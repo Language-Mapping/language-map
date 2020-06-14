@@ -1,24 +1,28 @@
-import React, { FC } from 'react'
-import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl'
-
-const MapboxMap = ReactMapboxGl({
-  accessToken:
-    'pk.eyJ1IjoiYWJldHRlcm1hcCIsImEiOiJjazVqengxMTgwOTB1M2pwbGNteHZkYTJrIn0.87lNhqvxIckDr8oZg_32Qg',
-})
+import React, { FC, useState } from 'react'
+import MapGL from 'react-map-gl'
 
 export const Map: FC = () => {
+  // Unsure why it needs the type here but not for feature coords...
+  const hood = [-74.006, 40.7128] as [number, number]
+  const zoom = 13
+  const bearing = -13
+  const pitch = 45
+  const [viewport, setViewport] = useState({
+    latitude: hood[1],
+    longitude: hood[0],
+    zoom,
+    bearing,
+    pitch,
+  })
+
   return (
-    <MapboxMap
-      // eslint-ignore-next-line
-      style="mapbox://styles/mapbox/streets-v9"
-      containerStyle={{
-        height: '100vh',
-        width: '100vw',
-      }}
-    >
-      <Layer type="symbol" id="marker" layout={{ 'icon-image': 'marker-15' }}>
-        <Feature coordinates={[-0.481747846041145, 51.3233379650232]} />
-      </Layer>
-    </MapboxMap>
+    <MapGL
+      {...viewport}
+      width="100vw"
+      height="100vh"
+      mapStyle="mapbox://styles/mapbox/dark-v9"
+      onViewportChange={setViewport}
+      mapboxApiAccessToken={process.env.MAPBOX_TOKEN}
+    />
   )
 }
