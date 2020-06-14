@@ -1,6 +1,8 @@
 import React, { FC, useState } from 'react'
 import MapGL from 'react-map-gl'
 
+import { MAPBOX_TOKEN as mapboxApiAccessToken } from 'config'
+
 export const Map: FC = () => {
   // Unsure why it needs the type here but not for feature coords...
   const hood = [-74.006, 40.7128] as [number, number]
@@ -22,7 +24,7 @@ export const Map: FC = () => {
       height="100vh"
       mapStyle="mapbox://styles/mapbox/dark-v9"
       onViewportChange={setViewport}
-      mapboxApiAccessToken={process.env.MAPBOX_TOKEN}
+      mapboxApiAccessToken={mapboxApiAccessToken}
     />
   )
 }

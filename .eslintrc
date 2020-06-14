@@ -119,6 +119,13 @@
     "import/imports-first": ["error", "absolute-first"],
     "import/newline-after-import": "error"
   },
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "jest": true,
+    "node": true
+  },
   "globals": {
     "window": true,
     "alert": true,
@@ -130,5 +137,21 @@
     "Blob": true,
     "navigator": true
   },
-  "parser": "babel-eslint"
+  "parser": "babel-eslint",
+  "settings": {
+    "ecmascript": 6,
+    "jsx": true,
+    "import/resolver": {
+      "node": {
+        "paths": ["src"]
+      }
+    },
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "react": {
+      "pragma": "React",
+      "version": "16.8"
+    }
+  }
 }
