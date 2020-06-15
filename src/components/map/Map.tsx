@@ -33,7 +33,7 @@ export const Map: FC = () => {
 
     async function getPoints() {
       const URL =
-        'https://services2.arcgis.com/NlsizNmbMFiinWw4/ArcGIS/rest/services/Languages_of_New_York_test/FeatureServer/0/query?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=*&returnGeometry=true&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=4326&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=false&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pgeojson&token='
+        'https://gist.githubusercontent.com/abettermap/e6b901d3b12996cf593011b46000362f/raw/ela-nyc.geojson'
       const response = await fetch(URL)
       const geojson = await response.json()
 
@@ -55,6 +55,10 @@ export const Map: FC = () => {
     >
       {pointData && (
         <Source type="geojson" data={pointData}>
+          {/* TODO: figure out why this doesn't work in TS. Looks like it wants 
+          a string, which is the case after Mapbox does its thing with `paint.
+          circle-color`, but until then it's an array. */}
+          {/* @ts-ignore */}
           <Layer {...pointStyle} />
         </Source>
       )}
