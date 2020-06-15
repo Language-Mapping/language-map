@@ -49,7 +49,7 @@ export const Map: FC = () => {
       {...viewport}
       width="100vw"
       height="100vh"
-      mapStyle="mapbox://styles/mapbox/dark-v9"
+      mapStyle="mapbox://styles/mapbox/dark-v9?optimize=true"
       onViewportChange={setViewport}
       mapboxApiAccessToken={mapboxApiAccessToken}
     >
