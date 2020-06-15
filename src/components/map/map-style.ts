@@ -4,7 +4,8 @@ export const polygonStyle = {
   id: 'polygons',
   type: 'fill',
   paint: {
-    'fill-color': 'green',
+    'fill-color': 'gray',
+    'fill-outline-color': '#eee',
     'fill-opacity': 0.6,
   },
 }

@@ -24,8 +24,7 @@ export const Map: FC = () => {
 
   useEffect(() => {
     async function getPolygons() {
-      const URL =
-        'https://raw.githubusercontent.com/uber/react-map-gl/master/examples/.data/us-income.geojson'
+      const URL = '/data/counties-nyc.geojson'
       const response = await fetch(URL)
       const geojson = await response.json()
 
