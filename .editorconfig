@@ -1,0 +1,14 @@
+# top-most EditorConfig file
+root = true
+
+# Project-wide settings (all files)
+[*]
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 2
+
+# TOC bug in GitLab Markdown parsing:
+# github.com/DavidAnson/markdownlint/blob/master/doc/Rules.md#md007---unordered-list-indentation
+[*.md]
+indent_size = 4
