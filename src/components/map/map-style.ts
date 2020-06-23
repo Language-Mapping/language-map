@@ -1,18 +1,9 @@
 // For more information on data-driven styles, see
 // https://www.mapbox.com/help/gl-dds-ref/
-export const polygonStyle = {
-  id: 'polygons',
-  type: 'fill',
-  paint: {
-    'fill-color': 'gray',
-    'fill-outline-color': '#eee',
-    'fill-opacity': 0.6,
-  },
-}
-
 export const pointStyle = {
   id: 'points',
   type: 'circle',
+  'source-layer': 'langs-4sdmo2',
   paint: {
     // https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-match
     'circle-color': [

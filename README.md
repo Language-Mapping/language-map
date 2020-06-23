@@ -1,44 +1,79 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# NYC Linguistic Diversity Map
 
-## Available Scripts
+> This project will become an interactive map of New York City’s linguistic
+> diversity, using data collected by the Endangered Language Alliance (ELA).
+> Users will need to be able to query a rich dataset and interact with the data
+> through an interactive map that may consist of audio, video, and storymap
+> links. The long-term vision for this project is to create an open source
+> toolkit documenting the workflows and tools used to enable others to undertake
+> language mapping in their own communities.
 
-In the project directory, you can run:
+## Setup and requirements
 
-### `yarn start`
+This project was bootstrapped with [Create React
+App](https://github.com/facebook/create-react-app) with `--typescript`. In order
+to develop it, you will need a few items.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Software
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+In order to use this project locally, you must have:
 
-### `yarn test`
+- [Node.js](https://nodejs.org/)
+- [`yarn` package manager](https://yarnpkg.com/)
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Setup and installation steps are available on each website.
 
-### `yarn build`
+### Mapbox API key
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+In order to use Mapbox features including background layers, vector tiles, and
+place search, follow these steps:
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+1. [Create a Mapbox account](https://account.mapbox.com/auth/signup/) if needed.
+2. [Create an access
+   token](https://docs.mapbox.com/accounts/overview/tokens/#creating-and-managing-access-tokens).
+3. Create a file called _.env_ in this directory.
+4. Add the following to it, replacing `YOUR_TOKEN` with the Mapbox token you
+   just created:
+   ```bash
+   REACT_APP_MAPBOX_ACCESS_TOKEN='YOUR_TOKEN'
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Usage
 
-### `yarn eject`
+### Install dependencies
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+In the project directory, run `yarn` to install the project's `npm`
+dependencies. It should take a lot less time to install after the first run.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Develop
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+In the project directory, run `yarn start` to run the app in a local web server
+visible at[http://localhost:3000](http://localhost:3000).
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+The page will automatically reload if you make edits. You will also see any lint
+errors in the console.
+
+### Test
+
+`yarn test` launches the test runner in the interactive watch mode. See the
+section about [running
+tests](https://facebook.github.io/create-react-app/docs/running-tests) for more
+information.
+
+### Build
+
+`yarn build` builds the app for production in a _./build_ folder in this
+directory. It bundles React in production mode and optimizes the build for the
+best performance. The build is minified and the filenames include cache-busting
+hashes. Your app is ready to be deployed!
+
+See the section about
+[deployment](https://facebook.github.io/create-react-app/docs/deployment) for
+more information.
 
 ## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+You can learn more in the [Create React App
+documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
