@@ -22,7 +22,11 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
       onViewportChange={setViewport}
       mapboxApiAccessToken={mapboxApiAccessToken}
     >
-      <Source type="vector" url="mapbox://abettermap.4xoc92wx">
+      <Source
+        type="vector"
+        url="mapbox://abettermap.4xoc92wx"
+        id="languages-src"
+      >
         {/* TODO: figure out why this doesn't work in TS. Looks like it wants 
           a string, which is the case after Mapbox does its thing with `paint.
           circle-color`, but until then it's an array. */}
