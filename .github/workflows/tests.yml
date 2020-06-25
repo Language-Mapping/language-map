@@ -3,17 +3,23 @@ name: CI Testing
 on: [push]
 
 jobs:
-  build:
+  install-and-test:
     name: Run all tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
     steps:
-      - uses: actions/checkout@v2
-      - uses: borales/actions-yarn@v2.0.0
+      - uses: actions/checkout@master
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@master
         with:
-          cmd: install
-      - uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: build
-      - uses: borales/actions-yarn@v2.0.0
-        with:
-          cmd: test
+          node-version: ${{ matrix.node-version }}
+      - name: Confirm Node version
+        run: node -v
+      - name: Install deps and test
+        run: |
+          yarn
+          yarn test
+        env:
+          CI: true
