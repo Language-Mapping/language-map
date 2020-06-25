@@ -2,8 +2,7 @@ import React from 'react'
 import { render } from '@testing-library/react'
 import { App } from 'components'
 
-test('renders learn react link', () => {
-  const { getByText } = render(<App />)
-  const linkElement = getByText(/learn react/i)
-  expect(linkElement).toBeInTheDocument()
+test('App is in the DOM using legit initial map state', async () => {
+  const component = await render(<App />)
+  expect(component.container).toBeInTheDocument()
 })
