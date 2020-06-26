@@ -4,12 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { MAPBOX_TOKEN as mapboxApiAccessToken } from 'config'
 import { pointStyle } from './map-style'
-
-type InitialMapState = {
-  latitude: number
-  longitude: number
-  zoom: number
-}
+import { InitialMapState } from './types'
 
 export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
   const [viewport, setViewport] = useState({ latitude, longitude, zoom })
