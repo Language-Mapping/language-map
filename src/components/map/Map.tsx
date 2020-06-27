@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react'
 import MapGL, { Source, Layer } from 'react-map-gl'
+import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { MAPBOX_TOKEN as mapboxApiAccessToken } from 'config'
 import { pointStyle } from './map-style'
