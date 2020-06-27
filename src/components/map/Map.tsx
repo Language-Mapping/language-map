@@ -22,9 +22,10 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
       onViewportChange={setViewport}
       mapboxApiAccessToken={mapboxApiAccessToken}
     >
+      {/* TODO: put in config, separate component, something */}
       <Source
         type="vector"
-        url="mapbox://abettermap.4xoc92wx"
+        url="mapbox://rhododendron.2knla7ts"
         id="languages-src"
       >
         {/* TODO: figure out why this doesn't work in TS. Looks like it wants 
