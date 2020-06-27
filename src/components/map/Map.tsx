@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react'
 import MapGL, { Source, Layer } from 'react-map-gl'
+import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { MAPBOX_TOKEN as mapboxApiAccessToken } from 'config'
 import { pointStyle } from './map-style'
@@ -22,9 +23,10 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
       onViewportChange={setViewport}
       mapboxApiAccessToken={mapboxApiAccessToken}
     >
+      {/* TODO: put in config, separate component, something */}
       <Source
         type="vector"
-        url="mapbox://abettermap.4xoc92wx"
+        url="mapbox://rhododendron.2knla7ts"
         id="languages-src"
       >
         {/* TODO: figure out why this doesn't work in TS. Looks like it wants 
