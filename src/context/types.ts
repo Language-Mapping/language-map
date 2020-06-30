@@ -13,6 +13,7 @@ export type StoreActionType =
       type: 'TOGGLE_UI_ALERT'
       payload: AlertPayloadType
     }
+  | { type: 'SET_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | {
       type: 'SET_LANG_LAYER_SYMBOLOGY'
       payload: keyof LangSymbStyles
@@ -20,6 +21,7 @@ export type StoreActionType =
 
 export type InitialStateType = {
   activeLangSymbKey: keyof LangSymbStyles
+  langFeatures: LangRecordSchema[]
   hasSeenSplash: boolean
   layerVisibility: LayerVisibilityTypes
   showSplash: boolean

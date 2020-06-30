@@ -12,6 +12,7 @@ import {
 
 export const initialState = {
   activeLangSymbKey: 'default', // TODO: correspond with a style
+  langFeatures: [],
   showSplash: false,
   loginSignupModal: null,
   hasSeenSplash: !!localStorage.getItem('hasSeenSplash') || false,
@@ -47,6 +48,11 @@ const reducer = (
   action: GlobalActionType
 ): InitialStateType => {
   switch (action.type) {
+    case 'SET_LANG_LAYER_FEATURES':
+      return {
+        ...state,
+        langFeatures: action.payload,
+      }
     case 'SET_LANG_LAYER_SYMBOLOGY':
       return {
         ...state,
