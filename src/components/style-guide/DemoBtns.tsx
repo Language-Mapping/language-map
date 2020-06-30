@@ -11,14 +11,6 @@ const useStyles = makeStyles((theme: Theme) =>
       '& > *': {
         margin: theme.spacing(1),
       },
-      '& > .MuiPaper-root': {
-        margin: theme.spacing(2),
-        padding: theme.spacing(3),
-      },
-      '& .MuiPaper-root .MuiPaper-root': {
-        margin: theme.spacing(1),
-        padding: theme.spacing(2),
-      },
     },
   })
 )
@@ -30,7 +22,10 @@ export const DemoBtns: FC = () => {
 
   return (
     <div>
-      <Paper>
+      <p>
+        These are definitely from MUI and contain a lot of useful variations.
+      </p>
+      <Paper elevation={4}>
         <h3>Contained</h3>
         <div className={classes.root}>
           <Button variant="contained">Default</Button>
@@ -48,7 +43,7 @@ export const DemoBtns: FC = () => {
           </Button>
         </div>
       </Paper>
-      <Paper>
+      <Paper elevation={4}>
         <h3>Text</h3>
         <div className={classes.root}>
           <Button>Default</Button>
@@ -60,7 +55,7 @@ export const DemoBtns: FC = () => {
           </Button>
         </div>
       </Paper>
-      <Paper>
+      <Paper elevation={4}>
         <h3>Outlined</h3>
         <div className={classes.root}>
           <Button variant="outlined">Default</Button>
@@ -78,8 +73,12 @@ export const DemoBtns: FC = () => {
           </Button>
         </div>
       </Paper>
-      <Paper>
+      <Paper elevation={4}>
         <h3>Sizes</h3>
+        <p>
+          Button sizes are pretty straightforward and are handy for adapting to
+          limited or spacious containers.
+        </p>
         <div className={classes.root}>
           <Button size="small">Small</Button>
           <Button size="medium">Medium</Button>
@@ -166,8 +165,13 @@ export const DemoBtns: FC = () => {
           </Button>
         </div>
       </Paper>
-      <Paper>
+      <Paper elevation={4}>
         <h3>Button Group</h3>
+        <p>
+          Not sure if we would use this but it could be handy for a baselayer
+          selector (e.g. Mapbox Streets, Aerial, or Dark) in case a radio group
+          makes less sense.
+        </p>
         <div className={classes.root}>
           <ButtonGroup
             color="primary"
@@ -197,7 +201,7 @@ export const DemoBtns: FC = () => {
           </ButtonGroup>
         </div>
       </Paper>
-      <Paper>
+      <Paper elevation={4}>
         <h3>Split Button</h3>
         <div className={classes.root}>
           <DemoSplitBtn />

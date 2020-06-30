@@ -45,6 +45,12 @@ export const DemoSplitBtn: FC = () => {
 
   return (
     <>
+      <p>
+        Not sure if we have a use case for these, especially if using React
+        Select, but they look good and could be useful. <b>TODO:</b> adjust
+        padding if using non-Roboto font? Not sure what happened to the spacing
+        here...
+      </p>
       <ButtonGroup
         variant="contained"
         color="primary"
@@ -79,7 +85,7 @@ export const DemoSplitBtn: FC = () => {
                 placement === 'bottom' ? 'center top' : 'center bottom',
             }}
           >
-            <Paper>
+            <Paper elevation={4}>
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList id="split-button-menu">
                   {options.map((option, index) => (
