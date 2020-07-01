@@ -3,6 +3,7 @@ import { Theme, createStyles, makeStyles } from '@material-ui/core/styles'
 import { Container, Paper } from '@material-ui/core'
 
 import {
+  DemoBreadcrumbs,
   DemoBtns,
   DemoCard,
   DemoCheckboxes,
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     pageHeader: {
-      marginTop: theme.spacing(8),
+      marginTop: theme.spacing(6),
     },
   })
 )
@@ -45,10 +46,14 @@ export const StyleGuide: FC = () => {
 
   return (
     <Container maxWidth="md" className={classes.root}>
-      <h1 className={classes.pageHeader}>Style Guide Demo</h1>
+      <DemoBreadcrumbs />
+      <h1 data-testid="style-guide-pg-title" className={classes.pageHeader}>
+        Style Guide Demo
+      </h1>
       <p>
         This is not meant to be a comprehensive set of all UI variations, but it
-        should represent the <i>majority</i> of them.
+        should represent the <i>majority</i> of them. The page will not be
+        advertised to users in any way as it is for internal purposes only.
       </p>
       <Paper elevation={4}>
         <h2>Standard HTML Elements</h2>
@@ -111,7 +116,11 @@ export const StyleGuide: FC = () => {
           <h3>Native Dropdown Selects</h3>
           <p>
             Note that we would most likely use a better Select library like{' '}
-            <a href="https://react-select.com/home" target="_blank">
+            <a
+              href="https://react-select.com/home"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               react-select
             </a>
             .

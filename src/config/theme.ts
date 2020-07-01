@@ -1,6 +1,5 @@
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles'
 import { withStyles } from '@material-ui/core'
-import green from '@material-ui/core/colors/green'
 import brown from '@material-ui/core/colors/brown'
 import blueGrey from '@material-ui/core/colors/blueGrey'
 
