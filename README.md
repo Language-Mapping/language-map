@@ -71,6 +71,13 @@ See the section about
 [deployment](https://facebook.github.io/create-react-app/docs/deployment) for
 more information.
 
+### View Style Guide Demo
+
+To better visualize UI styles, theming, and layout, you can see examples of
+common DOM elements and components at the `/style-guide` endpoint in any
+instance of the project (e.g. locally at `http://localhost:3000/style-guide` or
+in production at `https://languagemapping.netlify.app/style-guide`).
+
 ## Learn More
 
 You can learn more in the [Create React App
