@@ -1,13 +1,25 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { ThemeProvider } from '@material-ui/styles'
+import { CssBaseline } from '@material-ui/core'
+import { BrowserRouter as Router } from 'react-router-dom'
 
-import { App } from 'components'
 import * as serviceWorker from './serviceWorker'
-import './style.css'
+import { GlobalProvider } from 'components'
+import { theme, GlobalCss } from 'config/theme'
+import { App } from 'components'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <GlobalProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <GlobalCss />
+        <Router>
+          <App />
+        </Router>
+      </ThemeProvider>
+    </GlobalProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )
