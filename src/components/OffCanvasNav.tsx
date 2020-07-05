@@ -1,18 +1,13 @@
 import React, { FC } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import {
-  Drawer,
-  List,
-  Divider,
-  ListItem,
-  ListItemText,
-} from '@material-ui/core'
+import { Drawer } from '@material-ui/core'
 
 import { ToggleOffCanvasType } from './types'
+import { Nav } from 'components'
 
 const useStyles = makeStyles({
   list: {
-    width: 275,
+    width: 290,
   },
 })
 
@@ -38,21 +33,7 @@ export const OffCanvasNav: FC<OffCanvasNavType> = ({
         onClick={closeIt}
         onKeyDown={closeIt}
       >
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text) => (
-            <ListItem button key={text}>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {['All mail', 'Trash', 'Spam'].map((text) => (
-            <ListItem button key={text}>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
+        <Nav />
       </div>
     </Drawer>
   )

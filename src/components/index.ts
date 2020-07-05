@@ -1,4 +1,6 @@
 export * from './App'
+export * from './ContainerLayout'
+export * from './Nav'
 export * from './OffCanvasNav'
 export * from './TopBar'
 export * from 'context/GlobalContext'
