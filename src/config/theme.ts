@@ -7,7 +7,6 @@ import blueGrey from '@material-ui/core/colors/blueGrey'
 // CRED: https://stackoverflow.com/a/57127040/1048518
 const customTheme = createMuiTheme({
   palette: {
-    type: 'dark',
     primary: blueGrey,
     secondary: brown,
   },
