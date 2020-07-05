@@ -1,4 +1,5 @@
 import React, { FC, useState } from 'react'
+import { Link as RouteLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core'
 import { MdMenu } from 'react-icons/md'
@@ -16,6 +17,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     title: {
       flexGrow: 1,
+      '& a, & a:visited': {
+        textDecoration: 'none',
+        color: theme.palette.common.white,
+      },
     },
   })
 )
@@ -41,7 +46,7 @@ export const TopBar: FC = () => {
     <>
       <div className={classes.root}>
         <AppBar position="fixed">
-          <Toolbar variant="dense">
+          <Toolbar>
             <IconButton
               edge="start"
               className={classes.menuButton}
@@ -57,7 +62,7 @@ export const TopBar: FC = () => {
               className={classes.title}
               align="center"
             >
-              Languages of New York City
+              <RouteLink to="/">Languages of New York City</RouteLink>
             </Typography>
             {/* Empty placeholder to keep flexbox intact */}
             <div></div>
