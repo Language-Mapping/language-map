@@ -1,4 +1,5 @@
 export * from './App'
+export * from './BottomNav'
 export * from './ContainerLayout'
 export * from './Nav'
 export * from './OffCanvasNav'

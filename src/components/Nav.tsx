@@ -49,7 +49,7 @@ const primaryNavConfig = [
   {
     url: '/results',
     primaryText: 'Table/results',
-    secondaryText: 'Tabular list of results',
+    secondaryText: 'Tabular list of results (better elsewhere?)',
     icon: <MdViewList />,
   },
 ]
