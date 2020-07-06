@@ -49,7 +49,7 @@ export const TopBar: FC = () => {
     <>
       <div className={classes.root}>
         <AppBar position="fixed">
-          <Toolbar>
+          <Toolbar variant="dense">
             <IconButton
               edge="start"
               className={classes.menuButton}
