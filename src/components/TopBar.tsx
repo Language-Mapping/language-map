@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react'
 import { Link as RouteLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core'
-import { MdMenu } from 'react-icons/md'
+import { MdMenu, MdInfo } from 'react-icons/md'
 
 import { ToggleOffCanvasType } from './types'
 import { OffCanvasNav } from 'components'
@@ -11,16 +11,19 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       flexGrow: 1,
+      '& a, & a:visited': {
+        textDecoration: 'none',
+        color: theme.palette.common.white,
+      },
     },
     menuButton: {
       marginRight: theme.spacing(2),
     },
     title: {
       flexGrow: 1,
-      '& a, & a:visited': {
-        textDecoration: 'none',
-        color: theme.palette.common.white,
-      },
+    },
+    aboutIconButton: {
+      fill: theme.palette.common.white,
     },
   })
 )
@@ -64,8 +67,11 @@ export const TopBar: FC = () => {
             >
               <RouteLink to="/">Languages of New York City</RouteLink>
             </Typography>
-            {/* Empty placeholder to keep flexbox intact */}
-            <div></div>
+            <RouteLink to="/about">
+              <IconButton color="inherit" className={classes.aboutIconButton}>
+                <MdInfo />
+              </IconButton>
+            </RouteLink>
           </Toolbar>
         </AppBar>
       </div>
