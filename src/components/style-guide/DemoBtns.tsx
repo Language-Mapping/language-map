@@ -1,6 +1,12 @@
 import React, { FC } from 'react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { Button, ButtonGroup, IconButton, Paper } from '@material-ui/core'
+import {
+  Button,
+  ButtonGroup,
+  IconButton,
+  Paper,
+  Typography,
+} from '@material-ui/core'
 import { MdDelete } from 'react-icons/md'
 
 import { DemoSplitBtn } from 'components/style-guide'
@@ -26,7 +32,9 @@ export const DemoBtns: FC = () => {
         These are definitely from MUI and contain a lot of useful variations.
       </p>
       <Paper elevation={4}>
-        <h3>Contained</h3>
+        <Typography component="h3" variant="h4">
+          Contained
+        </Typography>
         <div className={classes.root}>
           <Button variant="contained">Default</Button>
           <Button variant="contained" color="primary">
@@ -44,7 +52,9 @@ export const DemoBtns: FC = () => {
         </div>
       </Paper>
       <Paper elevation={4}>
-        <h3>Text</h3>
+        <Typography component="h3" variant="h4">
+          Text
+        </Typography>
         <div className={classes.root}>
           <Button>Default</Button>
           <Button color="primary">Primary</Button>
@@ -56,7 +66,9 @@ export const DemoBtns: FC = () => {
         </div>
       </Paper>
       <Paper elevation={4}>
-        <h3>Outlined</h3>
+        <Typography component="h3" variant="h4">
+          Outlined
+        </Typography>
         <div className={classes.root}>
           <Button variant="outlined">Default</Button>
           <Button variant="outlined" color="primary">
@@ -74,7 +86,9 @@ export const DemoBtns: FC = () => {
         </div>
       </Paper>
       <Paper elevation={4}>
-        <h3>Sizes</h3>
+        <Typography component="h3" variant="h4">
+          Sizes
+        </Typography>
         <p>
           Button sizes are pretty straightforward and are handy for adapting to
           limited or spacious containers.
@@ -166,7 +180,9 @@ export const DemoBtns: FC = () => {
         </div>
       </Paper>
       <Paper elevation={4}>
-        <h3>Button Group</h3>
+        <Typography component="h3" variant="h4">
+          Button Group
+        </Typography>
         <p>
           Not sure if we would use this but it could be handy for a baselayer
           selector (e.g. Mapbox Streets, Aerial, or Dark) in case a radio group
@@ -202,7 +218,9 @@ export const DemoBtns: FC = () => {
         </div>
       </Paper>
       <Paper elevation={4}>
-        <h3>Split Button</h3>
+        <Typography component="h3" variant="h4">
+          Split Button
+        </Typography>
         <div className={classes.root}>
           <DemoSplitBtn />
         </div>

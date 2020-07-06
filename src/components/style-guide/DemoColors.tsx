@@ -5,7 +5,9 @@ export const DemoColors: FC = () => {
   return (
     <>
       <Paper elevation={4}>
-        <h3>Text Colors</h3>
+        <Typography component="h3" variant="h4">
+          Text Colors
+        </Typography>
         <Typography component="div" variant="body1">
           <Box color="primary.main">primary.main</Box>
           <Box color="secondary.main">secondary.main</Box>
@@ -19,7 +21,9 @@ export const DemoColors: FC = () => {
         </Typography>
       </Paper>
       <Paper elevation={4}>
-        <h3>Background Colors</h3>
+        <Typography component="h3" variant="h4">
+          Background Colors
+        </Typography>
         <Grid container spacing={1}>
           <Grid item xs={12} sm={4}>
             <Box bgcolor="primary.main" color="primary.contrastText" p={2}>

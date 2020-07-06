@@ -6,6 +6,7 @@ import { Breadcrumbs, Typography, Link } from '@material-ui/core'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      marginTop: theme.spacing(4),
       paddingTop: theme.spacing(4),
       paddingBottom: theme.spacing(4),
       borderBottomStyle: 'dashed',
