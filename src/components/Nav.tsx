@@ -9,8 +9,7 @@ import {
   ListItemText,
 } from '@material-ui/core'
 import { MdShare, MdHome, MdViewList, MdChat } from 'react-icons/md'
-import { FaInfo } from 'react-icons/fa'
-import { GoGear } from 'react-icons/go'
+import { GoGear, GoInfo } from 'react-icons/go'
 
 type ListItemType = {
   url: string
@@ -59,7 +58,7 @@ const secondaryNavConfig = [
     url: '/about',
     primaryText: 'About',
     secondaryText: 'Privacy policy, data sources',
-    icon: <FaInfo />,
+    icon: <GoInfo />,
   },
   {
     url: '/share',

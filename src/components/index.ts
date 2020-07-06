@@ -1,3 +1,4 @@
+export * from './AboutLinkAsIcon'
 export * from './App'
 export * from './BottomNav'
 export * from './ContainerLayout'
