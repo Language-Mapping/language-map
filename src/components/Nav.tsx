@@ -8,8 +8,9 @@ import {
   ListItem,
   ListItemText,
 } from '@material-ui/core'
-import { MdHome, MdViewList } from 'react-icons/md'
+import { MdShare, MdHome, MdViewList, MdChat } from 'react-icons/md'
 import { FaInfo } from 'react-icons/fa'
+import { GoGear } from 'react-icons/go'
 
 type ListItemType = {
   url: string
@@ -53,6 +54,35 @@ const primaryNavConfig = [
   },
 ]
 
+const secondaryNavConfig = [
+  {
+    url: '/about',
+    primaryText: 'About',
+    secondaryText: 'Privacy policy, data sources',
+    icon: <FaInfo />,
+  },
+  {
+    url: '/share',
+    primaryText: 'Share',
+    secondaryText:
+      'Maybe just a btn elsewhere, but could consider this second chance to market.',
+    icon: <MdShare />,
+  },
+  {
+    url: '/contact',
+    primaryText: 'Contact & Feedback',
+    secondaryText:
+      'Bug reports, suggest corrections, feature requests, questions, kudos, other comments. Simplest: Google Forms or similar.',
+    icon: <MdChat />,
+  },
+  {
+    url: '/settings',
+    primaryText: 'Settings',
+    secondaryText: 'Relevant? Just "auto-zoom on filter change" so far.',
+    icon: <GoGear />,
+  },
+]
+
 const NavListLink: FC<ListItemType> = ({
   url,
   primaryText,
@@ -81,14 +111,11 @@ export const Nav: FC = () => {
       </List>
       <Divider />
       <List>
-        <ListItem button>
-          <NavListLink
-            url="/about"
-            primaryText="About"
-            secondaryText="Privacy policy, data sources"
-            icon={<FaInfo />}
-          />
-        </ListItem>
+        {secondaryNavConfig.map((props: ListItemType) => (
+          <ListItem button key={props.primaryText}>
+            <NavListLink {...props} />
+          </ListItem>
+        ))}
       </List>
     </nav>
   )
