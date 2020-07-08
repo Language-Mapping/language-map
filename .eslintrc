@@ -9,15 +9,8 @@
     "jsx": true,
     "import/resolver": {
       "node": {
-        "paths": [
-          "src"
-        ],
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".ts",
-          ".tsx"
-        ]
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     },
     "ecmaFeatures": {
@@ -31,14 +24,6 @@
       "version": "detect"
     }
   },
-  // TODO: rm if not needed:
-  // "env": {
-  //   "browser": true,
-  //   "commonjs": true,
-  //   "es6": true,
-  //   "jest": true,
-  //   "node": true
-  // },
   "extends": [
     "airbnb-typescript",
     "airbnb/hooks",
@@ -55,10 +40,7 @@
     // last configuration in the extends array.
     "plugin:prettier/recommended"
   ],
-  "ignorePatterns": [
-    "scratch",
-    "src/serviceWorker.ts"
-  ],
+  "ignorePatterns": ["scratch", "src/serviceWorker.ts"],
   "rules": {
     "array-bracket-newline": [
       "error",
@@ -66,19 +48,10 @@
         "multiline": true
       }
     ],
-    "comma-dangle": [
-      "error",
-      "only-multiline"
-    ],
+    "comma-dangle": ["error", "only-multiline"],
     "comma-spacing": "error",
-    "comma-style": [
-      "error",
-      "last"
-    ],
-    "dot-location": [
-      "error",
-      "property"
-    ],
+    "comma-style": ["error", "last"],
+    "dot-location": ["error", "property"],
     "no-multi-spaces": "error",
     "no-multiple-empty-lines": [
       "error",
@@ -96,36 +69,22 @@
         "consistent": true
       }
     ],
-    "object-curly-spacing": [
-      "error",
-      "always"
-    ],
+    "object-curly-spacing": ["error", "always"],
     "object-property-newline": [
       "error",
       {
         "allowAllPropertiesOnSameLine": true
       }
     ],
-    "one-var-declaration-per-line": [
-      "error",
-      "initializations"
-    ],
-    "operator-linebreak": [
-      "error",
-      "after"
-    ],
-    "padded-blocks": [
-      "error",
-      "never"
-    ],
+    "one-var-declaration-per-line": ["error", "initializations"],
+    "operator-linebreak": ["error", "after"],
+    "padded-blocks": ["error", "never"],
     "padding-line-between-statements": [
       "error",
       {
         "blankLine": "always",
         "prev": "multiline-block-like",
-        "next": [
-          "multiline-block-like"
-        ]
+        "next": ["multiline-block-like"]
       },
       {
         "blankLine": "never",
@@ -180,14 +139,8 @@
         "packageDir": "./"
       }
     ],
-    "quote-props": [
-      "error",
-      "as-needed"
-    ],
-    "jsx-quotes": [
-      "error",
-      "prefer-double"
-    ],
+    "quote-props": ["error", "as-needed"],
+    "jsx-quotes": ["error", "prefer-double"],
     "space-before-blocks": "error",
     "space-before-function-paren": [
       "error",
@@ -201,12 +154,7 @@
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".ts",
-          ".tsx"
-        ]
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     ],
     "no-underscore-dangle": 0,
@@ -215,10 +163,7 @@
     "react/no-unescaped-entities": [
       "error",
       {
-        "forbid": [
-          ">",
-          "}"
-        ]
+        "forbid": [">", "}"]
       }
     ],
     "react/jsx-wrap-multilines": [
@@ -227,15 +172,10 @@
         "prop": "parens-new-line"
       }
     ],
-    "import/imports-first": [
-      "error",
-      "absolute-first"
-    ],
+    "import/imports-first": ["error", "absolute-first"],
     "import/newline-after-import": "error",
     "import/extensions": 0,
     "import/prefer-default-export": 0,
-    "@typescript-eslint/no-unused-vars": [
-      "error"
-    ]
+    "@typescript-eslint/no-unused-vars": ["error"]
   }
 }
