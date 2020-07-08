@@ -1,6 +1,54 @@
 {
-  "extends": ["airbnb", "prettier", "prettier/react"],
-  "plugins": ["prettier"],
+  "parser": "@typescript-eslint/parser", // Specifies the ESLint parser
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    // Allows for the parsing of modern ECMAScript features
+    // "ecmaVersion": 2020, // TODO: rm if not needed
+    "ecmaVersion": 2018, // Allows for the parsing of modern ECMAScript features
+    "sourceType": "module", // Allows for the use of imports
+    "jsx": true,
+    "import/resolver": {
+      "node": {
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    },
+    "ecmaFeatures": {
+      "jsx": true // Allows for the parsing of JSX
+    }
+  },
+  "settings": {
+    // "ecmascript": 6, // TODO: rm if not needed
+    "react": {
+      // Tells eslint-plugin-react to automatically detect the version of React
+      "version": "detect"
+    }
+  },
+  // TODO: rm if not needed:
+  // "env": {
+  //   "browser": true,
+  //   "commonjs": true,
+  //   "es6": true,
+  //   "jest": true,
+  //   "node": true
+  // },
+  "extends": [
+    "airbnb-typescript",
+    "airbnb/hooks",
+    "react-app",
+    // "jest", // is this even installed?
+    "plugin:jest/recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    // Uses eslint-config-prettier to disable ESLint rules from
+    // @typescript-eslint/eslint-plugin that would conflict with prettier
+    "prettier/@typescript-eslint",
+    // Enables eslint-plugin-prettier and eslint-config-prettier. This will
+    // display prettier errors as ESLint errors. Make sure this is always the
+    // last configuration in the extends array.
+    "plugin:prettier/recommended"
+  ],
+  "ignorePatterns": ["scratch"],
   "rules": {
     "array-bracket-newline": [
       "error",
@@ -90,8 +138,8 @@
         "trailingComma": "es5"
       }
     ],
-    // CRED: https://bit.ly/2HtgMDY
-    // ...if it doesn't work, try: https://bit.ly/2HtdGzT
+    // CRED: https://bit.ly/2HtgMDY ...if it doesn't work, try:
+    // https://bit.ly/2HtdGzT
     "import/no-extraneous-dependencies": [
       "error",
       { "devDependencies": true, "packageDir": "./" }
@@ -111,47 +159,16 @@
     "react/jsx-filename-extension": [
       1,
       {
-        "extensions": [".js", ".jsx"]
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     ],
     "react/prop-types": 0,
+    "react/jsx-props-no-spreading": 0,
     "no-underscore-dangle": 0,
     "import/imports-first": ["error", "absolute-first"],
-    "import/newline-after-import": "error"
-  },
-  "env": {
-    "browser": true,
-    "commonjs": true,
-    "es6": true,
-    "jest": true,
-    "node": true
-  },
-  "globals": {
-    "window": true,
-    "alert": true,
-    "fetch": true,
-    "document": true,
-    "localStorage": true,
-    "FormData": true,
-    "FileReader": true,
-    "Blob": true,
-    "navigator": true
-  },
-  "parser": "babel-eslint",
-  "settings": {
-    "ecmascript": 6,
-    "jsx": true,
-    "import/resolver": {
-      "node": {
-        "paths": ["src"]
-      }
-    },
-    "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"]
-    },
-    "react": {
-      "pragma": "React",
-      "version": "16.8"
-    }
+    "import/newline-after-import": "error",
+    "import/extensions": 0,
+    "import/prefer-default-export": 0,
+    "@typescript-eslint/no-unused-vars": ["error"]
   }
 }
