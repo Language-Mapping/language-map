@@ -8,7 +8,7 @@ import {
   ListItem,
   ListItemText,
 } from '@material-ui/core'
-import { MdShare, MdHome, MdViewList, MdChat } from 'react-icons/md'
+import { MdShare, MdHome, MdChat } from 'react-icons/md'
 import { GoGear, GoInfo } from 'react-icons/go'
 
 type ListItemType = {

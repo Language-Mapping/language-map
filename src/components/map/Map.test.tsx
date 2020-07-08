@@ -2,6 +2,7 @@ import React from 'react'
 import { render } from '@testing-library/react'
 
 import { Map } from 'components/map'
+import { initialMapState } from 'components/map/config'
 
 // TODO: rm if not using
 // jest.mock('mapbox-gl/dist/mapbox-gl', () => ({
@@ -19,14 +20,6 @@ import { Map } from 'components/map'
 //   // })),
 //   NavigationControl: jest.fn(),
 // }))
-
-const mapCenter = [-0, 0] as [number, number]
-
-export const initialMapState = {
-  latitude: mapCenter[1],
-  longitude: mapCenter[0],
-  zoom: 15,
-}
 
 describe('Detecting basic map presence', () => {
   test('Map component renders', async () => {

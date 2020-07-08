@@ -1,14 +1,15 @@
 import React, { FC, useState, useContext } from 'react'
 import MapGL from 'react-map-gl'
+// eslint-disable-next-line import/no-extraneous-dependencies
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 // TODO: move to map-specific config file along with anything else that is
 // project-specific in order to promote flexibility and reusability in case
 // another project wants this.
 import { MAPBOX_TOKEN as mapboxApiAccessToken } from 'config'
-import { InitialMapState } from './types'
 import { GlobalContext } from 'components'
 import { LanguageLayer } from 'components/map'
+import { InitialMapState } from './types'
 
 export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
   const [viewport, setViewport] = useState({ latitude, longitude, zoom })

@@ -5,8 +5,8 @@ import { fade } from '@material-ui/core/styles/colorManipulator'
 import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core'
 import { MdMenu } from 'react-icons/md'
 
-import { ToggleOffCanvasType } from './types'
 import { OffCanvasNav } from 'components'
+import { ToggleOffCanvasType } from './types'
 import { AboutLinkAsIcon } from './AboutLinkAsIcon'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -51,6 +51,7 @@ export const TopBar: FC = () => {
     }
 
     setOffCanvasOpen(open)
+
     return null
   }
 

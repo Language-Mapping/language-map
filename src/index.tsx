@@ -4,10 +4,10 @@ import { ThemeProvider } from '@material-ui/styles'
 import { CssBaseline } from '@material-ui/core'
 import { BrowserRouter as Router } from 'react-router-dom'
 
-import * as serviceWorker from './serviceWorker'
-import { GlobalProvider } from 'components'
+import { GlobalProvider, App } from 'components'
 import { theme, GlobalCss } from 'config/theme'
-import { App } from 'components'
+
+import * as serviceWorker from './serviceWorker'
 
 const AppWrap: FC = () => (
   <React.StrictMode>
@@ -25,9 +25,7 @@ const AppWrap: FC = () => (
 
 ReactDOM.render(<AppWrap />, document.getElementById('root'))
 
-// @ts-ignore
 if (module.hot) {
-  // @ts-ignore
   module.hot.accept()
 }
 

@@ -41,16 +41,15 @@ export const DomElements: FC = () => {
         <p>
           The map is committed to representing many of the smaller, minority,
           and Indigenous languages that are primarily oral and have neither
-          public visibility nor official support. It represents ELA’s ongoing
+          public visibility nor official support. It represents ELA's ongoing
           effort to draw on all available sources, including thousands of
-          interviews and discussions, to tell the continuing story of the
-          city’s many languages and cultures. The patterns it reveals — the
-          clustering of West African languages in Harlem and the Bronx, a
-          microcosm of the former Soviet Union in south Brooklyn, the
-          multifaceted Asian-language diversity of Queens, to name a few —
-          only hint at the linguistic complexity of a city where a single
-          building or block can host speakers of dozens of languages from across
-          the globe.
+          interviews and discussions, to tell the continuing story of the city's
+          many languages and cultures. The patterns it reveals — the clustering
+          of West African languages in Harlem and the Bronx, a microcosm of the
+          former Soviet Union in south Brooklyn, the multifaceted Asian-language
+          diversity of Queens, to name a few — only hint at the linguistic
+          complexity of a city where a single building or block can host
+          speakers of dozens of languages from across the globe.
         </p>
         <p>
           <b>This is bold text.</b>

@@ -64,7 +64,7 @@ const LayerSymbolSelect: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
   const currentValue = state.activeLangSymbKey
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     dispatch({ type: 'SET_LANG_SYMBOLOGY', payload: event.target.value })
   }
 
@@ -78,7 +78,7 @@ const LayerSymbolSelect: FC = () => {
       <Select
         native
         value={currentValue}
-        // onChange={handleChange}
+        onChange={handleChange}
         inputProps={{
           name: 'symbology',
           id: 'lang-symb-select',
@@ -97,7 +97,7 @@ const LayerLabelSelect: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
   const currentValue = state.activeLangLabelKey
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     dispatch({ type: 'SET_LANG_LABELS', payload: event.target.value })
   }
 
@@ -107,7 +107,7 @@ const LayerLabelSelect: FC = () => {
       <Select
         native
         value={currentValue}
-        // onChange={handleChange}
+        onChange={handleChange}
         inputProps={{
           name: 'label',
           id: 'lang-label-select',

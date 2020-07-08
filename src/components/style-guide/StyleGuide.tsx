@@ -166,7 +166,8 @@ export const StyleGuide: FC = () => {
           </a>
           ) based on them. For the most part they are hands-off unless there is
           a reason to change them, with the exception of choosing the{' '}
-          <code>primary</code> and <code>secondary</code> base colors.
+          <code>primary</code> and
+          <code>secondary</code> base colors.
         </p>
         <DemoColors />
       </Paper>

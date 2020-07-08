@@ -2,8 +2,8 @@ import React, { FC } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Drawer } from '@material-ui/core'
 
-import { ToggleOffCanvasType } from './types'
 import { Nav } from 'components'
+import { ToggleOffCanvasType } from './types'
 
 const useStyles = makeStyles({
   list: {

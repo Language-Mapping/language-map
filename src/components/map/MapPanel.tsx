@@ -3,11 +3,11 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import { Box, Typography, Paper } from '@material-ui/core'
 
-type panelPositionTypes = 'open' | 'half' | 'closed'
+type PanelPositionTypes = 'open' | 'half' | 'closed'
 
 type MapPanelTypes = {
   heading: string
-  position: panelPositionTypes
+  position: PanelPositionTypes
 }
 
 const useStyles = makeStyles((theme: Theme) =>
