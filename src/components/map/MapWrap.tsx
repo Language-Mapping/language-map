@@ -1,10 +1,12 @@
 import React, { FC, useState } from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
+import { Box } from '@material-ui/core'
 
 import { BottomNav } from 'components'
-import { Map, MapPanel } from 'components/map'
+import { Map, MapPanel, MapLayersPopout } from 'components/map'
 import { initialMapState } from 'components/map/config'
 
+// TODO: rm if not using, but understand why it breaks
 // const fillItUp = {
 //   bottom: 0,
 //   position: 'absolute',
@@ -53,6 +55,9 @@ export const MapWrap: FC = () => {
     <div className={classes.mapWrapRoot}>
       <div className={classes.mapItselfWrap}>
         <Map {...initialMapState} />
+        <Box position="absolute" top={60} right={8} zIndex={1}>
+          <MapLayersPopout />
+        </Box>
       </div>
       <MapPanel heading={panelsConfig[value].heading} position="open">
         {panelsConfig[value].content}

@@ -1,4 +1,5 @@
 export * from './LanguageLayer'
 export * from './Map'
+export * from './MapLayersPopout'
 export * from './MapPanel'
 export * from './MapWrap'

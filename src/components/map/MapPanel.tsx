@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
       right: theme.spacing(1),
       position: 'absolute',
       bottom: 60,
+      height: 200,
       backgroundColor: fade(theme.palette.common.white, 0.85),
       [theme.breakpoints.up('sm')]: {
         width: 325,
@@ -37,11 +38,12 @@ export const MapPanel: FC<MapPanelTypes> = ({
   position,
 }) => {
   const classes = useStyles()
-  const heights = {
-    open: 200,
-    half: 200,
-    closed: 200,
-  }
+  // TODO: rm if not using
+  // const heights = {
+  //   open: 200,
+  //   half: 200,
+  //   closed: 200,
+  // }
   const transforms = {
     open: 'translateY(0%)',
     half: 'translateY(50%)',
