@@ -46,26 +46,10 @@ const primaryNavConfig = [
     icon: <MdHome />,
   },
   {
-    url: '/results',
-    primaryText: 'Table/results',
-    secondaryText: 'Tabular list of results (better elsewhere?)',
-    icon: <MdViewList />,
-  },
-]
-
-const secondaryNavConfig = [
-  {
     url: '/about',
     primaryText: 'About',
     secondaryText: 'Privacy policy, data sources',
     icon: <GoInfo />,
-  },
-  {
-    url: '/share',
-    primaryText: 'Share',
-    secondaryText:
-      'Maybe just a btn elsewhere, but could consider this second chance to market.',
-    icon: <MdShare />,
   },
   {
     url: '/contact',
@@ -73,6 +57,16 @@ const secondaryNavConfig = [
     secondaryText:
       'Bug reports, suggest corrections, feature requests, questions, kudos, other comments. Simplest: Google Forms or similar.',
     icon: <MdChat />,
+  },
+]
+
+const secondaryNavConfig = [
+  {
+    url: '/share',
+    primaryText: 'Share',
+    secondaryText:
+      'Maybe just a btn elsewhere, but could consider this second chance to market.',
+    icon: <MdShare />,
   },
   {
     url: '/settings',
