@@ -35,15 +35,21 @@ const useStyles = makeStyles(() =>
 const panelsConfig = [
   {
     heading: 'Explore',
-    content: 'Query, search, filter, what have you',
+    subheading: 'Searching, filtering, etc.',
+    content:
+      'This panel would be shown first since it is what we want the user to see before diving into anything else.',
   },
   {
     heading: 'Results',
-    content: 'Table or list of results',
+    subheading: 'Table or list of results',
+    content:
+      'Not a ton of room here, should other options be considered? Might be cool as a "Grid View" too.',
   },
   {
     heading: 'Details',
-    content: 'Detailed info on a specific selected individual point',
+    subheading: '...of selected feature',
+    content:
+      'Detailed info on a specific selected individual point. Will be triggered by clicking a record in Results panel or a "View Details" button from within a popup when a point is clicked in the map.',
   },
 ]
 
@@ -59,9 +65,15 @@ export const MapWrap: FC = () => {
           <MapLayersPopout />
         </Box>
       </div>
-      <MapPanel heading={panelsConfig[value].heading} position="open">
-        {panelsConfig[value].content}
-      </MapPanel>
+      {panelsConfig.map((config) => (
+        <MapPanel
+          key={config.heading}
+          heading={panelsConfig[value].heading}
+          content={panelsConfig[value].content}
+          subheading={panelsConfig[value].subheading}
+          position="open"
+        />
+      ))}
       <BottomNav value={value} setValue={setValue} />
     </div>
   )

@@ -7,7 +7,10 @@ type PanelPositionTypes = 'open' | 'half' | 'closed'
 
 type MapPanelTypes = {
   heading: string
+  subheading: string
+  content: string
   position: PanelPositionTypes
+  children?: React.ReactNode
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -23,9 +26,11 @@ const useStyles = makeStyles((theme: Theme) =>
         width: 325,
         top: 140,
         bottom: theme.spacing(4),
+        height: 350,
         left: 16,
       },
       '& .MuiPaper-root': {
+        overflowY: 'auto',
         height: '100%',
       },
     },
@@ -36,6 +41,8 @@ export const MapPanel: FC<MapPanelTypes> = ({
   children,
   heading,
   position,
+  content,
+  subheading,
 }) => {
   const classes = useStyles()
   // TODO: rm if not using
@@ -58,7 +65,21 @@ export const MapPanel: FC<MapPanelTypes> = ({
       <Paper>
         <Box padding={2}>
           <Typography variant="h4">{heading}</Typography>
-          {children}
+          <Typography variant="h6">{subheading}</Typography>
+          <p>{content}</p>
+          <small>
+            If relevant, especially for complex panels with tons of info, the
+            elements could be organized by mutually exclusive Tabs.
+          </small>
+          <p>
+            <small>
+              On mobile (and maybe desktop) it would have 3 states: maximized,
+              half, and closed.
+            </small>
+          </p>
+          <p>
+            This panel <b>will not</b> be below mapbox logo.
+          </p>
         </Box>
       </Paper>
     </Box>

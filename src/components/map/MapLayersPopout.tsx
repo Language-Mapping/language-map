@@ -88,6 +88,9 @@ const LayerSymbolSelect: FC = () => {
         <option value="Status">Status</option>
         <option value="Region">Region</option>
       </Select>
+      <small>
+        (this will be driven by MB styles, not hard-coded like this)
+      </small>
     </FormControl>
   )
 }
@@ -125,11 +128,12 @@ const LayersMenu: FC = () => {
   return (
     <>
       <FormControl component="fieldset">
-        <FormLabel component="legend">Languages</FormLabel>
+        <FormLabel component="legend">Languages (Tab 1)</FormLabel>
         <FormGroup>
           <LayerToggle layerId="languages" name="Show/hide" />
         </FormGroup>
         <LayerSymbolSelect />
+        <small>The legend would go somewhere nearby:</small>
         <ul style={{ listStyleType: 'none', padding: 5, margin: 0 }}>
           <li>● Class 1</li>
           <li>○ Class 2</li>
@@ -137,6 +141,9 @@ const LayersMenu: FC = () => {
           <li>○ Class 4</li>
         </ul>
         <LayerLabelSelect />
+        <small>
+          (this will be driven by MB styles, not hard-coded like this)
+        </small>
       </FormControl>
     </>
   )
@@ -175,8 +182,21 @@ export const MapLayersPopout: FC = () => {
           horizontal: 'left',
         }}
       >
-        <Box padding={2}>
+        <Box padding={2} width={225} height={225}>
+          <p>
+            <small>
+              WIP, but this is where Layers panel would go. 3 tabs: Languages,
+              Overlays, and Baselayers. The challenge will be to make the legend
+              visible when the map is visible on mobile. Worst-case it might
+              have to go into one of the main panels.<b>More below:</b>
+            </small>
+          </p>
           <LayersMenu />
+          <p>
+            <small>
+              The other two tabs would be <b>Overlays</b> and <b>Baselayers</b>.
+            </small>
+          </p>
         </Box>
       </Popover>
     </div>
