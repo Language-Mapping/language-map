@@ -1,7 +1,5 @@
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles'
 import { withStyles } from '@material-ui/core'
-import brown from '@material-ui/core/colors/brown'
-import blueGrey from '@material-ui/core/colors/blueGrey'
 
 const HEADING_FONT = 'Gentium Basic, Times, serif'
 const headings = {
@@ -29,8 +27,18 @@ const headings = {
 // CRED: https://stackoverflow.com/a/57127040/1048518
 const customTheme = createMuiTheme({
   palette: {
-    primary: blueGrey,
-    secondary: brown,
+    primary: {
+      light: '#66ab9d',
+      main: '#409685',
+      dark: '#2c695d',
+      contrastText: '#fff',
+    },
+    secondary: {
+      light: '#ab6673',
+      main: '#964051',
+      dark: '#692c38',
+      contrastText: '#fff',
+    },
   },
   typography: {
     fontFamily: [
