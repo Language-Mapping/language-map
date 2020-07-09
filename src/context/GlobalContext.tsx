@@ -24,8 +24,8 @@ export const initialState = {
   // PROJECT-SPECIFIC, SHOULD GO IN CUSTOM FILE
   layerVisibility: {
     languages: true,
-    //  counties: false,
-    //  neighborhoods: false,
+    counties: false,
+    neighborhoods: false,
   },
   // END PROJECT-SPECIFIC
 }

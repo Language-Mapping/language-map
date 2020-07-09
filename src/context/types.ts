@@ -47,6 +47,8 @@ export type AlertPayloadType = {
 // components if needed
 export type LayerVisibilityTypes = {
   languages: boolean
+  neighborhoods: boolean
+  counties: boolean
 }
 
 export type LangSymbStyles = {

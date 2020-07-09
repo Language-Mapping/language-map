@@ -1,23 +1,19 @@
 import React, { FC, useState } from 'react'
-import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { Box } from '@material-ui/core'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { fade } from '@material-ui/core/styles/colorManipulator'
+import {
+  Box,
+  BottomNavigation,
+  BottomNavigationAction,
+} from '@material-ui/core'
 
-import { BottomNav } from 'components'
 import { Map, MapPanel, MapLayersPopout } from 'components/map'
 import { initialMapState } from 'components/map/config'
+import { panelsConfig } from './panelsConfig'
 
-// TODO: rm if not using, but understand why it breaks
-// const fillItUp = {
-//   bottom: 0,
-//   position: 'absolute',
-//   top: 0,
-//   width: '100%',
-// }
-
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mapWrapRoot: {
-      // ...fillItUp, // TODO: ???
       bottom: 0,
       position: 'absolute',
       top: 0,
@@ -29,33 +25,52 @@ const useStyles = makeStyles(() =>
       top: 0,
       width: '100%',
     },
+    mapPanelsWrap: {
+      left: theme.spacing(1),
+      right: theme.spacing(1),
+      position: 'absolute',
+      bottom: 60,
+      top: '50%',
+      transition: '300ms transform',
+      backgroundColor: fade(theme.palette.common.white, 0.85),
+      [theme.breakpoints.up('sm')]: {
+        width: 325,
+        top: 140,
+        bottom: theme.spacing(4),
+        left: 16,
+      },
+      '& .MuiPaper-root': {
+        overflowY: 'auto',
+        height: '100%',
+      },
+    },
+    bottomNavRoot: {
+      position: 'absolute',
+      left: theme.spacing(1),
+      right: theme.spacing(1),
+      bottom: theme.spacing(1),
+      '& svg': {
+        height: 20,
+        width: 20,
+      },
+      [theme.breakpoints.up('sm')]: {
+        width: 325,
+        top: theme.spacing(8),
+        left: theme.spacing(2),
+      },
+    },
   })
 )
 
-const panelsConfig = [
-  {
-    heading: 'Explore',
-    subheading: 'Searching, filtering, etc.',
-    content:
-      'This panel would be shown first since it is what we want the user to see before diving into anything else.',
-  },
-  {
-    heading: 'Results',
-    subheading: 'Table or list of results',
-    content:
-      'Not a ton of room here, should other options be considered? Might be cool as a "Grid View" too.',
-  },
-  {
-    heading: 'Details',
-    subheading: '...of selected feature',
-    content:
-      'Detailed info on a specific selected individual point. Will be triggered by clicking a record in Results panel or a "View Details" button from within a popup when a point is clicked in the map.',
-  },
-]
-
 export const MapWrap: FC = () => {
   const classes = useStyles()
-  const [value, setValue] = useState(0)
+  const [panelOpen, setPanelOpen] = useState(true)
+  // TODO: wire this up with routing, at least for sel. feat details.
+  const [activePanelIndex, setActivePanelIndex] = useState(0)
+  const transforms = {
+    open: 'translateY(0%)',
+    closed: 'translateY(100%)',
+  }
 
   return (
     <div className={classes.mapWrapRoot}>
@@ -65,16 +80,44 @@ export const MapWrap: FC = () => {
           <MapLayersPopout />
         </Box>
       </div>
-      {panelsConfig.map((config) => (
-        <MapPanel
-          key={config.heading}
-          heading={panelsConfig[value].heading}
-          content={panelsConfig[value].content}
-          subheading={panelsConfig[value].subheading}
-          position="open"
-        />
-      ))}
-      <BottomNav value={value} setValue={setValue} />
+      <Box
+        className={classes.mapPanelsWrap}
+        style={{
+          transform: panelOpen ? transforms.open : transforms.closed,
+          opacity: panelOpen ? 1 : 0,
+          maxHeight: panelOpen ? '100%' : 0,
+        }}
+      >
+        {panelsConfig.map((config, i) => (
+          <MapPanel
+            key={config.heading}
+            {...config}
+            active={i === activePanelIndex}
+          />
+        ))}
+      </Box>
+      <BottomNavigation
+        showLabels
+        className={classes.bottomNavRoot}
+        value={activePanelIndex}
+        onChange={(event, newValue) => {
+          if (panelOpen && newValue === activePanelIndex) {
+            setPanelOpen(false)
+          } else {
+            setPanelOpen(true)
+          }
+
+          setActivePanelIndex(newValue)
+        }}
+      >
+        {panelsConfig.map((config) => (
+          <BottomNavigationAction
+            key={config.heading}
+            label={config.heading}
+            icon={config.icon}
+          />
+        ))}
+      </BottomNavigation>
     </div>
   )
 }
