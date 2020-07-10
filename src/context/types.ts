@@ -4,6 +4,7 @@
 import React from 'react'
 import { Color } from '@material-ui/lab/Alert'
 
+type BaselayerType = 'dark' | 'light'
 export type GlobalContextDispatchType = React.Dispatch<StoreActionType>
 
 export type StoreActionType =
@@ -13,6 +14,7 @@ export type StoreActionType =
       type: 'TOGGLE_UI_ALERT'
       payload: AlertPayloadType
     }
+  | { type: 'SET_BASELAYER'; payload: BaselayerType }
   | { type: 'SET_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | {
       type: 'SET_LANG_LAYER_SYMBOLOGY'
@@ -26,6 +28,7 @@ export type InitialStateType = {
   layerVisibility: LayerVisibilityTypes
   showSplash: boolean
   uiAlert: AlertPayloadType
+  baselayer: BaselayerType
 }
 
 export type AlertPayloadType = {

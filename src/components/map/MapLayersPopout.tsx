@@ -1,18 +1,26 @@
 // TODO: add COVID project credit and link to MIT for much of this file? Most of
 // it was copied from MUI in the first place though...
 import React, { FC } from 'react'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Fab, Popover, Box } from '@material-ui/core'
 import { FiLayers } from 'react-icons/fi'
 
-import { LayerVisibilityTypes } from 'context/types'
 import { LayersMenu } from 'components/map'
 
-export type LayerToggleType = {
-  name: string
-  layerId: keyof LayerVisibilityTypes
-}
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    popoutRoot: {
+      // padding: theme.spacing(1),
+      '& svg': {
+        width: '1.2em',
+        height: '1.2em',
+      },
+    },
+  })
+)
 
 export const MapLayersPopout: FC = () => {
+  const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
@@ -32,6 +40,7 @@ export const MapLayersPopout: FC = () => {
         color="primary"
         aria-describedby="long-menu"
         onClick={handleClick}
+        className={classes.popoutRoot}
       >
         <FiLayers />
       </Fab>
@@ -45,7 +54,7 @@ export const MapLayersPopout: FC = () => {
           horizontal: 'left',
         }}
       >
-        <Box padding={2} width={225} height={225}>
+        <Box padding={2} width={225}>
           <LayersMenu />
         </Box>
       </Popover>

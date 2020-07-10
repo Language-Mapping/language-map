@@ -13,14 +13,15 @@ import { InitialMapState } from './types'
 
 export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
   const [viewport, setViewport] = useState({ latitude, longitude, zoom })
-  const { dispatch } = useContext(GlobalContext)
+  const { dispatch, state } = useContext(GlobalContext)
 
   return (
     <MapGL
       {...viewport}
       width="100%"
       height="100%"
-      mapStyle="mapbox://styles/mapbox/dark-v9"
+      // TODO: fix this. So weird!
+      mapStyle={`mapbox://styles/mapbox/${state.baselayer}-v9`}
       onViewportChange={setViewport}
       mapboxApiAccessToken={mapboxApiAccessToken}
       onLoad={(mapObject) => {

@@ -2,7 +2,7 @@ import React, { FC, useContext } from 'react'
 import { FormControlLabel, Switch } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
-import { LayerToggleType } from 'components/map'
+import { LayerToggleType } from './types'
 
 export const LayerToggle: FC<LayerToggleType> = ({ name, layerId }) => {
   const { state, dispatch } = useContext(GlobalContext)

@@ -16,6 +16,7 @@ export const initialState = {
   showSplash: false,
   loginSignupModal: null,
   hasSeenSplash: !!localStorage.getItem('hasSeenSplash') || false,
+  baselayer: 'dark',
   uiAlert: {
     open: false,
     message: '',
@@ -48,6 +49,12 @@ const reducer = (
   action: GlobalActionType
 ): InitialStateType => {
   switch (action.type) {
+    // TODO: fix this. So weird!
+    case 'SET_BASELAYER':
+      return {
+        ...state,
+        baselayer: action.payload,
+      }
     case 'SET_LANG_LAYER_FEATURES':
       return {
         ...state,
