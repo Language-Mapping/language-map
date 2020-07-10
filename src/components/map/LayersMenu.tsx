@@ -14,21 +14,11 @@ import { LayerToggle } from 'components/map'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    popoutRoot: {
-      '& svg': {
-        width: '1.2em',
-        height: '1.2em',
-      },
-    },
     formHeading: {
       marginBottom: 4,
       '&:last-of-type': {
         marginTop: theme.spacing(2),
       },
-    },
-    baselayerSwitcher: {
-      display: 'flex',
-      justifyContent: 'center',
     },
     baselayerGroup: {
       display: 'flex',
