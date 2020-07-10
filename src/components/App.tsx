@@ -1,8 +1,8 @@
 import React, { FC } from 'react'
 import { Switch, Route } from 'react-router-dom'
 
-import { StyleGuide } from 'components/style-guide'
 import { TopBar, ContainerLayout } from 'components'
+import { StyleGuide } from 'components/style-guide'
 import { MapWrap } from 'components/map'
 
 export const App: FC = () => {

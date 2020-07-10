@@ -2,10 +2,11 @@ import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { render, screen, fireEvent } from '@testing-library/react'
 
-import { App } from 'components'
+import { ProvidersWrap, App } from 'components'
 
 // TODO: figure out how to restore this without breaking the route tests. It
 // looks like it freaks out because <Router> has two instances this way.
+// eslint-disable-next-line jest/no-commented-out-tests
 // test('App is in the DOM using legit initial map state', async () => {
 //   const component = await render(<App />)
 //   expect(component.container).toBeInTheDocument()
@@ -14,9 +15,11 @@ import { App } from 'components'
 // Hoist helper functions (but not vars) to reuse between test cases
 const renderComponent = () =>
   render(
-    <MemoryRouter initialEntries={['/style-guide']}>
-      <App />
-    </MemoryRouter>
+    <ProvidersWrap>
+      <MemoryRouter initialEntries={['/style-guide']}>
+        <App />
+      </MemoryRouter>
+    </ProvidersWrap>
   )
 
 // {/* await  */}
