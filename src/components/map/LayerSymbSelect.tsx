@@ -3,7 +3,7 @@ import { FormControl, InputLabel, Select } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
 
-export const LayerSymbolSelect: FC = () => {
+export const LayerSymbSelect: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
   const currentValue = state.activeLangSymbKey
 
@@ -26,13 +26,10 @@ export const LayerSymbolSelect: FC = () => {
           id: 'lang-symb-select',
         }}
       >
+        <option value="Region">Region</option>
         <option value="Size">Size</option>
         <option value="Status">Status</option>
-        <option value="Region">Region</option>
       </Select>
-      <small>
-        (this will be driven by MB styles, not hard-coded like this)
-      </small>
     </FormControl>
   )
 }

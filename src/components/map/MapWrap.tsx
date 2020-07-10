@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { fade } from '@material-ui/core/styles/colorManipulator'
 import {
   Box,
   BottomNavigation,
@@ -32,7 +31,6 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: 60,
       top: '50%',
       transition: '300ms transform',
-      backgroundColor: fade(theme.palette.common.white, 0.85),
       [theme.breakpoints.up('sm')]: {
         width: 325,
         top: 140,

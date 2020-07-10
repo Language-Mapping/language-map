@@ -23,6 +23,7 @@ export const LayerLabelSelect: FC = () => {
           id: 'lang-label-select',
         }}
       >
+        <option value="None">No labels</option>
         <option value="Neighborhood">Neighborhood</option>
         <option value="Endonym">Endonym</option>
         <option value="Glottocode">Glottocode</option>

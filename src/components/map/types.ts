@@ -4,3 +4,10 @@ export type InitialMapState = {
   longitude: number
   zoom: number
 }
+
+export type LegendSwatchType = {
+  backgroundColor?: string
+  icon?: string
+  shape?: 'circle' | 'square' | 'icon'
+  text?: string
+}

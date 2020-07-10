@@ -3,6 +3,8 @@ import { FaSearch } from 'react-icons/fa'
 import { FiLayers } from 'react-icons/fi'
 import { TiDocumentText, TiThList } from 'react-icons/ti'
 
+import { LayersPanel } from 'components/map'
+
 export const panelsConfig = [
   {
     heading: 'Explore',
@@ -16,15 +18,10 @@ export const panelsConfig = [
     ),
   },
   {
-    heading: 'Layers',
-    subheading: 'Symbology + label controls',
+    heading: 'Display',
+    subheading: 'Symb + label ctrls. Alt. name?',
     icon: <FiLayers />,
-    component: (
-      <p>
-        Much more room here than layers popout menu via button over map. Will
-        allow for seeing most or all of the legend 24/7 without scrolling
-      </p>
-    ),
+    component: <LayersPanel />,
   },
   {
     heading: 'Results',
