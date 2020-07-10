@@ -19,6 +19,13 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       top: 0,
       width: '100%',
+      // GROSS:
+      '& .mb-language-map .mapboxgl-ctrl-bottom-left': {
+        [theme.breakpoints.down('sm')]: {
+          top: 60,
+          bottom: 'auto',
+        },
+      },
     },
     mapItselfWrap: {
       bottom: 0,
@@ -36,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('sm')]: {
         width: 325,
         top: 140,
-        bottom: theme.spacing(4),
+        bottom: theme.spacing(5), // above mapbox logo
         left: 16,
       },
       '& .MuiPaper-root': {

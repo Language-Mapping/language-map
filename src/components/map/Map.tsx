@@ -24,6 +24,8 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
       mapStyle={`mapbox://styles/mapbox/${state.baselayer}-v9`}
       onViewportChange={setViewport}
       mapboxApiAccessToken={mapboxApiAccessToken}
+      // TODO: show MB attribution text (not logo) on mobile
+      className="mb-language-map"
       onLoad={(mapObject) => {
         const features = mapObject.target
           .querySourceFeatures('languages-src', {
