@@ -50,7 +50,7 @@ export const MapLayersPopout: FC = () => {
         open={open}
         onClose={handleClose}
         transformOrigin={{
-          vertical: 'top',
+          vertical: 'center',
           horizontal: 'left',
         }}
       >

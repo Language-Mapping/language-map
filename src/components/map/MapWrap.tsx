@@ -4,9 +4,12 @@ import {
   Box,
   BottomNavigation,
   BottomNavigationAction,
+  Button,
   IconButton,
+  ButtonGroup,
 } from '@material-ui/core'
 import { MdClose } from 'react-icons/md'
+import { FiHome, FiZoomIn, FiZoomOut } from 'react-icons/fi'
 
 import { Map, MapPanel, MapLayersPopout } from 'components/map'
 import { initialMapState } from 'components/map/config'
@@ -72,6 +75,21 @@ const useStyles = makeStyles((theme: Theme) =>
       top: theme.spacing(1),
       zIndex: 2,
     },
+    mapCtrlsBtns: {
+      marginTop: theme.spacing(1),
+      position: 'absolute',
+      top: 60,
+      right: 8,
+      zIndex: 1,
+      '& button': {
+        minWidth: 40,
+        padding: `${theme.spacing(1)}px 0`,
+      },
+      '& svg': {
+        height: '1.5em',
+        width: '1.5em',
+      },
+    },
   })
 )
 
@@ -89,7 +107,26 @@ export const MapWrap: FC = () => {
     <div className={classes.mapWrapRoot}>
       <div className={classes.mapItselfWrap}>
         <Map {...initialMapState} />
-        <Box position="absolute" top={60} right={8} zIndex={1}>
+        {/* TODO: into another component obviously */}
+        <ButtonGroup
+          orientation="vertical"
+          color="primary"
+          aria-label="vertical contained primary button group"
+          variant="contained"
+          size="small"
+          className={classes.mapCtrlsBtns}
+        >
+          <Button>
+            <FiZoomIn />
+          </Button>
+          <Button>
+            <FiZoomOut />
+          </Button>
+          <Button>
+            <FiHome />
+          </Button>
+        </ButtonGroup>
+        <Box position="absolute" top={190} right={8} zIndex={1}>
           <MapLayersPopout />
         </Box>
       </div>
