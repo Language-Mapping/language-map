@@ -4,7 +4,9 @@ import {
   Box,
   BottomNavigation,
   BottomNavigationAction,
+  IconButton,
 } from '@material-ui/core'
+import { MdClose } from 'react-icons/md'
 
 import { Map, MapPanel, MapLayersPopout } from 'components/map'
 import { initialMapState } from 'components/map/config'
@@ -57,6 +59,12 @@ const useStyles = makeStyles((theme: Theme) =>
         left: theme.spacing(2),
       },
     },
+    closePanel: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
+      zIndex: 2,
+    },
   })
 )
 
@@ -86,6 +94,14 @@ export const MapWrap: FC = () => {
           maxHeight: panelOpen ? '100%' : 0,
         }}
       >
+        <IconButton
+          aria-label="delete"
+          size="small"
+          className={classes.closePanel}
+          onClick={() => setPanelOpen(false)}
+        >
+          <MdClose />
+        </IconButton>
         {panelsConfig.map((config, i) => (
           <MapPanel
             key={config.heading}
