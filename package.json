@@ -39,6 +39,7 @@
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^4.0.6",
     "husky": "^4.2.5",
+    "jest-environment-jsdom-sixteen": "^1.0.3",
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
     "prettier-eslint": "^11.0.0",
@@ -47,7 +48,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
     "eject": "react-scripts eject",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet"
   },

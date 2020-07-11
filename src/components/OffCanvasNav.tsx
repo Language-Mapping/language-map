@@ -28,8 +28,10 @@ export const OffCanvasNav: FC<OffCanvasNavType> = ({
   return (
     <Drawer open={open} onClose={toggleDrawer(false)}>
       <div
-        className={classes.list}
+        // getByRole returned more than one presentation element
+        data-testid="backdrop"
         role="presentation"
+        className={classes.list}
         onClick={closeIt}
         onKeyDown={closeIt}
       >
