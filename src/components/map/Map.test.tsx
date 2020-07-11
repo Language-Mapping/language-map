@@ -1,16 +1,14 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 
+import { ProvidersWrap } from 'components'
 import { Map } from 'components/map'
-
-// TODO: rm if not using
-// jest.mock('mapbox-gl/dist/mapbox-gl', () => ({
-//   Map: () => ({}),
-// }))
+import { initialMapState } from 'components/map/config'
 
 // TODO: rm if not using
 // jest.mock('mapbox-gl/dist/mapbox-gl', () => ({
 //   GeolocateControl: jest.fn(),
+//   Map: () => ({}), // or next line?
 //   Map: <Map />,
 //   // Map: jest.fn(() => ({
 //   //   addControl: jest.fn(),
@@ -20,22 +18,21 @@ import { Map } from 'components/map'
 //   NavigationControl: jest.fn(),
 // }))
 
-const mapCenter = [-0, 0] as [number, number]
-
-export const initialMapState = {
-  latitude: mapCenter[1],
-  longitude: mapCenter[0],
-  zoom: 15,
-}
+const renderComponent = () =>
+  render(
+    <ProvidersWrap>
+      <Map {...initialMapState} />
+    </ProvidersWrap>
+  )
 
 describe('Detecting basic map presence', () => {
   test('Map component renders', async () => {
-    const component = await render(<Map {...initialMapState} />)
+    const component = await renderComponent()
     expect(component).toBeTruthy()
   })
 
   test('Map component is in doc', async () => {
-    const component = await render(<Map {...initialMapState} />)
+    const component = await renderComponent()
     expect(component.container).toBeInTheDocument()
   })
 })

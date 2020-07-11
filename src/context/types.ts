@@ -4,6 +4,7 @@
 import React from 'react'
 import { Color } from '@material-ui/lab/Alert'
 
+type BaselayerType = 'dark' | 'light'
 export type GlobalContextDispatchType = React.Dispatch<StoreActionType>
 
 export type StoreActionType =
@@ -13,6 +14,7 @@ export type StoreActionType =
       type: 'TOGGLE_UI_ALERT'
       payload: AlertPayloadType
     }
+  | { type: 'SET_BASELAYER'; payload: BaselayerType }
   | { type: 'SET_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | {
       type: 'SET_LANG_LAYER_SYMBOLOGY'
@@ -26,6 +28,7 @@ export type InitialStateType = {
   layerVisibility: LayerVisibilityTypes
   showSplash: boolean
   uiAlert: AlertPayloadType
+  baselayer: BaselayerType
 }
 
 export type AlertPayloadType = {
@@ -47,6 +50,8 @@ export type AlertPayloadType = {
 // components if needed
 export type LayerVisibilityTypes = {
   languages: boolean
+  neighborhoods: boolean
+  counties: boolean
 }
 
 export type LangSymbStyles = {
@@ -64,7 +69,7 @@ export type LangRecordSchema = {
   Latitude: number // also in `geometry.coordinates` maybe? If so, remove?
   Longitude: number // also in `geometry.coordinates` maybe? If so, remove?
   Town: string
-  'Local Size': string // TODO: eventually number
+  'Local Size': 1 | 2 | 3 | 4 | 5
   'Top-Level Family': string
   'Local Status':
     | 'Historical'
@@ -113,8 +118,7 @@ export type LangRecordSchema = {
     | 'reviving'
     | 'shifting'
     | 'threatened'
-  // EVENTUALLY:
-  'Addl Neighborhoods'?: string // parsed by `|||` maybe?
+  'Additional Neighborhoods'?: string // parsed by `|||` maybe?
   'ELA Audio'?: string // TODO: TS for URL?
   'ELA Story Map'?: string // TODO: TS for URL?
 }

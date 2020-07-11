@@ -109,7 +109,9 @@ export const DemoCard: FC = () => {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <h3>Description:</h3>
+          <Typography component="h3" variant="h4">
+            Description:
+          </Typography>
           <p>
             Between 1917 and 1965, law prevented South Asians from immigrating
             to the US, but speakers of Bengali found their way to New York

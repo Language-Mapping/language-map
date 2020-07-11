@@ -2,34 +2,38 @@ import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { render, screen, fireEvent } from '@testing-library/react'
 
-import { App } from 'components'
+import { ProvidersWrap, App } from 'components'
 
 // TODO: figure out how to restore this without breaking the route tests. It
 // looks like it freaks out because <Router> has two instances this way.
+// eslint-disable-next-line jest/no-commented-out-tests
 // test('App is in the DOM using legit initial map state', async () => {
 //   const component = await render(<App />)
 //   expect(component.container).toBeInTheDocument()
 // })
 
 // Hoist helper functions (but not vars) to reuse between test cases
-const renderComponent = () =>
-  render(
-    <MemoryRouter initialEntries={['/style-guide']}>
+const renderApp = () => (
+  <ProvidersWrap>
+    <MemoryRouter initialEntries={['/about']}>
       <App />
     </MemoryRouter>
-  )
+  </ProvidersWrap>
+)
 
-// {/* await  */}
 describe('Testing routes', () => {
-  test('renders style guide route', async () => {
-    await renderComponent()
+  test('title element links to home', async () => {
+    await render(renderApp())
 
-    expect(screen.getByTestId('style-guide-pg-title')).toHaveTextContent(
-      /style guide demo/i
-    )
+    const mainContent = screen.getByRole('main')
+    const homeTitleLink = screen.getByText(/languages of new york city/i)
 
-    fireEvent.click(screen.getByText('Home'))
-    // TODO: test Home route, either as a router nav test or as a replacement to
-    // the original `toBeInTheDocument` test for `<App />`
+    // Starting from /about page should have expected heading
+    expect(mainContent).toHaveTextContent(/about page/i)
+
+    fireEvent.click(homeTitleLink)
+
+    // TODO: get by heading somehow? Really just want <h1>
+    expect(mainContent).not.toHaveTextContent(/about page/i)
   })
 })

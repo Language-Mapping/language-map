@@ -16,6 +16,7 @@ export const initialState = {
   showSplash: false,
   loginSignupModal: null,
   hasSeenSplash: !!localStorage.getItem('hasSeenSplash') || false,
+  baselayer: 'dark',
   uiAlert: {
     open: false,
     message: '',
@@ -24,8 +25,8 @@ export const initialState = {
   // PROJECT-SPECIFIC, SHOULD GO IN CUSTOM FILE
   layerVisibility: {
     languages: true,
-    //  counties: false,
-    //  neighborhoods: false,
+    counties: false,
+    neighborhoods: false,
   },
   // END PROJECT-SPECIFIC
 }
@@ -48,6 +49,12 @@ const reducer = (
   action: GlobalActionType
 ): InitialStateType => {
   switch (action.type) {
+    // TODO: fix this. So weird!
+    case 'SET_BASELAYER':
+      return {
+        ...state,
+        baselayer: action.payload,
+      }
     case 'SET_LANG_LAYER_FEATURES':
       return {
         ...state,
@@ -77,12 +84,14 @@ const reducer = (
     case 'SHOW_SPLASH':
       if (action.payload === true) {
         localStorage.setItem('hasSeenSplash', 'true')
+
         return {
           ...state,
           showSplash: action.payload,
           hasSeenSplash: true,
         }
       }
+
       return {
         ...state,
         showSplash: action.payload,
@@ -94,6 +103,8 @@ const reducer = (
 
 // Good article on setting all this up:
 // https://www.simplethread.com/cant-replace-redux-with-hooks/
+// TODO: fix the `any`
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const GlobalContext = createContext<{ state: any; dispatch: any }>({
   state: null,
   dispatch: null,
@@ -104,6 +115,9 @@ type GlobalProviderType = {
 }
 
 export const GlobalProvider: FC<GlobalProviderType> = ({ children }) => {
+  // TODO: stop taking the easy way out:
+  // https://dev.to/stephencweiss/usereducer-with-typescript-2kf
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const [state, dispatch] = useReducer(reducer, initialState)
 
@@ -111,7 +125,12 @@ export const GlobalProvider: FC<GlobalProviderType> = ({ children }) => {
   // useEffect(() => { bootstrapApp() }, [])
 
   return (
-    <GlobalContext.Provider value={{ state, dispatch }}>
+    <GlobalContext.Provider
+      value={{
+        state,
+        dispatch,
+      }}
+    >
       {children}
     </GlobalContext.Provider>
   )

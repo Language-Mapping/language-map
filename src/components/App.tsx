@@ -1,19 +1,34 @@
 import React, { FC } from 'react'
 import { Switch, Route } from 'react-router-dom'
 
+import { TopBar, ContainerLayout } from 'components'
 import { StyleGuide } from 'components/style-guide'
-import { Map } from 'components/map'
-import { initialMapState } from 'components/map/config'
+import { MapWrap } from 'components/map'
 
 export const App: FC = () => {
   return (
-    <Switch>
-      <Route path="/style-guide">
-        <StyleGuide />
-      </Route>
-      <Route path="/">
-        <Map {...initialMapState} />
-      </Route>
-    </Switch>
+    <>
+      <TopBar />
+      <main>
+        <Switch>
+          <Route path="/results">
+            <ContainerLayout>
+              <h1>Results Table</h1>
+            </ContainerLayout>
+          </Route>
+          <Route path="/about">
+            <ContainerLayout>
+              <h1>About Page</h1>
+            </ContainerLayout>
+          </Route>
+          <Route path="/style-guide">
+            <StyleGuide />
+          </Route>
+          <Route path="/">
+            <MapWrap />
+          </Route>
+        </Switch>
+      </main>
+    </>
   )
 }
