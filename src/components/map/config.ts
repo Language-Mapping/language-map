@@ -15,4 +15,5 @@ export const langLayerConfig = {
   layerId: 'langsNY_06242020-6lpxtk',
   pretty: 'Languages',
   tilesetId: 'elalliance.1bsrluyq',
+  styleUrl: 'elalliance/ckchv1ey41e861ilqnutvvobc/draft',
 }

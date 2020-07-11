@@ -28,6 +28,7 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
       // TODO: show MB attribution text (not logo) on mobile
       className="mb-language-map"
       onLoad={(mapObject) => {
+        // TODO: determine how this will align with JSON-derived Layers
         const features = mapObject.target
           .querySourceFeatures('languages-src', {
             sourceLayer: langLayerConfig.layerId,
@@ -43,7 +44,8 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
     >
       <LanguageLayer
         tilesetId={langLayerConfig.tilesetId}
-        layerId={langLayerConfig.layerId}
+        styleUrl={langLayerConfig.styleUrl}
+        token={mapboxApiAccessToken}
       />
     </MapGL>
   )

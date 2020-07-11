@@ -1,27 +1,42 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { Source, Layer } from 'react-map-gl'
-
-import { pointStyle } from './map-style'
 
 type LangLayerType = {
   tilesetId: string
-  layerId: string
+  styleUrl: string
+  token?: string
 }
 
-export const LanguageLayer: FC<LangLayerType> = ({ tilesetId, layerId }) => {
-  // TODO: consolidate or remove, depending on how layer is hit from MB Styles
-  const settings = {
-    ...pointStyle,
-    'source-layer': layerId,
-  }
+export const LanguageLayer: FC<LangLayerType> = ({
+  tilesetId,
+  styleUrl,
+  token,
+}) => {
+  const [layers, setLayers] = useState([])
+
+  useEffect(() => {
+    async function fetchMyAPI() {
+      let response = await fetch(
+        `https://api.mapbox.com/styles/v1/${styleUrl}?access_token=${token}`
+      )
+      response = await response.json()
+      // TODO: fix it
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      setLayers(response.layers)
+    }
+
+    fetchMyAPI()
+  }, [token, styleUrl])
 
   return (
     <Source type="vector" url={`mapbox://${tilesetId}`} id="languages-src">
-      {/* TODO: figure out why this doesn't work in TS. Looks like it wants
-          a string, which is the case after Mapbox does its thing with `paint.
-          circle-color`, but until then it's an array. */}
-      {/* @ts-ignore */}
-      <Layer {...settings} />
+      {layers.map((layer) => (
+        // TODO: fix it
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        <Layer key={layer.id} {...layer} />
+      ))}
     </Source>
   )
 }
