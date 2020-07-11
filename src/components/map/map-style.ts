@@ -3,7 +3,6 @@
 export const pointStyle = {
   id: 'points',
   type: 'circle',
-  'source-layer': 'langsNY_06242020-2lztil',
   promoteId: 'ID', // not sure if needed but seems logical
   paint: {
     // https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-match

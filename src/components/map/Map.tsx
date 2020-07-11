@@ -10,6 +10,7 @@ import { MAPBOX_TOKEN as mapboxApiAccessToken } from 'config'
 import { GlobalContext } from 'components'
 import { LanguageLayer } from 'components/map'
 import { InitialMapState } from './types'
+import { langLayerConfig } from './config'
 
 export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
   const [viewport, setViewport] = useState({ latitude, longitude, zoom })
@@ -29,8 +30,7 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
       onLoad={(mapObject) => {
         const features = mapObject.target
           .querySourceFeatures('languages-src', {
-            // MB tileset Layer ID, not the custom `id`
-            sourceLayer: 'langsNY_06242020-2lztil',
+            sourceLayer: langLayerConfig.layerId,
           })
           .map(({ properties }) => properties)
 
@@ -41,7 +41,10 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
         })
       }}
     >
-      <LanguageLayer />
+      <LanguageLayer
+        tilesetId={langLayerConfig.tilesetId}
+        layerId={langLayerConfig.layerId}
+      />
     </MapGL>
   )
 }

@@ -10,3 +10,9 @@ export const initialMapState = {
   // bearing,
   // pitch,
 }
+
+export const langLayerConfig = {
+  layerId: 'langsNY_06242020-6lpxtk',
+  pretty: 'Languages',
+  tilesetId: 'elalliance.1bsrluyq',
+}
