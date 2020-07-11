@@ -9,24 +9,26 @@ export const App: FC = () => {
   return (
     <>
       <TopBar />
-      <Switch>
-        <Route path="/results">
-          <ContainerLayout>
-            <h1>Results Table</h1>
-          </ContainerLayout>
-        </Route>
-        <Route path="/about">
-          <ContainerLayout>
-            <h1>About Page</h1>
-          </ContainerLayout>
-        </Route>
-        <Route path="/style-guide">
-          <StyleGuide />
-        </Route>
-        <Route path="/">
-          <MapWrap />
-        </Route>
-      </Switch>
+      <main>
+        <Switch>
+          <Route path="/results">
+            <ContainerLayout>
+              <h1>Results Table</h1>
+            </ContainerLayout>
+          </Route>
+          <Route path="/about">
+            <ContainerLayout>
+              <h1>About Page</h1>
+            </ContainerLayout>
+          </Route>
+          <Route path="/style-guide">
+            <StyleGuide />
+          </Route>
+          <Route path="/">
+            <MapWrap />
+          </Route>
+        </Switch>
+      </main>
     </>
   )
 }

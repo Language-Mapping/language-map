@@ -22,7 +22,8 @@ export const AboutLinkAsIcon: FC<ListItemLinkProps> = ({
       // https://github.com/yannickcr/eslint-plugin-react/issues/2269
       // eslint-disable-next-line
       React.forwardRef<any, Omit<RouteLinkProps, 'to'>>((itemProps, ref) => (
-        <RouteLink to={to} ref={ref} {...itemProps} />
+        // TODO: use `title` in tests
+        <RouteLink title="Project info" to={to} ref={ref} {...itemProps} />
       )),
     [to]
   )

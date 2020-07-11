@@ -5,7 +5,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { TopBar } from 'components'
 
 // Hoist helper functions (but not vars) to reuse between test cases
-const renderComponent = () => (
+const renderTopBar = () => (
   // Only needed because there are <Link> components
   <MemoryRouter>
     <TopBar />
@@ -14,7 +14,7 @@ const renderComponent = () => (
 
 describe('Testing off-canvas behavhior', () => {
   test('off-canvas nav menu toggle', async () => {
-    await render(renderComponent())
+    await render(renderTopBar())
 
     const burger = screen.getByLabelText('menu')
     fireEvent.click(burger)
