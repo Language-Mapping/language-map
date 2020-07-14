@@ -5,34 +5,8 @@ import React, { useReducer, createContext, FC } from 'react'
 
 // TODO: once content is ready (WP API?), use `react-query` lib to cache on load
 // and run the fetch in a `useEffect` inside `GlobalProvider`.
-import { InitialStateType } from 'context/types'
 import { reducer } from './reducer'
-
-export const initialState = {
-  showSplash: false,
-  hasSeenSplash: !!localStorage.getItem('hasSeenSplash') || false,
-  baselayer: 'dark',
-  uiAlert: {
-    open: false,
-    message: '',
-    severity: 'success',
-  },
-  // PROJECT-SPECIFIC, SHOULD GO IN CUSTOM FILE
-  activeLangSymbKey: 'default', // TODO: correspond with a style
-  langFeatures: [],
-  langSymbOptions: [],
-  layerVisibility: {
-    languages: true,
-    counties: false,
-    neighborhoods: false,
-  },
-  langLayerProps: {
-    id: 'languages',
-    type: 'circle',
-    paint: {},
-  },
-  // END PROJECT-SPECIFIC
-} as InitialStateType
+import { initialState } from './initialState'
 
 // Good article on setting all this up:
 // https://www.simplethread.com/cant-replace-redux-with-hooks/

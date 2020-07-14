@@ -33,7 +33,7 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
           .map(({ properties }) => properties)
 
         dispatch({
-          type: 'SET_LANG_LAYER_FEATURES',
+          type: 'INIT_LANG_LAYER_FEATURES',
           payload: features,
         })
       }}

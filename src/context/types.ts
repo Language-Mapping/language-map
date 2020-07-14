@@ -3,36 +3,41 @@
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
 import React from 'react'
 import { Color } from '@material-ui/lab/Alert'
-import { LayerProps } from 'react-map-gl'
+
+import { MetadataGroupType } from 'components/map/types'
 
 type BaselayerType = 'dark' | 'light'
 export type GlobalContextDispatchType = React.Dispatch<StoreActionType>
 
 export type StoreActionType =
   | { type: 'SHOW_SPLASH'; payload: boolean }
-  | { type: 'SET_LANG_LAYER_SYMB_OPTIONS'; payload: string[] }
-  | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibilityTypes }
   | {
       type: 'TOGGLE_UI_ALERT'
       payload: AlertPayloadType
     }
+  | { type: 'INIT_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
+  | { type: 'INIT_LANG_LAYER_SYMB_OPTIONS'; payload: MetadataGroupType }
   | { type: 'SET_BASELAYER'; payload: BaselayerType }
-  | { type: 'SET_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
+  | {
+      type: 'SET_LANG_LAYER_LABELS'
+      payload: string
+    }
   | {
       type: 'SET_LANG_LAYER_SYMBOLOGY'
-      payload: keyof LangSymbStyles
+      payload: string
     }
+  | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibilityTypes }
 
 export type InitialStateType = {
-  activeLangSymbKey: keyof LangSymbStyles
-  langFeatures: LangRecordSchema[]
+  activeLangSymbGroupId: string
+  activeLangLabelId: string
+  baselayer: BaselayerType
   hasSeenSplash: boolean
+  langFeatures: LangRecordSchema[]
+  langSymbGroups: MetadataGroupType
   layerVisibility: LayerVisibilityTypes
   showSplash: boolean
   uiAlert: AlertPayloadType
-  baselayer: BaselayerType
-  langSymbOptions: string[]
-  langLayerProps: LayerProps
 }
 
 export type AlertPayloadType = {
@@ -56,13 +61,6 @@ export type LayerVisibilityTypes = {
   languages: boolean
   neighborhoods: boolean
   counties: boolean
-}
-
-export type LangSymbStyles = {
-  default: {
-    todo: true
-    task: 'Wire this up with MB layer styles'
-  }
 }
 
 export type LangRecordSchema = {

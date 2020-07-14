@@ -18,3 +18,11 @@ export type LegendSwatchType = {
   shape?: 'circle' | 'square' | 'icon'
   text?: string
 }
+
+// MB Styles API individual group in the `metadata` of JSON response
+export type MetadataGroupType = {
+  [mbGroupIdHash: string]: {
+    name: string
+    collapsed: boolean // not needed but could be useful indirectly as a setting
+  }
+}

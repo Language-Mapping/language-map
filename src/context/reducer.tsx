@@ -8,27 +8,34 @@ export const reducer = (
   action: GlobalActionType
 ): InitialStateType => {
   switch (action.type) {
+    case 'INIT_LANG_LAYER_FEATURES':
+      return {
+        ...state,
+        langFeatures: action.payload,
+      }
+    case 'INIT_LANG_LAYER_SYMB_OPTIONS':
+      return {
+        ...state,
+        langSymbGroups: action.payload,
+      }
     // TODO: fix this. So weird!
     case 'SET_BASELAYER':
       return {
         ...state,
         baselayer: action.payload,
       }
-    case 'SET_LANG_LAYER_FEATURES':
-      return {
-        ...state,
-        langFeatures: action.payload,
-      }
     case 'SET_LANG_LAYER_SYMBOLOGY':
       return {
         ...state,
-        activeLangSymbKey: action.payload,
+        activeLangSymbGroupId: action.payload,
       }
-    case 'SET_LANG_LAYER_SYMB_OPTIONS':
+    // TODO: wire up
+    case 'SET_LANG_LAYER_LABELS':
       return {
         ...state,
-        langSymbOptions: action.payload,
+        activeLangLabelId: action.payload,
       }
+    // TODO: wire up
     case 'TOGGLE_UI_ALERT':
       return {
         ...state,
@@ -37,6 +44,7 @@ export const reducer = (
           ...action.payload,
         },
       }
+    // TODO: wire up
     case 'TOGGLE_LAYER_VISIBILITY':
       return {
         ...state,
