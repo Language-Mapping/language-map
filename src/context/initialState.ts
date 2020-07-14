@@ -6,6 +6,7 @@ const initialMapStates = {
   activeLangLabelId: '',
   baselayer: 'dark',
   langFeatures: [],
+  langLegend: [],
   langSymbGroups: {},
   layerVisibility: {
     languages: true,

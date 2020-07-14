@@ -4,7 +4,7 @@
 import React from 'react'
 import { Color } from '@material-ui/lab/Alert'
 
-import { MetadataGroupType } from 'components/map/types'
+import { MetadataGroupType, LegendSwatchType } from 'components/map/types'
 
 type BaselayerType = 'dark' | 'light'
 export type GlobalContextDispatchType = React.Dispatch<StoreActionType>
@@ -23,6 +23,10 @@ export type StoreActionType =
       payload: string
     }
   | {
+      type: 'SET_LANG_LAYER_LEGEND'
+      payload: LegendSwatchType[]
+    }
+  | {
       type: 'SET_LANG_LAYER_SYMBOLOGY'
       payload: string
     }
@@ -34,6 +38,7 @@ export type InitialStateType = {
   baselayer: BaselayerType
   hasSeenSplash: boolean
   langFeatures: LangRecordSchema[]
+  langLegend: LegendSwatchType[]
   langSymbGroups: MetadataGroupType
   layerVisibility: LayerVisibilityTypes
   showSplash: boolean

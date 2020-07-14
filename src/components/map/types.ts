@@ -1,3 +1,5 @@
+import { LayerProps } from 'react-map-gl'
+
 import { LayerVisibilityTypes } from 'context/types'
 
 export type LayerToggleType = {
@@ -16,6 +18,7 @@ export type LegendSwatchType = {
   backgroundColor?: string
   icon?: string
   shape?: 'circle' | 'square' | 'icon'
+  size?: number
   text?: string
 }
 
@@ -24,5 +27,13 @@ export type MetadataGroupType = {
   [mbGroupIdHash: string]: {
     name: string
     collapsed: boolean // not needed but could be useful indirectly as a setting
+  }
+}
+
+// `metadata` prop has MB Studio group ID and appears to only be part of the
+// Style API, not the Style Spec.
+export interface LayerWithMetadata extends LayerProps {
+  metadata: {
+    'mapbox:group': string
   }
 }

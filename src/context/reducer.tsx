@@ -24,16 +24,21 @@ export const reducer = (
         ...state,
         baselayer: action.payload,
       }
-    case 'SET_LANG_LAYER_SYMBOLOGY':
-      return {
-        ...state,
-        activeLangSymbGroupId: action.payload,
-      }
     // TODO: wire up
     case 'SET_LANG_LAYER_LABELS':
       return {
         ...state,
         activeLangLabelId: action.payload,
+      }
+    case 'SET_LANG_LAYER_LEGEND':
+      return {
+        ...state,
+        langLegend: action.payload,
+      }
+    case 'SET_LANG_LAYER_SYMBOLOGY':
+      return {
+        ...state,
+        activeLangSymbGroupId: action.payload,
       }
     // TODO: wire up
     case 'TOGGLE_UI_ALERT':

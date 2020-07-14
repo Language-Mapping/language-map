@@ -1,20 +1,13 @@
 import React, { FC, useEffect, useState, useContext } from 'react'
-import { Source, Layer, LayerProps } from 'react-map-gl'
+import { Source, Layer } from 'react-map-gl'
 
 import { GlobalContext } from 'components'
-import { MetadataGroupType } from './types'
+import { MetadataGroupType, LayerWithMetadata } from './types'
+import { createMapLegend } from '../../utils'
 
 type LangLayerType = {
   tilesetId: string
   styleUrl: string
-}
-
-// `metadata` prop has MB Studio group ID and appears to only be part of the
-// Style API, not the Style Spec.
-interface LayerWithMetadata extends LayerProps {
-  metadata: {
-    'mapbox:group': string
-  }
 }
 
 type MbResponseType = {
@@ -30,7 +23,8 @@ export const LanguageLayer: FC<LangLayerType> = ({ tilesetId, styleUrl }) => {
   const [layers, setLayers] = useState<LayerWithMetadata[]>([])
 
   useEffect(() => {
-    // TODO: react-query or, at a minimum, get this into utils
+    // TODO: react-query or, at a minimum, get this into utils and maybe run it
+    // higher up the tree instead.
     async function getMbStyleDocument() {
       const response = await fetch(styleUrl)
       const {
@@ -64,6 +58,20 @@ export const LanguageLayer: FC<LangLayerType> = ({ tilesetId, styleUrl }) => {
 
     getMbStyleDocument()
   }, [styleUrl, dispatch])
+
+  useEffect(() => {
+    const layersInActiveGroup = layers.filter(
+      (layer: LayerWithMetadata) =>
+        layer.metadata['mapbox:group'] === activeLangSymbGroupId
+    )
+
+    const legend = createMapLegend(layersInActiveGroup)
+
+    dispatch({
+      type: 'SET_LANG_LAYER_LEGEND',
+      payload: legend,
+    })
+  }, [activeLangSymbGroupId, layers, dispatch])
 
   if (!layers || !layers.length) {
     return null
