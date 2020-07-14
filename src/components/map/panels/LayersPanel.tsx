@@ -29,23 +29,14 @@ export const LayersPanel: FC = () => {
   const classes = useStyles()
 
   return (
-    <>
-      <p>
-        <small>
-          Not sure what to call this panel. It's not really "Layers" because
-          those controls are in the popout. Not to mention there is only one
-          layer, and it's Languages. Hmmmm.
-        </small>
-      </p>
-      <Grid container className={classes.layersPanelRoot} spacing={2}>
-        <Grid item xs={6} sm={5}>
-          <LayerSymbSelect />
-        </Grid>
-        <Grid item xs={6} sm={7}>
-          <LayerLabelSelect />
-        </Grid>
-        <Legend items={legendItems} />
+    <Grid container className={classes.layersPanelRoot} spacing={2}>
+      <Grid item xs={6} sm={5}>
+        <LayerSymbSelect />
       </Grid>
-    </>
+      <Grid item xs={6} sm={7}>
+        <LayerLabelSelect />
+      </Grid>
+      <Legend items={legendItems} />
+    </Grid>
   )
 }

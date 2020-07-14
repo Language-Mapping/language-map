@@ -3,12 +3,14 @@
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
 import React from 'react'
 import { Color } from '@material-ui/lab/Alert'
+import { LayerProps } from 'react-map-gl'
 
 type BaselayerType = 'dark' | 'light'
 export type GlobalContextDispatchType = React.Dispatch<StoreActionType>
 
 export type StoreActionType =
   | { type: 'SHOW_SPLASH'; payload: boolean }
+  | { type: 'SET_LANG_LAYER_SYMB_OPTIONS'; payload: string[] }
   | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibilityTypes }
   | {
       type: 'TOGGLE_UI_ALERT'
@@ -29,6 +31,8 @@ export type InitialStateType = {
   showSplash: boolean
   uiAlert: AlertPayloadType
   baselayer: BaselayerType
+  langSymbOptions: string[]
+  langLayerProps: LayerProps
 }
 
 export type AlertPayloadType = {

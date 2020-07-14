@@ -26,9 +26,11 @@ export const LayerSymbSelect: FC = () => {
           id: 'lang-symb-select',
         }}
       >
-        <option value="Region">Region</option>
-        <option value="Size">Size</option>
-        <option value="Status">Status</option>
+        {state.langSymbOptions.map((name: string) => (
+          <option key={name} value={name}>
+            {name}
+          </option>
+        ))}
       </Select>
     </FormControl>
   )
