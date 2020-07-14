@@ -13,6 +13,11 @@ export const reducer = (
         ...state,
         langFeatures: action.payload,
       }
+    case 'INIT_LANG_LAYER_LABEL_OPTIONS':
+      return {
+        ...state,
+        langLabels: action.payload,
+      }
     case 'INIT_LANG_LAYER_SYMB_OPTIONS':
       return {
         ...state,

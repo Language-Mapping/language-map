@@ -37,3 +37,14 @@ export interface LayerWithMetadata extends LayerProps {
     'mapbox:group': string
   }
 }
+
+export type LayerComponentType = {
+  styleUrl: string
+}
+
+export type MbResponseType = {
+  metadata: {
+    'mapbox:groups': MetadataGroupType
+  }
+  layers: LayerWithMetadata[]
+}

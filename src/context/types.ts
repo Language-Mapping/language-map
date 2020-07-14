@@ -16,6 +16,7 @@ export type StoreActionType =
       payload: AlertPayloadType
     }
   | { type: 'INIT_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
+  | { type: 'INIT_LANG_LAYER_LABEL_OPTIONS'; payload: string[] }
   | { type: 'INIT_LANG_LAYER_SYMB_OPTIONS'; payload: MetadataGroupType }
   | { type: 'SET_BASELAYER'; payload: BaselayerType }
   | {
@@ -38,6 +39,7 @@ export type InitialStateType = {
   baselayer: BaselayerType
   hasSeenSplash: boolean
   langFeatures: LangRecordSchema[]
+  langLabels: string[]
   langLegend: LegendSwatchType[]
   langSymbGroups: MetadataGroupType
   layerVisibility: LayerVisibilityTypes

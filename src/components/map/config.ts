@@ -11,9 +11,16 @@ export const initialMapState = {
   // pitch,
 }
 
-export const langLayerConfig = {
+export const langSrcConfig = {
   layerId: 'langsNY_06242020-6lpxtk',
-  pretty: 'Languages',
   tilesetId: 'elalliance.1bsrluyq',
-  styleUrl: 'elalliance/ckchv1ey41e861ilqnutvvobc/draft',
+  internalSrcID: 'languages-src',
+}
+
+export const langLayerConfig = {
+  styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48/draft',
+}
+
+export const langLabelsConfig = {
+  styleUrl: 'elalliance/ckcmj5ex61oka1ir0q9q82tmf/draft',
 }
