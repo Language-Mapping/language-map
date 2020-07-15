@@ -60,10 +60,13 @@ export const getMbStyleDocument = async (
   // property but that seems unintuitive.
   const firstGroupId = Object.keys(layerGroups)[0]
   let labelsGroupId = ''
+  const nonLabelsGroups: MetadataGroupType = {}
 
   for (const key in layerGroups) {
     if (layerGroups[key].name === 'Labels') {
       labelsGroupId = key
+    } else {
+      nonLabelsGroups[key] = layerGroups[key]
     }
   }
 
@@ -83,7 +86,7 @@ export const getMbStyleDocument = async (
   // Populate symb dropdown
   dispatch({
     type: 'INIT_LANG_LAYER_SYMB_OPTIONS',
-    payload: layerGroups,
+    payload: nonLabelsGroups,
   })
 
   // Set group ID of initial active MB Styles group
