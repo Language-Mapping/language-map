@@ -6,54 +6,25 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext } from 'components'
 import { MAPBOX_TOKEN } from '../../config'
-import { InitialMapState, LayerWithMetadata, MbResponseType } from './types'
-import { createMapLegend } from '../../utils'
-import { langLayerConfig, langLabelsConfig, langSrcConfig } from './config'
+import { LangRecordSchema } from '../../context/types'
+import { InitialMapState, LayerWithMetadata } from './types'
+import { createMapLegend, getMbStyleDocument } from '../../utils'
+import { langLayerConfig, langSrcConfig } from './config'
+
+const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
 
 export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
-  const [viewport, setViewport] = useState({ latitude, longitude, zoom })
   const { state, dispatch } = useContext(GlobalContext)
-  const { activeLangSymbGroupId } = state
+  const [viewport, setViewport] = useState({ latitude, longitude, zoom })
   const [symbLayers, setSymbLayers] = useState<LayerWithMetadata[]>([])
-  const symbStyleUrl = `https://api.mapbox.com/styles/v1/${langLayerConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
-  const labelsStyleUrl = `https://api.mapbox.com/styles/v1/${langLabelsConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
+  const [labelLayers, setLabelLayers] = useState<LayerWithMetadata[]>([])
+  const { activeLangSymbGroupId, activeLangLabelId } = state
 
   useEffect(() => {
-    // TODO: react-query or, at a minimum, get this into utils and maybe run it
-    // higher up the tree instead.
-    async function getMbStyleDocument() {
-      const response = await fetch(symbStyleUrl)
-      const {
-        metadata,
-        layers: allLayers,
-      }: MbResponseType = await response.json()
-      // TODO: instead of grabbing the first one, get the first one who has a
-      // child layer that is VISIBLE. Alternatively could use the `collapsed`
-      // property but that seems unintuitive.
-      const firstGroupId = Object.keys(metadata['mapbox:groups'])[0]
+    const symbStyleUrl = `${MB_STYLES_API_URL}/${langLayerConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
 
-      // Populate dropdown
-      dispatch({
-        type: 'INIT_LANG_LAYER_SYMB_OPTIONS',
-        payload: metadata['mapbox:groups'],
-      })
-
-      // Set group ID of initial active MB Styles group
-      dispatch({
-        type: 'SET_LANG_LAYER_SYMBOLOGY',
-        payload: firstGroupId,
-      })
-      const notTheBgLayerOrLabels = allLayers.filter(
-        (layer: LayerWithMetadata) =>
-          layer.metadata && layer.type !== 'background'
-      )
-      // debugger
-
-      setSymbLayers(notTheBgLayerOrLabels)
-    }
-
-    getMbStyleDocument()
-  }, [symbStyleUrl, dispatch])
+    getMbStyleDocument(symbStyleUrl, dispatch, setSymbLayers, setLabelLayers)
+  }, [dispatch])
 
   useEffect(() => {
     const layersInActiveGroup = symbLayers.filter(
@@ -69,35 +40,6 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
     })
   }, [activeLangSymbGroupId, symbLayers, dispatch])
 
-  const { activeLangLabelId } = state
-  const [labelLayers, setLabelLayers] = useState<LayerWithMetadata[]>([])
-
-  useEffect(() => {
-    // TODO: react-query or, at a minimum, get this into utils and maybe run it
-    // higher up the tree instead.
-    async function getMbStyleDocument() {
-      const response = await fetch(labelsStyleUrl)
-      const { layers: allLayers }: MbResponseType = await response.json()
-
-      const notTheBgLayer = allLayers.filter(
-        (layer: LayerWithMetadata) => layer.type !== 'background'
-      )
-      const labels = notTheBgLayer.map((layer) => layer.id)
-
-      // Populate dropdown
-      dispatch({
-        type: 'INIT_LANG_LAYER_LABEL_OPTIONS',
-        payload: labels,
-      })
-
-      // TODO: instead of grabbing the first one, get the first VISIBLE layer.
-      dispatch({ type: 'SET_LANG_LAYER_LABELS', payload: labels[0] })
-      setLabelLayers(notTheBgLayer)
-    }
-
-    getMbStyleDocument()
-  }, [labelsStyleUrl, dispatch])
-
   return (
     <MapGL
       {...viewport}
@@ -105,7 +47,6 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
       height="100%"
       onViewportChange={setViewport}
       mapboxApiAccessToken={MAPBOX_TOKEN}
-      // TODO: fix this. So weird!
       mapStyle={`mapbox://styles/mapbox/${state.baselayer}-v9`}
       // TODO: show MB attribution text (not logo) on mobile
       className="mb-language-map"
@@ -118,7 +59,7 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
 
         dispatch({
           type: 'INIT_LANG_LAYER_FEATURES',
-          payload: features,
+          payload: features as LangRecordSchema[],
         })
       }}
     >

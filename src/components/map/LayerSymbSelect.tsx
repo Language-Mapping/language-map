@@ -9,7 +9,10 @@ export const LayerSymbSelect: FC = () => {
   const groupIDs = Object.keys(langSymbGroups)
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    dispatch({ type: 'SET_LANG_LAYER_SYMBOLOGY', payload: event.target.value })
+    dispatch({
+      type: 'SET_LANG_LAYER_SYMBOLOGY',
+      payload: event.target.value as string,
+    })
   }
 
   // TODO: these guys?

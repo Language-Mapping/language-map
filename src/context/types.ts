@@ -4,9 +4,12 @@
 import React from 'react'
 import { Color } from '@material-ui/lab/Alert'
 
-import { MetadataGroupType, LegendSwatchType } from 'components/map/types'
+import {
+  MetadataGroupType,
+  LegendSwatchType,
+  BaselayerType,
+} from 'components/map/types'
 
-type BaselayerType = 'dark' | 'light'
 export type GlobalContextDispatchType = React.Dispatch<StoreActionType>
 
 export type StoreActionType =

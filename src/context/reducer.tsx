@@ -23,13 +23,11 @@ export const reducer = (
         ...state,
         langSymbGroups: action.payload,
       }
-    // TODO: fix this. So weird!
     case 'SET_BASELAYER':
       return {
         ...state,
         baselayer: action.payload,
       }
-    // TODO: wire up
     case 'SET_LANG_LAYER_LABELS':
       return {
         ...state,

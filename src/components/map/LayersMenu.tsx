@@ -11,6 +11,7 @@ import {
 
 import { GlobalContext } from 'components'
 import { LayerToggle } from 'components/map'
+import { BaselayerType } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,10 +38,9 @@ export const LayersMenu: FC = () => {
     const { value } = event.target as HTMLInputElement
     setActiveBaselayer(value)
 
-    // TODO: fix this. So weird!
     dispatch({
-      action: 'SET_BASELAYER',
-      payload: value,
+      type: 'SET_BASELAYER',
+      payload: value as BaselayerType,
     })
   }
 

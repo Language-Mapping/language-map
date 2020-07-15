@@ -2,6 +2,9 @@ import { LayerProps } from 'react-map-gl'
 
 import { LayerVisibilityTypes } from 'context/types'
 
+// Assumes using Mapbox style
+export type BaselayerType = 'dark' | 'light'
+
 export type LayerToggleType = {
   name: string
   layerId: keyof LayerVisibilityTypes
