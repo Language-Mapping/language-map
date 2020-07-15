@@ -1,6 +1,6 @@
-import { LayerProps } from 'react-map-gl'
+import { LayerProps, PointerEvent } from 'react-map-gl'
 
-import { LayerVisibilityTypes } from 'context/types'
+import { LangRecordSchema, LayerVisibilityTypes } from 'context/types'
 
 // Assumes using Mapbox style
 export type BaselayerType = 'dark' | 'light'
@@ -50,4 +50,26 @@ export type MbResponseType = {
     'mapbox:groups': MetadataGroupType
   }
   layers: LayerWithMetadata[]
+}
+
+export type LangFeatureType = {
+  id: number
+  layer: LayerWithMetadata
+  properties: LangRecordSchema
+  source: string
+  sourceLayer: string
+  type: 'Feature' | 'hmmmmmm'
+  state: {
+    alsoHmmmm: boolean
+  }
+}
+
+export type MapClickType = Omit<PointerEvent, 'features'> & {
+  features: LangFeatureType[]
+}
+
+export type PopupType = {
+  heading: string
+  longitude: number
+  latitude: number
 }

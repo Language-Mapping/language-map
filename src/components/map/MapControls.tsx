@@ -24,7 +24,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
-
+// TODO: consider this instead:
+// https://material-ui.com/components/speed-dial/#simple-speed-dial
 export const MapControls: FC = () => {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)

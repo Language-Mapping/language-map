@@ -5,6 +5,7 @@ import {
   LegendSwatchType,
   MbResponseType,
   LayerWithMetadata,
+  LangFeatureType,
 } from 'components/map/types'
 import { StoreActionType } from './context/types'
 
@@ -106,3 +107,9 @@ export const getMbStyleDocument = async (
   setLabelLayers(labelsLayers)
   setSymbLayers(notTheBgLayerOrLabels)
 }
+
+// Only if features exist and the top one matches the language source ID
+export const shouldOpenPopup = (
+  features: LangFeatureType[],
+  internalSrcID: string
+): boolean => features.length !== 0 && features[0].source === internalSrcID

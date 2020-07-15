@@ -5,20 +5,37 @@ import MapGL, { Source, Layer } from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext } from 'components'
+import { MapPopup } from 'components/map'
 import { MAPBOX_TOKEN } from '../../config'
 import { LangRecordSchema } from '../../context/types'
-import { InitialMapState, LayerWithMetadata } from './types'
-import { createMapLegend, getMbStyleDocument } from '../../utils'
+import {
+  InitialMapState,
+  LayerWithMetadata,
+  MapClickType,
+  PopupType,
+} from './types'
+import {
+  createMapLegend,
+  getMbStyleDocument,
+  shouldOpenPopup,
+} from '../../utils'
 import { langLayerConfig, langSrcConfig } from './config'
 
 const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
-
 export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
   const { state, dispatch } = useContext(GlobalContext)
   const [viewport, setViewport] = useState({ latitude, longitude, zoom })
   const [symbLayers, setSymbLayers] = useState<LayerWithMetadata[]>([])
   const [labelLayers, setLabelLayers] = useState<LayerWithMetadata[]>([])
   const { activeLangSymbGroupId, activeLangLabelId } = state
+
+  // TODO: mv popup stuff into reducer
+  const [popupOpen, setPopupOpen] = useState<boolean>(false)
+  const [popupSettings, setPopupSettings] = useState<PopupType>({
+    heading: '',
+    longitude: 0,
+    latitude: 0,
+  })
 
   useEffect(() => {
     const symbStyleUrl = `${MB_STYLES_API_URL}/${langLayerConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
@@ -50,6 +67,20 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
       mapStyle={`mapbox://styles/mapbox/${state.baselayer}-v9`}
       // TODO: show MB attribution text (not logo) on mobile
       className="mb-language-map"
+      onClick={(event: MapClickType): void => {
+        const { features, lngLat } = event
+
+        if (!shouldOpenPopup(features, langSrcConfig.internalSrcID)) {
+          return
+        }
+
+        setPopupOpen(true)
+        setPopupSettings({
+          heading: features[0].properties['Language Endonym'] as string,
+          latitude: lngLat[1],
+          longitude: lngLat[0],
+        })
+      }}
       onLoad={(map) => {
         const features = map.target
           .querySourceFeatures(langSrcConfig.internalSrcID, {
@@ -63,6 +94,7 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
         })
       }}
     >
+      {popupOpen && <MapPopup {...popupSettings} setPopupOpen={setPopupOpen} />}
       {/* NOTE: it did not seem to work when using two different Styles with the same dataset unless waiting until there is something to put into <Source> */}
       {symbLayers.length && labelLayers.length && (
         <Source
@@ -79,7 +111,9 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
                 key={layer.id}
                 {...layer}
                 // TODO: some kind of transition/animation on switch
-                layout={{ visibility: isInActiveGroup ? 'visible' : 'none' }}
+                layout={{
+                  visibility: isInActiveGroup ? 'visible' : 'none',
+                }}
               />
             )
           })}
