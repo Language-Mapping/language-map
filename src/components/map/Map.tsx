@@ -1,47 +1,115 @@
-import React, { FC, useState, useContext } from 'react'
-import MapGL from 'react-map-gl'
+import React, { FC, useState, useContext, useEffect } from 'react'
+import MapGL, { Source, Layer } from 'react-map-gl'
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-// TODO: move to map-specific config file along with anything else that is
-// project-specific in order to promote flexibility and reusability in case
-// another project wants this.
-import { MAPBOX_TOKEN as mapboxApiAccessToken } from 'config'
 import { GlobalContext } from 'components'
-import { LanguageLayer } from 'components/map'
-import { InitialMapState } from './types'
+import { MAPBOX_TOKEN } from '../../config'
+import { LangRecordSchema } from '../../context/types'
+import { InitialMapState, LayerWithMetadata } from './types'
+import { createMapLegend, getMbStyleDocument } from '../../utils'
+import { langLayerConfig, langSrcConfig } from './config'
+
+const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
 
 export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
+  const { state, dispatch } = useContext(GlobalContext)
   const [viewport, setViewport] = useState({ latitude, longitude, zoom })
-  const { dispatch, state } = useContext(GlobalContext)
+  const [symbLayers, setSymbLayers] = useState<LayerWithMetadata[]>([])
+  const [labelLayers, setLabelLayers] = useState<LayerWithMetadata[]>([])
+  const { activeLangSymbGroupId, activeLangLabelId } = state
+
+  useEffect(() => {
+    const symbStyleUrl = `${MB_STYLES_API_URL}/${langLayerConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
+
+    getMbStyleDocument(symbStyleUrl, dispatch, setSymbLayers, setLabelLayers)
+  }, [dispatch])
+
+  useEffect(() => {
+    const layersInActiveGroup = symbLayers.filter(
+      (layer: LayerWithMetadata) =>
+        layer.metadata['mapbox:group'] === activeLangSymbGroupId
+    )
+
+    const legend = createMapLegend(layersInActiveGroup)
+
+    dispatch({
+      type: 'SET_LANG_LAYER_LEGEND',
+      payload: legend,
+    })
+  }, [activeLangSymbGroupId, symbLayers, dispatch])
 
   return (
     <MapGL
       {...viewport}
       width="100%"
       height="100%"
-      // TODO: fix this. So weird!
-      mapStyle={`mapbox://styles/mapbox/${state.baselayer}-v9`}
       onViewportChange={setViewport}
-      mapboxApiAccessToken={mapboxApiAccessToken}
+      mapboxApiAccessToken={MAPBOX_TOKEN}
+      mapStyle={`mapbox://styles/mapbox/${state.baselayer}-v9`}
       // TODO: show MB attribution text (not logo) on mobile
       className="mb-language-map"
-      onLoad={(mapObject) => {
-        const features = mapObject.target
-          .querySourceFeatures('languages-src', {
-            // MB tileset Layer ID, not the custom `id`
-            sourceLayer: 'langsNY_06242020-2lztil',
+      onLoad={(map) => {
+        const features = map.target
+          .querySourceFeatures(langSrcConfig.internalSrcID, {
+            sourceLayer: langSrcConfig.layerId,
           })
           .map(({ properties }) => properties)
 
-        // TODO: test perf. Seems noticeably slower with all this data in state.
         dispatch({
-          type: 'SET_LANG_LAYER_FEATURES',
-          payload: features,
+          type: 'INIT_LANG_LAYER_FEATURES',
+          payload: features as LangRecordSchema[],
         })
       }}
     >
-      <LanguageLayer />
+      {/* NOTE: it did not seem to work when using two different Styles with the same dataset unless waiting until there is something to put into <Source> */}
+      {symbLayers.length && labelLayers.length && (
+        <Source
+          type="vector"
+          url={`mapbox://${langSrcConfig.tilesetId}`}
+          id={langSrcConfig.internalSrcID}
+        >
+          {symbLayers.map((layer: LayerWithMetadata) => {
+            const isInActiveGroup =
+              layer.metadata['mapbox:group'] === activeLangSymbGroupId
+
+            return (
+              <Layer
+                key={layer.id}
+                {...layer}
+                // TODO: some kind of transition/animation on switch
+                layout={{ visibility: isInActiveGroup ? 'visible' : 'none' }}
+              />
+            )
+          })}
+          {labelLayers.map((layer: LayerWithMetadata) => {
+            const isActiveLabel = layer.id === activeLangLabelId
+
+            // TODO: some kind of transition/animation on switch
+            const layout = {
+              ...layer.layout,
+              visibility: isActiveLabel ? 'visible' : 'none',
+            }
+
+            return (
+              <Layer
+                key={layer.id}
+                id={layer.id}
+                type={layer.type}
+                source={layer.source}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                source-layer={layer['source-layer']}
+                paint={layer.paint}
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                layout={layout}
+              />
+            )
+          })}
+        </Source>
+      )}
     </MapGL>
   )
 }

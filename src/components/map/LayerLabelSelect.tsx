@@ -5,10 +5,13 @@ import { GlobalContext } from 'components'
 
 export const LayerLabelSelect: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
-  const currentValue = state.activeLangLabelKey
+  const { activeLangLabelId, langLabels } = state
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    dispatch({ type: 'SET_LANG_LABELS', payload: event.target.value })
+    dispatch({
+      type: 'SET_LANG_LAYER_LABELS',
+      payload: event.target.value as string,
+    })
   }
 
   return (
@@ -16,7 +19,7 @@ export const LayerLabelSelect: FC = () => {
       <InputLabel htmlFor="lang-label-select">Label by:</InputLabel>
       <Select
         native
-        value={currentValue}
+        value={activeLangLabelId}
         onChange={handleChange}
         inputProps={{
           name: 'label',
@@ -24,9 +27,11 @@ export const LayerLabelSelect: FC = () => {
         }}
       >
         <option value="None">No labels</option>
-        <option value="Neighborhood">Neighborhood</option>
-        <option value="Endonym">Endonym</option>
-        <option value="Glottocode">Glottocode</option>
+        {langLabels.map((label: string) => (
+          <option key={label} value={label}>
+            {label}
+          </option>
+        ))}
       </Select>
     </FormControl>
   )

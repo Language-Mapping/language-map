@@ -1,5 +1,4 @@
 export * from './panels/LayersPanel'
-export * from './LanguageLayer'
 export * from './LayerLabelSelect'
 export * from './LayersMenu'
 export * from './LayerSymbSelect'

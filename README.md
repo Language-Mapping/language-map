@@ -35,8 +35,11 @@ place search, follow these steps:
 4. Add the following to it, replacing `YOUR_TOKEN` with the Mapbox token you
    just created:
    ```bash
-   REACT_APP_MAPBOX_ACCESS_TOKEN='YOUR_TOKEN'
+   REACT_APP_MB_TOKEN='YOUR_TOKEN'
    ```
+
+**TODO:** document `REACT_APP_MB_SECRET` or whatever for secret scope (aka
+fetching stuff, not MB GL access).
 
 ## Usage
 

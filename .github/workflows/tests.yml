@@ -25,4 +25,4 @@ jobs:
         run: yarn test
         env:
           CI: true
-          REACT_APP_MAPBOX_ACCESS_TOKEN: ${{ secrets.MAPBOX_ACCESS_TOKEN }}
+          REACT_APP_MB_TOKEN: ${{ secrets.MAPBOX_ACCESS_TOKEN }}

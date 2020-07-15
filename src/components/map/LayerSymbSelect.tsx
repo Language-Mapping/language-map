@@ -5,10 +5,14 @@ import { GlobalContext } from 'components'
 
 export const LayerSymbSelect: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
-  const currentValue = state.activeLangSymbKey
+  const { langSymbGroups, activeLangSymbGroupId } = state
+  const groupIDs = Object.keys(langSymbGroups)
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    dispatch({ type: 'SET_LANG_SYMBOLOGY', payload: event.target.value })
+    dispatch({
+      type: 'SET_LANG_LAYER_SYMBOLOGY',
+      payload: event.target.value as string,
+    })
   }
 
   // TODO: these guys?
@@ -19,16 +23,18 @@ export const LayerSymbSelect: FC = () => {
       <InputLabel htmlFor="lang-symb-select">Show by:</InputLabel>
       <Select
         native
-        value={currentValue}
+        value={activeLangSymbGroupId}
         onChange={handleChange}
         inputProps={{
           name: 'symbology',
           id: 'lang-symb-select',
         }}
       >
-        <option value="Region">Region</option>
-        <option value="Size">Size</option>
-        <option value="Status">Status</option>
+        {groupIDs.map((id: string) => (
+          <option key={id} value={id}>
+            {langSymbGroups[id].name}
+          </option>
+        ))}
       </Select>
     </FormControl>
   )

@@ -4,31 +4,50 @@
 import React from 'react'
 import { Color } from '@material-ui/lab/Alert'
 
-type BaselayerType = 'dark' | 'light'
+import {
+  MetadataGroupType,
+  LegendSwatchType,
+  BaselayerType,
+} from 'components/map/types'
+
 export type GlobalContextDispatchType = React.Dispatch<StoreActionType>
 
 export type StoreActionType =
   | { type: 'SHOW_SPLASH'; payload: boolean }
-  | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibilityTypes }
   | {
       type: 'TOGGLE_UI_ALERT'
       payload: AlertPayloadType
     }
+  | { type: 'INIT_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
+  | { type: 'INIT_LANG_LAYER_LABEL_OPTIONS'; payload: string[] }
+  | { type: 'INIT_LANG_LAYER_SYMB_OPTIONS'; payload: MetadataGroupType }
   | { type: 'SET_BASELAYER'; payload: BaselayerType }
-  | { type: 'SET_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
+  | {
+      type: 'SET_LANG_LAYER_LABELS'
+      payload: string
+    }
+  | {
+      type: 'SET_LANG_LAYER_LEGEND'
+      payload: LegendSwatchType[]
+    }
   | {
       type: 'SET_LANG_LAYER_SYMBOLOGY'
-      payload: keyof LangSymbStyles
+      payload: string
     }
+  | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibilityTypes }
 
 export type InitialStateType = {
-  activeLangSymbKey: keyof LangSymbStyles
-  langFeatures: LangRecordSchema[]
+  activeLangSymbGroupId: string
+  activeLangLabelId: string
+  baselayer: BaselayerType
   hasSeenSplash: boolean
+  langFeatures: LangRecordSchema[]
+  langLabels: string[]
+  langLegend: LegendSwatchType[]
+  langSymbGroups: MetadataGroupType
   layerVisibility: LayerVisibilityTypes
   showSplash: boolean
   uiAlert: AlertPayloadType
-  baselayer: BaselayerType
 }
 
 export type AlertPayloadType = {
@@ -52,13 +71,6 @@ export type LayerVisibilityTypes = {
   languages: boolean
   neighborhoods: boolean
   counties: boolean
-}
-
-export type LangSymbStyles = {
-  default: {
-    todo: true
-    task: 'Wire this up with MB layer styles'
-  }
 }
 
 export type LangRecordSchema = {
