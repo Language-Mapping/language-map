@@ -73,3 +73,11 @@ export type PopupType = {
   longitude: number
   latitude: number
 }
+
+export type MapPanelTypes = {
+  heading: string
+  subheading: string
+  active: boolean
+  icon: React.ReactNode
+  component?: React.ReactNode
+}

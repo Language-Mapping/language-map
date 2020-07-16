@@ -2,13 +2,7 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Box, Typography, Paper, Divider } from '@material-ui/core'
 
-type MapPanelTypes = {
-  heading: string
-  subheading: string
-  active: boolean
-  icon: React.ReactNode
-  component?: React.ReactNode
-}
+import { MapPanelTypes } from './types'
 
 type PaperRootType = {
   active: boolean
@@ -28,6 +22,12 @@ const useStyles = makeStyles({
 
 const useThemeStyles = makeStyles((theme: Theme) =>
   createStyles({
+    intro: {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.common.white,
+      borderBottom: `solid 8px ${theme.palette.primary.dark}`,
+      padding: `6px ${theme.spacing(2)}px`,
+    },
     mainHeading: {
       display: 'flex',
       alignItems: 'center',
@@ -52,20 +52,16 @@ export const MapPanel: FC<MapPanelTypes> = ({
 
   return (
     <Paper className={classes.paperRoot}>
-      <Box padding={2}>
-        <Box component="header" paddingBottom={1}>
-          <Typography variant="h4" className={themeClasses.mainHeading}>
-            {icon}
-            {heading}
-          </Typography>
-          <Typography>{subheading}</Typography>
-        </Box>
-        <Divider />
+      <Box component="header" className={themeClasses.intro}>
+        <Typography variant="h4" className={themeClasses.mainHeading}>
+          {icon}
+          {heading}
+        </Typography>
+        <Typography variant="caption">{subheading}</Typography>
+      </Box>
+      <Box paddingY={1} paddingX={2}>
         {component}
         <Divider />
-        <p>
-          <small>Complex panels could be organized by Tabs.</small>
-        </p>
       </Box>
     </Paper>
   )
