@@ -11,8 +11,9 @@ import { LangRecordSchema } from '../../context/types'
 import {
   InitialMapState,
   LayerWithMetadata,
-  MapClickType,
+  MapEventType,
   LongLatType,
+  LangFeatureType,
 } from './types'
 import {
   createMapLegend,
@@ -67,7 +68,7 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
       mapStyle={`mapbox://styles/mapbox/${state.baselayer}-v9`}
       // TODO: show MB attribution text (not logo) on mobile
       className="mb-language-map"
-      onClick={(event: MapClickType): void => {
+      onClick={(event: MapEventType): void => {
         const { features, lngLat } = event
 
         if (!shouldOpenPopup(features, langSrcConfig.internalSrcID)) {
@@ -82,6 +83,20 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
           longitude: lngLat[0],
         })
         setSelFeatAttribs(features[0].properties) // TODO: global context
+      }}
+      onHover={(event): void => {
+        const { features, target } = event
+
+        if (
+          !shouldOpenPopup(
+            features as LangFeatureType[],
+            langSrcConfig.internalSrcID
+          )
+        ) {
+          target.style.cursor = 'default'
+        } else {
+          target.style.cursor = 'pointer'
+        }
       }}
       onLoad={(map) => {
         const features = map.target

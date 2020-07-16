@@ -64,7 +64,7 @@ export type LangFeatureType = {
   }
 }
 
-export type MapClickType = Omit<PointerEvent, 'features'> & {
+export type MapEventType = Omit<PointerEvent, 'features'> & {
   features: LangFeatureType[]
 }
 
