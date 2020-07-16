@@ -72,13 +72,14 @@ export type AlertPayloadType = {
 // ========================================================================== //
 
 // TODO: use `keyof` to restrict possible values appropriately in other
-// components if needed
+// components if needed. Remove this type if unused.
 export type LayerVisibilityTypes = {
   languages: boolean
   neighborhoods: boolean
   counties: boolean
 }
 
+// TODO: separate file
 export type LangRecordSchema = {
   County: string
   Description: string // not all will be populated until August
@@ -139,4 +140,19 @@ export type LangRecordSchema = {
   'Additional Neighborhoods'?: string // parsed by `|||` maybe?
   'ELA Audio'?: string // TODO: TS for URL?
   'ELA Story Map'?: string // TODO: TS for URL?
+}
+
+// About page. Could be separate file
+export type WpApiPageResponseType = {
+  title: {
+    rendered: string
+  }
+  content: {
+    rendered: string
+  }
+}
+
+export type AboutPageStateType = {
+  title: string | null
+  content: string | null
 }

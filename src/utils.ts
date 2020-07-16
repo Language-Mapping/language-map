@@ -7,7 +7,11 @@ import {
   LayerWithMetadata,
   LangFeatureType,
 } from 'components/map/types'
-import { StoreActionType } from './context/types'
+import {
+  StoreActionType,
+  WpApiPageResponseType,
+  AboutPageStateType,
+} from './context/types'
 
 export const getGroupNames = (groupObject: MetadataGroupType): string[] =>
   Object.keys(groupObject).map((groupId: string) => groupObject[groupId].name)
@@ -112,4 +116,18 @@ export const getMbStyleDocument = async (
 export const shouldOpenPopup = (
   features: LangFeatureType[],
   internalSrcID: string
-): boolean => features.length !== 0 && features[0].source === internalSrcID
+): boolean =>
+  features && features.length !== 0 && features[0].source === internalSrcID
+
+export const getAboutPageContent = async (
+  url: string,
+  setAboutPgContent: Dispatch<AboutPageStateType>
+): Promise<void> => {
+  const response = await fetch(url) // TODO: handle errors
+  const { title, content }: WpApiPageResponseType = await response.json()
+
+  setAboutPgContent({
+    title: title.rendered,
+    content: content.rendered,
+  })
+}
