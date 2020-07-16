@@ -1,9 +1,10 @@
 import React, { FC } from 'react'
 import { Switch, Route } from 'react-router-dom'
 
-import { TopBar, ContainerLayout } from 'components'
+import { TopBar } from 'components'
 import { StyleGuide } from 'components/style-guide'
 import { MapWrap } from 'components/map'
+import { AboutPageView } from '../views/AboutPageView'
 
 export const App: FC = () => {
   return (
@@ -12,17 +13,15 @@ export const App: FC = () => {
       <main>
         <Switch>
           <Route path="/about">
-            <ContainerLayout>
-              <h1>About Page</h1>
-            </ContainerLayout>
+            <AboutPageView />
           </Route>
           <Route path="/style-guide">
             <StyleGuide />
           </Route>
-          <Route path="/">
-            <MapWrap />
-          </Route>
         </Switch>
+        <Route path="/">
+          <MapWrap />
+        </Route>
       </main>
     </>
   )
