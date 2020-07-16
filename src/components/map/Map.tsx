@@ -12,7 +12,7 @@ import {
   InitialMapState,
   LayerWithMetadata,
   MapClickType,
-  PopupType,
+  LongLatType,
 } from './types'
 import {
   createMapLegend,
@@ -27,12 +27,12 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
   const [viewport, setViewport] = useState({ latitude, longitude, zoom })
   const [symbLayers, setSymbLayers] = useState<LayerWithMetadata[]>([])
   const [labelLayers, setLabelLayers] = useState<LayerWithMetadata[]>([])
+  const [selFeatAttribs, setSelFeatAttribs] = useState<LangRecordSchema>()
   const { activeLangSymbGroupId, activeLangLabelId } = state
 
   // TODO: mv popup stuff into reducer
   const [popupOpen, setPopupOpen] = useState<boolean>(false)
-  const [popupSettings, setPopupSettings] = useState<PopupType>({
-    heading: '',
+  const [popupSettings, setPopupSettings] = useState<LongLatType>({
     longitude: 0,
     latitude: 0,
   })
@@ -71,15 +71,17 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
         const { features, lngLat } = event
 
         if (!shouldOpenPopup(features, langSrcConfig.internalSrcID)) {
+          setPopupOpen(false)
+
           return
         }
 
         setPopupOpen(true)
         setPopupSettings({
-          heading: features[0].properties['Language Endonym'] as string,
           latitude: lngLat[1],
           longitude: lngLat[0],
         })
+        setSelFeatAttribs(features[0].properties) // TODO: global context
       }}
       onLoad={(map) => {
         const features = map.target
@@ -94,7 +96,13 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
         })
       }}
     >
-      {popupOpen && <MapPopup {...popupSettings} setPopupOpen={setPopupOpen} />}
+      {popupOpen && (
+        <MapPopup
+          {...popupSettings}
+          setPopupOpen={setPopupOpen}
+          selFeatAttribs={selFeatAttribs}
+        />
+      )}
       {/* NOTE: it did not seem to work when using two different Styles with the same dataset unless waiting until there is something to put into <Source> */}
       {symbLayers.length && labelLayers.length && (
         <Source

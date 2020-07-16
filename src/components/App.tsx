@@ -11,11 +11,6 @@ export const App: FC = () => {
       <TopBar />
       <main>
         <Switch>
-          <Route path="/results">
-            <ContainerLayout>
-              <h1>Results Table</h1>
-            </ContainerLayout>
-          </Route>
           <Route path="/about">
             <ContainerLayout>
               <h1>About Page</h1>

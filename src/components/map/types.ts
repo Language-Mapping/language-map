@@ -68,8 +68,7 @@ export type MapClickType = Omit<PointerEvent, 'features'> & {
   features: LangFeatureType[]
 }
 
-export type PopupType = {
-  heading: string
+export type LongLatType = {
   longitude: number
   latitude: number
 }

@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useState, useContext } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
   Box,
@@ -10,6 +10,7 @@ import { MdClose } from 'react-icons/md'
 
 import { Map, MapPanel, MapControls } from 'components/map'
 import { initialMapState } from 'components/map/config'
+import { GlobalContext } from 'components'
 import { panelsConfig } from './panelsConfig'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -77,9 +78,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const MapWrap: FC = () => {
   const classes = useStyles()
+  const { state, dispatch } = useContext(GlobalContext)
   const [panelOpen, setPanelOpen] = useState(true)
-  // TODO: wire this up with routing, at least for sel. feat details.
-  const [activePanelIndex, setActivePanelIndex] = useState(0)
+  const { activePanelIndex } = state
   const transforms = {
     open: 'translateY(0%)',
     closed: 'translateY(100%)',
@@ -126,7 +127,10 @@ export const MapWrap: FC = () => {
             setPanelOpen(true)
           }
 
-          setActivePanelIndex(newValue)
+          dispatch({
+            type: 'SET_ACTIVE_PANEL_INDEX',
+            payload: newValue,
+          })
         }}
       >
         {panelsConfig.map((config) => (

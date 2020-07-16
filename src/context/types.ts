@@ -11,6 +11,7 @@ import {
 } from 'components/map/types'
 
 export type GlobalContextDispatchType = React.Dispatch<StoreActionType>
+export type ActivePanelIndexesType = 0 | 1 | 2 | 3 // GROSS
 
 export type StoreActionType =
   | { type: 'SHOW_SPLASH'; payload: boolean }
@@ -34,11 +35,16 @@ export type StoreActionType =
       type: 'SET_LANG_LAYER_SYMBOLOGY'
       payload: string
     }
+  | {
+      type: 'SET_ACTIVE_PANEL_INDEX'
+      payload: ActivePanelIndexesType
+    }
   | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibilityTypes }
 
 export type InitialStateType = {
   activeLangSymbGroupId: string
   activeLangLabelId: string
+  activePanelIndex: ActivePanelIndexesType
   baselayer: BaselayerType
   hasSeenSplash: boolean
   langFeatures: LangRecordSchema[]

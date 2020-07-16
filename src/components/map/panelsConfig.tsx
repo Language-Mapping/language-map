@@ -4,6 +4,7 @@ import { FiLayers } from 'react-icons/fi'
 import { TiDocumentText, TiThList } from 'react-icons/ti'
 
 import { LayersPanel } from 'components/map'
+import { MapPanelTypes } from './types'
 
 export const panelsConfig = [
   {
@@ -46,4 +47,4 @@ export const panelsConfig = [
       </p>
     ),
   },
-]
+] as MapPanelTypes[]
