@@ -24,16 +24,19 @@ const renderApp = () => (
 describe('Testing routes', () => {
   test('title element links to home', async () => {
     await render(renderApp())
-
-    const mainContent = screen.getByRole('main')
+    // TODO: get by heading somehow? Really just want <h1>
     const homeTitleLink = screen.getByText(/languages of new york city/i)
+    const aboutPageBackdrop = screen.getByTestId('about-page-backdrop')
 
-    // Starting from /about page should have expected heading
-    expect(mainContent).toHaveTextContent(/about page/i)
+    // Starting from /about page should have a backdrop, at least in tests.
+    // Couldn't figure out how to get the useEffect fetch to show the WP output,
+    // but that was kinda shaky approach anyway since the title is not
+    // guaranteed. Probably a better approach out there... TODO: learn how to
+    // make ^^^this^^^ happen
+    expect(aboutPageBackdrop).toBeInTheDocument()
 
     fireEvent.click(homeTitleLink)
 
-    // TODO: get by heading somehow? Really just want <h1>
-    expect(mainContent).not.toHaveTextContent(/about page/i)
+    expect(aboutPageBackdrop).not.toBeInTheDocument()
   })
 })

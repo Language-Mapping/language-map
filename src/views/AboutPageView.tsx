@@ -58,11 +58,13 @@ export const AboutPageView: FC = () => {
   }, [url])
 
   if (!contentReady) {
+    // TODO: give this component an aria-something
     return (
       <Backdrop
         className={classes.backdrop}
-        open={!contentReady}
+        open
         onClick={handleClose}
+        data-testid="about-page-backdrop"
       >
         <CircularProgress color="inherit" />
       </Backdrop>
@@ -71,7 +73,7 @@ export const AboutPageView: FC = () => {
 
   return (
     <Dialog
-      open={contentReady}
+      open
       onClose={handleClose}
       aria-labelledby="about-page-dialog-title"
       aria-describedby="about-page-dialog-description"
