@@ -1,5 +1,4 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
-import queryString from 'query-string'
 import MapGL, { Source, Layer } from 'react-map-gl'
 
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -19,7 +18,6 @@ import {
   createMapLegend,
   getMbStyleDocument,
   shouldOpenPopup,
-  findFeatureByID,
 } from '../../utils'
 import { langLayerConfig, langSrcConfig } from './config'
 
@@ -101,21 +99,6 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
             sourceLayer: langSrcConfig.layerId,
           })
           .map(({ properties }) => properties)
-        const idFromRoute = queryString.parse(window.location.search).id
-
-        if (idFromRoute && typeof idFromRoute === 'string') {
-          const recordMatchedByRoute = findFeatureByID(
-            langLayerRecords as LangRecordSchema[],
-            idFromRoute
-          )
-
-          if (recordMatchedByRoute) {
-            dispatch({
-              type: 'SET_SEL_FEAT_DETAILS',
-              payload: recordMatchedByRoute,
-            })
-          }
-        }
 
         dispatch({
           type: 'INIT_LANG_LAYER_FEATURES',

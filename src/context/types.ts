@@ -21,7 +21,6 @@ export type StoreActionType =
   | { type: 'SET_LANG_LAYER_LABELS'; payload: string }
   | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatchType[] }
   | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: string }
-  | { type: 'SET_SEL_FEAT_DETAILS'; payload: null | LangRecordSchema }
   | { type: 'SHOW_SPLASH'; payload: boolean }
   | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibilityTypes }
   | { type: 'TOGGLE_UI_ALERT'; payload: AlertPayloadType }
@@ -37,7 +36,6 @@ export type InitialStateType = {
   langLegend: LegendSwatchType[]
   langSymbGroups: MetadataGroupType
   layerVisibility: LayerVisibilityTypes
-  selFeatAttribs: null | LangRecordSchema
   showSplash: boolean
   uiAlert: AlertPayloadType
 }

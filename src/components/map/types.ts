@@ -1,4 +1,3 @@
-// import mapboxgl from 'mapbox-gl'
 import { LayerProps, PointerEvent } from 'react-map-gl'
 
 import {

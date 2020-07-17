@@ -15,7 +15,6 @@ const initialMapStates = {
     counties: false,
     neighborhoods: false,
   },
-  selFeatAttribs: null,
 }
 
 export const initialState = {
