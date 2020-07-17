@@ -14,29 +14,30 @@ export type GlobalContextDispatchType = React.Dispatch<StoreActionType>
 export type ActivePanelRouteType = '/' | '/display' | '/results' | '/details'
 
 export type StoreActionType =
-  | { type: 'SHOW_SPLASH'; payload: boolean }
-  | { type: 'TOGGLE_UI_ALERT'; payload: AlertPayloadType }
   | { type: 'INIT_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | { type: 'INIT_LANG_LAYER_LABEL_OPTIONS'; payload: string[] }
   | { type: 'INIT_LANG_LAYER_SYMB_OPTIONS'; payload: MetadataGroupType }
   | { type: 'SET_BASELAYER'; payload: BaselayerType }
   | { type: 'SET_LANG_LAYER_LABELS'; payload: string }
-  | { type: 'SET_SEL_FEAT_DETAILS'; payload: Partial<LangRecordSchema> }
   | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatchType[] }
   | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: string }
+  | { type: 'SET_SEL_FEAT_DETAILS'; payload: null | LangRecordSchema }
+  | { type: 'SHOW_SPLASH'; payload: boolean }
   | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibilityTypes }
+  | { type: 'TOGGLE_UI_ALERT'; payload: AlertPayloadType }
 
 export type InitialStateType = {
-  activeLangSymbGroupId: string
   activeLangLabelId: string
+  activeLangSymbGroupId: string
   baselayer: BaselayerType
   hasSeenSplash: boolean
   langFeatures: LangRecordSchema[]
+  langFeaturesCached: LangRecordSchema[]
   langLabels: string[]
   langLegend: LegendSwatchType[]
   langSymbGroups: MetadataGroupType
   layerVisibility: LayerVisibilityTypes
-  selFeatDetails: Partial<LangRecordSchema>
+  selFeatAttribs: null | LangRecordSchema
   showSplash: boolean
   uiAlert: AlertPayloadType
 }

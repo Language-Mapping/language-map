@@ -31,6 +31,8 @@ export const panelsConfig = [
     subheading: 'Table or list of results',
     icon: <TiThList />,
     route: '/results',
+    // Could this work instead of emoji API? Seems way too easy.
+    // https://material-ui.com/components/autocomplete/#country-select
     component: (
       <p>
         Not a ton of room here, should other options be considered? Might be

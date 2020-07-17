@@ -1,4 +1,5 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
+import queryString from 'query-string'
 import MapGL, { Source, Layer } from 'react-map-gl'
 
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -10,25 +11,26 @@ import { MAPBOX_TOKEN } from '../../config'
 import { LangRecordSchema } from '../../context/types'
 import {
   InitialMapState,
-  LayerWithMetadata,
   MapEventType,
   LongLatType,
-  LangFeatureType,
+  LayerPropsPlusMeta,
 } from './types'
 import {
   createMapLegend,
   getMbStyleDocument,
   shouldOpenPopup,
+  findFeatureByID,
 } from '../../utils'
 import { langLayerConfig, langSrcConfig } from './config'
 
 const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
+
 export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
   const { state, dispatch } = useContext(GlobalContext)
   const [viewport, setViewport] = useState({ latitude, longitude, zoom })
-  const [symbLayers, setSymbLayers] = useState<LayerWithMetadata[]>([])
-  const [labelLayers, setLabelLayers] = useState<LayerWithMetadata[]>([])
-  const [selFeatAttribs, setSelFeatAttribs] = useState<LangRecordSchema>()
+  const [symbLayers, setSymbLayers] = useState<LayerPropsPlusMeta[]>([])
+  const [labelLayers, setLabelLayers] = useState<LayerPropsPlusMeta[]>([])
+  const [popupAttribs, setPopupAttribs] = useState<LangRecordSchema>()
   const { activeLangSymbGroupId, activeLangLabelId } = state
 
   // TODO: mv popup stuff into reducer
@@ -46,7 +48,7 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
 
   useEffect(() => {
     const layersInActiveGroup = symbLayers.filter(
-      (layer: LayerWithMetadata) =>
+      (layer: LayerPropsPlusMeta) =>
         layer.metadata['mapbox:group'] === activeLangSymbGroupId
     )
 
@@ -82,41 +84,51 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
           latitude: lngLat[1],
           longitude: lngLat[0],
         })
-        setSelFeatAttribs(features[0].properties) // TODO: global context
+        setPopupAttribs(features[0].properties)
       }}
-      onHover={(event): void => {
+      onHover={(event: MapEventType): void => {
         const { features, target } = event
 
-        if (
-          !shouldOpenPopup(
-            features as LangFeatureType[],
-            langSrcConfig.internalSrcID
-          )
-        ) {
+        if (!shouldOpenPopup(features, langSrcConfig.internalSrcID)) {
           target.style.cursor = 'default'
         } else {
           target.style.cursor = 'pointer'
         }
       }}
       onLoad={(map) => {
-        const features = map.target
+        const langLayerRecords = map.target
           .querySourceFeatures(langSrcConfig.internalSrcID, {
             sourceLayer: langSrcConfig.layerId,
           })
           .map(({ properties }) => properties)
+        const idFromRoute = queryString.parse(window.location.search).id
+
+        if (idFromRoute && typeof idFromRoute === 'string') {
+          const recordMatchedByRoute = findFeatureByID(
+            langLayerRecords as LangRecordSchema[],
+            idFromRoute
+          )
+
+          if (recordMatchedByRoute) {
+            dispatch({
+              type: 'SET_SEL_FEAT_DETAILS',
+              payload: recordMatchedByRoute,
+            })
+          }
+        }
 
         dispatch({
           type: 'INIT_LANG_LAYER_FEATURES',
-          payload: features as LangRecordSchema[],
+          payload: langLayerRecords as LangRecordSchema[],
         })
       }}
     >
-      {popupOpen && (
+      {popupOpen && popupAttribs && (
         <MapPopup
           {...popupSettings}
           setPopupOpen={setPopupOpen}
           popupOpen={popupOpen}
-          selFeatAttribs={selFeatAttribs}
+          popupAttribs={popupAttribs}
         />
       )}
       {/* NOTE: it did not seem to work when using two different Styles with the same dataset unless waiting until there is something to put into <Source> */}
@@ -126,7 +138,7 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
           url={`mapbox://${langSrcConfig.tilesetId}`}
           id={langSrcConfig.internalSrcID}
         >
-          {symbLayers.map((layer: LayerWithMetadata) => {
+          {symbLayers.map((layer: LayerPropsPlusMeta) => {
             const isInActiveGroup =
               layer.metadata['mapbox:group'] === activeLangSymbGroupId
 
@@ -141,7 +153,7 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
               />
             )
           })}
-          {labelLayers.map((layer: LayerWithMetadata) => {
+          {labelLayers.map((layer: LayerPropsPlusMeta) => {
             const isActiveLabel = layer.id === activeLangLabelId
 
             // TODO: some kind of transition/animation on switch

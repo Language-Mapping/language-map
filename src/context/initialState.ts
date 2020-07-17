@@ -6,6 +6,7 @@ const initialMapStates = {
   activeLangLabelId: '',
   baselayer: 'dark',
   langFeatures: [],
+  langFeaturesCached: [],
   langLabels: [],
   langLegend: [],
   langSymbGroups: {},
@@ -14,7 +15,7 @@ const initialMapStates = {
     counties: false,
     neighborhoods: false,
   },
-  selFeatDetails: {},
+  selFeatAttribs: null,
 }
 
 export const initialState = {

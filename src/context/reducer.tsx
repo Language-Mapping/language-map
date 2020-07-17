@@ -12,6 +12,7 @@ export const reducer = (
       return {
         ...state,
         langFeatures: action.payload,
+        langFeaturesCached: action.payload, // for easy resets later
       }
     case 'INIT_LANG_LAYER_LABEL_OPTIONS':
       return {
@@ -46,7 +47,7 @@ export const reducer = (
     case 'SET_SEL_FEAT_DETAILS':
       return {
         ...state,
-        selFeatDetails: action.payload,
+        selFeatAttribs: action.payload,
       }
     // TODO: wire up
     case 'TOGGLE_UI_ALERT':

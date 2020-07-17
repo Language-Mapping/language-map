@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { Route, Switch, useHistory, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
   Box,
@@ -115,13 +115,13 @@ export const MapWrap: FC = () => {
             <MdClose />
           </IconButton>
         )}
-        {panelsConfig.map((config) => (
-          <MapPanel
-            key={config.heading}
-            {...config}
-            active={config.route === loc.pathname}
-          />
-        ))}
+        <Switch>
+          {panelsConfig.map((config) => (
+            <Route key={config.heading} path={config.route} exact>
+              <MapPanel {...config} active={config.route === loc.pathname} />
+            </Route>
+          ))}
+        </Switch>
       </Box>
       <BottomNavigation
         showLabels
