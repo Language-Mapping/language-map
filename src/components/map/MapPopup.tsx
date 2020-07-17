@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import queryString from 'query-string'
+import * as queryString from 'query-string'
 import { Link as RouteLink } from 'react-router-dom'
 import { Popup } from 'react-map-gl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'

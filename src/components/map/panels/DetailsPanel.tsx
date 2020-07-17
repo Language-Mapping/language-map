@@ -1,5 +1,5 @@
 import React, { FC, useContext } from 'react'
-import queryString from 'query-string'
+import * as queryString from 'query-string'
 import { useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
