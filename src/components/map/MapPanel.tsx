@@ -41,11 +41,11 @@ const useThemeStyles = makeStyles((theme: Theme) =>
 )
 
 export const MapPanel: FC<MapPanelTypes> = ({
+  active,
   component,
   heading,
-  subheading,
-  active,
   icon,
+  subheading,
 }) => {
   const classes = useStyles({ active })
   const themeClasses = useThemeStyles()

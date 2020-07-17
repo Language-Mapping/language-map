@@ -15,6 +15,7 @@ export const App: FC = () => {
           <Route path="/about">
             <AboutPageView />
           </Route>
+          {/* TODO: code-splitting since tons of internal-only components */}
           <Route path="/style-guide">
             <StyleGuide />
           </Route>

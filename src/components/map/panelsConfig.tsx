@@ -11,6 +11,7 @@ export const panelsConfig = [
     heading: 'Explore',
     subheading: 'Searching, filtering, etc.',
     icon: <FaSearch />,
+    route: '/',
     component: (
       <p>
         This panel would be shown first since it is what we want the user to see
@@ -22,12 +23,14 @@ export const panelsConfig = [
     heading: 'Display',
     subheading: 'Symb + label ctrls. Alt. name?',
     icon: <FiLayers />,
+    route: '/display',
     component: <LayersPanel />,
   },
   {
     heading: 'Results',
     subheading: 'Table or list of results',
     icon: <TiThList />,
+    route: '/results',
     component: (
       <p>
         Not a ton of room here, should other options be considered? Might be
@@ -39,6 +42,7 @@ export const panelsConfig = [
     heading: 'Details',
     subheading: '...of selected feature',
     icon: <TiDocumentText />,
+    route: '/details',
     component: (
       <p>
         Detailed info on a specific selected individual point. Will be triggered

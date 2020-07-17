@@ -23,11 +23,6 @@ export const reducer = (
         ...state,
         langSymbGroups: action.payload,
       }
-    case 'SET_ACTIVE_PANEL_INDEX':
-      return {
-        ...state,
-        activePanelIndex: action.payload,
-      }
     case 'SET_BASELAYER':
       return {
         ...state,

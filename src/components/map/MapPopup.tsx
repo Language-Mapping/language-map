@@ -1,12 +1,11 @@
-import React, { FC, useContext } from 'react'
+import React, { FC } from 'react'
 import { Popup } from 'react-map-gl'
 import { useHistory } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Button, Typography, Divider } from '@material-ui/core'
 
-import { GlobalContext } from 'components'
 import { LongLatType } from './types'
-import { LangRecordSchema } from '../../context/types'
+import { LangRecordSchema, ActivePanelRouteType } from '../../context/types'
 
 type PopupComponentType = LongLatType & {
   setPopupOpen: React.Dispatch<boolean>
@@ -42,7 +41,6 @@ export const MapPopup: FC<PopupComponentType> = ({
 }) => {
   const classes = useStyles()
   const history = useHistory()
-  const { dispatch } = useContext(GlobalContext)
 
   return (
     <Popup
@@ -71,12 +69,8 @@ export const MapPopup: FC<PopupComponentType> = ({
           color="secondary"
           size="small"
           onClick={() => {
-            history.push(`/results/${selFeatAttribs.ID}`)
-
-            dispatch({
-              type: 'SET_ACTIVE_PANEL_INDEX',
-              payload: 3,
-            })
+            const baseRoute: ActivePanelRouteType = '/details'
+            history.push(`${baseRoute}?id=${selFeatAttribs.ID}`)
 
             setPopupOpen(false)
 

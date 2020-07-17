@@ -1,6 +1,10 @@
 import { LayerProps, PointerEvent } from 'react-map-gl'
 
-import { LangRecordSchema, LayerVisibilityTypes } from 'context/types'
+import {
+  LangRecordSchema,
+  LayerVisibilityTypes,
+  ActivePanelRouteType,
+} from 'context/types'
 
 // Assumes using Mapbox style
 export type BaselayerType = 'dark' | 'light'
@@ -74,9 +78,10 @@ export type LongLatType = {
 }
 
 export type MapPanelTypes = {
-  heading: string
-  subheading: string
   active: boolean
+  heading: string
   icon: React.ReactNode
+  route: ActivePanelRouteType
+  subheading: string
   component?: React.ReactNode
 }
