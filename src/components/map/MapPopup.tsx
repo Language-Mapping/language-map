@@ -1,14 +1,16 @@
-import React, { FC } from 'react'
+import React, { FC, useContext } from 'react'
 import queryString from 'query-string'
 import { useHistory } from 'react-router-dom'
 import { Popup } from 'react-map-gl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Button, Typography, Divider } from '@material-ui/core'
 
+import { GlobalContext } from 'components'
 import { LongLatType } from './types'
 import { LangRecordSchema, ActivePanelRouteType } from '../../context/types'
 
 type PopupComponentType = LongLatType & {
+  popupOpen: boolean
   setPopupOpen: React.Dispatch<boolean>
   selFeatAttribs?: LangRecordSchema
 }
@@ -39,9 +41,15 @@ export const MapPopup: FC<PopupComponentType> = ({
   latitude,
   setPopupOpen,
   selFeatAttribs = {},
+  popupOpen,
 }) => {
   const classes = useStyles()
   const history = useHistory()
+  const { dispatch } = useContext(GlobalContext)
+
+  if (!popupOpen) {
+    return null
+  }
 
   return (
     <Popup
@@ -49,7 +57,7 @@ export const MapPopup: FC<PopupComponentType> = ({
       anchor="top"
       longitude={longitude}
       latitude={latitude}
-      closeOnClick={false}
+      closeOnClick
       className={classes.root}
       onClose={() => setPopupOpen(false)}
     >
@@ -76,6 +84,11 @@ export const MapPopup: FC<PopupComponentType> = ({
               ...parsed,
               id: selFeatAttribs.ID,
             }
+
+            dispatch({
+              type: 'SET_SEL_FEAT_DETAILS',
+              payload: selFeatAttribs,
+            })
 
             history.push(`${baseRoute}?${queryString.stringify(strung)}`)
 

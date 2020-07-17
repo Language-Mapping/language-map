@@ -1,3 +1,4 @@
+export * from './panels/DetailsPanel'
 export * from './panels/LayersPanel'
 export * from './LayerLabelSelect'
 export * from './LayersMenu'

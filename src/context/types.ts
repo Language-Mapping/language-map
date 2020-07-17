@@ -15,26 +15,15 @@ export type ActivePanelRouteType = '/' | '/display' | '/results' | '/details'
 
 export type StoreActionType =
   | { type: 'SHOW_SPLASH'; payload: boolean }
-  | {
-      type: 'TOGGLE_UI_ALERT'
-      payload: AlertPayloadType
-    }
+  | { type: 'TOGGLE_UI_ALERT'; payload: AlertPayloadType }
   | { type: 'INIT_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | { type: 'INIT_LANG_LAYER_LABEL_OPTIONS'; payload: string[] }
   | { type: 'INIT_LANG_LAYER_SYMB_OPTIONS'; payload: MetadataGroupType }
   | { type: 'SET_BASELAYER'; payload: BaselayerType }
-  | {
-      type: 'SET_LANG_LAYER_LABELS'
-      payload: string
-    }
-  | {
-      type: 'SET_LANG_LAYER_LEGEND'
-      payload: LegendSwatchType[]
-    }
-  | {
-      type: 'SET_LANG_LAYER_SYMBOLOGY'
-      payload: string
-    }
+  | { type: 'SET_LANG_LAYER_LABELS'; payload: string }
+  | { type: 'SET_SEL_FEAT_DETAILS'; payload: Partial<LangRecordSchema> }
+  | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatchType[] }
+  | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: string }
   | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibilityTypes }
 
 export type InitialStateType = {
@@ -47,6 +36,7 @@ export type InitialStateType = {
   langLegend: LegendSwatchType[]
   langSymbGroups: MetadataGroupType
   layerVisibility: LayerVisibilityTypes
+  selFeatDetails: Partial<LangRecordSchema>
   showSplash: boolean
   uiAlert: AlertPayloadType
 }

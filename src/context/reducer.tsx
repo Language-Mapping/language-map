@@ -43,6 +43,11 @@ export const reducer = (
         ...state,
         activeLangSymbGroupId: action.payload,
       }
+    case 'SET_SEL_FEAT_DETAILS':
+      return {
+        ...state,
+        selFeatDetails: action.payload,
+      }
     // TODO: wire up
     case 'TOGGLE_UI_ALERT':
       return {

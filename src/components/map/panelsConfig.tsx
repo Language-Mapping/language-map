@@ -3,7 +3,7 @@ import { FaSearch } from 'react-icons/fa'
 import { FiLayers } from 'react-icons/fi'
 import { TiDocumentText, TiThList } from 'react-icons/ti'
 
-import { LayersPanel } from 'components/map'
+import { LayersPanel, DetailsPanel } from 'components/map'
 import { MapPanelTypes } from './types'
 
 export const panelsConfig = [
@@ -43,12 +43,6 @@ export const panelsConfig = [
     subheading: '...of selected feature',
     icon: <TiDocumentText />,
     route: '/details',
-    component: (
-      <p>
-        Detailed info on a specific selected individual point. Will be triggered
-        by clicking a record in Results panel or a "View Details" button from
-        within a popup when a point is clicked in the map.
-      </p>
-    ),
+    component: <DetailsPanel />,
   },
 ] as MapPanelTypes[]

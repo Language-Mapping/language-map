@@ -115,6 +115,7 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
         <MapPopup
           {...popupSettings}
           setPopupOpen={setPopupOpen}
+          popupOpen={popupOpen}
           selFeatAttribs={selFeatAttribs}
         />
       )}
