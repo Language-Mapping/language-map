@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
-import { Popup } from 'react-map-gl'
+import queryString from 'query-string'
 import { useHistory } from 'react-router-dom'
+import { Popup } from 'react-map-gl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Button, Typography, Divider } from '@material-ui/core'
 
@@ -70,7 +71,13 @@ export const MapPopup: FC<PopupComponentType> = ({
           size="small"
           onClick={() => {
             const baseRoute: ActivePanelRouteType = '/details'
-            history.push(`${baseRoute}?id=${selFeatAttribs.ID}`)
+            const parsed = queryString.parse(window.location.search)
+            const strung = {
+              ...parsed,
+              id: selFeatAttribs.ID,
+            }
+
+            history.push(`${baseRoute}?${queryString.stringify(strung)}`)
 
             setPopupOpen(false)
 
