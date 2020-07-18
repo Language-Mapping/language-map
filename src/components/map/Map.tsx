@@ -1,4 +1,5 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
+import * as queryString from 'query-string'
 import MapGL, { Source, Layer } from 'react-map-gl'
 
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -94,15 +95,48 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
         }
       }}
       onLoad={(map) => {
-        const langLayerRecords = map.target
-          .querySourceFeatures(langSrcConfig.internalSrcID, {
+        const rawLangFeats = map.target.querySourceFeatures(
+          langSrcConfig.internalSrcID,
+          {
             sourceLayer: langSrcConfig.layerId,
+          }
+        )
+        const parsed = queryString.parse(window.location.search)
+
+        // TODO: tighten up query params via TS
+        // TODO: get this mess into utils
+        // TODO: make it all reusable, including `flyTo`, for route changes
+        if (parsed && parsed.id) {
+          const matchingRecord = rawLangFeats.find((feature) => {
+            const featAttribs = feature.properties as LangRecordSchema
+
+            return featAttribs.ID === parsed.id
           })
-          .map(({ properties }) => properties)
+
+          if (matchingRecord) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            const coords = matchingRecord.toJSON().geometry.coordinates
+
+            map.target.flyTo({
+              // this animation is considered essential with respect to
+              // prefers-reduced-motion
+              essential: true,
+              center: [coords[0], coords[1]],
+              zoom: 16,
+            })
+          }
+        }
+
+        // Just the properties for table/results, etc. Don't need the cruft from
+        // geojson.
+        const featsWithAttribsOnly = rawLangFeats.map(
+          ({ properties }) => properties
+        )
 
         dispatch({
           type: 'INIT_LANG_LAYER_FEATURES',
-          payload: langLayerRecords as LangRecordSchema[],
+          payload: featsWithAttribsOnly as LangRecordSchema[],
         })
       }}
     >
