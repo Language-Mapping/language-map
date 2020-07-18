@@ -1,9 +1,11 @@
 import React, { FC, useContext } from 'react'
-import * as queryString from 'query-string'
 import { useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import queryString from 'query-string'
 import { GlobalContext, LoadingIndicator } from 'components'
 
 const useStyles = makeStyles((theme: Theme) =>

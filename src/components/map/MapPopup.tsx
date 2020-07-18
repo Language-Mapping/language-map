@@ -1,10 +1,11 @@
 import React, { FC } from 'react'
-import * as queryString from 'query-string'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import queryString from 'query-string'
 import { Link as RouteLink } from 'react-router-dom'
 import { Popup } from 'react-map-gl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Divider } from '@material-ui/core'
-
 import { LongLatType } from './types'
 import { LangRecordSchema, ActivePanelRouteType } from '../../context/types'
 

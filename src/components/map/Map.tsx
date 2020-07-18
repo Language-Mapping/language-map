@@ -1,5 +1,7 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
-import * as queryString from 'query-string'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import queryString from 'query-string'
 import MapGL, { Source, Layer } from 'react-map-gl'
 
 // eslint-disable-next-line import/no-extraneous-dependencies
