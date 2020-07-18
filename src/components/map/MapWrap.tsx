@@ -1,4 +1,5 @@
 import React, { FC, useState } from 'react'
+import { Route, Switch, useHistory, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
   Box,
@@ -19,7 +20,9 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       top: 0,
       width: '100%',
-      // GROSS:
+      overflow: 'hidden',
+      // TODO: ensure attribution and logo are both clearly visible at all
+      // breakpoints. A bit mixed/scattered RN.
       '& .mb-language-map .mapboxgl-ctrl-bottom-left': {
         [theme.breakpoints.down('sm')]: {
           top: 60,
@@ -67,6 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     closePanel: {
+      color: theme.palette.common.white,
       position: 'absolute',
       right: theme.spacing(1),
       top: theme.spacing(1),
@@ -77,9 +81,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const MapWrap: FC = () => {
   const classes = useStyles()
+  const history = useHistory()
   const [panelOpen, setPanelOpen] = useState(true)
-  // TODO: wire this up with routing, at least for sel. feat details.
-  const [activePanelIndex, setActivePanelIndex] = useState(0)
+  const loc = useLocation()
+
   const transforms = {
     open: 'translateY(0%)',
     closed: 'translateY(100%)',
@@ -99,38 +104,43 @@ export const MapWrap: FC = () => {
           maxHeight: panelOpen ? '100%' : 0,
         }}
       >
-        <IconButton
-          aria-label="delete"
-          size="small"
-          className={classes.closePanel}
-          onClick={() => setPanelOpen(false)}
-        >
-          <MdClose />
-        </IconButton>
-        {panelsConfig.map((config, i) => (
-          <MapPanel
-            key={config.heading}
-            {...config}
-            active={i === activePanelIndex}
-          />
-        ))}
+        {panelOpen && (
+          <IconButton
+            aria-label="close"
+            title="Hide panel"
+            size="small"
+            className={classes.closePanel}
+            onClick={() => setPanelOpen(false)}
+          >
+            <MdClose />
+          </IconButton>
+        )}
+        <Switch>
+          {panelsConfig.map((config) => (
+            <Route key={config.heading} path={config.route} exact>
+              <MapPanel {...config} active={config.route === loc.pathname} />
+            </Route>
+          ))}
+        </Switch>
       </Box>
       <BottomNavigation
         showLabels
         className={classes.bottomNavRoot}
-        value={activePanelIndex}
+        value={loc.pathname}
         onChange={(event, newValue) => {
-          if (panelOpen && newValue === activePanelIndex) {
+          history.push(newValue)
+
+          // Open the container if closed, close it if already active panel
+          if (panelOpen && newValue === loc.pathname) {
             setPanelOpen(false)
           } else {
             setPanelOpen(true)
           }
-
-          setActivePanelIndex(newValue)
         }}
       >
         {panelsConfig.map((config) => (
           <BottomNavigationAction
+            value={config.route}
             key={config.heading}
             label={config.heading}
             icon={config.icon}

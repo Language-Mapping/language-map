@@ -56,11 +56,16 @@ const customTheme = createMuiTheme({
 // Global overrides of MUI components that need to be re-styled often. More
 // examples available at:
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/4523287b5c2a4f0dea1fe918b985aa6b6ca1efc6/src/theme.ts
-// customTheme.overrides = {
-//   MuiInput: {
-//     root: { fontFamily: "'Roboto', sans-serif" },
-//   },
-// }
+
+// Global overrides of MUI components that need to be re-styled often
+customTheme.overrides = {
+  MuiDialog: {
+    // Outside boundary of all dialogs
+    paper: {
+      margin: 12,
+    },
+  },
+}
 
 export const GlobalCss = withStyles({
   // @global is handled by jss-plugin-global.

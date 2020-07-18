@@ -1,6 +1,7 @@
 export * from './AboutLinkAsIcon'
 export * from './App'
 export * from './ContainerLayout'
+export * from './LoadingIndicator'
 export * from './Nav'
 export * from './OffCanvasNav'
 export * from './ProvidersWrap'

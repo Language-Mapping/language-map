@@ -12,6 +12,7 @@ export const reducer = (
       return {
         ...state,
         langFeatures: action.payload,
+        langFeaturesCached: action.payload, // for easy resets later
       }
     case 'INIT_LANG_LAYER_LABEL_OPTIONS':
       return {

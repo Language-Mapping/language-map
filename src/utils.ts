@@ -4,17 +4,23 @@ import {
   MetadataGroupType,
   LegendSwatchType,
   MbResponseType,
-  LayerWithMetadata,
+  LayerPropsPlusMeta,
+  LangFeatureType,
 } from 'components/map/types'
-import { StoreActionType } from './context/types'
+import {
+  StoreActionType,
+  WpApiPageResponseType,
+  AboutPageStateType,
+  LangRecordSchema,
+} from './context/types'
 
 export const getGroupNames = (groupObject: MetadataGroupType): string[] =>
   Object.keys(groupObject).map((groupId: string) => groupObject[groupId].name)
 
 export const createMapLegend = (
-  layers: LayerWithMetadata[]
+  layers: LayerPropsPlusMeta[]
 ): LegendSwatchType[] => {
-  return layers.map((layer: LayerWithMetadata) => {
+  return layers.map((layer: LayerPropsPlusMeta) => {
     const { type, id } = layer
     const lightGray = '#aaa'
 
@@ -49,8 +55,8 @@ export const createMapLegend = (
 export const getMbStyleDocument = async (
   styleUrl: string,
   dispatch: Dispatch<StoreActionType>,
-  setSymbLayers: Dispatch<LayerWithMetadata[]>,
-  setLabelLayers: Dispatch<LayerWithMetadata[]>
+  setSymbLayers: Dispatch<LayerPropsPlusMeta[]>,
+  setLabelLayers: Dispatch<LayerPropsPlusMeta[]>
 ): Promise<void> => {
   const response = await fetch(styleUrl) // TODO: handle errors
   const { metadata, layers: allLayers }: MbResponseType = await response.json()
@@ -72,15 +78,15 @@ export const getMbStyleDocument = async (
 
   // TODO: make this work with icons, which are of type `symbol`
   const notTheBgLayerOrLabels = allLayers.filter(
-    (layer: LayerWithMetadata) =>
+    (layer: LayerPropsPlusMeta) =>
       layer.metadata && layer.type !== 'background' && layer.type !== 'symbol'
   )
   const labelsLayers = allLayers.filter(
-    (layer: LayerWithMetadata) =>
+    (layer: LayerPropsPlusMeta) =>
       layer.metadata && layer.metadata['mapbox:group'] === labelsGroupId
   )
   const labels = labelsLayers.map(
-    (layer: LayerWithMetadata) => layer.id as string
+    (layer: LayerPropsPlusMeta) => layer.id as string
   )
 
   // Populate symb dropdown
@@ -106,3 +112,30 @@ export const getMbStyleDocument = async (
   setLabelLayers(labelsLayers)
   setSymbLayers(notTheBgLayerOrLabels)
 }
+
+// Only if features exist and the top one matches the language source ID
+export const shouldOpenPopup = (
+  features: LangFeatureType[],
+  internalSrcID: string
+): boolean =>
+  features && features.length !== 0 && features[0].source === internalSrcID
+
+export const getAboutPageContent = async (
+  url: string,
+  setAboutPgContent: Dispatch<AboutPageStateType>
+): Promise<void> => {
+  const response = await fetch(url) // TODO: handle errors
+  const { title, content }: WpApiPageResponseType = await response.json()
+
+  setAboutPgContent({
+    title: title.rendered,
+    content: content.rendered,
+  })
+}
+
+export const findFeatureByID = (
+  langLayerRecords: LangRecordSchema[],
+  id: string,
+  idField?: keyof LangRecordSchema
+): LangRecordSchema | undefined =>
+  langLayerRecords.find((record) => record[idField || 'ID'] === id)

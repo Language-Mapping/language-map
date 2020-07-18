@@ -11,37 +11,27 @@ import {
 } from 'components/map/types'
 
 export type GlobalContextDispatchType = React.Dispatch<StoreActionType>
+export type ActivePanelRouteType = '/' | '/display' | '/results' | '/details'
 
 export type StoreActionType =
-  | { type: 'SHOW_SPLASH'; payload: boolean }
-  | {
-      type: 'TOGGLE_UI_ALERT'
-      payload: AlertPayloadType
-    }
   | { type: 'INIT_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | { type: 'INIT_LANG_LAYER_LABEL_OPTIONS'; payload: string[] }
   | { type: 'INIT_LANG_LAYER_SYMB_OPTIONS'; payload: MetadataGroupType }
   | { type: 'SET_BASELAYER'; payload: BaselayerType }
-  | {
-      type: 'SET_LANG_LAYER_LABELS'
-      payload: string
-    }
-  | {
-      type: 'SET_LANG_LAYER_LEGEND'
-      payload: LegendSwatchType[]
-    }
-  | {
-      type: 'SET_LANG_LAYER_SYMBOLOGY'
-      payload: string
-    }
+  | { type: 'SET_LANG_LAYER_LABELS'; payload: string }
+  | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatchType[] }
+  | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: string }
+  | { type: 'SHOW_SPLASH'; payload: boolean }
   | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibilityTypes }
+  | { type: 'TOGGLE_UI_ALERT'; payload: AlertPayloadType }
 
 export type InitialStateType = {
-  activeLangSymbGroupId: string
   activeLangLabelId: string
+  activeLangSymbGroupId: string
   baselayer: BaselayerType
   hasSeenSplash: boolean
   langFeatures: LangRecordSchema[]
+  langFeaturesCached: LangRecordSchema[]
   langLabels: string[]
   langLegend: LegendSwatchType[]
   langSymbGroups: MetadataGroupType
@@ -66,13 +56,14 @@ export type AlertPayloadType = {
 // ========================================================================== //
 
 // TODO: use `keyof` to restrict possible values appropriately in other
-// components if needed
+// components if needed. Remove this type if unused.
 export type LayerVisibilityTypes = {
   languages: boolean
   neighborhoods: boolean
   counties: boolean
 }
 
+// TODO: separate file
 export type LangRecordSchema = {
   County: string
   Description: string // not all will be populated until August
@@ -133,4 +124,19 @@ export type LangRecordSchema = {
   'Additional Neighborhoods'?: string // parsed by `|||` maybe?
   'ELA Audio'?: string // TODO: TS for URL?
   'ELA Story Map'?: string // TODO: TS for URL?
+}
+
+// About page. Could be separate file
+export type WpApiPageResponseType = {
+  title: {
+    rendered: string
+  }
+  content: {
+    rendered: string
+  }
+}
+
+export type AboutPageStateType = {
+  title: string | null
+  content: string | null
 }

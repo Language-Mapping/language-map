@@ -1,6 +1,10 @@
-import { LayerProps } from 'react-map-gl'
+import { LayerProps, PointerEvent } from 'react-map-gl'
 
-import { LayerVisibilityTypes } from 'context/types'
+import {
+  LangRecordSchema,
+  LayerVisibilityTypes,
+  ActivePanelRouteType,
+} from 'context/types'
 
 // Assumes using Mapbox style
 export type BaselayerType = 'dark' | 'light'
@@ -35,7 +39,7 @@ export type MetadataGroupType = {
 
 // `metadata` prop has MB Studio group ID and appears to only be part of the
 // Style API, not the Style Spec.
-export interface LayerWithMetadata extends LayerProps {
+export type LayerPropsPlusMeta = LayerProps & {
   metadata: {
     'mapbox:group': string
   }
@@ -45,9 +49,40 @@ export type LayerComponentType = {
   styleUrl: string
 }
 
+// API response from Styles API. Not the same as what comes back in map.target
 export type MbResponseType = {
   metadata: {
     'mapbox:groups': MetadataGroupType
   }
-  layers: LayerWithMetadata[]
+  layers: LayerPropsPlusMeta[]
+}
+
+export type LangFeatureType = {
+  id: number
+  layer: LayerPropsPlusMeta
+  properties: LangRecordSchema
+  source: string
+  sourceLayer: string
+  type: 'Feature' | 'hmmmmmm'
+  state: {
+    alsoHmmmm: boolean
+  }
+}
+
+export type MapEventType = Omit<PointerEvent, 'features'> & {
+  features: LangFeatureType[]
+}
+
+export type LongLatType = {
+  longitude: number
+  latitude: number
+}
+
+export type MapPanelTypes = {
+  active: boolean
+  heading: string
+  icon: React.ReactNode
+  route: ActivePanelRouteType
+  subheading: string
+  component?: React.ReactNode
 }
