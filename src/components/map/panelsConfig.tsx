@@ -3,7 +3,7 @@ import { FaSearch } from 'react-icons/fa'
 import { FiLayers } from 'react-icons/fi'
 import { TiDocumentText, TiThList } from 'react-icons/ti'
 
-import { LayersPanel, DetailsPanel } from 'components/map'
+import { LayersPanel, DetailsPanel, ResultsPanel } from 'components/map'
 import { MapPanelTypes } from './types'
 
 export const panelsConfig = [
@@ -33,12 +33,7 @@ export const panelsConfig = [
     route: '/results',
     // Could this work instead of emoji API? Seems way too easy.
     // https://material-ui.com/components/autocomplete/#country-select
-    component: (
-      <p>
-        Not a ton of room here, should other options be considered? Might be
-        cool as a "Grid View" too.
-      </p>
-    ),
+    component: <ResultsPanel />,
   },
   {
     heading: 'Details',
