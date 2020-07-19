@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       left: theme.spacing(1),
       right: theme.spacing(1),
-      bottom: theme.spacing(1),
+      bottom: 0, // nice and flush = more room
       '& svg': {
         height: 20,
         width: 20,
@@ -67,6 +67,7 @@ const useStyles = makeStyles((theme: Theme) =>
         width: 325,
         top: theme.spacing(8),
         left: theme.spacing(2),
+        bottom: theme.spacing(1), // above MB logo?
       },
     },
     closePanel: {
@@ -97,6 +98,8 @@ export const MapWrap: FC = () => {
         <MapControls />
       </div>
       <Box
+        // Need the `id` in order to find unique element for `map.setPadding`
+        id="map-panels-wrap"
         className={classes.mapPanelsWrap}
         style={{
           transform: panelOpen ? transforms.open : transforms.closed,

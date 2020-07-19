@@ -3,6 +3,8 @@ import React, { FC, useState, useContext, useEffect } from 'react'
 // @ts-ignore
 import queryString from 'query-string'
 import MapGL, { Source, Layer } from 'react-map-gl'
+import { useTheme } from '@material-ui/core/styles'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -17,6 +19,7 @@ import {
   LongLatType,
   LayerPropsPlusMeta,
 } from './types'
+import { prepMapPadding } from './utils'
 import {
   createMapLegend,
   getMbStyleDocument,
@@ -27,12 +30,14 @@ import { langLayerConfig, langSrcConfig } from './config'
 const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
 
 export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
+  const theme = useTheme()
   const { state, dispatch } = useContext(GlobalContext)
   const [viewport, setViewport] = useState({ latitude, longitude, zoom })
   const [symbLayers, setSymbLayers] = useState<LayerPropsPlusMeta[]>([])
   const [labelLayers, setLabelLayers] = useState<LayerPropsPlusMeta[]>([])
   const [popupAttribs, setPopupAttribs] = useState<LangRecordSchema>()
   const { activeLangSymbGroupId, activeLangLabelId } = state
+  const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
 
   // TODO: mv popup stuff into reducer
   const [popupOpen, setPopupOpen] = useState<boolean>(false)
@@ -115,9 +120,13 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
           }
         )
         const parsed = queryString.parse(window.location.search)
+        const padding = prepMapPadding(isDesktop)
+
+        // NOTE: could not get padding to work with `flyTo` or `easeTo` or any
+        // related methods, so using this instead.
+        map.target.setPadding(padding)
 
         // TODO: tighten up query params via TS
-        // TODO: get this mess into utils
         // TODO: make it all reusable, including `flyTo`, for route changes
         if (parsed && parsed.id) {
           const matchingRecord = rawLangFeats.find((feature) => {
@@ -130,13 +139,14 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             const coords = matchingRecord.toJSON().geometry.coordinates
+            const newZoom = 15
 
             map.target.flyTo({
               // this animation is considered essential with respect to
               // prefers-reduced-motion
               essential: true,
               center: [coords[0], coords[1]],
-              zoom: 16,
+              zoom: newZoom,
             })
           }
         }
