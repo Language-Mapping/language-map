@@ -44,7 +44,18 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
   useEffect(() => {
     const symbStyleUrl = `${MB_STYLES_API_URL}/${langLayerConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
 
-    getMbStyleDocument(symbStyleUrl, dispatch, setSymbLayers, setLabelLayers)
+    getMbStyleDocument(
+      symbStyleUrl,
+      dispatch,
+      setSymbLayers,
+      setLabelLayers
+    ).catch((errMsg) => {
+      // TODO: wire up sentry
+      // eslint-disable-next-line no-console
+      console.error(
+        `Something went wrong trying to fetch MB style JSON: ${errMsg}`
+      )
+    })
   }, [dispatch])
 
   useEffect(() => {
