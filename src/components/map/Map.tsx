@@ -6,7 +6,6 @@ import MapGL, { Source, Layer } from 'react-map-gl'
 import { useTheme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext } from 'components'

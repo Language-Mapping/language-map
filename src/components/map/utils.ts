@@ -1,7 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { PaddingOptions } from 'mapbox-gl'
-
-// TODO: ^^^^^^^ fix this once internet available ^^^^^^^
 
 // One of the problems of using panels which overlap the map is how to deal with
 // "centering", in quotes because it's more "perceived" centering. Offset is
