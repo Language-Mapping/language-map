@@ -32,7 +32,13 @@ const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
 export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
   const theme = useTheme()
   const { state, dispatch } = useContext(GlobalContext)
-  const [viewport, setViewport] = useState({ latitude, longitude, zoom })
+  const [viewport, setViewport] = useState({
+    latitude,
+    longitude,
+    zoom,
+    pitch: 0,
+    bearing: 0,
+  })
   const [symbLayers, setSymbLayers] = useState<LayerPropsPlusMeta[]>([])
   const [labelLayers, setLabelLayers] = useState<LayerPropsPlusMeta[]>([])
   const [popupAttribs, setPopupAttribs] = useState<LangRecordSchema>()
@@ -125,6 +131,19 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
         // NOTE: could not get padding to work with `flyTo` or `easeTo` or any
         // related methods, so using this instead.
         map.target.setPadding(padding)
+        map.target.on('zoomend', (mapObj) => {
+          if (mapObj.updateViewportState) {
+            const { target } = mapObj
+
+            setViewport({
+              zoom: target.getZoom(),
+              pitch: target.getPitch(),
+              bearing: target.getBearing(),
+              latitude: target.getCenter().lat,
+              longitude: target.getCenter().lng,
+            })
+          }
+        })
 
         // TODO: tighten up query params via TS
         // TODO: make it all reusable, including `flyTo`, for route changes
@@ -139,20 +158,26 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             const coords = matchingRecord.toJSON().geometry.coordinates
-            const newZoom = 15
+            const newZoom = 14
 
-            map.target.flyTo({
-              // this animation is considered essential with respect to
-              // prefers-reduced-motion
-              essential: true,
-              center: [coords[0], coords[1]],
-              zoom: newZoom,
-            })
+            map.target.flyTo(
+              {
+                // this animation is considered essential with respect to
+                // prefers-reduced-motion
+                essential: true,
+                center: [coords[0], coords[1]],
+                zoom: newZoom,
+              },
+              {
+                updateViewportState: true,
+              }
+            )
           }
         }
 
         // Just the properties for table/results, etc. Don't need the cruft from
         // geojson.
+        // TODO: could `matchingRecord` be found within the `.map` here to reduce looping/iteration of `.find`?
         const featsWithAttribsOnly = rawLangFeats.map(
           ({ properties }) => properties
         )
