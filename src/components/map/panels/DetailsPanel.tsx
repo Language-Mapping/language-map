@@ -1,7 +1,7 @@
 import React, { FC, useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
+import { Typography, Divider } from '@material-ui/core'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -14,6 +14,13 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
       textAlign: 'center',
+    },
+    intro: {
+      paddingBottom: theme.spacing(1),
+    },
+    description: {
+      marginTop: theme.spacing(1),
+      fontSize: theme.typography.caption.fontSize,
     },
   })
 )
@@ -53,18 +60,24 @@ export const DetailsPanel: FC = () => {
 
   return (
     <div className={classes.detailsPanelRoot}>
-      <Typography variant="h3">{heading}</Typography>
-      {matchingRecord['Language Endonym'] !== matchingRecord.Language && (
-        <>
+      <div className={classes.intro}>
+        <Typography component="h3" variant="h4">
+          {heading}
+        </Typography>
+        {matchingRecord['Language Endonym'] !== matchingRecord.Language && (
           <Typography variant="caption">
             {`(${matchingRecord.Language})`}
           </Typography>
-          <br />
-        </>
-      )}
-      <small>
-        <i>{matchingRecord['NYC Neighborhood']}</i>
-      </small>
+        )}
+        <br />
+        <small>
+          <i>{matchingRecord['NYC Neighborhood']}</i>
+        </small>
+      </div>
+      <Divider />
+      <Typography variant="body2" align="left" className={classes.description}>
+        {matchingRecord.Description}
+      </Typography>
     </div>
   )
 }

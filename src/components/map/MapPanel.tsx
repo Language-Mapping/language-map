@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Box, Typography, Paper, Divider } from '@material-ui/core'
+import { Box, Typography, Paper } from '@material-ui/core'
 
 import { MapPanelTypes } from './types'
 
@@ -17,6 +17,8 @@ const useStyles = makeStyles({
     transition: '300ms all',
     opacity: (props: PaperRootType) => (props.active ? 1 : 0),
     zIndex: (props: PaperRootType) => (props.active ? 1 : -1),
+    display: 'flex',
+    flexDirection: 'column',
   },
 })
 
@@ -27,6 +29,8 @@ const useThemeStyles = makeStyles((theme: Theme) =>
       color: theme.palette.common.white,
       borderBottom: `solid 8px ${theme.palette.primary.dark}`,
       padding: `6px ${theme.spacing(2)}px`,
+      top: 0,
+      position: 'sticky',
     },
     mainHeading: {
       display: 'flex',
@@ -59,9 +63,8 @@ export const MapPanel: FC<MapPanelTypes> = ({
         </Typography>
         <Typography variant="caption">{subheading}</Typography>
       </Box>
-      <Box paddingY={1} paddingX={2}>
+      <Box paddingY={1} paddingX={2} overflow="auto">
         {component}
-        <Divider />
       </Box>
     </Paper>
   )
