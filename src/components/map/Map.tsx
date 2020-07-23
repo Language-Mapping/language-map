@@ -1,7 +1,7 @@
 // TODO: deal with this nightmare
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { FC, useState, useContext, useEffect } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import queryString from 'query-string'
@@ -27,8 +27,6 @@ const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
 
 export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
   const theme = useTheme()
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getLocation = useLocation() // must exist for routing to work?
   const history = useHistory()
   const { state, dispatch } = useContext(GlobalContext)
   const [viewport, setViewport] = useState({
@@ -151,7 +149,8 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
             sourceLayer: langSrcConfig.layerId,
           }
         )
-        const parsed = queryString.parse(window.location.search)
+        // TODO: use `initialEntries` in <MemoryRouter> to test routing
+        const parsed = window ? queryString.parse(window.location.search) : ''
 
         target.on('zoomend', (mapObj) => {
           const { updateViewportState } = mapObj

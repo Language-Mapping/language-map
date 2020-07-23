@@ -35,6 +35,7 @@ export const ResultsPanel: FC = () => {
   // const matchingRecord = state.langFeatures.find(
   //   (feature) => feature.ID === parsed.id
   // )
+  // yarn add material-table
 
   return (
     <div className={classes.resultsPanelRoot}>
