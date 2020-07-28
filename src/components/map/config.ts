@@ -12,15 +12,17 @@ export const initialMapState = {
 }
 
 export const langSrcConfig = {
-  layerId: 'langsNY_06242020-6lpxtk',
-  tilesetId: 'elalliance.1bsrluyq',
-  internalSrcID: 'languages-src',
+  // layerId: 'langsNY_06242020-6lpxtk', // original
+  // tilesetId: 'elalliance.1bsrluyq', // original
+  layerId: 'languages-08ip3e', // newer (long-term dev?)
+  tilesetId: 'elalliance.d0yv450e', // newer (long-term dev?)
+  internalSrcID: 'languages-src', // arbitrary, set in code, never changes
 }
 
+// TODO: extract AES from Studio, back up somewhere, then rm from Studio
+// Use dev/prod tilesetup
 export const langLayerConfig = {
+  // styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48', // original "prod"
+  // TODO: consider local URL?
   styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48/draft',
-}
-
-export const langLabelsConfig = {
-  styleUrl: 'elalliance/ckcmj5ex61oka1ir0q9q82tmf/draft',
 }
