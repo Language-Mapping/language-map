@@ -13,6 +13,13 @@ export const ResultsTable: FC = () => {
     { title: 'Language', field: 'Language' },
     { title: 'Endonym', field: 'Endonym' },
     { title: 'Neighborhood', field: 'Neighborhood' }, // TODO: inc. 2ndary
+    { title: 'Community Size', field: 'Community Size' },
+    { title: 'Type', field: 'Type' },
+    { title: 'Region', field: 'Region' },
+    { title: 'Primary Country', field: 'Primary Country' },
+    { title: 'Global Speaker Total', field: 'Global Speaker Total' },
+    { title: 'Language Family', field: 'Language Family' },
+    // { title: 'Description', field: 'Description' }, // TODO: restore/truncate
     // TODO: adapt and restore
     // {
     //   title: 'Birth Year',
