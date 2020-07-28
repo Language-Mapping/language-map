@@ -56,7 +56,7 @@ export const MapPopup: FC<PopupComponentType> = ({
     >
       <header>
         <Typography variant="h6" component="h3" className={classes.heading}>
-          {popupAttribs['Language Endonym' || 'Language']}
+          {popupAttribs['Endonym' || 'Language']}
         </Typography>
         {popupAttribs['NYC Neighborhood'] && (
           <small className={classes.subHeading}>

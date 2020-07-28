@@ -7,6 +7,7 @@ import { Typography } from '@material-ui/core'
 // @ts-ignore
 // import queryString from 'query-string'
 import { GlobalContext, LoadingIndicator } from 'components'
+import { ResultsTable } from './ResultsTable'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,14 +36,14 @@ export const ResultsPanel: FC = () => {
   // const matchingRecord = state.langFeatures.find(
   //   (feature) => feature.ID === parsed.id
   // )
-  // yarn add material-table
 
   return (
     <div className={classes.resultsPanelRoot}>
       <Typography variant="subtitle2">
         Showing {langFeatures.length} of {langFeaturesCached.length} total
-        features.
+        language communities.
       </Typography>
+      <ResultsTable />
     </div>
   )
 }

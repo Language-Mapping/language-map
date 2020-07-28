@@ -37,7 +37,7 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
     bearing: 0,
   })
   const [symbLayers, setSymbLayers] = useState<LayerPropsPlusMeta[]>([])
-  const [selFeatID, setSelFeatID] = useState<null | string>(null)
+  const [selFeatID, setSelFeatID] = useState<null | number>(null)
   const [labelLayers, setLabelLayers] = useState<LayerPropsPlusMeta[]>([])
   const { activeLangSymbGroupId, activeLangLabelId } = state
   const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
@@ -176,7 +176,7 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
           const matchingRecord = rawLangFeats.find((feature) => {
             const featAttribs = feature.properties as LangRecordSchema
 
-            return featAttribs.ID === parsed.id
+            return featAttribs.ID === parseInt(parsed.id, 10)
           })
 
           if (matchingRecord) {

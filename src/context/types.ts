@@ -65,19 +65,19 @@ export type LayerVisibilityTypes = {
 
 // TODO: separate file
 export type LangRecordSchema = {
+  ID: number // unique
   County: string
   Description: string // not all will be populated until August
-  ID: string // unique, #### format. TODO: consider TS validation?
   Language: string
   Latitude: number // also in `geometry.coordinates` maybe? If so, remove?
   Longitude: number // also in `geometry.coordinates` maybe? If so, remove?
   Town: string
-  'Local Size': 1 | 2 | 3 | 4 | 5
+  'Community Size': 1 | 2 | 3 | 4 | 5
   'Top-Level Family': string
-  'Local Status':
+  Type:
     | 'Historical'
     | 'Liturgical'
-    | 'Non-Residential'
+    | 'Institutional'
     | 'Residential'
     | 'Reviving'
   // Can/should `Region` be typed?
@@ -99,7 +99,6 @@ export type LangRecordSchema = {
     | 'South America'
     | 'Southeastern Asia'
     | 'Southern Africa'
-    | 'Southern America'
     | 'Southern Asia'
     | 'Southern Europe'
     | 'Western Africa'
@@ -107,23 +106,18 @@ export type LangRecordSchema = {
     | 'Western Europe'
   // END REQUIRED FIELDS, BEGIN OPTIONAL
   Glottocode?: string
-  'ELA Video'?: string // TODO: TS for URL?
   'Global Speaker Total'?: number // TODO: why string in MB tileset?
   'ISO 639-3'?: string
-  'Language Endonym'?: string // blank if same as English name
+  Endonym?: string // blank if same as English name
   'NYC Neighborhood'?: string // eventually no `NYC`
   'Primary Country'?: string // TODO: confirm not required
   'Secondary Country'?: string
-  AES?:
-    | 'moribund'
-    | 'nearly extinct'
-    | 'not endangered'
-    | 'reviving'
-    | 'shifting'
-    | 'threatened'
   'Additional Neighborhoods'?: string // parsed by `|||` maybe?
-  'ELA Audio'?: string // TODO: TS for URL?
-  'ELA Story Map'?: string // TODO: TS for URL?
+  // BEGIN MEDIA
+  Audio?: string // TODO: TS for URL?
+  'Story Map'?: string // TODO: TS for URL?
+  Video?: string // TODO: TS for URL?
+  // END MEDIA
 }
 
 // About page. Could be separate file

@@ -27,7 +27,7 @@ export const panelsConfig = [
     component: <LayersPanel />,
   },
   {
-    heading: 'Results',
+    heading: 'Data',
     subheading: 'Table or list of results',
     icon: <TiThList />,
     route: '/results',

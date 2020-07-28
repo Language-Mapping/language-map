@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
       top: '50%',
       transition: '300ms transform',
       [theme.breakpoints.up('sm')]: {
-        width: 325,
+        width: 425,
         top: 140,
         bottom: theme.spacing(5), // above mapbox logo
         left: 16,
@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
         width: 20,
       },
       [theme.breakpoints.up('sm')]: {
-        width: 325,
+        width: 425,
         top: theme.spacing(8),
         left: theme.spacing(2),
         bottom: theme.spacing(1), // above MB logo?

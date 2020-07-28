@@ -1,5 +1,5 @@
 import React, { FC, useContext } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Divider } from '@material-ui/core'
 
@@ -13,9 +13,9 @@ const useStyles = makeStyles((theme: Theme) =>
     detailsPanelRoot: {
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
-      textAlign: 'center',
     },
     intro: {
+      textAlign: 'center',
       paddingBottom: theme.spacing(1),
     },
     description: {
@@ -38,7 +38,7 @@ export const DetailsPanel: FC = () => {
 
   const parsed = queryString.parse(window.location.search)
   const matchingRecord = state.langFeatures.find(
-    (feature) => feature.ID === parsed.id
+    (feature) => feature.ID === parseInt(parsed.id, 10)
   )
 
   // No `id` in `search` params
@@ -55,16 +55,17 @@ export const DetailsPanel: FC = () => {
     )
   }
 
-  const heading = matchingRecord['Language Endonym'] || matchingRecord.Language
+  const heading = matchingRecord.Endonym || matchingRecord.Language
   document.title = `${matchingRecord.Language as string} - NYC Languages`
 
   return (
     <div className={classes.detailsPanelRoot}>
+      <RouterLink to="/results">{`<`} Back to results</RouterLink>
       <div className={classes.intro}>
         <Typography component="h3" variant="h4">
           {heading}
         </Typography>
-        {matchingRecord['Language Endonym'] !== matchingRecord.Language && (
+        {matchingRecord.Endonym !== matchingRecord.Language && (
           <Typography variant="caption">
             {`(${matchingRecord.Language})`}
           </Typography>
@@ -75,7 +76,7 @@ export const DetailsPanel: FC = () => {
         </small>
       </div>
       <Divider />
-      <Typography variant="body2" align="left" className={classes.description}>
+      <Typography variant="body2" className={classes.description}>
         {matchingRecord.Description}
       </Typography>
     </div>
