@@ -40,8 +40,8 @@ export const ResultsPanel: FC = () => {
   return (
     <div className={classes.resultsPanelRoot}>
       <Typography variant="subtitle2">
-        Showing {langFeatures.length} of {langFeaturesCached.length} total
-        language communities.
+        Showing {langFeatures.length} of {langFeaturesCached.length} language
+        communities.
       </Typography>
       <ResultsTable />
     </div>

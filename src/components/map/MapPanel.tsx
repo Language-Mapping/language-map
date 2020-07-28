@@ -30,11 +30,15 @@ const useThemeStyles = makeStyles((theme: Theme) =>
       borderBottom: `solid 8px ${theme.palette.primary.dark}`,
       padding: `6px ${theme.spacing(2)}px`,
       top: 0,
+      flexShrink: 0,
       position: 'sticky',
+      display: 'flex',
+      alignItems: 'center',
     },
     mainHeading: {
       display: 'flex',
       alignItems: 'center',
+      marginRight: theme.spacing(1),
       '& svg': {
         marginRight: theme.spacing(1),
         height: '0.8em',
@@ -63,7 +67,13 @@ export const MapPanel: FC<MapPanelTypes> = ({
         </Typography>
         <Typography variant="caption">{subheading}</Typography>
       </Box>
-      <Box paddingY={1} paddingX={2} overflow="auto">
+      <Box
+        paddingY={1}
+        paddingX={2}
+        overflow="auto"
+        zIndex={1}
+        position="relative"
+      >
         {component}
       </Box>
     </Paper>

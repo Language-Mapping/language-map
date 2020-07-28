@@ -11,8 +11,8 @@ export const ResultsTable: FC = () => {
   const history = useHistory()
   const columns = [
     { title: 'Language', field: 'Language' },
-    { title: 'Neighborhood', field: 'NYC Neighborhood' },
     { title: 'Endonym', field: 'Endonym' },
+    { title: 'Neighborhood', field: 'Neighborhood' }, // TODO: inc. 2ndary
     // TODO: adapt and restore
     // {
     //   title: 'Birth Year',

@@ -16,9 +16,7 @@ export const DemoSplitBtn: FC = () => {
   const anchorRef = useRef<HTMLDivElement>(null)
   const [selectedIndex, setSelectedIndex] = useState(1)
 
-  const handleClick = () => {
-    console.info(`You clicked ${options[selectedIndex]}`)
-  }
+  const handleClick = () => {}
 
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,

@@ -1,6 +1,6 @@
 import React from 'react'
-import { FaSearch } from 'react-icons/fa'
-import { FiLayers } from 'react-icons/fi'
+import { FaFilter } from 'react-icons/fa'
+import { GoSettings } from 'react-icons/go'
 import { TiDocumentText, TiThList } from 'react-icons/ti'
 
 import { LayersPanel, DetailsPanel, ResultsPanel } from 'components/map'
@@ -8,9 +8,9 @@ import { MapPanelTypes } from './types'
 
 export const panelsConfig = [
   {
-    heading: 'Explore',
-    subheading: 'Searching, filtering, etc.',
-    icon: <FaSearch />,
+    heading: 'Filter',
+    subheading: 'and query the data',
+    icon: <FaFilter />,
     route: '/',
     component: (
       <p>
@@ -20,15 +20,8 @@ export const panelsConfig = [
     ),
   },
   {
-    heading: 'Display',
-    subheading: 'Symb + label ctrls. Alt. name?',
-    icon: <FiLayers />,
-    route: '/display',
-    component: <LayersPanel />,
-  },
-  {
     heading: 'Data',
-    subheading: 'Table or list of results',
+    subheading: 'table of results',
     icon: <TiThList />,
     route: '/results',
     // Could this work instead of emoji API? Seems way too easy.
@@ -37,9 +30,16 @@ export const panelsConfig = [
   },
   {
     heading: 'Details',
-    subheading: '...of selected feature',
+    subheading: 'of selected feature',
     icon: <TiDocumentText />,
     route: '/details',
     component: <DetailsPanel />,
+  },
+  {
+    heading: 'Settings',
+    subheading: 'for symbols and labels',
+    icon: <GoSettings />,
+    route: '/display',
+    component: <LayersPanel />,
   },
 ] as MapPanelTypes[]

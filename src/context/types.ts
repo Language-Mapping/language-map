@@ -69,11 +69,12 @@ export type LangRecordSchema = {
   County: string
   Description: string // not all will be populated until August
   Language: string
+  Endonym: string // may be same as English name
   Latitude: number // also in `geometry.coordinates` maybe? If so, remove?
   Longitude: number // also in `geometry.coordinates` maybe? If so, remove?
   Town: string
   'Community Size': 1 | 2 | 3 | 4 | 5
-  'Top-Level Family': string
+  'Language Family': string
   Type:
     | 'Historical'
     | 'Liturgical'
@@ -108,11 +109,10 @@ export type LangRecordSchema = {
   Glottocode?: string
   'Global Speaker Total'?: number // TODO: why string in MB tileset?
   'ISO 639-3'?: string
-  Endonym?: string // blank if same as English name
-  'NYC Neighborhood'?: string // eventually no `NYC`
+  Neighborhood?: string // NYC 'hoods only
+  'Additional Neighborhoods'?: string // parsed by `|||` maybe?
   'Primary Country'?: string // TODO: confirm not required
   'Secondary Country'?: string
-  'Additional Neighborhoods'?: string // parsed by `|||` maybe?
   // BEGIN MEDIA
   Audio?: string // TODO: TS for URL?
   'Story Map'?: string // TODO: TS for URL?

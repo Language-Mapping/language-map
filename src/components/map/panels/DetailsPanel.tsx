@@ -65,14 +65,18 @@ export const DetailsPanel: FC = () => {
         <Typography component="h3" variant="h4">
           {heading}
         </Typography>
-        {matchingRecord.Endonym !== matchingRecord.Language && (
-          <Typography variant="caption">
-            {`(${matchingRecord.Language})`}
-          </Typography>
-        )}
-        <br />
+        {/* TODO: rm existence check once Endonym column fully populated */}
+        {matchingRecord.Endonym &&
+          matchingRecord.Endonym !== matchingRecord.Language && (
+            <>
+              <Typography variant="caption">
+                {`(${matchingRecord.Language})`}
+              </Typography>
+              <br />
+            </>
+          )}
         <small>
-          <i>{matchingRecord['NYC Neighborhood']}</i>
+          <i>{matchingRecord.Neighborhood}</i>
         </small>
       </div>
       <Divider />
