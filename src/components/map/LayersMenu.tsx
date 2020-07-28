@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const LayersMenu: FC = () => {
   const classes = useStyles()
   // TODO: use global state instead?
-  const [activeBaselayer, setActiveBaselayer] = useState('dark')
+  const [activeBaselayer, setActiveBaselayer] = useState('light')
   const { dispatch } = useContext(GlobalContext)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,8 +64,8 @@ export const LayersMenu: FC = () => {
         onChange={handleChange}
         className={classes.baselayerGroup}
       >
-        <FormControlLabel value="dark" control={<Radio />} label="Dark" />
         <FormControlLabel value="light" control={<Radio />} label="Light" />
+        <FormControlLabel value="dark" control={<Radio />} label="Dark" />
       </RadioGroup>
     </FormControl>
   )

@@ -4,7 +4,7 @@ import { InitialStateType } from 'context/types'
 const initialMapStates = {
   activeLangSymbGroupId: '',
   activeLangLabelId: '',
-  baselayer: 'dark',
+  baselayer: 'light',
   langFeatures: [],
   langFeaturesCached: [],
   langLabels: [],
