@@ -1,5 +1,7 @@
 export * from './panels/DetailsPanel'
+export * from './panels/FiltersPanel'
 export * from './panels/LayersPanel'
+export * from './panels/ResultsPanel'
 export * from './LayerLabelSelect'
 export * from './LayersMenu'
 export * from './LayerSymbSelect'

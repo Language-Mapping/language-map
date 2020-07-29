@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
       top: '50%',
       transition: '300ms transform',
       [theme.breakpoints.up('sm')]: {
-        width: 325,
+        width: 425,
         top: 140,
         bottom: theme.spacing(5), // above mapbox logo
         left: 16,
@@ -58,15 +58,16 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       left: theme.spacing(1),
       right: theme.spacing(1),
-      bottom: theme.spacing(1),
+      bottom: 0, // nice and flush = more room
       '& svg': {
         height: 20,
         width: 20,
       },
       [theme.breakpoints.up('sm')]: {
-        width: 325,
+        width: 425,
         top: theme.spacing(8),
         left: theme.spacing(2),
+        bottom: theme.spacing(1), // above MB logo?
       },
     },
     closePanel: {
@@ -97,6 +98,8 @@ export const MapWrap: FC = () => {
         <MapControls />
       </div>
       <Box
+        // Need the `id` in order to find unique element for `map.setPadding`
+        id="map-panels-wrap"
         className={classes.mapPanelsWrap}
         style={{
           transform: panelOpen ? transforms.open : transforms.closed,

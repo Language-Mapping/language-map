@@ -18,6 +18,7 @@ import { initialMapState } from 'components/map/config'
 //   NavigationControl: jest.fn(),
 // }))
 
+// TODO: use `initialEntries` in <MemoryRouter> to test routing
 const renderComponent = () =>
   render(
     <ProvidersWrap>

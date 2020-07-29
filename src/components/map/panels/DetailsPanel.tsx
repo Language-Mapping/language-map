@@ -1,7 +1,7 @@
 import React, { FC, useContext } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
+import { Typography, Divider } from '@material-ui/core'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -13,7 +13,14 @@ const useStyles = makeStyles((theme: Theme) =>
     detailsPanelRoot: {
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
+    },
+    intro: {
       textAlign: 'center',
+      paddingBottom: theme.spacing(1),
+    },
+    description: {
+      marginTop: theme.spacing(1),
+      fontSize: theme.typography.caption.fontSize,
     },
   })
 )
@@ -31,13 +38,17 @@ export const DetailsPanel: FC = () => {
 
   const parsed = queryString.parse(window.location.search)
   const matchingRecord = state.langFeatures.find(
-    (feature) => feature.ID === parsed.id
+    (feature) => feature.ID === parseInt(parsed.id, 10)
   )
 
   // No `id` in `search` params
   if (!parsed.id) {
-    // TODO: link to Results...
-    return <p>Please select a feature from the map or "Results" panel.</p>
+    return (
+      <p>
+        Click a language community in the map or the{' '}
+        <RouterLink to="/results">Data panel</RouterLink> to learn more.
+      </p>
+    )
   }
 
   if (!matchingRecord) {
@@ -48,23 +59,34 @@ export const DetailsPanel: FC = () => {
     )
   }
 
-  const heading = matchingRecord['Language Endonym'] || matchingRecord.Language
+  const heading = matchingRecord.Endonym || matchingRecord.Language
   document.title = `${matchingRecord.Language as string} - NYC Languages`
 
   return (
     <div className={classes.detailsPanelRoot}>
-      <Typography variant="h3">{heading}</Typography>
-      {matchingRecord['Language Endonym'] !== matchingRecord.Language && (
-        <>
-          <Typography variant="caption">
-            {`(${matchingRecord.Language})`}
-          </Typography>
-          <br />
-        </>
-      )}
-      <small>
-        <i>{matchingRecord['NYC Neighborhood']}</i>
-      </small>
+      <RouterLink to="/results">{`<`} Back to results</RouterLink>
+      <div className={classes.intro}>
+        <Typography component="h3" variant="h4">
+          {heading}
+        </Typography>
+        {/* TODO: rm existence check once Endonym column fully populated */}
+        {matchingRecord.Endonym &&
+          matchingRecord.Endonym !== matchingRecord.Language && (
+            <>
+              <Typography variant="caption">
+                {`(${matchingRecord.Language})`}
+              </Typography>
+              <br />
+            </>
+          )}
+        <small>
+          <i>{matchingRecord.Neighborhood}</i>
+        </small>
+      </div>
+      <Divider />
+      <Typography variant="body2" className={classes.description}>
+        {matchingRecord.Description}
+      </Typography>
     </div>
   )
 }

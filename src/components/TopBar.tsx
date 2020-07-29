@@ -57,7 +57,8 @@ export const TopBar: FC = () => {
 
   return (
     <>
-      <AppBar position="fixed" className={classes.appBar}>
+      {/* Need the `id` in order to find unique element for `map.setPadding` */}
+      <AppBar position="fixed" className={classes.appBar} id="page-header">
         <Toolbar variant="dense" className={classes.toolbar}>
           <IconButton
             edge="start"

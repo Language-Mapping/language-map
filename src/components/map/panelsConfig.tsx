@@ -1,50 +1,52 @@
 import React from 'react'
-import { FaSearch } from 'react-icons/fa'
-import { FiLayers } from 'react-icons/fi'
+import { FaFilter } from 'react-icons/fa'
+import { GoSettings } from 'react-icons/go'
 import { TiDocumentText, TiThList } from 'react-icons/ti'
 
-import { LayersPanel, DetailsPanel } from 'components/map'
+import {
+  LayersPanel,
+  DetailsPanel,
+  ResultsPanel,
+  FiltersPanel,
+} from 'components/map'
 import { MapPanelTypes } from './types'
 
 export const panelsConfig = [
   {
-    heading: 'Explore',
-    subheading: 'Searching, filtering, etc.',
-    icon: <FaSearch />,
+    heading: 'Filter',
+    subheading: 'narrow search',
+    icon: <FaFilter />,
     route: '/',
-    component: (
-      <p>
-        This panel would be shown first since it is what we want the user to see
-        before diving into anything else.
-      </p>
-    ),
+    summary:
+      'Explore 1000+ communities by name in English, in the language itself (endonym), and by ISO 639-3 and Glottocode. Find languages and dialects by region, country of origin, NYC-area location, and language family.',
+    component: <FiltersPanel />,
   },
   {
-    heading: 'Display',
-    subheading: 'Symb + label ctrls. Alt. name?',
-    icon: <FiLayers />,
-    route: '/display',
-    component: <LayersPanel />,
-  },
-  {
-    heading: 'Results',
-    subheading: 'Table or list of results',
+    heading: 'Data',
+    subheading: 'sift results',
     icon: <TiThList />,
     route: '/results',
     // Could this work instead of emoji API? Seems way too easy.
     // https://material-ui.com/components/autocomplete/#country-select
-    component: (
-      <p>
-        Not a ton of room here, should other options be considered? Might be
-        cool as a "Grid View" too.
-      </p>
-    ),
+    component: <ResultsPanel />,
+    summary:
+      'View filtered results and refine further to discover communities by interacting directly with the data.',
   },
   {
     heading: 'Details',
-    subheading: '...of selected feature',
+    subheading: 'visit communities',
     icon: <TiDocumentText />,
     route: '/details',
     component: <DetailsPanel />,
+    summary: '',
+  },
+  {
+    heading: 'Settings',
+    subheading: 'change interface',
+    icon: <GoSettings />,
+    route: '/display',
+    component: <LayersPanel />,
+    summary:
+      'Adjust the symbols and labels on the map to see communities in different ways — as dots, as language names (in English or in the language itself), or as icons (depending on the type of community) — while displaying the size and region of origin.',
   },
 ] as MapPanelTypes[]

@@ -59,6 +59,11 @@ const customTheme = createMuiTheme({
 
 // Global overrides of MUI components that need to be re-styled often
 customTheme.overrides = {
+  MuiInput: {
+    root: {
+      fontSize: customTheme.typography.body2.fontSize,
+    },
+  },
   MuiDialog: {
     // Outside boundary of all dialogs
     paper: {

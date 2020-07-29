@@ -19,6 +19,8 @@ export type InitialMapState = {
   latitude: number
   longitude: number
   zoom: number
+  pitch?: number
+  bearing?: number
 }
 
 export type LegendSwatchType = {
@@ -84,5 +86,6 @@ export type MapPanelTypes = {
   icon: React.ReactNode
   route: ActivePanelRouteType
   subheading: string
+  summary?: string
   component?: React.ReactNode
 }
