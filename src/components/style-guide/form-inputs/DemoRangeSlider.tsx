@@ -17,6 +17,7 @@ export const DemoRangeSlider: FC = () => {
   const classes = useStyles()
   const [value, setValue] = useState<number[]>([20, 37])
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (event: any, newValue: number | number[]) => {
     setValue(newValue as number[])
   }
@@ -24,7 +25,7 @@ export const DemoRangeSlider: FC = () => {
   return (
     <div className={classes.root}>
       <Typography id="range-slider" gutterBottom>
-        Example slider
+        Community Size
       </Typography>
       <Slider
         value={value}

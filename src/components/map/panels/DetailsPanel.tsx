@@ -43,8 +43,12 @@ export const DetailsPanel: FC = () => {
 
   // No `id` in `search` params
   if (!parsed.id) {
-    // TODO: link to Results...
-    return <p>Please select a feature from the map or "Results" panel.</p>
+    return (
+      <p>
+        Click a language community in the map or the{' '}
+        <RouterLink to="/results">Data panel</RouterLink> to learn more.
+      </p>
+    )
   }
 
   if (!matchingRecord) {

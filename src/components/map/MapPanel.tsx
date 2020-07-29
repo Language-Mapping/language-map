@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Box, Typography, Paper } from '@material-ui/core'
+import { Box, Typography, Paper, Divider } from '@material-ui/core'
 
 import { MapPanelTypes } from './types'
 
@@ -8,6 +8,7 @@ type PaperRootType = {
   active: boolean
 }
 
+// Uses component props (e.g. `active`) w/o access to Theme
 const useStyles = makeStyles({
   paperRoot: {
     position: 'absolute',
@@ -45,6 +46,11 @@ const useThemeStyles = makeStyles((theme: Theme) =>
         width: '0.8em',
       },
     },
+    summary: {
+      fontSize: 12,
+      color: theme.palette.grey[800],
+      marginTop: 0,
+    },
   })
 )
 
@@ -54,6 +60,7 @@ export const MapPanel: FC<MapPanelTypes> = ({
   heading,
   icon,
   subheading,
+  summary,
 }) => {
   const classes = useStyles({ active })
   const themeClasses = useThemeStyles()
@@ -74,6 +81,12 @@ export const MapPanel: FC<MapPanelTypes> = ({
         zIndex={1}
         position="relative"
       >
+        {summary ? (
+          <>
+            <p className={themeClasses.summary}>{summary}</p>
+            <Divider />
+          </>
+        ) : null}
         {component}
       </Box>
     </Paper>
