@@ -24,5 +24,7 @@ export const langSrcConfig = {
 export const langLayerConfig = {
   // styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48', // original "prod"
   // TODO: consider local URL?
-  styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48/draft',
+  // NOTE: Draft does NOT seem to be reliable or real-time
+  // styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48/draft',
+  styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48',
 }

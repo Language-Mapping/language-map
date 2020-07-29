@@ -59,6 +59,7 @@ export const getMbStyleDocument = async (
   setLabelLayers: Dispatch<LayerPropsPlusMeta[]>
 ): Promise<void> => {
   const response = await fetch(styleUrl) // TODO: handle errors
+  // const response = await fetch('/data/mb-styles.langs.json') // TODO: handle errors
   const { metadata, layers: allLayers }: MbResponseType = await response.json()
   const layerGroups = metadata['mapbox:groups']
   // TODO: instead of grabbing the first one, get the first one who has a
