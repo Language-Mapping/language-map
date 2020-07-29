@@ -41,6 +41,21 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
   const [labelLayers, setLabelLayers] = useState<LayerPropsPlusMeta[]>([])
   const { activeLangSymbGroupId, activeLangLabelId } = state
   const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
+  const mapRef = React.createRef()
+
+  // TODO: fly to on URL change
+  // useEffect(() => {
+  //   const parsed = window ? queryString.parse(window.location.search) : ''
+  //   const matched = mapRef.current.querySourceFeatures
+  //   const rawLangFeats = target.querySourceFeatures(
+  //     langSrcConfig.internalSrcID,
+  //     {
+  //       sourceLayer: langSrcConfig.layerId,
+  //     }
+  //   )
+
+  //   console.log(loc, parsed)
+  // }, [loc])
 
   useEffect(() => {
     const symbStyleUrl = `${MB_STYLES_API_URL}/${langLayerConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
@@ -72,8 +87,6 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
       payload: legend,
     })
   }, [activeLangSymbGroupId, symbLayers, dispatch])
-
-  const mapRef = React.createRef()
 
   return (
     <MapGL
