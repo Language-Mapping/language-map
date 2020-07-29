@@ -3,12 +3,22 @@ import { useHistory } from 'react-router-dom'
 // TODO: look into Column
 // import MaterialTable, { Column } from 'material-table'
 import MaterialTable from 'material-table'
+import { FaFilter } from 'react-icons/fa'
+import {
+  MdSearch,
+  MdClear,
+  MdChevronLeft,
+  MdChevronRight,
+  MdLastPage,
+  MdFirstPage,
+} from 'react-icons/md'
 
 import { GlobalContext } from 'components'
 
 export const ResultsTable: FC = () => {
   const { state } = useContext(GlobalContext)
   const history = useHistory()
+
   const columns = [
     { title: 'Language', field: 'Language' },
     { title: 'Endonym', field: 'Endonym' },
@@ -32,10 +42,29 @@ export const ResultsTable: FC = () => {
     //   lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' },
     // },
   ]
+  const options = {
+    showTitle: false,
+    filtering: true,
+    pageSize: 10,
+    pageSizeOptions: [5, 10, 25, 50],
+  }
+
+  const icons = {
+    Search: MdSearch,
+    Filter: FaFilter,
+    ResetSearch: MdClear,
+    FirstPage: MdFirstPage,
+    LastPage: MdLastPage,
+    PreviousPage: MdChevronLeft,
+    NextPage: MdChevronRight,
+  }
 
   return (
     <MaterialTable
-      options={{ showTitle: false, filtering: true, hideFilterIcons: true }}
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      icons={icons}
+      options={options}
       columns={columns}
       data={state.langFeatures}
       onRowClick={(a, b) => {
