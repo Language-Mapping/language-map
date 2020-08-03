@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 import { FaFilter } from 'react-icons/fa'
 import { GoSettings } from 'react-icons/go'
 import { TiDocumentText, TiThList } from 'react-icons/ti'
@@ -14,27 +15,41 @@ import { MapPanelTypes } from './types'
 export const panelsConfig = [
   {
     heading: 'Filter',
-    subheading: 'narrow search',
+    subheading: 'and query language data',
     icon: <FaFilter />,
     route: '/',
-    summary:
-      'Explore 1000+ communities by name in English, in the language itself (endonym), and by ISO 639-3 and Glottocode. Find languages and dialects by region, country of origin, NYC-area location, and language family.',
+    summary: (
+      <>
+        Explore 1000+ language communities using the options below. Your filters
+        affect both the map and{' '}
+        <RouterLink to={`/results${window.location.search}`}>
+          data table
+        </RouterLink>
+        .
+      </>
+    ),
     component: <FiltersPanel />,
   },
   {
     heading: 'Data',
-    subheading: 'sift results',
+    subheading: 'as a searchable table',
     icon: <TiThList />,
     route: '/results',
     // Could this work instead of emoji API? Seems way too easy.
     // https://material-ui.com/components/autocomplete/#country-select
     component: <ResultsPanel />,
-    summary:
-      'View filtered results and refine further to discover communities by interacting directly with the data.',
+    summary: (
+      <>
+        View results of your{' '}
+        <RouterLink to={`/${window.location.search}`}>filters</RouterLink> in a
+        table which you can further refine, sort, and search. Note that options
+        here only affect the table below.
+      </>
+    ),
   },
   {
     heading: 'Details',
-    subheading: 'visit communities',
+    subheading: 'of selected community',
     icon: <TiDocumentText />,
     route: '/details',
     component: <DetailsPanel />,
@@ -42,11 +57,11 @@ export const panelsConfig = [
   },
   {
     heading: 'Settings',
-    subheading: 'change interface',
+    subheading: 'for map symbols and labels',
     icon: <GoSettings />,
     route: '/display',
     component: <LayersPanel />,
     summary:
-      'Adjust the symbols and labels on the map to see communities in different ways — as dots, as language names (in English or in the language itself), or as icons (depending on the type of community) — while displaying the size and region of origin.',
+      'Visualize language communities in interesting ways by changing their symbols and text below.',
   },
 ] as MapPanelTypes[]

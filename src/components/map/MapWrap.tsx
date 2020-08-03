@@ -131,7 +131,7 @@ export const MapWrap: FC = () => {
         className={classes.bottomNavRoot}
         value={loc.pathname}
         onChange={(event, newValue) => {
-          history.push(newValue)
+          history.push(newValue + window.location.search)
 
           // Open the container if closed, close it if already active panel
           if (panelOpen && newValue === loc.pathname) {

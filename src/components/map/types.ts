@@ -86,6 +86,6 @@ export type MapPanelTypes = {
   icon: React.ReactNode
   route: ActivePanelRouteType
   subheading: string
-  summary?: string
+  summary?: string | React.ReactNode
   component?: React.ReactNode
 }

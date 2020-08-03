@@ -64,7 +64,9 @@ export const DetailsPanel: FC = () => {
 
   return (
     <div className={classes.detailsPanelRoot}>
-      <RouterLink to="/results">{`<`} Back to results</RouterLink>
+      <RouterLink to={`/results${window.location.search}`}>
+        {`<`} Back to results
+      </RouterLink>
       <div className={classes.intro}>
         <Typography component="h3" variant="h4">
           {heading}
