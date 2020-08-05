@@ -25,7 +25,7 @@ export const ResultsTable: FC = () => {
     { title: 'Neighborhood', field: 'Neighborhood' }, // TODO: inc. 2ndary
     { title: 'Community Size', field: 'Community Size' },
     { title: 'Type', field: 'Type' },
-    { title: 'Region', field: 'Region' },
+    { title: 'World Region', field: 'World Region' },
     { title: 'Primary Country', field: 'Primary Country' },
     { title: 'Global Speaker Total', field: 'Global Speaker Total' },
     { title: 'Language Family', field: 'Language Family' },

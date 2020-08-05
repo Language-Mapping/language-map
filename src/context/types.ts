@@ -81,8 +81,8 @@ export type LangRecordSchema = {
     | 'Institutional'
     | 'Residential'
     | 'Reviving'
-  // Can/should `Region` be typed?
-  Region:
+  'World Region':
+    | 'Australia and New Zealand'
     | 'Caribbean'
     | 'Central America'
     | 'Central Asia'
@@ -95,7 +95,6 @@ export type LangRecordSchema = {
     | 'Northern Africa'
     | 'Northern America'
     | 'Northern Europe'
-    | 'Oceania'
     | 'Polynesia'
     | 'South America'
     | 'Southeastern Asia'
