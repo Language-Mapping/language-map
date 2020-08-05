@@ -46,7 +46,7 @@ export const DetailsPanel: FC = () => {
     return (
       <p>
         Click a language community in the map or the{' '}
-        <RouterLink to="/results">Data panel</RouterLink> to learn more.
+        <RouterLink to="/results">data table</RouterLink> to learn more.
       </p>
     )
   }
@@ -64,7 +64,9 @@ export const DetailsPanel: FC = () => {
 
   return (
     <div className={classes.detailsPanelRoot}>
-      <RouterLink to="/results">{`<`} Back to results</RouterLink>
+      <RouterLink to={`/results${window.location.search}`}>
+        {`<`} Back to results
+      </RouterLink>
       <div className={classes.intro}>
         <Typography component="h3" variant="h4">
           {heading}

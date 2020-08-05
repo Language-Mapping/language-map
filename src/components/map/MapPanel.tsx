@@ -29,7 +29,7 @@ const useThemeStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.common.white,
       borderBottom: `solid 8px ${theme.palette.primary.dark}`,
-      padding: `6px ${theme.spacing(2)}px`,
+      padding: `6px ${theme.spacing(1)}px`,
       top: 0,
       flexShrink: 0,
       position: 'sticky',
@@ -39,12 +39,14 @@ const useThemeStyles = makeStyles((theme: Theme) =>
     mainHeading: {
       display: 'flex',
       alignItems: 'center',
-      marginRight: theme.spacing(1),
       '& svg': {
-        marginRight: theme.spacing(1),
+        marginRight: 6,
         height: '0.8em',
         width: '0.8em',
       },
+    },
+    subheading: {
+      marginLeft: 6,
     },
     summary: {
       fontSize: 12,
@@ -71,8 +73,10 @@ export const MapPanel: FC<MapPanelTypes> = ({
         <Typography variant="h4" className={themeClasses.mainHeading}>
           {icon}
           {heading}
+          <Typography variant="caption" className={themeClasses.subheading}>
+            {subheading}
+          </Typography>
         </Typography>
-        <Typography variant="caption">{subheading}</Typography>
       </Box>
       <Box
         paddingY={1}
