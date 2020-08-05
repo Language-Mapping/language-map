@@ -13,6 +13,11 @@ import { Map, MapPanel, MapControls } from 'components/map'
 import { initialMapState } from 'components/map/config'
 import { panelsConfig } from './panelsConfig'
 
+const transforms = {
+  open: 'translateY(0%)',
+  closed: 'translateY(100%)',
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mapWrapRoot: {
@@ -85,11 +90,6 @@ export const MapWrap: FC = () => {
   const history = useHistory()
   const [panelOpen, setPanelOpen] = useState(true)
   const loc = useLocation()
-
-  const transforms = {
-    open: 'translateY(0%)',
-    closed: 'translateY(100%)',
-  }
 
   return (
     <div className={classes.mapWrapRoot}>

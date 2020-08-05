@@ -1,17 +1,20 @@
 // TODO: deal with this nightmare
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+// @ts-nocheck
 import React, { FC, useState, useContext, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+import { useHistory, useLocation } from 'react-router-dom'
+/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 import queryString from 'query-string'
-import MapGL, { Source, Layer } from 'react-map-gl'
+import MapGL from 'react-map-gl'
+import MbGLfull from 'mapbox-gl'
 import { useTheme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext } from 'components'
+import { LangMbSrcAndLayer } from 'components/map'
 import { MAPBOX_TOKEN } from '../../config'
 import { LangRecordSchema } from '../../context/types'
 import { InitialMapState, MapEventType, LayerPropsPlusMeta } from './types'
@@ -23,6 +26,8 @@ import {
 } from '../../utils'
 import { langLayerConfig, langSrcConfig } from './config'
 
+type MapRefType = React.RefObject<mapboxgl.Map>
+
 const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
 
 export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
@@ -33,30 +38,52 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
     latitude,
     longitude,
     zoom,
-    pitch: 0,
-    bearing: 0,
   })
   const [symbLayers, setSymbLayers] = useState<LayerPropsPlusMeta[]>([])
+  // TODO: set the full feature attribs in glboal state (rather than just ID)
   const [selFeatID, setSelFeatID] = useState<null | number>(null)
   const [labelLayers, setLabelLayers] = useState<LayerPropsPlusMeta[]>([])
-  const { activeLangSymbGroupId, activeLangLabelId } = state
+  const { activeLangSymbGroupId } = state
   const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
-  const mapRef = React.createRef()
+  const mapRef: MapRefType = React.createRef()
+  const location = useLocation()
 
-  // TODO: fly to on URL change
-  // useEffect(() => {
-  //   const parsed = window ? queryString.parse(window.location.search) : ''
-  //   const matched = mapRef.current.querySourceFeatures
-  //   const rawLangFeats = target.querySourceFeatures(
-  //     langSrcConfig.internalSrcID,
-  //     {
-  //       sourceLayer: langSrcConfig.layerId,
-  //     }
-  //   )
+  // Do selected feature stuff on location change
+  useEffect((): void => {
+    if (!mapRef.current || !state.langFeaturesCached.length) {
+      return
+    }
 
-  //   console.log(loc, parsed)
-  // }, [loc])
+    const map: MbGLfull.Map = mapRef.current.getMap()
+    const parsed = queryString.parse(location.search)
 
+    if (!parsed || !parsed.id) {
+      return
+    }
+
+    // TODO: handle scenario where feature exists in cached but not filtered
+    // const matchedFeat = state.langFeaturesCached.find(
+    //       //   (feat) => parsed.id === feat.ID.toString()
+    // )
+
+    const rawLangFeats = map.querySourceFeatures(langSrcConfig.internalSrcID, {
+      sourceLayer: langSrcConfig.layerId,
+    })
+
+    const matchingRecord = rawLangFeats.find(
+      (geojsonFeat) => geojsonFeat.id.toString() === parsed.id
+    )
+
+    if (!matchingRecord) {
+      return
+    }
+
+    setSelFeatID(matchingRecord.id)
+    flyToCoords(map, matchingRecord)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search])
+
+  // Fetch MB Style doc
   useEffect(() => {
     const symbStyleUrl = `${MB_STYLES_API_URL}/${langLayerConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
 
@@ -72,8 +99,10 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
         `Something went wrong trying to fetch MB style JSON: ${errMsg}`
       )
     })
-  }, [dispatch])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
+  // Create map legend
   useEffect(() => {
     const layersInActiveGroup = symbLayers.filter(
       (layer: LayerPropsPlusMeta) =>
@@ -88,11 +117,43 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
     })
   }, [activeLangSymbGroupId, symbLayers, dispatch])
 
+  function handleHover(event: MapEventType) {
+    const { features, target } = event
+
+    if (!shouldOpenPopup(features, langSrcConfig.internalSrcID)) {
+      // TODO: hide label on mouseout
+      target.style.cursor = 'default'
+    } else {
+      // TODO: show label on hover
+      target.style.cursor = 'pointer'
+    }
+  }
+
+  function flyToCoords(target, matchingRecord) {
+    const coords = matchingRecord.geometry.coordinates
+    const newZoom = 14
+
+    target.flyTo(
+      {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // padding, // NOTE: this is evidently TS'ed incorrectly
+        // Animation is considered essential with respect to
+        // prefers-reduced-motion
+        essential: true,
+        center: [coords[0], coords[1]],
+        zoom: newZoom,
+      },
+      {
+        openPopup: true,
+        updateViewportState: true,
+      }
+    )
+  }
+
   return (
     <MapGL
       {...viewport}
       width="100%"
-      // @ts-ignore
       ref={mapRef}
       height="100%"
       onViewportChange={setViewport}
@@ -101,21 +162,15 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
       // TODO: show MB attribution text (not logo) on mobile
       className="mb-language-map"
       onNativeClick={(event: MapEventType): void => {
-        const { features } = event
-
         // Not ready
         if (!mapRef.current) {
           return
         }
 
-        const topFeature = features[0]
-
-        // Clickout deselects
+        // Deselect currently selected feature if there is one
         if (selFeatID) {
-          // @ts-ignore
           mapRef.current.getMap().setFeatureState(
             {
-              // @ts-ignore
               sourceLayer: langSrcConfig.layerId,
               source: langSrcConfig.internalSrcID,
               id: selFeatID,
@@ -124,35 +179,23 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
           )
         }
 
-        // Not ready
-        if (!shouldOpenPopup(features, langSrcConfig.internalSrcID)) {
+        // Not ready due to no features under click or
+        if (!shouldOpenPopup(event.features, langSrcConfig.internalSrcID)) {
+          // TODO: use current route sans search, don't switch to details
+          history.push(`/details`)
+
           return
         }
 
+        const topFeature = event.features[0]
         const selFeatAttrbs = topFeature.properties
 
-        // @ts-ignore
-        mapRef.current.getMap().setFeatureState(
-          {
-            // @ts-ignore
-            sourceLayer: topFeature.layer['source-layer'],
-            id: selFeatAttrbs.ID,
-            source: topFeature.layer.source,
-          },
-          { selected: true }
-        )
-
+        // TODO: use `initialEntries` in <MemoryRouter> to test routing
         history.push(`/details?id=${selFeatAttrbs.ID}`)
-        setSelFeatID(selFeatAttrbs.ID)
+        setSelFeatID(selFeatAttrbs.ID) // TODO: global state w/all attribs
       }}
       onHover={(event: MapEventType): void => {
-        const { features, target } = event
-
-        if (!shouldOpenPopup(features, langSrcConfig.internalSrcID)) {
-          target.style.cursor = 'default'
-        } else {
-          target.style.cursor = 'pointer'
-        }
+        handleHover(event)
       }}
       onLoad={(map) => {
         const { target } = map
@@ -162,9 +205,17 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
             sourceLayer: langSrcConfig.layerId,
           }
         )
-        // TODO: use `initialEntries` in <MemoryRouter> to test routing
         const parsed = window ? queryString.parse(window.location.search) : ''
+        target.setPadding(prepMapPadding(isDesktop))
 
+        // TODO: get full list of features without starting at low Zoom
+        // target.on('sourcedata', function (e) {
+        //   if (e.isSourceLoaded) {
+        //     const langSrc = e.target.getSource(langSrcConfig.internalSrcID)
+        //     // also some .tileJson methods or something for ^^^
+        //     // Do something when the source has finished loading
+        //   }
+        // })
         target.on('zoomend', (mapObj) => {
           const { updateViewportState } = mapObj
 
@@ -174,8 +225,6 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
 
           setViewport({
             zoom: target.getZoom(),
-            pitch: target.getPitch(),
-            bearing: target.getBearing(),
             latitude: target.getCenter().lat,
             longitude: target.getCenter().lng,
           })
@@ -189,34 +238,11 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
           const matchingRecord = rawLangFeats.find((feature) => {
             const featAttribs = feature.properties as LangRecordSchema
 
-            return featAttribs.ID === parseInt(parsed.id, 10)
+            return featAttribs.ID.toString() === parsed.id
           })
 
           if (matchingRecord) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            const asGeoJSON = matchingRecord.toJSON()
-            const coords = asGeoJSON.geometry.coordinates
-            const newZoom = 14
-            const padding = prepMapPadding(isDesktop)
-
-            target.flyTo(
-              {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                padding, // NOTE: this is evidently TS'ed incorrectly
-                center: [coords[0], coords[1]],
-                zoom: newZoom,
-                // Animation is considered essential with respect to
-                // prefers-reduced-motion
-                essential: true,
-              },
-              {
-                openPopup: true,
-                updateViewportState: true,
-                featureProps: asGeoJSON.properties,
-              }
-            )
+            flyToCoords(target, matchingRecord)
           }
         }
 
@@ -235,67 +261,11 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
     >
       {/* NOTE: it did not seem to work when using two different Styles with the same dataset unless waiting until there is something to put into <Source> */}
       {symbLayers.length && labelLayers.length && (
-        <Source
-          type="vector"
-          url={`mapbox://${langSrcConfig.tilesetId}`}
-          // @ts-ignore
-          promoteId="ID"
-          id={langSrcConfig.internalSrcID}
-        >
-          {symbLayers.map((layer: LayerPropsPlusMeta) => {
-            const isInActiveGroup =
-              layer.metadata['mapbox:group'] === activeLangSymbGroupId
-            const paint = {
-              ...layer.paint,
-              'circle-radius': [
-                'case',
-                ['boolean', ['feature-state', 'selected'], false],
-                25,
-                5,
-              ],
-            }
-
-            return (
-              <Layer
-                key={layer.id}
-                {...layer}
-                // TODO: some kind of transition/animation on switch
-                layout={{
-                  visibility: isInActiveGroup ? 'visible' : 'none',
-                }}
-                // @ts-ignore
-                paint={paint}
-              />
-            )
-          })}
-          {labelLayers.map((layer: LayerPropsPlusMeta) => {
-            const isActiveLabel = layer.id === activeLangLabelId
-
-            // TODO: some kind of transition/animation on switch
-            const layout = {
-              ...layer.layout,
-              visibility: isActiveLabel ? 'visible' : 'none',
-            }
-
-            return (
-              <Layer
-                key={layer.id}
-                id={layer.id}
-                type={layer.type}
-                source={layer.source}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                source-layer={layer['source-layer']}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                paint={layer.paint}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                layout={layout}
-              />
-            )
-          })}
-        </Source>
+        <LangMbSrcAndLayer
+          selFeatID={selFeatID}
+          symbLayers={symbLayers}
+          labelLayers={labelLayers}
+        />
       )}
     </MapGL>
   )
