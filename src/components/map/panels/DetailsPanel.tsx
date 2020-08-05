@@ -46,7 +46,7 @@ export const DetailsPanel: FC = () => {
     return (
       <p>
         Click a language community in the map or the{' '}
-        <RouterLink to="/results">Data panel</RouterLink> to learn more.
+        <RouterLink to="/results">data table</RouterLink> to learn more.
       </p>
     )
   }

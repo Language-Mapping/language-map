@@ -62,6 +62,6 @@ export const panelsConfig = [
     route: '/display',
     component: <LayersPanel />,
     summary:
-      'Visualize language communities in interesting ways by changing their symbols and text below.',
+      'Visualize language communities in different ways by changing their symbols and labels below.',
   },
 ] as MapPanelTypes[]
