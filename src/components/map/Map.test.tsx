@@ -1,5 +1,6 @@
 import React from 'react'
 import { render } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 
 import { ProvidersWrap } from 'components'
 import { Map } from 'components/map'
@@ -22,7 +23,9 @@ import { initialMapState } from 'components/map/config'
 const renderComponent = () =>
   render(
     <ProvidersWrap>
-      <Map {...initialMapState} />
+      <MemoryRouter>
+        <Map {...initialMapState} />
+      </MemoryRouter>
     </ProvidersWrap>
   )
 
