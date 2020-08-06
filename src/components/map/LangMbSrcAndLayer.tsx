@@ -1,7 +1,5 @@
-// TODO: deal with this nightmare
-/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import React, { FC, useContext } from 'react'
+import * as mbGlFull from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
 import { GlobalContext } from 'components'
@@ -11,7 +9,7 @@ import { langSrcConfig } from './config'
 type SourceAndLayerType = {
   symbLayers: LayerPropsPlusMeta[]
   labelLayers: LayerPropsPlusMeta[]
-  selFeatID: number
+  selFeatID: number | null
 }
 
 export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
@@ -24,20 +22,31 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
 
   return (
     <Source
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore // promoteId is just not anywhere in the source...
+      promoteId="ID"
       type="vector"
       url={`mapbox://${langSrcConfig.tilesetId}`}
-      promoteId="ID"
       id={langSrcConfig.internalSrcID}
     >
       {symbLayers.map((layer: LayerPropsPlusMeta) => {
-        /* eslint-disable operator-linebreak */
-        const paint = {
-          ...layer.paint,
-          'circle-radius': selFeatID
-            ? ['match', ['get', 'ID'], [selFeatID], 15, 5]
-            : layer.paint['circle-radius'],
+        let radius = 5
+
+        // Something screwy with TS defs for paint...
+        /* eslint-disable @typescript-eslint/ban-ts-comment */
+        if (selFeatID) {
+          // @ts-ignore
+          radius = ['match', ['get', 'ID'], [selFeatID], 15, 5]
+        } else if (layer.paint && layer.paint['circle-radius']) {
+          // @ts-ignore
+          radius = layer.paint['circle-radius']
         }
-        /* eslint-enable operator-linebreak */
+        /* eslint-enable @typescript-eslint/ban-ts-comment */
+        const paint: mbGlFull.CirclePaint = {
+          ...layer.paint,
+          'circle-radius': radius,
+        }
+
         const isInActiveGroup =
           layer.metadata['mapbox:group'] === activeLangSymbGroupId
 
@@ -57,7 +66,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
         const isActiveLabel = layer.id === activeLangLabelId
 
         // TODO: some kind of transition/animation on switch
-        const layout = {
+        const layout: mbGlFull.AnyLayout = {
           ...layer.layout,
           visibility: isActiveLabel ? 'visible' : 'none',
         }

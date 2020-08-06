@@ -115,7 +115,7 @@ export const getMbStyleDocument = async (
 }
 
 // Only if features exist and the top one matches the language source ID
-export const shouldOpenPopup = (
+export const langFeatClicked = (
   features: LangFeatureType[],
   internalSrcID: string
 ): boolean =>

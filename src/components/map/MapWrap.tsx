@@ -1,4 +1,7 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useState, useContext, useEffect } from 'react'
+/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+// @ts-ignore
+import queryString from 'query-string'
 import { Route, Switch, useHistory, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
@@ -11,6 +14,7 @@ import { MdClose } from 'react-icons/md'
 
 import { Map, MapPanel, MapControls } from 'components/map'
 import { initialMapState } from 'components/map/config'
+import { GlobalContext } from 'components'
 import { panelsConfig } from './panelsConfig'
 
 const transforms = {
@@ -89,7 +93,44 @@ export const MapWrap: FC = () => {
   const classes = useStyles()
   const history = useHistory()
   const [panelOpen, setPanelOpen] = useState(true)
-  const loc = useLocation()
+  const location = useLocation()
+  const { state, dispatch } = useContext(GlobalContext)
+  const { langFeaturesCached } = state
+
+  // Do selected feature stuff on location change
+  useEffect((): void => {
+    const parsed = queryString.parse(location.search)
+
+    if (!langFeaturesCached.length || !parsed || !parsed.id) {
+      return
+    }
+
+    // TODO: handle scenario where feature exists in cached but not filtered
+    // const matchedFeat = state.langFeaturesCached.find(
+    //       //   (feat) => parsed.id === feat.ID.toString()
+    // )
+    const matchingRecord = langFeaturesCached.find(
+      (record) => record.ID.toString() === parsed.id
+    )
+
+    if (!matchingRecord) {
+      dispatch({
+        type: 'SET_SEL_FEAT_ATTRIBS',
+        payload: null,
+      })
+
+      return
+    }
+
+    document.title = `${matchingRecord.Language as string} - NYC Languages`
+
+    dispatch({
+      type: 'SET_SEL_FEAT_ATTRIBS',
+      payload: matchingRecord,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search, state.langFeaturesCached.length])
+  // ^^^^^^^ run it on load and on search params change ^^^^^^^
 
   return (
     <div className={classes.mapWrapRoot}>
@@ -121,7 +162,10 @@ export const MapWrap: FC = () => {
         <Switch>
           {panelsConfig.map((config) => (
             <Route key={config.heading} path={config.route} exact>
-              <MapPanel {...config} active={config.route === loc.pathname} />
+              <MapPanel
+                {...config}
+                active={config.route === location.pathname}
+              />
             </Route>
           ))}
         </Switch>
@@ -129,12 +173,12 @@ export const MapWrap: FC = () => {
       <BottomNavigation
         showLabels
         className={classes.bottomNavRoot}
-        value={loc.pathname}
+        value={location.pathname}
         onChange={(event, newValue) => {
           history.push(newValue + window.location.search)
 
           // Open the container if closed, close it if already active panel
-          if (panelOpen && newValue === loc.pathname) {
+          if (panelOpen && newValue === location.pathname) {
             setPanelOpen(false)
           } else {
             setPanelOpen(true)

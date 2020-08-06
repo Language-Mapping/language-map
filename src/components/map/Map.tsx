@@ -1,13 +1,10 @@
-// TODO: deal with this nightmare
-/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-// @ts-nocheck
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 import queryString from 'query-string'
-import MapGL from 'react-map-gl'
-import MbGLfull from 'mapbox-gl'
+import MapGL, { InteractiveMap } from 'react-map-gl'
+import * as mbGlFull from 'mapbox-gl'
 import { useTheme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
@@ -22,13 +19,14 @@ import { prepMapPadding } from './utils'
 import {
   createMapLegend,
   getMbStyleDocument,
-  shouldOpenPopup,
+  langFeatClicked,
 } from '../../utils'
 import { langLayerConfig, langSrcConfig } from './config'
 
-type MapRefType = React.RefObject<mapboxgl.Map>
+type MapRefType = React.RefObject<InteractiveMap>
 
 const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
+const symbStyleUrl = `${MB_STYLES_API_URL}/${langLayerConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
 
 export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
   const theme = useTheme()
@@ -39,54 +37,32 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
     longitude,
     zoom,
   })
-  const [symbLayers, setSymbLayers] = useState<LayerPropsPlusMeta[]>([])
-  // TODO: set the full feature attribs in glboal state (rather than just ID)
-  const [selFeatID, setSelFeatID] = useState<null | number>(null)
-  const [labelLayers, setLabelLayers] = useState<LayerPropsPlusMeta[]>([])
-  const { activeLangSymbGroupId } = state
+  const [symbLayers, setSymbLayers] = useState<LayerPropsPlusMeta[]>()
+  const [labelLayers, setLabelLayers] = useState<LayerPropsPlusMeta[]>()
+  const { activeLangSymbGroupId, selFeatAttrbs } = state
   const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
   const mapRef: MapRefType = React.createRef()
   const location = useLocation()
+  const mapPadding = prepMapPadding(isDesktop)
 
   // Do selected feature stuff on location change
   useEffect((): void => {
-    if (!mapRef.current || !state.langFeaturesCached.length) {
+    if (!mapRef.current || !selFeatAttrbs) {
       return
     }
 
-    const map: MbGLfull.Map = mapRef.current.getMap()
-    const parsed = queryString.parse(location.search)
+    const map: mbGlFull.Map = mapRef.current.getMap()
 
-    if (!parsed || !parsed.id) {
-      return
-    }
-
-    // TODO: handle scenario where feature exists in cached but not filtered
-    // const matchedFeat = state.langFeaturesCached.find(
-    //       //   (feat) => parsed.id === feat.ID.toString()
-    // )
-
-    const rawLangFeats = map.querySourceFeatures(langSrcConfig.internalSrcID, {
-      sourceLayer: langSrcConfig.layerId,
+    flyToCoords(map, {
+      lat: selFeatAttrbs.Latitude,
+      lng: selFeatAttrbs.Longitude,
     })
 
-    const matchingRecord = rawLangFeats.find(
-      (geojsonFeat) => geojsonFeat.id.toString() === parsed.id
-    )
-
-    if (!matchingRecord) {
-      return
-    }
-
-    setSelFeatID(matchingRecord.id)
-    flyToCoords(map, matchingRecord)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search])
+  }, [location.search, selFeatAttrbs])
 
   // Fetch MB Style doc
   useEffect(() => {
-    const symbStyleUrl = `${MB_STYLES_API_URL}/${langLayerConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
-
     getMbStyleDocument(
       symbStyleUrl,
       dispatch,
@@ -104,6 +80,10 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
 
   // Create map legend
   useEffect(() => {
+    if (!symbLayers) {
+      return
+    }
+
     const layersInActiveGroup = symbLayers.filter(
       (layer: LayerPropsPlusMeta) =>
         layer.metadata['mapbox:group'] === activeLangSymbGroupId
@@ -115,12 +95,13 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
       type: 'SET_LANG_LAYER_LEGEND',
       payload: legend,
     })
-  }, [activeLangSymbGroupId, symbLayers, dispatch])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [symbLayers])
 
   function handleHover(event: MapEventType) {
     const { features, target } = event
 
-    if (!shouldOpenPopup(features, langSrcConfig.internalSrcID)) {
+    if (!langFeatClicked(features, langSrcConfig.internalSrcID)) {
       // TODO: hide label on mouseout
       target.style.cursor = 'default'
     } else {
@@ -129,23 +110,26 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
     }
   }
 
-  function flyToCoords(target, matchingRecord) {
-    const coords = matchingRecord.geometry.coordinates
-    const newZoom = 14
+  function flyToCoords(
+    target: mbGlFull.Map,
+    center: { lng: number; lat: number }
+  ) {
+    const zoomLevel = 12
 
     target.flyTo(
       {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // padding, // NOTE: this is evidently TS'ed incorrectly
         // Animation is considered essential with respect to
         // prefers-reduced-motion
         essential: true,
-        center: [coords[0], coords[1]],
-        zoom: newZoom,
+        center,
+        zoom: zoomLevel,
       },
       {
         openPopup: true,
-        updateViewportState: true,
+        newPosition: {
+          center,
+          zoom: zoomLevel,
+        },
       }
     )
   }
@@ -162,37 +146,27 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
       // TODO: show MB attribution text (not logo) on mobile
       className="mb-language-map"
       onNativeClick={(event: MapEventType): void => {
-        // Not ready
-        if (!mapRef.current) {
-          return
-        }
-
         // Deselect currently selected feature if there is one
-        if (selFeatID) {
+        if (mapRef.current && selFeatAttrbs) {
           mapRef.current.getMap().setFeatureState(
             {
               sourceLayer: langSrcConfig.layerId,
               source: langSrcConfig.internalSrcID,
-              id: selFeatID,
+              id: selFeatAttrbs.ID,
             },
             { selected: false }
           )
         }
 
-        // Not ready due to no features under click or
-        if (!shouldOpenPopup(event.features, langSrcConfig.internalSrcID)) {
-          // TODO: use current route sans search, don't switch to details
-          history.push(`/details`)
+        // No language features under click
+        if (!langFeatClicked(event.features, langSrcConfig.internalSrcID)) {
+          history.push(`${location.pathname}`)
 
           return
         }
 
-        const topFeature = event.features[0]
-        const selFeatAttrbs = topFeature.properties
-
         // TODO: use `initialEntries` in <MemoryRouter> to test routing
-        history.push(`/details?id=${selFeatAttrbs.ID}`)
-        setSelFeatID(selFeatAttrbs.ID) // TODO: global state w/all attribs
+        history.push(`/details?id=${event.features[0].properties.ID}`)
       }}
       onHover={(event: MapEventType): void => {
         handleHover(event)
@@ -205,8 +179,47 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
             sourceLayer: langSrcConfig.layerId,
           }
         )
-        const parsed = window ? queryString.parse(window.location.search) : ''
-        target.setPadding(prepMapPadding(isDesktop))
+
+        // TODO: tighten up query params via TS
+        const parsed = queryString.parse(location.search)
+
+        // TODO: rm when no longer needed
+        // target.showPadding = true // quite handy
+        target.setPadding(mapPadding)
+
+        const cacheOfIDs: mbGlFull.MapboxGeoJSONFeature[] = []
+        // Just the properties for table/results, etc. Don't need the JSON cruft
+        const uniqueRecords = rawLangFeats.reduce(
+          // TODO: come on, fix this
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          (all: LangRecordSchema[], thisOne: mbGlFull.MapboxGeoJSONFeature) => {
+            if (!thisOne.properties) {
+              return all
+            }
+
+            // Cheap way to set some things while in the middle of the loop
+            if (
+              parsed &&
+              parsed.id &&
+              parsed.id === thisOne.properties.ID.toString()
+            ) {
+              flyToCoords(target, {
+                lat: thisOne.properties.Latitude,
+                lng: thisOne.properties.Longitude,
+              })
+            }
+
+            if (cacheOfIDs.indexOf(thisOne.properties.ID) === -1) {
+              cacheOfIDs.push(thisOne.properties.ID)
+
+              return [...all, thisOne.properties]
+            }
+
+            return all
+          },
+          []
+        )
 
         // TODO: get full list of features without starting at low Zoom
         // target.on('sourcedata', function (e) {
@@ -216,53 +229,34 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
         //     // Do something when the source has finished loading
         //   }
         // })
-        target.on('zoomend', (mapObj) => {
-          const { updateViewportState } = mapObj
 
-          if (!updateViewportState) {
-            return null
+        target.on('zoomend', function handleZoomEnd(mapObj) {
+          const { newPosition } = mapObj
+
+          if (!mapObj.newPosition) {
+            return
           }
 
           setViewport({
-            zoom: target.getZoom(),
-            latitude: target.getCenter().lat,
-            longitude: target.getCenter().lng,
+            zoom: newPosition.zoom,
+            latitude: newPosition.center.lat,
+            longitude: newPosition.center.lng,
           })
-
-          return null
         })
-
-        // TODO: tighten up query params via TS
-        // TODO: make it all reusable, including `flyTo`, for route changes
-        if (parsed && parsed.id) {
-          const matchingRecord = rawLangFeats.find((feature) => {
-            const featAttribs = feature.properties as LangRecordSchema
-
-            return featAttribs.ID.toString() === parsed.id
-          })
-
-          if (matchingRecord) {
-            flyToCoords(target, matchingRecord)
-          }
-        }
-
-        // Just the properties for table/results, etc. Don't need the cruft from
-        // geojson.
-        // TODO: could `matchingRecord` be found within the `.map` here to reduce looping/iteration of `.find`?
-        const featsWithAttribsOnly = rawLangFeats.map(
-          ({ properties }) => properties
-        )
 
         dispatch({
           type: 'INIT_LANG_LAYER_FEATURES',
-          payload: featsWithAttribsOnly as LangRecordSchema[],
+          // TODO: come on, fix this
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          payload: uniqueRecords as LangRecordSchema[],
         })
       }}
     >
       {/* NOTE: it did not seem to work when using two different Styles with the same dataset unless waiting until there is something to put into <Source> */}
-      {symbLayers.length && labelLayers.length && (
+      {symbLayers && labelLayers && (
         <LangMbSrcAndLayer
-          selFeatID={selFeatID}
+          selFeatID={selFeatAttrbs ? selFeatAttrbs.ID : null}
           symbLayers={symbLayers}
           labelLayers={labelLayers}
         />

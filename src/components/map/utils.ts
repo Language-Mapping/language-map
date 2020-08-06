@@ -21,7 +21,7 @@ export const prepMapPadding = (
   if (!isDesktop) {
     return {
       ...defaults,
-      bottom: window.screen.height / 2 - topBarHeight,
+      bottom: window.screen.height / 4 + topBarHeight * 2,
     }
   }
 
@@ -31,7 +31,7 @@ export const prepMapPadding = (
 
   return {
     ...defaults,
-    left: window.screen.width / 2 - (sidePanelWidth - sidePanelGutter),
+    left: sidePanelWidth + sidePanelGutter,
     top: topBarHeight,
   }
 }

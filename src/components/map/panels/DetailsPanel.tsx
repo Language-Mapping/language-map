@@ -3,9 +3,6 @@ import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Divider } from '@material-ui/core'
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import queryString from 'query-string'
 import { GlobalContext, LoadingIndicator } from 'components'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -17,6 +14,9 @@ const useStyles = makeStyles((theme: Theme) =>
     intro: {
       textAlign: 'center',
       paddingBottom: theme.spacing(1),
+    },
+    subheading: {
+      marginBottom: theme.spacing(1),
     },
     description: {
       marginTop: theme.spacing(1),
@@ -32,17 +32,15 @@ export const DetailsPanel: FC = () => {
   const { state } = useContext(GlobalContext)
 
   // Shaky check to see if features have loaded and are stored globally
+  // TODO: use MB's loading events to set this instead
   if (!state.langFeaturesCached.length) {
     return <LoadingIndicator />
   }
 
-  const parsed = queryString.parse(window.location.search)
-  const matchingRecord = state.langFeatures.find(
-    (feature) => feature.ID === parseInt(parsed.id, 10)
-  )
+  const { selFeatAttrbs } = state
 
-  // No `id` in `search` params
-  if (!parsed.id) {
+  // No sel feat details
+  if (!selFeatAttrbs) {
     return (
       <p>
         Click a language community in the map or the{' '}
@@ -51,16 +49,14 @@ export const DetailsPanel: FC = () => {
     )
   }
 
-  if (!matchingRecord) {
-    return (
-      <p>
-        Feature with id <b>{parsed.id}</b> not found.
-      </p>
-    )
-  }
-
-  const heading = matchingRecord.Endonym || matchingRecord.Language
-  document.title = `${matchingRecord.Language as string} - NYC Languages`
+  // TODO: deal with this
+  // if (!Object.keys(state.selFeatAttrbs).length) {
+  //   return (
+  //     <p>
+  //       Feature with id <b>{parsed.id}</b> not found.
+  //     </p>
+  //   )
+  // }
 
   return (
     <div className={classes.detailsPanelRoot}>
@@ -69,25 +65,20 @@ export const DetailsPanel: FC = () => {
       </RouterLink>
       <div className={classes.intro}>
         <Typography component="h3" variant="h4">
-          {heading}
+          {selFeatAttrbs.Endonym}
         </Typography>
-        {/* TODO: rm existence check once Endonym column fully populated */}
-        {matchingRecord.Endonym &&
-          matchingRecord.Endonym !== matchingRecord.Language && (
-            <>
-              <Typography variant="caption">
-                {`(${matchingRecord.Language})`}
-              </Typography>
-              <br />
-            </>
-          )}
+        {selFeatAttrbs.Endonym !== selFeatAttrbs.Language && (
+          <Typography variant="caption" className={classes.subheading}>
+            {`(${selFeatAttrbs.Language})`}
+          </Typography>
+        )}
         <small>
-          <i>{matchingRecord.Neighborhood}</i>
+          <i>{selFeatAttrbs.Neighborhood}</i>
         </small>
       </div>
       <Divider />
       <Typography variant="body2" className={classes.description}>
-        {matchingRecord.Description}
+        {selFeatAttrbs.Description}
       </Typography>
     </div>
   )

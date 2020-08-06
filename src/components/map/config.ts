@@ -5,7 +5,7 @@ const mapCenter = [-73.96, 40.7128] as [number, number]
 export const initialMapState = {
   latitude: mapCenter[1],
   longitude: mapCenter[0],
-  zoom: 2,
+  zoom: 5,
 }
 
 export const langSrcConfig = {

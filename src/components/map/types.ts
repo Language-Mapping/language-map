@@ -1,4 +1,5 @@
 import { LayerProps, PointerEvent } from 'react-map-gl'
+import * as mbGlFull from 'mapbox-gl'
 
 import {
   LangRecordSchema,
@@ -45,6 +46,8 @@ export type LayerPropsPlusMeta = LayerProps & {
   metadata: {
     'mapbox:group': string
   }
+  paint: mbGlFull.CirclePaint
+  'source-layer': string
 }
 
 export type LayerComponentType = {
