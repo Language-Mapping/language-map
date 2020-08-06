@@ -2,7 +2,7 @@ import React, { FC, useState, useContext, useEffect } from 'react'
 /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 import queryString from 'query-string'
-import { Route, Switch, useHistory, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
   Box,
@@ -91,7 +91,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const MapWrap: FC = () => {
   const classes = useStyles()
-  const history = useHistory()
   const [panelOpen, setPanelOpen] = useState(true)
   const location = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
@@ -128,6 +127,11 @@ export const MapWrap: FC = () => {
       type: 'SET_SEL_FEAT_ATTRIBS',
       payload: matchingRecord,
     })
+
+    dispatch({
+      type: 'SET_ACTIVE_PANEL_INDEX',
+      payload: 2,
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search, state.langFeaturesCached.length])
   // ^^^^^^^ run it on load and on search params change ^^^^^^^
@@ -159,35 +163,32 @@ export const MapWrap: FC = () => {
             <MdClose />
           </IconButton>
         )}
-        <Switch>
-          {panelsConfig.map((config) => (
-            <Route key={config.heading} path={config.route} exact>
-              <MapPanel
-                {...config}
-                active={config.route === location.pathname}
-              />
-            </Route>
-          ))}
-        </Switch>
+        {panelsConfig.map((config, i) => (
+          <MapPanel
+            key={config.heading}
+            {...config}
+            active={i === state.activePanelIndex}
+          />
+        ))}
       </Box>
       <BottomNavigation
         showLabels
         className={classes.bottomNavRoot}
-        value={location.pathname}
+        value={state.activePanelIndex}
         onChange={(event, newValue) => {
-          history.push(newValue + window.location.search)
+          dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: newValue })
 
           // Open the container if closed, close it if already active panel
-          if (panelOpen && newValue === location.pathname) {
+          if (panelOpen && newValue === state.activePanelIndex) {
             setPanelOpen(false)
           } else {
             setPanelOpen(true)
           }
         }}
       >
-        {panelsConfig.map((config) => (
+        {panelsConfig.map((config, i) => (
           <BottomNavigationAction
-            value={config.route}
+            value={i}
             key={config.heading}
             label={config.heading}
             icon={config.icon}

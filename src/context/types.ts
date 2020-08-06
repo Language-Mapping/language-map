@@ -11,12 +11,13 @@ import {
 } from 'components/map/types'
 
 export type GlobalContextDispatchType = React.Dispatch<StoreActionType>
-export type ActivePanelRouteType = '/' | '/display' | '/results' | '/details'
+export type ActivePanelIndexType = 0 | 1 | 2 | 3
 
 export type StoreActionType =
   | { type: 'INIT_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | { type: 'INIT_LANG_LAYER_LABEL_OPTIONS'; payload: string[] }
   | { type: 'INIT_LANG_LAYER_SYMB_OPTIONS'; payload: MetadataGroupType }
+  | { type: 'SET_ACTIVE_PANEL_INDEX'; payload: ActivePanelIndexType }
   | { type: 'SET_BASELAYER'; payload: BaselayerType }
   | { type: 'SET_LANG_LAYER_LABELS'; payload: string }
   | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatchType[] }
@@ -29,6 +30,7 @@ export type StoreActionType =
 export type InitialStateType = {
   activeLangLabelId: string
   activeLangSymbGroupId: string
+  activePanelIndex: ActivePanelIndexType
   baselayer: BaselayerType
   hasSeenSplash: boolean
   langFeatures: LangRecordSchema[]

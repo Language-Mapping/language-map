@@ -111,10 +111,10 @@ export const ResultsPanel: FC = () => {
       </p>
       {resultsModalOpen && (
         <ResultsModal setResultsModalOpen={setResultsModalOpen}>
-          <ResultsTable />
+          <ResultsTable setResultsModalOpen={setResultsModalOpen} />
         </ResultsModal>
       )}
-      <ResultsTable />
+      <ResultsTable setResultsModalOpen={setResultsModalOpen} />
     </div>
   )
 }

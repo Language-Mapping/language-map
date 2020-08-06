@@ -15,8 +15,12 @@ import {
 
 import { GlobalContext } from 'components'
 
-export const ResultsTable: FC = () => {
-  const { state } = useContext(GlobalContext)
+type ResultsTableType = {
+  setResultsModalOpen: React.Dispatch<boolean>
+}
+
+export const ResultsTable: FC<ResultsTableType> = ({ setResultsModalOpen }) => {
+  const { state, dispatch } = useContext(GlobalContext)
   const history = useHistory()
 
   const columns = [
@@ -71,7 +75,10 @@ export const ResultsTable: FC = () => {
         if (!b) {
           return
         }
+
         history.push(`/details?id=${b.ID}`)
+        dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: 2 })
+        setResultsModalOpen(false)
       }}
     />
   )

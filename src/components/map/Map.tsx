@@ -160,7 +160,8 @@ export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
 
         // No language features under click
         if (!langFeatClicked(event.features, langSrcConfig.internalSrcID)) {
-          history.push(`${location.pathname}`)
+          history.push('/details')
+          dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
 
           return
         }

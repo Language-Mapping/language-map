@@ -1,7 +1,7 @@
 import React, { FC, useContext } from 'react'
-import { Link as RouterLink, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography, Divider } from '@material-ui/core'
+import { Link, Typography, Divider } from '@material-ui/core'
 
 import { GlobalContext, LoadingIndicator } from 'components'
 
@@ -29,7 +29,7 @@ export const DetailsPanel: FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getLocation = useLocation() // must exist for routing to work?
   const classes = useStyles()
-  const { state } = useContext(GlobalContext)
+  const { state, dispatch } = useContext(GlobalContext)
 
   // Shaky check to see if features have loaded and are stored globally
   // TODO: use MB's loading events to set this instead
@@ -44,7 +44,16 @@ export const DetailsPanel: FC = () => {
     return (
       <p>
         Click a language community in the map or the{' '}
-        <RouterLink to="/results">data table</RouterLink> to learn more.
+        <Link
+          href="javascript;"
+          onClick={(e: React.MouseEvent) => {
+            e.preventDefault()
+            dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: 1 })
+          }}
+        >
+          data table
+        </Link>{' '}
+        to learn more.
       </p>
     )
   }
@@ -60,9 +69,15 @@ export const DetailsPanel: FC = () => {
 
   return (
     <div className={classes.detailsPanelRoot}>
-      <RouterLink to={`/results${window.location.search}`}>
+      <Link
+        href="javascript;"
+        onClick={(e: React.MouseEvent) => {
+          e.preventDefault()
+          dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: 1 })
+        }}
+      >
         {`<`} Back to results
-      </RouterLink>
+      </Link>
       <div className={classes.intro}>
         <Typography component="h3" variant="h4">
           {selFeatAttrbs.Endonym}

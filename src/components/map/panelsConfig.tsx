@@ -1,9 +1,10 @@
-import React from 'react'
-import { Link as RouterLink } from 'react-router-dom'
+import React, { FC, useContext } from 'react'
 import { FaFilter } from 'react-icons/fa'
 import { GoSettings } from 'react-icons/go'
 import { TiDocumentText, TiThList } from 'react-icons/ti'
+import { Link } from '@material-ui/core'
 
+import { GlobalContext } from 'components'
 import {
   LayersPanel,
   DetailsPanel,
@@ -11,21 +12,42 @@ import {
   FiltersPanel,
 } from 'components/map'
 import { MapPanelTypes } from './types'
+import { ActivePanelIndexType } from '../../context/types'
+
+type CheapLinkType = {
+  text: string
+  activePanelIndex: ActivePanelIndexType
+}
+
+const CheapLinkWithDispatch: FC<CheapLinkType> = ({
+  text,
+  activePanelIndex,
+}) => {
+  const { dispatch } = useContext(GlobalContext)
+
+  return (
+    <Link
+      href="javascript;"
+      onClick={(e: React.MouseEvent) => {
+        e.preventDefault()
+        dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: activePanelIndex })
+      }}
+    >
+      {text}
+    </Link>
+  )
+}
 
 export const panelsConfig = [
   {
     heading: 'Filter',
     subheading: 'and query language data',
     icon: <FaFilter />,
-    route: '/',
     summary: (
       <>
         Explore 1000+ language communities using the options below. Your filters
         affect both the map and{' '}
-        <RouterLink to={`/results${window.location.search}`}>
-          data table
-        </RouterLink>
-        .
+        <CheapLinkWithDispatch text="data table" activePanelIndex={1} />.
       </>
     ),
     component: <FiltersPanel />,
@@ -34,16 +56,15 @@ export const panelsConfig = [
     heading: 'Data',
     subheading: 'as a searchable table',
     icon: <TiThList />,
-    route: '/results',
     // Could this work instead of emoji API? Seems way too easy.
     // https://material-ui.com/components/autocomplete/#country-select
     component: <ResultsPanel />,
     summary: (
       <>
         View results of your{' '}
-        <RouterLink to={`/${window.location.search}`}>filters</RouterLink> in a
-        table which you can further refine, sort, and search. Note that options
-        here only affect the table below.
+        <CheapLinkWithDispatch text="filters" activePanelIndex={0} /> in a table
+        which you can further refine, sort, and search. Note that options here
+        only affect the table below.
       </>
     ),
   },
@@ -51,7 +72,6 @@ export const panelsConfig = [
     heading: 'Details',
     subheading: 'of selected community',
     icon: <TiDocumentText />,
-    route: '/details',
     component: <DetailsPanel />,
     summary: '',
   },
@@ -59,7 +79,6 @@ export const panelsConfig = [
     heading: 'Settings',
     subheading: 'for map symbols and labels',
     icon: <GoSettings />,
-    route: '/display',
     component: <LayersPanel />,
     summary:
       'Visualize language communities in different ways by changing their symbols and labels below.',
