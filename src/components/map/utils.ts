@@ -1,4 +1,9 @@
+import * as mbGlFull from 'mapbox-gl'
 import { PaddingOptions } from 'mapbox-gl'
+
+import { StoreActionType } from '../../context/types'
+import { MapEventType, LangFeatureType, LayerPropsPlusMeta } from './types'
+import { createMapLegend } from '../../utils'
 
 // One of the problems of using panels which overlap the map is how to deal with
 // "centering", in quotes because it's more "perceived" centering. Offset is
@@ -34,4 +39,70 @@ export const prepMapPadding = (
     left: sidePanelWidth + sidePanelGutter,
     top: topBarHeight,
   }
+}
+
+export function flyToCoords(
+  target: mbGlFull.Map,
+  center: { lng: number; lat: number },
+  zoom?: number
+): void {
+  const zoomLevel = zoom || 12
+
+  target.flyTo(
+    {
+      // Animation is considered essential with respect to
+      // prefers-reduced-motion
+      essential: true,
+      center,
+      zoom: zoomLevel,
+    },
+    {
+      openPopup: true,
+      newPosition: {
+        center,
+        zoom: zoomLevel,
+      },
+    }
+  )
+}
+
+// Only if features exist and the top one matches the language source ID
+export const areLangFeatsUnderCursor = (
+  features: LangFeatureType[],
+  internalSrcID: string
+): boolean =>
+  features && features.length !== 0 && features[0].source === internalSrcID
+
+export function handleHover(event: MapEventType, sourceID: string): void {
+  const { features, target } = event
+
+  if (!areLangFeatsUnderCursor(features, sourceID)) {
+    // TODO: hide label on mouseout
+    target.style.cursor = 'default'
+  } else {
+    // TODO: show label on hover
+    target.style.cursor = 'pointer'
+  }
+}
+
+export const initLegend = (
+  dispatch: React.Dispatch<StoreActionType>,
+  activeLangSymbGroupId: string,
+  symbLayers?: LayerPropsPlusMeta[]
+): void => {
+  if (!symbLayers) {
+    return
+  }
+
+  const layersInActiveGroup = symbLayers.filter(
+    (layer: LayerPropsPlusMeta) =>
+      layer.metadata['mapbox:group'] === activeLangSymbGroupId
+  )
+
+  const legend = createMapLegend(layersInActiveGroup)
+
+  dispatch({
+    type: 'SET_LANG_LAYER_LEGEND',
+    payload: legend,
+  })
 }

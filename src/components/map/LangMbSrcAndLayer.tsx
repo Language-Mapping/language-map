@@ -4,7 +4,7 @@ import { Source, Layer } from 'react-map-gl'
 
 import { GlobalContext } from 'components'
 import { LayerPropsPlusMeta } from './types'
-import { langSrcConfig } from './config'
+import { mbStylesTilesConfig } from './config'
 
 type SourceAndLayerType = {
   symbLayers: LayerPropsPlusMeta[]
@@ -26,8 +26,8 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
       // @ts-ignore // promoteId is just not anywhere in the source...
       promoteId="ID"
       type="vector"
-      url={`mapbox://${langSrcConfig.tilesetId}`}
-      id={langSrcConfig.internalSrcID}
+      url={`mapbox://${mbStylesTilesConfig.tilesetId}`}
+      id={mbStylesTilesConfig.internalSrcID}
     >
       {symbLayers.map((layer: LayerPropsPlusMeta) => {
         let radius = 5

@@ -13,7 +13,6 @@ import {
 import { MdClose } from 'react-icons/md'
 
 import { Map, MapPanel, MapControls } from 'components/map'
-import { initialMapState } from 'components/map/config'
 import { GlobalContext } from 'components'
 import { panelsConfig } from './panelsConfig'
 
@@ -91,9 +90,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const MapWrap: FC = () => {
   const classes = useStyles()
-  const [panelOpen, setPanelOpen] = useState(true)
   const location = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
+  const [panelOpen, setPanelOpen] = useState(true)
   const { langFeaturesCached } = state
 
   // Do selected feature stuff on location change
@@ -139,7 +138,7 @@ export const MapWrap: FC = () => {
   return (
     <div className={classes.mapWrapRoot}>
       <div className={classes.mapItselfWrap}>
-        <Map {...initialMapState} />
+        <Map />
         <MapControls />
       </div>
       <Box

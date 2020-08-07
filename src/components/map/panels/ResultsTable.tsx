@@ -71,12 +71,13 @@ export const ResultsTable: FC<ResultsTableType> = ({ setResultsModalOpen }) => {
       options={options}
       columns={columns}
       data={state.langFeatures}
-      onRowClick={(a, b) => {
-        if (!b) {
+      onRowClick={(a, record) => {
+        if (!record) {
           return
         }
 
-        history.push(`/details?id=${b.ID}`)
+        history.push(`/?id=${record.ID}`)
+
         dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: 2 })
         setResultsModalOpen(false)
       }}

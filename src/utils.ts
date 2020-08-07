@@ -5,7 +5,6 @@ import {
   LegendSwatchType,
   MbResponseType,
   LayerPropsPlusMeta,
-  LangFeatureType,
 } from 'components/map/types'
 import {
   StoreActionType,
@@ -113,13 +112,6 @@ export const getMbStyleDocument = async (
   setLabelLayers(labelsLayers)
   setSymbLayers(notTheBgLayerOrLabels)
 }
-
-// Only if features exist and the top one matches the language source ID
-export const langFeatClicked = (
-  features: LangFeatureType[],
-  internalSrcID: string
-): boolean =>
-  features && features.length !== 0 && features[0].source === internalSrcID
 
 export const getAboutPageContent = async (
   url: string,
