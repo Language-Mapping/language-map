@@ -1,7 +1,4 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
-/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-import queryString from 'query-string'
 import { useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
@@ -14,7 +11,10 @@ import { MdClose } from 'react-icons/md'
 
 import { Map, MapPanel, MapControls } from 'components/map'
 import { GlobalContext } from 'components'
+import { LayerPropsPlusMeta } from './types'
 import { panelsConfig } from './panelsConfig'
+import { getIDfromURLparams, getMbStyleDocument } from '../../utils'
+import { mbStylesTilesConfig } from './config'
 
 const transforms = {
   open: 'translateY(0%)',
@@ -90,16 +90,47 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const MapWrap: FC = () => {
   const classes = useStyles()
-  const location = useLocation()
+  const loc = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
   const [panelOpen, setPanelOpen] = useState(true)
+  const [prevSelFeatID, setPrevSelFeatID] = useState<number | null>(null)
+  const [symbLayers, setSymbLayers] = useState<LayerPropsPlusMeta[]>()
+  const [labelLayers, setLabelLayers] = useState<LayerPropsPlusMeta[]>()
+  const [selFeatLocal, setSelFeatLocal] = useState<{
+    lat: number
+    lng: number
+    id: number
+  }>()
+
   const { langFeaturesCached } = state
+
+  // Fetch MB Style doc
+  useEffect(() => {
+    getMbStyleDocument(
+      mbStylesTilesConfig.symbStyleUrl,
+      dispatch,
+      setSymbLayers,
+      setLabelLayers
+    ).catch((errMsg) => {
+      // eslint-disable-next-line no-console
+      console.error(
+        // TODO: wire up sentry
+        `Something went wrong trying to fetch MB style JSON: ${errMsg}`
+      )
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Do selected feature stuff on location change
   useEffect((): void => {
-    const parsed = queryString.parse(location.search)
+    const idFromUrl = getIDfromURLparams(window.location.search)
 
-    if (!langFeaturesCached.length || !parsed || !parsed.id) {
+    // Cache the previous ID so its feature state can be cleared/deselected
+    if (state.selFeatAttrbs) {
+      setPrevSelFeatID(state.selFeatAttrbs.ID)
+    }
+
+    if (!langFeaturesCached.length || !idFromUrl) {
       return
     }
 
@@ -108,7 +139,7 @@ export const MapWrap: FC = () => {
     //       //   (feat) => parsed.id === feat.ID.toString()
     // )
     const matchingRecord = langFeaturesCached.find(
-      (record) => record.ID.toString() === parsed.id
+      (record) => record.ID === idFromUrl
     )
 
     if (!matchingRecord) {
@@ -122,6 +153,15 @@ export const MapWrap: FC = () => {
 
     document.title = `${matchingRecord.Language as string} - NYC Languages`
 
+    // Redundant with global state, but could not seem to juggle the `useEffect`
+    // and timing between this component and <Map>. Seems like cheap fix, but
+    // keep eye out for better option.
+    setSelFeatLocal({
+      lat: matchingRecord.Latitude,
+      lng: matchingRecord.Longitude,
+      id: matchingRecord.ID,
+    })
+
     dispatch({
       type: 'SET_SEL_FEAT_ATTRIBS',
       payload: matchingRecord,
@@ -132,15 +172,23 @@ export const MapWrap: FC = () => {
       payload: 2,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search, state.langFeaturesCached.length])
+  }, [loc, state.langFeaturesCached.length])
   // ^^^^^^^ run it on load and on search params change ^^^^^^^
 
   return (
     <div className={classes.mapWrapRoot}>
-      <div className={classes.mapItselfWrap}>
-        <Map />
-        <MapControls />
-      </div>
+      {symbLayers && labelLayers && (
+        <div className={classes.mapItselfWrap}>
+          <Map
+            symbLayers={symbLayers}
+            labelLayers={labelLayers}
+            selFeatLocal={selFeatLocal}
+            prevSelFeatID={prevSelFeatID}
+          />
+          <MapControls />
+        </div>
+      )}
+      {/* TODO: this and BottomNav into separate component/s (very non-map) */}
       <Box
         // Need the `id` in order to find unique element for `map.setPadding`
         id="map-panels-wrap"

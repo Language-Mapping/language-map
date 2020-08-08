@@ -9,13 +9,11 @@ import { mbStylesTilesConfig } from './config'
 type SourceAndLayerType = {
   symbLayers: LayerPropsPlusMeta[]
   labelLayers: LayerPropsPlusMeta[]
-  selFeatID: number | null
 }
 
 export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
   symbLayers,
   labelLayers,
-  selFeatID,
 }) => {
   const { state } = useContext(GlobalContext)
   const { activeLangSymbGroupId, activeLangLabelId } = state
@@ -30,23 +28,6 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
       id={mbStylesTilesConfig.internalSrcID}
     >
       {symbLayers.map((layer: LayerPropsPlusMeta) => {
-        let radius = 5
-
-        // Something screwy with TS defs for paint...
-        /* eslint-disable @typescript-eslint/ban-ts-comment */
-        if (selFeatID) {
-          // @ts-ignore
-          radius = ['match', ['get', 'ID'], [selFeatID], 15, 5]
-        } else if (layer.paint && layer.paint['circle-radius']) {
-          // @ts-ignore
-          radius = layer.paint['circle-radius']
-        }
-        /* eslint-enable @typescript-eslint/ban-ts-comment */
-        const paint: mbGlFull.CirclePaint = {
-          ...layer.paint,
-          'circle-radius': radius,
-        }
-
         const isInActiveGroup =
           layer.metadata['mapbox:group'] === activeLangSymbGroupId
 
@@ -58,7 +39,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
             layout={{
               visibility: isInActiveGroup ? 'visible' : 'none',
             }}
-            paint={paint}
+            paint={layer.paint}
           />
         )
       })}
@@ -71,17 +52,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
           visibility: isActiveLabel ? 'visible' : 'none',
         }
 
-        return (
-          <Layer
-            key={layer.id}
-            id={layer.id}
-            type={layer.type}
-            source={layer.source}
-            source-layer={layer['source-layer']}
-            paint={layer.paint}
-            layout={layout}
-          />
-        )
+        return <Layer key={layer.id} {...layer} layout={layout} />
       })}
     </Source>
   )

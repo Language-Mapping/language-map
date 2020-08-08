@@ -76,7 +76,7 @@ export const ResultsTable: FC<ResultsTableType> = ({ setResultsModalOpen }) => {
           return
         }
 
-        history.push(`/?id=${record.ID}`)
+        history.push(`/details?id=${record.ID}`)
 
         dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: 2 })
         setResultsModalOpen(false)

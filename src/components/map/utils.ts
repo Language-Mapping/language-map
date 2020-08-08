@@ -43,24 +43,23 @@ export const prepMapPadding = (
 
 export function flyToCoords(
   target: mbGlFull.Map,
-  center: { lng: number; lat: number },
-  zoom?: number
+  settings: { lng: number; lat: number; zoom?: number | 10.25 }
 ): void {
-  const zoomLevel = zoom || 12
+  const { zoom, lat, lng } = settings
 
   target.flyTo(
     {
       // Animation is considered essential with respect to
       // prefers-reduced-motion
       essential: true,
-      center,
-      zoom: zoomLevel,
+      center: { lat, lng },
+      zoom,
     },
     {
       openPopup: true,
       newPosition: {
-        center,
-        zoom: zoomLevel,
+        center: { lat, lng },
+        zoom,
       },
     }
   )
@@ -88,12 +87,8 @@ export function handleHover(event: MapEventType, sourceID: string): void {
 export const initLegend = (
   dispatch: React.Dispatch<StoreActionType>,
   activeLangSymbGroupId: string,
-  symbLayers?: LayerPropsPlusMeta[]
+  symbLayers: LayerPropsPlusMeta[]
 ): void => {
-  if (!symbLayers) {
-    return
-  }
-
   const layersInActiveGroup = symbLayers.filter(
     (layer: LayerPropsPlusMeta) =>
       layer.metadata['mapbox:group'] === activeLangSymbGroupId

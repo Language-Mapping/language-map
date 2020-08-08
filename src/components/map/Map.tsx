@@ -1,8 +1,5 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
-/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-import queryString from 'query-string'
+import { useHistory } from 'react-router-dom'
 import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
 import * as mbGlFull from 'mapbox-gl'
 import { useTheme } from '@material-ui/core/styles'
@@ -14,84 +11,113 @@ import { GlobalContext, LoadingBackdrop } from 'components'
 import { LangMbSrcAndLayer } from 'components/map'
 import { LangRecordSchema } from '../../context/types'
 import { MapEventType, LayerPropsPlusMeta } from './types'
+import { getIDfromURLparams, findFeatureByID } from '../../utils'
 import {
   prepMapPadding,
   flyToCoords,
   handleHover,
   areLangFeatsUnderCursor,
-  initLegend,
 } from './utils'
-import { getMbStyleDocument } from '../../utils'
 import {
   mbStylesTilesConfig,
-  symbStyleUrl,
   MAPBOX_TOKEN,
   initialMapState,
   postLoadInitMapStates,
 } from './config'
 
 type MapRefType = React.RefObject<InteractiveMap>
+type MapPropsType = {
+  prevSelFeatID: number | null
+  selFeatLocal?: {
+    lat: number
+    lng: number
+    id: number
+  }
+  symbLayers?: LayerPropsPlusMeta[]
+  labelLayers?: LayerPropsPlusMeta[]
+}
 
-export const Map: FC = () => {
+export const Map: FC<MapPropsType> = ({
+  symbLayers,
+  labelLayers,
+  selFeatLocal,
+  prevSelFeatID,
+}) => {
   const theme = useTheme()
   const history = useHistory()
-  const location = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
-  const { selFeatAttrbs } = state
   const mapRef: MapRefType = React.createRef()
 
   const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
 
   const [viewport, setViewport] = useState(initialMapState)
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
-  const [symbLayers, setSymbLayers] = useState<LayerPropsPlusMeta[]>()
-  const [labelLayers, setLabelLayers] = useState<LayerPropsPlusMeta[]>()
 
-  // Fetch MB Style doc
-  useEffect(() => {
-    getMbStyleDocument(
-      symbStyleUrl,
-      dispatch,
-      setSymbLayers,
-      setLabelLayers
-    ).catch((errMsg) => {
-      // eslint-disable-next-line no-console
-      console.error(
-        // TODO: wire up sentry
-        `Something went wrong trying to fetch MB style JSON: ${errMsg}`
-      )
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  // Do selected feature stuff on location change
+  // Do selected feature stuff on sel feat change
   useEffect((): void => {
-    if (!mapRef.current || !selFeatAttrbs) {
+    // Map not ready
+    if (!mapRef.current) {
       return
     }
 
     const map: mbGlFull.Map = mapRef.current.getMap()
 
-    flyToCoords(
-      map,
+    // Deselect currently selected feature if there is one
+    if (prevSelFeatID) {
+      setSelFeatState(map, prevSelFeatID, false)
+    }
+
+    if (!selFeatLocal) {
+      return
+    }
+
+    // Make feature appear selected
+    setSelFeatState(map, selFeatLocal.id, true)
+
+    flyToCoords(map, {
+      lat: selFeatLocal.lat,
+      lng: selFeatLocal.lng,
+      zoom: 12,
+    })
+    /* eslint-enable @typescript-eslint/ban-ts-comment */
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selFeatLocal])
+
+  function setSelFeatState(map: mbGlFull.Map, id: number, selected: boolean) {
+    map.setFeatureState(
       {
-        lat: selFeatAttrbs.Latitude,
-        lng: selFeatAttrbs.Longitude,
+        sourceLayer: mbStylesTilesConfig.layerId,
+        source: mbStylesTilesConfig.internalSrcID,
+        id,
       },
-      12
+      { selected }
     )
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search, selFeatAttrbs])
-
-  // Create map legend
-  useEffect(() => {
-    initLegend(dispatch, state.activeLangSymbGroupId, symbLayers)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [symbLayers])
+  }
 
   function onHover(event: MapEventType) {
     handleHover(event, mbStylesTilesConfig.internalSrcID)
+  }
+
+  // Update viewport state after things like `flyTo`, otherwise the map shifts
+  // back to previous position after panning or zooming.
+  function forceViewportUpdate(newPosition?: {
+    zoom: number
+    center: {
+      lat: number
+      lng: number
+    }
+  }) {
+    // Custom object via `EventData` (e.g. after `flyTo`)
+    if (!newPosition) {
+      return
+    }
+
+    setViewport({
+      zoom: newPosition.zoom,
+      latitude: newPosition.center.lat,
+      longitude: newPosition.center.lng,
+    })
   }
 
   // Runs only once and kicks off the whole thinig
@@ -99,17 +125,7 @@ export const Map: FC = () => {
     const { target: map } = mapLoadEvent
 
     map.on('zoomend', function handleZoomEnd(mapObj) {
-      const { newPosition } = mapObj
-
-      if (!mapObj.newPosition) {
-        return
-      }
-
-      setViewport({
-        zoom: newPosition.zoom,
-        latitude: newPosition.center.lat,
-        longitude: newPosition.center.lng,
-      })
+      forceViewportUpdate(mapObj.newPosition)
     })
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -129,13 +145,14 @@ export const Map: FC = () => {
     map.setPadding(prepMapPadding(isDesktop))
     // TODO: ^^^^ make pinch and scroll wheel work as expected ^^^^
 
-    // TODO: tighten up query params via TS
-    const parsed = queryString.parse(location.search)
     const cacheOfIDs: number[] = []
-
     const uniqueRecords: LangRecordSchema[] = []
+    const idFromUrl = getIDfromURLparams(window.location.search)
 
-    // Just the properties for table/results, don't need the GeoJSON cruft
+    // Just the properties for table/results, don't need the GeoJSON cruft. Also
+    // need to make sure each ID is unique as there have been some initial data
+    // inconsistencies, and more importantly MB may have feature duplication if
+    // there is a tile overlap.
     rawLangFeats.forEach((thisFeat) => {
       if (
         !thisFeat.properties ||
@@ -145,25 +162,27 @@ export const Map: FC = () => {
       }
 
       const justTheProps = thisFeat.properties as LangRecordSchema
+
       cacheOfIDs.push(justTheProps.ID)
-
-      // Cheap way to set some things while in the middle of the loop
-      if (parsed && parsed.id && parsed.id === justTheProps.ID.toString()) {
-        dispatch({
-          type: 'SET_SEL_FEAT_ATTRIBS',
-          payload: justTheProps,
-        })
-      }
-
       uniqueRecords.push(justTheProps)
     })
+
+    const matchingRecord = findFeatureByID(uniqueRecords, idFromUrl)
 
     // If feature selected, `useEffect` will be triggered and handle the
     // zoom. Otherwise fly to the post-load settings that look good on
     // mobile or desktop.
-    if (!selFeatAttrbs) {
+    if (!matchingRecord) {
       const configKey = isDesktop ? 'desktop' : 'mobile'
-      flyToCoords(map, postLoadInitMapStates[configKey])
+
+      flyToCoords(map, {
+        ...postLoadInitMapStates[configKey],
+      })
+    } else {
+      flyToCoords(map, {
+        lat: matchingRecord.Latitude,
+        lng: matchingRecord.Longitude,
+      })
     }
 
     dispatch({
@@ -174,11 +193,29 @@ export const Map: FC = () => {
     setMapLoaded(true)
   }
 
+  function onNativeClick(event: MapEventType): void {
+    // No language features under click, clear the route
+    if (
+      !areLangFeatsUnderCursor(
+        event.features,
+        mbStylesTilesConfig.internalSrcID
+      )
+    ) {
+      history.push('/') // TODO: better solution than home route?
+
+      return
+    }
+
+    // TODO: use `initialEntries` in <MemoryRouter> to test routing
+    history.push(`/details?id=${event.features[0].properties.ID}`)
+  }
+
   return (
     <>
       {!mapLoaded && <LoadingBackdrop />}
       <MapGL
         {...viewport}
+        clickRadius={3} // much comfier for small points on small screens
         ref={mapRef}
         height="100%"
         width="100%"
@@ -188,35 +225,7 @@ export const Map: FC = () => {
         // TODO: show MB attribution text (not logo) on mobile
         className="mb-language-map"
         // TODO: mv into utils
-        onNativeClick={(event: MapEventType): void => {
-          // Deselect currently selected feature if there is one
-          if (mapRef.current && selFeatAttrbs) {
-            mapRef.current.getMap().setFeatureState(
-              {
-                sourceLayer: mbStylesTilesConfig.layerId,
-                source: mbStylesTilesConfig.internalSrcID,
-                id: selFeatAttrbs.ID,
-              },
-              { selected: false }
-            )
-          }
-
-          // No language features under click
-          if (
-            !areLangFeatsUnderCursor(
-              event.features,
-              mbStylesTilesConfig.internalSrcID
-            )
-          ) {
-            history.push('/')
-            dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
-
-            return
-          }
-
-          // TODO: use `initialEntries` in <MemoryRouter> to test routing
-          history.push(`/?id=${event.features[0].properties.ID}`)
-        }}
+        onNativeClick={onNativeClick}
         onHover={onHover}
         onLoad={(mapLoadEvent) => {
           onLoad(mapLoadEvent)
@@ -225,7 +234,6 @@ export const Map: FC = () => {
         {/* NOTE: it did not seem to work when using two different Styles with the same dataset unless waiting until there is something to put into <Source> */}
         {symbLayers && labelLayers && (
           <LangMbSrcAndLayer
-            selFeatID={selFeatAttrbs ? selFeatAttrbs.ID : null}
             symbLayers={symbLayers}
             labelLayers={labelLayers}
           />

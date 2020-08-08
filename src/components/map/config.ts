@@ -1,20 +1,23 @@
-const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
+// TODO: rm if only using local, otherwise restore when ready
+// const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MB_TOKEN
 export const mbStylesTilesConfig = {
   // NOTE: Draft does NOT seem to be reliable or real-time
   // styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48/draft',
-  styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48',
+  // TODO: rm if only using local, otherwise restore when ready
+  // styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48',
   // TODO: ^^^ consider local URL, at least during dev ^^^
+  symbStyleUrl: '/data/mb-styles.langs.json',
   layerId: 'languages-08ip3e',
   tilesetId: 'elalliance.d0yv450e',
   internalSrcID: 'languages-src', // arbitrary, set in code, never changes
 }
-export const symbStyleUrl = `${MB_STYLES_API_URL}/${mbStylesTilesConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
 
+// TODO: rm if only using local, otherwise restore when ready
+// export const symbStyleUrl = `${MB_STYLES_API_URL}/${mbStylesTilesConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
 // Unsure why it needs the type here but not for feature coords..
 const mapCenter = [-73.96, 40.7128] as [number, number]
-// NYC: [-73.96, 40.7128]
 export const initialMapState = {
   latitude: mapCenter[1],
   longitude: mapCenter[0],

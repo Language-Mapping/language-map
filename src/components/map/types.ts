@@ -46,10 +46,6 @@ export type LayerPropsPlusMeta = LayerProps & {
   'source-layer': string
 }
 
-export type LayerComponentType = {
-  styleUrl: string
-}
-
 // API response from Styles API. Not the same as what comes back in map.target
 export type MbResponseType = {
   metadata: {

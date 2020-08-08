@@ -6,6 +6,7 @@ import {
   MbResponseType,
   LayerPropsPlusMeta,
 } from 'components/map/types'
+import { initLegend } from 'components/map/utils'
 import {
   StoreActionType,
   WpApiPageResponseType,
@@ -49,16 +50,14 @@ export const createMapLegend = (
   })
 }
 
-// TODO: react-query or, at a minimum, get this into utils and maybe run it
-// higher up the tree instead.
+// TODO: react-query
 export const getMbStyleDocument = async (
-  styleUrl: string,
+  symbStyleUrl: string,
   dispatch: Dispatch<StoreActionType>,
   setSymbLayers: Dispatch<LayerPropsPlusMeta[]>,
   setLabelLayers: Dispatch<LayerPropsPlusMeta[]>
 ): Promise<void> => {
-  const response = await fetch(styleUrl) // TODO: handle errors
-  // const response = await fetch('/data/mb-styles.langs.json') // TODO: handle errors
+  const response = await fetch(symbStyleUrl) // TODO: handle errors
   const { metadata, layers: allLayers }: MbResponseType = await response.json()
   const layerGroups = metadata['mapbox:groups']
   // TODO: instead of grabbing the first one, get the first one who has a
@@ -107,6 +106,8 @@ export const getMbStyleDocument = async (
     payload: labels,
   })
 
+  initLegend(dispatch, firstGroupId, notTheBgLayerOrLabels)
+
   // TODO: instead of grabbing the first one, get the first VISIBLE layer using
   // `find` instead of filter.
   setLabelLayers(labelsLayers)
@@ -128,7 +129,14 @@ export const getAboutPageContent = async (
 
 export const findFeatureByID = (
   langLayerRecords: LangRecordSchema[],
-  id: string,
+  id: number,
   idField?: keyof LangRecordSchema
 ): LangRecordSchema | undefined =>
   langLayerRecords.find((record) => record[idField || 'ID'] === id)
+
+export const getIDfromURLparams = (url: string): number => {
+  const urlParams = new URLSearchParams(url)
+  const idAsString = urlParams.get('id') as string
+
+  return parseInt(idAsString, 10)
+}

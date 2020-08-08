@@ -12,9 +12,6 @@ import {
 import { MdClose } from 'react-icons/md'
 import { AiOutlineFullscreen } from 'react-icons/ai'
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-// import queryString from 'query-string'
 import { GlobalContext, LoadingIndicator } from 'components'
 import { ResultsTable } from './ResultsTable'
 
