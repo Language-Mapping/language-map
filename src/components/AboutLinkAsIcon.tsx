@@ -1,9 +1,5 @@
 import React, { FC } from 'react'
-import {
-  Link as RouteLink,
-  LinkProps as RouteLinkProps,
-} from 'react-router-dom'
-import { Omit } from '@material-ui/types'
+import { useHistory } from 'react-router-dom'
 import { IconButton } from '@material-ui/core'
 import { GoInfo } from 'react-icons/go'
 
@@ -16,24 +12,15 @@ export const AboutLinkAsIcon: FC<ListItemLinkProps> = ({
   muiClass,
   to = '/about',
 }) => {
-  const renderLink = React.useMemo(
-    () =>
-      // TODO: fix this mess:
-      // https://github.com/yannickcr/eslint-plugin-react/issues/2269
-      // eslint-disable-next-line
-      React.forwardRef<any, Omit<RouteLinkProps, 'to'>>((itemProps, ref) => (
-        // TODO: use `title` in tests
-        <RouteLink title="Project info" to={to} ref={ref} {...itemProps} />
-      )),
-    [to]
-  )
+  const history = useHistory()
 
   return (
     <IconButton
+      title="Project info"
       color="inherit"
       className={muiClass}
-      component={renderLink}
       edge="end"
+      onClick={() => history.push(to)}
     >
       <GoInfo />
     </IconButton>

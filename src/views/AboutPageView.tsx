@@ -39,6 +39,7 @@ const createMarkup = (content: string): { __html: string } => ({
 export const AboutPageView: FC = () => {
   const classes = useStyles()
   const history = useHistory()
+
   // TODO: learn how to use undefined or null as the initial/default type rather
   // than creating an object for the sake of TS.
   const [aboutPgContent, setAboutPgContent] = useState<AboutPageStateType>({
@@ -50,7 +51,7 @@ export const AboutPageView: FC = () => {
   const url = `${wpAPIsettings.pageUrl}/${wpAPIsettings.pageId}`
 
   const handleClose = () => {
-    history.push('/')
+    history.goBack() // TODO: something less gross?
   }
 
   useEffect(() => {
