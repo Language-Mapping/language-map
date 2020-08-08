@@ -14,7 +14,7 @@ import { GlobalContext } from 'components'
 import { LayerPropsPlusMeta } from './types'
 import { panelsConfig } from './panelsConfig'
 import { getIDfromURLparams, getMbStyleDocument } from '../../utils'
-import { mbStylesTilesConfig } from './config'
+import { mbStyleTileConfig } from './config'
 
 const transforms = {
   open: 'translateY(0%)',
@@ -93,21 +93,14 @@ export const MapWrap: FC = () => {
   const loc = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
   const [panelOpen, setPanelOpen] = useState(true)
-  const [prevSelFeatID, setPrevSelFeatID] = useState<number | null>(null)
   const [symbLayers, setSymbLayers] = useState<LayerPropsPlusMeta[]>()
   const [labelLayers, setLabelLayers] = useState<LayerPropsPlusMeta[]>()
-  const [selFeatLocal, setSelFeatLocal] = useState<{
-    lat: number
-    lng: number
-    id: number
-  }>()
-
   const { langFeaturesCached } = state
 
   // Fetch MB Style doc
   useEffect(() => {
     getMbStyleDocument(
-      mbStylesTilesConfig.symbStyleUrl,
+      mbStyleTileConfig.symbStyleUrl,
       dispatch,
       setSymbLayers,
       setLabelLayers
@@ -125,18 +118,22 @@ export const MapWrap: FC = () => {
   useEffect((): void => {
     const idFromUrl = getIDfromURLparams(window.location.search)
 
-    // Cache the previous ID so its feature state can be cleared/deselected
-    if (state.selFeatAttrbs) {
-      setPrevSelFeatID(state.selFeatAttrbs.ID)
+    if (!langFeaturesCached.length) {
+      return
     }
 
-    if (!langFeaturesCached.length || !idFromUrl) {
+    if (!idFromUrl || idFromUrl === -1) {
+      dispatch({
+        type: 'SET_SEL_FEAT_ATTRIBS',
+        payload: null,
+      })
+
       return
     }
 
     // TODO: handle scenario where feature exists in cached but not filtered
     // const matchedFeat = state.langFeaturesCached.find(
-    //       //   (feat) => parsed.id === feat.ID.toString()
+    //   (feat) => parsed.id === feat.ID.toString()
     // )
     const matchingRecord = langFeaturesCached.find(
       (record) => record.ID === idFromUrl
@@ -153,15 +150,6 @@ export const MapWrap: FC = () => {
 
     document.title = `${matchingRecord.Language as string} - NYC Languages`
 
-    // Redundant with global state, but could not seem to juggle the `useEffect`
-    // and timing between this component and <Map>. Seems like cheap fix, but
-    // keep eye out for better option.
-    setSelFeatLocal({
-      lat: matchingRecord.Latitude,
-      lng: matchingRecord.Longitude,
-      id: matchingRecord.ID,
-    })
-
     dispatch({
       type: 'SET_SEL_FEAT_ATTRIBS',
       payload: matchingRecord,
@@ -173,7 +161,6 @@ export const MapWrap: FC = () => {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc, state.langFeaturesCached.length])
-  // ^^^^^^^ run it on load and on search params change ^^^^^^^
 
   return (
     <div className={classes.mapWrapRoot}>
@@ -182,8 +169,6 @@ export const MapWrap: FC = () => {
           <Map
             symbLayers={symbLayers}
             labelLayers={labelLayers}
-            selFeatLocal={selFeatLocal}
-            prevSelFeatID={prevSelFeatID}
             baselayer={state.baselayer}
           />
           <MapControls />

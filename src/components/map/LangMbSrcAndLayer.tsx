@@ -4,7 +4,7 @@ import { Source, Layer } from 'react-map-gl'
 
 import { GlobalContext } from 'components'
 import { LayerPropsPlusMeta } from './types'
-import { mbStylesTilesConfig } from './config'
+import { mbStyleTileConfig } from './config'
 
 type SourceAndLayerType = {
   symbLayers: LayerPropsPlusMeta[]
@@ -24,8 +24,8 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
       // @ts-ignore // promoteId is just not anywhere in the source...
       promoteId="ID"
       type="vector"
-      url={`mapbox://${mbStylesTilesConfig.tilesetId}`}
-      id={mbStylesTilesConfig.internalSrcID}
+      url={`mapbox://${mbStyleTileConfig.tilesetId}`}
+      id={mbStyleTileConfig.internalSrcID}
     >
       {symbLayers.map((layer: LayerPropsPlusMeta) => {
         const isInActiveGroup =

@@ -1,5 +1,5 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
 import * as mbGlFull from 'mapbox-gl'
 import { useTheme } from '@material-ui/core/styles'
@@ -19,7 +19,7 @@ import {
   areLangFeatsUnderCursor,
 } from './utils'
 import {
-  mbStylesTilesConfig,
+  mbStyleTileConfig,
   MAPBOX_TOKEN,
   initialMapState,
   postLoadInitMapStates,
@@ -27,12 +27,6 @@ import {
 
 type MapRefType = React.RefObject<InteractiveMap>
 type MapPropsType = {
-  prevSelFeatID: number | null
-  selFeatLocal?: {
-    lat: number
-    lng: number
-    id: number
-  }
   baselayer: BaselayerType
   symbLayers?: LayerPropsPlusMeta[]
   labelLayers?: LayerPropsPlusMeta[]
@@ -41,105 +35,51 @@ type MapPropsType = {
 export const Map: FC<MapPropsType> = ({
   symbLayers,
   labelLayers,
-  selFeatLocal,
-  prevSelFeatID,
   baselayer,
 }) => {
   const theme = useTheme()
   const history = useHistory()
-  const loc = useLocation()
-  const { dispatch } = useContext(GlobalContext)
+  const { state, dispatch } = useContext(GlobalContext)
   const mapRef: MapRefType = React.createRef()
-
+  const { selFeatAttrbs } = state
   const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
 
   const [viewport, setViewport] = useState(initialMapState)
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
 
-  useEffect((): void => {
-    // Map not ready
-    if (!mapRef.current) {
-      return
-    }
-
-    const map: mbGlFull.Map = mapRef.current.getMap()
-
-    if (mapLoaded) {
-      // This is TOTAL garbage. WHY DOES IT WORK
-      setSelFeatState(map, 88, false)
-      map.removeFeatureState({ source: mbStylesTilesConfig.internalSrcID })
-    }
-
-    // This is TOTAL garbage. WHY DOES IT WORK
-    if (mapLoaded) {
-      map.removeFeatureState({ source: mbStylesTilesConfig.internalSrcID })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prevSelFeatID, loc])
-
   // Do selected feature stuff on sel feat change
   useEffect((): void => {
     // Map not ready
-    if (!mapRef.current) {
+    if (!mapRef.current || !mapLoaded) {
       return
     }
 
     const map: mbGlFull.Map = mapRef.current.getMap()
 
-    if (mapLoaded) {
-      // Deselect all features
-      map.removeFeatureState({ source: mbStylesTilesConfig.internalSrcID })
-    }
+    // Deselect all features
+    clearAllSelFeats(map)
 
-    if (!selFeatLocal) {
+    if (!selFeatAttrbs) {
       return
     }
 
-    // Deselect currently selected feature if there is one
-    if (prevSelFeatID) {
-      setSelFeatState(map, prevSelFeatID, false)
-    }
-
     // Make feature appear selected
-    if (prevSelFeatID !== selFeatLocal.id) {
-      setSelFeatState(map, selFeatLocal.id, true)
-    }
+    setSelFeatState(map, selFeatAttrbs.ID, true)
 
     flyToCoords(map, {
-      lat: selFeatLocal.lat,
-      lng: selFeatLocal.lng,
+      lat: selFeatAttrbs.Latitude,
+      lng: selFeatAttrbs.Longitude,
       zoom: 12,
     })
-    /* eslint-enable @typescript-eslint/ban-ts-comment */
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selFeatLocal])
+  }, [selFeatAttrbs])
 
   function setSelFeatState(map: mbGlFull.Map, id: number, selected: boolean) {
-    const rmOnceYouUnderstand = map.querySourceFeatures('languages-src', {
-      sourceLayer: 'languages-08ip3e',
-      filter: ['!=', ['feature-state', 'selected'], true],
-    })
-
-    const prevFeat = rmOnceYouUnderstand.find(
-      (feat) => feat.id === prevSelFeatID
-    )
-
-    if (prevFeat) {
-      map.setFeatureState(
-        {
-          sourceLayer: mbStylesTilesConfig.layerId,
-          source: mbStylesTilesConfig.internalSrcID,
-          id: prevFeat.id,
-        },
-        { selected: false }
-      )
-    }
-
     map.setFeatureState(
       {
-        sourceLayer: mbStylesTilesConfig.layerId,
-        source: mbStylesTilesConfig.internalSrcID,
+        sourceLayer: mbStyleTileConfig.layerId,
+        source: mbStyleTileConfig.internalSrcID,
         id,
       },
       { selected }
@@ -147,7 +87,7 @@ export const Map: FC<MapPropsType> = ({
   }
 
   function onHover(event: MapEventType) {
-    handleHover(event, mbStylesTilesConfig.internalSrcID)
+    handleHover(event, mbStyleTileConfig.internalSrcID)
   }
 
   // Update viewport state after things like `flyTo`, otherwise the map shifts
@@ -184,10 +124,13 @@ export const Map: FC<MapPropsType> = ({
     const langSrcBounds = map.getSource('languages-src').bounds
     map.fitBounds(langSrcBounds) // ensure all feats are visible
 
+    const cacheOfIDs: number[] = []
+    const uniqueRecords: LangRecordSchema[] = []
+    const idFromUrl = getIDfromURLparams(window.location.search)
     const rawLangFeats = map.querySourceFeatures(
-      mbStylesTilesConfig.internalSrcID,
+      mbStyleTileConfig.internalSrcID,
       {
-        sourceLayer: mbStylesTilesConfig.layerId,
+        sourceLayer: mbStyleTileConfig.layerId,
       }
     )
 
@@ -196,12 +139,8 @@ export const Map: FC<MapPropsType> = ({
     map.setPadding(prepMapPadding(isDesktop))
     // TODO: ^^^^ make pinch and scroll wheel work as expected ^^^^
 
-    const cacheOfIDs: number[] = []
-    const uniqueRecords: LangRecordSchema[] = []
-    const idFromUrl = getIDfromURLparams(window.location.search)
-
-    // Just the properties for table/results, don't need the GeoJSON cruft. Also
-    // need to make sure each ID is unique as there have been some initial data
+    // Just the properties for table/results, don't need GeoJSON cruft. Also
+    // need to make sure each ID is unique as there have been initial data
     // inconsistencies, and more importantly MB may have feature duplication if
     // there is a tile overlap.
     rawLangFeats.forEach((thisFeat) => {
@@ -220,9 +159,6 @@ export const Map: FC<MapPropsType> = ({
 
     const matchingRecord = findFeatureByID(uniqueRecords, idFromUrl)
 
-    // If feature selected, `useEffect` will be triggered and handle the
-    // zoom. Otherwise fly to the post-load settings that look good on
-    // mobile or desktop.
     if (!matchingRecord) {
       const configKey = isDesktop ? 'desktop' : 'mobile'
 
@@ -230,11 +166,23 @@ export const Map: FC<MapPropsType> = ({
         ...postLoadInitMapStates[configKey],
       })
     } else {
-      flyToCoords(map, {
-        lat: matchingRecord.Latitude,
-        lng: matchingRecord.Longitude,
+      setSelFeatState(map, matchingRecord.ID, true)
+
+      setViewport({
+        latitude: matchingRecord.Latitude,
+        longitude: matchingRecord.Longitude,
+        zoom: 12,
       })
+
+      // This stopped working after a billion changes...
+      // flyToCoords(map, {
+      //   lat: matchingRecord.Latitude,
+      //   lng: matchingRecord.Longitude,
+      // })
     }
+
+    // TODO: set paint property
+    // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
 
     dispatch({
       type: 'INIT_LANG_LAYER_FEATURES',
@@ -245,48 +193,30 @@ export const Map: FC<MapPropsType> = ({
   }
 
   function onNativeClick(event: MapEventType): void {
-    // Deselect currently selected feature if there is one
-    if (prevSelFeatID && mapRef && mapRef.current) {
-      setSelFeatState(mapRef.current.getMap(), prevSelFeatID, false)
+    // Map not ready
+    if (!mapRef || !mapRef.current || !mapLoaded) {
+      return
     }
 
     // No language features under click, clear the route
     if (
-      !areLangFeatsUnderCursor(
-        event.features,
-        mbStylesTilesConfig.internalSrcID
-      )
+      !areLangFeatsUnderCursor(event.features, mbStyleTileConfig.internalSrcID)
     ) {
-      history.push('/') // TODO: better solution than home route?
-      if (mapRef && mapRef.current) {
-        mapRef.current
-          .getMap()
-          .removeFeatureState({ source: mbStylesTilesConfig.internalSrcID })
-        const selfffeeeat = mapRef.current
-          .getMap()
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          .queryRenderedFeatures({ layers: ['Largest'] })
-          // ^^^^^^ This is TOTAL garbage. WHY DOES IT WORK ^^^^^^
-          .filter((featttt) => featttt.state.selected)
-
-        if (selfffeeeat && selfffeeeat[0].properties) {
-          mapRef.current.getMap().setFeatureState(
-            {
-              sourceLayer: mbStylesTilesConfig.layerId,
-              source: mbStylesTilesConfig.internalSrcID,
-              id: selfffeeeat[0].properties.ID,
-            },
-            { selected: false }
-          )
-        }
-      }
+      history.push(`${window.location.pathname}?id=-1`) // TODO: better solution
 
       return
     }
 
     // TODO: use `initialEntries` in <MemoryRouter> to test routing
     history.push(`/details?id=${event.features[0].properties.ID}`)
+  }
+
+  // Assumes map is ready
+  function clearAllSelFeats(map: mbGlFull.Map) {
+    map.removeFeatureState({
+      source: mbStyleTileConfig.internalSrcID,
+      sourceLayer: mbStyleTileConfig.layerId,
+    }) // TODO: add `selected` key
   }
 
   return (

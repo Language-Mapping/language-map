@@ -2,7 +2,7 @@
 // const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MB_TOKEN
-export const mbStylesTilesConfig = {
+export const mbStyleTileConfig = {
   // NOTE: Draft does NOT seem to be reliable or real-time
   // styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48/draft',
   // TODO: rm if only using local, otherwise restore when ready
@@ -15,7 +15,7 @@ export const mbStylesTilesConfig = {
 }
 
 // TODO: rm if only using local, otherwise restore when ready
-// export const symbStyleUrl = `${MB_STYLES_API_URL}/${mbStylesTilesConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
+// export const symbStyleUrl = `${MB_STYLES_API_URL}/${mbStyleTileConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
 // Unsure why it needs the type here but not for feature coords..
 const mapCenter = [-73.96, 40.7128] as [number, number]
 export const initialMapState = {
