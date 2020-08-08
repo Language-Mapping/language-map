@@ -184,6 +184,7 @@ export const MapWrap: FC = () => {
             labelLayers={labelLayers}
             selFeatLocal={selFeatLocal}
             prevSelFeatID={prevSelFeatID}
+            baselayer={state.baselayer}
           />
           <MapControls />
         </div>

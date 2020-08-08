@@ -1,5 +1,5 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
 import * as mbGlFull from 'mapbox-gl'
 import { useTheme } from '@material-ui/core/styles'
@@ -10,7 +10,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import { GlobalContext, LoadingBackdrop } from 'components'
 import { LangMbSrcAndLayer } from 'components/map'
 import { LangRecordSchema } from '../../context/types'
-import { MapEventType, LayerPropsPlusMeta } from './types'
+import { MapEventType, LayerPropsPlusMeta, BaselayerType } from './types'
 import { getIDfromURLparams, findFeatureByID } from '../../utils'
 import {
   prepMapPadding,
@@ -33,6 +33,7 @@ type MapPropsType = {
     lng: number
     id: number
   }
+  baselayer: BaselayerType
   symbLayers?: LayerPropsPlusMeta[]
   labelLayers?: LayerPropsPlusMeta[]
 }
@@ -42,16 +43,39 @@ export const Map: FC<MapPropsType> = ({
   labelLayers,
   selFeatLocal,
   prevSelFeatID,
+  baselayer,
 }) => {
   const theme = useTheme()
   const history = useHistory()
-  const { state, dispatch } = useContext(GlobalContext)
+  const loc = useLocation()
+  const { dispatch } = useContext(GlobalContext)
   const mapRef: MapRefType = React.createRef()
 
   const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
 
   const [viewport, setViewport] = useState(initialMapState)
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
+
+  useEffect((): void => {
+    // Map not ready
+    if (!mapRef.current) {
+      return
+    }
+
+    const map: mbGlFull.Map = mapRef.current.getMap()
+
+    if (mapLoaded) {
+      // This is TOTAL garbage. WHY DOES IT WORK
+      setSelFeatState(map, 88, false)
+      map.removeFeatureState({ source: mbStylesTilesConfig.internalSrcID })
+    }
+
+    // This is TOTAL garbage. WHY DOES IT WORK
+    if (mapLoaded) {
+      map.removeFeatureState({ source: mbStylesTilesConfig.internalSrcID })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prevSelFeatID, loc])
 
   // Do selected feature stuff on sel feat change
   useEffect((): void => {
@@ -62,17 +86,24 @@ export const Map: FC<MapPropsType> = ({
 
     const map: mbGlFull.Map = mapRef.current.getMap()
 
-    // Deselect currently selected feature if there is one
-    if (prevSelFeatID) {
-      setSelFeatState(map, prevSelFeatID, false)
+    if (mapLoaded) {
+      // Deselect all features
+      map.removeFeatureState({ source: mbStylesTilesConfig.internalSrcID })
     }
 
     if (!selFeatLocal) {
       return
     }
 
+    // Deselect currently selected feature if there is one
+    if (prevSelFeatID) {
+      setSelFeatState(map, prevSelFeatID, false)
+    }
+
     // Make feature appear selected
-    setSelFeatState(map, selFeatLocal.id, true)
+    if (prevSelFeatID !== selFeatLocal.id) {
+      setSelFeatState(map, selFeatLocal.id, true)
+    }
 
     flyToCoords(map, {
       lat: selFeatLocal.lat,
@@ -85,6 +116,26 @@ export const Map: FC<MapPropsType> = ({
   }, [selFeatLocal])
 
   function setSelFeatState(map: mbGlFull.Map, id: number, selected: boolean) {
+    const rmOnceYouUnderstand = map.querySourceFeatures('languages-src', {
+      sourceLayer: 'languages-08ip3e',
+      filter: ['!=', ['feature-state', 'selected'], true],
+    })
+
+    const prevFeat = rmOnceYouUnderstand.find(
+      (feat) => feat.id === prevSelFeatID
+    )
+
+    if (prevFeat) {
+      map.setFeatureState(
+        {
+          sourceLayer: mbStylesTilesConfig.layerId,
+          source: mbStylesTilesConfig.internalSrcID,
+          id: prevFeat.id,
+        },
+        { selected: false }
+      )
+    }
+
     map.setFeatureState(
       {
         sourceLayer: mbStylesTilesConfig.layerId,
@@ -194,6 +245,11 @@ export const Map: FC<MapPropsType> = ({
   }
 
   function onNativeClick(event: MapEventType): void {
+    // Deselect currently selected feature if there is one
+    if (prevSelFeatID && mapRef && mapRef.current) {
+      setSelFeatState(mapRef.current.getMap(), prevSelFeatID, false)
+    }
+
     // No language features under click, clear the route
     if (
       !areLangFeatsUnderCursor(
@@ -202,6 +258,29 @@ export const Map: FC<MapPropsType> = ({
       )
     ) {
       history.push('/') // TODO: better solution than home route?
+      if (mapRef && mapRef.current) {
+        mapRef.current
+          .getMap()
+          .removeFeatureState({ source: mbStylesTilesConfig.internalSrcID })
+        const selfffeeeat = mapRef.current
+          .getMap()
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          .queryRenderedFeatures({ layers: ['Largest'] })
+          // ^^^^^^ This is TOTAL garbage. WHY DOES IT WORK ^^^^^^
+          .filter((featttt) => featttt.state.selected)
+
+        if (selfffeeeat && selfffeeeat[0].properties) {
+          mapRef.current.getMap().setFeatureState(
+            {
+              sourceLayer: mbStylesTilesConfig.layerId,
+              source: mbStylesTilesConfig.internalSrcID,
+              id: selfffeeeat[0].properties.ID,
+            },
+            { selected: false }
+          )
+        }
+      }
 
       return
     }
@@ -214,18 +293,17 @@ export const Map: FC<MapPropsType> = ({
     <>
       {!mapLoaded && <LoadingBackdrop />}
       <MapGL
+        // TODO: show MB attribution text (not logo) on mobile
+        className="mb-language-map"
         {...viewport}
         clickRadius={3} // much comfier for small points on small screens
         ref={mapRef}
         height="100%"
         width="100%"
-        onViewportChange={setViewport}
         mapboxApiAccessToken={MAPBOX_TOKEN}
-        mapStyle={`mapbox://styles/mapbox/${state.baselayer}-v9`}
-        // TODO: show MB attribution text (not logo) on mobile
-        className="mb-language-map"
-        // TODO: mv into utils
-        onNativeClick={onNativeClick}
+        mapStyle={`mapbox://styles/mapbox/${baselayer}-v9`}
+        onViewportChange={setViewport}
+        onClick={onNativeClick} // TODO: mv into utils
         onHover={onHover}
         onLoad={(mapLoadEvent) => {
           onLoad(mapLoadEvent)
