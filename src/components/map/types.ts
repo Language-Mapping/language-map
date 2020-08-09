@@ -12,13 +12,13 @@ export type LayerToggleType = {
 }
 
 // TODO: validate lat/long: -90 to 90, -180 to 180, zoom 1-20. Existing MB type?
-export type InitialMapState = {
-  latitude: number
-  longitude: number
-  zoom: number
-  pitch?: number
-  bearing?: number
-}
+// export type InitialMapStateType = {
+//   latitude: number
+//   longitude: number
+//   zoom: number
+//   pitch?: number
+//   bearing?: number
+// }
 
 export type LegendSwatchType = {
   backgroundColor?: string

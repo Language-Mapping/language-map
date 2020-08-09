@@ -43,17 +43,23 @@ export const prepMapPadding = (
 
 export function flyToCoords(
   target: mbGlFull.Map,
-  settings: { lng: number; lat: number; zoom?: number | 10.25 }
+  settings: { lng: number; lat: number; zoom?: number | 10.25 },
+  offset?: [number, number]
 ): void {
   const { zoom, lat, lng } = settings
 
-  target.flyTo(
+  target.easeTo(
     {
       // Animation is considered essential with respect to
       // prefers-reduced-motion
       essential: true,
-      center: { lat, lng },
+      center: {
+        lng,
+        lat,
+      },
       zoom,
+      offset: offset || [250, 50],
+      duration: 700,
     },
     {
       openPopup: true,
@@ -72,15 +78,27 @@ export const areLangFeatsUnderCursor = (
 ): boolean =>
   features && features.length !== 0 && features[0].source === internalSrcID
 
-export function handleHover(event: MapEventType, sourceID: string): void {
+export function handleHover(
+  event: MapEventType,
+  sourceID: string,
+  setShowPopup: React.Dispatch<{ show: boolean; lat?: number; lon?: number }>
+): void {
   const { features, target } = event
 
   if (!areLangFeatsUnderCursor(features, sourceID)) {
     // TODO: hide label on mouseout
     target.style.cursor = 'default'
+    setShowPopup({
+      show: false,
+    })
   } else {
     // TODO: show label on hover
     target.style.cursor = 'pointer'
+    setShowPopup({
+      show: true,
+      lat: features[0].properties.Latitude,
+      lon: features[0].properties.Longitude,
+    })
   }
 }
 

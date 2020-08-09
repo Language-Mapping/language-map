@@ -1,6 +1,6 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
+import MapGL, { Popup, InteractiveMap, MapLoadEvent } from 'react-map-gl'
 import * as mbGlFull from 'mapbox-gl'
 import { useTheme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
@@ -31,7 +31,6 @@ type MapPropsType = {
   symbLayers?: LayerPropsPlusMeta[]
   labelLayers?: LayerPropsPlusMeta[]
 }
-
 export const Map: FC<MapPropsType> = ({
   symbLayers,
   labelLayers,
@@ -43,9 +42,15 @@ export const Map: FC<MapPropsType> = ({
   const mapRef: MapRefType = React.createRef()
   const { selFeatAttrbs } = state
   const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
+  const padding = prepMapPadding(isDesktop)
 
   const [viewport, setViewport] = useState(initialMapState)
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
+  const [showPopup, setShowPopup] = useState<{
+    show: boolean
+    lat?: number
+    lon?: number
+  }>({ show: false })
 
   // Do selected feature stuff on sel feat change
   useEffect((): void => {
@@ -66,11 +71,15 @@ export const Map: FC<MapPropsType> = ({
     // Make feature appear selected
     setSelFeatState(map, selFeatAttrbs.ID, true)
 
-    flyToCoords(map, {
-      lat: selFeatAttrbs.Latitude,
-      lng: selFeatAttrbs.Longitude,
-      zoom: 12,
-    })
+    flyToCoords(
+      map,
+      {
+        lat: selFeatAttrbs.Latitude,
+        lng: selFeatAttrbs.Longitude,
+        zoom: 12,
+      },
+      [padding.left / 2, padding.top / 2]
+    )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selFeatAttrbs])
@@ -87,36 +96,41 @@ export const Map: FC<MapPropsType> = ({
   }
 
   function onHover(event: MapEventType) {
-    handleHover(event, mbStyleTileConfig.internalSrcID)
-  }
-
-  // Update viewport state after things like `flyTo`, otherwise the map shifts
-  // back to previous position after panning or zooming.
-  function forceViewportUpdate(newPosition?: {
-    zoom: number
-    center: {
-      lat: number
-      lng: number
-    }
-  }) {
-    // Custom object via `EventData` (e.g. after `flyTo`)
-    if (!newPosition) {
-      return
-    }
-
-    setViewport({
-      zoom: newPosition.zoom,
-      latitude: newPosition.center.lat,
-      longitude: newPosition.center.lng,
-    })
+    handleHover(event, mbStyleTileConfig.internalSrcID, setShowPopup)
   }
 
   // Runs only once and kicks off the whole thinig
   function onLoad(mapLoadEvent: MapLoadEvent) {
     const { target: map } = mapLoadEvent
 
-    map.on('zoomend', function handleZoomEnd(mapObj) {
-      forceViewportUpdate(mapObj.newPosition)
+    // Update viewport state after things like `flyTo`, otherwise the map shifts
+    // back to previous position after panning or zooming.
+    map.on('zoomend', function handleZoomEnd(zoomEndEvent) {
+      const { newPosition } = zoomEndEvent
+
+      if (newPosition) {
+        setViewport({
+          ...viewport,
+          zoom: map.getZoom(),
+          latitude: map.getCenter().lat,
+          longitude: map.getCenter().lng,
+        })
+      }
+    })
+
+    // Update viewport state after things like `flyTo`, otherwise the map shifts
+    // back to previous position after panning or zooming.
+    map.on('moveend', function handleMoveEnd(zoomEndEvent) {
+      const { newPosition } = zoomEndEvent
+
+      if (newPosition) {
+        setViewport({
+          ...viewport,
+          zoom: map.getZoom(),
+          latitude: map.getCenter().lat,
+          longitude: map.getCenter().lng,
+        })
+      }
     })
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -133,11 +147,6 @@ export const Map: FC<MapPropsType> = ({
         sourceLayer: mbStyleTileConfig.layerId,
       }
     )
-
-    // TODO: rm when no longer needed
-    // map.showPadding = true // quite handy
-    map.setPadding(prepMapPadding(isDesktop))
-    // TODO: ^^^^ make pinch and scroll wheel work as expected ^^^^
 
     // Just the properties for table/results, don't need GeoJSON cruft. Also
     // need to make sure each ID is unique as there have been initial data
@@ -162,13 +171,18 @@ export const Map: FC<MapPropsType> = ({
     if (!matchingRecord) {
       const configKey = isDesktop ? 'desktop' : 'mobile'
 
-      flyToCoords(map, {
-        ...postLoadInitMapStates[configKey],
-      })
+      flyToCoords(
+        map,
+        {
+          ...postLoadInitMapStates[configKey],
+        },
+        [padding.left, padding.top]
+      )
     } else {
       setSelFeatState(map, matchingRecord.ID, true)
 
       setViewport({
+        ...viewport,
         latitude: matchingRecord.Latitude,
         longitude: matchingRecord.Longitude,
         zoom: 12,
@@ -245,6 +259,19 @@ export const Map: FC<MapPropsType> = ({
             symbLayers={symbLayers}
             labelLayers={labelLayers}
           />
+        )}
+        {showPopup.show && showPopup.lat && showPopup.lon && (
+          <Popup
+            longitude={showPopup.lon}
+            latitude={showPopup.lat}
+            closeButton={false}
+            // TODO: implement or rm:
+            // dynamicPosition
+          >
+            <div className="popup--small">
+              {state.selFeatAttrbs && state.selFeatAttrbs.Language}
+            </div>
+          </Popup>
         )}
       </MapGL>
     </>

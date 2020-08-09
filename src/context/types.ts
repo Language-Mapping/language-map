@@ -74,8 +74,8 @@ export type LangRecordSchema = {
   Description: string // not all will be populated until August
   Language: string
   Endonym: string // may be same as English name
-  Latitude: number // also in `geometry.coordinates` maybe? If so, remove?
-  Longitude: number // also in `geometry.coordinates` maybe? If so, remove?
+  Latitude: number // keep it (nice convenience over geometry.coordinates)
+  Longitude: number // keep it (nice convenience over geometry.coordinates)
   Town: string
   'Community Size': 1 | 2 | 3 | 4 | 5
   'Language Family': string
