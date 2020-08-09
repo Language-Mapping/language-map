@@ -1,5 +1,4 @@
 import * as mbGlFull from 'mapbox-gl'
-import { PaddingOptions } from 'mapbox-gl'
 
 import { StoreActionType } from '../../context/types'
 import { MapEventType, LangFeatureType, LayerPropsPlusMeta } from './types'
@@ -9,56 +8,48 @@ import { createMapLegend } from '../../utils'
 // "centering", in quotes because it's more "perceived" centering. Offset is
 // needed to make a panned-to selected feature centered between the header and
 // panel (on mobile) or between the panel and the right side (on desktop).
-export const prepMapPadding = (
+export const prepMapOffset = (
   isDesktop: boolean,
   topBarElemID = 'page-header',
   mapPanelsElemeID = 'map-panels-wrap'
-): PaddingOptions => {
+): [number, number] => {
   const topBarElem = document.getElementById(topBarElemID)
   const topBarHeight = topBarElem ? topBarElem.offsetHeight : 60
-  const defaults = {
-    bottom: 0,
-    left: 0,
-    right: 0,
-    top: 0,
-  }
 
   if (!isDesktop) {
-    return {
-      ...defaults,
-      bottom: window.screen.height / 4 + topBarHeight * 2,
-    }
+    // NOTE: very important to use `innerHeight` here! Otherwise the buttons,
+    // address bar, etc. are not taken into account.
+    const halfScreenHeight = window.innerHeight / 2
+    const visibleViewportHt = halfScreenHeight - topBarHeight
+    const vertOffset = -1 * (visibleViewportHt / 2)
+
+    return [0, vertOffset]
   }
 
   const sidePanelElem = document.getElementById(mapPanelsElemeID)
   const sidePanelWidth = sidePanelElem ? sidePanelElem.scrollWidth : 60
   const sidePanelGutter = sidePanelElem ? sidePanelElem.offsetLeft : 16
 
-  return {
-    ...defaults,
-    left: sidePanelWidth + sidePanelGutter,
-    top: topBarHeight,
-  }
+  return [(sidePanelWidth + sidePanelGutter) / 2, topBarHeight / 2]
 }
 
 export function flyToCoords(
   target: mbGlFull.Map,
   settings: { lng: number; lat: number; zoom?: number | 10.25 },
-  offset?: [number, number]
+  offset: [number, number]
 ): void {
   const { zoom, lat, lng } = settings
 
-  target.easeTo(
+  target.flyTo(
     {
-      // Animation is considered essential with respect to
-      // prefers-reduced-motion
+      // Animation considered essential with respect to prefers-reduced-motion
       essential: true,
       center: {
         lng,
         lat,
       },
       zoom,
-      offset: offset || [250, 50],
+      offset,
       duration: 700,
     },
     {

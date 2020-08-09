@@ -2,7 +2,7 @@ import React, { FC, useState, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import MapGL, { Popup, InteractiveMap, MapLoadEvent } from 'react-map-gl'
 import * as mbGlFull from 'mapbox-gl'
-import { useTheme } from '@material-ui/core/styles'
+import { Theme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -13,7 +13,7 @@ import { LangRecordSchema } from '../../context/types'
 import { MapEventType, LayerPropsPlusMeta, BaselayerType } from './types'
 import { getIDfromURLparams, findFeatureByID } from '../../utils'
 import {
-  prepMapPadding,
+  prepMapOffset,
   flyToCoords,
   handleHover,
   areLangFeatsUnderCursor,
@@ -36,21 +36,27 @@ export const Map: FC<MapPropsType> = ({
   labelLayers,
   baselayer,
 }) => {
-  const theme = useTheme()
   const history = useHistory()
   const { state, dispatch } = useContext(GlobalContext)
   const mapRef: MapRefType = React.createRef()
   const { selFeatAttrbs } = state
-  const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
-  const padding = prepMapPadding(isDesktop)
+  const isDesktop = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'))
 
   const [viewport, setViewport] = useState(initialMapState)
+  const [mapOffset, setMapOffset] = useState<[number, number]>([0, 0])
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
   const [showPopup, setShowPopup] = useState<{
     show: boolean
     lat?: number
     lon?: number
   }>({ show: false })
+
+  // Set the offset for transitions like `flyTo` and `easeTo`
+  useEffect((): void => {
+    const offset = prepMapOffset(isDesktop)
+
+    setMapOffset(offset)
+  }, [isDesktop])
 
   // Do selected feature stuff on sel feat change
   useEffect((): void => {
@@ -78,7 +84,7 @@ export const Map: FC<MapPropsType> = ({
         lng: selFeatAttrbs.Longitude,
         zoom: 12,
       },
-      [padding.left / 2, padding.top / 2]
+      mapOffset
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -176,7 +182,7 @@ export const Map: FC<MapPropsType> = ({
         {
           ...postLoadInitMapStates[configKey],
         },
-        [padding.left, padding.top]
+        mapOffset
       )
     } else {
       setSelFeatState(map, matchingRecord.ID, true)
