@@ -51,12 +51,9 @@ export function flyToCoords(
       zoom,
       offset,
     },
+    // Custom event data to keep state in sync
     {
-      openPopup: true,
-      newPosition: {
-        center: { lat, lng },
-        zoom,
-      },
+      forceViewportUpdate: true,
     }
   )
 }

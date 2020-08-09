@@ -110,34 +110,21 @@ export const Map: FC<MapPropsType> = ({
   function onLoad(mapLoadEvent: MapLoadEvent) {
     const { target: map } = mapLoadEvent
 
-    // Update viewport state after things like `flyTo`, otherwise the map shifts
-    // back to previous position after panning or zooming.
-    map.on('zoomend', function handleZoomEnd(zoomEndEvent) {
-      const { newPosition } = zoomEndEvent
-
-      if (newPosition) {
-        setViewport({
-          ...viewport,
-          zoom: map.getZoom(),
-          latitude: map.getCenter().lat,
-          longitude: map.getCenter().lng,
-        })
+    // Maintain viewport state sync if needed (e.g. after things like `flyTo`),
+    // otherwise the map shifts back to previous position after panning or
+    // zooming.
+    map.on('moveend', function onMoveEnd(zoomEndEvent) {
+      // No custom event data, regular move event
+      if (!zoomEndEvent.forceViewportUpdate) {
+        return
       }
-    })
 
-    // Update viewport state after things like `flyTo`, otherwise the map shifts
-    // back to previous position after panning or zooming.
-    map.on('moveend', function handleMoveEnd(zoomEndEvent) {
-      const { newPosition } = zoomEndEvent
-
-      if (newPosition) {
-        setViewport({
-          ...viewport,
-          zoom: map.getZoom(),
-          latitude: map.getCenter().lat,
-          longitude: map.getCenter().lng,
-        })
-      }
+      setViewport({
+        ...viewport,
+        zoom: map.getZoom(),
+        latitude: map.getCenter().lat,
+        longitude: map.getCenter().lng,
+      })
     })
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
