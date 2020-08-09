@@ -22,7 +22,7 @@ import {
   mbStyleTileConfig,
   MAPBOX_TOKEN,
   initialMapState,
-  postLoadInitMapStates,
+  postLoadMapView,
 } from './config'
 
 type MapRefType = React.RefObject<InteractiveMap>
@@ -58,7 +58,7 @@ export const Map: FC<MapPropsType> = ({
     setMapOffset(offset)
   }, [isDesktop])
 
-  // Do selected feature stuff on sel feat change
+  // Do selected feature stuff on sel feat change or map load
   useEffect((): void => {
     // Map not ready
     if (!mapRef.current || !mapLoaded) {
@@ -74,7 +74,8 @@ export const Map: FC<MapPropsType> = ({
       return
     }
 
-    // Make feature appear selected
+    // NOTE: won't get this far on load even if feature is selected. The timing
+    // and order of the whole process prevent that. Make feature appear selected
     setSelFeatState(map, selFeatAttrbs.ID, true)
 
     flyToCoords(
@@ -88,7 +89,7 @@ export const Map: FC<MapPropsType> = ({
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selFeatAttrbs])
+  }, [selFeatAttrbs, mapLoaded])
 
   function setSelFeatState(map: mbGlFull.Map, id: number, selected: boolean) {
     map.setFeatureState(
@@ -144,9 +145,9 @@ export const Map: FC<MapPropsType> = ({
     const langSrcBounds = map.getSource('languages-src').bounds
     map.fitBounds(langSrcBounds) // ensure all feats are visible
 
+    const idFromUrl = getIDfromURLparams(window.location.search)
     const cacheOfIDs: number[] = []
     const uniqueRecords: LangRecordSchema[] = []
-    const idFromUrl = getIDfromURLparams(window.location.search)
     const rawLangFeats = map.querySourceFeatures(
       mbStyleTileConfig.internalSrcID,
       {
@@ -174,31 +175,12 @@ export const Map: FC<MapPropsType> = ({
 
     const matchingRecord = findFeatureByID(uniqueRecords, idFromUrl)
 
+    // TODO: figure out how to get this into the same `useEffect` that handles
+    // when selFeatAttribs or mapLoaded are changed.
     if (!matchingRecord) {
       const configKey = isDesktop ? 'desktop' : 'mobile'
 
-      flyToCoords(
-        map,
-        {
-          ...postLoadInitMapStates[configKey],
-        },
-        mapOffset
-      )
-    } else {
-      setSelFeatState(map, matchingRecord.ID, true)
-
-      setViewport({
-        ...viewport,
-        latitude: matchingRecord.Latitude,
-        longitude: matchingRecord.Longitude,
-        zoom: 12,
-      })
-
-      // This stopped working after a billion changes...
-      // flyToCoords(map, {
-      //   lat: matchingRecord.Latitude,
-      //   lng: matchingRecord.Longitude,
-      // })
+      flyToCoords(map, { ...postLoadMapView[configKey] }, mapOffset)
     }
 
     // TODO: set paint property

@@ -50,7 +50,6 @@ export function flyToCoords(
       },
       zoom,
       offset,
-      duration: 700,
     },
     {
       openPopup: true,

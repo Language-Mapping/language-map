@@ -25,7 +25,7 @@ export const initialMapState = {
 }
 
 // After the `fitBounds` happens and gets all the features into state
-export const postLoadInitMapStates = {
+export const postLoadMapView = {
   desktop: {
     lat: 40.7186,
     lng: -73.9079,
