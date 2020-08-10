@@ -30,8 +30,23 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
       id={mbStyleTileConfig.internalSrcID}
     >
       {symbLayers.map((layer: LayerPropsPlusMeta) => {
+        let { paint } = layer
         const isInActiveGroup =
           layer.metadata['mapbox:group'] === activeLangSymbGroupId
+
+        // Set selected feature stroke for all layers of `circle` type
+        if (layer.type === 'circle') {
+          paint = {
+            ...paint,
+            'circle-stroke-color': 'cyan',
+            'circle-stroke-width': [
+              'case',
+              ['boolean', ['feature-state', 'selected'], false],
+              3,
+              0,
+            ],
+          }
+        }
 
         return (
           <Layer
@@ -41,7 +56,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
             layout={{
               visibility: isInActiveGroup ? 'visible' : 'none',
             }}
-            paint={layer.paint}
+            paint={paint}
           />
         )
       })}

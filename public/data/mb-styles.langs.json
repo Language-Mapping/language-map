@@ -56,13 +56,7 @@
       "filter": ["match", ["get", "Community Size"], [2], true, false],
       "layout": { "visibility": "none" },
       "paint": {
-        "circle-color": "#6baed6",
-        "circle-radius": [
-          "case",
-          ["boolean", ["feature-state", "selected"], false],
-          12,
-          5
-        ]
+        "circle-color": "#6baed6"
       }
     },
     {
@@ -74,13 +68,7 @@
       "filter": ["match", ["get", "Community Size"], [2], true, false],
       "layout": { "visibility": "none" },
       "paint": {
-        "circle-color": "#4292c6",
-        "circle-radius": [
-          "case",
-          ["boolean", ["feature-state", "selected"], false],
-          12,
-          5
-        ]
+        "circle-color": "#4292c6"
       }
     },
     {
@@ -92,13 +80,7 @@
       "filter": ["match", ["get", "Community Size"], [3], true, false],
       "layout": { "visibility": "none" },
       "paint": {
-        "circle-color": "#2171b5",
-        "circle-radius": [
-          "case",
-          ["boolean", ["feature-state", "selected"], false],
-          12,
-          5
-        ]
+        "circle-color": "#2171b5"
       }
     },
     {
@@ -110,13 +92,7 @@
       "filter": ["match", ["get", "Community Size"], [4], true, false],
       "layout": { "visibility": "none" },
       "paint": {
-        "circle-color": "#08519c",
-        "circle-radius": [
-          "case",
-          ["boolean", ["feature-state", "selected"], false],
-          12,
-          5
-        ]
+        "circle-color": "#08519c"
       }
     },
     {
@@ -128,13 +104,7 @@
       "filter": ["match", ["get", "Community Size"], [5], true, false],
       "layout": { "visibility": "none" },
       "paint": {
-        "circle-color": "#08306b",
-        "circle-radius": [
-          "case",
-          ["boolean", ["feature-state", "selected"], false],
-          12,
-          5
-        ]
+        "circle-color": "#08306b"
       }
     },
     {
