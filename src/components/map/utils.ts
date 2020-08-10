@@ -1,6 +1,6 @@
 import * as mbGlFull from 'mapbox-gl'
 
-import { StoreActionType } from '../../context/types'
+import { StoreActionType, LangRecordSchema } from '../../context/types'
 import {
   MapTooltipType,
   MapEventType,
@@ -41,7 +41,8 @@ export const prepMapOffset = (
 export function flyToCoords(
   target: mbGlFull.Map,
   settings: { lng: number; lat: number; zoom?: number | 10.25 },
-  offset: [number, number]
+  offset: [number, number],
+  selFeatAttribs: LangRecordSchema | null
 ): void {
   const { zoom, lat, lng } = settings
 
@@ -53,12 +54,13 @@ export function flyToCoords(
         lng,
         lat,
       },
-      zoom,
+      zoom, // TODO: only zoom to the default if current zoom is less than that
       offset,
     },
-    // Custom event data to keep state in sync
+    // Custom event data
     {
-      forceViewportUpdate: true,
+      forceViewportUpdate: true, // to keep state in sync
+      selFeatAttribs, // popup data
     }
   )
 }

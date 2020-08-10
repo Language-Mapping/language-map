@@ -18,6 +18,8 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
   const { state } = useContext(GlobalContext)
   const { activeLangSymbGroupId, activeLangLabelId } = state
 
+  // NOTE: it did not seem to work when using two different Styles with the same
+  // dataset unless waiting until there is something to put into <Source>.
   return (
     <Source
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -46,7 +48,6 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
       {labelLayers.map((layer: LayerPropsPlusMeta) => {
         const isActiveLabel = layer.id === activeLangLabelId
 
-        // TODO: some kind of transition/animation on switch
         const layout: mbGlFull.AnyLayout = {
           ...layer.layout,
           visibility: isActiveLabel ? 'visible' : 'none',

@@ -81,11 +81,6 @@ export const Map: FC<MapPropsType> = ({
     // and order of the whole process prevent that. Make feature appear selected
 
     setSelFeatState(map, selFeatAttribs.ID, true)
-    setPopupOpen({
-      latitude: selFeatAttribs.Latitude,
-      longitude: selFeatAttribs.Longitude,
-      selFeatAttribs,
-    })
 
     flyToCoords(
       map,
@@ -94,7 +89,8 @@ export const Map: FC<MapPropsType> = ({
         lng: selFeatAttribs.Longitude,
         zoom: 12,
       },
-      mapOffset
+      mapOffset,
+      selFeatAttribs
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -124,16 +120,24 @@ export const Map: FC<MapPropsType> = ({
     // zooming.
     map.on('moveend', function onMoveEnd(zoomEndEvent) {
       // No custom event data, regular move event
-      if (!zoomEndEvent.forceViewportUpdate) {
-        return
+      if (zoomEndEvent.forceViewportUpdate) {
+        setViewport({
+          ...viewport,
+          zoom: map.getZoom(),
+          latitude: map.getCenter().lat,
+          longitude: map.getCenter().lng,
+        })
       }
+    })
 
-      setViewport({
-        ...viewport,
-        zoom: map.getZoom(),
-        latitude: map.getCenter().lat,
-        longitude: map.getCenter().lng,
-      })
+    map.on('zoomend', function onMoveEnd(zoomEndEvent) {
+      if (zoomEndEvent.selFeatAttribs) {
+        setPopupOpen({
+          latitude: zoomEndEvent.selFeatAttribs.Latitude,
+          longitude: zoomEndEvent.selFeatAttribs.Longitude,
+          selFeatAttribs: zoomEndEvent.selFeatAttribs,
+        })
+      }
     })
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -171,12 +175,12 @@ export const Map: FC<MapPropsType> = ({
 
     const matchingRecord = findFeatureByID(uniqueRecords, idFromUrl)
 
-    // TODO: figure out how to get this into the same `useEffect` that handles
-    // when selFeatAttribs or mapLoaded are changed.
+    // NOTE: could not get this into the same `useEffect` that handles when
+    // selFeatAttribs or mapLoaded are changed with an MB error/crash.
     if (!matchingRecord) {
       const configKey = isDesktop ? 'desktop' : 'mobile'
 
-      flyToCoords(map, { ...postLoadMapView[configKey] }, mapOffset)
+      flyToCoords(map, { ...postLoadMapView[configKey] }, mapOffset, null)
     }
 
     // TODO: set paint property
@@ -205,6 +209,8 @@ export const Map: FC<MapPropsType> = ({
       return
     }
 
+    setTooltipOpen(null) // super annoying if tooltip stays intact after a click
+
     // TODO: use `initialEntries` in <MemoryRouter> to test routing
     history.push(`/details?id=${event.features[0].properties.ID}`)
   }
@@ -214,7 +220,7 @@ export const Map: FC<MapPropsType> = ({
     map.removeFeatureState({
       source: mbStyleTileConfig.internalSrcID,
       sourceLayer: mbStyleTileConfig.layerId,
-    }) // TODO: add `selected` key
+    }) // TODO: add `selected` key?
   }
 
   return (
@@ -237,7 +243,6 @@ export const Map: FC<MapPropsType> = ({
           onLoad(mapLoadEvent)
         }}
       >
-        {/* NOTE: it did not seem to work when using two different Styles with the same dataset unless waiting until there is something to put into <Source> */}
         {symbLayers && labelLayers && (
           <LangMbSrcAndLayer
             symbLayers={symbLayers}
