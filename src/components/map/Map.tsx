@@ -230,7 +230,7 @@ export const Map: FC<MapPropsType> = ({
         // TODO: show MB attribution text (not logo) on mobile
         className="mb-language-map"
         {...viewport}
-        clickRadius={3} // much comfier for small points on small screens
+        clickRadius={4} // much comfier for small points on small screens
         ref={mapRef}
         height="100%"
         width="100%"

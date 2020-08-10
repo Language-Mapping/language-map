@@ -8,12 +8,19 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       textAlign: 'center',
-      width: 200,
-      '& a[role="button"]': {
-        color: theme.palette.common.white,
-      },
+      minWidth: 150,
       '& .mapboxgl-popup-content': {
-        padding: theme.spacing(1),
+        // Leave room for "x" close button
+        padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+      },
+      '& .mapboxgl-popup-close-button': {
+        fontSize: 16,
+        padding: 0,
+        margin: 0,
+        lineHeight: '16px',
+        top: 2,
+        right: 4,
+        color: theme.palette.grey[600],
       },
     },
     heading: {
@@ -43,7 +50,7 @@ export const MapPopup: FC<MapPopupComponentType> = ({
 
   return (
     <Popup
-      tipSize={15}
+      tipSize={10}
       anchor="bottom"
       longitude={longitude}
       latitude={latitude}
