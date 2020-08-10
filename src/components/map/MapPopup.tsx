@@ -2,14 +2,7 @@ import React, { FC } from 'react'
 import { Popup } from 'react-map-gl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
-import { LongLatType } from './types'
-import { LangRecordSchema } from '../../context/types'
-
-type PopupComponentType = LongLatType & {
-  popupOpen: boolean
-  setPopupOpen: React.Dispatch<boolean>
-  popupAttribs: LangRecordSchema
-}
+import { MapPopupType } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,11 +26,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const MapPopup: FC<PopupComponentType> = ({
+type MapPopupComponentType = MapPopupType & {
+  setPopupOpen: React.Dispatch<MapPopupType | null>
+}
+
+export const MapPopup: FC<MapPopupComponentType> = ({
   longitude,
   latitude,
   setPopupOpen,
-  popupAttribs,
+  selFeatAttribs,
 }) => {
   const classes = useStyles()
 
@@ -47,20 +44,20 @@ export const MapPopup: FC<PopupComponentType> = ({
   return (
     <Popup
       tipSize={15}
-      anchor="top"
+      anchor="bottom"
       longitude={longitude}
       latitude={latitude}
       closeOnClick={false} // TODO: fix this madness
       className={classes.root}
-      onClose={() => setPopupOpen(false)}
+      onClose={() => setPopupOpen(null)}
     >
       <header>
         <Typography variant="h6" component="h3" className={classes.heading}>
-          {popupAttribs['Endonym' || 'Language']}
+          {selFeatAttribs['Endonym' || 'Language']}
         </Typography>
-        {popupAttribs.Neighborhood && (
+        {selFeatAttribs.Neighborhoods && (
           <small className={classes.subHeading}>
-            {popupAttribs.Neighborhood}
+            {selFeatAttribs.Neighborhoods.split(', ')}
           </small>
         )}
       </header>

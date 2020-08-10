@@ -52,7 +52,7 @@ export const reducer = (
     case 'SET_SEL_FEAT_ATTRIBS':
       return {
         ...state,
-        selFeatAttrbs: action.payload,
+        selFeatAttribs: action.payload,
       }
     // TODO: wire up
     case 'TOGGLE_UI_ALERT':

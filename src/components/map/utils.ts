@@ -1,7 +1,12 @@
 import * as mbGlFull from 'mapbox-gl'
 
 import { StoreActionType } from '../../context/types'
-import { MapEventType, LangFeatureType, LayerPropsPlusMeta } from './types'
+import {
+  MapTooltipType,
+  MapEventType,
+  LangFeatureType,
+  LayerPropsPlusMeta,
+} from './types'
 import { createMapLegend } from '../../utils'
 
 // One of the problems of using panels which overlap the map is how to deal with
@@ -68,23 +73,24 @@ export const areLangFeatsUnderCursor = (
 export function handleHover(
   event: MapEventType,
   sourceID: string,
-  setShowPopup: React.Dispatch<{ show: boolean; lat?: number; lon?: number }>
+  setTooltipOpen: React.Dispatch<MapTooltipType | null>
 ): void {
   const { features, target } = event
 
   if (!areLangFeatsUnderCursor(features, sourceID)) {
     // TODO: hide label on mouseout
     target.style.cursor = 'default'
-    setShowPopup({
-      show: false,
-    })
+    setTooltipOpen(null)
   } else {
+    const { Latitude, Longitude, Endonym, Language } = features[0].properties
+
     // TODO: show label on hover
     target.style.cursor = 'pointer'
-    setShowPopup({
-      show: true,
-      lat: features[0].properties.Latitude,
-      lon: features[0].properties.Longitude,
+    setTooltipOpen({
+      latitude: Latitude,
+      longitude: Longitude,
+      heading: Endonym, // TODO: image if Dropbox/http
+      subHeading: Endonym === Language ? '' : Language,
     })
   }
 }

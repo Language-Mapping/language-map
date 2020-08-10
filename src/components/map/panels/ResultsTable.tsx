@@ -26,7 +26,7 @@ export const ResultsTable: FC<ResultsTableType> = ({ setResultsModalOpen }) => {
   const columns = [
     { title: 'Language', field: 'Language' },
     { title: 'Endonym', field: 'Endonym' },
-    { title: 'Neighborhood', field: 'Neighborhood' }, // TODO: inc. 2ndary
+    { title: 'Neighborhoods', field: 'Neighborhoods' }, // TODO: inc. 2ndary
     { title: 'Community Size', field: 'Community Size' },
     { title: 'Type', field: 'Type' },
     { title: 'World Region', field: 'World Region' },

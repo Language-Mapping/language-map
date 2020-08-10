@@ -37,10 +37,10 @@ export const DetailsPanel: FC = () => {
     return <LoadingIndicator />
   }
 
-  const { selFeatAttrbs } = state
+  const { selFeatAttribs } = state
 
   // No sel feat details
-  if (!selFeatAttrbs) {
+  if (!selFeatAttribs) {
     return (
       <p>
         Click a language community in the map or the{' '}
@@ -59,7 +59,7 @@ export const DetailsPanel: FC = () => {
   }
 
   // TODO: deal with this
-  // if (!Object.keys(state.selFeatAttrbs).length) {
+  // if (!Object.keys(state.selFeatAttribs).length) {
   //   return (
   //     <p>
   //       Feature with id <b>{parsed.id}</b> not found.
@@ -80,20 +80,22 @@ export const DetailsPanel: FC = () => {
       </Link>
       <div className={classes.intro}>
         <Typography component="h3" variant="h4">
-          {selFeatAttrbs.Endonym}
+          {selFeatAttribs.Endonym}
         </Typography>
-        {selFeatAttrbs.Endonym !== selFeatAttrbs.Language && (
+        {selFeatAttribs.Endonym !== selFeatAttribs.Language && (
           <Typography variant="caption" className={classes.subheading}>
-            {`(${selFeatAttrbs.Language})`}
+            {`(${selFeatAttribs.Language})`}
           </Typography>
         )}
-        <small>
-          <i>{selFeatAttrbs.Neighborhood}</i>
-        </small>
+        {selFeatAttribs.Neighborhoods && (
+          <small>
+            <i>{selFeatAttribs.Neighborhoods.split(', ')[0]}</i>
+          </small>
+        )}
       </div>
       <Divider />
       <Typography variant="body2" className={classes.description}>
-        {selFeatAttrbs.Description}
+        {selFeatAttribs.Description}
       </Typography>
     </div>
   )

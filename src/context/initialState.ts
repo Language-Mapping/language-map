@@ -19,7 +19,7 @@ const initialMapStates = {
 
 export const initialState = {
   activePanelIndex: 0,
-  selFeatAttrbs: null,
+  selFeatAttribs: null,
   showSplash: false,
   hasSeenSplash: !!localStorage.getItem('hasSeenSplash') || false,
   uiAlert: {

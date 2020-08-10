@@ -1,6 +1,6 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import MapGL, { Popup, InteractiveMap, MapLoadEvent } from 'react-map-gl'
+import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
 import * as mbGlFull from 'mapbox-gl'
 import { Theme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
@@ -8,9 +8,15 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext, LoadingBackdrop } from 'components'
-import { LangMbSrcAndLayer } from 'components/map'
+import { LangMbSrcAndLayer, MapPopup, MapTooltip } from 'components/map'
 import { LangRecordSchema } from '../../context/types'
-import { MapEventType, LayerPropsPlusMeta, BaselayerType } from './types'
+import {
+  MapEventType,
+  LayerPropsPlusMeta,
+  BaselayerType,
+  MapPopupType,
+  MapTooltipType,
+} from './types'
 import { getIDfromURLparams, findFeatureByID } from '../../utils'
 import {
   prepMapOffset,
@@ -39,17 +45,14 @@ export const Map: FC<MapPropsType> = ({
   const history = useHistory()
   const { state, dispatch } = useContext(GlobalContext)
   const mapRef: MapRefType = React.createRef()
-  const { selFeatAttrbs } = state
+  const { selFeatAttribs } = state
   const isDesktop = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'))
 
   const [viewport, setViewport] = useState(initialMapState)
   const [mapOffset, setMapOffset] = useState<[number, number]>([0, 0])
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
-  const [showPopup, setShowPopup] = useState<{
-    show: boolean
-    lat?: number
-    lon?: number
-  }>({ show: false })
+  const [popupOpen, setPopupOpen] = useState<MapPopupType | null>(null)
+  const [tooltipOpen, setTooltipOpen] = useState<MapTooltipType | null>(null)
 
   // Set the offset for transitions like `flyTo` and `easeTo`
   useEffect((): void => {
@@ -70,26 +73,32 @@ export const Map: FC<MapPropsType> = ({
     // Deselect all features
     clearAllSelFeats(map)
 
-    if (!selFeatAttrbs) {
+    if (!selFeatAttribs) {
       return
     }
 
     // NOTE: won't get this far on load even if feature is selected. The timing
     // and order of the whole process prevent that. Make feature appear selected
-    setSelFeatState(map, selFeatAttrbs.ID, true)
+
+    setSelFeatState(map, selFeatAttribs.ID, true)
+    setPopupOpen({
+      latitude: selFeatAttribs.Latitude,
+      longitude: selFeatAttribs.Longitude,
+      selFeatAttribs,
+    })
 
     flyToCoords(
       map,
       {
-        lat: selFeatAttrbs.Latitude,
-        lng: selFeatAttrbs.Longitude,
+        lat: selFeatAttribs.Latitude,
+        lng: selFeatAttribs.Longitude,
         zoom: 12,
       },
       mapOffset
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selFeatAttrbs, mapLoaded])
+  }, [selFeatAttribs, mapLoaded])
 
   function setSelFeatState(map: mbGlFull.Map, id: number, selected: boolean) {
     map.setFeatureState(
@@ -103,7 +112,7 @@ export const Map: FC<MapPropsType> = ({
   }
 
   function onHover(event: MapEventType) {
-    handleHover(event, mbStyleTileConfig.internalSrcID, setShowPopup)
+    handleHover(event, mbStyleTileConfig.internalSrcID, setTooltipOpen)
   }
 
   // Runs only once and kicks off the whole thinig
@@ -235,18 +244,22 @@ export const Map: FC<MapPropsType> = ({
             labelLayers={labelLayers}
           />
         )}
-        {showPopup.show && showPopup.lat && showPopup.lon && (
-          <Popup
-            longitude={showPopup.lon}
-            latitude={showPopup.lat}
-            closeButton={false}
-            // TODO: implement or rm:
-            // dynamicPosition
-          >
-            <div className="popup--small">
-              {state.selFeatAttrbs && state.selFeatAttrbs.Language}
-            </div>
-          </Popup>
+        {selFeatAttribs && popupOpen && (
+          <MapPopup
+            setPopupOpen={setPopupOpen}
+            longitude={popupOpen.longitude}
+            latitude={popupOpen.latitude}
+            selFeatAttribs={selFeatAttribs}
+          />
+        )}
+        {isDesktop && tooltipOpen && (
+          <MapTooltip
+            setTooltipOpen={setTooltipOpen}
+            longitude={tooltipOpen.longitude}
+            latitude={tooltipOpen.latitude}
+            heading={tooltipOpen.heading}
+            subHeading={tooltipOpen.subHeading}
+          />
         )}
       </MapGL>
     </>

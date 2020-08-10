@@ -39,7 +39,7 @@ export type InitialStateType = {
   langLegend: LegendSwatchType[]
   langSymbGroups: MetadataGroupType
   layerVisibility: LayerVisibilityTypes
-  selFeatAttrbs: null | LangRecordSchema
+  selFeatAttribs: null | LangRecordSchema
   showSplash: boolean
   uiAlert: AlertPayloadType
 }
@@ -112,10 +112,8 @@ export type LangRecordSchema = {
   Glottocode?: string
   'Global Speaker Total'?: number // TODO: why string in MB tileset?
   'ISO 639-3'?: string
-  Neighborhood?: string // NYC 'hoods only
-  'Additional Neighborhoods'?: string // parsed by `|||` maybe?
-  'Primary Country'?: string // TODO: confirm not required
-  'Secondary Country'?: string
+  Neighborhoods?: string // NYC 'hoods only
+  Countries?: string // TODO: confirm not required
   // BEGIN MEDIA
   Audio?: string // TODO: TS for URL?
   'Story Map'?: string // TODO: TS for URL?

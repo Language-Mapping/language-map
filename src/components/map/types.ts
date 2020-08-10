@@ -83,3 +83,12 @@ export type MapPanelTypes = {
   summary?: string | React.ReactNode
   component?: React.ReactNode
 }
+
+export type MapPopupType = LongLatType & {
+  selFeatAttribs: LangRecordSchema
+}
+
+export type MapTooltipType = LongLatType & {
+  heading: string
+  subHeading: string
+}
