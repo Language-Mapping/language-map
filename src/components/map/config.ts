@@ -1,6 +1,12 @@
 // TODO: rm if only using local, otherwise restore when ready
 // const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
 
+import iconArrowUp from './icons/arrow-up.svg'
+import iconBook from './icons/book.svg'
+import iconBuilding from './icons/building.svg'
+import iconHome from './icons/home.svg'
+import iconMuseum from './icons/museum.svg'
+
 export const MAPBOX_TOKEN = process.env.REACT_APP_MB_TOKEN
 export const mbStyleTileConfig = {
   // NOTE: Draft does NOT seem to be reliable or real-time
@@ -38,29 +44,13 @@ export const postLoadMapView = {
   },
 }
 
-// TODO: rm when done
-// Australia and New Zealand - 867078 // formerly oceania
-// Caribbean - 55b4a3
-// Central America - 4e7bbc
-// Central Asia - c29e49
-// Eastern Africa - d64699
-// Eastern Asia - dc6d3a
-// Eastern Europe - 88c64c
-// Melanesia - 72493b
-// Micronesia - 72493b
-// Middle Africa - 684984
-// Northern Africa - da84b7
-// Northern America - 465192
-// Northern Europe - 295e5b
-// Polynesia - 72493b
-// South America - 3fb4ce
-// Southeastern Asia - 96302e
-// Southern Africa - 846caf
-// Southern Asia - dd3939
-// Southern Europe - 7ca298
-// Western Africa - 9b4899
-// Western Asia - 97a853
-// Western Europe - 397439
+export const mapIconsConfig = [
+  { icon: iconArrowUp, id: 'arrow-up' },
+  { icon: iconBook, id: 'book' },
+  { icon: iconBuilding, id: 'building' },
+  { icon: iconHome, id: 'home' },
+  { icon: iconMuseum, id: 'museum' },
+]
 
 // Looks handy?
 // https://api.mapbox.com/v4/elalliance.d0yv450e.json?secure&access_token=pk.eyJ1IjoiZWxhbGxpYW5jZSIsImEiOiJja2M1Nmd6YnYwZXQ4MnJvYjd6MnJsb25lIn0.AC_4h4BmJCg2YvlygXzLxQ

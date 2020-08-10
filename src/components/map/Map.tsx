@@ -29,6 +29,7 @@ import {
   MAPBOX_TOKEN,
   initialMapState,
   postLoadMapView,
+  mapIconsConfig,
 } from './config'
 
 type MapRefType = React.RefObject<InteractiveMap>
@@ -60,6 +61,28 @@ export const Map: FC<MapPropsType> = ({
 
     setMapOffset(offset)
   }, [isDesktop])
+
+  useEffect((): void => {
+    // Map not ready
+    if (!mapRef.current) {
+      return
+    }
+
+    const map: mbGlFull.Map = mapRef.current.getMap()
+
+    mapIconsConfig.forEach((config) => {
+      const { id, icon } = config
+
+      if (map.hasImage(id)) {
+        map.removeImage(id)
+      }
+
+      const img = new Image(20, 20)
+      img.onload = () => map.addImage(id, img)
+      img.src = icon
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [baselayer])
 
   // Do selected feature stuff on sel feat change or map load
   useEffect((): void => {

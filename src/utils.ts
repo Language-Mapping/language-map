@@ -59,32 +59,33 @@ export const getMbStyleDocument = async (
 ): Promise<void> => {
   const response = await fetch(symbStyleUrl) // TODO: handle errors
   const { metadata, layers: allLayers }: MbResponseType = await response.json()
-  const layerGroups = metadata['mapbox:groups']
-  // TODO: instead of grabbing the first one, get the first one who has a
-  // child layer that is VISIBLE. Alternatively could use the `collapsed`
-  // property but that seems unintuitive.
-  const firstGroupId = Object.keys(layerGroups)[0]
-  let labelsGroupId = ''
+  const allLayerGroups = metadata['mapbox:groups']
   const nonLabelsGroups: MetadataGroupType = {}
+  let labelsGroupId = ''
 
-  for (const key in layerGroups) {
-    if (layerGroups[key].name === 'Labels') {
+  for (const key in allLayerGroups) {
+    if (allLayerGroups[key].name === 'Labels') {
       labelsGroupId = key
     } else {
-      nonLabelsGroups[key] = layerGroups[key]
+      nonLabelsGroups[key] = allLayerGroups[key]
     }
   }
 
-  // TODO: make this work with icons, which are of type `symbol`
+  // Default symbology to show first
+  const firstGroupId = Object.keys(nonLabelsGroups)[0]
   const notTheBgLayerOrLabels = allLayers.filter(
     (layer: LayerPropsPlusMeta) =>
-      layer.metadata && layer.type !== 'background' && layer.type !== 'symbol'
+      layer.metadata &&
+      layer.type !== 'background' &&
+      layer.metadata['mapbox:group'] !== labelsGroupId
   )
   const labelsLayers = allLayers.filter(
     (layer: LayerPropsPlusMeta) =>
       layer.metadata && layer.metadata['mapbox:group'] === labelsGroupId
   )
-  const labels = labelsLayers.map(
+
+  // The field names that will populate the "Label by" dropdown
+  const labelFields = labelsLayers.map(
     (layer: LayerPropsPlusMeta) => layer.id as string
   )
 
@@ -103,13 +104,10 @@ export const getMbStyleDocument = async (
   // Populate labels dropdown
   dispatch({
     type: 'INIT_LANG_LAYER_LABEL_OPTIONS',
-    payload: labels,
+    payload: labelFields,
   })
 
   initLegend(dispatch, firstGroupId, notTheBgLayerOrLabels)
-
-  // TODO: instead of grabbing the first one, get the first VISIBLE layer using
-  // `find` instead of filter.
   setLabelLayers(labelsLayers)
   setSymbLayers(notTheBgLayerOrLabels)
 }
