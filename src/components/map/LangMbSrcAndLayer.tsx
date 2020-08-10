@@ -52,6 +52,13 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
               0,
             ],
           }
+          // TODO: change symbol size (???) for selected feat. Evidently cannot
+          // set layout properties base on feature-state though...
+        } else if (layer.type === 'symbol') {
+          layout = {
+            ...layout,
+            'icon-size': 0.5, // 0.8 looks good with 24x24 source image
+          }
         }
 
         return (

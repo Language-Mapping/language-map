@@ -62,6 +62,9 @@ export const Map: FC<MapPropsType> = ({
     setMapOffset(offset)
   }, [isDesktop])
 
+  // (Re)load symbol icons. Must be done whenever `baselayer` is changed,
+  // otherwise the images no longer exist.
+  // TODO: chuck it into utils, and recycle the icons if it makes sense
   useEffect((): void => {
     // Map not ready
     if (!mapRef.current) {
@@ -77,7 +80,8 @@ export const Map: FC<MapPropsType> = ({
         map.removeImage(id)
       }
 
-      const img = new Image(20, 20)
+      const img = new Image(48, 48) // src files are 24x24 viewbox
+
       img.onload = () => map.addImage(id, img)
       img.src = icon
     })
