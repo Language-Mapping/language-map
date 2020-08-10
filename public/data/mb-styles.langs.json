@@ -10,19 +10,10 @@
       "ios": "5.6.0"
     },
     "mapbox:groups": {
-      "2320935a76eb23847fedcce356785d97": {
-        "name": "Community Size",
-        "collapsed": false
-      },
+      "103cfccc2ebe5006e8a8d85a7c7f51d2": { "name": "World Region" },
+      "2320935a76eb23847fedcce356785d97": { "name": "Community Size" },
       "4c2160b40d77f3e74f58f19e5f9c9007": { "name": "Type" },
-      "f83891b595f76eb2a1ed376bda0b2c44": {
-        "name": "Labels",
-        "collapsed": true
-      },
-      "103cfccc2ebe5006e8a8d85a7c7f51d2": {
-        "name": "Region",
-        "collapsed": true
-      }
+      "f83891b595f76eb2a1ed376bda0b2c44": { "name": "Labels" }
     },
     "mapbox:uiParadigm": "layers"
   },
@@ -227,7 +218,7 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Polynesia"], true, false],
+      "filter": ["match", ["get", "World Region"], ["Polynesia"], true, false],
       "paint": { "circle-color": "#72493b" }
     },
     {
@@ -236,7 +227,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Northern Europe"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Northern Europe"],
+        true,
+        false
+      ],
       "paint": { "circle-color": "#295e5b" }
     },
     {
@@ -247,7 +244,7 @@
       "source-layer": "languages-08ip3e",
       "filter": [
         "match",
-        ["get", "Region"],
+        ["get", "World Region"],
         ["Australia and New Zealand"],
         true,
         false
@@ -260,7 +257,7 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Micronesia"], true, false],
+      "filter": ["match", ["get", "World Region"], ["Micronesia"], true, false],
       "paint": { "circle-color": "#72493b" }
     },
     {
@@ -269,7 +266,7 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Melanesia"], true, false],
+      "filter": ["match", ["get", "World Region"], ["Melanesia"], true, false],
       "paint": { "circle-color": "#72493b" }
     },
     {
@@ -278,7 +275,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Southern Africa"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Southern Africa"],
+        true,
+        false
+      ],
       "paint": { "circle-color": "#846caf" }
     },
     {
@@ -287,7 +290,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Middle Africa"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Middle Africa"],
+        true,
+        false
+      ],
       "paint": { "circle-color": "#684984" }
     },
     {
@@ -296,7 +305,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Northern Africa"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Northern Africa"],
+        true,
+        false
+      ],
       "paint": { "circle-color": "#da84b7" }
     },
     {
@@ -305,7 +320,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Eastern Africa"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Eastern Africa"],
+        true,
+        false
+      ],
       "paint": { "circle-color": "#d64699" }
     },
     {
@@ -314,7 +335,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Southern Asia"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Southern Asia"],
+        true,
+        false
+      ],
       "paint": { "circle-color": "#dd3939" }
     },
     {
@@ -323,7 +350,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Eastern Asia"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Eastern Asia"],
+        true,
+        false
+      ],
       "paint": { "circle-color": "#dc6d3a" }
     },
     {
@@ -332,7 +365,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Central Asia"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Central Asia"],
+        true,
+        false
+      ],
       "paint": { "circle-color": "#c29e49" }
     },
     {
@@ -341,7 +380,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Southern Europe"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Southern Europe"],
+        true,
+        false
+      ],
       "paint": { "circle-color": "#7ca298" }
     },
     {
@@ -350,7 +395,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Western Africa"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Western Africa"],
+        true,
+        false
+      ],
       "paint": { "circle-color": "#9b4899" }
     },
     {
@@ -359,7 +410,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Western Europe"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Western Europe"],
+        true,
+        false
+      ],
       "paint": { "circle-color": "#397439" }
     },
     {
@@ -368,7 +425,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Western Asia"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Western Asia"],
+        true,
+        false
+      ],
       "paint": { "circle-color": "#97a853" }
     },
     {
@@ -379,7 +442,7 @@
       "source-layer": "languages-08ip3e",
       "filter": [
         "match",
-        ["get", "Region"],
+        ["get", "World Region"],
         ["Southeastern Asia"],
         true,
         false
@@ -392,7 +455,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Eastern Europe"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Eastern Europe"],
+        true,
+        false
+      ],
       "paint": { "circle-color": "#88c64c" }
     },
     {
@@ -401,7 +470,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["South America"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["South America"],
+        true,
+        false
+      ],
       "paint": { "circle-color": "#3fb4ce" }
     },
     {
@@ -410,7 +485,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Northern America"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Northern America"],
+        true,
+        false
+      ],
       "layout": {},
       "paint": { "circle-color": "#465192 " }
     },
@@ -420,7 +501,13 @@
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Region"], ["Central America"], true, false],
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Central America"],
+        true,
+        false
+      ],
       "paint": { "circle-color": "#4e7bbc" }
     },
     {
