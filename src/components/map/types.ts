@@ -1,31 +1,18 @@
 import { PointerEvent, LayerProps } from 'react-map-gl'
 import * as mbGlFull from 'mapbox-gl'
 
-import { LangRecordSchema, LayerVisibilityTypes } from 'context/types'
+import { LangRecordSchema } from 'context/types'
+
+type LongLat = {
+  longitude: number
+  latitude: number
+}
 
 // Assumes using Mapbox style
-export type BaselayerType = 'dark' | 'light'
-
-export type LayerToggleType = {
-  name: string
-  layerId: keyof LayerVisibilityTypes
-}
-
-export type LegendSwatchType = {
-  type: 'circle' | 'symbol'
-  legendLabel: string
-  backgroundColor?: string
-  iconID?: string
-  size?: number
-}
-
-// Same as the regular swatch but will have SVG element if it is a symbol
-export type LegendSwatchComponent = LegendSwatchType & {
-  icon?: string
-}
+export type Baselayer = 'dark' | 'light'
 
 // MB Styles API individual group in the `metadata` of JSON response
-export type MetadataGroupType = {
+export type MetadataGroup = {
   [mbGroupIdHash: string]: {
     name: string
   }
@@ -38,7 +25,7 @@ export type LayerPropsPlusMeta = Omit<
   'type' | 'paint' | 'layout'
 > & {
   metadata: {
-    'mapbox:group': keyof MetadataGroupType
+    'mapbox:group': keyof MetadataGroup
   }
   type: 'circle' | 'symbol' | 'background'
   layout: mbGlFull.CircleLayout | mbGlFull.SymbolLayout
@@ -51,14 +38,14 @@ export type LayerPropsNonBGlayer = Omit<LayerPropsPlusMeta, 'type'> & {
 }
 
 // API response from Styles API. Not the same as what comes back in map.target
-export type MbResponseType = {
+export type MbResponse = {
   metadata: {
-    'mapbox:groups': MetadataGroupType
+    'mapbox:groups': MetadataGroup
   }
   layers: LayerPropsPlusMeta[]
 }
 
-export type LangFeatureType = {
+export type LangFeature = {
   id: number
   layer: LayerPropsPlusMeta
   properties: LangRecordSchema
@@ -70,16 +57,11 @@ export type LangFeatureType = {
   }
 }
 
-export type MapEventType = Omit<PointerEvent, 'features'> & {
-  features: LangFeatureType[]
+export type MapEvent = Omit<PointerEvent, 'features'> & {
+  features: LangFeature[]
 }
 
-export type LongLatType = {
-  longitude: number
-  latitude: number
-}
-
-export type MapPanelTypes = {
+export type MapPanel = {
   active: boolean
   heading: string
   icon: React.ReactNode
@@ -88,17 +70,17 @@ export type MapPanelTypes = {
   component?: React.ReactNode
 }
 
-export type MapPopupType = LongLatType & {
+export type MapPopup = LongLat & {
   selFeatAttribs: LangRecordSchema
 }
 
-export type MapTooltipType = LongLatType & {
+export type MapTooltip = LongLat & {
   heading: string
   subHeading: string
 }
 
 export type MapComponent = {
-  baselayer: BaselayerType
+  baselayer: Baselayer
   symbLayers: LayerPropsNonBGlayer[]
   labelLayers?: LayerPropsNonBGlayer[]
 }

@@ -2,9 +2,14 @@ import React, { FC, useContext } from 'react'
 import { FormControlLabel, Switch } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
-import { LayerToggleType } from './types'
+import { LayerVisibility } from 'context/types'
 
-export const LayerToggle: FC<LayerToggleType> = ({ name, layerId }) => {
+type LayerToggleComponent = {
+  name: string
+  layerId: keyof LayerVisibility
+}
+
+export const LayerToggle: FC<LayerToggleComponent> = ({ name, layerId }) => {
   const { state, dispatch } = useContext(GlobalContext)
   const checked = state.layerVisibility[layerId]
 

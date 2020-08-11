@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom'
 import { BrowserRouter as Router } from 'react-router-dom'
 
 import { App, ProvidersWrap } from 'components'
-
 import * as serviceWorker from './serviceWorker'
 
 const AppWrap: FC = () => (

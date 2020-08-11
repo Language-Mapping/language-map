@@ -3,7 +3,11 @@ import { Popup } from 'react-map-gl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
-import { MapTooltipType } from './types'
+import { MapTooltip as MapTooltipType } from './types'
+
+type MapTooltipComponent = MapTooltipType & {
+  setTooltipOpen: React.Dispatch<MapTooltipType | null>
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,11 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-type MapTooltipComponentType = MapTooltipType & {
-  setTooltipOpen: React.Dispatch<MapTooltipType | null>
-}
-
-export const MapTooltip: FC<MapTooltipComponentType> = ({
+export const MapTooltip: FC<MapTooltipComponent> = ({
   longitude,
   latitude,
   heading,

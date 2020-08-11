@@ -1,12 +1,9 @@
-import {
-  StoreActionType as GlobalActionType,
-  InitialStateType,
-} from 'context/types'
+import { StoreAction, InitialState } from 'context/types'
 
 export const reducer = (
-  state: InitialStateType,
-  action: GlobalActionType
-): InitialStateType => {
+  state: InitialState,
+  action: StoreAction
+): InitialState => {
   switch (action.type) {
     case 'INIT_LANG_LAYER_FEATURES':
       return {

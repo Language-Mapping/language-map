@@ -2,21 +2,21 @@ import React, { FC, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Typography,
-  DialogActions,
-  Button,
-  IconButton,
   Backdrop,
+  Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Typography,
 } from '@material-ui/core'
 import { MdClose } from 'react-icons/md'
 
-import { wpAPIsettings } from '../config'
-import { getAboutPageContent } from '../utils'
-import { AboutPageStateType } from '../context/types'
+import { getAboutPageContent } from './utils'
+import { wpAPIsettings } from './config'
+import { AboutPageState } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,7 +42,7 @@ export const AboutPageView: FC = () => {
 
   // TODO: learn how to use undefined or null as the initial/default type rather
   // than creating an object for the sake of TS.
-  const [aboutPgContent, setAboutPgContent] = useState<AboutPageStateType>({
+  const [aboutPgContent, setAboutPgContent] = useState<AboutPageState>({
     title: null,
     content: null,
   })

@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom'
 
 import { TopBar } from 'components/nav'
 import { MapWrap } from 'components/map'
-import { AboutPageView } from '../views/AboutPageView'
+import { AboutPageView } from 'components/about'
 
 export const App: FC = () => {
   return (

@@ -5,14 +5,24 @@ import { Source, Layer } from 'react-map-gl'
 import { LayerPropsNonBGlayer } from './types'
 import { mbStyleTileConfig } from './config'
 
-type SourceAndLayerType = {
+type SourceAndLayerComponent = {
   symbLayers: LayerPropsNonBGlayer[]
   labelLayers: LayerPropsNonBGlayer[]
   activeLangSymbGroupId: string
   activeLangLabelId: string
 }
 
-export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
+const commonCirclePaint = {
+  'circle-stroke-color': 'cyan',
+  'circle-stroke-width': [
+    'case',
+    ['boolean', ['feature-state', 'selected'], false],
+    3,
+    0,
+  ],
+} as mbGlFull.CirclePaint
+
+export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
   symbLayers,
   labelLayers,
   activeLangSymbGroupId,
@@ -44,13 +54,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
         if (layer.type === 'circle') {
           paint = {
             ...paint,
-            'circle-stroke-color': 'cyan',
-            'circle-stroke-width': [
-              'case',
-              ['boolean', ['feature-state', 'selected'], false],
-              3,
-              0,
-            ],
+            ...commonCirclePaint,
           }
           // TODO: change symbol size (???) for selected feat. Evidently cannot
           // set layout properties base on feature-state though...

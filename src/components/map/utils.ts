@@ -1,13 +1,7 @@
-import * as mbGlFull from 'mapbox-gl'
+import mbGlFull from 'mapbox-gl'
 
-import { StoreActionType, LangRecordSchema } from '../../context/types'
-import {
-  MapTooltipType,
-  MapEventType,
-  LangFeatureType,
-  LayerPropsNonBGlayer,
-} from './types'
-import { createMapLegend } from '../../utils'
+import { LangRecordSchema } from '../../context/types'
+import * as MapTypes from './types'
 
 // One of the problems of using panels which overlap the map is how to deal with
 // "centering", in quotes because it's more "perceived" centering. Offset is
@@ -46,50 +40,45 @@ export function flyToCoords(
 ): void {
   const { zoom, lat, lng } = settings
   const currentZoom = map.getZoom()
+  const customEventData = {
+    forceViewportUpdate: true, // to keep state in sync
+    selFeatAttribs, // popup data
+  }
 
   map.flyTo(
     {
       // Animation considered essential with respect to prefers-reduced-motion
       essential: true,
-      center: {
-        lng,
-        lat,
-      },
+      center: { lng, lat },
       offset,
       // Only zoom to the default if current zoom is less than that
       zoom: zoom && currentZoom < zoom ? zoom : currentZoom,
     },
-    // Custom event data
-    {
-      forceViewportUpdate: true, // to keep state in sync
-      selFeatAttribs, // popup data
-    }
+    customEventData
   )
 }
 
 // Only if features exist and the top one matches the language source ID
 export const areLangFeatsUnderCursor = (
-  features: LangFeatureType[],
+  features: MapTypes.LangFeature[],
   internalSrcID: string
 ): boolean =>
   features && features.length !== 0 && features[0].source === internalSrcID
 
 export function handleHover(
-  event: MapEventType,
+  event: MapTypes.MapEvent,
   sourceID: string,
-  setTooltipOpen: React.Dispatch<MapTooltipType | null>
+  setTooltipOpen: React.Dispatch<MapTypes.MapTooltip | null>
 ): void {
   const { features, target } = event
 
   if (!areLangFeatsUnderCursor(features, sourceID)) {
-    // TODO: hide label on mouseout
     target.style.cursor = 'default'
     setTooltipOpen(null)
   } else {
     const { Latitude, Longitude, Endonym, Language } = features[0].properties
-
-    // TODO: show label on hover
     target.style.cursor = 'pointer'
+
     setTooltipOpen({
       latitude: Latitude,
       longitude: Longitude,
@@ -97,21 +86,4 @@ export function handleHover(
       subHeading: Endonym === Language ? '' : Language,
     })
   }
-}
-
-export const initLegend = (
-  dispatch: React.Dispatch<StoreActionType>,
-  activeLangSymbGroupId: string,
-  symbLayers: LayerPropsNonBGlayer[]
-): void => {
-  const layersInActiveGroup = symbLayers.filter(
-    (layer) => layer.metadata['mapbox:group'] === activeLangSymbGroupId
-  )
-
-  const legend = createMapLegend(layersInActiveGroup)
-
-  dispatch({
-    type: 'SET_LANG_LAYER_LEGEND',
-    payload: legend,
-  })
 }

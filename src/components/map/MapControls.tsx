@@ -24,7 +24,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
-// TODO: consider this instead:
+
+// TODO: use this instead:
 // https://material-ui.com/components/speed-dial/#simple-speed-dial
 export const MapControls: FC = () => {
   const classes = useStyles()

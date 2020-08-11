@@ -9,6 +9,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext, LoadingBackdrop } from 'components'
 import { LangMbSrcAndLayer, MapPopup, MapTooltip } from 'components/map'
+import { initLegend } from 'components/legend/utils'
 import * as MapTypes from './types'
 import * as mapUtils from './utils'
 import * as mapConfig from './config'
@@ -17,7 +18,6 @@ import { getIDfromURLparams, findFeatureByID } from '../../utils'
 
 const { layerId, internalSrcID } = mapConfig.mbStyleTileConfig
 
-type MapRefType = React.RefObject<InteractiveMap>
 export const Map: FC<MapTypes.MapComponent> = ({
   symbLayers,
   labelLayers,
@@ -25,18 +25,17 @@ export const Map: FC<MapTypes.MapComponent> = ({
 }) => {
   const history = useHistory()
   const { state, dispatch } = useContext(GlobalContext)
-  const mapRef: MapRefType = React.createRef()
+  const mapRef: React.RefObject<InteractiveMap> = React.createRef()
   const { selFeatAttribs } = state
   const isDesktop = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'))
 
   const [viewport, setViewport] = useState(mapConfig.initialMapState)
   const [mapOffset, setMapOffset] = useState<[number, number]>([0, 0])
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
-  const [popupOpen, setPopupOpen] = useState<MapTypes.MapPopupType | null>(null)
-  const [
-    tooltipOpen,
-    setTooltipOpen,
-  ] = useState<MapTypes.MapTooltipType | null>(null)
+  const [popupOpen, setPopupOpen] = useState<MapTypes.MapPopup | null>(null)
+  const [tooltipOpen, setTooltipOpen] = useState<MapTypes.MapTooltip | null>(
+    null
+  )
 
   // Set the offset for transitions like `flyTo` and `easeTo`
   useEffect((): void => {
@@ -46,7 +45,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
   }, [isDesktop])
 
   useEffect((): void => {
-    mapUtils.initLegend(dispatch, state.activeLangSymbGroupId, symbLayers)
+    initLegend(dispatch, state.activeLangSymbGroupId, symbLayers)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.activeLangSymbGroupId])
 
@@ -110,10 +109,10 @@ export const Map: FC<MapTypes.MapComponent> = ({
       mapOffset,
       selFeatAttribs
     )
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selFeatAttribs, mapLoaded])
 
+  // TODO: chuck it into utils
   function setSelFeatState(map: mbGlFull.Map, id: number, selected: boolean) {
     map.setFeatureState(
       {
@@ -125,7 +124,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
     )
   }
 
-  function onHover(event: MapTypes.MapEventType) {
+  function onHover(event: MapTypes.MapEvent) {
     mapUtils.handleHover(event, internalSrcID, setTooltipOpen)
   }
 
@@ -214,7 +213,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
     setMapLoaded(true)
   }
 
-  function onNativeClick(event: MapTypes.MapEventType): void {
+  // TODO: chuck it into utils
+  function onNativeClick(event: MapTypes.MapEvent): void {
     // Map not ready
     if (!mapRef || !mapRef.current || !mapLoaded) {
       return

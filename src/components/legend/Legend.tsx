@@ -2,8 +2,12 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { LegendSwatch } from 'components/legend'
-import { LegendSwatchComponent } from 'components/map/types'
 import { langTypeIconsConfig } from 'components/map/config'
+import { LegendSwatchComponent } from './types'
+
+type LegendComponent = {
+  items: LegendSwatchComponent[]
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,11 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-type LegendType = {
-  items: LegendSwatchComponent[]
-}
-
-export const Legend: FC<LegendType> = ({ items }) => {
+export const Legend: FC<LegendComponent> = ({ items }) => {
   const classes = useStyles()
 
   return (

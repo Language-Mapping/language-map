@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
-import { LegendSwatchComponent } from 'components/map/types'
+import { LegendSwatchComponent } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

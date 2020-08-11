@@ -15,11 +15,13 @@ import {
 
 import { GlobalContext } from 'components'
 
-type ResultsTableType = {
+type ResultsTableComponent = {
   setResultsModalOpen: React.Dispatch<boolean>
 }
 
-export const ResultsTable: FC<ResultsTableType> = ({ setResultsModalOpen }) => {
+export const ResultsTable: FC<ResultsTableComponent> = ({
+  setResultsModalOpen,
+}) => {
   const { state, dispatch } = useContext(GlobalContext)
   const history = useHistory()
 

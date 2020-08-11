@@ -15,7 +15,7 @@ import { AiOutlineFullscreen } from 'react-icons/ai'
 import { GlobalContext, LoadingIndicator } from 'components'
 import { ResultsTable } from './ResultsTable'
 
-type ResultsModalType = {
+type ResultsModalComponent = {
   children: React.ReactNode
   setResultsModalOpen: React.Dispatch<boolean>
 }
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const ResultsModal: FC<ResultsModalType> = ({
+const ResultsModal: FC<ResultsModalComponent> = ({
   children,
   setResultsModalOpen,
 }) => {

@@ -1,4 +1,4 @@
-import { InitialStateType } from 'context/types'
+import { InitialState } from 'context/types'
 
 // Somewhat project-specific, consider putting in separate file
 const initialMapStates = {
@@ -28,4 +28,4 @@ export const initialState = {
     severity: 'success',
   },
   ...initialMapStates,
-} as InitialStateType
+} as InitialState

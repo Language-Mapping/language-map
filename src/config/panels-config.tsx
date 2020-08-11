@@ -10,18 +10,15 @@ import { ResultsPanel } from 'components/results'
 import { FiltersPanel } from 'components/filters'
 import { LegendPanel } from 'components/legend'
 import { DetailsPanel } from 'components/details'
-import { MapPanelTypes } from 'components/map/types'
-import { ActivePanelIndexType } from '../context/types'
+import { MapPanel } from 'components/map/types'
+import { ActivePanelIndex } from '../context/types'
 
-type CheapLinkType = {
+type CheapLink = {
   text: string
-  activePanelIndex: ActivePanelIndexType
+  activePanelIndex: ActivePanelIndex
 }
 
-const CheapLinkWithDispatch: FC<CheapLinkType> = ({
-  text,
-  activePanelIndex,
-}) => {
+const CheapLinkWithDispatch: FC<CheapLink> = ({ text, activePanelIndex }) => {
   const { dispatch } = useContext(GlobalContext)
 
   return (
@@ -82,4 +79,4 @@ export const panelsConfig = [
     summary:
       'Visualize language communities in different ways by changing their symbols and labels below.',
   },
-] as MapPanelTypes[]
+] as MapPanel[]

@@ -4,7 +4,7 @@ import { Backdrop, CircularProgress, Typography } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    backdrop: {
+    backdropRoot: {
       zIndex: theme.zIndex.drawer + 1,
       color: '#fff',
       flexDirection: 'column',
@@ -19,7 +19,7 @@ export const LoadingBackdrop: FC = () => {
   const classes = useStyles()
 
   return (
-    <Backdrop className={classes.backdrop} open>
+    <Backdrop className={classes.backdropRoot} open>
       <Typography variant="h4" component="h2" className={classes.text}>
         Loading...
       </Typography>

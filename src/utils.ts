@@ -1,70 +1,26 @@
 import { Dispatch } from 'react'
 
 import {
-  MetadataGroupType,
-  LegendSwatchType,
-  MbResponseType,
+  MetadataGroup,
+  MbResponse,
   LayerPropsNonBGlayer,
 } from 'components/map/types'
-import {
-  StoreActionType,
-  WpApiPageResponseType,
-  AboutPageStateType,
-  LangRecordSchema,
-} from './context/types'
+import { StoreAction, LangRecordSchema } from './context/types'
 
-export const getGroupNames = (groupObject: MetadataGroupType): string[] =>
+export const getGroupNames = (groupObject: MetadataGroup): string[] =>
   Object.keys(groupObject).map((groupId: string) => groupObject[groupId].name)
-
-export const createMapLegend = (
-  layers: LayerPropsNonBGlayer[]
-): LegendSwatchType[] => {
-  return layers.map((layer) => {
-    const { type, id, paint, layout } = layer
-    const settings = {
-      legendLabel: id,
-      type,
-    } as LegendSwatchType
-
-    // Quite a fight against the MB types here...
-    /* eslint-disable @typescript-eslint/ban-ts-comment */
-    if (type === 'circle') {
-      // @ts-ignore
-      const backgroundColor = paint['circle-color']
-      // @ts-ignore
-      const size = paint['circle-radius'] || 5
-
-      return {
-        ...settings,
-        size,
-        backgroundColor,
-      }
-    }
-
-    if (type === 'symbol') {
-      return {
-        ...settings,
-        // @ts-ignore
-        iconID: layout['icon-image'],
-      }
-    }
-    /* eslint-enable @typescript-eslint/ban-ts-comment */
-
-    return settings
-  })
-}
 
 // TODO: react-query
 export const getMbStyleDocument = async (
   symbStyleUrl: string,
-  dispatch: Dispatch<StoreActionType>,
+  dispatch: Dispatch<StoreAction>,
   setSymbLayers: Dispatch<LayerPropsNonBGlayer[]>,
   setLabelLayers: Dispatch<LayerPropsNonBGlayer[]>
 ): Promise<void> => {
   const response = await fetch(symbStyleUrl) // TODO: handle errors
-  const { metadata, layers: allLayers }: MbResponseType = await response.json()
+  const { metadata, layers: allLayers }: MbResponse = await response.json()
   const allLayerGroups = metadata['mapbox:groups']
-  const nonLabelsGroups: MetadataGroupType = {}
+  const nonLabelsGroups: MetadataGroup = {}
   let labelsGroupId = ''
 
   for (const key in allLayerGroups) {
@@ -111,19 +67,6 @@ export const getMbStyleDocument = async (
 
   setLabelLayers(labelsLayers)
   setSymbLayers(notTheBgLayerOrLabels)
-}
-
-export const getAboutPageContent = async (
-  url: string,
-  setAboutPgContent: Dispatch<AboutPageStateType>
-): Promise<void> => {
-  const response = await fetch(url) // TODO: handle errors
-  const { title, content }: WpApiPageResponseType = await response.json()
-
-  setAboutPgContent({
-    title: title.rendered,
-    content: content.rendered,
-  })
 }
 
 export const findFeatureByID = (

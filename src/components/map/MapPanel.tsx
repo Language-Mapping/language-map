@@ -2,9 +2,9 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Box, Typography, Paper, Divider } from '@material-ui/core'
 
-import { MapPanelTypes } from './types'
+import { MapPanel as MapPanelType } from './types'
 
-type PaperRootType = {
+type PaperRoot = {
   active: boolean
 }
 
@@ -16,8 +16,8 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       top: 0,
       transition: '300ms all',
-      opacity: (props: PaperRootType) => (props.active ? 1 : 0),
-      zIndex: (props: PaperRootType) => (props.active ? 1 : -1),
+      opacity: (props: PaperRoot) => (props.active ? 1 : 0),
+      zIndex: (props: PaperRoot) => (props.active ? 1 : -1),
       display: 'flex',
       flexDirection: 'column',
     },
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const MapPanel: FC<MapPanelTypes> = ({
+export const MapPanel: FC<MapPanelType> = ({
   active,
   component,
   heading,

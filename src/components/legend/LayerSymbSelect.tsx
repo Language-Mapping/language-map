@@ -3,6 +3,7 @@ import { FormControl, InputLabel, Select } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
 
+// TODO: consider passing down some of the global stuff as props
 export const LayerSymbSelect: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
   const { langSymbGroups, activeLangSymbGroupId } = state
@@ -15,9 +16,7 @@ export const LayerSymbSelect: FC = () => {
     })
   }
 
-  // TODO: these guys?
-  // FormHelperText,
-  // NativeSelect,
+  // TODO: these guys maybe? FormHelperText, NativeSelect
   return (
     <FormControl>
       <InputLabel htmlFor="lang-symb-select">Show by:</InputLabel>

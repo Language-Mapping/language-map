@@ -12,7 +12,7 @@ import { MdClose } from 'react-icons/md'
 import { Map, MapPanel, MapControls } from 'components/map'
 import { GlobalContext } from 'components'
 import { LayerPropsNonBGlayer } from './types'
-import { panelsConfig } from '../panelsConfig'
+import { panelsConfig } from '../../config/panels-config'
 import { getIDfromURLparams, getMbStyleDocument } from '../../utils'
 import { mbStyleTileConfig } from './config'
 

@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom'
 import { IconButton } from '@material-ui/core'
 import { GoInfo } from 'react-icons/go'
 
-interface ListItemLinkProps {
+type ListItemLinkProps = {
   muiClass: string
   to?: string
 }

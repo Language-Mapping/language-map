@@ -2,11 +2,15 @@ import React, { FC } from 'react'
 import { Popup } from 'react-map-gl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
-import { MapPopupType } from './types'
+import { MapPopup as MapPopupType } from './types'
+
+type MapPopupComponent = MapPopupType & {
+  setPopupOpen: React.Dispatch<MapPopupType | null>
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    mapPopupRoot: {
       textAlign: 'center',
       minWidth: 150,
       '& .mapboxgl-popup-content': {
@@ -33,11 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-type MapPopupComponentType = MapPopupType & {
-  setPopupOpen: React.Dispatch<MapPopupType | null>
-}
-
-export const MapPopup: FC<MapPopupComponentType> = ({
+export const MapPopup: FC<MapPopupComponent> = ({
   longitude,
   latitude,
   setPopupOpen,
@@ -45,8 +45,8 @@ export const MapPopup: FC<MapPopupComponentType> = ({
 }) => {
   const classes = useStyles()
 
-  // NOTE: the longest legit language or endonym so far is 27 characters:
-  // English, Cameroonian Pidgin
+  // NOTE: the longest legit language or endonym so far is:
+  // Cameroonian Pidgin English
 
   return (
     <Popup
@@ -55,7 +55,7 @@ export const MapPopup: FC<MapPopupComponentType> = ({
       longitude={longitude}
       latitude={latitude}
       closeOnClick={false} // TODO: fix this madness
-      className={classes.root}
+      className={classes.mapPopupRoot}
       onClose={() => setPopupOpen(null)}
     >
       <header>
