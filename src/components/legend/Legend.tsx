@@ -1,9 +1,9 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import { LegendSwatch } from 'components/map'
-import { LegendSwatchComponent } from './types'
-import { langTypeIconsConfig } from './config'
+import { LegendSwatch } from 'components/legend'
+import { LegendSwatchComponent } from 'components/map/types'
+import { langTypeIconsConfig } from 'components/map/config'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

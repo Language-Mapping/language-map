@@ -5,14 +5,13 @@ import { TiDocumentText, TiThList } from 'react-icons/ti'
 import { Link } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
-import {
-  LayersPanel,
-  DetailsPanel,
-  ResultsPanel,
-  FiltersPanel,
-} from 'components/map'
-import { MapPanelTypes } from './types'
-import { ActivePanelIndexType } from '../../context/types'
+
+import { ResultsPanel } from 'components/results'
+import { FiltersPanel } from 'components/filters'
+import { LegendPanel } from 'components/legend'
+import { DetailsPanel } from 'components/details'
+import { MapPanelTypes } from 'components/map/types'
+import { ActivePanelIndexType } from '../context/types'
 
 type CheapLinkType = {
   text: string
@@ -79,7 +78,7 @@ export const panelsConfig = [
     heading: 'Settings',
     subheading: 'for map symbols and labels',
     icon: <GoSettings />,
-    component: <LayersPanel />,
+    component: <LegendPanel />,
     summary:
       'Visualize language communities in different ways by changing their symbols and labels below.',
   },

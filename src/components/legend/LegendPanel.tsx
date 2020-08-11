@@ -3,7 +3,7 @@ import { Grid } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { GlobalContext, LoadingIndicator } from 'components'
-import { LayerSymbSelect, LayerLabelSelect, Legend } from 'components/map'
+import { LayerSymbSelect, LayerLabelSelect, Legend } from 'components/legend'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const LayersPanel: FC = () => {
+export const LegendPanel: FC = () => {
   const classes = useStyles()
   const { state } = useContext(GlobalContext)
   const { langLegend, langLabels } = state
