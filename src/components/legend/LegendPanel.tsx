@@ -2,7 +2,7 @@ import React, { FC, useContext } from 'react'
 import { Grid } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import { GlobalContext, LoadingIndicator } from 'components'
+import { GlobalContext } from 'components'
 import { LayerSymbSelect, LayerLabelSelect, Legend } from 'components/legend'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -17,21 +17,18 @@ const useStyles = makeStyles((theme: Theme) =>
 export const LegendPanel: FC = () => {
   const classes = useStyles()
   const { state } = useContext(GlobalContext)
-  const { langLegend, langLabels } = state
-
-  if (!langLegend.length || !langLabels.length) {
-    return <LoadingIndicator />
-  }
 
   return (
-    <Grid container className={classes.layersPanelRoot} spacing={2}>
-      <Grid item xs={6} sm={5}>
-        <LayerSymbSelect />
+    <>
+      <Grid container className={classes.layersPanelRoot} spacing={2}>
+        <Grid item>
+          <LayerSymbSelect />
+        </Grid>
+        <Grid item>
+          <LayerLabelSelect />
+        </Grid>
       </Grid>
-      <Grid item xs={6} sm={7}>
-        <LayerLabelSelect />
-      </Grid>
-      <Legend items={langLegend} />
-    </Grid>
+      <Legend items={state.langLegend} />
+    </>
   )
 }

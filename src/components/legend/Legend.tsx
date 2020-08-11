@@ -13,9 +13,12 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     legendRoot: {
       listStyleType: 'none',
-      paddingLeft: 12,
-      marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
+      marginTop: 0,
+      paddingLeft: 4,
+      [theme.breakpoints.up('sm')]: {
+        paddingLeft: 10,
+      },
     },
   })
 )

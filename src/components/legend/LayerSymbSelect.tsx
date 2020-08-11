@@ -1,13 +1,13 @@
 import React, { FC, useContext } from 'react'
-import { FormControl, InputLabel, Select } from '@material-ui/core'
+import { TextField } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
+import { commonSelectProps } from './config'
 
 // TODO: consider passing down some of the global stuff as props
 export const LayerSymbSelect: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
-  const { langSymbGroups, activeLangSymbGroupId } = state
-  const groupIDs = Object.keys(langSymbGroups)
+  const groupIDs = Object.keys(state.langSymbGroups)
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     dispatch({
@@ -18,24 +18,19 @@ export const LayerSymbSelect: FC = () => {
 
   // TODO: these guys maybe? FormHelperText, NativeSelect
   return (
-    <FormControl>
-      <InputLabel htmlFor="lang-symb-select">Show by:</InputLabel>
-      <Select
-        native
-        value={activeLangSymbGroupId}
-        onChange={handleChange}
-        inputProps={{
-          name: 'symbology',
-          id: 'lang-symb-select',
-        }}
-      >
-        <option value="None">None (hide layer)</option>
-        {groupIDs.map((id: string) => (
-          <option key={id} value={id}>
-            {langSymbGroups[id].name}
-          </option>
-        ))}
-      </Select>
-    </FormControl>
+    <TextField
+      {...commonSelectProps}
+      label="Show by:"
+      value={state.activeLangSymbGroupId}
+      onChange={handleChange}
+      inputProps={{ name: 'symbology', id: 'lang-symb-select' }}
+    >
+      <option value="None">None (hide layer)</option>
+      {groupIDs.map((id: string) => (
+        <option key={id} value={id}>
+          {state.langSymbGroups[id].name}
+        </option>
+      ))}
+    </TextField>
   )
 }
