@@ -50,7 +50,6 @@ export const LayersMenu: FC = () => {
         Layer Visibility
       </FormLabel>
       <FormGroup>
-        <LayerToggle layerId="languages" name="Languages" />
         <LayerToggle layerId="counties" name="Counties" />
         <LayerToggle layerId="neighborhoods" name="Neighborhoods" />
       </FormGroup>

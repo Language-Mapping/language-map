@@ -30,6 +30,7 @@ export const LayerSymbSelect: FC = () => {
           id: 'lang-symb-select',
         }}
       >
+        <option value="None">None (hide layer)</option>
         {groupIDs.map((id: string) => (
           <option key={id} value={id}>
             {langSymbGroups[id].name}
