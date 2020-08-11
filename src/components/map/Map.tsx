@@ -9,39 +9,16 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext, LoadingBackdrop } from 'components'
 import { LangMbSrcAndLayer, MapPopup, MapTooltip } from 'components/map'
+import * as MapTypes from './types'
+import * as mapUtils from './utils'
+import * as mapConfig from './config'
 import { LangRecordSchema } from '../../context/types'
-import {
-  MapEventType,
-  LayerPropsNonBGlayer,
-  BaselayerType,
-  MapPopupType,
-  MapTooltipType,
-} from './types'
 import { getIDfromURLparams, findFeatureByID } from '../../utils'
-import {
-  prepMapOffset,
-  flyToCoords,
-  handleHover,
-  areLangFeatsUnderCursor,
-} from './utils'
-import {
-  mbStyleTileConfig,
-  MAPBOX_TOKEN,
-  initialMapState,
-  postLoadMapView,
-  langTypeIconsConfig,
-} from './config'
 
-const { layerId, internalSrcID } = mbStyleTileConfig
+const { layerId, internalSrcID } = mapConfig.mbStyleTileConfig
 
 type MapRefType = React.RefObject<InteractiveMap>
-type MapPropsType = {
-  baselayer: BaselayerType
-  symbLayers?: LayerPropsNonBGlayer[]
-  labelLayers?: LayerPropsNonBGlayer[]
-}
-
-export const Map: FC<MapPropsType> = ({
+export const Map: FC<MapTypes.MapComponent> = ({
   symbLayers,
   labelLayers,
   baselayer,
@@ -52,18 +29,26 @@ export const Map: FC<MapPropsType> = ({
   const { selFeatAttribs } = state
   const isDesktop = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'))
 
-  const [viewport, setViewport] = useState(initialMapState)
+  const [viewport, setViewport] = useState(mapConfig.initialMapState)
   const [mapOffset, setMapOffset] = useState<[number, number]>([0, 0])
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
-  const [popupOpen, setPopupOpen] = useState<MapPopupType | null>(null)
-  const [tooltipOpen, setTooltipOpen] = useState<MapTooltipType | null>(null)
+  const [popupOpen, setPopupOpen] = useState<MapTypes.MapPopupType | null>(null)
+  const [
+    tooltipOpen,
+    setTooltipOpen,
+  ] = useState<MapTypes.MapTooltipType | null>(null)
 
   // Set the offset for transitions like `flyTo` and `easeTo`
   useEffect((): void => {
-    const offset = prepMapOffset(isDesktop)
+    const offset = mapUtils.prepMapOffset(isDesktop)
 
     setMapOffset(offset)
   }, [isDesktop])
+
+  useEffect((): void => {
+    mapUtils.initLegend(dispatch, state.activeLangSymbGroupId, symbLayers)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.activeLangSymbGroupId])
 
   // (Re)load symbol icons. Must be done whenever `baselayer` is changed,
   // otherwise the images no longer exist.
@@ -78,7 +63,7 @@ export const Map: FC<MapPropsType> = ({
 
     // CRED:
     // https://github.com/mapbox/mapbox-gl-js/issues/5529#issuecomment-340011876
-    langTypeIconsConfig.forEach((config) => {
+    mapConfig.langTypeIconsConfig.forEach((config) => {
       const { id, icon } = config
 
       if (map.hasImage(id)) {
@@ -115,7 +100,7 @@ export const Map: FC<MapPropsType> = ({
 
     setSelFeatState(map, ID, true)
 
-    flyToCoords(
+    mapUtils.flyToCoords(
       map,
       {
         lat: Latitude,
@@ -140,8 +125,8 @@ export const Map: FC<MapPropsType> = ({
     )
   }
 
-  function onHover(event: MapEventType) {
-    handleHover(event, internalSrcID, setTooltipOpen)
+  function onHover(event: MapTypes.MapEventType) {
+    mapUtils.handleHover(event, internalSrcID, setTooltipOpen)
   }
 
   // Runs only once and kicks off the whole thinig
@@ -210,7 +195,12 @@ export const Map: FC<MapPropsType> = ({
     if (!matchingRecord) {
       const configKey = isDesktop ? 'desktop' : 'mobile'
 
-      flyToCoords(map, { ...postLoadMapView[configKey] }, mapOffset, null)
+      mapUtils.flyToCoords(
+        map,
+        { ...mapConfig.postLoadMapView[configKey] },
+        mapOffset,
+        null
+      )
     }
 
     // TODO: set paint property
@@ -224,14 +214,14 @@ export const Map: FC<MapPropsType> = ({
     setMapLoaded(true)
   }
 
-  function onNativeClick(event: MapEventType): void {
+  function onNativeClick(event: MapTypes.MapEventType): void {
     // Map not ready
     if (!mapRef || !mapRef.current || !mapLoaded) {
       return
     }
 
     // No language features under click, clear the route
-    if (!areLangFeatsUnderCursor(event.features, internalSrcID)) {
+    if (!mapUtils.areLangFeatsUnderCursor(event.features, internalSrcID)) {
       history.push(`${window.location.pathname}?id=-1`) // TODO: better solution
 
       return
@@ -262,7 +252,7 @@ export const Map: FC<MapPropsType> = ({
         ref={mapRef}
         height="100%"
         width="100%"
-        mapboxApiAccessToken={MAPBOX_TOKEN}
+        mapboxApiAccessToken={mapConfig.MAPBOX_TOKEN}
         mapStyle={`mapbox://styles/mapbox/${baselayer}-v9`}
         onViewportChange={setViewport}
         onClick={onNativeClick} // TODO: mv into utils

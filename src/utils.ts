@@ -6,7 +6,6 @@ import {
   MbResponseType,
   LayerPropsNonBGlayer,
 } from 'components/map/types'
-import { initLegend } from 'components/map/utils'
 import {
   StoreActionType,
   WpApiPageResponseType,
@@ -110,7 +109,6 @@ export const getMbStyleDocument = async (
     payload: labelFields,
   })
 
-  initLegend(dispatch, firstGroupId, notTheBgLayerOrLabels)
   setLabelLayers(labelsLayers)
   setSymbLayers(notTheBgLayerOrLabels)
 }

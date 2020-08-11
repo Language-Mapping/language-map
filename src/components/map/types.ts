@@ -96,3 +96,9 @@ export type MapTooltipType = LongLatType & {
   heading: string
   subHeading: string
 }
+
+export type MapComponent = {
+  baselayer: BaselayerType
+  symbLayers: LayerPropsNonBGlayer[]
+  labelLayers?: LayerPropsNonBGlayer[]
+}
