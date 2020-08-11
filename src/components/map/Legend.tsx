@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     legendRoot: {
       listStyleType: 'none',
-      paddingLeft: theme.spacing(2),
+      paddingLeft: 12,
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1),
     },

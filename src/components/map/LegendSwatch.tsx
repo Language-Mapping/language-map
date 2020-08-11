@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Typography } from '@material-ui/core'
 
 import { LegendSwatchComponent } from './types'
 
@@ -7,15 +8,18 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     legendSwatchRoot: {
       display: 'grid',
-      gridTemplateColumns: '20px 1fr',
+      gridTemplateColumns: '24px 1fr',
       alignItems: 'center',
       justifyItems: 'center',
+      marginBottom: (props: { type: 'symbol' | string }) =>
+        props.type === 'symbol' ? theme.spacing(1) : 0,
     },
-    symbol: {
-      height: 10,
-      width: 10,
+    swatch: {
       marginRight: theme.spacing(1),
-      borderRadius: '100%', // TODO: support other shapes?
+    },
+    legendLabel: {
+      justifySelf: 'flex-start',
+      color: theme.palette.grey[800],
     },
   })
 )
@@ -29,14 +33,14 @@ export const LegendSwatch: FC<LegendSwatchComponent> = ({
   legendLabel,
   size = 7,
 }) => {
-  const classes = useStyles()
+  const classes = useStyles({ type })
   const adjustedSize = size * 1.5
 
   return (
     <li className={classes.legendSwatchRoot}>
       {type === 'circle' && (
         <span
-          className={classes.symbol}
+          className={classes.swatch}
           style={{
             backgroundColor,
             height: adjustedSize,
@@ -45,8 +49,17 @@ export const LegendSwatch: FC<LegendSwatchComponent> = ({
           }}
         />
       )}
-      {type === 'symbol' && icon}
-      <span style={{ justifySelf: 'flex-start' }}>{legendLabel}</span>
+      {type === 'symbol' && (
+        <img
+          className={classes.swatch}
+          style={{ height: 20, width: 20 }}
+          src={icon}
+          alt={legendLabel}
+        />
+      )}
+      <Typography variant="caption" className={classes.legendLabel}>
+        {legendLabel}
+      </Typography>
     </li>
   )
 }

@@ -8,23 +8,19 @@ type PaperRootType = {
   active: boolean
 }
 
-// Uses component props (e.g. `active`) w/o access to Theme
-const useStyles = makeStyles({
-  paperRoot: {
-    position: 'absolute',
-    backgroundColor: 'hsla(100, 0%, 100%, 0.95)',
-    width: '100%',
-    top: 0,
-    transition: '300ms all',
-    opacity: (props: PaperRootType) => (props.active ? 1 : 0),
-    zIndex: (props: PaperRootType) => (props.active ? 1 : -1),
-    display: 'flex',
-    flexDirection: 'column',
-  },
-})
-
-const useThemeStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    paperRoot: {
+      position: 'absolute',
+      backgroundColor: 'hsla(100, 0%, 100%, 0.95)',
+      width: '100%',
+      top: 0,
+      transition: '300ms all',
+      opacity: (props: PaperRootType) => (props.active ? 1 : 0),
+      zIndex: (props: PaperRootType) => (props.active ? 1 : -1),
+      display: 'flex',
+      flexDirection: 'column',
+    },
     intro: {
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.common.white,
@@ -50,8 +46,9 @@ const useThemeStyles = makeStyles((theme: Theme) =>
     },
     summary: {
       fontSize: 12,
-      color: theme.palette.grey[800],
+      color: theme.palette.grey[700],
       marginTop: 0,
+      marginBottom: theme.spacing(1),
     },
   })
 )
@@ -65,15 +62,14 @@ export const MapPanel: FC<MapPanelTypes> = ({
   summary,
 }) => {
   const classes = useStyles({ active })
-  const themeClasses = useThemeStyles()
 
   return (
     <Paper className={classes.paperRoot}>
-      <Box component="header" className={themeClasses.intro}>
-        <Typography variant="h4" className={themeClasses.mainHeading}>
+      <Box component="header" className={classes.intro}>
+        <Typography variant="h4" className={classes.mainHeading}>
           {icon}
           {heading}
-          <Typography variant="caption" className={themeClasses.subheading}>
+          <Typography variant="caption" className={classes.subheading}>
             {subheading}
           </Typography>
         </Typography>
@@ -87,7 +83,7 @@ export const MapPanel: FC<MapPanelTypes> = ({
       >
         {summary ? (
           <>
-            <p className={themeClasses.summary}>{summary}</p>
+            <p className={classes.summary}>{summary}</p>
             <Divider />
           </>
         ) : null}
