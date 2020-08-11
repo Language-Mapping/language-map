@@ -3,8 +3,7 @@ import { render } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 
 import { ProvidersWrap } from 'components'
-import { Map } from 'components/map'
-import { initialMapState } from 'components/map/config'
+import { MapWrap } from 'components/map'
 
 // TODO: rm if not using
 // jest.mock('mapbox-gl/dist/mapbox-gl', () => ({
@@ -24,7 +23,7 @@ const renderComponent = () =>
   render(
     <ProvidersWrap>
       <MemoryRouter>
-        <Map {...initialMapState} />
+        <MapWrap />
       </MemoryRouter>
     </ProvidersWrap>
   )
