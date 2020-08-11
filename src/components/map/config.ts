@@ -44,7 +44,7 @@ export const postLoadMapView = {
   },
 }
 
-export const mapIconsConfig = [
+export const langTypeIconsConfig = [
   { icon: iconArrowUp, id: 'arrow-up' },
   { icon: iconBook, id: 'book' },
   { icon: iconBuilding, id: 'building' },

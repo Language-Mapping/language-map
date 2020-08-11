@@ -11,7 +11,7 @@ import { MdClose } from 'react-icons/md'
 
 import { Map, MapPanel, MapControls } from 'components/map'
 import { GlobalContext } from 'components'
-import { LayerPropsPlusMeta } from './types'
+import { LayerPropsNonBGlayer } from './types'
 import { panelsConfig } from './panelsConfig'
 import { getIDfromURLparams, getMbStyleDocument } from '../../utils'
 import { mbStyleTileConfig } from './config'
@@ -93,8 +93,8 @@ export const MapWrap: FC = () => {
   const loc = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
   const [panelOpen, setPanelOpen] = useState(true)
-  const [symbLayers, setSymbLayers] = useState<LayerPropsPlusMeta[]>()
-  const [labelLayers, setLabelLayers] = useState<LayerPropsPlusMeta[]>()
+  const [symbLayers, setSymbLayers] = useState<LayerPropsNonBGlayer[]>()
+  const [labelLayers, setLabelLayers] = useState<LayerPropsNonBGlayer[]>()
   const { langFeaturesCached } = state
 
   // Fetch MB Style doc

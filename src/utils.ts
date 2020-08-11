@@ -4,7 +4,7 @@ import {
   MetadataGroupType,
   LegendSwatchType,
   MbResponseType,
-  LayerPropsPlusMeta,
+  LayerPropsNonBGlayer,
 } from 'components/map/types'
 import { initLegend } from 'components/map/utils'
 import {
@@ -18,35 +18,40 @@ export const getGroupNames = (groupObject: MetadataGroupType): string[] =>
   Object.keys(groupObject).map((groupId: string) => groupObject[groupId].name)
 
 export const createMapLegend = (
-  layers: LayerPropsPlusMeta[]
+  layers: LayerPropsNonBGlayer[]
 ): LegendSwatchType[] => {
-  return layers.map((layer: LayerPropsPlusMeta) => {
-    const { type, id } = layer
-    const lightGray = '#aaa'
+  return layers.map((layer) => {
+    const { type, id, paint, layout } = layer
+    const settings = {
+      legendLabel: id,
+      type,
+    } as LegendSwatchType
 
+    // Quite a fight against the MB types here...
+    /* eslint-disable @typescript-eslint/ban-ts-comment */
     if (type === 'circle') {
-      // TODO: learn how to get past the `CirclePaint` issue, which has
-      // properties like `circle-radius` that allow multiple types.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { paint }: { paint: any } = layer
-
-      const backgroundColor = paint['circle-color'] || lightGray
+      // @ts-ignore
+      const backgroundColor = paint['circle-color']
+      // @ts-ignore
       const size = paint['circle-radius'] || 5
 
       return {
-        shape: 'circle',
+        ...settings,
         size,
         backgroundColor,
-        text: id,
       }
     }
 
-    return {
-      shape: 'circle',
-      size: 5,
-      backgroundColor: lightGray,
-      text: id,
+    if (type === 'symbol') {
+      return {
+        ...settings,
+        // @ts-ignore
+        iconID: layout['icon-image'],
+      }
     }
+    /* eslint-enable @typescript-eslint/ban-ts-comment */
+
+    return settings
   })
 }
 
@@ -54,8 +59,8 @@ export const createMapLegend = (
 export const getMbStyleDocument = async (
   symbStyleUrl: string,
   dispatch: Dispatch<StoreActionType>,
-  setSymbLayers: Dispatch<LayerPropsPlusMeta[]>,
-  setLabelLayers: Dispatch<LayerPropsPlusMeta[]>
+  setSymbLayers: Dispatch<LayerPropsNonBGlayer[]>,
+  setLabelLayers: Dispatch<LayerPropsNonBGlayer[]>
 ): Promise<void> => {
   const response = await fetch(symbStyleUrl) // TODO: handle errors
   const { metadata, layers: allLayers }: MbResponseType = await response.json()
@@ -73,21 +78,19 @@ export const getMbStyleDocument = async (
 
   // Default symbology to show first
   const firstGroupId = Object.keys(nonLabelsGroups)[0]
-  const notTheBgLayerOrLabels = allLayers.filter(
-    (layer: LayerPropsPlusMeta) =>
-      layer.metadata &&
-      layer.type !== 'background' &&
-      layer.metadata['mapbox:group'] !== labelsGroupId
+
+  const nonBgLayersWithMeta = allLayers.filter(
+    (layer) => layer.metadata && layer.type !== 'background'
   )
-  const labelsLayers = allLayers.filter(
-    (layer: LayerPropsPlusMeta) =>
-      layer.metadata && layer.metadata['mapbox:group'] === labelsGroupId
-  )
+  const notTheBgLayerOrLabels = nonBgLayersWithMeta.filter(
+    (layer) => layer.metadata['mapbox:group'] !== labelsGroupId
+  ) as LayerPropsNonBGlayer[]
+  const labelsLayers = nonBgLayersWithMeta.filter(
+    (layer) => layer.metadata['mapbox:group'] === labelsGroupId
+  ) as LayerPropsNonBGlayer[]
 
   // The field names that will populate the "Label by" dropdown
-  const labelFields = labelsLayers.map(
-    (layer: LayerPropsPlusMeta) => layer.id as string
-  )
+  const labelFields = labelsLayers.map((layer) => layer.id as string)
 
   // Populate symb dropdown
   dispatch({

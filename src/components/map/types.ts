@@ -1,4 +1,4 @@
-import { LayerProps, PointerEvent } from 'react-map-gl'
+import { PointerEvent, LayerProps } from 'react-map-gl'
 import * as mbGlFull from 'mapbox-gl'
 
 import { LangRecordSchema, LayerVisibilityTypes } from 'context/types'
@@ -11,39 +11,43 @@ export type LayerToggleType = {
   layerId: keyof LayerVisibilityTypes
 }
 
-// TODO: validate lat/long: -90 to 90, -180 to 180, zoom 1-20. Existing MB type?
-// export type InitialMapStateType = {
-//   latitude: number
-//   longitude: number
-//   zoom: number
-//   pitch?: number
-//   bearing?: number
-// }
-
 export type LegendSwatchType = {
+  type: 'circle' | 'symbol'
+  legendLabel: string
   backgroundColor?: string
-  icon?: string
-  shape?: 'circle' | 'square' | 'icon'
+  iconID?: string
   size?: number
-  text?: string
+}
+
+// Same as the regular swatch but will have SVG element if it is a symbol
+export type LegendSwatchComponent = LegendSwatchType & {
+  icon?: string
 }
 
 // MB Styles API individual group in the `metadata` of JSON response
 export type MetadataGroupType = {
   [mbGroupIdHash: string]: {
     name: string
-    collapsed: boolean // not needed but could be useful indirectly as a setting
   }
 }
 
 // `metadata` prop has MB Studio group ID and appears to only be part of the
 // Style API, not the Style Spec.
-export type LayerPropsPlusMeta = LayerProps & {
+export type LayerPropsPlusMeta = Omit<
+  LayerProps,
+  'type' | 'paint' | 'layout'
+> & {
   metadata: {
-    'mapbox:group': string
+    'mapbox:group': keyof MetadataGroupType
   }
-  paint: mbGlFull.CirclePaint
-  'source-layer': string
+  type: 'circle' | 'symbol' | 'background'
+  layout: mbGlFull.CircleLayout | mbGlFull.SymbolLayout
+  paint: mbGlFull.CirclePaint | mbGlFull.SymbolPaint
+}
+
+// Same but only circle or symbol types
+export type LayerPropsNonBGlayer = Omit<LayerPropsPlusMeta, 'type'> & {
+  type: 'circle' | 'symbol'
 }
 
 // API response from Styles API. Not the same as what comes back in map.target

@@ -1,23 +1,23 @@
-import React, { FC, useContext } from 'react'
+import React, { FC } from 'react'
 import * as mbGlFull from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
-import { GlobalContext } from 'components'
-import { LayerPropsPlusMeta } from './types'
+import { LayerPropsNonBGlayer } from './types'
 import { mbStyleTileConfig } from './config'
 
 type SourceAndLayerType = {
-  symbLayers: LayerPropsPlusMeta[]
-  labelLayers: LayerPropsPlusMeta[]
+  symbLayers: LayerPropsNonBGlayer[]
+  labelLayers: LayerPropsNonBGlayer[]
+  activeLangSymbGroupId: string
+  activeLangLabelId: string
 }
 
 export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
   symbLayers,
   labelLayers,
+  activeLangSymbGroupId,
+  activeLangLabelId,
 }) => {
-  const { state } = useContext(GlobalContext)
-  const { activeLangSymbGroupId, activeLangLabelId } = state
-
   // NOTE: it did not seem to work when using two different Styles with the same
   // dataset unless waiting until there is something to put into <Source>.
   return (
@@ -29,7 +29,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
       url={`mapbox://${mbStyleTileConfig.tilesetId}`}
       id={mbStyleTileConfig.internalSrcID}
     >
-      {symbLayers.map((layer: LayerPropsPlusMeta) => {
+      {symbLayers.map((layer: LayerPropsNonBGlayer) => {
         let { paint, layout } = layer
         const isInActiveGroup =
           layer.metadata['mapbox:group'] === activeLangSymbGroupId
@@ -57,7 +57,8 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
         } else if (layer.type === 'symbol') {
           layout = {
             ...layout,
-            'icon-size': 0.5, // 0.8 looks good with 24x24 source image
+            // 0.5 looks good with 24x24 SVG added
+            'icon-size': 0.5,
           }
         }
 
@@ -71,7 +72,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerType> = ({
           />
         )
       })}
-      {labelLayers.map((layer: LayerPropsPlusMeta) => {
+      {labelLayers.map((layer: LayerPropsNonBGlayer) => {
         const isActiveLabel = layer.id === activeLangLabelId
 
         const layout: mbGlFull.AnyLayout = {

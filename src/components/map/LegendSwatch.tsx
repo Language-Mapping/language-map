@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import { LegendSwatchType } from './types'
+import { LegendSwatchComponent } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,11 +22,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 // TODO: break this out into LegendItem separately since swatch could be handy
 // on its own, e.g. in Details or Popup
-export const LegendSwatch: FC<LegendSwatchType> = ({
+export const LegendSwatch: FC<LegendSwatchComponent> = ({
   backgroundColor,
   icon,
-  shape = 'circle',
-  text,
+  type,
+  legendLabel,
   size = 7,
 }) => {
   const classes = useStyles()
@@ -34,16 +34,19 @@ export const LegendSwatch: FC<LegendSwatchType> = ({
 
   return (
     <li className={classes.legendSwatchRoot}>
-      <span
-        className={classes.symbol}
-        style={{
-          backgroundColor,
-          height: adjustedSize,
-          width: adjustedSize,
-          borderRadius: shape === 'circle' ? '100%' : 'unset',
-        }}
-      />
-      <span style={{ justifySelf: 'flex-start' }}>{text}</span>
+      {type === 'circle' && (
+        <span
+          className={classes.symbol}
+          style={{
+            backgroundColor,
+            height: adjustedSize,
+            width: adjustedSize,
+            borderRadius: '100%',
+          }}
+        />
+      )}
+      {type === 'symbol' && icon}
+      <span style={{ justifySelf: 'flex-start' }}>{legendLabel}</span>
     </li>
   )
 }

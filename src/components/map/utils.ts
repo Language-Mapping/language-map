@@ -5,7 +5,7 @@ import {
   MapTooltipType,
   MapEventType,
   LangFeatureType,
-  LayerPropsPlusMeta,
+  LayerPropsNonBGlayer,
 } from './types'
 import { createMapLegend } from '../../utils'
 
@@ -102,11 +102,10 @@ export function handleHover(
 export const initLegend = (
   dispatch: React.Dispatch<StoreActionType>,
   activeLangSymbGroupId: string,
-  symbLayers: LayerPropsPlusMeta[]
+  symbLayers: LayerPropsNonBGlayer[]
 ): void => {
   const layersInActiveGroup = symbLayers.filter(
-    (layer: LayerPropsPlusMeta) =>
-      layer.metadata['mapbox:group'] === activeLangSymbGroupId
+    (layer) => layer.metadata['mapbox:group'] === activeLangSymbGroupId
   )
 
   const legend = createMapLegend(layersInActiveGroup)

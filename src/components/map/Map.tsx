@@ -12,7 +12,7 @@ import { LangMbSrcAndLayer, MapPopup, MapTooltip } from 'components/map'
 import { LangRecordSchema } from '../../context/types'
 import {
   MapEventType,
-  LayerPropsPlusMeta,
+  LayerPropsNonBGlayer,
   BaselayerType,
   MapPopupType,
   MapTooltipType,
@@ -29,15 +29,18 @@ import {
   MAPBOX_TOKEN,
   initialMapState,
   postLoadMapView,
-  mapIconsConfig,
+  langTypeIconsConfig,
 } from './config'
+
+const { layerId, internalSrcID } = mbStyleTileConfig
 
 type MapRefType = React.RefObject<InteractiveMap>
 type MapPropsType = {
   baselayer: BaselayerType
-  symbLayers?: LayerPropsPlusMeta[]
-  labelLayers?: LayerPropsPlusMeta[]
+  symbLayers?: LayerPropsNonBGlayer[]
+  labelLayers?: LayerPropsNonBGlayer[]
 }
+
 export const Map: FC<MapPropsType> = ({
   symbLayers,
   labelLayers,
@@ -73,7 +76,9 @@ export const Map: FC<MapPropsType> = ({
 
     const map: mbGlFull.Map = mapRef.current.getMap()
 
-    mapIconsConfig.forEach((config) => {
+    // CRED:
+    // https://github.com/mapbox/mapbox-gl-js/issues/5529#issuecomment-340011876
+    langTypeIconsConfig.forEach((config) => {
       const { id, icon } = config
 
       if (map.hasImage(id)) {
@@ -106,14 +111,15 @@ export const Map: FC<MapPropsType> = ({
 
     // NOTE: won't get this far on load even if feature is selected. The timing
     // and order of the whole process prevent that. Make feature appear selected
+    const { ID, Latitude, Longitude } = selFeatAttribs
 
-    setSelFeatState(map, selFeatAttribs.ID, true)
+    setSelFeatState(map, ID, true)
 
     flyToCoords(
       map,
       {
-        lat: selFeatAttribs.Latitude,
-        lng: selFeatAttribs.Longitude,
+        lat: Latitude,
+        lng: Longitude,
         zoom: 12,
       },
       mapOffset,
@@ -126,8 +132,8 @@ export const Map: FC<MapPropsType> = ({
   function setSelFeatState(map: mbGlFull.Map, id: number, selected: boolean) {
     map.setFeatureState(
       {
-        sourceLayer: mbStyleTileConfig.layerId,
-        source: mbStyleTileConfig.internalSrcID,
+        sourceLayer: layerId,
+        source: internalSrcID,
         id,
       },
       { selected }
@@ -135,7 +141,7 @@ export const Map: FC<MapPropsType> = ({
   }
 
   function onHover(event: MapEventType) {
-    handleHover(event, mbStyleTileConfig.internalSrcID, setTooltipOpen)
+    handleHover(event, internalSrcID, setTooltipOpen)
   }
 
   // Runs only once and kicks off the whole thinig
@@ -175,12 +181,9 @@ export const Map: FC<MapPropsType> = ({
     const idFromUrl = getIDfromURLparams(window.location.search)
     const cacheOfIDs: number[] = []
     const uniqueRecords: LangRecordSchema[] = []
-    const rawLangFeats = map.querySourceFeatures(
-      mbStyleTileConfig.internalSrcID,
-      {
-        sourceLayer: mbStyleTileConfig.layerId,
-      }
-    )
+    const rawLangFeats = map.querySourceFeatures(internalSrcID, {
+      sourceLayer: layerId,
+    })
 
     // Just the properties for table/results, don't need GeoJSON cruft. Also
     // need to make sure each ID is unique as there have been initial data
@@ -228,9 +231,7 @@ export const Map: FC<MapPropsType> = ({
     }
 
     // No language features under click, clear the route
-    if (
-      !areLangFeatsUnderCursor(event.features, mbStyleTileConfig.internalSrcID)
-    ) {
+    if (!areLangFeatsUnderCursor(event.features, internalSrcID)) {
       history.push(`${window.location.pathname}?id=-1`) // TODO: better solution
 
       return
@@ -245,8 +246,8 @@ export const Map: FC<MapPropsType> = ({
   // Assumes map is ready
   function clearAllSelFeats(map: mbGlFull.Map) {
     map.removeFeatureState({
-      source: mbStyleTileConfig.internalSrcID,
-      sourceLayer: mbStyleTileConfig.layerId,
+      source: internalSrcID,
+      sourceLayer: layerId,
     }) // TODO: add `selected` key?
   }
 
@@ -274,6 +275,8 @@ export const Map: FC<MapPropsType> = ({
           <LangMbSrcAndLayer
             symbLayers={symbLayers}
             labelLayers={labelLayers}
+            activeLangSymbGroupId={state.activeLangSymbGroupId}
+            activeLangLabelId={state.activeLangLabelId}
           />
         )}
         {selFeatAttribs && popupOpen && (
