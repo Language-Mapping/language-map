@@ -22,14 +22,14 @@ const commonCirclePaint = {
   ],
 } as mbGlFull.CirclePaint
 
+// NOTE: it did not seem to work when using two different Styles with the same
+// dataset unless waiting until there is something to put into <Source>.
 export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
   symbLayers,
   labelLayers,
   activeLangSymbGroupId,
   activeLangLabelId,
 }) => {
-  // NOTE: it did not seem to work when using two different Styles with the same
-  // dataset unless waiting until there is something to put into <Source>.
   return (
     <Source
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -52,28 +52,17 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
 
         // Set selected feature stroke for all layers of `circle` type
         if (layer.type === 'circle') {
-          paint = {
-            ...paint,
-            ...commonCirclePaint,
-          }
-          // TODO: change symbol size (???) for selected feat. Evidently cannot
-          // set layout properties base on feature-state though...
+          paint = { ...paint, ...commonCirclePaint }
         } else if (layer.type === 'symbol') {
-          layout = {
-            ...layout,
-            // 0.5 looks good with 24x24 SVG added
-            'icon-size': 0.5,
-          }
+          // TODO: change symbol size (???) for selected feat. Evidently cannot
+          // set layout properties base on feature-state though, so maybe this:
+          // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setlayoutproperty
+          layout = { ...layout, 'icon-size': 0.5 } // 0.5 good with 24x24 SVG
         }
 
         return (
-          <Layer
-            key={layer.id}
-            {...layer}
-            layout={layout}
-            // TODO: some kind of transition/animation on switch
-            paint={paint}
-          />
+          // TODO: some kind of transition/animation on switch
+          <Layer key={layer.id} {...layer} layout={layout} paint={paint} />
         )
       })}
       {labelLayers.map((layer: LayerPropsNonBGlayer) => {

@@ -16,7 +16,7 @@ import * as mapConfig from './config'
 import { LangRecordSchema } from '../../context/types'
 import { getIDfromURLparams, findFeatureByID } from '../../utils'
 
-const { layerId, internalSrcID } = mapConfig.mbStyleTileConfig
+const { layerId: sourceLayer, internalSrcID } = mapConfig.mbStyleTileConfig
 
 export const Map: FC<MapTypes.MapComponent> = ({
   symbLayers,
@@ -37,6 +37,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
     null
   )
 
+  /* eslint-disable react-hooks/exhaustive-deps */
+  // ^^^^^ otherwise it wants things like mapRef and dispatch 24/7
   // Set the offset for transitions like `flyTo` and `easeTo`
   useEffect((): void => {
     const offset = mapUtils.prepMapOffset(isDesktop)
@@ -46,35 +48,15 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
   useEffect((): void => {
     initLegend(dispatch, state.activeLangSymbGroupId, symbLayers)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.activeLangSymbGroupId])
 
   // (Re)load symbol icons. Must be done whenever `baselayer` is changed,
   // otherwise the images no longer exist.
-  // TODO: chuck it into utils, and recycle the icons if it makes sense
   useEffect((): void => {
-    // Map not ready
-    if (!mapRef.current) {
-      return
+    if (mapRef.current) {
+      const map: mbGlFull.Map = mapRef.current.getMap()
+      mapUtils.addLangTypeIconsToMap(map, mapConfig.langTypeIconsConfig)
     }
-
-    const map: mbGlFull.Map = mapRef.current.getMap()
-
-    // CRED:
-    // https://github.com/mapbox/mapbox-gl-js/issues/5529#issuecomment-340011876
-    mapConfig.langTypeIconsConfig.forEach((config) => {
-      const { id, icon } = config
-
-      if (map.hasImage(id)) {
-        map.removeImage(id)
-      }
-
-      const img = new Image(48, 48) // src files are 24x24 viewbox
-
-      img.onload = () => map.addImage(id, img)
-      img.src = icon
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [baselayer])
 
   // Do selected feature stuff on sel feat change or map load
@@ -95,31 +77,18 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
     // NOTE: won't get this far on load even if feature is selected. The timing
     // and order of the whole process prevent that. Make feature appear selected
-    const { ID, Latitude, Longitude } = selFeatAttribs
+
+    const { ID, Latitude: lat, Longitude: lng } = selFeatAttribs
 
     setSelFeatState(map, ID, true)
-
-    mapUtils.flyToCoords(
-      map,
-      {
-        lat: Latitude,
-        lng: Longitude,
-        zoom: 12,
-      },
-      mapOffset,
-      selFeatAttribs
-    )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    mapUtils.flyToCoords(map, { lat, lng, zoom: 12 }, mapOffset, selFeatAttribs)
   }, [selFeatAttribs, mapLoaded])
+  /* eslint-enable react-hooks/exhaustive-deps */
 
-  // TODO: chuck it into utils
+  // TODO: animate selected feature
   function setSelFeatState(map: mbGlFull.Map, id: number, selected: boolean) {
     map.setFeatureState(
-      {
-        sourceLayer: layerId,
-        source: internalSrcID,
-        id,
-      },
+      { sourceLayer, source: internalSrcID, id },
       { selected }
     )
   }
@@ -139,7 +108,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
       // No custom event data, regular move event
       if (zoomEndEvent.forceViewportUpdate) {
         setViewport({
-          ...viewport,
+          ...viewport, // spreading just in case bearing or pitch are added
           zoom: map.getZoom(),
           latitude: map.getCenter().lat,
           longitude: map.getCenter().lng,
@@ -165,9 +134,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
     const idFromUrl = getIDfromURLparams(window.location.search)
     const cacheOfIDs: number[] = []
     const uniqueRecords: LangRecordSchema[] = []
-    const rawLangFeats = map.querySourceFeatures(internalSrcID, {
-      sourceLayer: layerId,
-    })
+    const rawLangFeats = map.querySourceFeatures(internalSrcID, { sourceLayer })
 
     // Just the properties for table/results, don't need GeoJSON cruft. Also
     // need to make sure each ID is unique as there have been initial data
@@ -235,10 +202,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
   // Assumes map is ready
   function clearAllSelFeats(map: mbGlFull.Map) {
-    map.removeFeatureState({
-      source: internalSrcID,
-      sourceLayer: layerId,
-    }) // TODO: add `selected` key?
+    // TODO: add `selected` key?
+    map.removeFeatureState({ source: internalSrcID, sourceLayer })
   }
 
   return (

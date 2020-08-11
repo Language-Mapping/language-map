@@ -84,3 +84,5 @@ export type MapComponent = {
   symbLayers: LayerPropsNonBGlayer[]
   labelLayers?: LayerPropsNonBGlayer[]
 }
+
+export type LangIconConfig = { icon: string; id: string }

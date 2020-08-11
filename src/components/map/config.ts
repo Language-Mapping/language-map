@@ -24,6 +24,7 @@ export const mbStyleTileConfig = {
 // export const symbStyleUrl = `${MB_STYLES_API_URL}/${mbStyleTileConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
 // Unsure why it needs the type here but not for feature coords..
 const mapCenter = [-73.96, 40.7128] as [number, number]
+
 export const initialMapState = {
   latitude: mapCenter[1],
   longitude: mapCenter[0],

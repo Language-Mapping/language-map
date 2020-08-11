@@ -87,3 +87,23 @@ export function handleHover(
     })
   }
 }
+
+// TODO: recycle the icons if it makes sense
+export const addLangTypeIconsToMap = (
+  map: mbGlFull.Map,
+  iconsConfig: MapTypes.LangIconConfig[]
+): void => {
+  iconsConfig.forEach((config) => {
+    const { id, icon } = config
+
+    if (map.hasImage(id)) {
+      map.removeImage(id)
+    }
+
+    // CRED:
+    // https://github.com/mapbox/mapbox-gl-js/issues/5529#issuecomment-340011876
+    const img = new Image(48, 48) // src files are 24x24 viewbox
+    img.onload = () => map.addImage(id, img)
+    img.src = icon
+  })
+}
