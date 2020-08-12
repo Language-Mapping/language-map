@@ -51,15 +51,15 @@ export const Map: FC<MapTypes.MapComponent> = ({
   }, [state.activeLangSymbGroupId])
 
   // (Re)load symbol icons. Must be done whenever `baselayer` is changed,
-  // otherwise the images no longer exist. TODO: rm if no longer using.
-  // Currently experiencing tons of issues with custom styles vs. default MB in
-  // terms of fonts/glyps and icons/images
-  useEffect((): void => {
-    if (mapRef.current) {
-      const map: mbGlFull.Map = mapRef.current.getMap()
-      mapUtils.addLangTypeIconsToMap(map, mapConfig.langTypeIconsConfig)
-    }
-  }, [baselayer])
+  // otherwise the images no longer exist.
+  // TODO: rm if no longer using. Currently experiencing tons of issues with
+  // custom styles vs. default MB in terms of fonts/glyps and icons/images
+  // useEffect((): void => {
+  //   if (mapRef.current) {
+  //     const map: mbGlFull.Map = mapRef.current.getMap()
+  //     mapUtils.addLangTypeIconsToMap(map, mapConfig.langTypeIconsConfig)
+  //   }
+  // }, [baselayer])
 
   // Do selected feature stuff on sel feat change or map load
   useEffect((): void => {
@@ -82,7 +82,9 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
     const { ID, Latitude: lat, Longitude: lng } = selFeatAttribs
 
+    setPopupOpen(null)
     setSelFeatState(map, ID, true)
+
     mapUtils.flyToCoords(map, { lat, lng, zoom: 12 }, mapOffset, selFeatAttribs)
   }, [selFeatAttribs, mapLoaded])
   /* eslint-enable react-hooks/exhaustive-deps */
@@ -119,7 +121,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
     })
 
     map.on('zoomend', function onMoveEnd(zoomEndEvent) {
-      if (zoomEndEvent.selFeatAttribs) {
+      if (zoomEndEvent.selFeatAttribs && !map.isMoving()) {
         setPopupOpen({
           latitude: zoomEndEvent.selFeatAttribs.Latitude,
           longitude: zoomEndEvent.selFeatAttribs.Longitude,
@@ -203,6 +205,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
     }
 
     setTooltipOpen(null) // super annoying if tooltip stays intact after a click
+    setPopupOpen(null)
 
     // TODO: use `initialEntries` in <MemoryRouter> to test routing
     history.push(`/details?id=${event.features[0].properties.ID}`)
