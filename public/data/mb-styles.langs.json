@@ -105,7 +105,9 @@
       "source": "composite",
       "source-layer": "languages-08ip3e",
       "filter": ["match", ["get", "Type"], ["Historical"], true, false],
-      "layout": { "icon-image": "museum" },
+      "layout": {
+        "icon-image": "_museum"
+      },
       "paint": {}
     },
     {
@@ -115,7 +117,9 @@
       "source": "composite",
       "source-layer": "languages-08ip3e",
       "filter": ["match", ["get", "Type"], ["Institutional"], true, false],
-      "layout": { "icon-image": "building" },
+      "layout": {
+        "icon-image": "_building"
+      },
       "paint": {}
     },
     {
@@ -125,7 +129,9 @@
       "source": "composite",
       "source-layer": "languages-08ip3e",
       "filter": ["match", ["get", "Type"], ["Liturgical"], true, false],
-      "layout": { "icon-image": "book" },
+      "layout": {
+        "icon-image": "_book"
+      },
       "paint": {}
     },
     {
@@ -135,7 +141,9 @@
       "source": "composite",
       "source-layer": "languages-08ip3e",
       "filter": ["match", ["get", "Type"], ["Residential"], true, false],
-      "layout": { "icon-image": "home" },
+      "layout": {
+        "icon-image": "_home"
+      },
       "paint": {}
     },
     {
@@ -145,7 +153,10 @@
       "source": "composite",
       "source-layer": "languages-08ip3e",
       "filter": ["match", ["get", "Type"], ["Reviving"], true, false],
-      "layout": { "icon-image": "arrow-up", "icon-rotate": 45 },
+      "layout": {
+        "icon-image": "_arrow-up",
+        "icon-rotate": 45
+      },
       "paint": {}
     },
     {

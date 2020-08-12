@@ -18,6 +18,11 @@ export const mbStyleTileConfig = {
   layerId: 'languages-08ip3e',
   tilesetId: 'elalliance.d0yv450e',
   internalSrcID: 'languages-src', // arbitrary, set in code, never changes
+  // So far this is the only known way to use the custom fonts
+  customStyles: {
+    dark: 'mapbox://styles/elalliance/ckdqj968x01ot19lf5yg472f2',
+    light: 'mapbox://styles/elalliance/ckdovh9us01wz1ipa5fjihv7l',
+  },
 }
 
 // TODO: rm if only using local, otherwise restore when ready
@@ -46,11 +51,11 @@ export const postLoadMapView = {
 }
 
 export const langTypeIconsConfig = [
-  { icon: iconArrowUp, id: 'arrow-up' },
-  { icon: iconBook, id: 'book' },
-  { icon: iconBuilding, id: 'building' },
-  { icon: iconHome, id: 'home' },
-  { icon: iconMuseum, id: 'museum' },
+  { icon: iconArrowUp, id: '_arrow-up' },
+  { icon: iconBook, id: '_book' },
+  { icon: iconBuilding, id: '_building' },
+  { icon: iconHome, id: '_home' },
+  { icon: iconMuseum, id: '_museum' },
 ]
 
 // Looks handy?

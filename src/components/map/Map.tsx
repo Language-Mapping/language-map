@@ -51,7 +51,9 @@ export const Map: FC<MapTypes.MapComponent> = ({
   }, [state.activeLangSymbGroupId])
 
   // (Re)load symbol icons. Must be done whenever `baselayer` is changed,
-  // otherwise the images no longer exist.
+  // otherwise the images no longer exist. TODO: rm if no longer using.
+  // Currently experiencing tons of issues with custom styles vs. default MB in
+  // terms of fonts/glyps and icons/images
   useEffect((): void => {
     if (mapRef.current) {
       const map: mbGlFull.Map = mapRef.current.getMap()
@@ -218,7 +220,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
         height="100%"
         width="100%"
         mapboxApiAccessToken={mapConfig.MAPBOX_TOKEN}
-        mapStyle={`mapbox://styles/mapbox/${baselayer}-v9`}
+        mapStyle={mapConfig.mbStyleTileConfig.customStyles.light}
         onViewportChange={setViewport}
         onClick={onNativeClick} // TODO: mv into utils
         onHover={onHover}
