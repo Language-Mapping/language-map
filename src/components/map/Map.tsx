@@ -189,9 +189,15 @@ export const Map: FC<MapTypes.MapComponent> = ({
       return
     }
 
-    // No language features under click, clear the route
+    // No language features under click, clear the route. Note that this keeps
+    // the `id` in the URL if there is already a selected feature, which feels a
+    // little weird, but it's much better than relying on a dummy route like
+    // `id=-1`. Still not the greatest so keep an eye out for a better solution.
     if (!mapUtils.areLangFeatsUnderCursor(event.features, internalSrcID)) {
-      history.push(`${window.location.pathname}?id=-1`) // TODO: better solution
+      dispatch({
+        type: 'SET_SEL_FEAT_ATTRIBS',
+        payload: null,
+      })
 
       return
     }
