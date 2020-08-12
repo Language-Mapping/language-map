@@ -54,12 +54,12 @@ export const Map: FC<MapTypes.MapComponent> = ({
   // otherwise the images no longer exist.
   // TODO: rm if no longer using. Currently experiencing tons of issues with
   // custom styles vs. default MB in terms of fonts/glyps and icons/images
-  // useEffect((): void => {
-  //   if (mapRef.current) {
-  //     const map: mbGlFull.Map = mapRef.current.getMap()
-  //     mapUtils.addLangTypeIconsToMap(map, mapConfig.langTypeIconsConfig)
-  //   }
-  // }, [baselayer])
+  useEffect((): void => {
+    if (mapRef.current) {
+      const map: mbGlFull.Map = mapRef.current.getMap()
+      mapUtils.addLangTypeIconsToMap(map, mapConfig.langTypeIconsConfig)
+    }
+  }, [baselayer]) // baselayer may be irrelevant if only using Light BG
 
   // Do selected feature stuff on sel feat change or map load
   useEffect((): void => {
