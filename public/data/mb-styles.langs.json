@@ -44,10 +44,11 @@
       "metadata": { "mapbox:group": "2320935a76eb23847fedcce356785d97" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Community Size"], [2], true, false],
+      "filter": ["match", ["get", "Community Size"], [1], true, false],
       "layout": { "visibility": "none" },
       "paint": {
-        "circle-color": "#6baed6"
+        "circle-color": "#6baed6",
+        "circle-radius": 4
       }
     },
     {
@@ -59,7 +60,8 @@
       "filter": ["match", ["get", "Community Size"], [2], true, false],
       "layout": { "visibility": "none" },
       "paint": {
-        "circle-color": "#4292c6"
+        "circle-color": "#4292c6",
+        "circle-radius": 5
       }
     },
     {
@@ -71,7 +73,8 @@
       "filter": ["match", ["get", "Community Size"], [3], true, false],
       "layout": { "visibility": "none" },
       "paint": {
-        "circle-color": "#2171b5"
+        "circle-color": "#2171b5",
+        "circle-radius": 6
       }
     },
     {
@@ -83,7 +86,8 @@
       "filter": ["match", ["get", "Community Size"], [4], true, false],
       "layout": { "visibility": "none" },
       "paint": {
-        "circle-color": "#08519c"
+        "circle-color": "#08519c",
+        "circle-radius": 7
       }
     },
     {
@@ -95,7 +99,8 @@
       "filter": ["match", ["get", "Community Size"], [5], true, false],
       "layout": { "visibility": "none" },
       "paint": {
-        "circle-color": "#08306b"
+        "circle-color": "#08306b",
+        "circle-radius": 8
       }
     },
     {
