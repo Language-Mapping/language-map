@@ -8,7 +8,12 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext, LoadingBackdrop } from 'components'
-import { LangMbSrcAndLayer, MapPopup, MapTooltip } from 'components/map'
+import {
+  LangMbSrcAndLayer,
+  MapPopup,
+  MapTooltip,
+  MapCtrlBtns,
+} from 'components/map'
 import { initLegend } from 'components/legend/utils'
 import * as MapTypes from './types'
 import * as mapUtils from './utils'
@@ -22,6 +27,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
   symbLayers,
   labelLayers,
   baselayer,
+  wrapClassName,
 }) => {
   const history = useHistory()
   const { state, dispatch } = useContext(GlobalContext)
@@ -218,7 +224,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
   }
 
   return (
-    <>
+    <div className={wrapClassName}>
       {!mapLoaded && <LoadingBackdrop />}
       <MapGL
         // TODO: show MB attribution text (not logo) on mobile
@@ -263,6 +269,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
           />
         )}
       </MapGL>
-    </>
+      <MapCtrlBtns />
+    </div>
   )
 }

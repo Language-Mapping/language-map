@@ -81,8 +81,9 @@ export type MapTooltip = LongLat & {
 
 export type MapComponent = {
   baselayer: Baselayer
+  wrapClassName: string
   symbLayers: LayerPropsNonBGlayer[]
-  labelLayers?: LayerPropsNonBGlayer[]
+  labelLayers: LayerPropsNonBGlayer[]
 }
 
 export type LangIconConfig = { icon: string; id: string }

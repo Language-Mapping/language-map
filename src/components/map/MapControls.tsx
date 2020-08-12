@@ -1,3 +1,4 @@
+// TODO: rm this entire file once no longer needed
 import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Button, ButtonGroup, Popover, Box } from '@material-ui/core'
@@ -25,8 +26,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-// TODO: use this instead:
-// https://material-ui.com/components/speed-dial/#simple-speed-dial
 export const MapControls: FC = () => {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
