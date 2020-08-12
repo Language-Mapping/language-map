@@ -11,7 +11,7 @@ import {
 
 import { GlobalContext } from 'components'
 import { LayerToggle } from 'components/map'
-import { BaselayerType } from './types'
+import { Baselayer } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,7 +40,7 @@ export const LayersMenu: FC = () => {
 
     dispatch({
       type: 'SET_BASELAYER',
-      payload: value as BaselayerType,
+      payload: value as Baselayer,
     })
   }
 
@@ -50,7 +50,6 @@ export const LayersMenu: FC = () => {
         Layer Visibility
       </FormLabel>
       <FormGroup>
-        <LayerToggle layerId="languages" name="Languages" />
         <LayerToggle layerId="counties" name="Counties" />
         <LayerToggle layerId="neighborhoods" name="Neighborhoods" />
       </FormGroup>

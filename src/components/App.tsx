@@ -1,10 +1,9 @@
 import React, { FC } from 'react'
 import { Switch, Route } from 'react-router-dom'
 
-import { TopBar } from 'components'
-import { StyleGuide } from 'components/style-guide'
+import { TopBar } from 'components/nav'
 import { MapWrap } from 'components/map'
-import { AboutPageView } from '../views/AboutPageView'
+import { AboutPageView } from 'components/about'
 
 export const App: FC = () => {
   return (
@@ -14,10 +13,6 @@ export const App: FC = () => {
         <Switch>
           <Route path="/about">
             <AboutPageView />
-          </Route>
-          {/* TODO: code-splitting since tons of internal-only components */}
-          <Route path="/style-guide">
-            <StyleGuide />
           </Route>
         </Switch>
         <Route path="/">

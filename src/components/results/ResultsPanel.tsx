@@ -12,13 +12,10 @@ import {
 import { MdClose } from 'react-icons/md'
 import { AiOutlineFullscreen } from 'react-icons/ai'
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-// import queryString from 'query-string'
 import { GlobalContext, LoadingIndicator } from 'components'
 import { ResultsTable } from './ResultsTable'
 
-type ResultsModalType = {
+type ResultsModalComponent = {
   children: React.ReactNode
   setResultsModalOpen: React.Dispatch<boolean>
 }
@@ -38,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const ResultsModal: FC<ResultsModalType> = ({
+const ResultsModal: FC<ResultsModalComponent> = ({
   children,
   setResultsModalOpen,
 }) => {
@@ -111,10 +108,10 @@ export const ResultsPanel: FC = () => {
       </p>
       {resultsModalOpen && (
         <ResultsModal setResultsModalOpen={setResultsModalOpen}>
-          <ResultsTable />
+          <ResultsTable setResultsModalOpen={setResultsModalOpen} />
         </ResultsModal>
       )}
-      <ResultsTable />
+      <ResultsTable setResultsModalOpen={setResultsModalOpen} />
     </div>
   )
 }

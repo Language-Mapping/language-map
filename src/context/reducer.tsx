@@ -1,12 +1,9 @@
-import {
-  StoreActionType as GlobalActionType,
-  InitialStateType,
-} from 'context/types'
+import { StoreAction, InitialState } from 'context/types'
 
 export const reducer = (
-  state: InitialStateType,
-  action: GlobalActionType
-): InitialStateType => {
+  state: InitialState,
+  action: StoreAction
+): InitialState => {
   switch (action.type) {
     case 'INIT_LANG_LAYER_FEATURES':
       return {
@@ -23,6 +20,11 @@ export const reducer = (
       return {
         ...state,
         langSymbGroups: action.payload,
+      }
+    case 'SET_ACTIVE_PANEL_INDEX':
+      return {
+        ...state,
+        activePanelIndex: action.payload,
       }
     case 'SET_BASELAYER':
       return {
@@ -43,6 +45,11 @@ export const reducer = (
       return {
         ...state,
         activeLangSymbGroupId: action.payload,
+      }
+    case 'SET_SEL_FEAT_ATTRIBS':
+      return {
+        ...state,
+        selFeatAttribs: action.payload,
       }
     // TODO: wire up
     case 'TOGGLE_UI_ALERT':

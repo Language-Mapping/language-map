@@ -8,10 +8,10 @@ import {
   ListItem,
   ListItemText,
 } from '@material-ui/core'
-import { MdShare, MdHome, MdChat } from 'react-icons/md'
-import { GoGear, GoInfo } from 'react-icons/go'
 
-type ListItemType = {
+import { primaryNavConfig, secondaryNavConfig } from './config'
+
+type ListItemComponent = {
   url: string
   primaryText: string
   secondaryText: string
@@ -37,46 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
-
-const primaryNavConfig = [
-  {
-    url: '/',
-    primaryText: 'Home',
-    secondaryText: 'The main map view',
-    icon: <MdHome />,
-  },
-  {
-    url: '/about',
-    primaryText: 'About',
-    secondaryText: 'Privacy policy, data sources',
-    icon: <GoInfo />,
-  },
-  {
-    url: '/contact',
-    primaryText: 'Contact & Feedback',
-    secondaryText:
-      'Bug reports, suggest corrections, feature requests, questions, kudos, other comments. Simplest: Google Forms or similar.',
-    icon: <MdChat />,
-  },
-]
-
-const secondaryNavConfig = [
-  {
-    url: '/share',
-    primaryText: 'Share',
-    secondaryText:
-      'Maybe just a btn elsewhere, but could consider this second chance to market.',
-    icon: <MdShare />,
-  },
-  {
-    url: '/settings',
-    primaryText: 'Settings',
-    secondaryText: 'Relevant? Just "auto-zoom on filter change" so far.',
-    icon: <GoGear />,
-  },
-]
-
-const NavListLink: FC<ListItemType> = ({
+const NavListLink: FC<ListItemComponent> = ({
   url,
   primaryText,
   secondaryText,
@@ -96,7 +57,7 @@ export const Nav: FC = () => {
   return (
     <nav>
       <List>
-        {primaryNavConfig.map((props: ListItemType) => (
+        {primaryNavConfig.map((props: ListItemComponent) => (
           <ListItem button key={props.primaryText}>
             <NavListLink {...props} />
           </ListItem>
@@ -104,7 +65,7 @@ export const Nav: FC = () => {
       </List>
       <Divider />
       <List>
-        {secondaryNavConfig.map((props: ListItemType) => (
+        {secondaryNavConfig.map((props: ListItemComponent) => (
           <ListItem button key={props.primaryText}>
             <NavListLink {...props} />
           </ListItem>

@@ -7,28 +7,28 @@ import React, { useReducer, createContext, FC } from 'react'
 // and run the fetch in a `useEffect` inside `GlobalProvider`.
 import { reducer } from './reducer'
 import { initialState } from './initialState'
-import { StoreActionType, InitialStateType } from './types'
+import { StoreAction, InitialState } from './types'
 
-type ContextType = {
-  state: InitialStateType
-  dispatch: React.Dispatch<StoreActionType>
+type Context = {
+  state: InitialState
+  dispatch: React.Dispatch<StoreAction>
 }
 
 // Good article on setting all this up:
 // https://www.simplethread.com/cant-replace-redux-with-hooks/
-export const GlobalContext = createContext<ContextType>({
+export const GlobalContext = createContext<Context>({
   state: initialState,
   dispatch: () => null,
 })
 
-type GlobalProviderType = {
+type GlobalProviderComponent = {
   children: React.ReactNode
 }
 
 // TODO: this if it makes sense to:
 // https://dev.to/stephencweiss/usereducer-with-typescript-2kf
 
-export const GlobalProvider: FC<GlobalProviderType> = ({ children }) => {
+export const GlobalProvider: FC<GlobalProviderComponent> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   return (

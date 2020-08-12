@@ -1,94 +1,51 @@
 import { Dispatch } from 'react'
 
 import {
-  MetadataGroupType,
-  LegendSwatchType,
-  MbResponseType,
-  LayerPropsPlusMeta,
-  LangFeatureType,
+  MetadataGroup,
+  MbResponse,
+  LayerPropsNonBGlayer,
 } from 'components/map/types'
-import {
-  StoreActionType,
-  WpApiPageResponseType,
-  AboutPageStateType,
-  LangRecordSchema,
-} from './context/types'
+import { StoreAction, LangRecordSchema } from './context/types'
 
-export const getGroupNames = (groupObject: MetadataGroupType): string[] =>
+export const getGroupNames = (groupObject: MetadataGroup): string[] =>
   Object.keys(groupObject).map((groupId: string) => groupObject[groupId].name)
 
-export const createMapLegend = (
-  layers: LayerPropsPlusMeta[]
-): LegendSwatchType[] => {
-  return layers.map((layer: LayerPropsPlusMeta) => {
-    const { type, id } = layer
-    const lightGray = '#aaa'
-
-    if (type === 'circle') {
-      // TODO: learn how to get past the `CirclePaint` issue, which has
-      // properties like `circle-radius` that allow multiple types.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { paint }: { paint: any } = layer
-
-      const backgroundColor = paint['circle-color'] || lightGray
-      const size = paint['circle-radius'] || 5
-
-      return {
-        shape: 'circle',
-        size,
-        backgroundColor,
-        text: id,
-      }
-    }
-
-    return {
-      shape: 'circle',
-      size: 5,
-      backgroundColor: lightGray,
-      text: id,
-    }
-  })
-}
-
-// TODO: react-query or, at a minimum, get this into utils and maybe run it
-// higher up the tree instead.
+// TODO: react-query
 export const getMbStyleDocument = async (
-  styleUrl: string,
-  dispatch: Dispatch<StoreActionType>,
-  setSymbLayers: Dispatch<LayerPropsPlusMeta[]>,
-  setLabelLayers: Dispatch<LayerPropsPlusMeta[]>
+  symbStyleUrl: string,
+  dispatch: Dispatch<StoreAction>,
+  setSymbLayers: Dispatch<LayerPropsNonBGlayer[]>,
+  setLabelLayers: Dispatch<LayerPropsNonBGlayer[]>
 ): Promise<void> => {
-  const response = await fetch(styleUrl) // TODO: handle errors
-  // const response = await fetch('/data/mb-styles.langs.json') // TODO: handle errors
-  const { metadata, layers: allLayers }: MbResponseType = await response.json()
-  const layerGroups = metadata['mapbox:groups']
-  // TODO: instead of grabbing the first one, get the first one who has a
-  // child layer that is VISIBLE. Alternatively could use the `collapsed`
-  // property but that seems unintuitive.
-  const firstGroupId = Object.keys(layerGroups)[0]
+  const response = await fetch(symbStyleUrl) // TODO: handle errors
+  const { metadata, layers: allLayers }: MbResponse = await response.json()
+  const allLayerGroups = metadata['mapbox:groups']
+  const nonLabelsGroups: MetadataGroup = {}
   let labelsGroupId = ''
-  const nonLabelsGroups: MetadataGroupType = {}
 
-  for (const key in layerGroups) {
-    if (layerGroups[key].name === 'Labels') {
+  for (const key in allLayerGroups) {
+    if (allLayerGroups[key].name === 'Labels') {
       labelsGroupId = key
     } else {
-      nonLabelsGroups[key] = layerGroups[key]
+      nonLabelsGroups[key] = allLayerGroups[key]
     }
   }
 
-  // TODO: make this work with icons, which are of type `symbol`
-  const notTheBgLayerOrLabels = allLayers.filter(
-    (layer: LayerPropsPlusMeta) =>
-      layer.metadata && layer.type !== 'background' && layer.type !== 'symbol'
+  // Default symbology to show first
+  const firstGroupId = Object.keys(nonLabelsGroups)[0]
+
+  const nonBgLayersWithMeta = allLayers.filter(
+    (layer) => layer.metadata && layer.type !== 'background'
   )
-  const labelsLayers = allLayers.filter(
-    (layer: LayerPropsPlusMeta) =>
-      layer.metadata && layer.metadata['mapbox:group'] === labelsGroupId
-  )
-  const labels = labelsLayers.map(
-    (layer: LayerPropsPlusMeta) => layer.id as string
-  )
+  const notTheBgLayerOrLabels = nonBgLayersWithMeta.filter(
+    (layer) => layer.metadata['mapbox:group'] !== labelsGroupId
+  ) as LayerPropsNonBGlayer[]
+  const labelsLayers = nonBgLayersWithMeta.filter(
+    (layer) => layer.metadata['mapbox:group'] === labelsGroupId
+  ) as LayerPropsNonBGlayer[]
+
+  // The field names that will populate the "Label by" dropdown
+  const labelFields = labelsLayers.map((layer) => layer.id as string)
 
   // Populate symb dropdown
   dispatch({
@@ -105,38 +62,23 @@ export const getMbStyleDocument = async (
   // Populate labels dropdown
   dispatch({
     type: 'INIT_LANG_LAYER_LABEL_OPTIONS',
-    payload: labels,
+    payload: labelFields,
   })
 
-  // TODO: instead of grabbing the first one, get the first VISIBLE layer using
-  // `find` instead of filter.
   setLabelLayers(labelsLayers)
   setSymbLayers(notTheBgLayerOrLabels)
 }
 
-// Only if features exist and the top one matches the language source ID
-export const shouldOpenPopup = (
-  features: LangFeatureType[],
-  internalSrcID: string
-): boolean =>
-  features && features.length !== 0 && features[0].source === internalSrcID
-
-export const getAboutPageContent = async (
-  url: string,
-  setAboutPgContent: Dispatch<AboutPageStateType>
-): Promise<void> => {
-  const response = await fetch(url) // TODO: handle errors
-  const { title, content }: WpApiPageResponseType = await response.json()
-
-  setAboutPgContent({
-    title: title.rendered,
-    content: content.rendered,
-  })
-}
-
 export const findFeatureByID = (
   langLayerRecords: LangRecordSchema[],
-  id: string,
+  id: number,
   idField?: keyof LangRecordSchema
 ): LangRecordSchema | undefined =>
   langLayerRecords.find((record) => record[idField || 'ID'] === id)
+
+export const getIDfromURLparams = (url: string): number => {
+  const urlParams = new URLSearchParams(url)
+  const idAsString = urlParams.get('id') as string
+
+  return parseInt(idAsString, 10)
+}

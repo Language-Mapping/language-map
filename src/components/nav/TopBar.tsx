@@ -5,9 +5,8 @@ import { fade } from '@material-ui/core/styles/colorManipulator'
 import { AppBar, Toolbar, Typography, IconButton } from '@material-ui/core'
 import { MdMenu } from 'react-icons/md'
 
-import { OffCanvasNav } from 'components'
-import { ToggleOffCanvasType } from './types'
-import { AboutLinkAsIcon } from './AboutLinkAsIcon'
+import { OffCanvasNav, AboutLinkAsIcon } from 'components/nav'
+import { ToggleOffCanvasNav } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,7 +40,7 @@ export const TopBar: FC = () => {
   const classes = useStyles()
   const [offCanvasOpen, setOffCanvasOpen] = useState<boolean>(false)
 
-  const toggleDrawer: ToggleOffCanvasType = (open) => (event) => {
+  const toggleDrawer: ToggleOffCanvasNav = (open) => (event) => {
     if (
       event.type === 'keydown' &&
       ((event as React.KeyboardEvent).key === 'Tab' ||

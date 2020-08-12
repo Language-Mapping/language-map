@@ -1,26 +1,17 @@
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles'
 import { withStyles } from '@material-ui/core'
 
+// Always have a hard time finding the Typography variant docs for some reason:
+// https://material-ui.com/components/typography/#component
+
 const HEADING_FONT = 'Gentium Basic, Times, serif'
 const headings = {
-  h1: {
-    fontFamily: HEADING_FONT,
-  },
-  h2: {
-    fontFamily: HEADING_FONT,
-  },
-  h3: {
-    fontFamily: HEADING_FONT,
-  },
-  h4: {
-    fontFamily: HEADING_FONT,
-  },
-  h5: {
-    fontFamily: HEADING_FONT,
-  },
-  h6: {
-    fontFamily: HEADING_FONT,
-  },
+  h1: { fontFamily: HEADING_FONT },
+  h2: { fontFamily: HEADING_FONT },
+  h3: { fontFamily: HEADING_FONT },
+  h4: { fontFamily: HEADING_FONT },
+  h5: { fontFamily: HEADING_FONT },
+  h6: { fontFamily: HEADING_FONT },
 }
 
 // Easy access to theme properties when used in `createMuiTheme` overrides

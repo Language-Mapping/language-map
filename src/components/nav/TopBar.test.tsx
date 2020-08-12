@@ -2,7 +2,7 @@ import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 
-import { TopBar } from 'components'
+import { TopBar } from 'components/nav'
 
 // Hoist helper functions (but not vars) to reuse between test cases
 const renderTopBar = () => (

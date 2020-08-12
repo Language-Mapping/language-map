@@ -4,7 +4,7 @@ import { Typography, CircularProgress } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    loadingRoot: {
+    loadingIndicatorRoot: {
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
       textAlign: 'center',
@@ -19,7 +19,7 @@ export const LoadingIndicator: FC = () => {
   const classes = useStyles()
 
   return (
-    <div className={classes.loadingRoot}>
+    <div className={classes.loadingIndicatorRoot}>
       <Typography variant="h5" className={classes.loadingText}>
         Loading...
       </Typography>

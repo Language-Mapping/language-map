@@ -1,302 +1,268 @@
-// TODO: deal with this nightmare
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import queryString from 'query-string'
-import MapGL, { Source, Layer } from 'react-map-gl'
-import { useTheme } from '@material-ui/core/styles'
+import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
+import * as mbGlFull from 'mapbox-gl'
+import { Theme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import { GlobalContext } from 'components'
-import { MAPBOX_TOKEN } from '../../config'
+import { GlobalContext, LoadingBackdrop } from 'components'
+import { LangMbSrcAndLayer, MapPopup, MapTooltip } from 'components/map'
+import { initLegend } from 'components/legend/utils'
+import * as MapTypes from './types'
+import * as mapUtils from './utils'
+import * as mapConfig from './config'
 import { LangRecordSchema } from '../../context/types'
-import { InitialMapState, MapEventType, LayerPropsPlusMeta } from './types'
-import { prepMapPadding } from './utils'
-import {
-  createMapLegend,
-  getMbStyleDocument,
-  shouldOpenPopup,
-} from '../../utils'
-import { langLayerConfig, langSrcConfig } from './config'
+import { getIDfromURLparams, findFeatureByID } from '../../utils'
 
-const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
+const { layerId: sourceLayer, internalSrcID } = mapConfig.mbStyleTileConfig
 
-export const Map: FC<InitialMapState> = ({ latitude, longitude, zoom }) => {
-  const theme = useTheme()
+export const Map: FC<MapTypes.MapComponent> = ({
+  symbLayers,
+  labelLayers,
+  baselayer,
+}) => {
   const history = useHistory()
   const { state, dispatch } = useContext(GlobalContext)
-  const [viewport, setViewport] = useState({
-    latitude,
-    longitude,
-    zoom,
-    pitch: 0,
-    bearing: 0,
-  })
-  const [symbLayers, setSymbLayers] = useState<LayerPropsPlusMeta[]>([])
-  const [selFeatID, setSelFeatID] = useState<null | number>(null)
-  const [labelLayers, setLabelLayers] = useState<LayerPropsPlusMeta[]>([])
-  const { activeLangSymbGroupId, activeLangLabelId } = state
-  const isDesktop = useMediaQuery(theme.breakpoints.up('sm'))
-  const mapRef = React.createRef()
+  const mapRef: React.RefObject<InteractiveMap> = React.createRef()
+  const { selFeatAttribs } = state
+  const isDesktop = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'))
 
-  // TODO: fly to on URL change
-  // useEffect(() => {
-  //   const parsed = window ? queryString.parse(window.location.search) : ''
-  //   const matched = mapRef.current.querySourceFeatures
-  //   const rawLangFeats = target.querySourceFeatures(
-  //     langSrcConfig.internalSrcID,
-  //     {
-  //       sourceLayer: langSrcConfig.layerId,
-  //     }
-  //   )
+  const [viewport, setViewport] = useState(mapConfig.initialMapState)
+  const [mapOffset, setMapOffset] = useState<[number, number]>([0, 0])
+  const [mapLoaded, setMapLoaded] = useState<boolean>(false)
+  const [popupOpen, setPopupOpen] = useState<MapTypes.MapPopup | null>(null)
+  const [tooltipOpen, setTooltipOpen] = useState<MapTypes.MapTooltip | null>(
+    null
+  )
 
-  //   console.log(loc, parsed)
-  // }, [loc])
+  /* eslint-disable react-hooks/exhaustive-deps */
+  // ^^^^^ otherwise it wants things like mapRef and dispatch 24/7
+  // Set the offset for transitions like `flyTo` and `easeTo`
+  useEffect((): void => {
+    const offset = mapUtils.prepMapOffset(isDesktop)
 
-  useEffect(() => {
-    const symbStyleUrl = `${MB_STYLES_API_URL}/${langLayerConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
+    setMapOffset(offset)
+  }, [isDesktop])
 
-    getMbStyleDocument(
-      symbStyleUrl,
-      dispatch,
-      setSymbLayers,
-      setLabelLayers
-    ).catch((errMsg) => {
-      // TODO: wire up sentry
-      // eslint-disable-next-line no-console
-      console.error(
-        `Something went wrong trying to fetch MB style JSON: ${errMsg}`
-      )
-    })
-  }, [dispatch])
+  useEffect((): void => {
+    initLegend(dispatch, state.activeLangSymbGroupId, symbLayers)
+  }, [state.activeLangSymbGroupId])
 
-  useEffect(() => {
-    const layersInActiveGroup = symbLayers.filter(
-      (layer: LayerPropsPlusMeta) =>
-        layer.metadata['mapbox:group'] === activeLangSymbGroupId
+  // (Re)load symbol icons. Must be done whenever `baselayer` is changed,
+  // otherwise the images no longer exist.
+  // TODO: rm if no longer using. Currently experiencing tons of issues with
+  // custom styles vs. default MB in terms of fonts/glyps and icons/images
+  // useEffect((): void => {
+  //   if (mapRef.current) {
+  //     const map: mbGlFull.Map = mapRef.current.getMap()
+  //     mapUtils.addLangTypeIconsToMap(map, mapConfig.langTypeIconsConfig)
+  //   }
+  // }, [baselayer])
+
+  // Do selected feature stuff on sel feat change or map load
+  useEffect((): void => {
+    // Map not ready
+    if (!mapRef.current || !mapLoaded) {
+      return
+    }
+
+    const map: mbGlFull.Map = mapRef.current.getMap()
+
+    // Deselect all features
+    clearAllSelFeats(map)
+
+    if (!selFeatAttribs) {
+      return
+    }
+
+    // NOTE: won't get this far on load even if feature is selected. The timing
+    // and order of the whole process prevent that. Make feature appear selected
+
+    const { ID, Latitude: lat, Longitude: lng } = selFeatAttribs
+
+    setPopupOpen(null)
+    setSelFeatState(map, ID, true)
+
+    mapUtils.flyToCoords(map, { lat, lng, zoom: 12 }, mapOffset, selFeatAttribs)
+  }, [selFeatAttribs, mapLoaded])
+  /* eslint-enable react-hooks/exhaustive-deps */
+
+  // TODO: animate selected feature
+  function setSelFeatState(map: mbGlFull.Map, id: number, selected: boolean) {
+    map.setFeatureState(
+      { sourceLayer, source: internalSrcID, id },
+      { selected }
     )
+  }
 
-    const legend = createMapLegend(layersInActiveGroup)
+  function onHover(event: MapTypes.MapEvent) {
+    mapUtils.handleHover(event, internalSrcID, setTooltipOpen)
+  }
+
+  // Runs only once and kicks off the whole thinig
+  function onLoad(mapLoadEvent: MapLoadEvent) {
+    const { target: map } = mapLoadEvent
+
+    // Maintain viewport state sync if needed (e.g. after things like `flyTo`),
+    // otherwise the map shifts back to previous position after panning or
+    // zooming.
+    map.on('moveend', function onMoveEnd(zoomEndEvent) {
+      // No custom event data, regular move event
+      if (zoomEndEvent.forceViewportUpdate) {
+        setViewport({
+          ...viewport, // spreading just in case bearing or pitch are added
+          zoom: map.getZoom(),
+          latitude: map.getCenter().lat,
+          longitude: map.getCenter().lng,
+        })
+      }
+    })
+
+    map.on('zoomend', function onMoveEnd(zoomEndEvent) {
+      if (zoomEndEvent.selFeatAttribs && !map.isMoving()) {
+        setPopupOpen({
+          latitude: zoomEndEvent.selFeatAttribs.Latitude,
+          longitude: zoomEndEvent.selFeatAttribs.Longitude,
+          selFeatAttribs: zoomEndEvent.selFeatAttribs,
+        })
+      }
+    })
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const langSrcBounds = map.getSource('languages-src').bounds
+    map.fitBounds(langSrcBounds) // ensure all feats are visible
+
+    const idFromUrl = getIDfromURLparams(window.location.search)
+    const cacheOfIDs: number[] = []
+    const uniqueRecords: LangRecordSchema[] = []
+    const rawLangFeats = map.querySourceFeatures(internalSrcID, { sourceLayer })
+
+    // Just the properties for table/results, don't need GeoJSON cruft. Also
+    // need to make sure each ID is unique as there have been initial data
+    // inconsistencies, and more importantly MB may have feature duplication if
+    // there is a tile overlap.
+    rawLangFeats.forEach((thisFeat) => {
+      if (
+        !thisFeat.properties ||
+        cacheOfIDs.indexOf(thisFeat.properties.ID) !== -1
+      ) {
+        return
+      }
+
+      const justTheProps = thisFeat.properties as LangRecordSchema
+
+      cacheOfIDs.push(justTheProps.ID)
+      uniqueRecords.push(justTheProps)
+    })
+
+    const matchingRecord = findFeatureByID(uniqueRecords, idFromUrl)
+
+    // NOTE: could not get this into the same `useEffect` that handles when
+    // selFeatAttribs or mapLoaded are changed with an MB error/crash.
+    if (!matchingRecord) {
+      const configKey = isDesktop ? 'desktop' : 'mobile'
+
+      mapUtils.flyToCoords(
+        map,
+        { ...mapConfig.postLoadMapView[configKey] },
+        mapOffset,
+        null
+      )
+    }
+
+    // TODO: set paint property
+    // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
 
     dispatch({
-      type: 'SET_LANG_LAYER_LEGEND',
-      payload: legend,
+      type: 'INIT_LANG_LAYER_FEATURES',
+      payload: uniqueRecords,
     })
-  }, [activeLangSymbGroupId, symbLayers, dispatch])
+
+    setMapLoaded(true)
+  }
+
+  // TODO: chuck it into utils
+  function onNativeClick(event: MapTypes.MapEvent): void {
+    // Map not ready
+    if (!mapRef || !mapRef.current || !mapLoaded) {
+      return
+    }
+
+    // No language features under click, clear the route. Note that this keeps
+    // the `id` in the URL if there is already a selected feature, which feels a
+    // little weird, but it's much better than relying on a dummy route like
+    // `id=-1`. Still not the greatest so keep an eye out for a better solution.
+    if (!mapUtils.areLangFeatsUnderCursor(event.features, internalSrcID)) {
+      dispatch({
+        type: 'SET_SEL_FEAT_ATTRIBS',
+        payload: null,
+      })
+
+      return
+    }
+
+    setTooltipOpen(null) // super annoying if tooltip stays intact after a click
+    setPopupOpen(null)
+
+    // TODO: use `initialEntries` in <MemoryRouter> to test routing
+    history.push(`/details?id=${event.features[0].properties.ID}`)
+  }
+
+  // Assumes map is ready
+  function clearAllSelFeats(map: mbGlFull.Map) {
+    // TODO: add `selected` key?
+    map.removeFeatureState({ source: internalSrcID, sourceLayer })
+  }
 
   return (
-    <MapGL
-      {...viewport}
-      width="100%"
-      // @ts-ignore
-      ref={mapRef}
-      height="100%"
-      onViewportChange={setViewport}
-      mapboxApiAccessToken={MAPBOX_TOKEN}
-      mapStyle={`mapbox://styles/mapbox/${state.baselayer}-v9`}
-      // TODO: show MB attribution text (not logo) on mobile
-      className="mb-language-map"
-      onNativeClick={(event: MapEventType): void => {
-        const { features } = event
-
-        // Not ready
-        if (!mapRef.current) {
-          return
-        }
-
-        const topFeature = features[0]
-
-        // Clickout deselects
-        if (selFeatID) {
-          // @ts-ignore
-          mapRef.current.getMap().setFeatureState(
-            {
-              // @ts-ignore
-              sourceLayer: langSrcConfig.layerId,
-              source: langSrcConfig.internalSrcID,
-              id: selFeatID,
-            },
-            { selected: false }
-          )
-        }
-
-        // Not ready
-        if (!shouldOpenPopup(features, langSrcConfig.internalSrcID)) {
-          return
-        }
-
-        const selFeatAttrbs = topFeature.properties
-
-        // @ts-ignore
-        mapRef.current.getMap().setFeatureState(
-          {
-            // @ts-ignore
-            sourceLayer: topFeature.layer['source-layer'],
-            id: selFeatAttrbs.ID,
-            source: topFeature.layer.source,
-          },
-          { selected: true }
-        )
-
-        history.push(`/details?id=${selFeatAttrbs.ID}`)
-        setSelFeatID(selFeatAttrbs.ID)
-      }}
-      onHover={(event: MapEventType): void => {
-        const { features, target } = event
-
-        if (!shouldOpenPopup(features, langSrcConfig.internalSrcID)) {
-          target.style.cursor = 'default'
-        } else {
-          target.style.cursor = 'pointer'
-        }
-      }}
-      onLoad={(map) => {
-        const { target } = map
-        const rawLangFeats = target.querySourceFeatures(
-          langSrcConfig.internalSrcID,
-          {
-            sourceLayer: langSrcConfig.layerId,
-          }
-        )
-        // TODO: use `initialEntries` in <MemoryRouter> to test routing
-        const parsed = window ? queryString.parse(window.location.search) : ''
-
-        target.on('zoomend', (mapObj) => {
-          const { updateViewportState } = mapObj
-
-          if (!updateViewportState) {
-            return null
-          }
-
-          setViewport({
-            zoom: target.getZoom(),
-            pitch: target.getPitch(),
-            bearing: target.getBearing(),
-            latitude: target.getCenter().lat,
-            longitude: target.getCenter().lng,
-          })
-
-          return null
-        })
-
-        // TODO: tighten up query params via TS
-        // TODO: make it all reusable, including `flyTo`, for route changes
-        if (parsed && parsed.id) {
-          const matchingRecord = rawLangFeats.find((feature) => {
-            const featAttribs = feature.properties as LangRecordSchema
-
-            return featAttribs.ID === parseInt(parsed.id, 10)
-          })
-
-          if (matchingRecord) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            const asGeoJSON = matchingRecord.toJSON()
-            const coords = asGeoJSON.geometry.coordinates
-            const newZoom = 14
-            const padding = prepMapPadding(isDesktop)
-
-            target.flyTo(
-              {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                padding, // NOTE: this is evidently TS'ed incorrectly
-                center: [coords[0], coords[1]],
-                zoom: newZoom,
-                // Animation is considered essential with respect to
-                // prefers-reduced-motion
-                essential: true,
-              },
-              {
-                openPopup: true,
-                updateViewportState: true,
-                featureProps: asGeoJSON.properties,
-              }
-            )
-          }
-        }
-
-        // Just the properties for table/results, etc. Don't need the cruft from
-        // geojson.
-        // TODO: could `matchingRecord` be found within the `.map` here to reduce looping/iteration of `.find`?
-        const featsWithAttribsOnly = rawLangFeats.map(
-          ({ properties }) => properties
-        )
-
-        dispatch({
-          type: 'INIT_LANG_LAYER_FEATURES',
-          payload: featsWithAttribsOnly as LangRecordSchema[],
-        })
-      }}
-    >
-      {/* NOTE: it did not seem to work when using two different Styles with the same dataset unless waiting until there is something to put into <Source> */}
-      {symbLayers.length && labelLayers.length && (
-        <Source
-          type="vector"
-          url={`mapbox://${langSrcConfig.tilesetId}`}
-          // @ts-ignore
-          promoteId="ID"
-          id={langSrcConfig.internalSrcID}
-        >
-          {symbLayers.map((layer: LayerPropsPlusMeta) => {
-            const isInActiveGroup =
-              layer.metadata['mapbox:group'] === activeLangSymbGroupId
-            const paint = {
-              ...layer.paint,
-              'circle-radius': [
-                'case',
-                ['boolean', ['feature-state', 'selected'], false],
-                25,
-                5,
-              ],
-            }
-
-            return (
-              <Layer
-                key={layer.id}
-                {...layer}
-                // TODO: some kind of transition/animation on switch
-                layout={{
-                  visibility: isInActiveGroup ? 'visible' : 'none',
-                }}
-                // @ts-ignore
-                paint={paint}
-              />
-            )
-          })}
-          {labelLayers.map((layer: LayerPropsPlusMeta) => {
-            const isActiveLabel = layer.id === activeLangLabelId
-
-            // TODO: some kind of transition/animation on switch
-            const layout = {
-              ...layer.layout,
-              visibility: isActiveLabel ? 'visible' : 'none',
-            }
-
-            return (
-              <Layer
-                key={layer.id}
-                id={layer.id}
-                type={layer.type}
-                source={layer.source}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                source-layer={layer['source-layer']}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                paint={layer.paint}
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                layout={layout}
-              />
-            )
-          })}
-        </Source>
-      )}
-    </MapGL>
+    <>
+      {!mapLoaded && <LoadingBackdrop />}
+      <MapGL
+        // TODO: show MB attribution text (not logo) on mobile
+        className="mb-language-map"
+        {...viewport}
+        clickRadius={4} // much comfier for small points on small screens
+        ref={mapRef}
+        height="100%"
+        width="100%"
+        mapboxApiAccessToken={mapConfig.MAPBOX_TOKEN}
+        mapStyle={mapConfig.mbStyleTileConfig.customStyles.light}
+        onViewportChange={setViewport}
+        onClick={onNativeClick} // TODO: mv into utils
+        onHover={onHover}
+        onLoad={(mapLoadEvent) => {
+          onLoad(mapLoadEvent)
+        }}
+      >
+        {symbLayers && labelLayers && (
+          <LangMbSrcAndLayer
+            symbLayers={symbLayers}
+            labelLayers={labelLayers}
+            activeLangSymbGroupId={state.activeLangSymbGroupId}
+            activeLangLabelId={state.activeLangLabelId}
+          />
+        )}
+        {selFeatAttribs && popupOpen && (
+          <MapPopup
+            setPopupOpen={setPopupOpen}
+            longitude={popupOpen.longitude}
+            latitude={popupOpen.latitude}
+            selFeatAttribs={selFeatAttribs}
+          />
+        )}
+        {isDesktop && tooltipOpen && (
+          <MapTooltip
+            setTooltipOpen={setTooltipOpen}
+            longitude={tooltipOpen.longitude}
+            latitude={tooltipOpen.latitude}
+            heading={tooltipOpen.heading}
+            subHeading={tooltipOpen.subHeading}
+          />
+        )}
+      </MapGL>
+    </>
   )
 }

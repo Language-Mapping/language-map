@@ -1,65 +1,51 @@
-import { LayerProps, PointerEvent } from 'react-map-gl'
+import { PointerEvent, LayerProps } from 'react-map-gl'
+import * as mbGlFull from 'mapbox-gl'
 
-import {
-  LangRecordSchema,
-  LayerVisibilityTypes,
-  ActivePanelRouteType,
-} from 'context/types'
+import { LangRecordSchema } from 'context/types'
+
+type LongLat = {
+  longitude: number
+  latitude: number
+}
 
 // Assumes using Mapbox style
-export type BaselayerType = 'dark' | 'light'
-
-export type LayerToggleType = {
-  name: string
-  layerId: keyof LayerVisibilityTypes
-}
-
-// TODO: validate lat/long: -90 to 90, -180 to 180, zoom 1-20. Existing MB type?
-export type InitialMapState = {
-  latitude: number
-  longitude: number
-  zoom: number
-  pitch?: number
-  bearing?: number
-}
-
-export type LegendSwatchType = {
-  backgroundColor?: string
-  icon?: string
-  shape?: 'circle' | 'square' | 'icon'
-  size?: number
-  text?: string
-}
+export type Baselayer = 'dark' | 'light'
 
 // MB Styles API individual group in the `metadata` of JSON response
-export type MetadataGroupType = {
+export type MetadataGroup = {
   [mbGroupIdHash: string]: {
     name: string
-    collapsed: boolean // not needed but could be useful indirectly as a setting
   }
 }
 
 // `metadata` prop has MB Studio group ID and appears to only be part of the
 // Style API, not the Style Spec.
-export type LayerPropsPlusMeta = LayerProps & {
+export type LayerPropsPlusMeta = Omit<
+  LayerProps,
+  'type' | 'paint' | 'layout'
+> & {
   metadata: {
-    'mapbox:group': string
+    'mapbox:group': keyof MetadataGroup
   }
+  type: 'circle' | 'symbol' | 'background'
+  layout: mbGlFull.CircleLayout | mbGlFull.SymbolLayout
+  paint: mbGlFull.CirclePaint | mbGlFull.SymbolPaint
 }
 
-export type LayerComponentType = {
-  styleUrl: string
+// Same but only circle or symbol types
+export type LayerPropsNonBGlayer = Omit<LayerPropsPlusMeta, 'type'> & {
+  type: 'circle' | 'symbol'
 }
 
 // API response from Styles API. Not the same as what comes back in map.target
-export type MbResponseType = {
+export type MbResponse = {
   metadata: {
-    'mapbox:groups': MetadataGroupType
+    'mapbox:groups': MetadataGroup
   }
   layers: LayerPropsPlusMeta[]
 }
 
-export type LangFeatureType = {
+export type LangFeature = {
   id: number
   layer: LayerPropsPlusMeta
   properties: LangRecordSchema
@@ -71,21 +57,32 @@ export type LangFeatureType = {
   }
 }
 
-export type MapEventType = Omit<PointerEvent, 'features'> & {
-  features: LangFeatureType[]
+export type MapEvent = Omit<PointerEvent, 'features'> & {
+  features: LangFeature[]
 }
 
-export type LongLatType = {
-  longitude: number
-  latitude: number
-}
-
-export type MapPanelTypes = {
+export type MapPanel = {
   active: boolean
   heading: string
   icon: React.ReactNode
-  route: ActivePanelRouteType
   subheading: string
   summary?: string | React.ReactNode
   component?: React.ReactNode
 }
+
+export type MapPopup = LongLat & {
+  selFeatAttribs: LangRecordSchema
+}
+
+export type MapTooltip = LongLat & {
+  heading: string
+  subHeading: string
+}
+
+export type MapComponent = {
+  baselayer: Baselayer
+  symbLayers: LayerPropsNonBGlayer[]
+  labelLayers?: LayerPropsNonBGlayer[]
+}
+
+export type LangIconConfig = { icon: string; id: string }

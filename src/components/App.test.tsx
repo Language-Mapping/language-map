@@ -24,6 +24,7 @@ const renderApp = () => (
 describe('Testing routes', () => {
   test('title element links to home', async () => {
     await render(renderApp())
+
     // TODO: get by heading somehow? Really just want <h1>
     const homeTitleLink = screen.getByText(/languages of new york city/i)
     const aboutPageBackdrop = screen.getByTestId('about-page-backdrop')

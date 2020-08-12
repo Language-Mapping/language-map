@@ -1,5 +1,5 @@
-import React, { FC, useState } from 'react'
-import { Route, Switch, useHistory, useLocation } from 'react-router-dom'
+import React, { FC, useState, useContext, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
   Box,
@@ -10,8 +10,16 @@ import {
 import { MdClose } from 'react-icons/md'
 
 import { Map, MapPanel, MapControls } from 'components/map'
-import { initialMapState } from 'components/map/config'
-import { panelsConfig } from './panelsConfig'
+import { GlobalContext } from 'components'
+import { LayerPropsNonBGlayer } from './types'
+import { panelsConfig } from '../../config/panels-config'
+import { getIDfromURLparams, getMbStyleDocument } from '../../utils'
+import { mbStyleTileConfig } from './config'
+
+const transforms = {
+  open: 'translateY(0%)',
+  closed: 'translateY(100%)',
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -82,21 +90,91 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const MapWrap: FC = () => {
   const classes = useStyles()
-  const history = useHistory()
-  const [panelOpen, setPanelOpen] = useState(true)
   const loc = useLocation()
+  const { state, dispatch } = useContext(GlobalContext)
+  const [panelOpen, setPanelOpen] = useState(true)
+  const [symbLayers, setSymbLayers] = useState<LayerPropsNonBGlayer[]>()
+  const [labelLayers, setLabelLayers] = useState<LayerPropsNonBGlayer[]>()
+  const { langFeaturesCached } = state
 
-  const transforms = {
-    open: 'translateY(0%)',
-    closed: 'translateY(100%)',
-  }
+  // Fetch MB Style doc
+  useEffect(() => {
+    getMbStyleDocument(
+      mbStyleTileConfig.symbStyleUrl,
+      dispatch,
+      setSymbLayers,
+      setLabelLayers
+    ).catch((errMsg) => {
+      // eslint-disable-next-line no-console
+      console.error(
+        // TODO: wire up sentry
+        `Something went wrong trying to fetch MB style JSON: ${errMsg}`
+      )
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Do selected feature stuff on location change
+  useEffect((): void => {
+    const idFromUrl = getIDfromURLparams(window.location.search)
+
+    if (!langFeaturesCached.length) {
+      return
+    }
+
+    if (!idFromUrl || idFromUrl === -1) {
+      dispatch({
+        type: 'SET_SEL_FEAT_ATTRIBS',
+        payload: null,
+      })
+
+      return
+    }
+
+    // TODO: handle scenario where feature exists in cached but not filtered
+    // const matchedFeat = state.langFeaturesCached.find(
+    //   (feat) => parsed.id === feat.ID.toString()
+    // )
+    const matchingRecord = langFeaturesCached.find(
+      (record) => record.ID === idFromUrl
+    )
+
+    if (!matchingRecord) {
+      dispatch({
+        type: 'SET_SEL_FEAT_ATTRIBS',
+        payload: null,
+      })
+
+      return
+    }
+
+    document.title = `${matchingRecord.Language as string} - NYC Languages`
+
+    dispatch({
+      type: 'SET_SEL_FEAT_ATTRIBS',
+      payload: matchingRecord,
+    })
+
+    dispatch({
+      type: 'SET_ACTIVE_PANEL_INDEX',
+      payload: 2,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loc, state.langFeaturesCached.length])
 
   return (
     <div className={classes.mapWrapRoot}>
-      <div className={classes.mapItselfWrap}>
-        <Map {...initialMapState} />
-        <MapControls />
-      </div>
+      {symbLayers && labelLayers && (
+        <div className={classes.mapItselfWrap}>
+          <Map
+            symbLayers={symbLayers}
+            labelLayers={labelLayers}
+            baselayer={state.baselayer}
+          />
+          <MapControls />
+        </div>
+      )}
+      {/* TODO: this and BottomNav into separate component/s (very non-map) */}
       <Box
         // Need the `id` in order to find unique element for `map.setPadding`
         id="map-panels-wrap"
@@ -118,32 +196,32 @@ export const MapWrap: FC = () => {
             <MdClose />
           </IconButton>
         )}
-        <Switch>
-          {panelsConfig.map((config) => (
-            <Route key={config.heading} path={config.route} exact>
-              <MapPanel {...config} active={config.route === loc.pathname} />
-            </Route>
-          ))}
-        </Switch>
+        {panelsConfig.map((config, i) => (
+          <MapPanel
+            key={config.heading}
+            {...config}
+            active={i === state.activePanelIndex}
+          />
+        ))}
       </Box>
       <BottomNavigation
         showLabels
         className={classes.bottomNavRoot}
-        value={loc.pathname}
+        value={state.activePanelIndex}
         onChange={(event, newValue) => {
-          history.push(newValue + window.location.search)
+          dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: newValue })
 
           // Open the container if closed, close it if already active panel
-          if (panelOpen && newValue === loc.pathname) {
+          if (panelOpen && newValue === state.activePanelIndex) {
             setPanelOpen(false)
           } else {
             setPanelOpen(true)
           }
         }}
       >
-        {panelsConfig.map((config) => (
+        {panelsConfig.map((config, i) => (
           <BottomNavigationAction
-            value={config.route}
+            value={i}
             key={config.heading}
             label={config.heading}
             icon={config.icon}

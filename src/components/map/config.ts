@@ -1,57 +1,62 @@
-// NYC: [-73.96, 40.7128]
+// TODO: rm if only using local, otherwise restore when ready
+// const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
+
+import iconArrowUp from './icons/arrow-up.svg'
+import iconBook from './icons/book.svg'
+import iconBuilding from './icons/building.svg'
+import iconHome from './icons/home.svg'
+import iconMuseum from './icons/museum.svg'
+
+export const MAPBOX_TOKEN = process.env.REACT_APP_MB_TOKEN
+export const mbStyleTileConfig = {
+  // NOTE: Draft does NOT seem to be reliable or real-time
+  // styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48/draft',
+  // TODO: rm if only using local, otherwise restore when ready
+  // styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48',
+  // TODO: ^^^ consider local URL, at least during dev ^^^
+  symbStyleUrl: '/data/mb-styles.langs.json',
+  layerId: 'languages-08ip3e',
+  tilesetId: 'elalliance.d0yv450e',
+  internalSrcID: 'languages-src', // arbitrary, set in code, never changes
+  // So far this is the only known way to use the custom fonts
+  customStyles: {
+    dark: 'mapbox://styles/elalliance/ckdqj968x01ot19lf5yg472f2',
+    light: 'mapbox://styles/elalliance/ckdovh9us01wz1ipa5fjihv7l',
+  },
+}
+
+// TODO: rm if only using local, otherwise restore when ready
+// export const symbStyleUrl = `${MB_STYLES_API_URL}/${mbStyleTileConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
 // Unsure why it needs the type here but not for feature coords..
 const mapCenter = [-73.96, 40.7128] as [number, number]
 
 export const initialMapState = {
   latitude: mapCenter[1],
   longitude: mapCenter[0],
-  zoom: 10,
-  // TODO: restore when makes sense to
-  // bearing,
-  // pitch,
+  zoom: 5,
 }
 
-export const langSrcConfig = {
-  // layerId: 'langsNY_06242020-6lpxtk', // original
-  // tilesetId: 'elalliance.1bsrluyq', // original
-  layerId: 'languages-08ip3e', // newer (long-term dev?)
-  tilesetId: 'elalliance.d0yv450e', // newer (long-term dev?)
-  internalSrcID: 'languages-src', // arbitrary, set in code, never changes
+// After the `fitBounds` happens and gets all the features into state
+export const postLoadMapView = {
+  desktop: {
+    lat: 40.7186,
+    lng: -73.9079,
+    zoom: 10.76,
+  },
+  mobile: {
+    lat: 40.7293,
+    lng: -73.9059,
+    zoom: 9.39,
+  },
 }
 
-// TODO: extract AES from Studio, back up somewhere, then rm from Studio
-// Use dev/prod tilesetup
-export const langLayerConfig = {
-  // styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48', // original "prod"
-  // TODO: consider local URL?
-  // NOTE: Draft does NOT seem to be reliable or real-time
-  // styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48/draft',
-  styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48',
-}
-
-// TODO: rm when done
-// Australia and New Zealand - 867078 // formerly oceania
-// Caribbean - 55b4a3
-// Central America - 4e7bbc
-// Central Asia - c29e49
-// Eastern Africa - d64699
-// Eastern Asia - dc6d3a
-// Eastern Europe - 88c64c
-// Melanesia - 72493b
-// Micronesia - 72493b
-// Middle Africa - 684984
-// Northern Africa - da84b7
-// Northern America - 465192
-// Northern Europe - 295e5b
-// Polynesia - 72493b
-// South America - 3fb4ce
-// Southeastern Asia - 96302e
-// Southern Africa - 846caf
-// Southern Asia - dd3939
-// Southern Europe - 7ca298
-// Western Africa - 9b4899
-// Western Asia - 97a853
-// Western Europe - 397439
+export const langTypeIconsConfig = [
+  { icon: iconArrowUp, id: '_arrow-up' },
+  { icon: iconBook, id: '_book' },
+  { icon: iconBuilding, id: '_building' },
+  { icon: iconHome, id: '_home' },
+  { icon: iconMuseum, id: '_museum' },
+]
 
 // Looks handy?
 // https://api.mapbox.com/v4/elalliance.d0yv450e.json?secure&access_token=pk.eyJ1IjoiZWxhbGxpYW5jZSIsImEiOiJja2M1Nmd6YnYwZXQ4MnJvYjd6MnJsb25lIn0.AC_4h4BmJCg2YvlygXzLxQ

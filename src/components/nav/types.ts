@@ -1,3 +1,3 @@
-export type ToggleOffCanvasType = (
+export type ToggleOffCanvasNav = (
   open: boolean
 ) => (event: React.KeyboardEvent | React.MouseEvent) => null

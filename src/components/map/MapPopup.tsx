@@ -2,25 +2,29 @@ import React, { FC } from 'react'
 import { Popup } from 'react-map-gl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
-import { LongLatType } from './types'
-import { LangRecordSchema } from '../../context/types'
+import { MapPopup as MapPopupType } from './types'
 
-type PopupComponentType = LongLatType & {
-  popupOpen: boolean
-  setPopupOpen: React.Dispatch<boolean>
-  popupAttribs: LangRecordSchema
+type MapPopupComponent = MapPopupType & {
+  setPopupOpen: React.Dispatch<MapPopupType | null>
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    mapPopupRoot: {
       textAlign: 'center',
-      width: 200,
-      '& a[role="button"]': {
-        color: theme.palette.common.white,
-      },
+      minWidth: 150,
       '& .mapboxgl-popup-content': {
-        padding: theme.spacing(1),
+        // Leave room for "x" close button
+        padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+      },
+      '& .mapboxgl-popup-close-button': {
+        fontSize: 16,
+        padding: 0,
+        margin: 0,
+        lineHeight: '16px',
+        top: 2,
+        right: 4,
+        color: theme.palette.grey[600],
       },
     },
     heading: {
@@ -33,34 +37,34 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const MapPopup: FC<PopupComponentType> = ({
+export const MapPopup: FC<MapPopupComponent> = ({
   longitude,
   latitude,
   setPopupOpen,
-  popupAttribs,
+  selFeatAttribs,
 }) => {
   const classes = useStyles()
 
-  // NOTE: the longest legit language or endonym so far is 27 characters:
-  // English, Cameroonian Pidgin
+  // NOTE: the longest legit language or endonym so far is:
+  // Cameroonian Pidgin English
 
   return (
     <Popup
-      tipSize={15}
-      anchor="top"
+      tipSize={10}
+      anchor="bottom"
       longitude={longitude}
       latitude={latitude}
       closeOnClick={false} // TODO: fix this madness
-      className={classes.root}
-      onClose={() => setPopupOpen(false)}
+      className={classes.mapPopupRoot}
+      onClose={() => setPopupOpen(null)}
     >
       <header>
         <Typography variant="h6" component="h3" className={classes.heading}>
-          {popupAttribs['Endonym' || 'Language']}
+          {selFeatAttribs['Endonym' || 'Language']}
         </Typography>
-        {popupAttribs.Neighborhood && (
+        {selFeatAttribs.Neighborhoods && (
           <small className={classes.subHeading}>
-            {popupAttribs.Neighborhood}
+            {selFeatAttribs.Neighborhoods.split(', ')}
           </small>
         )}
       </header>

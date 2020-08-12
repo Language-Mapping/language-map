@@ -1,0 +1,540 @@
+{
+  "version": 8,
+  "name": "Language Styles",
+  "metadata": {
+    "mapbox:autocomposite": true,
+    "mapbox:type": "template",
+    "mapbox:sdk-support": {
+      "js": "1.9.0",
+      "android": "8.6.0",
+      "ios": "5.6.0"
+    },
+    "mapbox:groups": {
+      "103cfccc2ebe5006e8a8d85a7c7f51d2": { "name": "World Region" },
+      "2320935a76eb23847fedcce356785d97": { "name": "Community Size" },
+      "4c2160b40d77f3e74f58f19e5f9c9007": { "name": "Type" },
+      "f83891b595f76eb2a1ed376bda0b2c44": { "name": "Labels" }
+    },
+    "mapbox:uiParadigm": "layers"
+  },
+  "center": [-73.98365446329586, 40.712560017797216],
+  "zoom": 12.664603022566926,
+  "bearing": 0,
+  "pitch": 0,
+  "sources": {
+    "composite": { "url": "mapbox://elalliance.d0yv450e", "type": "vector" }
+  },
+  "sprite": "mapbox://sprites/elalliance/ckcmivm0r1o491iomlji26c48/07jfodz49iyeho8s3lrozfkfy",
+  "glyphs": "mapbox://fonts/elalliance/{fontstack}/{range}.pbf",
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "layout": { "visibility": "none" },
+      "paint": { "background-color": "hsl(0, 1%, 15%)" }
+    },
+    {
+      "id": "background - light",
+      "type": "background",
+      "paint": { "background-color": "hsl(60, 10%, 96%)" }
+    },
+    {
+      "id": "Smallest",
+      "type": "circle",
+      "metadata": { "mapbox:group": "2320935a76eb23847fedcce356785d97" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": ["match", ["get", "Community Size"], [1], true, false],
+      "layout": { "visibility": "none" },
+      "paint": {
+        "circle-color": "#6baed6",
+        "circle-radius": 4
+      }
+    },
+    {
+      "id": "Small",
+      "type": "circle",
+      "metadata": { "mapbox:group": "2320935a76eb23847fedcce356785d97" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": ["match", ["get", "Community Size"], [2], true, false],
+      "layout": { "visibility": "none" },
+      "paint": {
+        "circle-color": "#4292c6",
+        "circle-radius": 5
+      }
+    },
+    {
+      "id": "Medium",
+      "type": "circle",
+      "metadata": { "mapbox:group": "2320935a76eb23847fedcce356785d97" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": ["match", ["get", "Community Size"], [3], true, false],
+      "layout": { "visibility": "none" },
+      "paint": {
+        "circle-color": "#2171b5",
+        "circle-radius": 6
+      }
+    },
+    {
+      "id": "Large",
+      "type": "circle",
+      "metadata": { "mapbox:group": "2320935a76eb23847fedcce356785d97" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": ["match", ["get", "Community Size"], [4], true, false],
+      "layout": { "visibility": "none" },
+      "paint": {
+        "circle-color": "#08519c",
+        "circle-radius": 7
+      }
+    },
+    {
+      "id": "Largest",
+      "type": "circle",
+      "metadata": { "mapbox:group": "2320935a76eb23847fedcce356785d97" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": ["match", ["get", "Community Size"], [5], true, false],
+      "layout": { "visibility": "none" },
+      "paint": {
+        "circle-color": "#08306b",
+        "circle-radius": 8
+      }
+    },
+    {
+      "id": "Historical",
+      "type": "symbol",
+      "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": ["match", ["get", "Type"], ["Historical"], true, false],
+      "layout": {
+        "icon-image": "_museum"
+      },
+      "paint": {}
+    },
+    {
+      "id": "Institutional",
+      "type": "symbol",
+      "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": ["match", ["get", "Type"], ["Institutional"], true, false],
+      "layout": {
+        "icon-image": "_building"
+      },
+      "paint": {}
+    },
+    {
+      "id": "Liturgical",
+      "type": "symbol",
+      "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": ["match", ["get", "Type"], ["Liturgical"], true, false],
+      "layout": {
+        "icon-image": "_book"
+      },
+      "paint": {}
+    },
+    {
+      "id": "Residential",
+      "type": "symbol",
+      "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": ["match", ["get", "Type"], ["Residential"], true, false],
+      "layout": {
+        "icon-image": "_home"
+      },
+      "paint": {}
+    },
+    {
+      "id": "Reviving",
+      "type": "symbol",
+      "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": ["match", ["get", "Type"], ["Reviving"], true, false],
+      "layout": {
+        "icon-image": "_arrow-up",
+        "icon-rotate": 45
+      },
+      "paint": {}
+    },
+    {
+      "id": "Language",
+      "type": "symbol",
+      "metadata": { "mapbox:group": "f83891b595f76eb2a1ed376bda0b2c44" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "layout": {
+        "text-variable-anchor": ["bottom-left", "top-left"],
+        "text-radial-offset": 0,
+        "text-field": ["to-string", ["get", "Language"]],
+        "text-font": ["Noto Sans Regular", "Arial Unicode MS Regular"],
+        "text-size": 10,
+        "visibility": "none"
+      },
+      "paint": {
+        "text-color": "hsl(0, 0%, 5%)",
+        "text-halo-width": 1,
+        "text-halo-color": "hsla(0, 0%, 95%, 0.95)"
+      }
+    },
+    {
+      "id": "Endonym",
+      "type": "symbol",
+      "metadata": { "mapbox:group": "f83891b595f76eb2a1ed376bda0b2c44" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "all",
+        [
+          "match",
+          ["get", "Endonym"],
+          [
+            "https://www.dropbox.com/s/088s1kpa26rz1pe/American_Sign_Language_ASL.svg?dl=0"
+          ],
+          false,
+          true
+        ],
+        [
+          "match",
+          ["get", "Endonym"],
+          ["https://www.dropbox.com/s/vhwi767ez3jdvnd/Avestan.svg?dl=0"],
+          false,
+          true
+        ]
+      ],
+      "layout": {
+        "text-variable-anchor": ["bottom-left", "top-left"],
+        "text-radial-offset": 0,
+        "text-field": ["get", "Endonym"],
+        "text-font": ["Noto Sans Regular", "Arial Unicode MS Regular"],
+        "text-size": 10,
+        "visibility": "none"
+      },
+      "paint": {
+        "text-color": "hsl(0, 0%, 5%)",
+        "text-halo-width": 1,
+        "text-halo-color": "hsla(0, 0%, 95%, 0.95)"
+      }
+    },
+    {
+      "id": "Polynesia",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": ["match", ["get", "World Region"], ["Polynesia"], true, false],
+      "paint": { "circle-color": "#72493b" }
+    },
+    {
+      "id": "Northern Europe",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Northern Europe"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#295e5b" }
+    },
+    {
+      "id": "Australia & New Zealand",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Australia and New Zealand"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#867078" }
+    },
+    {
+      "id": "Micronesia",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": ["match", ["get", "World Region"], ["Micronesia"], true, false],
+      "paint": { "circle-color": "#72493b" }
+    },
+    {
+      "id": "Melanesia",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": ["match", ["get", "World Region"], ["Melanesia"], true, false],
+      "paint": { "circle-color": "#72493b" }
+    },
+    {
+      "id": "Southern Africa",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Southern Africa"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#846caf" }
+    },
+    {
+      "id": "Middle Africa",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Middle Africa"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#684984" }
+    },
+    {
+      "id": "Northern Africa",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Northern Africa"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#da84b7" }
+    },
+    {
+      "id": "Eastern Africa",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Eastern Africa"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#d64699" }
+    },
+    {
+      "id": "Southern Asia",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Southern Asia"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#dd3939" }
+    },
+    {
+      "id": "Eastern Asia",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Eastern Asia"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#dc6d3a" }
+    },
+    {
+      "id": "Central Asia",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Central Asia"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#c29e49" }
+    },
+    {
+      "id": "Southern Europe",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Southern Europe"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#7ca298" }
+    },
+    {
+      "id": "Western Africa",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Western Africa"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#9b4899" }
+    },
+    {
+      "id": "Western Europe",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Western Europe"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#397439" }
+    },
+    {
+      "id": "Western Asia",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Western Asia"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#97a853" }
+    },
+    {
+      "id": "Southeastern Asia",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Southeastern Asia"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#96302e" }
+    },
+    {
+      "id": "Eastern Europe",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Eastern Europe"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#88c64c" }
+    },
+    {
+      "id": "South America",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["South America"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#3fb4ce" }
+    },
+    {
+      "id": "Northern America",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Northern America"],
+        true,
+        false
+      ],
+      "layout": {},
+      "paint": { "circle-color": "#465192 " }
+    },
+    {
+      "id": "Central America",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": [
+        "match",
+        ["get", "World Region"],
+        ["Central America"],
+        true,
+        false
+      ],
+      "paint": { "circle-color": "#4e7bbc" }
+    },
+    {
+      "id": "Caribbean",
+      "type": "circle",
+      "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
+      "source": "composite",
+      "source-layer": "languages-08ip3e",
+      "filter": ["match", ["get", "World Region"], ["Caribbean"], true, false],
+      "paint": { "circle-color": "hsl(169, 39%, 52%)" }
+    }
+  ],
+  "created": "2020-07-14T22:43:54.288Z",
+  "id": "ckcmivm0r1o491iomlji26c48",
+  "modified": "2020-08-06T22:14:08.828Z",
+  "owner": "elalliance",
+  "visibility": "public",
+  "draft": false
+}

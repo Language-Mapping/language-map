@@ -1,4 +1,4 @@
-import { InitialStateType } from 'context/types'
+import { InitialState } from 'context/types'
 
 // Somewhat project-specific, consider putting in separate file
 const initialMapStates = {
@@ -18,6 +18,8 @@ const initialMapStates = {
 }
 
 export const initialState = {
+  activePanelIndex: 0,
+  selFeatAttribs: null,
   showSplash: false,
   hasSeenSplash: !!localStorage.getItem('hasSeenSplash') || false,
   uiAlert: {
@@ -26,4 +28,4 @@ export const initialState = {
     severity: 'success',
   },
   ...initialMapStates,
-} as InitialStateType
+} as InitialState

@@ -15,17 +15,23 @@ import {
 
 import { GlobalContext } from 'components'
 
-export const ResultsTable: FC = () => {
-  const { state } = useContext(GlobalContext)
+type ResultsTableComponent = {
+  setResultsModalOpen: React.Dispatch<boolean>
+}
+
+export const ResultsTable: FC<ResultsTableComponent> = ({
+  setResultsModalOpen,
+}) => {
+  const { state, dispatch } = useContext(GlobalContext)
   const history = useHistory()
 
   const columns = [
     { title: 'Language', field: 'Language' },
     { title: 'Endonym', field: 'Endonym' },
-    { title: 'Neighborhood', field: 'Neighborhood' }, // TODO: inc. 2ndary
+    { title: 'Neighborhoods', field: 'Neighborhoods' }, // TODO: inc. 2ndary
     { title: 'Community Size', field: 'Community Size' },
     { title: 'Type', field: 'Type' },
-    { title: 'Region', field: 'Region' },
+    { title: 'World Region', field: 'World Region' },
     { title: 'Primary Country', field: 'Primary Country' },
     { title: 'Global Speaker Total', field: 'Global Speaker Total' },
     { title: 'Language Family', field: 'Language Family' },
@@ -67,11 +73,15 @@ export const ResultsTable: FC = () => {
       options={options}
       columns={columns}
       data={state.langFeatures}
-      onRowClick={(a, b) => {
-        if (!b) {
+      onRowClick={(a, record) => {
+        if (!record) {
           return
         }
-        history.push(`/details?id=${b.ID}`)
+
+        history.push(`/details?id=${record.ID}`)
+
+        dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: 2 })
+        setResultsModalOpen(false)
       }}
     />
   )

@@ -2,8 +2,14 @@ import React, { FC } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Drawer } from '@material-ui/core'
 
-import { Nav } from 'components'
-import { ToggleOffCanvasType } from './types'
+import { Nav } from 'components/nav'
+import { ToggleOffCanvasNav } from './types'
+
+type OffCanvasNavComponent = {
+  open: boolean
+  toggleDrawer: ToggleOffCanvasNav
+  setOpen: (open: boolean) => void
+}
 
 const useStyles = makeStyles({
   list: {
@@ -11,13 +17,7 @@ const useStyles = makeStyles({
   },
 })
 
-type OffCanvasNavType = {
-  open: boolean
-  toggleDrawer: ToggleOffCanvasType
-  setOpen: (open: boolean) => void
-}
-
-export const OffCanvasNav: FC<OffCanvasNavType> = ({
+export const OffCanvasNav: FC<OffCanvasNavComponent> = ({
   open,
   setOpen,
   toggleDrawer,
