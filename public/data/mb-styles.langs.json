@@ -166,15 +166,17 @@
       "source": "composite",
       "source-layer": "languages-08ip3e",
       "layout": {
+        "text-variable-anchor": ["bottom-left", "top-left"],
+        "text-radial-offset": 0,
         "text-field": ["to-string", ["get", "Language"]],
+        "text-font": ["Noto Sans Regular", "Arial Unicode MS Regular"],
         "text-size": 10,
         "visibility": "none"
       },
       "paint": {
-        "text-color": "#1c1c1c",
-        "text-halo-color": "hsla(0, 0%, 10%, 0.18)",
+        "text-color": "hsl(0, 0%, 5%)",
         "text-halo-width": 1,
-        "text-halo-blur": 2
+        "text-halo-color": "hsla(0, 0%, 95%, 0.95)"
       }
     },
     {
@@ -203,15 +205,17 @@
         ]
       ],
       "layout": {
-        "text-size": 10,
+        "text-variable-anchor": ["bottom-left", "top-left"],
+        "text-radial-offset": 0,
         "text-field": ["get", "Endonym"],
-        "text-anchor": "bottom-left",
         "text-font": ["Noto Sans Regular", "Arial Unicode MS Regular"],
+        "text-size": 10,
         "visibility": "none"
       },
       "paint": {
-        "text-color": "#1c1c1c",
-        "text-halo-color": "hsla(0, 0%, 0%, 0)"
+        "text-color": "hsl(0, 0%, 5%)",
+        "text-halo-width": 1,
+        "text-halo-color": "hsla(0, 0%, 95%, 0.95)"
       }
     },
     {
