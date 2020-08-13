@@ -14,40 +14,17 @@ import {
 } from 'react-icons/md'
 
 import { GlobalContext } from 'components'
+import { columns } from './config'
 
 type ResultsTableComponent = {
   setResultsModalOpen: React.Dispatch<boolean>
 }
-
 export const ResultsTable: FC<ResultsTableComponent> = ({
   setResultsModalOpen,
 }) => {
   const { state, dispatch } = useContext(GlobalContext)
   const history = useHistory()
 
-  const columns = [
-    { title: 'Language', field: 'Language' },
-    { title: 'Endonym', field: 'Endonym' },
-    { title: 'Neighborhoods', field: 'Neighborhoods' }, // TODO: inc. 2ndary
-    { title: 'Community Size', field: 'Community Size' },
-    { title: 'Type', field: 'Type' },
-    { title: 'World Region', field: 'World Region' },
-    { title: 'Primary Country', field: 'Primary Country' },
-    { title: 'Global Speaker Total', field: 'Global Speaker Total' },
-    { title: 'Language Family', field: 'Language Family' },
-    // { title: 'Description', field: 'Description' }, // TODO: restore/truncate
-    // TODO: adapt and restore
-    // {
-    //   title: 'Birth Year',
-    //   field: 'birthYear',
-    //   type: 'numeric',
-    // },
-    // {
-    //   title: 'Birth Place',
-    //   field: 'birthCity',
-    //   lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' },
-    // },
-  ]
   const options = {
     showTitle: false,
     filtering: true,
