@@ -14,11 +14,16 @@ import { GlobalContext } from 'components'
 import { LayerPropsNonBGlayer } from './types'
 import { panelsConfig } from '../../config/panels-config'
 import { getIDfromURLparams, getMbStyleDocument } from '../../utils'
-import { mbStyleTileConfig } from './config'
+import { mbStyleTileConfig, MID_BREAKPOINT } from './config'
 
 const transforms = {
   open: 'translateY(0%)',
   closed: 'translateY(100%)',
+}
+
+const panelWidths = {
+  mid: 375,
+  midLarge: 425,
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -51,11 +56,14 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: 60,
       top: '50%',
       transition: '300ms transform',
-      [theme.breakpoints.up('sm')]: {
-        width: 425,
+      [theme.breakpoints.up(MID_BREAKPOINT)]: {
+        width: panelWidths.mid,
         top: 140,
         bottom: theme.spacing(5), // above mapbox logo
         left: 16,
+      },
+      [theme.breakpoints.up('md')]: {
+        width: panelWidths.midLarge,
       },
       '& .MuiPaper-root': {
         overflowY: 'auto',
@@ -71,11 +79,14 @@ const useStyles = makeStyles((theme: Theme) =>
         height: 20,
         width: 20,
       },
-      [theme.breakpoints.up('sm')]: {
-        width: 425,
+      [theme.breakpoints.up(MID_BREAKPOINT)]: {
+        width: panelWidths.mid,
         top: theme.spacing(8),
         left: theme.spacing(2),
         bottom: theme.spacing(1), // above MB logo?
+      },
+      [theme.breakpoints.up('md')]: {
+        width: panelWidths.midLarge,
       },
     },
     closePanel: {

@@ -33,7 +33,9 @@ export const Map: FC<MapTypes.MapComponent> = ({
   const { state, dispatch } = useContext(GlobalContext)
   const mapRef: React.RefObject<InteractiveMap> = React.createRef()
   const { selFeatAttribs } = state
-  const isDesktop = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'))
+  const isDesktop = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.up(mapConfig.MID_BREAKPOINT)
+  )
 
   const [viewport, setViewport] = useState(mapConfig.initialMapState)
   const [mapOffset, setMapOffset] = useState<[number, number]>([0, 0])

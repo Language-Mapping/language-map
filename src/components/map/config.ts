@@ -25,6 +25,8 @@ export const mbStyleTileConfig = {
   },
 }
 
+export const MID_BREAKPOINT = 800 // TODO: uhhh just use theme.breakpoints?
+
 // TODO: rm if only using local, otherwise restore when ready
 // export const symbStyleUrl = `${MB_STYLES_API_URL}/${mbStyleTileConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
 // Unsure why it needs the type here but not for feature coords..

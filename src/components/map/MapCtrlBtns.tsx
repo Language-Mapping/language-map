@@ -11,6 +11,7 @@ import { MdMoreVert, MdClose } from 'react-icons/md'
 import { FiHome, FiZoomIn, FiZoomOut } from 'react-icons/fi'
 
 import { MapControlAction } from './types'
+import { MID_BREAKPOINT } from './config'
 
 type MapCtrlBtnsComponent = {
   // Render prop so we don't have pass a million props to this component
@@ -53,7 +54,10 @@ const ctrlBtnsConfig = [
 
 export const MapCtrlBtns: FC<MapCtrlBtnsComponent> = ({ onMapCtrlClick }) => {
   const classes = useStyles()
-  const isDesktop = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'))
+  // TODO: pass this down from higher up
+  const isDesktop = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.up(MID_BREAKPOINT)
+  )
   const [open, setOpen] = React.useState(true)
   const size = isDesktop ? 'medium' : 'small'
 
