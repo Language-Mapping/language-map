@@ -57,7 +57,9 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
           // TODO: change symbol size (???) for selected feat. Evidently cannot
           // set layout properties base on feature-state though, so maybe this:
           // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setlayoutproperty
-          layout = { ...layout, 'icon-size': 0.5 } // 0.5 good with 24x24 SVG
+          // 0.5 good with 24x24 SVG if there is a background circle. Otherwise
+          // a little smaller is better.
+          layout = { ...layout, 'icon-size': 0.4 }
         }
 
         return (

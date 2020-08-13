@@ -1,7 +1,7 @@
 // TODO: rm if only using local, otherwise restore when ready
 // const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
 
-import iconArrowUp from './icons/arrow-up.svg'
+import iconTree from './icons/tree.svg'
 import iconBook from './icons/book.svg'
 import iconBuilding from './icons/building.svg'
 import iconHome from './icons/home.svg'
@@ -51,7 +51,7 @@ export const postLoadMapView = {
 }
 
 export const langTypeIconsConfig = [
-  { icon: iconArrowUp, id: '_arrow-up' },
+  { icon: iconTree, id: '_tree' },
   { icon: iconBook, id: '_book' },
   { icon: iconBuilding, id: '_building' },
   { icon: iconHome, id: '_home' },

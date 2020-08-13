@@ -159,8 +159,7 @@
       "source-layer": "languages-08ip3e",
       "filter": ["match", ["get", "Type"], ["Reviving"], true, false],
       "layout": {
-        "icon-image": "_arrow-up",
-        "icon-rotate": 45
+        "icon-image": "_tree"
       },
       "paint": {}
     },
