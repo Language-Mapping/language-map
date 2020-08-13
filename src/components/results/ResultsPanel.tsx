@@ -1,24 +1,12 @@
 import React, { FC, useContext, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import {
-  Button,
-  Typography,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  IconButton,
-} from '@material-ui/core'
-import { MdClose } from 'react-icons/md'
+import { Button, Typography } from '@material-ui/core'
 import { AiOutlineFullscreen } from 'react-icons/ai'
 
 import { GlobalContext, LoadingIndicator } from 'components'
+import { useTableStyles } from './config'
 import { ResultsTable } from './ResultsTable'
-
-type ResultsModalComponent = {
-  children: React.ReactNode
-  setResultsModalOpen: React.Dispatch<boolean>
-}
+import { ResultsModal } from './ResultsModal'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,50 +15,12 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: theme.spacing(2),
       textAlign: 'center',
     },
-    closeBtn: {
-      position: 'absolute',
-      top: theme.spacing(1),
-      right: theme.spacing(1),
-    },
   })
 )
 
-const ResultsModal: FC<ResultsModalComponent> = ({
-  children,
-  setResultsModalOpen,
-}) => {
-  const classes = useStyles()
-
-  const handleClose = () => {
-    setResultsModalOpen(false)
-  }
-
-  return (
-    <Dialog
-      open
-      onClose={handleClose}
-      aria-labelledby="results-modal-dialog-title"
-      aria-describedby="results-modal-dialog-description"
-      maxWidth="md"
-    >
-      <DialogTitle id="results-modal-dialog-title" disableTypography>
-        <Typography variant="h2">Data</Typography>
-      </DialogTitle>
-      <IconButton onClick={handleClose} className={classes.closeBtn}>
-        <MdClose />
-      </IconButton>
-      <DialogContent dividers>{children}</DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Exit
-        </Button>
-      </DialogActions>
-    </Dialog>
-  )
-}
-
 export const ResultsPanel: FC = () => {
   const classes = useStyles()
+  const sharedTableClasses = useTableStyles()
   const { state } = useContext(GlobalContext)
   const { langFeaturesCached, langFeatures } = state
   const [resultsModalOpen, setResultsModalOpen] = useState<boolean>(false)
@@ -90,22 +40,22 @@ export const ResultsPanel: FC = () => {
   // React.cloneElement(element, [props], [...children])
 
   return (
-    <div className={classes.resultsPanelRoot}>
-      <Typography variant="subtitle2">
+    <div
+      className={`${classes.resultsPanelRoot} ${sharedTableClasses.tableRoot}`}
+    >
+      <Typography variant="caption">
         Showing {langFeatures.length} of {langFeaturesCached.length} language
         communities.
       </Typography>
-      <p>
-        <Button
-          onClick={() => setResultsModalOpen(true)}
-          color="primary"
-          size="small"
-          variant="outlined"
-          startIcon={<AiOutlineFullscreen />}
-        >
-          View fullscreen
-        </Button>
-      </p>
+      <Button
+        onClick={() => setResultsModalOpen(true)}
+        color="primary"
+        size="small"
+        variant="outlined"
+        startIcon={<AiOutlineFullscreen />}
+      >
+        View fullscreen
+      </Button>
       {resultsModalOpen && (
         <ResultsModal setResultsModalOpen={setResultsModalOpen}>
           <ResultsTable setResultsModalOpen={setResultsModalOpen} />
