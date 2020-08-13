@@ -86,12 +86,17 @@ export const Map: FC<MapTypes.MapComponent> = ({
     // NOTE: won't get this far on load even if feature is selected. The timing
     // and order of the whole process prevent that. Make feature appear selected
 
-    const { ID, Latitude: lat, Longitude: lng } = selFeatAttribs
+    const { ID, Latitude: latitude, Longitude: longitude } = selFeatAttribs
 
     setPopupOpen(null)
     setSelFeatState(map, ID, true)
 
-    mapUtils.flyToCoords(map, { lat, lng, zoom: 12 }, mapOffset, selFeatAttribs)
+    mapUtils.flyToCoords(
+      map,
+      { latitude, longitude, zoom: 12 },
+      mapOffset,
+      selFeatAttribs
+    )
   }, [selFeatAttribs, mapLoaded])
   /* eslint-enable react-hooks/exhaustive-deps */
 
@@ -269,7 +274,43 @@ export const Map: FC<MapTypes.MapComponent> = ({
           />
         )}
       </MapGL>
-      <MapCtrlBtns />
+      <MapCtrlBtns
+        onMapCtrlClick={(actionID: MapTypes.MapControlAction) => {
+          if (!mapRef.current) {
+            return
+          }
+
+          const map: mbGlFull.Map = mapRef.current.getMap()
+
+          if (actionID === 'home') {
+            const configKey = isDesktop ? 'desktop' : 'mobile'
+
+            mapUtils.flyToCoords(
+              map,
+              mapConfig.postLoadMapView[configKey],
+              mapOffset,
+              selFeatAttribs,
+              true
+            )
+
+            return
+          }
+
+          const { zoom, latitude, longitude } = viewport
+
+          mapUtils.flyToCoords(
+            map,
+            {
+              latitude,
+              longitude,
+              zoom: actionID === 'in' ? zoom + 1 : zoom - 1,
+            },
+            [0, 0],
+            selFeatAttribs,
+            true
+          )
+        }}
+      />
     </div>
   )
 }

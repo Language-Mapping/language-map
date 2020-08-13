@@ -10,6 +10,19 @@ import {
 import { MdMoreVert, MdClose } from 'react-icons/md'
 import { FiHome, FiZoomIn, FiZoomOut } from 'react-icons/fi'
 
+import { MapControlAction } from './types'
+
+type MapCtrlBtnsComponent = {
+  // Render prop so we don't have pass a million props to this component
+  onMapCtrlClick: (actionID: MapControlAction) => void
+}
+
+type CtrlBtnConfig = {
+  id: MapControlAction
+  icon: React.ReactNode
+  name: string
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mapCtrlsRoot: {
@@ -33,12 +46,12 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const ctrlBtnsConfig = [
-  { icon: <FiZoomIn />, name: 'Zoom in' },
-  { icon: <FiZoomOut />, name: 'Zoom out' },
-  { icon: <FiHome />, name: 'Zoom home' },
-]
+  { id: 'in', icon: <FiZoomIn />, name: 'Zoom in' },
+  { id: 'out', icon: <FiZoomOut />, name: 'Zoom out' },
+  { id: 'home', icon: <FiHome />, name: 'Zoom home' },
+] as CtrlBtnConfig[]
 
-export const MapCtrlBtns: FC = () => {
+export const MapCtrlBtns: FC<MapCtrlBtnsComponent> = ({ onMapCtrlClick }) => {
   const classes = useStyles()
   const isDesktop = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'))
   const [open, setOpen] = React.useState(true)
@@ -81,6 +94,7 @@ export const MapCtrlBtns: FC = () => {
           tooltipTitle={action.name}
           onClick={(e) => {
             e.stopPropagation() // prevent closing the menu
+            onMapCtrlClick(action.id)
           }}
           FabProps={{ size }}
         />

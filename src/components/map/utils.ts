@@ -34,15 +34,22 @@ export const prepMapOffset = (
 
 export function flyToCoords(
   map: mbGlFull.Map,
-  settings: { lng: number; lat: number; zoom?: number | 10.25 },
+  settings: { longitude: number; latitude: number; zoom?: number | 10.25 },
   offset: [number, number],
-  selFeatAttribs: LangRecordSchema | null
+  selFeatAttribs: LangRecordSchema | null,
+  disregardCurrZoom?: boolean // e.g. when
 ): void {
-  const { zoom, lat, lng } = settings
+  const { zoom: targetZoom, latitude: lat, longitude: lng } = settings
   const currentZoom = map.getZoom()
   const customEventData = {
     forceViewportUpdate: true, // to keep state in sync
     selFeatAttribs, // popup data
+  }
+  let zoomToUse = targetZoom
+
+  // Only zoom to the default if current zoom is higher than that
+  if (!disregardCurrZoom && targetZoom && currentZoom > targetZoom) {
+    zoomToUse = currentZoom
   }
 
   map.flyTo(
@@ -51,8 +58,7 @@ export function flyToCoords(
       essential: true,
       center: { lng, lat },
       offset,
-      // Only zoom to the default if current zoom is less than that
-      zoom: zoom && currentZoom < zoom ? zoom : currentZoom,
+      zoom: zoomToUse,
     },
     customEventData
   )

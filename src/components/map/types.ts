@@ -8,6 +8,10 @@ type LongLat = {
   latitude: number
 }
 
+export type MapViewportState = {
+  zoom: number
+} & LongLat
+
 // Assumes using Mapbox style
 export type Baselayer = 'dark' | 'light'
 
@@ -87,3 +91,5 @@ export type MapComponent = {
 }
 
 export type LangIconConfig = { icon: string; id: string }
+
+export type MapControlAction = 'home' | 'in' | 'out'
