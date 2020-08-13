@@ -82,3 +82,5 @@ export const getIDfromURLparams = (url: string): number => {
 
   return parseInt(idAsString, 10)
 }
+
+export const isURL = (text: string): boolean => text.slice(0, 4) === 'http'

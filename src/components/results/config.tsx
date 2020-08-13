@@ -1,4 +1,6 @@
+import React from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Link } from '@material-ui/core'
 import { Icons } from 'material-table'
 import { FaFilter } from 'react-icons/fa'
 import {
@@ -13,6 +15,7 @@ import {
 } from 'react-icons/md'
 
 import * as Types from './types'
+import { isURL } from '../../utils'
 
 export const useTableStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,8 +51,10 @@ export const options = {
   doubleHorizontalScroll: true,
   draggable: false,
   filtering: true,
+  // filterCellStyle: { color: 'green' },
   pageSize: 10,
   pageSizeOptions: [5, 10, 25, 50],
+  searchFieldAlignment: 'left',
   showTitle: false,
   thirdSortClick: false,
 } as Types.TableOptions
@@ -68,7 +73,21 @@ export const icons = {
 
 export const columns = [
   { title: 'Language', field: 'Language' },
-  { title: 'Endonym', field: 'Endonym' },
+  {
+    title: 'Endonym',
+    field: 'Endonym',
+    render: function renderEndo(data) {
+      if (!isURL(data.Endonym)) {
+        return data.Endonym
+      }
+
+      return (
+        <Link href={data.Endonym} target="_blank" rel="noreferrer">
+          Download image
+        </Link>
+      )
+    },
+  },
   { title: 'Neighborhoods', field: 'Neighborhoods' },
   { title: 'Community Size', field: 'Community Size', searchable: false },
   { title: 'Type', field: 'Type' },
