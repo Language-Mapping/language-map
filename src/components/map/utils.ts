@@ -1,6 +1,5 @@
 import mbGlFull from 'mapbox-gl'
 
-import { LangRecordSchema } from '../../context/types'
 import * as MapTypes from './types'
 
 // One of the problems of using panels which overlap the map is how to deal with
@@ -32,18 +31,23 @@ export const prepMapOffset = (
   return [(sidePanelWidth + sidePanelGutter) / 2, topBarHeight / 2]
 }
 
-export function flyToCoords(
-  map: mbGlFull.Map,
-  settings: { longitude: number; latitude: number; zoom?: number | 10.25 },
-  offset: [number, number],
-  selFeatAttribs: LangRecordSchema | null,
-  disregardCurrZoom?: boolean // e.g. when
-): void {
-  const { zoom: targetZoom, latitude: lat, longitude: lng } = settings
+export const flyToCoords: MapTypes.FlyToCoords = (
+  map,
+  settings,
+  offset,
+  selFeatAttribs
+) => {
+  const {
+    zoom: targetZoom,
+    latitude: lat,
+    longitude: lng,
+    disregardCurrZoom,
+  } = settings
   const currentZoom = map.getZoom()
   const customEventData = {
     forceViewportUpdate: true, // to keep state in sync
     selFeatAttribs, // popup data
+    disregardCurrZoom,
   }
   let zoomToUse = targetZoom
 

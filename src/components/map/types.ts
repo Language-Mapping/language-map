@@ -3,7 +3,7 @@ import * as mbGlFull from 'mapbox-gl'
 
 import { LangRecordSchema } from 'context/types'
 
-type LongLat = {
+export type LongLat = {
   longitude: number
   latitude: number
 }
@@ -93,3 +93,13 @@ export type MapComponent = {
 export type LangIconConfig = { icon: string; id: string }
 
 export type MapControlAction = 'home' | 'in' | 'out'
+
+export type FlyToCoords = (
+  map: mbGlFull.Map,
+  settings: {
+    zoom?: number | 10.25
+    disregardCurrZoom?: boolean // e.g. when using map controls
+  } & LongLat,
+  offset: [number, number],
+  selFeatAttribs: LangRecordSchema | null
+) => void

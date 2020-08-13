@@ -228,6 +228,47 @@ export const Map: FC<MapTypes.MapComponent> = ({
     map.removeFeatureState({ source: internalSrcID, sourceLayer })
   }
 
+  // TODO: into utils if it doesn't require passing 1000 args
+  function onMapCtrlClick(actionID: MapTypes.MapControlAction) {
+    if (!mapRef.current) {
+      return
+    }
+
+    const map: mbGlFull.Map = mapRef.current.getMap()
+
+    setPopupOpen(null) // otherwise janky lag while map is moving
+
+    if (actionID === 'home') {
+      const configKey = isDesktop ? 'desktop' : 'mobile'
+
+      mapUtils.flyToCoords(
+        map,
+        {
+          ...mapConfig.postLoadMapView[configKey],
+          disregardCurrZoom: true,
+        },
+        mapOffset,
+        selFeatAttribs
+      )
+
+      return // assumes `in` or `out` from here down
+    }
+
+    const { zoom, latitude, longitude } = viewport
+
+    mapUtils.flyToCoords(
+      map,
+      {
+        latitude,
+        longitude,
+        zoom: actionID === 'in' ? zoom + 1 : zoom - 1,
+        disregardCurrZoom: true,
+      },
+      [0, 0],
+      selFeatAttribs
+    )
+  }
+
   return (
     <div className={wrapClassName}>
       {!mapLoaded && <LoadingBackdrop />}
@@ -276,39 +317,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
       </MapGL>
       <MapCtrlBtns
         onMapCtrlClick={(actionID: MapTypes.MapControlAction) => {
-          if (!mapRef.current) {
-            return
-          }
-
-          const map: mbGlFull.Map = mapRef.current.getMap()
-
-          if (actionID === 'home') {
-            const configKey = isDesktop ? 'desktop' : 'mobile'
-
-            mapUtils.flyToCoords(
-              map,
-              mapConfig.postLoadMapView[configKey],
-              mapOffset,
-              selFeatAttribs,
-              true
-            )
-
-            return
-          }
-
-          const { zoom, latitude, longitude } = viewport
-
-          mapUtils.flyToCoords(
-            map,
-            {
-              latitude,
-              longitude,
-              zoom: actionID === 'in' ? zoom + 1 : zoom - 1,
-            },
-            [0, 0],
-            selFeatAttribs,
-            true
-          )
+          onMapCtrlClick(actionID)
         }}
       />
     </div>
