@@ -70,8 +70,8 @@ export type MapPanel = {
   heading: string
   icon: React.ReactNode
   subheading: string
-  summary?: string | React.ReactNode
-  component?: React.ReactNode
+  component: React.ReactNode
+  summary: string | React.ReactNode
 }
 
 export type MapPopup = LongLat & {

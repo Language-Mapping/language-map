@@ -1,50 +1,30 @@
-import React, { FC, useContext } from 'react'
+import React from 'react'
 import { FaFilter } from 'react-icons/fa'
 import { GoSettings } from 'react-icons/go'
 import { TiDocumentText, TiThList } from 'react-icons/ti'
-import { Link } from '@material-ui/core'
-
-import { GlobalContext } from 'components'
 
 import { ResultsPanel } from 'components/results'
 import { FiltersPanel } from 'components/filters'
 import { LegendPanel } from 'components/legend'
 import { DetailsPanel } from 'components/details'
 import { MapPanel } from 'components/map/types'
-import { ActivePanelIndex } from '../context/types'
+import { LinkToActivePanel } from 'components'
 
-type CheapLink = {
-  text: string
-  activePanelIndex: ActivePanelIndex
-}
-
-const CheapLinkWithDispatch: FC<CheapLink> = ({ text, activePanelIndex }) => {
-  const { dispatch } = useContext(GlobalContext)
-
-  return (
-    <Link
-      href="javascript;"
-      onClick={(e: React.MouseEvent) => {
-        e.preventDefault()
-        dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: activePanelIndex })
-      }}
-    >
-      {text}
-    </Link>
-  )
-}
-
+// CRED for Object.assign: https://stackoverflow.com/a/43376213/1048518
 export const panelsConfig = [
   {
     heading: 'Filter',
     subheading: 'and query language data',
     icon: <FaFilter />,
-    summary: (
-      <>
-        Explore 1000+ language communities using the options below. Your filters
-        affect both the map and{' '}
-        <CheapLinkWithDispatch text="data table" activePanelIndex={1} />.
-      </>
+    summary: Object.assign(
+      () => (
+        <>
+          Explore 1000+ language communities using the options below. Your
+          filters affect both the map and{' '}
+          <LinkToActivePanel text="data table" activePanelIndex={1} />.
+        </>
+      ),
+      { displayName: 'FilterPanelSummary' }
     ),
     component: <FiltersPanel />,
   },
@@ -54,15 +34,18 @@ export const panelsConfig = [
     icon: <TiThList />,
     // Could this work instead of emoji API? Seems way too easy.
     // https://material-ui.com/components/autocomplete/#country-select
-    component: <ResultsPanel />,
-    summary: (
-      <>
-        View results of your{' '}
-        <CheapLinkWithDispatch text="filters" activePanelIndex={0} /> in a table
-        which you can further refine, sort, and search. Note that options here
-        only affect the table below.
-      </>
+    summary: Object.assign(
+      () => (
+        <>
+          View results of your{' '}
+          <LinkToActivePanel text="filters" activePanelIndex={0} /> in a table
+          which you can further refine, sort, and search. Note that options here
+          only affect the table below.
+        </>
+      ),
+      { displayName: 'DataPanelSummary' }
     ),
+    component: <ResultsPanel />,
   },
   {
     heading: 'Details',

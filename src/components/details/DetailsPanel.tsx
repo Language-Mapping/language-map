@@ -3,14 +3,15 @@ import { useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Link, Typography, Divider } from '@material-ui/core'
 
-import { GlobalContext, LoadingIndicator } from 'components'
+import {
+  GlobalContext,
+  LoadingIndicator,
+  PanelIntro,
+  LinkToActivePanel,
+} from 'components'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    detailsPanelRoot: {
-      paddingTop: theme.spacing(2),
-      paddingBottom: theme.spacing(2),
-    },
     intro: {
       textAlign: 'center',
       paddingBottom: theme.spacing(1),
@@ -42,19 +43,11 @@ export const DetailsPanel: FC = () => {
   // No sel feat details
   if (!selFeatAttribs) {
     return (
-      <p>
+      <PanelIntro>
         Click a language community in the map or the{' '}
-        <Link
-          href="javascript;"
-          onClick={(e: React.MouseEvent) => {
-            e.preventDefault()
-            dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: 1 })
-          }}
-        >
-          data table
-        </Link>{' '}
-        to learn more.
-      </p>
+        <LinkToActivePanel text="data table" activePanelIndex={1} /> to learn
+        more.
+      </PanelIntro>
     )
   }
 
@@ -68,16 +61,18 @@ export const DetailsPanel: FC = () => {
   // }
 
   return (
-    <div className={classes.detailsPanelRoot}>
-      <Link
+    <>
+      <Typography
         href="javascript;"
+        variant="caption"
+        component={Link}
         onClick={(e: React.MouseEvent) => {
           e.preventDefault()
           dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: 1 })
         }}
       >
         {`<`} Back to results
-      </Link>
+      </Typography>
       <div className={classes.intro}>
         <Typography component="h3" variant="h4">
           {selFeatAttribs.Endonym}
@@ -97,6 +92,6 @@ export const DetailsPanel: FC = () => {
       <Typography variant="body2" className={classes.description}>
         {selFeatAttribs.Description}
       </Typography>
-    </div>
+    </>
   )
 }

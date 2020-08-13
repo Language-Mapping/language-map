@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Box, Typography, Paper, Divider } from '@material-ui/core'
+import { Box, Typography, Paper } from '@material-ui/core'
 
 import { MapPanel as MapPanelType } from './types'
 
@@ -81,12 +81,6 @@ export const MapPanel: FC<MapPanelType> = ({
         zIndex={1}
         position="relative"
       >
-        {summary ? (
-          <>
-            <p className={classes.summary}>{summary}</p>
-            <Divider />
-          </>
-        ) : null}
         {component}
       </Box>
     </Paper>
