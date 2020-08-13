@@ -8,7 +8,12 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext, LoadingBackdrop } from 'components'
-import { LangMbSrcAndLayer, MapPopup, MapTooltip } from 'components/map'
+import {
+  LangMbSrcAndLayer,
+  MapPopup,
+  MapTooltip,
+  MapCtrlBtns,
+} from 'components/map'
 import { initLegend } from 'components/legend/utils'
 import * as MapTypes from './types'
 import * as mapUtils from './utils'
@@ -22,6 +27,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
   symbLayers,
   labelLayers,
   baselayer,
+  wrapClassName,
 }) => {
   const history = useHistory()
   const { state, dispatch } = useContext(GlobalContext)
@@ -80,12 +86,17 @@ export const Map: FC<MapTypes.MapComponent> = ({
     // NOTE: won't get this far on load even if feature is selected. The timing
     // and order of the whole process prevent that. Make feature appear selected
 
-    const { ID, Latitude: lat, Longitude: lng } = selFeatAttribs
+    const { ID, Latitude: latitude, Longitude: longitude } = selFeatAttribs
 
     setPopupOpen(null)
     setSelFeatState(map, ID, true)
 
-    mapUtils.flyToCoords(map, { lat, lng, zoom: 12 }, mapOffset, selFeatAttribs)
+    mapUtils.flyToCoords(
+      map,
+      { latitude, longitude, zoom: 12 },
+      mapOffset,
+      selFeatAttribs
+    )
   }, [selFeatAttribs, mapLoaded])
   /* eslint-enable react-hooks/exhaustive-deps */
 
@@ -217,8 +228,49 @@ export const Map: FC<MapTypes.MapComponent> = ({
     map.removeFeatureState({ source: internalSrcID, sourceLayer })
   }
 
+  // TODO: into utils if it doesn't require passing 1000 args
+  function onMapCtrlClick(actionID: MapTypes.MapControlAction) {
+    if (!mapRef.current) {
+      return
+    }
+
+    const map: mbGlFull.Map = mapRef.current.getMap()
+
+    setPopupOpen(null) // otherwise janky lag while map is moving
+
+    if (actionID === 'home') {
+      const configKey = isDesktop ? 'desktop' : 'mobile'
+
+      mapUtils.flyToCoords(
+        map,
+        {
+          ...mapConfig.postLoadMapView[configKey],
+          disregardCurrZoom: true,
+        },
+        mapOffset,
+        selFeatAttribs
+      )
+
+      return // assumes `in` or `out` from here down
+    }
+
+    const { zoom, latitude, longitude } = viewport
+
+    mapUtils.flyToCoords(
+      map,
+      {
+        latitude,
+        longitude,
+        zoom: actionID === 'in' ? zoom + 1 : zoom - 1,
+        disregardCurrZoom: true,
+      },
+      [0, 0],
+      selFeatAttribs
+    )
+  }
+
   return (
-    <>
+    <div className={wrapClassName}>
       {!mapLoaded && <LoadingBackdrop />}
       <MapGL
         // TODO: show MB attribution text (not logo) on mobile
@@ -263,6 +315,11 @@ export const Map: FC<MapTypes.MapComponent> = ({
           />
         )}
       </MapGL>
-    </>
+      <MapCtrlBtns
+        onMapCtrlClick={(actionID: MapTypes.MapControlAction) => {
+          onMapCtrlClick(actionID)
+        }}
+      />
+    </div>
   )
 }

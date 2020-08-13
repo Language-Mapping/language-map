@@ -39,13 +39,13 @@ export const initialMapState = {
 // After the `fitBounds` happens and gets all the features into state
 export const postLoadMapView = {
   desktop: {
-    lat: 40.7186,
-    lng: -73.9079,
+    latitude: 40.7186,
+    longitude: -73.9079,
     zoom: 10.76,
   },
   mobile: {
-    lat: 40.7293,
-    lng: -73.9059,
+    latitude: 40.7293,
+    longitude: -73.9059,
     zoom: 9.39,
   },
 }

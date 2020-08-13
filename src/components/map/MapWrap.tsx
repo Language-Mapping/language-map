@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core'
 import { MdClose } from 'react-icons/md'
 
-import { Map, MapPanel, MapControls } from 'components/map'
+import { Map, MapPanel } from 'components/map'
 import { GlobalContext } from 'components'
 import { LayerPropsNonBGlayer } from './types'
 import { panelsConfig } from '../../config/panels-config'
@@ -165,14 +165,12 @@ export const MapWrap: FC = () => {
   return (
     <div className={classes.mapWrapRoot}>
       {symbLayers && labelLayers && (
-        <div className={classes.mapItselfWrap}>
-          <Map
-            symbLayers={symbLayers}
-            labelLayers={labelLayers}
-            baselayer={state.baselayer}
-          />
-          <MapControls />
-        </div>
+        <Map
+          wrapClassName={classes.mapItselfWrap}
+          symbLayers={symbLayers}
+          labelLayers={labelLayers}
+          baselayer={state.baselayer}
+        />
       )}
       {/* TODO: this and BottomNav into separate component/s (very non-map) */}
       <Box
