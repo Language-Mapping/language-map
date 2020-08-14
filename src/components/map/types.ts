@@ -66,12 +66,11 @@ export type MapEvent = Omit<PointerEvent, 'features'> & {
 }
 
 export type MapPanel = {
-  active: boolean
   heading: string
   icon: React.ReactNode
   subheading: string
   component: React.ReactNode
-  summary: string | React.ReactNode
+  summary: null | React.ReactNode | string
 }
 
 export type MapPopup = LongLat & {

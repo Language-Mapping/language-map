@@ -16,6 +16,7 @@ import {
 
 import * as Types from './types'
 import { isURL } from '../../utils'
+import { LangRecordSchema } from '../../context/types'
 
 export const useTableStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,8 +50,8 @@ export const useTableStyles = makeStyles((theme: Theme) =>
 export const options = {
   columnsButton: true,
   doubleHorizontalScroll: true,
-  draggable: false,
   filtering: true,
+  grouping: true,
   // filterCellStyle: { color: 'green' },
   pageSize: 10,
   pageSizeOptions: [5, 10, 25, 50],
@@ -60,6 +61,7 @@ export const options = {
 } as Types.TableOptions
 
 export const icons = {
+  DetailPanel: MdChevronRight,
   Filter: FaFilter,
   FirstPage: MdFirstPage,
   LastPage: MdLastPage,
@@ -71,25 +73,32 @@ export const icons = {
   ViewColumn: MdViewColumn,
 } as Icons
 
+function renderEndo(data: LangRecordSchema): string | React.ReactNode {
+  if (!isURL(data.Endonym)) {
+    return data.Endonym
+  }
+
+  return (
+    <Link href={data.Endonym} target="_blank" rel="noreferrer">
+      Download image
+    </Link>
+  )
+}
+
 export const columns = [
   { title: 'Language', field: 'Language' },
   {
     title: 'Endonym',
     field: 'Endonym',
-    render: function renderEndo(data) {
-      if (!isURL(data.Endonym)) {
-        return data.Endonym
-      }
-
-      return (
-        <Link href={data.Endonym} target="_blank" rel="noreferrer">
-          Download image
-        </Link>
-      )
-    },
+    render: renderEndo,
   },
   { title: 'Neighborhoods', field: 'Neighborhoods' },
-  { title: 'Community Size', field: 'Community Size', searchable: false },
+  {
+    title: 'Community Size',
+    field: 'Community Size',
+    searchable: false,
+    type: 'numeric',
+  },
   { title: 'Type', field: 'Type' },
   { title: 'World Region', field: 'World Region' },
   { title: 'Countries', field: 'Countries' },
@@ -97,6 +106,7 @@ export const columns = [
     title: 'Global Speaker Total',
     field: 'Global Speaker Total',
     searchable: false,
+    type: 'numeric',
   },
   { title: 'Language Family', field: 'Language Family' },
   {
