@@ -17,6 +17,11 @@ import {
 import * as Types from './types'
 import { isURL } from '../../utils'
 import { LangRecordSchema } from '../../context/types'
+import countryCodes from './config.emojis.json'
+
+type CountryCodes = {
+  [key: string]: string
+}
 
 export const useTableStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -73,6 +78,49 @@ export const icons = {
   ViewColumn: MdViewColumn,
 } as Icons
 
+// ISO 3166-1 alpha-2 (⚠️ No support for IE 11)
+function countryToFlag(isoCode: string) {
+  if (typeof String.fromCodePoint === 'undefined') {
+    return isoCode
+  }
+
+  return isoCode
+    .toUpperCase()
+    .replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
+}
+
+// DISCREPANCIES: Democratic Republic of Congo, Ivory Coast
+// ABSENT: Congo-Brazzaville and related
+// MAYA'S OLD VS. ROSS'S NEW: Micronesia? Korea?
+function renderCountries(data: LangRecordSchema): string | React.ReactNode {
+  if (!data.Countries) {
+    return ''
+  }
+
+  const gahhh = countryCodes as CountryCodes
+  const countries = data.Countries.split(', ')
+
+  const countriesWithFlags = countries.map((country) => {
+    if (gahhh[country]) {
+      return countryToFlag(gahhh[country])
+    }
+
+    return country
+  })
+
+  return (
+    <>
+      {countriesWithFlags.map((countryWithFlag, i) => (
+        <div key={countries[i]}>
+          {countryWithFlag}
+          {`    `}
+          {countries[i]}
+        </div>
+      ))}
+    </>
+  )
+}
+
 function renderEndo(data: LangRecordSchema): string | React.ReactNode {
   if (!isURL(data.Endonym)) {
     return data.Endonym
@@ -101,7 +149,7 @@ export const columns = [
   },
   { title: 'Type', field: 'Type' },
   { title: 'World Region', field: 'World Region' },
-  { title: 'Countries', field: 'Countries' },
+  { title: 'Countries', field: 'Countries', render: renderCountries },
   {
     title: 'Global Speaker Total',
     field: 'Global Speaker Total',
@@ -114,13 +162,7 @@ export const columns = [
     field: 'Description',
     render: (data) => `${data.Description.slice(0, 20)}...`,
   },
-  // { title: 'Description', field: 'Description' }, // TODO: restore/truncate
-  // TODO: adapt and restore
-  // {
-  //   title: 'Birth Year',
-  //   field: 'birthYear',
-  //   type: 'numeric',
-  // },
+  // TODO: rm if not using lookup
   // {
   //   title: 'Birth Place',
   //   field: 'birthCity',
