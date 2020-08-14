@@ -11,21 +11,17 @@ import { FaQuestionCircle } from 'react-icons/fa'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    // TODO: standardize across other panels
-    filtersPanelRoot: {
-      paddingTop: theme.spacing(2),
-      paddingBottom: theme.spacing(2),
-    },
     formControl: {
       margin: theme.spacing(1),
       minWidth: 120,
     },
     defsModalTrigger: {
+      alignItems: 'center',
       color: theme.palette.info.main,
       display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
       fontSize: 12,
+      justifyContent: 'flex-end',
+      marginTop: theme.spacing(1),
       '& > svg': {
         marginRight: 4,
       },
@@ -37,8 +33,10 @@ export const FiltersPanel: FC = () => {
   const classes = useStyles()
   const [commType, setCommType] = useState<string>('Historical') // TODO: types
 
+  // TODO: for Countries selection:
+  // https://material-ui.com/components/autocomplete/#country-select
   return (
-    <div className={classes.filtersPanelRoot}>
+    <>
       <Link href="javascript;" className={classes.defsModalTrigger}>
         <FaQuestionCircle />
         What do these mean?
@@ -59,6 +57,6 @@ export const FiltersPanel: FC = () => {
           How/where the language is currently used
         </FormHelperText>
       </FormControl>
-    </div>
+    </>
   )
 }

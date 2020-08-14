@@ -1,6 +1,4 @@
-import React from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Link } from '@material-ui/core'
 import { Icons } from 'material-table'
 import { FaFilter } from 'react-icons/fa'
 import {
@@ -15,13 +13,7 @@ import {
 } from 'react-icons/md'
 
 import * as Types from './types'
-import { isURL } from '../../utils'
-import { LangRecordSchema } from '../../context/types'
-import countryCodes from './config.emojis.json'
-
-type CountryCodes = {
-  [key: string]: string
-}
+import * as utils from './utils'
 
 export const useTableStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -78,67 +70,12 @@ export const icons = {
   ViewColumn: MdViewColumn,
 } as Icons
 
-// ISO 3166-1 alpha-2 (⚠️ No support for IE 11)
-function countryToFlag(isoCode: string) {
-  if (typeof String.fromCodePoint === 'undefined') {
-    return isoCode
-  }
-
-  return isoCode
-    .toUpperCase()
-    .replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
-}
-
-// DISCREPANCIES: Democratic Republic of Congo, Ivory Coast
-// ABSENT: Congo-Brazzaville and related
-// MAYA'S OLD VS. ROSS'S NEW: Micronesia? Korea?
-function renderCountries(data: LangRecordSchema): string | React.ReactNode {
-  if (!data.Countries) {
-    return ''
-  }
-
-  const gahhh = countryCodes as CountryCodes
-  const countries = data.Countries.split(', ')
-
-  const countriesWithFlags = countries.map((country) => {
-    if (gahhh[country]) {
-      return countryToFlag(gahhh[country])
-    }
-
-    return country
-  })
-
-  return (
-    <>
-      {countriesWithFlags.map((countryWithFlag, i) => (
-        <div key={countries[i]}>
-          {countryWithFlag}
-          {`    `}
-          {countries[i]}
-        </div>
-      ))}
-    </>
-  )
-}
-
-function renderEndo(data: LangRecordSchema): string | React.ReactNode {
-  if (!isURL(data.Endonym)) {
-    return data.Endonym
-  }
-
-  return (
-    <Link href={data.Endonym} target="_blank" rel="noreferrer">
-      Download image
-    </Link>
-  )
-}
-
 export const columns = [
   { title: 'Language', field: 'Language' },
   {
     title: 'Endonym',
     field: 'Endonym',
-    render: renderEndo,
+    render: utils.renderEndoColumn,
   },
   { title: 'Neighborhoods', field: 'Neighborhoods' },
   {
@@ -149,7 +86,11 @@ export const columns = [
   },
   { title: 'Type', field: 'Type' },
   { title: 'World Region', field: 'World Region' },
-  { title: 'Countries', field: 'Countries', render: renderCountries },
+  {
+    title: 'Countries',
+    field: 'Countries',
+    render: utils.renderCountriesColumn,
+  },
   {
     title: 'Global Speaker Total',
     field: 'Global Speaker Total',
