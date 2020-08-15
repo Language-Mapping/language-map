@@ -15,8 +15,10 @@ export const mbStyleTileConfig = {
   // styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48',
   // TODO: ^^^ consider local URL, at least during dev ^^^
   symbStyleUrl: '/data/mb-styles.langs.json',
-  layerId: 'languages-08ip3e',
-  tilesetId: 'elalliance.d0yv450e',
+  // layerId: 'languages-08ip3e',
+  layerId: 'jason-schema-no-disp-5eaf8w',
+  // tilesetId: 'elalliance.d0yv450e',
+  tilesetId: 'elalliance.5okvgals',
   internalSrcID: 'languages-src', // arbitrary, set in code, never changes
   // So far this is the only known way to use the custom fonts
   customStyles: {

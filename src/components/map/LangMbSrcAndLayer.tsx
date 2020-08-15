@@ -64,7 +64,13 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
 
         return (
           // TODO: some kind of transition/animation on switch
-          <Layer key={layer.id} {...layer} layout={layout} paint={paint} />
+          <Layer
+            key={layer.id}
+            {...layer}
+            source-layer={mbStyleTileConfig.layerId}
+            layout={layout}
+            paint={paint}
+          />
         )
       })}
       {labelLayers.map((layer: LayerPropsNonBGlayer) => {
@@ -75,7 +81,14 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
           visibility: isActiveLabel ? 'visible' : 'none',
         }
 
-        return <Layer key={layer.id} {...layer} layout={layout} />
+        return (
+          <Layer
+            key={layer.id}
+            {...layer}
+            source-layer={mbStyleTileConfig.layerId}
+            layout={layout}
+          />
+        )
       })}
     </Source>
   )

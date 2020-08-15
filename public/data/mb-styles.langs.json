@@ -22,7 +22,7 @@
   "bearing": 0,
   "pitch": 0,
   "sources": {
-    "composite": { "url": "mapbox://elalliance.d0yv450e", "type": "vector" }
+    "composite": { "url": "mapbox://elalliance.5okvgals", "type": "vector" }
   },
   "sprite": "mapbox://sprites/elalliance/ckcmivm0r1o491iomlji26c48/07jfodz49iyeho8s3lrozfkfy",
   "glyphs": "mapbox://fonts/elalliance/{fontstack}/{range}.pbf",
