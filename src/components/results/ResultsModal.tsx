@@ -34,9 +34,12 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     dialogContent: {
+      // need all the room we can get
       paddingBottom: 0, // sticky footer pagination is weird otherwise
-      [theme.breakpoints.down('sm')]: {
-        padding: 0, // need all the horiz. room we can get
+      paddingTop: 0,
+      [theme.breakpoints.up('sm')]: {
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
       },
     },
   })

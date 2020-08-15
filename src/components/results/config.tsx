@@ -1,6 +1,7 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Icons } from 'material-table'
 import { FaFilter } from 'react-icons/fa'
+
 import {
   MdSearch,
   MdClear,
@@ -71,7 +72,7 @@ export const options = {
   columnsButton: true,
   doubleHorizontalScroll: true,
   filtering: true,
-  // grouping: true, TODO: restore once the rest is cool
+  grouping: true, // TODO: restore once the rest is cool
   // filterCellStyle: { color: 'green' },
   pageSize: 20,
   pageSizeOptions: [5, 10, 20, 50],
@@ -100,7 +101,7 @@ export const columns = [
     // Average: 9.3, Longest: 31
     title: 'Language',
     field: 'Language',
-    width: 130,
+    width: 120,
     defaultSort: 'asc',
   },
   {
@@ -108,7 +109,7 @@ export const columns = [
     title: 'Endonym',
     field: 'Endonym',
     render: utils.renderEndoColumn,
-    width: 130,
+    width: 120,
   },
   {
     // Average: 12, Longest: 26

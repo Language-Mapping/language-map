@@ -15,6 +15,10 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: theme.spacing(2),
       textAlign: 'center',
     },
+    featureCount: {
+      marginBottom: theme.spacing(1),
+      fontSize: theme.typography.caption.fontSize,
+    },
   })
 )
 
@@ -43,7 +47,7 @@ export const ResultsPanel: FC = () => {
     <div
       className={`${classes.resultsPanelRoot} ${sharedTableClasses.tableRoot}`}
     >
-      <Typography variant="caption">
+      <Typography className={classes.featureCount}>
         Showing {langFeatures.length} of {langFeaturesCached.length} language
         communities.
       </Typography>
@@ -51,7 +55,7 @@ export const ResultsPanel: FC = () => {
         onClick={() => setResultsModalOpen(true)}
         color="primary"
         size="small"
-        variant="outlined"
+        variant="contained"
         startIcon={<AiOutlineFullscreen />}
       >
         View fullscreen

@@ -1,6 +1,7 @@
 import React, { FC, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 import MaterialTable from 'material-table'
+import { FaMapMarkedAlt } from 'react-icons/fa'
 
 import { GlobalContext } from 'components'
 import * as config from './config'
@@ -21,16 +22,22 @@ export const ResultsTable: FC<ResultsTableComponent> = ({
       options={config.options}
       columns={config.columns}
       data={state.langFeatures}
-      onRowClick={(a, record) => {
-        if (!record) {
-          return
-        }
+      actions={[
+        {
+          // eslint-disable-next-line react/display-name
+          icon: () => <FaMapMarkedAlt />,
+          tooltip: 'View in map',
+          onClick: (event: React.MouseEvent, rowData) => {
+            setResultsModalOpen(false)
 
-        history.push(`/details?id=${record.ID}`)
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            history.push(`/details?id=${rowData.ID}`)
 
-        dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: 2 })
-        setResultsModalOpen(false)
-      }}
+            dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: 2 })
+          },
+        },
+      ]}
     />
   )
 }
