@@ -49,7 +49,7 @@ export const FiltersPanel: FC = () => {
         >
           <option value="Historical">Historical</option>
           <option value="Liturgical">Liturgical</option>
-          <option value="Institutional">Institutional</option>
+          <option value="Communal">Communal</option>
           <option value="Residential">Residential</option>
           <option value="Reviving">Reviving</option>
         </NativeSelect>

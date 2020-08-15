@@ -3,7 +3,7 @@
 
 import iconTree from './icons/tree.svg'
 import iconBook from './icons/book.svg'
-import iconBuilding from './icons/building.svg'
+import iconUsers from './icons/users.svg'
 import iconHome from './icons/home.svg'
 import iconMuseum from './icons/museum.svg'
 
@@ -55,7 +55,7 @@ export const postLoadMapView = {
 export const langTypeIconsConfig = [
   { icon: iconTree, id: '_tree' },
   { icon: iconBook, id: '_book' },
-  { icon: iconBuilding, id: '_building' },
+  { icon: iconUsers, id: '_users' },
   { icon: iconHome, id: '_home' },
   { icon: iconMuseum, id: '_museum' },
 ]

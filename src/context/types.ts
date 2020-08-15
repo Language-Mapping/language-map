@@ -88,7 +88,7 @@ export type WorldRegion =
 
 export type UhhhTypes =
   | 'Historical'
-  | 'Institutional'
+  | 'Communal'
   | 'Liturgical'
   | 'Residential'
   | 'Reviving'
