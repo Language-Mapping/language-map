@@ -67,8 +67,15 @@ export const useTableStyles = makeStyles((theme: Theme) =>
   })
 )
 
+export const localization = {
+  header: {
+    actions: '', // don't need anything here
+  },
+}
+
 // Table options for the <MaterialTable> component
 export const options = {
+  // actionsColumnIndex: 1,
   columnsButton: true,
   doubleHorizontalScroll: true,
   filtering: true,
@@ -181,7 +188,6 @@ export const columns = [
     // Gigantic, just using ellipsis
     title: 'Description',
     field: 'Description',
-    render: utils.renderDescripColumn,
-    width: 300,
+    hidden: true,
   },
 ] as Types.ColumnsConfig[]
