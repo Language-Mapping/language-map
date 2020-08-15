@@ -116,12 +116,12 @@
       "paint": {}
     },
     {
-      "id": "Communal",
+      "id": "Community",
       "type": "symbol",
       "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Type"], ["Communal"], true, false],
+      "filter": ["match", ["get", "Type"], ["Community"], true, false],
       "layout": {
         "icon-image": "_users"
       },

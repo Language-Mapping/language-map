@@ -148,7 +148,7 @@ export const columns = [
     width: 115,
     lookup: {
       Historical: 'Historical',
-      Communal: 'Communal',
+      Community: 'Community',
       Liturgical: 'Liturgical',
       Residential: 'Residential',
       Reviving: 'Reviving',
