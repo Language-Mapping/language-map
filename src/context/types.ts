@@ -108,7 +108,7 @@ export type LangRecordSchema = InternalUse & {
   Endonym: string // often same as English name, may be an http link to image
   Neighborhoods?: string // NYC 'hoods only
   'Community Size': CommunitySize
-  Type: Statuses // TODO: will become "Status" instead
+  Status: Statuses
   'World Region': WorldRegion
   Countries: string // TODO: confirm required
   'Global Speaker Total'?: number // string in MB tileset b/c some blanks

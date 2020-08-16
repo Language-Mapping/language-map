@@ -12,7 +12,7 @@
     "mapbox:groups": {
       "103cfccc2ebe5006e8a8d85a7c7f51d2": { "name": "World Region" },
       "2320935a76eb23847fedcce356785d97": { "name": "Community Size" },
-      "4c2160b40d77f3e74f58f19e5f9c9007": { "name": "Type" },
+      "4c2160b40d77f3e74f58f19e5f9c9007": { "name": "Status" },
       "f83891b595f76eb2a1ed376bda0b2c44": { "name": "Labels" }
     },
     "mapbox:uiParadigm": "layers"
@@ -109,7 +109,7 @@
       "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Type"], ["Historical"], true, false],
+      "filter": ["match", ["get", "Status"], ["Historical"], true, false],
       "layout": {
         "icon-image": "_museum"
       },
@@ -121,7 +121,7 @@
       "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Type"], ["Community"], true, false],
+      "filter": ["match", ["get", "Status"], ["Community"], true, false],
       "layout": {
         "icon-image": "_users"
       },
@@ -133,7 +133,7 @@
       "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Type"], ["Liturgical"], true, false],
+      "filter": ["match", ["get", "Status"], ["Liturgical"], true, false],
       "layout": {
         "icon-image": "_book"
       },
@@ -145,7 +145,7 @@
       "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Type"], ["Residential"], true, false],
+      "filter": ["match", ["get", "Status"], ["Residential"], true, false],
       "layout": {
         "icon-image": "_home"
       },
@@ -157,7 +157,7 @@
       "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Type"], ["Reviving"], true, false],
+      "filter": ["match", ["get", "Status"], ["Reviving"], true, false],
       "layout": {
         "icon-image": "_tree"
       },

@@ -94,8 +94,8 @@ export const columns = [
   },
   {
     // Longest: 13
-    title: 'Type',
-    field: 'Type',
+    title: 'Status',
+    field: 'Status',
     width: 115,
     searchable: false,
     lookup: {
