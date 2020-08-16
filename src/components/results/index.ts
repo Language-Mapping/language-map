@@ -1,1 +1,2 @@
-export * from './ResultsPanel'
+export * from './ResultsModal'
+export * from './ResultsTable'

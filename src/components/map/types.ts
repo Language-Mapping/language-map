@@ -65,12 +65,16 @@ export type MapEvent = Omit<PointerEvent, 'features'> & {
   features: LangFeature[]
 }
 
+// TODO: enforce in all relevant spots
+// TODO: mv into context/types
+export type RouteLocation = '/' | '/details' | '/table' | '/about' | '/glossary'
+
 export type MapPanel = {
   heading: string
   icon: React.ReactNode
   subheading: string
   component: React.ReactNode
-  summary: null | React.ReactNode | string
+  path: RouteLocation
 }
 
 export type MapPopup = LongLat & {

@@ -6,7 +6,7 @@ import { langTypeIconsConfig, MID_BREAKPOINT } from 'components/map/config'
 import { LegendSwatchComponent } from './types'
 
 type LegendComponent = {
-  items: LegendSwatchComponent[]
+  legendItems: LegendSwatchComponent[]
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -23,12 +23,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const Legend: FC<LegendComponent> = ({ items }) => {
+export const Legend: FC<LegendComponent> = ({ legendItems }) => {
   const classes = useStyles()
 
   return (
     <ul className={classes.legendRoot}>
-      {items.map((item) => {
+      {legendItems.map((item) => {
         let matchingConfig
 
         if (item.iconID) {

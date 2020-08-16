@@ -1,12 +1,7 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, Switch, Route } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import {
-  Box,
-  BottomNavigation,
-  BottomNavigationAction,
-  IconButton,
-} from '@material-ui/core'
+import { Box, IconButton } from '@material-ui/core'
 import { MdClose } from 'react-icons/md'
 
 import { Map, MapPanel } from 'components/map'
@@ -23,7 +18,7 @@ const transforms = {
 
 const panelWidths = {
   mid: 375,
-  midLarge: 425,
+  midLarge: 475,
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -53,12 +48,12 @@ const useStyles = makeStyles((theme: Theme) =>
       left: theme.spacing(1),
       right: theme.spacing(1),
       position: 'absolute',
-      bottom: 60,
+      bottom: 0,
       top: '50%',
       transition: '300ms transform',
       [theme.breakpoints.up(MID_BREAKPOINT)]: {
         width: panelWidths.mid,
-        top: 140,
+        top: 80, // TODO: less shaky, maybe `const TOPBAR_HEIGHT = 80`?
         bottom: theme.spacing(5), // above mapbox logo
         left: 16,
       },
@@ -68,25 +63,6 @@ const useStyles = makeStyles((theme: Theme) =>
       '& .MuiPaper-root': {
         overflowY: 'auto',
         height: '100%',
-      },
-    },
-    bottomNavRoot: {
-      position: 'absolute',
-      left: theme.spacing(1),
-      right: theme.spacing(1),
-      bottom: 0, // nice and flush = more room
-      '& svg': {
-        height: 20,
-        width: 20,
-      },
-      [theme.breakpoints.up(MID_BREAKPOINT)]: {
-        width: panelWidths.mid,
-        top: theme.spacing(8),
-        left: theme.spacing(2),
-        bottom: theme.spacing(1), // above MB logo?
-      },
-      [theme.breakpoints.up('md')]: {
-        width: panelWidths.midLarge,
       },
     },
     closePanel: {
@@ -165,13 +141,10 @@ export const MapWrap: FC = () => {
       type: 'SET_SEL_FEAT_ATTRIBS',
       payload: matchingRecord,
     })
-
-    dispatch({
-      type: 'SET_ACTIVE_PANEL_INDEX',
-      payload: 2,
-    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc, state.langFeaturesCached.length])
+
+  useEffect((): void => setPanelOpen(true), [loc]) // TODO: not so willy-nilly?
 
   return (
     <div className={classes.mapWrapRoot}>
@@ -183,7 +156,6 @@ export const MapWrap: FC = () => {
           baselayer={state.baselayer}
         />
       )}
-      {/* TODO: this and BottomNav into separate component/s (very non-map) */}
       <Box
         // Need the `id` in order to find unique element for `map.setPadding`
         id="map-panels-wrap"
@@ -194,6 +166,13 @@ export const MapWrap: FC = () => {
           maxHeight: panelOpen ? '100%' : 0,
         }}
       >
+        <Switch>
+          {panelsConfig.map((config) => (
+            <Route key={config.heading} path={config.path}>
+              <MapPanel {...config} active={loc.pathname === config.path} />
+            </Route>
+          ))}
+        </Switch>
         {panelOpen && (
           <IconButton
             aria-label="close"
@@ -205,38 +184,7 @@ export const MapWrap: FC = () => {
             <MdClose />
           </IconButton>
         )}
-        {panelsConfig.map((config, i) => (
-          <MapPanel
-            key={config.heading}
-            {...config}
-            active={i === state.activePanelIndex}
-          />
-        ))}
       </Box>
-      <BottomNavigation
-        showLabels
-        className={classes.bottomNavRoot}
-        value={state.activePanelIndex}
-        onChange={(event, newValue) => {
-          dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: newValue })
-
-          // Open the container if closed, close it if already active panel
-          if (panelOpen && newValue === state.activePanelIndex) {
-            setPanelOpen(false)
-          } else {
-            setPanelOpen(true)
-          }
-        }}
-      >
-        {panelsConfig.map((config, i) => (
-          <BottomNavigationAction
-            value={i}
-            key={config.heading}
-            label={config.heading}
-            icon={config.icon}
-          />
-        ))}
-      </BottomNavigation>
     </div>
   )
 }

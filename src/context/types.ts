@@ -6,17 +6,15 @@ import { Color } from '@material-ui/lab/Alert'
 import { MetadataGroup, Baselayer } from 'components/map/types'
 import { LegendSwatch } from 'components/legend/types'
 
-export type ActivePanelIndex = 0 | 1 | 2 | 3
-
 export type StoreAction =
   | { type: 'INIT_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | { type: 'INIT_LANG_LAYER_LABEL_OPTIONS'; payload: string[] }
   | { type: 'INIT_LANG_LAYER_SYMB_OPTIONS'; payload: MetadataGroup }
-  | { type: 'SET_ACTIVE_PANEL_INDEX'; payload: ActivePanelIndex }
   | { type: 'SET_BASELAYER'; payload: Baselayer }
   | { type: 'SET_LANG_LAYER_LABELS'; payload: string }
   | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatch[] }
   | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: string }
+  | { type: 'SET_MAP_LOADED'; payload: boolean }
   | { type: 'SET_SEL_FEAT_ATTRIBS'; payload: null | LangRecordSchema }
   | { type: 'SHOW_SPLASH'; payload: boolean }
   | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibility }
@@ -25,15 +23,15 @@ export type StoreAction =
 export type InitialState = {
   activeLangLabelId: string
   activeLangSymbGroupId: string
-  activePanelIndex: ActivePanelIndex
   baselayer: Baselayer
   hasSeenSplash: boolean
   langFeatures: LangRecordSchema[]
   langFeaturesCached: LangRecordSchema[]
   langLabels: string[]
-  langLegend: LegendSwatch[]
+  legendItems: LegendSwatch[]
   langSymbGroups: MetadataGroup
   layerVisibility: LayerVisibility // TODO: rm everywhere if not using
+  mapLoaded: boolean
   selFeatAttribs: null | LangRecordSchema
   showSplash: boolean
   uiAlert: AlertPayload

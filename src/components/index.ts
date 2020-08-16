@@ -1,6 +1,6 @@
 export * from './App'
 export * from './ContainerLayout'
-export * from './LinkToActivePanel'
+export * from './GlossaryTrigger'
 export * from './LoadingBackdrop'
 export * from './LoadingIndicator'
 export * from './PanelIntro'

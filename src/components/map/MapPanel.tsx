@@ -2,7 +2,6 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Box, Typography, Paper } from '@material-ui/core'
 
-import { PanelIntro } from 'components'
 import { MapPanel as MapPanelType } from './types'
 
 type PaperRoot = {
@@ -64,7 +63,6 @@ export const MapPanel: FC<MapPanelComponent> = ({
   heading,
   icon,
   subheading,
-  summary,
 }) => {
   const classes = useStyles({ active })
 
@@ -86,7 +84,6 @@ export const MapPanel: FC<MapPanelComponent> = ({
         zIndex={1}
         position="relative"
       >
-        {summary ? <PanelIntro>{summary}</PanelIntro> : null}
         {component}
       </Box>
     </Paper>

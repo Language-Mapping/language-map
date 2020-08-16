@@ -1,14 +1,9 @@
 import React, { FC, useContext } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Link, Typography, Divider } from '@material-ui/core'
 
-import {
-  GlobalContext,
-  LoadingIndicator,
-  PanelIntro,
-  LinkToActivePanel,
-} from 'components'
+import { GlobalContext, LoadingIndicator, PanelIntro } from 'components'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -27,10 +22,10 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const DetailsPanel: FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const history = useHistory()
   const getLocation = useLocation() // must exist for routing to work?
   const classes = useStyles()
-  const { state, dispatch } = useContext(GlobalContext)
+  const { state } = useContext(GlobalContext)
 
   // Shaky check to see if features have loaded and are stored globally
   // TODO: use MB's loading events to set this instead
@@ -45,20 +40,16 @@ export const DetailsPanel: FC = () => {
     return (
       <PanelIntro>
         Click a language community in the map or the{' '}
-        <LinkToActivePanel text="data table" activePanelIndex={1} /> to learn
-        more.
+        <b>MAKE DATA MODAL LINKABLE</b> to learn more.
       </PanelIntro>
     )
   }
 
-  // TODO: deal with this
-  // if (!Object.keys(state.selFeatAttribs).length) {
-  //   return (
-  //     <p>
-  //       Feature with id <b>{parsed.id}</b> not found.
-  //     </p>
-  //   )
-  // }
+  // TODO: deal with `id` present in URL but no match found
+  // const parsed = queryString.parse(window.location.search)
+  // const matchingRecord = state.langFeatures.find(
+  //   (feature) => feature.ID === parsed.id
+  // )
 
   return (
     <>
@@ -68,7 +59,7 @@ export const DetailsPanel: FC = () => {
         component={Link}
         onClick={(e: React.MouseEvent) => {
           e.preventDefault()
-          dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: 1 })
+          history.push(`/${getLocation.search}`)
         }}
       >
         {`<`} Back to results

@@ -32,14 +32,13 @@ export const Map: FC<MapTypes.MapComponent> = ({
   const history = useHistory()
   const { state, dispatch } = useContext(GlobalContext)
   const mapRef: React.RefObject<InteractiveMap> = React.createRef()
-  const { selFeatAttribs } = state
+  const { selFeatAttribs, mapLoaded } = state
   const isDesktop = useMediaQuery((theme: Theme) =>
     theme.breakpoints.up(mapConfig.MID_BREAKPOINT)
   )
 
   const [viewport, setViewport] = useState(mapConfig.initialMapState)
   const [mapOffset, setMapOffset] = useState<[number, number]>([0, 0])
-  const [mapLoaded, setMapLoaded] = useState<boolean>(false)
   const [popupOpen, setPopupOpen] = useState<MapTypes.MapPopup | null>(null)
   const [tooltipOpen, setTooltipOpen] = useState<MapTypes.MapTooltip | null>(
     null
@@ -194,7 +193,10 @@ export const Map: FC<MapTypes.MapComponent> = ({
       payload: uniqueRecords,
     })
 
-    setMapLoaded(true)
+    dispatch({
+      type: 'SET_MAP_LOADED',
+      payload: true,
+    })
   }
 
   // TODO: chuck it into utils
@@ -214,6 +216,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
         payload: null,
       })
 
+      // TODO: decide /how/whether to force the panel open if nothing is found
       return
     }
 

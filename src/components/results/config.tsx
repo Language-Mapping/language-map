@@ -1,4 +1,3 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Icons } from 'material-table'
 import { FaFilter } from 'react-icons/fa'
 
@@ -16,57 +15,6 @@ import {
 import * as Types from './types'
 import * as utils from './utils'
 
-export const useTableStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    tableRoot: {
-      // TODO: rm once horiz. scroll is figured out
-      // '& .MuiTable-root': {
-      //   minWidth: 750,
-      // },
-      // Gross way to get the table footer, which has no unique classes
-      '& .MuiTable-root:last-of-type': {
-        position: 'sticky',
-        bottom: 0,
-        backgroundColor: theme.palette.common.white,
-      },
-      '& .MuiTableBody-root': {
-        fontSize: '0.85rem',
-      },
-      '& .MuiToolbar-root .MuiIconButton-label': {
-        color: theme.palette.primary.main,
-      },
-      // e.g. the Filter icon at beginning of column filters
-      '& .MuiInputAdornment-root': {
-        color: theme.palette.grey[500],
-      },
-      '& .MuiTableCell-head': {
-        fontWeight: 'bold',
-        lineHeight: 1.2,
-        color: theme.palette.primary.main,
-      },
-      '& .MuiTableCell-root:not(.MuiTableCell-footer)': {
-        padding: `5px 8px 5px 12px`, // this may do nothing if height/width set
-        height: 50, // CRED: https://stackoverflow.com/a/25329017/1048518
-      },
-      '& .MuiTableFooter-root': {
-        justifyContent: 'center',
-      },
-      '& .MuiTablePagination-spacer': {
-        display: 'none',
-      },
-      '& .MuiTablePagination-select': {
-        paddingLeft: 0,
-      },
-      [theme.breakpoints.down('sm')]: {
-        '& .MuiTableFooter-root .MuiIconButton-root': {
-          // Waaaaayy too much default padding, can't see on mobile
-          padding: 4,
-        },
-      },
-    },
-  })
-)
-
 export const localization = {
   header: {
     actions: '', // don't need anything here
@@ -77,14 +25,17 @@ export const localization = {
 export const options = {
   // actionsColumnIndex: 1,
   columnsButton: true,
+  detailPanelColumnAlignment: 'right',
   doubleHorizontalScroll: true,
   filtering: true,
-  grouping: true, // TODO: restore once the rest is cool
+  // grouping: true, // TODO: restore once the rest is cool
+  maxBodyHeight: 'calc(100vh - 175px)', // '60vh',
+  headerStyle: { position: 'sticky', top: 0 },
   // filterCellStyle: { color: 'green' },
   pageSize: 20,
   pageSizeOptions: [5, 10, 20, 50],
-  searchFieldAlignment: 'left',
-  showTitle: false,
+  searchFieldAlignment: 'left', // TODO: rm if not using global search
+  search: false, // TODO: confirm
   tableLayout: 'fixed',
   thirdSortClick: false,
 } as Types.TableOptions
@@ -146,6 +97,7 @@ export const columns = [
     title: 'Type',
     field: 'Type',
     width: 115,
+    searchable: false,
     lookup: {
       Historical: 'Historical',
       Community: 'Community',

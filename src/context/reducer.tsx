@@ -21,11 +21,6 @@ export const reducer = (
         ...state,
         langSymbGroups: action.payload,
       }
-    case 'SET_ACTIVE_PANEL_INDEX':
-      return {
-        ...state,
-        activePanelIndex: action.payload,
-      }
     case 'SET_BASELAYER':
       return {
         ...state,
@@ -39,7 +34,7 @@ export const reducer = (
     case 'SET_LANG_LAYER_LEGEND':
       return {
         ...state,
-        langLegend: action.payload,
+        legendItems: action.payload,
       }
     case 'SET_LANG_LAYER_SYMBOLOGY':
       return {
@@ -50,6 +45,11 @@ export const reducer = (
       return {
         ...state,
         selFeatAttribs: action.payload,
+      }
+    case 'SET_MAP_LOADED':
+      return {
+        ...state,
+        mapLoaded: action.payload,
       }
     // TODO: wire up
     case 'TOGGLE_UI_ALERT':

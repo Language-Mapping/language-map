@@ -8,7 +8,7 @@ const initialMapStates = {
   langFeatures: [],
   langFeaturesCached: [],
   langLabels: [],
-  langLegend: [],
+  legendItems: [],
   langSymbGroups: {},
   layerVisibility: {
     languages: true,
@@ -18,7 +18,7 @@ const initialMapStates = {
 }
 
 export const initialState = {
-  activePanelIndex: 0,
+  mapLoaded: false,
   selFeatAttribs: null,
   showSplash: false,
   hasSeenSplash: !!localStorage.getItem('hasSeenSplash') || false,
