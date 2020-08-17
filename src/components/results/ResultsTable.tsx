@@ -1,91 +1,116 @@
 /* eslint-disable react/display-name */
 import React, { FC, useContext } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import MaterialTable from 'material-table'
 import { Typography } from '@material-ui/core'
-import { FaMapMarkedAlt } from 'react-icons/fa'
 import { GoFile } from 'react-icons/go'
-import { MdShare } from 'react-icons/md'
+import { FiShare } from 'react-icons/fi'
+import { IoMdCloseCircle, IoMdHelpCircle } from 'react-icons/io'
+// TODO: rm when settled
+// import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon'
+import { TiThList } from 'react-icons/ti'
 
-import { GlobalContext, GlossaryTrigger } from 'components'
+import { GlobalContext } from 'components'
 import * as config from './config'
-import { RecordDescription } from './RecordDescription'
+// TODO: wire up
+// import { RecordDescription } from './RecordDescription'
+import { useWindowResize } from '../../utils'
 
 const { icons, options, columns, localization } = config
 
-type ResultsTableComponent = {
-  setResultsModalOpen: React.Dispatch<boolean>
-}
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    resultsTableTitle: {
+    tableTitleRoot: {
       display: 'flex',
-      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    titleIcon: {
+      fontSize: '0.6em',
+      color: theme.palette.grey[700],
+      marginRight: theme.spacing(1),
     },
   })
 )
 
+// TODO: separate file
 const Title: FC = () => {
   const classes = useStyles()
 
   return (
-    <div className={classes.resultsTableTitle}>
-      <Typography variant="h3">
-        Results Data
-        <GlossaryTrigger />
-      </Typography>
-    </div>
+    <Typography variant="h4" className={classes.tableTitleRoot}>
+      <TiThList className={classes.titleIcon} />
+      Results Data
+    </Typography>
   )
 }
 
-export const ResultsTable: FC<ResultsTableComponent> = ({
-  setResultsModalOpen,
-}) => {
+// TODO: rm when settled
+// function MuiFriendlyIcon(props: SvgIconProps) {
+//   return <SvgIcon component={GoFile} {...props} />
+// }
+
+export const ResultsTable: FC = () => {
   const { state } = useContext(GlobalContext)
   const history = useHistory()
+  const loc = useLocation()
+  const { height } = useWindowResize()
 
   // TODO: highlight selected feature in table
   return (
     <MaterialTable
       icons={icons}
-      options={options}
+      options={{
+        ...options,
+        maxBodyHeight: height - 118, // TODO: more exact for mobile and desk
+      }}
       columns={columns}
       localization={localization}
       data={state.langFeatures}
       title={<Title />}
+      onRowClick={(event, rowData) => {
+        if (rowData) {
+          history.push(`/details?id=${rowData.ID}`)
+        }
+      }}
       actions={[
         {
-          icon: () => <FaMapMarkedAlt />,
-          tooltip: 'View in map',
-          onClick: (event: React.MouseEvent, rowData) => {
-            setResultsModalOpen(false)
-
+          icon: () => <IoMdHelpCircle />,
+          tooltip: 'Column glossary',
+          isFreeAction: true,
+          // eslint-disable-next-line no-alert
+          onClick: () => alert('Glossary will open'),
+          // onClick: () => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          // history.push(`/glossary${loc.search}`)
+          // },
+        },
+        {
+          icon: () => <IoMdCloseCircle />,
+          tooltip: 'Exit to map',
+          isFreeAction: true,
+          onClick: () => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            history.push(`/details?id=${rowData.ID}`)
+            history.push(`/${loc.search}`)
           },
         },
         {
-          icon: () => <MdShare />,
-          tooltip: 'Share this community',
-          onClick: () => null,
-          // TODO: wire up
-          // onClick: (event: React.MouseEvent, rowData) => {
-          //   console.log(
-          //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          //     // @ts-ignore
-          //     `This would open a sharing panel for record ${rowData.ID}`
-          //   )
-          // },
-        },
-      ]}
-      detailPanel={[
-        {
           icon: () => <GoFile />,
           tooltip: 'Show description',
-          render: (rowData) => <RecordDescription text={rowData.Description} />,
+          onClick: () =>
+            // eslint-disable-next-line no-alert
+            alert(
+              'Description popout will open and use similar style as before (e.g. serif font and initial letter much larger)'
+            ),
+        },
+        {
+          icon: () => <FiShare />,
+          tooltip: 'Share this community',
+          // onClick: (event: React.MouseEvent, rowData) => { // TODO: wire up
+          // eslint-disable-next-line no-alert
+          onClick: () => alert('Sharing popout will open'),
         },
       ]}
     />

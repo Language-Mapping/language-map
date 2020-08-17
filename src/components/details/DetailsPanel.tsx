@@ -1,9 +1,19 @@
 import React, { FC, useContext } from 'react'
-import { useLocation, useHistory } from 'react-router-dom'
+import { useLocation, Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Link, Typography, Divider } from '@material-ui/core'
+import { Typography, Divider } from '@material-ui/core'
 
-import { GlobalContext, LoadingIndicator, PanelIntro } from 'components'
+import {
+  GlobalContext,
+  LoadingIndicator,
+  PanelIntro,
+  GlossaryTrigger,
+} from 'components'
+import { RouteLocation } from 'components/map/types'
+
+// TODO: wire up
+// const GLOSSARY_PATH: RouteLocation = '/glossary'
+const DATA_TABLE_PATH: RouteLocation = '/table'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,10 +32,9 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const DetailsPanel: FC = () => {
-  const history = useHistory()
-  const getLocation = useLocation() // must exist for routing to work?
-  const classes = useStyles()
   const { state } = useContext(GlobalContext)
+  const loc = useLocation() // must exist for routing to work?
+  const classes = useStyles()
 
   // Shaky check to see if features have loaded and are stored globally
   // TODO: use MB's loading events to set this instead
@@ -53,17 +62,10 @@ export const DetailsPanel: FC = () => {
 
   return (
     <>
-      <Typography
-        href="javascript;"
-        variant="caption"
-        component={Link}
-        onClick={(e: React.MouseEvent) => {
-          e.preventDefault()
-          history.push(`/${getLocation.search}`)
-        }}
-      >
-        {`<`} Back to results
+      <Typography to={`${DATA_TABLE_PATH}${loc.search}`} component={RouterLink}>
+        View all results
       </Typography>
+      <GlossaryTrigger />
       <div className={classes.intro}>
         <Typography component="h3" variant="h4">
           {selFeatAttribs.Endonym}

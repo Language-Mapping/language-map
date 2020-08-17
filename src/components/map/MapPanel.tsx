@@ -1,7 +1,8 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Box, Typography, Paper } from '@material-ui/core'
+import { Box, Paper } from '@material-ui/core'
 
+import { MapPanelHeader } from 'components'
 import { MapPanel as MapPanelType } from './types'
 
 type PaperRoot = {
@@ -25,35 +26,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
     },
-    intro: {
-      backgroundColor: theme.palette.primary.main,
-      color: theme.palette.common.white,
-      borderBottom: `solid 8px ${theme.palette.primary.dark}`,
-      padding: `6px ${theme.spacing(1)}px`,
-      top: 0,
-      flexShrink: 0,
-      position: 'sticky',
-      display: 'flex',
-      alignItems: 'center',
-    },
-    mainHeading: {
-      display: 'flex',
-      alignItems: 'center',
-      '& svg': {
-        marginRight: 6,
-        height: '0.8em',
-        width: '0.8em',
-      },
-    },
-    subheading: {
-      marginLeft: 6,
-    },
-    summary: {
-      fontSize: 12,
-      color: theme.palette.grey[700],
-      marginTop: 0,
-      marginBottom: theme.spacing(1),
-    },
   })
 )
 
@@ -68,15 +40,12 @@ export const MapPanel: FC<MapPanelComponent> = ({
 
   return (
     <Paper className={classes.paperRoot}>
-      <Box component="header" className={classes.intro}>
-        <Typography variant="h4" className={classes.mainHeading}>
-          {icon}
-          {heading}
-          <Typography variant="caption" className={classes.subheading}>
-            {subheading}
-          </Typography>
-        </Typography>
-      </Box>
+      <MapPanelHeader
+        active={active}
+        heading={heading}
+        icon={icon}
+        subheading={subheading}
+      />
       <Box
         paddingY={1}
         paddingX={2}

@@ -10,8 +10,6 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.info.main,
       display: 'flex',
       fontSize: 12,
-      justifyContent: 'flex-end',
-      marginTop: theme.spacing(1),
       '& > svg': {
         marginRight: 4,
       },

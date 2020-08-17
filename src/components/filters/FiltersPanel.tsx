@@ -1,27 +1,31 @@
-import React, { FC, useState, useContext } from 'react'
+import React, { FC, useContext } from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
 import { Button } from '@material-ui/core'
 import { TiThList } from 'react-icons/ti'
 
 import { GlobalContext, LoadingIndicator } from 'components'
-import { ResultsTable, ResultsModal } from 'components/results'
 import { LegendPanel } from 'components/legend'
+import { RouteLocation } from 'components/map/types'
 
 export const FiltersPanel: FC = () => {
   const { state } = useContext(GlobalContext)
-  const [resultsModalOpen, setResultsModalOpen] = useState<boolean>(false)
+  const loc = useLocation()
+  const history = useHistory()
 
   // Shaky check to see if features have loaded and are stored globally
   if (!state.langFeaturesCached.length || !state.mapLoaded) {
     return <LoadingIndicator />
   }
 
+  const DATA_TABLE_PATH: RouteLocation = '/table'
+
   // TODO: for Countries selection:
   // https://material-ui.com/components/autocomplete/#country-select
   return (
     <>
       <Button
-        // TODO: <Route>
-        onClick={() => setResultsModalOpen(true)}
+        // TODO: <RouterLink> instead
+        onClick={() => history.push(`${DATA_TABLE_PATH}${loc.search}`)}
         color="primary"
         size="small"
         variant="contained"
@@ -29,12 +33,6 @@ export const FiltersPanel: FC = () => {
       >
         View data table
       </Button>
-      {/* TODO: <Route> */}
-      {resultsModalOpen && (
-        <ResultsModal setResultsModalOpen={setResultsModalOpen}>
-          <ResultsTable setResultsModalOpen={setResultsModalOpen} />
-        </ResultsModal>
-      )}
       <LegendPanel legendItems={state.legendItems} />
     </>
   )

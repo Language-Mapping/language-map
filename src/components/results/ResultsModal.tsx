@@ -1,16 +1,11 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Dialog } from '@material-ui/core'
-
-// TODO: rm if not using
-// import { IconButton } from '@material-ui/core'
-// import { MdClose } from 'react-icons/md'
 
 import { useTableStyles } from '../filters/config.styles'
 
 type ResultsModalComponent = {
   children: React.ReactNode
-  setResultsModalOpen: React.Dispatch<boolean>
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -22,6 +17,10 @@ const useStyles = makeStyles((theme: Theme) =>
       '& .MuiPaper-root': {
         overflowY: 'hidden',
       },
+      // Don't even know what this is, some kind of spacer, but seems useless
+      '& > div.MuiDialog-container.MuiDialog-scrollPaper > div > div > div:nth-child(2) > div:nth-child(1)': {
+        display: 'none',
+      },
     },
     closeBtn: {
       position: 'absolute',
@@ -29,34 +28,22 @@ const useStyles = makeStyles((theme: Theme) =>
       top: theme.spacing(1),
       right: theme.spacing(1),
     },
-    defsModalTrigger: {
-      alignItems: 'center',
-      color: theme.palette.info.main,
-      display: 'flex',
-      fontSize: 12,
-      justifyContent: 'flex-end',
-      marginTop: theme.spacing(1),
-      '& > svg': {
-        marginRight: 4,
-      },
-    },
   })
 )
 
-export const ResultsModal: FC<ResultsModalComponent> = ({
-  children,
-  setResultsModalOpen,
-}) => {
+export const ResultsModal: FC<ResultsModalComponent> = ({ children }) => {
   const classes = useStyles()
-  const sharedTableClasses = useTableStyles()
+  const sharedTableClasses = useTableStyles() // TODO: combine w/classes
+  const [open, setOpen] = useState<boolean>(true)
 
   const handleClose = () => {
-    setResultsModalOpen(false)
+    setOpen(false)
+    // TODO: why so hard?
   }
 
   return (
     <Dialog
-      open
+      open={open}
       fullScreen
       className={`${sharedTableClasses.tableRoot} ${classes.resultsModalRoot}`}
       onClose={handleClose}
@@ -64,9 +51,7 @@ export const ResultsModal: FC<ResultsModalComponent> = ({
       aria-describedby="results-modal-dialog-description"
       maxWidth="md"
     >
-      {/* <IconButton onClick={handleClose} className={classes.closeBtn}>
-        <MdClose />
-      </IconButton> */}
+      {/* TODO: restore? */}
       {/* <Typography className={classes.featureCount}>
         Showing {langFeatures.length} of {langFeaturesCached.length} language
         communities.

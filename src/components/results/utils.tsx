@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from '@material-ui/core'
+// import { GoFile } from 'react-icons/go'
 
 import { isURL } from '../../utils'
 import { LangRecordSchema } from '../../context/types'
@@ -52,7 +53,7 @@ export function renderCountriesColumn(
           key={countries[i]}
           style={{ display: 'flex', alignItems: 'center' }}
         >
-          <div style={{ marginRight: 2 }}>{countryWithFlag}</div>
+          <div style={{ marginRight: 6 }}>{countryWithFlag}</div>
           <div>{countries[i]}</div>
         </div>
       ))}
@@ -83,8 +84,14 @@ export function renderNeighbColumn(
     return data.Neighborhoods
   }
 
+  // TODO: rm if not using
+  // const searchRegExp = new RegExp(DEFAULT_DELIM, 'g') // Throws SyntaxError
+  // const replaceWith = ',\n\n'
+  // const replaceWith = 'OK'
+  // return data.Neighborhoods.split(DEFAULT_DELIM).join(',\r')
+
   return (
-    <ul style={{ paddingLeft: 15, margin: '5px 0' }}>
+    <ul style={{ paddingLeft: 2, margin: 0 }}>
       {data.Neighborhoods.split(DEFAULT_DELIM).map((neighborhood) => (
         <li key={neighborhood}>{neighborhood}</li>
       ))}
@@ -96,4 +103,5 @@ export function renderDescripColumn(
   data: LangRecordSchema
 ): string | React.ReactNode {
   return !data.Description || `${data.Description.slice(0, 80).trimEnd()}...`
+  // return !data.Description || <GoFile />
 }

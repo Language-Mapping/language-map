@@ -3,37 +3,39 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 export const useTableStyles = makeStyles((theme: Theme) =>
   createStyles({
     tableRoot: {
-      // TODO: rm once horiz. scroll is figured out
-      // '& .MuiTable-root': {
-      //   minWidth: 750,
-      // },
       // Gross way to get the table footer, which has no unique classes
-      '& .MuiTable-root:last-of-type': {
+      '& .MuiPaper-root > .MuiTable-root': {
         position: 'sticky',
         bottom: 0,
-        backgroundColor: theme.palette.common.white,
       },
       '& .MuiTableBody-root': {
-        fontSize: '0.85rem',
-      },
-      '& .MuiToolbar-root .MuiIconButton-label': {
-        color: theme.palette.primary.main,
+        fontSize: '0.8rem',
       },
       // e.g. the Filter icon at beginning of column filters
       '& .MuiInputAdornment-root': {
         color: theme.palette.grey[500],
       },
+      // Column headings
       '& .MuiTableCell-head': {
         fontWeight: 'bold',
         lineHeight: 1.2,
         color: theme.palette.primary.main,
       },
-      '& .MuiTableCell-root:not(.MuiTableCell-footer)': {
-        padding: `5px 8px 5px 12px`, // this may do nothing if height/width set
-        height: 50, // CRED: https://stackoverflow.com/a/25329017/1048518
+      // Default cushion of non-dense table cell is 16px
+      '& .MuiTableCell-root': {
+        padding: '12px 10px',
       },
+      // Pagination
+      '& .MuiTableCell-footer': {
+        padding: 0, // may have no impact when height is set
+        // height: 50, // but height is needed in order to establish a minHeight
+        // CRED: https://stackoverflow.com/a/25329017/1048518
+      },
+      // The table footer
       '& .MuiTableFooter-root': {
         justifyContent: 'center',
+        background: theme.palette.common.white,
+        borderTop: `solid 1px ${theme.palette.grey[400]}`,
       },
       '& .MuiTablePagination-spacer': {
         display: 'none',
@@ -41,15 +43,20 @@ export const useTableStyles = makeStyles((theme: Theme) =>
       '& .MuiTablePagination-select': {
         paddingLeft: 0,
       },
-      '& .MuiIconButton-label': {
+      // All icons in and out of table. Icons inherit color and size from it.
+      '& .MuiIconButton-root': {
+        padding: theme.spacing(1),
         color: theme.palette.primary.main,
+        fontSize: '1.4rem',
       },
       [theme.breakpoints.down('sm')]: {
         '& .MuiTableFooter-root .MuiIconButton-root': {
-          // Waaaaayy too much default padding, can't see on mobile
-          padding: 4,
+          padding: 4, // waaaaayy too much default padding, can't see on mobile
         },
       },
+      // Handy reference for potentially useful selectors
+      // '& .MuiTableCell-root:nth-child(2)': {}, // First non-actions column
+      // '& .MuiToolbar-root': {}, // top bar title, free actions; footer pag.
     },
   })
 )
