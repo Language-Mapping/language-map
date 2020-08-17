@@ -54,6 +54,9 @@ export const useTableStyles = makeStyles((theme: Theme) =>
           padding: 4, // waaaaayy too much default padding, can't see on mobile
         },
       },
+      '& .MuiTableSortLabel-icon': {
+        flexShrink: 0, // prevents tiny arrows on columns w/wrapped headings
+      },
       // Handy reference for potentially useful selectors
       // '& .MuiTableCell-root:nth-child(2)': {}, // First non-actions column
       // '& .MuiToolbar-root': {}, // top bar title, free actions; footer pag.

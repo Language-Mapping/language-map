@@ -78,14 +78,14 @@ export const columns = [
     // Average: 12, Longest: 26
     title: 'Neighborhoods',
     field: 'Neighborhoods',
-    width: 145, // some wrapping but not bad w/o bullet points
+    width: 155, // some wrapping but not bad; leaves room for Sort arrow
     render: utils.renderNeighbColumn,
   },
   {
     // Longest: 14
     title: 'Community Size',
     field: 'Community Size',
-    width: 115,
+    width: 125, // leaves room for Sort arrow
     searchable: false,
     type: 'numeric',
     align: 'left',
@@ -131,7 +131,7 @@ export const columns = [
     // Longest: 20
     title: 'Global Speakers', // TODO: ok to abbrev?
     field: 'Global Speaker Total',
-    width: 100, // keep column heading at 2 lines after "Speaker" if using that
+    width: 105, // leaves room for Sort arrow
     searchable: false,
     align: 'left',
     type: 'numeric',
