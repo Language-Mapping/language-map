@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FC } from 'react'
 import { Link } from '@material-ui/core'
 // import { GoFile } from 'react-icons/go'
 
@@ -10,11 +10,13 @@ type CountryCodes = {
   [key: string]: string
 }
 
+type CountryWithEmojiComponent = {
+  flag: string
+  name: keyof CountryCodes
+}
+
 const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
 
-// DATA DISCREPANCIES: Democratic Republic of Congo, Ivory Coast
-// ABSENT: Congo-Brazzaville and related
-// MAYA'S OLD VS. ROSS'S NEW: Micronesia? Korea?
 // ISO 3166-1 alpha-2 (⚠️ No support for IE 11)
 // CRED:  https://material-ui.com/components/autocomplete/#country-select
 export function countryToFlag(isoCode: string): string {
@@ -25,6 +27,17 @@ export function countryToFlag(isoCode: string): string {
   return isoCode
     .toUpperCase()
     .replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
+}
+
+const CountryWithEmojiFlag: FC<CountryWithEmojiComponent> = (props) => {
+  const { name, flag } = props
+
+  return (
+    <li style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ marginRight: 6 }}>{flag}</div>
+      <div>{name}</div>
+    </li>
+  )
 }
 
 export function renderCountriesColumn(
@@ -42,22 +55,19 @@ export function renderCountriesColumn(
       return countryToFlag(countryCodesTyped[country])
     }
 
-    return country
+    return '' // there SHOULD be a match but if not then just use blank
   })
 
   return (
-    <>
+    <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
       {countriesWithFlags.map((countryWithFlag, i) => (
-        // TODO: into component
-        <div
+        <CountryWithEmojiFlag
           key={countries[i]}
-          style={{ display: 'flex', alignItems: 'center' }}
-        >
-          <div style={{ marginRight: 6 }}>{countryWithFlag}</div>
-          <div>{countries[i]}</div>
-        </div>
+          flag={countryWithFlag}
+          name={countries[i]}
+        />
       ))}
-    </>
+    </ul>
   )
 }
 
@@ -80,20 +90,18 @@ export function renderEndoColumn(
 export function renderNeighbColumn(
   data: LangRecordSchema
 ): string | React.ReactNode {
+  // Only NYC hoods will be populated, and not all have more than one value
   if (!data.Neighborhoods || !data.Neighborhoods.includes(DEFAULT_DELIM)) {
     return data.Neighborhoods
   }
 
-  // TODO: rm if not using
-  // const searchRegExp = new RegExp(DEFAULT_DELIM, 'g') // Throws SyntaxError
-  // const replaceWith = ',\n\n'
-  // const replaceWith = 'OK'
-  // return data.Neighborhoods.split(DEFAULT_DELIM).join(',\r')
-
   return (
-    <ul style={{ paddingLeft: 2, margin: 0 }}>
+    <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
       {data.Neighborhoods.split(DEFAULT_DELIM).map((neighborhood) => (
-        <li key={neighborhood}>{neighborhood}</li>
+        <li key={neighborhood}>
+          <span style={{ marginRight: 4 }}>•</span>
+          {neighborhood}
+        </li>
       ))}
     </ul>
   )
