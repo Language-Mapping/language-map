@@ -56,6 +56,9 @@ export const ResultsTable: FC = () => {
   const loc = useLocation()
   const { height } = useWindowResize()
 
+  // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
+  // properly (blanks last, regardless of direction)
+
   // TODO: highlight selected feature in table
   return (
     <MaterialTable
@@ -76,7 +79,7 @@ export const ResultsTable: FC = () => {
       actions={[
         {
           icon: () => <IoMdHelpCircle />,
-          tooltip: 'Column glossary',
+          tooltip: 'Glossary',
           isFreeAction: true,
           // eslint-disable-next-line no-alert
           onClick: () => alert('Glossary will open'),

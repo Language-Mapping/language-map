@@ -97,12 +97,14 @@ export function renderNeighbColumn(
 
   return (
     <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
-      {data.Neighborhoods.split(DEFAULT_DELIM).map((neighborhood) => (
-        <li key={neighborhood}>
-          <span style={{ marginRight: 4 }}>•</span>
-          {neighborhood}
-        </li>
-      ))}
+      {data.Neighborhoods.split(DEFAULT_DELIM)
+        // .sort() // no! order is intentional
+        .map((neighborhood) => (
+          <li key={neighborhood}>
+            <span style={{ marginRight: 4 }}>•</span>
+            {neighborhood}
+          </li>
+        ))}
     </ul>
   )
 }
@@ -112,4 +114,18 @@ export function renderDescripColumn(
 ): string | React.ReactNode {
   return !data.Description || `${data.Description.slice(0, 80).trimEnd()}...`
   // return !data.Description || <GoFile />
+}
+
+export function renderCommSizeColumn(
+  data: LangRecordSchema
+): string | React.ReactNode {
+  // TODO: icon swatch
+  return data['Community Size']
+}
+
+export function renderWorldRegionColumn(
+  data: LangRecordSchema
+): string | React.ReactNode {
+  // TODO: icon swatch
+  return data['World Region']
 }

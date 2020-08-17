@@ -26,8 +26,9 @@ export const options = {
   actionsColumnIndex: 0,
   columnsButton: true,
   doubleHorizontalScroll: true,
-  draggable: false, // kinda clunky
+  draggable: true, // kinda clunky
   filtering: true,
+  grouping: false, // kinda clunky
   isLoading: true,
   pageSize: 10,
   pageSizeOptions: [5, 10, 20, 50],
@@ -36,7 +37,6 @@ export const options = {
   tableLayout: 'fixed',
   thirdSortClick: false,
   // TODO: rm unused, or keep for reference
-  // grouping: false, // kinda clunky
   // headerStyle: { position: 'sticky', top: 0 },
   // filterCellStyle: { backgroundColor: 'yellow' }, // works
   // filterRowStyle: { backgroundColor: 'red' }, // works, but sticky 2 tricky!
@@ -80,6 +80,27 @@ export const columns = [
     field: 'Neighborhoods',
     width: 155, // some wrapping but not bad; leaves room for Sort arrow
     render: utils.renderNeighbColumn,
+    // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
+    // properly (blanks last, regardless of direction)
+    customSort: function sortNeighbs(a, b) {
+      if (a.Neighborhoods === b.Neighborhoods) {
+        return 0
+      }
+
+      // nulls sort after anything else
+      if (a.Neighborhoods === '') {
+        return 1
+      }
+
+      if (b.Neighborhoods === '') {
+        return -1
+      }
+
+      return a.Neighborhoods < b.Neighborhoods ? -1 : 1
+
+      // If descending, highest sorts first
+      // return a.Neighborhoods < b.Neighborhoods ? 1 : -1
+    },
   },
   {
     // Longest: 14
@@ -87,15 +108,15 @@ export const columns = [
     field: 'Community Size',
     width: 125, // leaves room for Sort arrow
     searchable: false,
-    type: 'numeric',
     align: 'left',
     lookup: {
-      1: 'Smallest',
-      2: 'Small',
-      3: 'Medium',
-      4: 'Large',
-      5: 'Largest',
+      1: '1 - Smallest',
+      2: '2 - Small',
+      3: '3 - Medium',
+      4: '4 - Large',
+      5: '5 - Largest',
     },
+    render: utils.renderCommSizeColumn,
   },
   {
     // Longest: 13
@@ -116,6 +137,7 @@ export const columns = [
     title: 'World Region',
     field: 'World Region',
     width: 145, // creates 2-liners
+    render: utils.renderWorldRegionColumn,
   },
   {
     // Average: 8.5, Longest: 35 (w/o big Congos: Average: 8, Longest: 24)

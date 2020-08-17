@@ -106,7 +106,7 @@ type CommunitySize = 1 | 2 | 3 | 4 | 5
 export type LangRecordSchema = InternalUse & {
   Language: string
   Endonym: string // often same as English name, may be an http link to image
-  Neighborhoods?: string // NYC 'hoods only
+  Neighborhoods: string | '' // NYC 'hoods only
   'Community Size': CommunitySize
   Status: Statuses
   'World Region': WorldRegion

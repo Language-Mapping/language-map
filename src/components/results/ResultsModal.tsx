@@ -17,7 +17,9 @@ const useStyles = makeStyles((theme: Theme) =>
       '& .MuiPaper-root': {
         overflowY: 'hidden',
       },
-      // Don't even know what this is, some kind of spacer, but seems useless
+      // Don't even know what this is, some kind of spacer or something to do
+      // with grouping perhaps (even though it's set to `false` in the table
+      // options), but either way itseems useless.
       '& > div.MuiDialog-container.MuiDialog-scrollPaper > div > div > div:nth-child(2) > div:nth-child(1)': {
         display: 'none',
       },
