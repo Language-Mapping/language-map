@@ -120,6 +120,8 @@ export const columns = [
   {
     // Average: 8.5, Longest: 35 (w/o big Congos: Average: 8, Longest: 24)
     // ...plus emoji flag and margin
+    // TODO: for Countries selection:
+    // https://material-ui.com/components/autocomplete/#country-select
     title: 'Countries',
     field: 'Countries',
     width: 180, // full "Russian Federation" (shown first if sorted by Language)

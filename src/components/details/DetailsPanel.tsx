@@ -1,5 +1,4 @@
 import React, { FC, useContext } from 'react'
-import { useLocation, Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Divider } from '@material-ui/core'
 
@@ -9,11 +8,10 @@ import {
   PanelIntro,
   GlossaryTrigger,
 } from 'components'
-import { RouteLocation } from 'components/map/types'
+import { ViewResultsDataBtn } from 'components/results/ViewResultsDataBtn'
 
 // TODO: wire up
 // const GLOSSARY_PATH: RouteLocation = '/glossary'
-const DATA_TABLE_PATH: RouteLocation = '/table'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,7 +31,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const DetailsPanel: FC = () => {
   const { state } = useContext(GlobalContext)
-  const loc = useLocation() // must exist for routing to work?
   const classes = useStyles()
 
   // Shaky check to see if features have loaded and are stored globally
@@ -62,9 +59,7 @@ export const DetailsPanel: FC = () => {
 
   return (
     <>
-      <Typography to={`${DATA_TABLE_PATH}${loc.search}`} component={RouterLink}>
-        View all results
-      </Typography>
+      <ViewResultsDataBtn />
       <GlossaryTrigger />
       <div className={classes.intro}>
         <Typography component="h3" variant="h4">

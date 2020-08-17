@@ -40,7 +40,7 @@ const Title: FC = () => {
   return (
     <Typography variant="h4" className={classes.tableTitleRoot}>
       <TiThList className={classes.titleIcon} />
-      Results Data
+      Data
     </Typography>
   )
 }

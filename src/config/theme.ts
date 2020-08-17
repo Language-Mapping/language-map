@@ -75,11 +75,7 @@ export const GlobalCss = withStyles({
     '.simpler-font': {
       fontFamily: "'Roboto', sans-serif",
     },
-    // '.obvious-link': {
-    //   color: customTheme.palette.info.main,
-    //   textDecoration: 'none',
-    // },
-    'a:visited, .obvious-link': {
+    'a:not([role="button"]), .obvious-link': {
       color: customTheme.palette.info.main,
       textDecoration: 'none',
     },
