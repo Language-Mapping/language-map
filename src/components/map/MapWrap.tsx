@@ -6,13 +6,10 @@ import { MdClose } from 'react-icons/md'
 
 import { Map, MapPanel } from 'components/map'
 import { GlobalContext } from 'components'
-import { ResultsTable, ResultsModal } from 'components/results'
-import { LayerPropsNonBGlayer, RouteLocation } from './types'
+import { LayerPropsNonBGlayer } from './types'
 import { panelsConfig } from '../../config/panels-config'
 import { getIDfromURLparams, getMbStyleDocument } from '../../utils'
 import { mbStyleTileConfig, MID_BREAKPOINT } from './config'
-
-const DATA_TABLE_PATH: RouteLocation = '/table'
 
 const transforms = {
   open: 'translateY(0%)',
@@ -171,11 +168,6 @@ export const MapWrap: FC = () => {
         }}
       >
         <Switch>
-          <Route path={DATA_TABLE_PATH}>
-            <ResultsModal>
-              <ResultsTable />
-            </ResultsModal>
-          </Route>
           {panelsConfig.map((config) => (
             <Route key={config.heading} path={config.path}>
               <MapPanel {...config} active={loc.pathname === config.path} />

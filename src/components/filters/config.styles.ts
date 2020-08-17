@@ -1,8 +1,25 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-export const useTableStyles = makeStyles((theme: Theme) =>
+export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    tableRoot: {
+    resultsModalRoot: {
+      '& .MuiDialog-paper': {
+        overflowY: 'hidden',
+      },
+      '& .MuiPaper-root': {
+        overflowY: 'hidden',
+      },
+      '& .MuiDialog-container > .MuiDialog-paperScrollPaper': {
+        marginTop: 0,
+        marginBottom: 0,
+        maxHeight: `calc(100% - ${theme.spacing(4)}px)`,
+      },
+      // Don't even know what this is, some kind of spacer or something to do
+      // with grouping perhaps (even though it's set to `false` in the table
+      // options), but either way itseems useless.
+      '& > div.MuiDialog-container.MuiDialog-scrollPaper > div > div > div:nth-child(2) > div:nth-child(1)': {
+        display: 'none',
+      },
       // Gross way to get the table footer, which has no unique classes
       '& .MuiPaper-root > .MuiTable-root': {
         position: 'sticky',
@@ -60,6 +77,12 @@ export const useTableStyles = makeStyles((theme: Theme) =>
       // Handy reference for potentially useful selectors
       // '& .MuiTableCell-root:nth-child(2)': {}, // First non-actions column
       // '& .MuiToolbar-root': {}, // top bar title, free actions; footer pag.
+    },
+    closeBtn: {
+      position: 'absolute',
+      zIndex: 1,
+      top: theme.spacing(1),
+      right: theme.spacing(1),
     },
   })
 )

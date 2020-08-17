@@ -21,14 +21,11 @@ export const GlobalContext = createContext<Context>({
   dispatch: () => null,
 })
 
-type GlobalProviderComponent = {
-  children: React.ReactNode
-}
-
 // TODO: this if it makes sense to:
 // https://dev.to/stephencweiss/usereducer-with-typescript-2kf
 
-export const GlobalProvider: FC<GlobalProviderComponent> = ({ children }) => {
+export const GlobalProvider: FC = (props) => {
+  const { children } = props
   const [state, dispatch] = useReducer(reducer, initialState)
 
   return (

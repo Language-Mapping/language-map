@@ -1,10 +1,24 @@
 import React, { FC } from 'react'
 import { Link } from '@material-ui/core'
-// import { GoFile } from 'react-icons/go'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { isURL } from '../../utils'
 import { LangRecordSchema } from '../../context/types'
 import countryCodes from './config.emojis.json'
+
+// import { GoFile } from 'react-icons/go'
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    countryWithEmojiFlag: {
+      alignItems: 'center',
+      display: 'flex',
+      lineHeight: 1.3,
+    },
+    emojiFlag: {
+      marginRight: 6,
+    },
+  })
+)
 
 type CountryCodes = {
   [key: string]: string
@@ -30,11 +44,13 @@ export function countryToFlag(isoCode: string): string {
 }
 
 const CountryWithEmojiFlag: FC<CountryWithEmojiComponent> = (props) => {
+  const classes = useStyles()
+  const { countryWithEmojiFlag, emojiFlag } = classes
   const { name, flag } = props
 
   return (
-    <li style={{ display: 'flex', alignItems: 'center' }}>
-      <div style={{ marginRight: 6 }}>{flag}</div>
+    <li className={countryWithEmojiFlag}>
+      <div className={emojiFlag}>{flag}</div>
       <div>{name}</div>
     </li>
   )
