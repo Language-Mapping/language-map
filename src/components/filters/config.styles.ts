@@ -9,11 +9,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& .MuiPaper-root': {
         overflowY: 'hidden',
       },
-      '& .MuiDialog-container > .MuiDialog-paperScrollPaper': {
-        marginTop: 0,
-        marginBottom: 0,
-        maxHeight: `calc(100% - ${theme.spacing(4)}px)`,
-      },
       // Don't even know what this is, some kind of spacer or something to do
       // with grouping perhaps (even though it's set to `false` in the table
       // options), but either way itseems useless.
@@ -63,8 +58,11 @@ export const useStyles = makeStyles((theme: Theme) =>
       // All icons in and out of table. Icons inherit color and size from it.
       '& .MuiIconButton-root': {
         padding: theme.spacing(1),
-        color: theme.palette.primary.main,
         fontSize: '1.4rem',
+      },
+      // ...otherwise it overrides the `disabled` Action buttons
+      '& .MuiIconButton-root:not([disabled])': {
+        color: theme.palette.primary.main,
       },
       [theme.breakpoints.down('sm')]: {
         '& .MuiTableFooter-root .MuiIconButton-root': {
@@ -83,6 +81,12 @@ export const useStyles = makeStyles((theme: Theme) =>
       zIndex: 1,
       top: theme.spacing(1),
       right: theme.spacing(1),
+    },
+    // Squeeze a bit more room out of the dialog
+    resultsModalPaper: {
+      marginTop: 0,
+      marginBottom: 0,
+      maxHeight: `calc(100% - ${theme.spacing(4)}px)`,
     },
   })
 )

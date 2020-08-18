@@ -33,7 +33,7 @@ export const options = {
   pageSize: 10,
   pageSizeOptions: [5, 10, 20, 50],
   searchFieldAlignment: 'left', // TODO: rm if not using global search
-  search: false, // TODO: confirm
+  search: true, // TODO: confirm
   tableLayout: 'fixed',
   thirdSortClick: false,
   // TODO: rm unused, or keep for reference
@@ -82,6 +82,7 @@ export const columns = [
     render: utils.renderNeighbColumn,
     // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
     // properly (blanks last, regardless of direction)
+    // CRED: https://stackoverflow.com/a/29829361/1048518
     customSort: function sortNeighbs(a, b) {
       if (a.Neighborhoods === b.Neighborhoods) {
         return 0
@@ -170,5 +171,6 @@ export const columns = [
     title: 'Description',
     field: 'Description',
     hidden: true,
+    searchable: true,
   },
 ] as Types.ColumnsConfig[]

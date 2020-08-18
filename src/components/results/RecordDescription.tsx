@@ -1,56 +1,77 @@
-/* eslint-disable react/display-name */
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
+import {
+  Typography,
+  Dialog,
+  DialogContent,
+  IconButton,
+} from '@material-ui/core'
+import { MdClose } from 'react-icons/md'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    recDescRoot: {
-      padding: `${theme.spacing(6)}px ${theme.spacing(1)}px`,
-      maxWidth: '100vw',
-      marginTop: theme.spacing(1),
-      [theme.breakpoints.up('sm')]: {
-        maxWidth: 600,
-      },
-      marginLeft: 'auto',
-      marginRight: 'auto',
+    dialogContent: {
+      paddingTop: theme.spacing(4),
+      paddingBottom: theme.spacing(4),
+      color: theme.palette.grey[800],
     },
     yarr: {
       fontFamily: theme.typography.h1.fontFamily,
-      color: theme.palette.grey[700],
+      marginTop: theme.spacing(2),
     },
     firstLetter: {
-      color: 'initial',
+      color: theme.palette.common.black,
       fontSize: theme.typography.h1.fontSize,
       fontFamily: theme.typography.h1.fontFamily,
       fontWeight: theme.typography.h1.fontWeight,
       lineHeight: 0,
+    },
+    closeBtn: {
+      position: 'absolute',
+      zIndex: 1,
+      top: theme.spacing(1),
+      right: theme.spacing(1),
     },
   })
 )
 
 type RecordDescripComponent = {
   text: string
+  onClose: React.Dispatch<string>
 }
 
-export const RecordDescription: FC<RecordDescripComponent> = ({
-  text,
-}: {
-  text: string
-}) => {
+export const RecordDescription: FC<RecordDescripComponent> = (props) => {
+  const { text, onClose } = props
   const classes = useStyles()
+  const [open, setOpen] = useState<boolean>(true)
+
+  const handleClose = () => {
+    setOpen(false)
+    onClose('')
+  }
 
   return (
-    <div className={classes.recDescRoot}>
-      <Typography variant="subtitle2" className={classes.yarr}>
-        {text && (
-          <>
-            <span className={classes.firstLetter}>{text[0]}</span>
-            {text.slice(1)}
-          </>
-        )}
-        {!text && 'No description available'}
-      </Typography>
-    </div>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="descrip-modal-dialog-title"
+      aria-describedby="descrip-modal-dialog-description"
+      maxWidth="md"
+    >
+      <IconButton onClick={handleClose} className={classes.closeBtn}>
+        <MdClose />
+      </IconButton>
+      <DialogContent className={`${classes.dialogContent}`}>
+        <Typography className={classes.yarr}>
+          {text && (
+            <>
+              <span className={classes.firstLetter}>{text[0]}</span>
+              {text.slice(1)}
+            </>
+          )}
+          {!text && 'No description available'}
+        </Typography>
+      </DialogContent>
+    </Dialog>
   )
 }
