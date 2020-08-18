@@ -18,7 +18,7 @@ export const ViewResultsDataBtn: FC = () => {
       component={RouterLink}
       startIcon={<TiThList />}
     >
-      View data
+      View data table
     </Button>
   )
 }

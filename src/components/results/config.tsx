@@ -1,4 +1,4 @@
-import { Icons } from 'material-table'
+import { Icons, Localization } from 'material-table'
 import { FaFilter } from 'react-icons/fa'
 
 import {
@@ -15,9 +15,20 @@ import {
 import * as Types from './types'
 import * as utils from './utils'
 
-export const localization = {
+export const COMM_SIZE_COL_MAP = {
+  1: 'Smallest',
+  2: 'Small',
+  3: 'Medium',
+  4: 'Large',
+  5: 'Largest',
+}
+
+export const localization: Localization = {
   header: {
-    actions: '', // don't need anything here
+    actions: '',
+  },
+  toolbar: {
+    searchPlaceholder: 'Try Igbo, or Nigeria...',
   },
 }
 
@@ -32,11 +43,12 @@ export const options = {
   isLoading: true,
   pageSize: 10,
   pageSizeOptions: [5, 10, 20, 50],
-  searchFieldAlignment: 'left', // TODO: rm if not using global search
-  search: true, // TODO: confirm
+  searchFieldAlignment: 'left',
+  search: true,
   tableLayout: 'fixed',
   thirdSortClick: false,
   // TODO: rm unused, or keep for reference
+  // actionsCellStyle: {}, // semi-useful but ended up with `!important` anyway
   // headerStyle: { position: 'sticky', top: 0 },
   // filterCellStyle: { backgroundColor: 'yellow' }, // works
   // filterRowStyle: { backgroundColor: 'red' }, // works, but sticky 2 tricky!
@@ -66,19 +78,64 @@ export const columns = [
     field: 'Language',
     width: 115,
     defaultSort: 'asc',
+    searchable: false,
+    editable: 'never',
   },
   {
-    // Average: 8.5, Longest: 26
+    // Average: 8.5, Longest: 26, Longest full: Anashinaabemowin
     title: 'Endonym',
     field: 'Endonym',
     render: utils.renderEndoColumn,
-    width: 115,
+    width: 130,
+    searchable: false,
+    editable: 'never',
+  },
+  {
+    // Average: 13, Longest: 25 (thanks AUS & NZ...)
+    title: 'World Region',
+    field: 'World Region',
+    width: 155, // creates 2-liners
+    render: utils.renderWorldRegionColumn,
+    searchable: false,
+    editable: 'never',
+  },
+  {
+    // Average: 8.5, Longest: 35 (w/o big Congos: Average: 8, Longest: 24)
+    // ...plus emoji flag and margin
+    // TODO: for Countries selection:
+    // https://material-ui.com/components/autocomplete/#country-select
+    title: 'Countries',
+    field: 'Countries',
+    width: 180, // full "Russian Federation" (shown first if sorted by Language)
+    render: utils.renderCountriesColumn,
+    searchable: false,
+    editable: 'never',
+  },
+  {
+    // Longest: 20
+    title: 'Global Speakers', // TODO: ok to abbrev?
+    field: 'Global Speaker Total',
+    width: 105, // leaves room for Sort arrow
+    align: 'left',
+    type: 'numeric',
+    searchable: false,
+    editable: 'never',
+  },
+  {
+    // Average: 10, Longest: 23 but preserve hyphenated Athabaskan-Eyak-Tlingit
+    title: 'Language Family',
+    field: 'Language Family',
+    width: 140,
+    searchable: false,
+    editable: 'never',
   },
   {
     // Average: 12, Longest: 26
-    title: 'Neighborhoods',
+    title: '*Neighborhoods',
     field: 'Neighborhoods',
     width: 155, // some wrapping but not bad; leaves room for Sort arrow
+    searchable: false,
+    editable: 'never',
     render: utils.renderNeighbColumn,
     // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
     // properly (blanks last, regardless of direction)
@@ -105,26 +162,22 @@ export const columns = [
   },
   {
     // Longest: 14
-    title: 'Community Size',
+    title: '*Size',
     field: 'Community Size',
     width: 125, // leaves room for Sort arrow
-    searchable: false,
     align: 'left',
-    lookup: {
-      1: '1 - Smallest',
-      2: '2 - Small',
-      3: '3 - Medium',
-      4: '4 - Large',
-      5: '5 - Largest',
-    },
-    render: utils.renderCommSizeColumn,
+    lookup: COMM_SIZE_COL_MAP,
+    render: (data) => COMM_SIZE_COL_MAP[data['Community Size']],
+    searchable: false,
+    editable: 'never',
   },
   {
     // Longest: 13
-    title: 'Status',
+    title: '*Status',
     field: 'Status',
     width: 110,
     searchable: false,
+    editable: 'never',
     lookup: {
       Historical: 'Historical',
       Community: 'Community',
@@ -134,43 +187,24 @@ export const columns = [
     },
   },
   {
-    // Average: 13, Longest: 25 (thanks AUS & NZ...)
-    title: 'World Region',
-    field: 'World Region',
-    width: 145, // creates 2-liners
-    render: utils.renderWorldRegionColumn,
-  },
-  {
-    // Average: 8.5, Longest: 35 (w/o big Congos: Average: 8, Longest: 24)
-    // ...plus emoji flag and margin
-    // TODO: for Countries selection:
-    // https://material-ui.com/components/autocomplete/#country-select
-    title: 'Countries',
-    field: 'Countries',
-    width: 180, // full "Russian Federation" (shown first if sorted by Language)
-    render: utils.renderCountriesColumn,
-  },
-  {
-    // Longest: 20
-    title: 'Global Speakers', // TODO: ok to abbrev?
-    field: 'Global Speaker Total',
-    width: 105, // leaves room for Sort arrow
-    searchable: false,
-    align: 'left',
-    type: 'numeric',
-  },
-  {
-    // Average: 10, Longest: 23
-    // ...BUT must preserve hyphenated Athabaskan-Eyak-Tlingit
-    title: 'Language Family',
-    field: 'Language Family',
-    width: 140,
-  },
-  {
-    // Gigantic, will trigger into popover but needs to be searchable
     title: 'Description',
     field: 'Description',
     hidden: true,
     searchable: true,
+    editable: 'never',
+  },
+  {
+    title: 'Glottocode',
+    field: 'Glottocode',
+    hidden: true,
+    searchable: true,
+    editable: 'never',
+  },
+  {
+    title: 'ISO 639-3',
+    field: 'ISO 639-3',
+    hidden: true,
+    searchable: true,
+    editable: 'never',
   },
 ] as Types.ColumnsConfig[]

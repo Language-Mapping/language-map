@@ -6,7 +6,6 @@ import { isURL } from '../../utils'
 import { LangRecordSchema } from '../../context/types'
 import countryCodes from './config.emojis.json'
 
-// import { GoFile } from 'react-icons/go'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     countryWithEmojiFlag: {
@@ -125,19 +124,13 @@ export function renderNeighbColumn(
   )
 }
 
-export function renderDescripColumn(
-  data: LangRecordSchema
-): string | React.ReactNode {
-  return !data.Description || `${data.Description.slice(0, 80).trimEnd()}...`
-  // return !data.Description || <GoFile />
-}
-
-export function renderCommSizeColumn(
-  data: LangRecordSchema
-): string | React.ReactNode {
-  // TODO: icon swatch
-  return data['Community Size']
-}
+// TODO: restore when ready for swatch, otherwise remove
+// export function renderCommSizeColumn(
+//   data: LangRecordSchema
+// ): string | React.ReactNode {
+//   // TODO: icon swatch
+//   return COMM_SIZE_COL_MAP[data['Community Size']]
+// }
 
 export function renderWorldRegionColumn(
   data: LangRecordSchema

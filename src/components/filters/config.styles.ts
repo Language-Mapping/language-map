@@ -17,8 +17,8 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       // Gross way to get the table footer, which has no unique classes
       '& .MuiPaper-root > .MuiTable-root': {
-        position: 'sticky',
         bottom: 0,
+        position: 'sticky',
       },
       '& .MuiTableBody-root': {
         fontSize: '0.8rem',
@@ -27,11 +27,16 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& .MuiInputAdornment-root': {
         color: theme.palette.grey[500],
       },
-      // Column headings
+      // All column headings
       '& .MuiTableCell-head': {
+        color: theme.palette.primary.main,
         fontWeight: 'bold',
         lineHeight: 1.2,
-        color: theme.palette.primary.main,
+      },
+      // Actions heading
+      '& .MuiTableCell-head:first-of-type': {
+        textAlign: 'left !important', // sick of trying to fight the plugin
+        width: '75px !important', // sick of trying to fight the plugin
       },
       // Default cushion of non-dense table cell is 16px
       '& .MuiTableCell-root': {
@@ -45,9 +50,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       // The table footer
       '& .MuiTableFooter-root': {
-        justifyContent: 'center',
         background: theme.palette.common.white,
         borderTop: `solid 1px ${theme.palette.grey[400]}`,
+        justifyContent: 'center',
       },
       '& .MuiTablePagination-spacer': {
         display: 'none',
@@ -57,8 +62,8 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       // All icons in and out of table. Icons inherit color and size from it.
       '& .MuiIconButton-root': {
-        padding: theme.spacing(1),
         fontSize: '1.4rem',
+        padding: 6,
       },
       // ...otherwise it overrides the `disabled` Action buttons
       '& .MuiIconButton-root:not([disabled])': {
@@ -73,19 +78,21 @@ export const useStyles = makeStyles((theme: Theme) =>
         flexShrink: 0, // prevents tiny arrows on columns w/wrapped headings
       },
       // Handy reference for potentially useful selectors
-      // '& .MuiTableCell-root:nth-child(2)': {}, // First non-actions column
+      // '& .MuiTableCell-head:not(:first-of-type)': {}, // non-actions headings
+      // '& .MuiTableCell-root:first-child': {}, // actions column cells
+      // '& .MuiTableCell-root:nth-child(2)': {}, // first non-actions column
       // '& .MuiToolbar-root': {}, // top bar title, free actions; footer pag.
     },
     closeBtn: {
       position: 'absolute',
-      zIndex: 1,
-      top: theme.spacing(1),
       right: theme.spacing(1),
+      top: theme.spacing(1),
+      zIndex: 1,
     },
     // Squeeze a bit more room out of the dialog
     resultsModalPaper: {
-      marginTop: 0,
       marginBottom: 0,
+      marginTop: 0,
       maxHeight: `calc(100% - ${theme.spacing(4)}px)`,
     },
   })

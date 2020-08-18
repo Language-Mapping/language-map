@@ -36,6 +36,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
       // @ts-ignore // promoteId is just not anywhere in the source...
       promoteId="ID"
       type="vector"
+      // YO: careful here, it's overriding what's in the MB style JSON...
       url={`mapbox://${mbStyleTileConfig.tilesetId}`}
       id={mbStyleTileConfig.internalSrcID}
     >
@@ -67,6 +68,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
           <Layer
             key={layer.id}
             {...layer}
+            // YO: careful here, it's overriding what's in the MB style JSON...
             source-layer={mbStyleTileConfig.layerId}
             layout={layout}
             paint={paint}
@@ -85,6 +87,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
           <Layer
             key={layer.id}
             {...layer}
+            // YO: careful here, it's overriding what's in the MB style JSON...
             source-layer={mbStyleTileConfig.layerId}
             layout={layout}
           />
