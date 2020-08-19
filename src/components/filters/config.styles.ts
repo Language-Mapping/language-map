@@ -3,6 +3,30 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     resultsModalRoot: {
+      '& .MuiToolbar-root .MuiTextField-root': {
+        paddingLeft: theme.spacing(2),
+      },
+      [theme.breakpoints.down(450)]: {
+        '& .MuiTableFooter-root .MuiIconButton-root': {
+          padding: 4, // waaaaayy too much default padding, can't see on mobile
+        },
+        '& .MuiToolbar-root .MuiIconButton-root': {
+          padding: 2,
+        },
+        '& .MuiToolbar-root .MuiTextField-root': {
+          flexShrink: 1,
+          minWidth: 100,
+          order: 4,
+          paddingLeft: 0,
+          width: 140,
+        },
+        '& [class^=MTableToolbar-spacer]': {
+          display: 'none',
+        },
+        '& .MuiToolbar-root': {
+          paddingRight: theme.spacing(1),
+        },
+      },
       '& .MuiDialog-paper': {
         overflowY: 'hidden',
       },
@@ -66,19 +90,21 @@ export const useStyles = makeStyles((theme: Theme) =>
         padding: 6,
       },
       // ...otherwise it overrides the `disabled` Action buttons
-      '& .MuiIconButton-root:not([disabled])': {
+      '& table .MuiIconButton-root:not([disabled]), .MuiToolbar-root .MuiIconButton-root:not([disabled])': {
         color: theme.palette.primary.main,
-      },
-      [theme.breakpoints.down('sm')]: {
-        '& .MuiTableFooter-root .MuiIconButton-root': {
-          padding: 4, // waaaaayy too much default padding, can't see on mobile
-        },
       },
       '& .MuiTableSortLabel-icon': {
         flexShrink: 0, // prevents tiny arrows on columns w/wrapped headings
       },
+      // Top bar title, free actions; footer pag.
+      '& .MuiToolbar-root > :last-child': {
+        marginRight: theme.spacing(1),
+        // flexWrap: 'wrap', // TODO: rm if not using
+      },
       // Handy reference for potentially useful selectors
       // '& .MuiTableCell-head:not(:first-of-type)': {}, // non-actions headings
+      // '& .MuiToolbar-root': {},
+      // '& .MuiToolbar-root > :first-child': {}, // top bar title?
       // '& .MuiTableCell-root:first-child': {}, // actions column cells
       // '& .MuiTableCell-root:nth-child(2)': {}, // first non-actions column
       // '& .MuiToolbar-root': {}, // top bar title, free actions; footer pag.

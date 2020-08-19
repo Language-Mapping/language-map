@@ -1,23 +1,13 @@
-import React, { FC, useState } from 'react'
+import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import {
-  Typography,
-  Dialog,
-  DialogContent,
-  IconButton,
-} from '@material-ui/core'
-import { MdClose } from 'react-icons/md'
+import { Typography } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    dialogContent: {
-      paddingTop: theme.spacing(4),
-      paddingBottom: theme.spacing(4),
-      color: theme.palette.grey[800],
-    },
-    yarr: {
+    recDescripRoot: {
       fontFamily: theme.typography.h1.fontFamily,
       marginTop: theme.spacing(2),
+      color: theme.palette.grey[800],
     },
     firstLetter: {
       color: theme.palette.common.black,
@@ -35,43 +25,19 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-type RecordDescripComponent = {
-  text: string
-  onClose: React.Dispatch<string>
-}
-
-export const RecordDescription: FC<RecordDescripComponent> = (props) => {
-  const { text, onClose } = props
+export const RecordDescription: FC<{ text: string }> = (props) => {
   const classes = useStyles()
-  const [open, setOpen] = useState<boolean>(true)
-
-  const handleClose = () => {
-    setOpen(false)
-    onClose('')
-  }
+  const { text } = props
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="descrip-modal-dialog-title"
-      aria-describedby="descrip-modal-dialog-description"
-      maxWidth="md"
-    >
-      <IconButton onClick={handleClose} className={classes.closeBtn}>
-        <MdClose />
-      </IconButton>
-      <DialogContent className={`${classes.dialogContent}`}>
-        <Typography className={classes.yarr}>
-          {text && (
-            <>
-              <span className={classes.firstLetter}>{text[0]}</span>
-              {text.slice(1)}
-            </>
-          )}
-          {!text && 'No description available'}
-        </Typography>
-      </DialogContent>
-    </Dialog>
+    <Typography className={classes.recDescripRoot}>
+      {text && (
+        <>
+          <span className={classes.firstLetter}>{text[0]}</span>
+          {text.slice(1)}
+        </>
+      )}
+      {!text && 'No description available'}
+    </Typography>
   )
 }

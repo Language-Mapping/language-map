@@ -1,18 +1,16 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable react/display-name */
 import React, { FC, useContext, useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import MaterialTable from 'material-table'
 import { Typography } from '@material-ui/core'
 import { GoFile } from 'react-icons/go'
 import { FiShare } from 'react-icons/fi'
-import { IoMdCloseCircle, IoMdHelpCircle } from 'react-icons/io'
-// TODO: rm when settled
-// import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon'
+import { IoMdHelpCircle, IoMdCloseCircle } from 'react-icons/io'
 import { TiThList } from 'react-icons/ti'
 
-import { GlobalContext } from 'components'
+import { GlobalContext, SimpleDialog } from 'components'
 import * as config from './config'
 import { RecordDescription } from './RecordDescription'
 import { useWindowResize } from '../../utils'
@@ -31,6 +29,9 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(1),
       flexShrink: 0,
     },
+    descripDialogPaper: {
+      margin: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
+    },
   })
 )
 
@@ -46,15 +47,10 @@ const Title: FC = () => {
   )
 }
 
-// TODO: rm when settled
-// function MuiFriendlyIcon(props: SvgIconProps) {
-//   return <SvgIcon component={GoFile} {...props} />
-// }
-
 export const ResultsTable: FC = () => {
   const { state } = useContext(GlobalContext)
+  const classes = useStyles()
   const history = useHistory()
-  const loc = useLocation()
   const { height } = useWindowResize()
   const [descripModalText, setDescripModalText] = useState<string>('')
 
@@ -65,10 +61,15 @@ export const ResultsTable: FC = () => {
   return (
     <>
       {descripModalText && (
-        <RecordDescription
-          text={descripModalText}
-          onClose={setDescripModalText}
-        />
+        <SimpleDialog
+          open={descripModalText !== ''}
+          onClose={(event, reason) => setDescripModalText('')}
+          PaperProps={{
+            className: classes.descripDialogPaper,
+          }}
+        >
+          <RecordDescription text={descripModalText} />
+        </SimpleDialog>
       )}
       <MaterialTable
         icons={icons}
@@ -87,20 +88,16 @@ export const ResultsTable: FC = () => {
         }}
         actions={[
           {
-            icon: () => <IoMdHelpCircle />,
-            tooltip: 'Glossary',
+            icon: () => <IoMdCloseCircle />,
+            tooltip: 'Clear filters',
             isFreeAction: true,
             onClick: () => null, // TODO: wire up
           },
           {
-            icon: () => <IoMdCloseCircle />,
-            tooltip: 'Exit to map',
+            icon: () => <IoMdHelpCircle />,
+            tooltip: 'Glossary',
             isFreeAction: true,
-            onClick: () => {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              history.push(`/${loc.search}`)
-            },
+            onClick: () => null, // TODO: wire up
           },
           (data) => ({
             icon: () => <GoFile />,

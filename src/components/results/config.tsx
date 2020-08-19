@@ -28,7 +28,7 @@ export const localization: Localization = {
     actions: '',
   },
   toolbar: {
-    searchPlaceholder: 'Try Igbo, or Nigeria...',
+    searchPlaceholder: 'Search data...',
   },
 }
 
@@ -44,6 +44,7 @@ export const options = {
   pageSize: 10,
   pageSizeOptions: [5, 10, 20, 50],
   searchFieldAlignment: 'left',
+  // searchFieldStyle: {}, // TODO: rm if not using
   search: true,
   tableLayout: 'fixed',
   thirdSortClick: false,
@@ -52,9 +53,10 @@ export const options = {
   // headerStyle: { position: 'sticky', top: 0 },
   // filterCellStyle: { backgroundColor: 'yellow' }, // works
   // filterRowStyle: { backgroundColor: 'red' }, // works, but sticky 2 tricky!
+  // fixedColumns: { left: 1 }, // useless if using Actions
   // padding: 'dense', // dense leads to choppier inconsistent row height
   // rowStyle: { backgroundColor: 'turquoise' }, // works
-  // fixedColumns: { left: 1 }, // useless if using Actions
+  // searchFieldVariant: 'outlined', // meh, too big
 } as Types.TableOptions
 
 export const icons = {
@@ -78,7 +80,7 @@ export const columns = [
     field: 'Language',
     width: 115,
     defaultSort: 'asc',
-    searchable: false,
+    searchable: true,
     editable: 'never',
   },
   {
@@ -87,7 +89,7 @@ export const columns = [
     field: 'Endonym',
     render: utils.renderEndoColumn,
     width: 130,
-    searchable: false,
+    searchable: true,
     editable: 'never',
   },
   {
@@ -96,7 +98,7 @@ export const columns = [
     field: 'World Region',
     width: 155, // creates 2-liners
     render: utils.renderWorldRegionColumn,
-    searchable: false,
+    searchable: true,
     editable: 'never',
   },
   {
@@ -108,7 +110,7 @@ export const columns = [
     field: 'Countries',
     width: 180, // full "Russian Federation" (shown first if sorted by Language)
     render: utils.renderCountriesColumn,
-    searchable: false,
+    searchable: true,
     editable: 'never',
   },
   {
@@ -126,7 +128,7 @@ export const columns = [
     title: 'Language Family',
     field: 'Language Family',
     width: 140,
-    searchable: false,
+    searchable: true,
     editable: 'never',
   },
   {
@@ -134,7 +136,7 @@ export const columns = [
     title: '*Neighborhoods',
     field: 'Neighborhoods',
     width: 155, // some wrapping but not bad; leaves room for Sort arrow
-    searchable: false,
+    searchable: true,
     editable: 'never',
     render: utils.renderNeighbColumn,
     // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods

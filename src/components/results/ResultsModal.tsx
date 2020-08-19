@@ -1,21 +1,23 @@
-import React, { FC, useState } from 'react'
+import React, { FC } from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
 import { Dialog } from '@material-ui/core'
 
 import { useStyles } from 'components/filters/config.styles'
+import { DialogCloseBtn } from 'components'
 
 export const ResultsModal: FC = (props) => {
   const { children } = props
   const classes = useStyles()
-  const [open, setOpen] = useState<boolean>(true)
+  const history = useHistory()
+  const loc = useLocation()
 
   const handleClose = () => {
-    setOpen(false)
-    // TODO: why so hard?
+    history.push(`/${loc.search}`)
   }
 
   return (
     <Dialog
-      open={open}
+      open
       className={`${classes.resultsModalRoot}`}
       onClose={handleClose}
       aria-labelledby="results-modal-dialog-title"
@@ -30,6 +32,7 @@ export const ResultsModal: FC = (props) => {
         Showing {langFeatures.length} of {langFeaturesCached.length} language
         communities.
       </Typography> */}
+      <DialogCloseBtn onClose={handleClose} tooltip="Exit to map" />
       {children}
     </Dialog>
   )
