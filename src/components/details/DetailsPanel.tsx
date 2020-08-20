@@ -19,6 +19,12 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       paddingBottom: theme.spacing(1),
     },
+    detailsPanelHeading: {
+      fontSize: '2.4rem', // gross but it makes `Anashinaabemowin` fit
+      [theme.breakpoints.up('sm')]: {
+        fontSize: '3rem', // gross but it makes `Anashinaabemowin` fit
+      },
+    },
     subheading: {
       marginBottom: theme.spacing(1),
     },
@@ -67,7 +73,7 @@ export const DetailsPanel: FC = () => {
         <GlossaryTrigger />
       </div>
       <div className={classes.intro}>
-        <Typography component="h3" variant="h4">
+        <Typography variant="h3" className={classes.detailsPanelHeading}>
           {selFeatAttribs.Endonym}
         </Typography>
         {selFeatAttribs.Endonym !== selFeatAttribs.Language && (
