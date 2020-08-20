@@ -55,6 +55,9 @@ export const ResultsTable: FC = () => {
   const loc = useLocation()
   // const { height } = useWindowResize() // TODO: rm if not using
   const [descripModalText, setDescripModalText] = useState<string>('')
+  const [mapFiltersBtnDisabled, setMapFiltersBtnDisbled] = useState<boolean>(
+    true
+  )
   const tableRef = React.useRef<MuiTableWithDataMgr>(null)
 
   // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
@@ -92,13 +95,9 @@ export const ResultsTable: FC = () => {
             history.push(`/details?id=${rowData.ID}`)
           }
         }}
-        // TODO: rm if not using, but most likely use to set button state
-        // onFilterChange={() =>
-        //   // @ts-ignore
-        //   tableRef.current && tableRef.current.onQueryChange()
-        // }
+        onFilterChange={() => setMapFiltersBtnDisbled(false)}
         // TODO: rm if not using (not even sure what triggers it)
-        // onQueryChange={(ok) => console.log(ok)}
+        // onQueryChange={() => setMapFiltersBtnDisbled(false)}
         // TODO: all into config
         actions={[
           {
@@ -109,8 +108,9 @@ export const ResultsTable: FC = () => {
           },
           {
             icon: () => <FaMapMarkedAlt />,
-            tooltip: 'Set filters',
+            tooltip: 'Set filters in map',
             isFreeAction: true,
+            disabled: mapFiltersBtnDisabled,
             onClick: () => {
               if (!tableRef || !tableRef.current) {
                 return
