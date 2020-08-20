@@ -57,10 +57,15 @@ export const DetailsPanel: FC = () => {
   //   (feature) => feature.ID === parsed.id
   // )
 
+  // TODO: something respectable for styles, aka MUI-something
   return (
     <>
-      <ViewResultsDataBtn />
-      <GlossaryTrigger />
+      <div style={{ textAlign: 'center', margin: 8 }}>
+        <ViewResultsDataBtn />
+      </div>
+      <div style={{ position: 'absolute', top: 8, right: 8 }}>
+        <GlossaryTrigger />
+      </div>
       <div className={classes.intro}>
         <Typography component="h3" variant="h4">
           {selFeatAttribs.Endonym}

@@ -12,9 +12,12 @@ export const FiltersPanel: FC = () => {
     return <LoadingIndicator />
   }
 
+  // TODO: something respectable for styles, aka MUI-something
   return (
     <>
-      <ViewResultsDataBtn />
+      <div style={{ textAlign: 'center', margin: 8 }}>
+        <ViewResultsDataBtn />
+      </div>
       <LegendPanel legendItems={state.legendItems} />
     </>
   )

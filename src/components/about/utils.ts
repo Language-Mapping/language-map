@@ -1,13 +1,13 @@
-import { WpApiPageResponse, AboutPageState } from './types'
+import { WpApiPageResponse, RemoteContentState } from './types'
 
-export const getAboutPageContent = async (
+export const fetchContentFromWP = async (
   url: string,
-  setAboutPgContent: React.Dispatch<AboutPageState>
+  setContent: React.Dispatch<RemoteContentState>
 ): Promise<void> => {
   const response = await fetch(url) // TODO: handle errors
   const { title, content }: WpApiPageResponse = await response.json()
 
-  setAboutPgContent({
+  setContent({
     title: title.rendered,
     content: content.rendered,
   })

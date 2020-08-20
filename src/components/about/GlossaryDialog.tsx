@@ -18,8 +18,19 @@ import { fetchContentFromWP } from './utils'
 import { wpAPIsettings } from './config'
 import { RemoteContentState } from './types'
 
+const GLOSSARY_WP_URL = `${wpAPIsettings.pageUrl}/${wpAPIsettings.glossaryPageID}`
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    glossaryRoot: {
+      // e.g. the world map
+      '& img': {
+        height: 'auto',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        width: '95%',
+      },
+    },
     closeBtn: {
       position: 'absolute',
       top: theme.spacing(1),
@@ -36,27 +47,26 @@ const createMarkup = (content: string): { __html: string } => ({
   __html: content,
 })
 
-export const AboutPageView: FC = () => {
+export const GlossaryDialog: FC = () => {
   const classes = useStyles()
   const history = useHistory()
 
   // TODO: learn how to use undefined or null as the initial/default type rather
   // than creating an object for the sake of TS.
-  const [aboutPgContent, setAboutPgContent] = useState<RemoteContentState>({
+  const [glossaryContent, setGlossaryContent] = useState<RemoteContentState>({
     title: null,
     content: null,
   })
   const contentReady =
-    aboutPgContent.title !== null && aboutPgContent.content !== null
-  const url = `${wpAPIsettings.pageUrl}/${wpAPIsettings.pageId}`
+    glossaryContent.title !== null && glossaryContent.content !== null
 
   const handleClose = () => {
     history.goBack() // TODO: something less gross?
   }
 
   useEffect(() => {
-    fetchContentFromWP(url, setAboutPgContent)
-  }, [url])
+    fetchContentFromWP(GLOSSARY_WP_URL, setGlossaryContent)
+  }, [])
 
   if (!contentReady) {
     // TODO: give this component an aria-something
@@ -74,14 +84,15 @@ export const AboutPageView: FC = () => {
 
   return (
     <Dialog
+      className={classes.glossaryRoot}
       open
       onClose={handleClose}
-      aria-labelledby="about-page-dialog-title"
-      aria-describedby="about-page-dialog-description"
+      aria-labelledby="glossary-page-dialog-title"
+      aria-describedby="glossary-page-dialog-description"
       maxWidth="md"
     >
-      <DialogTitle id="about-page-dialog-title" disableTypography>
-        <Typography variant="h2">{aboutPgContent?.title}</Typography>
+      <DialogTitle id="glossary-page-dialog-title" disableTypography>
+        <Typography variant="h2">{glossaryContent?.title}</Typography>
       </DialogTitle>
       <IconButton onClick={handleClose} className={classes.closeBtn}>
         <MdClose />
@@ -89,7 +100,7 @@ export const AboutPageView: FC = () => {
       <DialogContent dividers>
         <div
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={createMarkup(aboutPgContent.content || '')}
+          dangerouslySetInnerHTML={createMarkup(glossaryContent.content || '')}
           id="about-page-dialog-description"
         />
       </DialogContent>

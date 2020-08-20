@@ -128,7 +128,7 @@ export const ResultsTable: FC = () => {
             icon: () => <IoMdHelpCircle />,
             tooltip: 'Glossary',
             isFreeAction: true,
-            onClick: () => null, // TODO: wire up
+            onClick: () => history.push(`/glossary${loc.search}`),
           },
           (data) => ({
             icon: () => <GoFile />,

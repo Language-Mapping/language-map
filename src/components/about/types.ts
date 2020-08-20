@@ -7,7 +7,7 @@ export type WpApiPageResponse = {
   }
 }
 
-export type AboutPageState = {
+export type RemoteContentState = {
   title: string | null
   content: string | null
 }

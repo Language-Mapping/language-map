@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Link } from '@material-ui/core'
 import { FaQuestionCircle } from 'react-icons/fa'
@@ -19,12 +20,15 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const GlossaryTrigger: FC = () => {
   const classes = useStyles()
+  const loc = useLocation()
 
-  // TODO: a simple `<RouterLink to="/glossary?${loc.search}"` should do it
   return (
-    <Link href="javascript;" className={classes.glossaryTriggerRoot}>
+    <Link
+      component={RouterLink}
+      to={`/glossary${loc.search}`}
+      className={classes.glossaryTriggerRoot}
+    >
       <FaQuestionCircle />
-      What do these mean?
     </Link>
   )
 }
