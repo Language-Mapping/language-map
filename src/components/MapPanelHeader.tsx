@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
     panelHeaderRoot: {
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.common.white,
-      borderBottom: `solid 8px ${theme.palette.primary.dark}`,
+      borderBottom: `solid 6px ${theme.palette.primary.dark}`,
       padding: `6px ${theme.spacing(1)}px`,
       top: 0,
       flexShrink: 0,

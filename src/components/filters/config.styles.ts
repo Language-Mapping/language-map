@@ -3,35 +3,44 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     resultsModalRoot: {
-      '& .MuiToolbar-root .MuiTextField-root': {
-        paddingLeft: theme.spacing(2),
-      },
-      [theme.breakpoints.down(450)]: {
+      [theme.breakpoints.down('sm')]: {
         '& .MuiTableFooter-root .MuiIconButton-root': {
           padding: 4, // waaaaayy too much default padding, can't see on mobile
         },
         '& .MuiToolbar-root .MuiIconButton-root': {
           padding: 2,
         },
+        // Search bar
         '& .MuiToolbar-root .MuiTextField-root': {
           flexShrink: 1,
-          minWidth: 100,
-          order: 4,
           paddingLeft: 0,
-          width: 140,
+          order: 4,
+          minWidth: 200,
+          width: '70%',
         },
         '& [class^=MTableToolbar-spacer]': {
           display: 'none',
         },
-        '& .MuiToolbar-root': {
-          paddingRight: theme.spacing(1),
+        '& .MuiToolbar-root:not(.MuiTablePagination-toolbar)': {
+          padding: theme.spacing(1),
+          flexWrap: 'wrap',
+          justifyContent: 'space-around',
+          minHeight: 90,
+          borderTopRightRadius: 4,
+          borderTopLeftRadius: 4,
+        },
+        // Top bar title, free actions; footer pag.
+        '& .MuiToolbar-root > :last-child': {
+          marginRight: theme.spacing(1),
         },
       },
-      '& .MuiDialog-paper': {
-        overflowY: 'hidden',
-      },
+      // Not apparent at all screen sizes
       '& .MuiPaper-root': {
         overflowY: 'hidden',
+      },
+      '& .MuiToolbar-root:not(.MuiTablePagination-toolbar)': {
+        backgroundColor: theme.palette.grey[100],
+        borderBottom: `solid 1px ${theme.palette.grey[400]}`,
       },
       // Don't even know what this is, some kind of spacer or something to do
       // with grouping perhaps (even though it's set to `false` in the table
@@ -43,13 +52,16 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& .MuiPaper-root > .MuiTable-root': {
         bottom: 0,
         position: 'sticky',
+        backgroundColor: theme.palette.grey[100],
+        borderBottomRightRadius: 4,
+        borderBottomLeftRadius: 4,
       },
       '& .MuiTableBody-root': {
         fontSize: '0.8rem',
       },
       // e.g. the Filter icon at beginning of column filters
       '& .MuiInputAdornment-root': {
-        color: theme.palette.grey[500],
+        color: theme.palette.grey[600],
       },
       // All column headings
       '& .MuiTableCell-head': {
@@ -75,8 +87,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       // The table footer
       '& .MuiTableFooter-root': {
-        background: theme.palette.common.white,
-        borderTop: `solid 1px ${theme.palette.grey[400]}`,
+        boxShadow: theme.shadows[14],
         justifyContent: 'center',
       },
       '& .MuiTablePagination-spacer': {
@@ -87,8 +98,8 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       // All icons in and out of table. Icons inherit color and size from it.
       '& .MuiIconButton-root': {
-        fontSize: '1.4rem',
-        padding: 6,
+        // fontSize: '1.4rem', // TODO: rm if not using
+        padding: theme.spacing(1),
       },
       // ...otherwise it overrides the `disabled` Action buttons
       '& table .MuiIconButton-root:not([disabled]), .MuiToolbar-root .MuiIconButton-root:not([disabled])': {
@@ -99,12 +110,10 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       // Top bar title, free actions; footer pag.
       '& .MuiToolbar-root > :last-child': {
-        marginRight: theme.spacing(1),
-        // flexWrap: 'wrap', // TODO: rm if not using
+        marginRight: theme.spacing(4),
       },
       // Handy reference for potentially useful selectors
       // '& .MuiTableCell-head:not(:first-of-type)': {}, // non-actions headings
-      // '& .MuiToolbar-root': {},
       // '& .MuiToolbar-root > :first-child': {}, // top bar title?
       // '& .MuiTableCell-root:first-child': {}, // actions column cells
       // '& .MuiTableCell-root:nth-child(2)': {}, // first non-actions column

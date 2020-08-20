@@ -14,7 +14,7 @@ import { GlobalContext, SimpleDialog } from 'components'
 import * as config from './config'
 import { MuiTableWithDataMgr } from './types'
 import { RecordDescription } from './RecordDescription'
-import { useWindowResize } from '../../utils'
+// import { useWindowResize } from '../../utils' // TODO: rm if not using
 
 const { icons, options, columns, localization } = config
 
@@ -53,7 +53,7 @@ export const ResultsTable: FC = () => {
   const classes = useStyles()
   const history = useHistory()
   const loc = useLocation()
-  const { height } = useWindowResize()
+  // const { height } = useWindowResize() // TODO: rm if not using
   const [descripModalText, setDescripModalText] = useState<string>('')
   const tableRef = React.useRef<MuiTableWithDataMgr>(null)
 
@@ -79,7 +79,9 @@ export const ResultsTable: FC = () => {
         tableRef={tableRef}
         options={{
           ...options,
-          maxBodyHeight: height - 138, // TODO: more exact for mobile and desk
+          // maxBodyHeight: height - 138, // TODO: more exact for mobile and desk
+          // maxBodyHeight: height - 120, // TODO: more exact for mobile and desk
+          maxBodyHeight: 'calc(100vh - 73px - 32px - 53px - 20px)',
         }}
         columns={columns}
         localization={localization}
