@@ -165,11 +165,11 @@ export const columns = [
   {
     // Longest: 14
     title: '*Size',
-    field: 'Community Size',
+    field: 'Size',
     width: 125, // leaves room for Sort arrow
     align: 'left',
     lookup: COMM_SIZE_COL_MAP,
-    render: (data) => COMM_SIZE_COL_MAP[data['Community Size']],
+    render: (data) => COMM_SIZE_COL_MAP[data.Size],
     searchable: false,
     editable: 'never',
   },

@@ -109,7 +109,7 @@ export type LangRecordSchema = InternalUse & {
   Language: string
   Endonym: string // often same as English name, may be an http link to image
   Neighborhoods: string | '' // NYC 'hoods only
-  'Community Size': CommunitySize
+  Size: CommunitySize
   Status: Statuses
   'World Region': WorldRegion
   Countries: string // TODO: confirm required

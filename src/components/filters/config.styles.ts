@@ -60,7 +60,8 @@ export const useStyles = makeStyles((theme: Theme) =>
       // Actions heading
       '& .MuiTableCell-head:first-of-type': {
         textAlign: 'left !important', // sick of trying to fight the plugin
-        width: '75px !important', // sick of trying to fight the plugin
+        // TODO: restore width to 75ish if reinstating "View in map" btn
+        width: '55px !important', // sick of trying to fight the plugin
       },
       // Default cushion of non-dense table cell is 16px
       '& .MuiTableCell-root': {

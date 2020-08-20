@@ -129,7 +129,7 @@ export function renderNeighbColumn(
 //   data: LangRecordSchema
 // ): string | React.ReactNode {
 //   // TODO: icon swatch
-//   return COMM_SIZE_COL_MAP[data['Community Size']]
+//   return COMM_SIZE_COL_MAP[data['Size']]
 // }
 
 export function renderWorldRegionColumn(

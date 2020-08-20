@@ -25,7 +25,7 @@ export const DemoRangeSlider: FC = () => {
   return (
     <div className={classes.root}>
       <Typography id="range-slider" gutterBottom>
-        Community Size
+        Size
       </Typography>
       <Slider
         value={value}
