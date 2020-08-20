@@ -1,17 +1,18 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable react/display-name */
 import React, { FC, useContext, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import MaterialTable from 'material-table'
 import { Typography } from '@material-ui/core'
 import { GoFile } from 'react-icons/go'
-import { FiShare } from 'react-icons/fi'
 import { IoMdHelpCircle, IoMdCloseCircle } from 'react-icons/io'
 import { TiThList } from 'react-icons/ti'
+import { FaMapMarkedAlt } from 'react-icons/fa'
 
 import { GlobalContext, SimpleDialog } from 'components'
 import * as config from './config'
+import { MuiTableWithDataMgr } from './types'
 import { RecordDescription } from './RecordDescription'
 import { useWindowResize } from '../../utils'
 
@@ -48,11 +49,13 @@ const Title: FC = () => {
 }
 
 export const ResultsTable: FC = () => {
-  const { state } = useContext(GlobalContext)
+  const { state, dispatch } = useContext(GlobalContext)
   const classes = useStyles()
   const history = useHistory()
+  const loc = useLocation()
   const { height } = useWindowResize()
   const [descripModalText, setDescripModalText] = useState<string>('')
+  const tableRef = React.useRef<MuiTableWithDataMgr>(null)
 
   // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
   // properly (blanks last, regardless of direction)
@@ -73,6 +76,7 @@ export const ResultsTable: FC = () => {
       )}
       <MaterialTable
         icons={icons}
+        tableRef={tableRef}
         options={{
           ...options,
           maxBodyHeight: height - 138, // TODO: more exact for mobile and desk
@@ -86,12 +90,39 @@ export const ResultsTable: FC = () => {
             history.push(`/details?id=${rowData.ID}`)
           }
         }}
+        // TODO: rm if not using, but most likely use to set button state
+        // onFilterChange={() =>
+        //   // @ts-ignore
+        //   tableRef.current && tableRef.current.onQueryChange()
+        // }
+        // TODO: rm if not using (not even sure what triggers it)
+        // onQueryChange={(ok) => console.log(ok)}
+        // TODO: all into config
         actions={[
           {
             icon: () => <IoMdCloseCircle />,
             tooltip: 'Clear filters',
             isFreeAction: true,
             onClick: () => null, // TODO: wire up
+          },
+          {
+            icon: () => <FaMapMarkedAlt />,
+            tooltip: 'Set filters',
+            isFreeAction: true,
+            onClick: () => {
+              if (!tableRef || !tableRef.current) {
+                return
+              }
+
+              dispatch({
+                type: 'SET_LANG_FEAT_IDS',
+                payload: tableRef.current.dataManager.filteredData.map(
+                  (data) => data.ID
+                ),
+              })
+
+              history.push(`/${loc.search}`)
+            },
           },
           {
             icon: () => <IoMdHelpCircle />,
@@ -120,11 +151,6 @@ export const ResultsTable: FC = () => {
             },
             disabled: data.Description === '',
           }),
-          {
-            icon: () => <FiShare />,
-            tooltip: 'Share this community',
-            onClick: () => null, // TODO: wire up
-          },
         ]}
       />
     </>

@@ -135,6 +135,5 @@ export function renderNeighbColumn(
 export function renderWorldRegionColumn(
   data: LangRecordSchema
 ): string | React.ReactNode {
-  // TODO: icon swatch
-  return data['World Region']
+  return data['World Region'] // TODO: icon swatch
 }

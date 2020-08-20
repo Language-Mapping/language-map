@@ -5,6 +5,7 @@ const initialMapStates = {
   activeLangSymbGroupId: '',
   activeLangLabelId: '',
   baselayer: 'light',
+  langFeatIDs: null,
   langFeatures: [],
   langFeaturesCached: [],
   langLabels: [],

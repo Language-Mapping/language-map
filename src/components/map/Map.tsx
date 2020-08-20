@@ -53,6 +53,41 @@ export const Map: FC<MapTypes.MapComponent> = ({
     setMapOffset(offset)
   }, [isDesktop])
 
+  // TODO: another file
+  useEffect((): void => {
+    if (!mapRef.current || !mapLoaded || state.langFeatIDs === null) {
+      return
+    }
+
+    const map: mbGlFull.Map = mapRef.current.getMap()
+    const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
+    // TODO: consider usefulness, otherwise remove
+    // const layer =  map.getLayer(name)
+
+    currentLayerNames.forEach((name) => {
+      const currentFilters = map.getFilter(name)
+
+      // Clear it first // TODO: rm if not necessary
+      map.setFilter(name, null)
+
+      let origFilter = []
+
+      // GROSS dude. Gotta be a better way to check?
+      if (currentFilters[0] === 'all') {
+        ;[, origFilter] = currentFilters
+      } else {
+        origFilter = currentFilters
+      }
+
+      map.setFilter(name, [
+        'all',
+        origFilter,
+        // CRED: https://gis.stackexchange.com/a/287629/5824
+        ['in', ['get', 'ID'], ['literal', state.langFeatIDs]],
+      ])
+    })
+  }, [state.langFeatIDs])
+
   useEffect((): void => {
     initLegend(dispatch, state.activeLangSymbGroupId, symbLayers)
   }, [state.activeLangSymbGroupId])

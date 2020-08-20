@@ -26,6 +26,11 @@ export const reducer = (
         ...state,
         baselayer: action.payload,
       }
+    case 'SET_LANG_FEAT_IDS':
+      return {
+        ...state,
+        langFeatIDs: action.payload,
+      }
     case 'SET_LANG_LAYER_LABELS':
       return {
         ...state,

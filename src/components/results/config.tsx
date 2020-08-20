@@ -115,7 +115,7 @@ export const columns = [
   },
   {
     // Longest: 20
-    title: 'Global Speakers', // TODO: ok to abbrev?
+    title: 'Global Speakers', // the only abbrev so far
     field: 'Global Speaker Total',
     width: 105, // leaves room for Sort arrow
     align: 'left',

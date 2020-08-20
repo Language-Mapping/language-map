@@ -1,4 +1,4 @@
-import { Options, Column } from 'material-table'
+import MaterialTable, { Options, Column } from 'material-table'
 
 import { LangRecordSchema } from '../../context/types'
 
@@ -8,3 +8,10 @@ export type ColumnsConfig = Column<LangRecordSchema> & {
 }
 
 export type TableOptions = Options<LangRecordSchema>
+
+// `dataManager` prop definitely exists but is not evidently part of the TS
+export type MuiTableWithDataMgr = MaterialTable<LangRecordSchema> & {
+  dataManager: {
+    filteredData: LangRecordSchema[]
+  }
+}
