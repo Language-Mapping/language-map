@@ -15,16 +15,25 @@ type MapPanelComponent = MapPanelType & {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    paperRoot: {
-      position: 'absolute',
+    mapPanelRoot: {
       backgroundColor: 'hsla(100, 0%, 100%, 0.95)',
-      width: '100%',
-      top: 0,
-      transition: '300ms all',
-      opacity: (props: PaperRoot) => (props.active ? 1 : 0),
-      zIndex: (props: PaperRoot) => (props.active ? 1 : -1),
       display: 'flex',
       flexDirection: 'column',
+      opacity: (props: PaperRoot) => (props.active ? 1 : 0),
+      position: 'absolute',
+      top: 0,
+      transition: '300ms all',
+      width: '100%',
+      zIndex: (props: PaperRoot) => (props.active ? 1 : -1),
+    },
+    mapPanelContent: {
+      overflow: 'auto',
+      padding: 10,
+      position: 'relative',
+      zIndex: 1,
+      [theme.breakpoints.up('sm')]: {
+        padding: theme.spacing(2),
+      },
     },
   })
 )
@@ -39,22 +48,14 @@ export const MapPanel: FC<MapPanelComponent> = ({
   const classes = useStyles({ active })
 
   return (
-    <Paper className={classes.paperRoot}>
+    <Paper className={classes.mapPanelRoot} elevation={14}>
       <MapPanelHeader
         active={active}
         heading={heading}
         icon={icon}
         subheading={subheading}
       />
-      <Box
-        paddingY={1}
-        paddingX={2}
-        overflow="auto"
-        zIndex={1}
-        position="relative"
-      >
-        {component}
-      </Box>
+      <Box className={classes.mapPanelContent}>{component}</Box>
     </Paper>
   )
 }

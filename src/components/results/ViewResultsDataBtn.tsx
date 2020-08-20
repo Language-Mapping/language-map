@@ -18,7 +18,7 @@ export const ViewResultsDataBtn: FC = () => {
       to={`${DATA_TABLE_PATHNAME}${loc.search}`}
       variant="outlined"
     >
-      View data and filters
+      Data and filters
     </Button>
   )
 }

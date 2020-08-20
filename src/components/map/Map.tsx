@@ -32,7 +32,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
   const history = useHistory()
   const { state, dispatch } = useContext(GlobalContext)
   const mapRef: React.RefObject<InteractiveMap> = React.createRef()
-  const { selFeatAttribs, mapLoaded } = state
+  const { selFeatAttribs, mapLoaded, langFeatIDs } = state
   const isDesktop = useMediaQuery((theme: Theme) =>
     theme.breakpoints.up(mapConfig.MID_BREAKPOINT)
   )
@@ -55,7 +55,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
   // TODO: another file
   useEffect((): void => {
-    if (!mapRef.current || !mapLoaded || state.langFeatIDs === null) {
+    if (!mapRef.current || !mapLoaded) {
       return
     }
 
@@ -79,14 +79,18 @@ export const Map: FC<MapTypes.MapComponent> = ({
         origFilter = currentFilters
       }
 
-      map.setFilter(name, [
-        'all',
-        origFilter,
-        // CRED: https://gis.stackexchange.com/a/287629/5824
-        ['in', ['get', 'ID'], ['literal', state.langFeatIDs]],
-      ])
+      if (langFeatIDs === null) {
+        map.setFilter(name, origFilter)
+      } else {
+        map.setFilter(name, [
+          'all',
+          origFilter,
+          // CRED: https://gis.stackexchange.com/a/287629/5824
+          ['in', ['get', 'ID'], ['literal', langFeatIDs]],
+        ])
+      }
     })
-  }, [state.langFeatIDs])
+  }, [langFeatIDs])
 
   useEffect((): void => {
     initLegend(dispatch, state.activeLangSymbGroupId, symbLayers)
