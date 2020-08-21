@@ -1,47 +1,14 @@
-import React, { FC } from 'react'
+import React from 'react'
 import { Link } from '@material-ui/core'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { isURL } from '../../utils'
 import { LangRecordSchema } from '../../context/types'
 import countryCodes from './config.emojis.json'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    countryWithEmojiFlag: {
-      alignItems: 'center',
-      display: 'flex',
-      lineHeight: 1.3,
-    },
-    emojiFlag: {
-      marginRight: 6,
-    },
-  })
-)
-
-type CountryCodes = {
-  [key: string]: string
-}
-
-type CountryWithEmojiComponent = {
-  flag: string
-  name: keyof CountryCodes
-}
+import { CountryCodes } from './types'
+import { CountryListItemWithFlag } from './CountryListItemWithFlag'
 
 const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
-
-const CountryWithEmojiFlag: FC<CountryWithEmojiComponent> = (props) => {
-  const classes = useStyles()
-  const { countryWithEmojiFlag, emojiFlag } = classes
-  const { name, flag } = props
-
-  return (
-    <li className={countryWithEmojiFlag}>
-      <div className={emojiFlag}>{flag}</div>
-      <div>{name}</div>
-    </li>
-  )
-}
 
 export function renderCountriesColumn(
   data: LangRecordSchema
@@ -64,9 +31,9 @@ export function renderCountriesColumn(
   return (
     <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
       {countriesWithFlags.map((countryWithFlag, i) => (
-        <CountryWithEmojiFlag
+        <CountryListItemWithFlag
           key={countries[i]}
-          flag={countryWithFlag}
+          countryCode={countryWithFlag}
           name={countries[i]}
         />
       ))}
@@ -101,7 +68,7 @@ export function renderNeighbColumn(
   return (
     <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
       {data.Neighborhoods.split(DEFAULT_DELIM)
-        // .sort() // no! order is intentional
+        // .sort() // no! order is intentional ("primary" is first)
         .map((neighborhood) => (
           <li key={neighborhood}>
             <span style={{ marginRight: 4 }}>•</span>

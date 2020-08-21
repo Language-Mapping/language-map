@@ -15,3 +15,8 @@ export type MuiTableWithDataMgr = MaterialTable<LangRecordSchema> & {
     filteredData: LangRecordSchema[]
   }
 }
+
+// The JSON file with {"name":"code"} country key/val pairs
+export type CountryCodes = {
+  [key: string]: string
+}
