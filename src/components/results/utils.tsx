@@ -30,18 +30,6 @@ type CountryWithEmojiComponent = {
 
 const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
 
-// ISO 3166-1 alpha-2 (⚠️ No support for IE 11)
-// CRED:  https://material-ui.com/components/autocomplete/#country-select
-export function countryToFlag(isoCode: string): string {
-  if (typeof String.fromCodePoint === 'undefined') {
-    return isoCode
-  }
-
-  return isoCode
-    .toUpperCase()
-    .replace(/./g, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397))
-}
-
 const CountryWithEmojiFlag: FC<CountryWithEmojiComponent> = (props) => {
   const classes = useStyles()
   const { countryWithEmojiFlag, emojiFlag } = classes
@@ -67,7 +55,7 @@ export function renderCountriesColumn(
 
   const countriesWithFlags = countries.map((country) => {
     if (countryCodesTyped[country]) {
-      return countryToFlag(countryCodesTyped[country])
+      return countryCodesTyped[country]
     }
 
     return '' // there SHOULD be a match but if not then just use blank
