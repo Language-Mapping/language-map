@@ -1,10 +1,11 @@
 import React, { FC } from 'react'
 import { Route } from 'react-router-dom'
 
-import { TopBar } from 'components/nav'
+import { TopBar, OffCanvasNav } from 'components/nav'
 import { MapWrap } from 'components/map'
 import { RouteLocation } from 'components/map/types'
 import { AboutPageView, GlossaryDialog } from 'components/about'
+
 import { ResultsTable, ResultsModal } from 'components/results'
 
 const DATA_TABLE_PATHNAME: RouteLocation = '/table'
@@ -13,6 +14,7 @@ const GLOSSARY_PATHNAME: RouteLocation = '/glossary'
 export const App: FC = () => {
   return (
     <>
+      <OffCanvasNav />
       <TopBar />
       <main>
         <Route path="/about">

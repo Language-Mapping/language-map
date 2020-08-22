@@ -20,6 +20,7 @@ export type StoreAction =
   | { type: 'SHOW_SPLASH'; payload: boolean }
   | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibility }
   | { type: 'TOGGLE_UI_ALERT'; payload: AlertPayload }
+  | { type: 'TOGGLE_OFF_CANVAS_NAV' }
 
 export type InitialState = {
   activeLangLabelId: string
@@ -34,6 +35,7 @@ export type InitialState = {
   langSymbGroups: MetadataGroup
   layerVisibility: LayerVisibility // TODO: rm everywhere if not using
   mapLoaded: boolean
+  offCanvasNavOpen: boolean
   selFeatAttribs: null | LangRecordSchema
   showSplash: boolean
   uiAlert: AlertPayload

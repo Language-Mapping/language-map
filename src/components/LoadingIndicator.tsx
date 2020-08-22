@@ -20,7 +20,7 @@ export const LoadingIndicator: FC = () => {
 
   return (
     <div className={classes.loadingIndicatorRoot}>
-      <Typography variant="h5" className={classes.loadingText}>
+      <Typography variant="h5" component="p" className={classes.loadingText}>
         Loading...
       </Typography>
       <CircularProgress color="inherit" />

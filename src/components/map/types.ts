@@ -95,7 +95,7 @@ export type MapComponent = {
 
 export type LangIconConfig = { icon: string; id: string }
 
-export type MapControlAction = 'home' | 'in' | 'out'
+export type MapControlAction = 'home' | 'in' | 'out' | 'info'
 
 export type FlyToCoords = (
   map: mbGlFull.Map,

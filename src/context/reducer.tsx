@@ -65,6 +65,11 @@ export const reducer = (
           ...action.payload,
         },
       }
+    case 'TOGGLE_OFF_CANVAS_NAV':
+      return {
+        ...state,
+        offCanvasNavOpen: !state.offCanvasNavOpen,
+      }
     // TODO: wire up
     case 'TOGGLE_LAYER_VISIBILITY':
       return {

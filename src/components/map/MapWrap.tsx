@@ -26,17 +26,30 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mapWrapRoot: {
       bottom: 0,
+      overflow: 'hidden',
       position: 'absolute',
       top: 0,
       width: '100%',
-      overflow: 'hidden',
       // TODO: ensure attribution and logo are both clearly visible at all
       // breakpoints. A bit mixed/scattered RN.
-      '& .mb-language-map .mapboxgl-ctrl-bottom-left': {
-        [theme.breakpoints.down('sm')]: {
-          top: 60,
-          bottom: 'auto',
+      '& .mapboxgl-ctrl-top-right': {
+        bottom: -18,
+        right: 50,
+        [theme.breakpoints.up('sm')]: {
+          bottom: 6,
+          right: 2,
+          top: 'auto',
         },
+      },
+      '& .mapboxgl-ctrl-bottom-left': {
+        bottom: -4,
+        [theme.breakpoints.up('sm')]: {
+          bottom: 0,
+          left: 0,
+        },
+      },
+      '& .mapboxgl-ctrl-bottom-left a': {
+        color: theme.palette.grey[700],
       },
     },
     mapItselfWrap: {
@@ -46,24 +59,25 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
     },
     mapPanelsWrap: {
+      bottom: 4,
       left: theme.spacing(1),
-      right: theme.spacing(1),
       position: 'absolute',
-      bottom: 0,
+      right: theme.spacing(1),
       top: '50%',
       transition: '300ms transform',
+      // TODO: you know what
       [theme.breakpoints.up(MID_BREAKPOINT)]: {
+        bottom: theme.spacing(3), // above mapbox stuffs
+        left: theme.spacing(3),
+        top: theme.spacing(3),
         width: panelWidths.mid,
-        top: 80, // TODO: less shaky, maybe `const TOPBAR_HEIGHT = 80`?
-        bottom: theme.spacing(5), // above mapbox logo
-        left: 16,
       },
       [theme.breakpoints.up('md')]: {
         width: panelWidths.midLarge,
       },
       '& .MuiPaper-root': {
-        overflowY: 'auto',
         height: '100%',
+        overflowY: 'auto',
       },
     },
     closePanel: {

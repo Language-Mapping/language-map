@@ -34,7 +34,9 @@ export const Map: FC<MapTypes.MapComponent> = ({
   const mapRef: React.RefObject<InteractiveMap> = React.createRef()
   const { selFeatAttribs, mapLoaded, langFeatIDs } = state
   const isDesktop = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.up(mapConfig.MID_BREAKPOINT)
+    // TODO: this
+    // theme.breakpoints.up(mapConfig.MID_BREAKPOINT)
+    theme.breakpoints.up('sm')
   )
 
   const [viewport, setViewport] = useState(mapConfig.initialMapState)
@@ -236,6 +238,11 @@ export const Map: FC<MapTypes.MapComponent> = ({
       type: 'SET_MAP_LOADED',
       payload: true,
     })
+
+    map.addControl(
+      new mbGlFull.AttributionControl({ compact: true }),
+      'top-right'
+    )
   }
 
   // TODO: chuck it into utils
@@ -275,6 +282,14 @@ export const Map: FC<MapTypes.MapComponent> = ({
   // TODO: into utils if it doesn't require passing 1000 args
   function onMapCtrlClick(actionID: MapTypes.MapControlAction) {
     if (!mapRef.current) {
+      return
+    }
+
+    if (actionID === 'info') {
+      dispatch({
+        type: 'TOGGLE_OFF_CANVAS_NAV',
+      })
+
       return
     }
 
@@ -324,6 +339,10 @@ export const Map: FC<MapTypes.MapComponent> = ({
         ref={mapRef}
         height="100%"
         width="100%"
+        attributionControl={false}
+        mapOptions={{
+          logoPosition: 'top-right',
+        }}
         mapboxApiAccessToken={mapConfig.MAPBOX_TOKEN}
         mapStyle={mapConfig.mbStyleTileConfig.customStyles.light}
         onViewportChange={setViewport}

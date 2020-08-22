@@ -20,6 +20,7 @@ const initialMapStates = {
 
 export const initialState = {
   mapLoaded: false,
+  offCanvasNavOpen: false,
   selFeatAttribs: null,
   showSplash: false,
   hasSeenSplash: !!localStorage.getItem('hasSeenSplash') || false,

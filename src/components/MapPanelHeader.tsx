@@ -50,7 +50,7 @@ export const MapPanelHeader: FC<MapPanelComponent> = ({
 
   return (
     <Box component="header" className={classes.panelHeaderRoot}>
-      <Typography variant="h4" className={classes.mainHeading}>
+      <Typography variant="h4" component="h2" className={classes.mainHeading}>
         {icon}
         {heading}
         <Typography variant="caption" className={classes.subheading}>

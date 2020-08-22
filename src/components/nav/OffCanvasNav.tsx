@@ -1,37 +1,59 @@
-import React, { FC } from 'react'
+import React, { FC, useContext } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Drawer } from '@material-ui/core'
 
+import { GlobalContext } from 'components'
 import { Nav } from 'components/nav'
 import { ToggleOffCanvasNav } from './types'
 
-type OffCanvasNavComponent = {
-  open: boolean
-  toggleDrawer: ToggleOffCanvasNav
-  setOpen: (open: boolean) => void
-}
-
 const useStyles = makeStyles({
-  list: {
+  offCanvasNavRoot: {
+    cursor: 'pointer',
+  },
+  offCanvasNavList: {
     width: 290,
   },
 })
 
-export const OffCanvasNav: FC<OffCanvasNavComponent> = ({
-  open,
-  setOpen,
-  toggleDrawer,
-}) => {
+export const OffCanvasNav: FC = () => {
+  const { state, dispatch } = useContext(GlobalContext)
+  const offCanvasOpen = state.offCanvasNavOpen
   const classes = useStyles()
-  const closeIt = () => setOpen(false)
+  const closeIt = () => {
+    dispatch({
+      type: 'TOGGLE_OFF_CANVAS_NAV',
+    })
+  }
 
+  const toggleDrawer: ToggleOffCanvasNav = (open) => (event) => {
+    if (
+      event.type === 'keydown' &&
+      ((event as React.KeyboardEvent).key === 'Tab' ||
+        (event as React.KeyboardEvent).key === 'Shift')
+    ) {
+      return null
+    }
+
+    dispatch({
+      type: 'TOGGLE_OFF_CANVAS_NAV',
+    })
+
+    return null
+  }
+
+  // TODO: make the <nav> semantic. Well it already is but it's not visible
+  // until the off-canvas is opened...
   return (
-    <Drawer open={open} onClose={toggleDrawer(false)}>
+    <Drawer
+      open={offCanvasOpen}
+      onClose={toggleDrawer(false)}
+      className={classes.offCanvasNavRoot}
+    >
       <div
         // getByRole returned more than one presentation element
         data-testid="backdrop"
         role="presentation"
-        className={classes.list}
+        className={classes.offCanvasNavList}
         onClick={closeIt}
         onKeyDown={closeIt}
       >
