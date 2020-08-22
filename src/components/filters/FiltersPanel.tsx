@@ -4,6 +4,7 @@ import { ClearFiltersBtn } from 'components/filters'
 import { GlobalContext, LoadingIndicator } from 'components'
 import { LegendPanel } from 'components/legend'
 import { ViewResultsDataBtn } from 'components/results/ViewResultsDataBtn'
+import { SearchByOmnibox } from './SearchByOmnibox'
 
 export const FiltersPanel: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
@@ -16,6 +17,7 @@ export const FiltersPanel: FC = () => {
   // TODO: something respectable for styles, aka MUI-something
   return (
     <>
+      <SearchByOmnibox data={state.langFeatures} />
       <div
         style={{
           display: 'grid',
