@@ -8,15 +8,16 @@ const useStyles = makeStyles((theme: Theme) =>
     topBarRoot: {
       // NICE. faders.
       // backgroundColor: fade(theme.palette.primary.main, 0.75),
+      position: 'relative',
       [theme.breakpoints.down('sm')]: {
-        left: theme.spacing(1),
-        position: 'absolute',
-        top: 0,
+        // TODO: make it like desktop, as in don't take up the full width on
+        // mobile as it makes the map under it unreachable.
+        marginLeft: theme.spacing(1),
+        zIndex: 1,
       },
       [theme.breakpoints.up('sm')]: {
-        textAlign: 'center',
         display: 'flex',
-        position: 'relative',
+        textAlign: 'center',
       },
       // Direct children relative position so `zIndex` can be used
       '& > *': {
