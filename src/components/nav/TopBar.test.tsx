@@ -1,6 +1,6 @@
 import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 
 import { TopBar } from 'components/nav'
 
@@ -12,22 +12,12 @@ const renderTopBar = () => (
   </MemoryRouter>
 )
 
-describe('Testing off-canvas behavhior', () => {
+describe('Formerly testing off-canvas behavhior', () => {
   test('off-canvas nav menu toggle', async () => {
     await render(renderTopBar())
 
-    const burger = screen.getByLabelText('menu')
-    fireEvent.click(burger)
+    const navList = screen.queryByRole('navigation')
 
-    const navList = screen.getByRole('navigation')
-    const backdrop = screen.getByTestId('backdrop')
-
-    expect(navList).toBeInTheDocument()
-    fireEvent.click(backdrop)
-
-    // Nav menu closed
-    await waitFor(() => {
-      expect(screen.queryByRole('navigation')).not.toBeInTheDocument()
-    })
+    expect(navList).not.toBeInTheDocument()
   })
 })
