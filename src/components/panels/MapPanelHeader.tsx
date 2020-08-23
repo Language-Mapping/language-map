@@ -6,7 +6,7 @@ import {
   MOBILE_PANEL_HEADER_HEIGHT,
   DESKTOP_PANEL_HEADER_HEIGHT,
 } from 'components/map/styles'
-import { MapPanel } from './map/types'
+import { MapPanel } from 'components/panels/types'
 
 type PanelHeaderProps = {
   active?: boolean

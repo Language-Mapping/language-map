@@ -4,7 +4,8 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Divider } from '@material-ui/core'
 
 import { RouteLocation } from 'components/map/types'
-import { GlobalContext, LoadingIndicator, PanelIntro } from 'components'
+import { PanelIntro } from 'components/panels'
+import { GlobalContext, LoadingIndicator } from 'components'
 import { DetailsIntro } from './DetailsIntro'
 
 const DATA_TABLE_PATHNAME: RouteLocation = '/table'

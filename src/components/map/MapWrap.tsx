@@ -3,8 +3,14 @@ import { useLocation, Switch, Route } from 'react-router-dom'
 import { Box, IconButton } from '@material-ui/core'
 import { MdClose } from 'react-icons/md'
 
-import { Map, MapPanel, MapPanelContent } from 'components/map'
-import { GlobalContext, MapPanelHeader, MapPanelHeaderChild } from 'components'
+import {
+  MapPanel,
+  MapPanelContent,
+  MapPanelHeader,
+  MapPanelHeaderChild,
+} from 'components/panels'
+import { Map } from 'components/map'
+import { GlobalContext } from 'components'
 import { LayerPropsNonBGlayer } from './types'
 import { mbStyleTileConfig } from './config'
 import { useStyles } from './styles'
