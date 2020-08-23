@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     panelContent: {
       overflow: 'auto',
-      padding: 10,
+      padding: '.8rem',
       // TODO: make it nicely transitioned again
       opacity: (props: PanelProps) => (props.active ? 1 : 0),
       position: 'relative',

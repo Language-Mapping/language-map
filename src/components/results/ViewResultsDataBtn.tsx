@@ -16,7 +16,7 @@ export const ViewResultsDataBtn: FC = () => {
       size="small"
       startIcon={<TiThList />}
       to={`${DATA_TABLE_PATHNAME}${loc.search}`}
-      variant="outlined"
+      variant="contained"
     >
       Data and filters
     </Button>

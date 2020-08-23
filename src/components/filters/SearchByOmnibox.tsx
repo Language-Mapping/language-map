@@ -2,31 +2,87 @@ import React, { FC } from 'react'
 import matchSorter from 'match-sorter'
 import { useHistory } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { TextField } from '@material-ui/core'
+import { TextField, Link, Typography } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import { MdClose } from 'react-icons/md'
+import { TiWarning } from 'react-icons/ti'
 
 import { RouteLocation } from 'components/map/types'
 import { LangRecordSchema } from '../../context/types'
 
 type OmniboxComponent = {
   data: LangRecordSchema[]
+  enableClear: boolean
+  clearFilters: () => void
 }
+
+type FiltersWarningComponent = Pick<OmniboxComponent, 'clearFilters'>
 
 const detailsRoutePath: RouteLocation = '/details'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     omniboxRoot: {
-      marginBottom: theme.spacing(1),
+      marginBottom: '1rem',
+      marginTop: '0.5rem',
+    },
+    omniLabel: {
+      color: theme.palette.primary.main,
+      fontSize: '1rem', // default causes wrap on small screens
+    },
+    filtersWarning: {
+      display: 'flex',
+      alignItems: 'center',
+      fontSize: '.8rem',
+      '& > a': {
+        fontWeight: 'bold',
+      },
+      '& > svg': {
+        marginRight: '0.4em',
+      },
     },
   })
 )
 
+// The text above the text field. Kind of a fight w/MUI stuff...
+const OmniLabel: FC = () => {
+  const classes = useStyles()
+
+  return (
+    <div className={classes.omniLabel}>
+      Language, endonym, Glottocode, ISO 639-3
+    </div>
+  )
+}
+
+// NOTE: the future of this is pending convo:
+// Let user know that they are searching filtered data
+const FiltersWarning: FC<FiltersWarningComponent> = (props) => {
+  const classes = useStyles()
+  const { clearFilters } = props
+
+  return (
+    <Typography className={classes.filtersWarning}>
+      <TiWarning />
+      Data search includes current filters.&nbsp;
+      <Link
+        href="#"
+        onClick={(e: React.MouseEvent) => {
+          e.preventDefault()
+          clearFilters()
+          e.stopPropagation()
+        }}
+      >
+        Clear filters
+      </Link>
+    </Typography>
+  )
+}
+
 export const SearchByOmnibox: FC<OmniboxComponent> = (props) => {
   const history = useHistory()
   const classes = useStyles()
-  const { data } = props
+  const { data, enableClear, clearFilters } = props
 
   return (
     <Autocomplete
@@ -36,8 +92,8 @@ export const SearchByOmnibox: FC<OmniboxComponent> = (props) => {
       autoHighlight
       closeIcon={<MdClose />}
       // debug // TODO: rm when done
-      forcePopupIcon
-      fullWidth
+      defaultValue={null}
+      fullWidth={false}
       groupBy={(option) => option.Language}
       options={data}
       size="small"
@@ -46,7 +102,6 @@ export const SearchByOmnibox: FC<OmniboxComponent> = (props) => {
           history.push(`${detailsRoutePath}?id=${value.ID}`)
         }
       }}
-      // TODO: use getOptionLabel if nothing custom needed
       renderOption={(option) => {
         return <>{option.Neighborhoods || option.Town}</>
       }}
@@ -56,14 +111,21 @@ export const SearchByOmnibox: FC<OmniboxComponent> = (props) => {
         })
       }}
       renderInput={(params) => (
-        <TextField
-          {...params}
-          helperText="Enter a language, endonym, Glottocode, or ISO"
-          label="Search data (TODO: mention filters?)..."
-          placeholder="Click a result to view in map"
-          size="small"
-          // InputProps={{ }}
-        />
+        <>
+          <TextField
+            {...params}
+            label={<OmniLabel />}
+            placeholder="Search language communities..."
+            helperText={
+              enableClear && <FiltersWarning clearFilters={clearFilters} />
+            }
+            InputLabelProps={{
+              shrink: true,
+              focused: false,
+              disableAnimation: true,
+            }}
+          />
+        </>
       )}
     />
   )
