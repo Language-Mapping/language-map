@@ -1,40 +1,36 @@
 import React, { FC, useContext } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Divider } from '@material-ui/core'
 
-import {
-  GlobalContext,
-  LoadingIndicator,
-  PanelIntro,
-  GlossaryTrigger,
-} from 'components'
-import { ViewResultsDataBtn } from 'components/results/ViewResultsDataBtn'
+import { RouteLocation } from 'components/map/types'
+import { GlobalContext, LoadingIndicator, PanelIntro } from 'components'
+import { DetailsIntro } from './DetailsIntro'
 
-// TODO: wire up
-// const GLOSSARY_PATH: RouteLocation = '/glossary'
+const DATA_TABLE_PATHNAME: RouteLocation = '/table'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     intro: {
-      textAlign: 'center',
       paddingBottom: theme.spacing(1),
+      textAlign: 'center',
     },
+    // Gross but it makes `Anashinaabemowin` fit
     detailsPanelHeading: {
-      fontSize: '2.4rem', // gross but it makes `Anashinaabemowin` fit
+      fontSize: '2.4rem',
       [theme.breakpoints.up('sm')]: {
-        fontSize: '3rem', // gross but it makes `Anashinaabemowin` fit
+        fontSize: '3rem',
       },
     },
-    subheading: {
+    detailsSubheading: {
       marginBottom: theme.spacing(1),
     },
     description: {
-      marginTop: theme.spacing(1),
       fontSize: theme.typography.caption.fontSize,
+      marginTop: theme.spacing(1),
     },
   })
 )
-
 export const DetailsPanel: FC = () => {
   const { state } = useContext(GlobalContext)
   const classes = useStyles()
@@ -42,6 +38,7 @@ export const DetailsPanel: FC = () => {
   // Shaky check to see if features have loaded and are stored globally
   // TODO: use MB's loading events to set this instead
   if (!state.langFeaturesCached.length) {
+    // TODO: skeletons
     return <LoadingIndicator />
   }
 
@@ -51,8 +48,14 @@ export const DetailsPanel: FC = () => {
   if (!selFeatAttribs) {
     return (
       <PanelIntro>
-        Click a language community in the map or the{' '}
-        <b>MAKE DATA MODAL LINKABLE</b> to learn more.
+        Click a language community in the map or visit the{' '}
+        <RouterLink
+          to={DATA_TABLE_PATHNAME}
+          title="Data table of language communities"
+        >
+          data table
+        </RouterLink>{' '}
+        to view and filter all communities.
       </PanelIntro>
     )
   }
@@ -66,18 +69,13 @@ export const DetailsPanel: FC = () => {
   // TODO: something respectable for styles, aka MUI-something
   return (
     <>
-      <div style={{ textAlign: 'center', margin: 8 }}>
-        <ViewResultsDataBtn />
-      </div>
-      <div style={{ position: 'absolute', top: 8, right: 8 }}>
-        <GlossaryTrigger />
-      </div>
+      <DetailsIntro />
       <div className={classes.intro}>
         <Typography variant="h3" className={classes.detailsPanelHeading}>
           {selFeatAttribs.Endonym}
         </Typography>
         {selFeatAttribs.Endonym !== selFeatAttribs.Language && (
-          <Typography variant="caption" className={classes.subheading}>
+          <Typography variant="caption" className={classes.detailsSubheading}>
             {`(${selFeatAttribs.Language})`}
           </Typography>
         )}

@@ -13,7 +13,7 @@ const panelWidths = {
 }
 
 export const MOBILE_PANEL_HEADER_HEIGHT = '3rem'
-export const DESKTOP_PANEL_HEADER_HEIGHT = '4rem'
+export const DESKTOP_PANEL_HEADER_HEIGHT = '3.5rem'
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({

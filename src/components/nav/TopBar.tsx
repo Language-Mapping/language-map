@@ -6,8 +6,6 @@ import { Typography } from '@material-ui/core'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     topBarRoot: {
-      // NICE. faders.
-      // backgroundColor: fade(theme.palette.primary.main, 0.75),
       position: 'relative',
       [theme.breakpoints.down('sm')]: {
         // TODO: make it like desktop, as in don't take up the full width on

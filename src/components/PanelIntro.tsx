@@ -9,6 +9,10 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.grey[600],
       marginTop: 0,
       marginBottom: theme.spacing(1),
+      // e.g. route links
+      '& > a': {
+        fontWeight: 'bold',
+      },
     },
   })
 )

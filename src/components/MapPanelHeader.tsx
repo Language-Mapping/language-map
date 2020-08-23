@@ -58,13 +58,6 @@ const useStyles = makeStyles((theme: Theme) =>
         width: '0.8em',
       },
     },
-    subheading: {
-      fontSize: 12,
-      gridArea: 'subheading',
-      [theme.breakpoints.down('xs')]: {
-        display: 'none',
-      },
-    },
   })
 )
 
@@ -78,10 +71,14 @@ export const MapPanelHeaderChild: FC<PanelHeaderComponent> = ({
 
   return (
     <>
-      <Typography variant="h4" component="h2" className={classes.mainHeading}>
+      <Typography
+        variant="h4"
+        component="h2"
+        className={classes.mainHeading}
+        title={`${heading} ${subheading}`}
+      >
         {icon}
         <span className="panel-header-text">{heading}</span>
-        <Typography className={classes.subheading}>{subheading}</Typography>
       </Typography>
     </>
   )
