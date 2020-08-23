@@ -4,6 +4,5 @@ export const commonSelectProps = {
   margin: 'dense',
   select: true,
   size: 'small',
-  variant: 'outlined',
   SelectProps: { native: true },
 } as OutlinedTextFieldProps

@@ -240,8 +240,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
     })
 
     map.addControl(
-      new mbGlFull.AttributionControl({ compact: true }),
-      'top-right'
+      new mbGlFull.AttributionControl({ compact: false }),
+      'bottom-right'
     )
   }
 
@@ -340,9 +340,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
         height="100%"
         width="100%"
         attributionControl={false}
-        mapOptions={{
-          logoPosition: 'top-right',
-        }}
+        mapOptions={{ logoPosition: 'bottom-right' }}
         mapboxApiAccessToken={mapConfig.MAPBOX_TOKEN}
         mapStyle={mapConfig.mbStyleTileConfig.customStyles.light}
         onViewportChange={setViewport}

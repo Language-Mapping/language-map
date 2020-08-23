@@ -2,35 +2,27 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Box, Paper } from '@material-ui/core'
 
-import { MapPanelHeader } from 'components'
-import { MapPanel as MapPanelType } from './types'
-
-type PaperRoot = {
-  active: boolean
-}
-
-type MapPanelComponent = MapPanelType & {
-  active: boolean
+type PanelProps = {
+  active?: boolean
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    mapPanelRoot: {
-      backgroundColor: 'hsla(100, 0%, 100%, 0.95)',
+    panelRoot: {
       display: 'flex',
       flexDirection: 'column',
-      opacity: (props: PaperRoot) => (props.active ? 1 : 0),
       position: 'absolute',
       top: 0,
       transition: '300ms all',
       width: '100%',
-      zIndex: (props: PaperRoot) => (props.active ? 1 : -1),
     },
-    mapPanelContent: {
+    panelContent: {
       overflow: 'auto',
       padding: 10,
+      // TODO: make it nicely transitioned again
+      opacity: (props: PanelProps) => (props.active ? 1 : 0),
       position: 'relative',
-      zIndex: 1,
+      transition: '300ms opacity',
       [theme.breakpoints.up('sm')]: {
         padding: theme.spacing(2),
       },
@@ -38,24 +30,22 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const MapPanel: FC<MapPanelComponent> = ({
-  active,
-  component,
-  heading,
-  icon,
-  subheading,
-}) => {
+export const MapPanelContent: FC<{ active: boolean; heading: string }> = (
+  props
+) => {
+  const { active, children } = props
   const classes = useStyles({ active })
 
+  return <Box className={classes.panelContent}>{children}</Box>
+}
+
+export const MapPanel: FC = (props) => {
+  const { children } = props
+  const classes = useStyles({})
+
   return (
-    <Paper className={classes.mapPanelRoot} elevation={14}>
-      <MapPanelHeader
-        active={active}
-        heading={heading}
-        icon={icon}
-        subheading={subheading}
-      />
-      <Box className={classes.mapPanelContent}>{component}</Box>
+    <Paper className={classes.panelRoot} elevation={14}>
+      {children}
     </Paper>
   )
 }
