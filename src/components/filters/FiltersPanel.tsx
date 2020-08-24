@@ -2,7 +2,7 @@ import React, { FC, useContext } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
-import { GlobalContext, LoadingIndicator } from 'components'
+import { GlobalContext } from 'components'
 import { LegendPanel } from 'components/legend'
 import { ViewResultsDataBtn } from 'components/results/ViewResultsDataBtn'
 import { SearchByOmnibox } from './SearchByOmnibox'
@@ -17,11 +17,6 @@ const useStyles = makeStyles((theme: Theme) =>
 export const FiltersPanel: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
   const classes = useStyles()
-
-  // Shaky check to see if features have loaded and are stored globally
-  if (!state.langFeaturesCached.length || !state.mapLoaded) {
-    return <LoadingIndicator />
-  }
 
   // TODO: something respectable for styles, aka MUI-something
   return (
