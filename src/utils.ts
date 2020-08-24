@@ -53,6 +53,7 @@ export const getMbStyleDocument = async (
     payload: nonLabelsGroups,
   })
 
+  // TODO: consider orig. Region colors for `Status`: https://bit.ly/34szqZe
   // Set group ID of initial active MB Styles group
   dispatch({
     type: 'SET_LANG_LAYER_SYMBOLOGY',

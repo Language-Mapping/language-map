@@ -79,6 +79,8 @@ const FiltersWarning: FC<FiltersWarningComponent> = (props) => {
   )
 }
 
+// TODO: rule out that no additional features are needed from match-sorter:
+// https://github.com/kentcdodds/match-sorter
 export const SearchByOmnibox: FC<OmniboxComponent> = (props) => {
   const history = useHistory()
   const classes = useStyles()

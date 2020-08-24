@@ -1,6 +1,5 @@
 import { Icons, Localization } from 'material-table'
 import { FaFilter } from 'react-icons/fa'
-
 import {
   MdSearch,
   MdClear,
@@ -46,7 +45,6 @@ export const options = {
   searchFieldAlignment: 'left',
   // searchFieldStyle: {}, // TODO: rm if not using
   search: true,
-  tableLayout: 'fixed',
   thirdSortClick: false,
   // TODO: rm unused, or keep for reference
   // actionsCellStyle: {}, // semi-useful but ended up with `!important` anyway
@@ -57,6 +55,7 @@ export const options = {
   // padding: 'dense', // dense leads to choppier inconsistent row height
   // rowStyle: { backgroundColor: 'turquoise' }, // works
   // searchFieldVariant: 'outlined', // meh, too big
+  // tableLayout: 'fixed', // can set widths, but `fixed` = for bad Actions col
 } as Types.TableOptions
 
 export const icons = {
@@ -78,28 +77,28 @@ export const columns = [
     // Average: 9.3, Longest: 31
     title: 'Language',
     field: 'Language',
-    width: 115,
     defaultSort: 'asc',
-    searchable: true,
     editable: 'never',
+    searchable: true,
   },
   {
     // Average: 8.5, Longest: 26, Longest full: Anashinaabemowin
     title: 'Endonym',
     field: 'Endonym',
-    render: utils.renderEndoColumn,
-    width: 130,
-    searchable: true,
     editable: 'never',
+    render: utils.renderEndoColumn,
+    searchable: true,
   },
   {
     // Average: 13, Longest: 25 (thanks AUS & NZ...)
     title: 'World Region',
     field: 'World Region',
-    width: 155, // creates 2-liners
+    editable: 'never',
     render: utils.renderWorldRegionColumn,
     searchable: true,
-    editable: 'never',
+    headerStyle: {
+      whiteSpace: 'nowrap',
+    },
   },
   {
     // Average: 8.5, Longest: 35 (w/o big Congos: Average: 8, Longest: 24)
@@ -108,105 +107,88 @@ export const columns = [
     // https://material-ui.com/components/autocomplete/#country-select
     title: 'Countries',
     field: 'Countries',
-    width: 180, // full "Russian Federation" (shown first if sorted by Language)
+    editable: 'never',
     render: utils.renderCountriesColumn,
     searchable: true,
-    editable: 'never',
+    headerStyle: {
+      paddingRight: 25, // enough for `United States` cells to not wrap
+    },
   },
   {
     // Longest: 20
     title: 'Global Speakers', // the only abbrev so far
     field: 'Global Speaker Total',
-    width: 105, // leaves room for Sort arrow
-    align: 'left',
-    type: 'numeric',
-    searchable: false,
     editable: 'never',
+    render: utils.renderGlobalSpeakColumn,
+    searchable: false,
+    type: 'numeric',
+    headerStyle: {
+      whiteSpace: 'nowrap',
+    },
   },
   {
     // Average: 10, Longest: 23 but preserve hyphenated Athabaskan-Eyak-Tlingit
     title: 'Language Family',
     field: 'Language Family',
-    width: 140,
-    searchable: true,
     editable: 'never',
+    searchable: true,
+    headerStyle: {
+      whiteSpace: 'nowrap',
+    },
   },
   {
     // Average: 12, Longest: 26
     title: '*Neighborhoods',
     field: 'Neighborhoods',
-    width: 155, // some wrapping but not bad; leaves room for Sort arrow
     searchable: true,
     editable: 'never',
     render: utils.renderNeighbColumn,
-    // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
-    // properly (blanks last, regardless of direction)
-    // CRED: https://stackoverflow.com/a/29829361/1048518
-    customSort: function sortNeighbs(a, b) {
-      if (a.Neighborhoods === b.Neighborhoods) {
-        return 0
-      }
-
-      // nulls sort after anything else
-      if (a.Neighborhoods === '') {
-        return 1
-      }
-
-      if (b.Neighborhoods === '') {
-        return -1
-      }
-
-      return a.Neighborhoods < b.Neighborhoods ? -1 : 1
-
-      // If descending, highest sorts first
-      // return a.Neighborhoods < b.Neighborhoods ? 1 : -1
-    },
+    customSort: utils.sortNeighbs,
   },
   {
     // Longest: 14
     title: '*Size',
     field: 'Size',
-    width: 125, // leaves room for Sort arrow
     align: 'left',
+    editable: 'never',
     lookup: COMM_SIZE_COL_MAP,
     render: (data) => COMM_SIZE_COL_MAP[data.Size],
     searchable: false,
-    editable: 'never',
   },
   {
     // Longest: 13
     title: '*Status',
     field: 'Status',
-    width: 110,
     searchable: false,
     editable: 'never',
     lookup: {
-      Historical: 'Historical',
       Community: 'Community',
+      Historical: 'Historical',
       Liturgical: 'Liturgical',
       Residential: 'Residential',
       Reviving: 'Reviving',
     },
   },
+  // All hidden from here down
   {
     title: 'Description',
     field: 'Description',
+    editable: 'never',
     hidden: true,
     searchable: true,
-    editable: 'never',
   },
   {
     title: 'Glottocode',
     field: 'Glottocode',
+    editable: 'never',
     hidden: true,
     searchable: true,
-    editable: 'never',
   },
   {
     title: 'ISO 639-3',
     field: 'ISO 639-3',
+    editable: 'never',
     hidden: true,
     searchable: true,
-    editable: 'never',
   },
 ] as Types.ColumnsConfig[]

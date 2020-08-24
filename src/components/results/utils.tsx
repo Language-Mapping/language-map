@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from '@material-ui/core'
 
 import { isURL } from '../../utils'
 import { LangRecordSchema } from '../../context/types'
@@ -7,6 +6,8 @@ import countryCodes from './config.emojis.json'
 
 import { CountryCodes } from './types'
 import { CountryListItemWithFlag } from './CountryListItemWithFlag'
+
+import { EndoImageModal } from './EndoImageModal'
 
 const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
 
@@ -50,10 +51,15 @@ export function renderEndoColumn(
     return data.Endonym
   }
 
+  return <EndoImageModal url={data.Endonym} language={data.Language} />
+}
+
+export function renderGlobalSpeakColumn(
+  data: LangRecordSchema
+): string | React.ReactNode {
   return (
-    <Link href={data.Endonym} target="_blank" rel="noreferrer">
-      Download image
-    </Link>
+    !data['Global Speaker Total'] ||
+    data['Global Speaker Total'].toLocaleString()
   )
 }
 
@@ -91,4 +97,27 @@ export function renderWorldRegionColumn(
   data: LangRecordSchema
 ): string | React.ReactNode {
   return data['World Region'] // TODO: icon swatch
+}
+
+// TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
+// properly (blanks last, regardless of direction)
+// CRED: https://stackoverflow.com/a/29829361/1048518
+export function sortNeighbs(a: LangRecordSchema, b: LangRecordSchema) {
+  if (a.Neighborhoods === b.Neighborhoods) {
+    return 0
+  }
+
+  // nulls sort after anything else
+  if (a.Neighborhoods === '') {
+    return 1
+  }
+
+  if (b.Neighborhoods === '') {
+    return -1
+  }
+
+  return a.Neighborhoods < b.Neighborhoods ? -1 : 1
+
+  // If descending, highest sorts first
+  // return a.Neighborhoods < b.Neighborhoods ? 1 : -1
 }

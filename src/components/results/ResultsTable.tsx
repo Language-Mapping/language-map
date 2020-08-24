@@ -8,9 +8,10 @@ import { Typography } from '@material-ui/core'
 import { GoFile } from 'react-icons/go'
 import { IoMdHelpCircle, IoMdCloseCircle } from 'react-icons/io'
 import { TiThList } from 'react-icons/ti'
-import { FaMapMarkedAlt } from 'react-icons/fa'
+import { FaMapMarkedAlt, FaSearchLocation } from 'react-icons/fa'
 
 import { GlobalContext, SimpleDialog } from 'components'
+import { RouteLocation } from 'components/map/types'
 import * as config from './config'
 import { MuiTableWithDataMgr } from './types'
 import { RecordDescription } from './RecordDescription'
@@ -30,6 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(1),
       flexShrink: 0,
     },
+    // Smaller than the default so that it is not as large as table modal
     descripDialogPaper: {
       margin: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
     },
@@ -90,11 +92,6 @@ export const ResultsTable: FC = () => {
         localization={localization}
         data={state.langFeatures}
         title={<Title />}
-        onRowClick={(event, rowData) => {
-          if (rowData) {
-            history.push(`/details?id=${rowData.ID}`)
-          }
-        }}
         onFilterChange={() => setMapFiltersBtnDisbled(false)}
         // TODO: rm if not using (not even sure what triggers it)
         // onQueryChange={() => setMapFiltersBtnDisbled(false)}
@@ -132,6 +129,26 @@ export const ResultsTable: FC = () => {
               history.push(`/${loc.search}`)
             },
           },
+          (data) => ({
+            icon: () => <FaSearchLocation />,
+            tooltip: 'View in map',
+            onClick: (event, clickedRowData) => {
+              const DETAILS_PATH: RouteLocation = '/details'
+              let ID = -1
+
+              if (Array.isArray(clickedRowData)) {
+                ID = clickedRowData[0].ID
+              } else {
+                ID = clickedRowData.ID
+              }
+
+              history.push(`${DETAILS_PATH}?id=${ID}`)
+            },
+            iconProps: {
+              color: data.Description === '' ? 'disabled' : 'primary',
+            },
+            disabled: data.Description === '',
+          }),
           {
             icon: () => <IoMdHelpCircle />,
             tooltip: 'Glossary',
