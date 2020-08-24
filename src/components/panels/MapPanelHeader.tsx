@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+import { useLocation, Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Box, Typography } from '@material-ui/core'
 
@@ -12,7 +13,7 @@ type PanelHeaderProps = {
   active?: boolean
 }
 
-type PanelHeaderComponent = Omit<MapPanel, 'component' | 'path'> & {
+type PanelHeaderComponent = Omit<MapPanel, 'component'> & {
   active: boolean
 }
 
@@ -30,6 +31,9 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'sticky',
       textAlign: 'center',
       top: 0,
+      '& a, a:visited': {
+        color: theme.palette.common.white,
+      },
       [theme.breakpoints.down('xs')]: {
         height: MOBILE_PANEL_HEADER_HEIGHT,
       },
@@ -46,6 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
         "icon main"
         "subheading subheading"
       `,
+      transition: '300ms background-color',
       backgroundColor: (props: PanelHeaderProps) =>
         props.active ? theme.palette.primary.dark : theme.palette.primary.light,
       '& .panel-header-text': {
@@ -57,25 +62,31 @@ const useStyles = makeStyles((theme: Theme) =>
         height: '0.8em',
         width: '0.8em',
       },
+      '&:hover': {
+        backgroundColor: (props: PanelHeaderProps) => {
+          const { dark, main } = theme.palette.primary
+
+          return props.active ? dark : main
+        },
+      },
     },
   })
 )
 
-export const MapPanelHeaderChild: FC<PanelHeaderComponent> = ({
-  active,
-  heading,
-  icon,
-  subheading,
-}) => {
+export const MapPanelHeaderChild: FC<PanelHeaderComponent> = (props) => {
+  const { active, heading, icon, subheading, path } = props
   const classes = useStyles({ active })
+  const loc = useLocation()
 
   return (
     <>
       <Typography
         variant="h4"
-        component="h2"
+        // component="h2" // TODO: make semantic if it makes sense
+        component={RouterLink}
         className={classes.mainHeading}
         title={`${heading} ${subheading}`}
+        to={`${path}${loc.search}`}
       >
         {icon}
         <span className="panel-header-text">{heading}</span>
