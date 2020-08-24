@@ -78,14 +78,12 @@ export const columns = [
     title: 'Language',
     field: 'Language',
     defaultSort: 'asc',
-    editable: 'never',
     searchable: true,
   },
   {
     // Average: 8.5, Longest: 26, Longest full: Anashinaabemowin
     title: 'Endonym',
     field: 'Endonym',
-    editable: 'never',
     disableClick: true, // TODO: use this if we want row clicks again
     render: utils.renderEndoColumn,
     searchable: true,
@@ -94,7 +92,6 @@ export const columns = [
     // Average: 13, Longest: 25 (thanks AUS & NZ...)
     title: 'World Region',
     field: 'World Region',
-    editable: 'never',
     render: utils.renderWorldRegionColumn,
     searchable: true,
     headerStyle: {
@@ -108,7 +105,6 @@ export const columns = [
     // https://material-ui.com/components/autocomplete/#country-select
     title: 'Countries',
     field: 'Countries',
-    editable: 'never',
     render: utils.renderCountriesColumn,
     searchable: true,
     headerStyle: {
@@ -119,11 +115,13 @@ export const columns = [
     // Longest: 20
     title: 'Global Speakers', // the only abbrev so far
     field: 'Global Speaker Total',
-    editable: 'never',
+    // defaultSort: 'asc', // TODO: make this work
+    // customSort: utils.sortNeighbs, // TODO: this
     render: utils.renderGlobalSpeakColumn,
     searchable: false,
     type: 'numeric',
     headerStyle: {
+      paddingLeft: 0,
       whiteSpace: 'nowrap',
     },
   },
@@ -131,7 +129,6 @@ export const columns = [
     // Average: 10, Longest: 23 but preserve hyphenated Athabaskan-Eyak-Tlingit
     title: 'Language Family',
     field: 'Language Family',
-    editable: 'never',
     searchable: true,
     headerStyle: {
       whiteSpace: 'nowrap',
@@ -142,7 +139,6 @@ export const columns = [
     title: '*Neighborhoods',
     field: 'Neighborhoods',
     searchable: true,
-    editable: 'never',
     render: utils.renderNeighbColumn,
     customSort: utils.sortNeighbs,
   },
@@ -151,7 +147,6 @@ export const columns = [
     title: '*Size',
     field: 'Size',
     align: 'left',
-    editable: 'never',
     lookup: COMM_SIZE_COL_MAP,
     render: (data) => COMM_SIZE_COL_MAP[data.Size],
     searchable: false,
@@ -161,7 +156,6 @@ export const columns = [
     title: '*Status',
     field: 'Status',
     searchable: false,
-    editable: 'never',
     lookup: {
       Community: 'Community',
       Historical: 'Historical',
@@ -174,21 +168,18 @@ export const columns = [
   {
     title: 'Description',
     field: 'Description',
-    editable: 'never',
     hidden: true,
     searchable: true,
   },
   {
     title: 'Glottocode',
     field: 'Glottocode',
-    editable: 'never',
     hidden: true,
     searchable: true,
   },
   {
     title: 'ISO 639-3',
     field: 'ISO 639-3',
-    editable: 'never',
     hidden: true,
     searchable: true,
   },
