@@ -129,7 +129,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     resultsModalPaper: {
       marginBottom: 0,
       marginTop: 0,
-      maxHeight: `calc(100% - ${theme.spacing(4)}px)`,
+      maxHeight: `calc(100% - ${theme.spacing(2)}px)`,
     },
   })
 )

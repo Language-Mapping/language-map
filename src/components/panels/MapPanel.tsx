@@ -4,6 +4,13 @@ import { Box, Paper } from '@material-ui/core'
 
 type PanelProps = {
   active?: boolean
+  panelOpen?: boolean
+}
+
+type PanelContentComponent = {
+  active: boolean
+  heading: string
+  panelOpen: boolean
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -13,16 +20,18 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       position: 'absolute',
       top: 0,
-      transition: '300ms all',
       width: '100%',
     },
     panelContent: {
       overflow: 'auto',
       padding: '.8rem',
-      // TODO: make it nicely transitioned again
-      opacity: (props: PanelProps) => (props.active ? 1 : 0),
       position: 'relative',
-      transition: '300ms opacity',
+      transition: '300ms all',
+      opacity: (props: PanelProps) => (props.active && props.panelOpen ? 1 : 0),
+      transform: (props: PanelProps) =>
+        props.active && props.panelOpen ? 'scaleY(1)' : 'scaleY(0)',
+      maxHeight: (props: PanelProps) =>
+        props.active && props.panelOpen ? '100%' : 0,
       [theme.breakpoints.up('sm')]: {
         padding: theme.spacing(2),
       },
@@ -30,11 +39,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const MapPanelContent: FC<{ active: boolean; heading: string }> = (
-  props
-) => {
-  const { active, children } = props
-  const classes = useStyles({ active })
+export const MapPanelContent: FC<PanelContentComponent> = (props) => {
+  const { active, children, panelOpen } = props
+  const classes = useStyles({ active, panelOpen })
 
   return <Box className={classes.panelContent}>{children}</Box>
 }

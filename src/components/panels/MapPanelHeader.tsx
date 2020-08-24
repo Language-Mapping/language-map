@@ -15,6 +15,8 @@ type PanelHeaderProps = {
 
 type PanelHeaderComponent = Omit<MapPanel, 'component'> & {
   active: boolean
+  panelOpen: boolean
+  setPanelOpen: React.Dispatch<boolean>
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -22,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     panelHeaderRoot: {
       alignItems: 'center',
       backgroundColor: theme.palette.primary.main,
-      borderBottom: `solid 4px ${theme.palette.primary.dark}`,
+      borderBottom: `solid 2px ${theme.palette.primary.dark}`,
       color: theme.palette.common.white,
       display: 'flex',
       flexShrink: 0,
@@ -31,8 +33,9 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'sticky',
       textAlign: 'center',
       top: 0,
+      zIndex: 1,
       '& a, a:visited': {
-        color: theme.palette.common.white,
+        color: `${theme.palette.common.white} !important`, // constant fight!
       },
       [theme.breakpoints.down('xs')]: {
         height: MOBILE_PANEL_HEADER_HEIGHT,
@@ -43,6 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignContent: 'center',
       display: 'grid',
       flex: 1,
+      fontSize: '1.75rem',
       height: '100%',
       justifyContent: 'center',
       padding: `0 ${theme.spacing(1)}px`,
@@ -74,7 +78,15 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const MapPanelHeaderChild: FC<PanelHeaderComponent> = (props) => {
-  const { active, heading, icon, subheading, path } = props
+  const {
+    active,
+    heading,
+    icon,
+    panelOpen,
+    path,
+    setPanelOpen,
+    subheading,
+  } = props
   const classes = useStyles({ active })
   const loc = useLocation()
 
@@ -85,8 +97,15 @@ export const MapPanelHeaderChild: FC<PanelHeaderComponent> = (props) => {
         // component="h2" // TODO: make semantic if it makes sense
         component={RouterLink}
         className={classes.mainHeading}
-        title={`${heading} ${subheading}`}
+        title={`${heading} ${subheading} (click to show/hide panel)`}
         to={`${path}${loc.search}`}
+        onClick={() => {
+          if (active && panelOpen) {
+            setPanelOpen(false)
+          } else {
+            setPanelOpen(true)
+          }
+        }}
       >
         {icon}
         <span className="panel-header-text">{heading}</span>

@@ -26,24 +26,32 @@ export const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       // MB wordmark (logo) and attribution text
       '& .mapboxgl-ctrl-bottom-right': {
-        alignItems: 'center',
+        alignItems: 'baseline',
         display: 'flex',
         transition: '300ms transform',
+        // FINE-TUNE AWARD 2020 (fits baaaarely on iPhone X, super fragile!)
         [theme.breakpoints.down('xs')]: {
+          left: 8,
           transform: (props: UseStyleProps) => {
             if (!props.panelOpen) {
-              // TODO: drop it down just a little lower
-              // return `translateY(calc(100% + ${MOBILE_PANEL_HEADER_HEIGHT}))`
-              return `translateY(-${MOBILE_PANEL_HEADER_HEIGHT})`
+              return `translateY(calc(-${MOBILE_PANEL_HEADER_HEIGHT} + 2px))`
             }
 
-            return `translateY(-${props.screenHeight / 2}px)`
+            return `translateY(calc(-${props.screenHeight / 2}px + 2px))`
           },
         },
       },
-      // Attriution text
+      // MB folks would probably like their logo to have more room, but it's
+      // definitely legible in this setup.
+      '& .mapboxgl-ctrl': {
+        margin: 0,
+      },
+      // Attribution text
       '& .mapboxgl-ctrl-attrib': {
+        marginLeft: 4,
         order: 1,
+        position: 'relative',
+        top: -2,
       },
     },
     // The actual map container

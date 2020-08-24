@@ -1,7 +1,6 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useLocation, Switch, Route } from 'react-router-dom'
-import { Box, IconButton } from '@material-ui/core'
-import { MdClose } from 'react-icons/md'
+import { Box } from '@material-ui/core'
 
 import {
   MapPanel,
@@ -11,7 +10,7 @@ import {
 } from 'components/panels'
 import { Map } from 'components/map'
 import { GlobalContext } from 'components'
-import { LayerPropsNonBGlayer } from './types'
+import { LayerPropsNonBGlayer, RouteLocation } from './types'
 import { mbStyleTileConfig } from './config'
 import { useStyles } from './styles'
 import { panelsConfig } from '../../config/panels-config'
@@ -86,7 +85,20 @@ export const MapWrap: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc, state.langFeaturesCached.length])
 
-  useEffect((): void => setPanelOpen(true), [loc]) // TODO: not so willy-nilly?
+  // Open panel for relevant routes
+  useEffect((): void => {
+    const pathsToTriggerOpen = ['/details', '/'] as RouteLocation[]
+
+    if (pathsToTriggerOpen.includes(loc.pathname as RouteLocation)) {
+      setPanelOpen(true)
+    }
+  }, [loc])
+
+  // Open panel as needed (may have been some conflicts/redundancy with
+  // `location`, and still redundancy but it does work)
+  useEffect((): void => {
+    setPanelOpen(panelOpen)
+  }, [panelOpen])
 
   return (
     <div className={classes.mapWrapRoot}>
@@ -108,6 +120,8 @@ export const MapWrap: FC = () => {
                 key={config.heading}
                 {...config}
                 active={loc.pathname === config.path}
+                panelOpen={panelOpen}
+                setPanelOpen={setPanelOpen}
               >
                 {config.component}
               </MapPanelHeaderChild>
@@ -119,6 +133,7 @@ export const MapWrap: FC = () => {
                 <MapPanelContent
                   {...config}
                   active={loc.pathname === config.path}
+                  panelOpen={panelOpen}
                 >
                   {config.component}
                 </MapPanelContent>
@@ -126,17 +141,6 @@ export const MapWrap: FC = () => {
             ))}
           </Switch>
         </MapPanel>
-        {panelOpen && (
-          <IconButton
-            aria-label="close"
-            title="Hide panel"
-            size="small"
-            className={classes.closePanel}
-            onClick={() => setPanelOpen(false)}
-          >
-            <MdClose />
-          </IconButton>
-        )}
       </Box>
     </div>
   )
