@@ -116,11 +116,17 @@ export const ResultsTable: FC = () => {
                 return
               }
 
+              // TODO: pick one or the other, not both
               dispatch({
                 type: 'SET_LANG_FEAT_IDS',
                 payload: tableRef.current.dataManager.filteredData.map(
                   (data) => data.ID
                 ),
+              })
+
+              dispatch({
+                type: 'INIT_LANG_LAYER_FEATURES',
+                payload: tableRef.current.dataManager.filteredData,
               })
 
               history.push(`/${loc.search}`)

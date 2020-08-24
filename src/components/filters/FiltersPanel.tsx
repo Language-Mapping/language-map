@@ -9,8 +9,10 @@ import { SearchByOmnibox } from './SearchByOmnibox'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    panelSubheading: {
-      marginBottom: 0,
+    resultsBtnWrap: {
+      display: 'flex',
+      justifyContent: 'center',
+      marginBottom: 8,
     },
   })
 )
@@ -21,27 +23,20 @@ export const FiltersPanel: FC = () => {
   // TODO: something respectable for styles, aka MUI-something
   return (
     <>
-      <Typography
-        variant="h5"
-        component="h3"
-        className={classes.panelSubheading}
-      >
-        Search & Filter
-      </Typography>
       <SearchByOmnibox
         data={state.langFeatures}
         enableClear={state.langFeatIDs !== null}
-        clearFilters={() =>
+        clearFilters={() => {
+          // TODO: pick one or the other, not both
           dispatch({ type: 'SET_LANG_FEAT_IDS', payload: null })
-        }
-      />
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: 8,
+
+          dispatch({
+            type: 'INIT_LANG_LAYER_FEATURES',
+            payload: state.langFeaturesCached,
+          })
         }}
-      >
+      />
+      <div className={classes.resultsBtnWrap}>
         <ViewResultsDataBtn />
       </div>
       <Typography variant="h5" component="h3">
