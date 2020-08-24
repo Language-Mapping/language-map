@@ -7,6 +7,12 @@ import { RouteLocation } from 'components/map/types'
 import { PanelIntro } from 'components/panels'
 import { GlobalContext, LoadingIndicator } from 'components'
 import { DetailsIntro } from './DetailsIntro'
+import { isURL, correctDropboxURL } from '../../utils'
+
+type EndoImageComponent = {
+  url: string
+  alt: string
+}
 
 const DATA_TABLE_PATHNAME: RouteLocation = '/table'
 
@@ -23,8 +29,13 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: '3rem',
       },
     },
-    detailsSubheading: {
-      marginBottom: theme.spacing(1),
+    endoImage: {
+      height: 120,
+      maxWidth: '95%',
+    },
+    neighborhoods: {
+      color: theme.palette.grey[800],
+      fontSize: '0.8rem',
     },
     description: {
       fontSize: theme.typography.caption.fontSize,
@@ -32,6 +43,31 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
+
+// Mongolian, ASL, etc. have URLs to images
+const EndoImageWrap: FC<EndoImageComponent> = (props) => {
+  const classes = useStyles()
+  const { url: origUrl, alt } = props
+  const url = correctDropboxURL(origUrl)
+
+  return <img src={url} alt={alt} className={classes.endoImage} />
+}
+
+const NoFeatSel: FC = () => {
+  return (
+    <PanelIntro>
+      Click a language community in the map or visit the{' '}
+      <RouterLink
+        to={DATA_TABLE_PATHNAME}
+        title="Data table of language communities"
+      >
+        data table
+      </RouterLink>{' '}
+      to view and filter all communities.
+    </PanelIntro>
+  )
+}
+
 export const DetailsPanel: FC = () => {
   const { state } = useContext(GlobalContext)
   const classes = useStyles()
@@ -47,19 +83,12 @@ export const DetailsPanel: FC = () => {
 
   // No sel feat details
   if (!selFeatAttribs) {
-    return (
-      <PanelIntro>
-        Click a language community in the map or visit the{' '}
-        <RouterLink
-          to={DATA_TABLE_PATHNAME}
-          title="Data table of language communities"
-        >
-          data table
-        </RouterLink>{' '}
-        to view and filter all communities.
-      </PanelIntro>
-    )
+    return <NoFeatSel />
   }
+
+  const { Endonym, Language, Neighborhoods, Description } = selFeatAttribs
+  const { detailsPanelHeading, intro, description, neighborhoods } = classes
+  const isImage = isURL(Endonym)
 
   // TODO: deal with `id` present in URL but no match found
   // const parsed = queryString.parse(window.location.search)
@@ -71,24 +100,26 @@ export const DetailsPanel: FC = () => {
   return (
     <>
       <DetailsIntro />
-      <div className={classes.intro}>
-        <Typography variant="h3" className={classes.detailsPanelHeading}>
-          {selFeatAttribs.Endonym}
-        </Typography>
-        {selFeatAttribs.Endonym !== selFeatAttribs.Language && (
-          <Typography variant="caption" className={classes.detailsSubheading}>
-            {`(${selFeatAttribs.Language})`}
+      <div className={intro}>
+        {(isImage && <EndoImageWrap url={Endonym} alt={Language} />) || (
+          <Typography variant="h3" className={detailsPanelHeading}>
+            {Endonym}
           </Typography>
         )}
-        {selFeatAttribs.Neighborhoods && (
-          <small>
-            <i>{selFeatAttribs.Neighborhoods.split(', ')[0]}</i>
-          </small>
+        {Endonym !== Language && (
+          <Typography variant="caption" component="p">
+            {Language}
+          </Typography>
+        )}
+        {Neighborhoods && (
+          <Typography className={neighborhoods}>
+            <i>{Neighborhoods.split(', ')[0]}</i>
+          </Typography>
         )}
       </div>
       <Divider />
-      <Typography variant="body2" className={classes.description}>
-        {selFeatAttribs.Description}
+      <Typography variant="body2" className={description}>
+        {Description}
       </Typography>
     </>
   )

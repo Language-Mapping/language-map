@@ -110,3 +110,17 @@ export function useWindowResize(): { width: number; height: number } {
     height,
   }
 }
+
+// "dl" stuff takes you to the downloadable version, raw and www to raw. Could
+// just change this in the data but Ross is away and Jason already gave faulty
+// instructions...
+export function correctDropboxURL(url: string): string {
+  const badDropboxHost = 'dl.dropboxusercontent.com'
+  const goodDropboxHost = 'www.dropbox.com'
+  const badDropboxSuffix = 'dl=0'
+  const goodDropboxSuffix = 'raw=1'
+
+  return url
+    .replace(badDropboxHost, goodDropboxHost)
+    .replace(badDropboxSuffix, goodDropboxSuffix)
+}

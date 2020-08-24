@@ -5,6 +5,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Link, Typography } from '@material-ui/core'
 
 import { SimpleDialog } from 'components'
+import { correctDropboxURL } from '../../utils'
 
 type EndoImageComponent = {
   url: string
@@ -40,18 +41,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
-
-function correctDropboxURL(url: string): string {
-  const BAD_DROPBOX_HOST = 'dl.dropboxusercontent.com'
-  const GOOD_DROPBOX_HOST = 'www.dropbox.com'
-  const BAD_DROPBOX_SUFFIX = 'dl=0'
-  const GOOD_DROPBOX_SUFFIX = 'raw=1'
-
-  return url
-    .replace(BAD_DROPBOX_HOST, GOOD_DROPBOX_HOST)
-    .replace(BAD_DROPBOX_SUFFIX, GOOD_DROPBOX_SUFFIX)
-}
-
 export const EndoImageModal: FC<EndoImageComponent> = (props) => {
   const { url: origUrl, language } = props
   const isSvg = origUrl.includes('.svg')
