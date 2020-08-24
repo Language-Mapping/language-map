@@ -7,7 +7,7 @@ import { RouteLocation } from 'components/map/types'
 import { PanelIntro } from 'components/panels'
 import { GlobalContext, LoadingIndicator } from 'components'
 import { DetailsIntro } from './DetailsIntro'
-import { isURL, correctDropboxURL } from '../../utils'
+import { isURL, correctDropboxURL, prettyTruncateList } from '../../utils'
 
 type EndoImageComponent = {
   url: string
@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
     neighborhoods: {
       color: theme.palette.grey[800],
       fontSize: '0.8rem',
+      fontStyle: 'italic',
     },
     description: {
       fontSize: theme.typography.caption.fontSize,
@@ -113,7 +114,7 @@ export const DetailsPanel: FC = () => {
         )}
         {Neighborhoods && (
           <Typography className={neighborhoods}>
-            <i>{Neighborhoods.split(', ')[0]}</i>
+            {prettyTruncateList(Neighborhoods)}
           </Typography>
         )}
       </div>
