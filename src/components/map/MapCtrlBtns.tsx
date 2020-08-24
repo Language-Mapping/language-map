@@ -32,8 +32,8 @@ const useStyles = makeStyles((theme: Theme) =>
       right: 4, // same as left-side page title
       zIndex: 1100, // above app bar
       [theme.breakpoints.up('sm')]: {
-        top: theme.spacing(2),
-        right: theme.spacing(2),
+        top: theme.spacing(3),
+        right: theme.spacing(3),
       },
       '& svg': {
         height: '1.5em',

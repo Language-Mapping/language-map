@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
         props.active && props.panelOpen ? '100%' : 0,
       [theme.breakpoints.up('sm')]: {
         padding: theme.spacing(2),
+        paddingTop: theme.spacing(1),
       },
     },
   })

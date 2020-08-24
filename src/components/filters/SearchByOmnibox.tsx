@@ -108,6 +108,7 @@ export const SearchByOmnibox: FC<OmniboxComponent> = (props) => {
       filterOptions={(options, { inputValue }) => {
         return matchSorter(options, inputValue, {
           keys: ['Language', 'Endonym', 'ISO 639-3', 'Glottocode'],
+          threshold: matchSorter.rankings.WORD_STARTS_WITH,
         })
       }}
       renderInput={(params) => (
@@ -120,9 +121,9 @@ export const SearchByOmnibox: FC<OmniboxComponent> = (props) => {
               enableClear && <FiltersWarning clearFilters={clearFilters} />
             }
             InputLabelProps={{
-              shrink: true,
-              focused: false,
               disableAnimation: true,
+              focused: false,
+              shrink: true,
             }}
           />
         </>
