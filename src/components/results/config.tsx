@@ -86,6 +86,7 @@ export const columns = [
     title: 'Endonym',
     field: 'Endonym',
     editable: 'never',
+    disableClick: true, // TODO: use this if we want row clicks again
     render: utils.renderEndoColumn,
     searchable: true,
   },
