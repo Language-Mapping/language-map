@@ -14,9 +14,9 @@ import {
 } from '@material-ui/core'
 import { MdClose } from 'react-icons/md'
 
-import { getAboutPageContent } from './utils'
+import { fetchContentFromWP } from './utils'
 import { wpAPIsettings } from './config'
-import { AboutPageState } from './types'
+import { RemoteContentState } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,7 +42,7 @@ export const AboutPageView: FC = () => {
 
   // TODO: learn how to use undefined or null as the initial/default type rather
   // than creating an object for the sake of TS.
-  const [aboutPgContent, setAboutPgContent] = useState<AboutPageState>({
+  const [aboutPgContent, setAboutPgContent] = useState<RemoteContentState>({
     title: null,
     content: null,
   })
@@ -55,7 +55,7 @@ export const AboutPageView: FC = () => {
   }
 
   useEffect(() => {
-    getAboutPageContent(url, setAboutPgContent)
+    fetchContentFromWP(url, setAboutPgContent)
   }, [url])
 
   if (!contentReady) {

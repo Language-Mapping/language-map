@@ -5,10 +5,11 @@ const initialMapStates = {
   activeLangSymbGroupId: '',
   activeLangLabelId: '',
   baselayer: 'light',
+  langFeatIDs: null,
   langFeatures: [],
   langFeaturesCached: [],
   langLabels: [],
-  langLegend: [],
+  legendItems: [],
   langSymbGroups: {},
   layerVisibility: {
     languages: true,
@@ -18,7 +19,8 @@ const initialMapStates = {
 }
 
 export const initialState = {
-  activePanelIndex: 0,
+  mapLoaded: false,
+  offCanvasNavOpen: false,
   selFeatAttribs: null,
   showSplash: false,
   hasSeenSplash: !!localStorage.getItem('hasSeenSplash') || false,

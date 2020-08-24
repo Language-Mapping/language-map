@@ -1,88 +1,166 @@
-import React, { FC, useContext } from 'react'
-import { useHistory } from 'react-router-dom'
-// TODO: look into Column
-// import MaterialTable, { Column } from 'material-table'
+/* eslint-disable operator-linebreak */
+/* eslint-disable react/display-name */
+import React, { FC, useContext, useState } from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import MaterialTable from 'material-table'
-import { FaFilter } from 'react-icons/fa'
-import {
-  MdSearch,
-  MdClear,
-  MdChevronLeft,
-  MdChevronRight,
-  MdLastPage,
-  MdFirstPage,
-} from 'react-icons/md'
+import { Typography } from '@material-ui/core'
+import { GoFile } from 'react-icons/go'
+import { IoMdHelpCircle, IoMdCloseCircle } from 'react-icons/io'
+import { TiThList } from 'react-icons/ti'
+import { FaMapMarkedAlt } from 'react-icons/fa'
 
-import { GlobalContext } from 'components'
+import { GlobalContext, SimpleDialog } from 'components'
+import * as config from './config'
+import { MuiTableWithDataMgr } from './types'
+import { RecordDescription } from './RecordDescription'
+// import { useWindowResize } from '../../utils' // TODO: rm if not using
 
-type ResultsTableComponent = {
-  setResultsModalOpen: React.Dispatch<boolean>
-}
+const { icons, options, columns, localization } = config
 
-export const ResultsTable: FC<ResultsTableComponent> = ({
-  setResultsModalOpen,
-}) => {
-  const { state, dispatch } = useContext(GlobalContext)
-  const history = useHistory()
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    tableTitleRoot: {
+      display: 'flex',
+      alignItems: 'center',
+    },
+    titleIcon: {
+      fontSize: '0.6em',
+      color: theme.palette.grey[700],
+      marginRight: theme.spacing(1),
+      flexShrink: 0,
+    },
+    descripDialogPaper: {
+      margin: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
+    },
+  })
+)
 
-  const columns = [
-    { title: 'Language', field: 'Language' },
-    { title: 'Endonym', field: 'Endonym' },
-    { title: 'Neighborhoods', field: 'Neighborhoods' }, // TODO: inc. 2ndary
-    { title: 'Community Size', field: 'Community Size' },
-    { title: 'Type', field: 'Type' },
-    { title: 'World Region', field: 'World Region' },
-    { title: 'Primary Country', field: 'Primary Country' },
-    { title: 'Global Speaker Total', field: 'Global Speaker Total' },
-    { title: 'Language Family', field: 'Language Family' },
-    // { title: 'Description', field: 'Description' }, // TODO: restore/truncate
-    // TODO: adapt and restore
-    // {
-    //   title: 'Birth Year',
-    //   field: 'birthYear',
-    //   type: 'numeric',
-    // },
-    // {
-    //   title: 'Birth Place',
-    //   field: 'birthCity',
-    //   lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' },
-    // },
-  ]
-  const options = {
-    showTitle: false,
-    filtering: true,
-    pageSize: 10,
-    pageSizeOptions: [5, 10, 25, 50],
-  }
-
-  const icons = {
-    Search: MdSearch,
-    Filter: FaFilter,
-    ResetSearch: MdClear,
-    FirstPage: MdFirstPage,
-    LastPage: MdLastPage,
-    PreviousPage: MdChevronLeft,
-    NextPage: MdChevronRight,
-  }
+// TODO: separate file
+const Title: FC = () => {
+  const classes = useStyles()
 
   return (
-    <MaterialTable
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      icons={icons}
-      options={options}
-      columns={columns}
-      data={state.langFeatures}
-      onRowClick={(a, record) => {
-        if (!record) {
-          return
-        }
+    <Typography variant="h4" className={classes.tableTitleRoot}>
+      <TiThList className={classes.titleIcon} />
+      Data
+    </Typography>
+  )
+}
 
-        history.push(`/details?id=${record.ID}`)
+export const ResultsTable: FC = () => {
+  const { state, dispatch } = useContext(GlobalContext)
+  const classes = useStyles()
+  const history = useHistory()
+  const loc = useLocation()
+  // const { height } = useWindowResize() // TODO: rm if not using
+  const [descripModalText, setDescripModalText] = useState<string>('')
+  const [mapFiltersBtnDisabled, setMapFiltersBtnDisbled] = useState<boolean>(
+    true
+  )
+  const tableRef = React.useRef<MuiTableWithDataMgr>(null)
 
-        dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: 2 })
-        setResultsModalOpen(false)
-      }}
-    />
+  // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
+  // properly (blanks last, regardless of direction)
+
+  // TODO: highlight selected feature in table
+  return (
+    <>
+      {descripModalText && (
+        <SimpleDialog
+          open={descripModalText !== ''}
+          onClose={(event, reason) => setDescripModalText('')}
+          PaperProps={{
+            className: classes.descripDialogPaper,
+          }}
+        >
+          <RecordDescription text={descripModalText} />
+        </SimpleDialog>
+      )}
+      <MaterialTable
+        icons={icons}
+        tableRef={tableRef}
+        options={{
+          ...options,
+          // maxBodyHeight: height - 138, // TODO: more exact for mobile and desk
+          // maxBodyHeight: height - 120, // TODO: more exact for mobile and desk
+          maxBodyHeight: 'calc(100vh - 73px - 32px - 53px - 20px)',
+        }}
+        columns={columns}
+        localization={localization}
+        data={state.langFeatures}
+        title={<Title />}
+        onRowClick={(event, rowData) => {
+          if (rowData) {
+            history.push(`/details?id=${rowData.ID}`)
+          }
+        }}
+        onFilterChange={() => setMapFiltersBtnDisbled(false)}
+        // TODO: rm if not using (not even sure what triggers it)
+        // onQueryChange={() => setMapFiltersBtnDisbled(false)}
+        // TODO: all into config
+        actions={[
+          {
+            icon: () => <IoMdCloseCircle />,
+            tooltip: 'Clear filters',
+            isFreeAction: true,
+            onClick: () => null, // TODO: wire up
+          },
+          {
+            icon: () => <FaMapMarkedAlt />,
+            tooltip: 'Set filters in map',
+            isFreeAction: true,
+            disabled: mapFiltersBtnDisabled,
+            onClick: () => {
+              if (!tableRef || !tableRef.current) {
+                return
+              }
+
+              // TODO: pick one or the other, not both
+              dispatch({
+                type: 'SET_LANG_FEAT_IDS',
+                payload: tableRef.current.dataManager.filteredData.map(
+                  (data) => data.ID
+                ),
+              })
+
+              dispatch({
+                type: 'INIT_LANG_LAYER_FEATURES',
+                payload: tableRef.current.dataManager.filteredData,
+              })
+
+              history.push(`/${loc.search}`)
+            },
+          },
+          {
+            icon: () => <IoMdHelpCircle />,
+            tooltip: 'Glossary',
+            isFreeAction: true,
+            onClick: () => history.push(`/glossary${loc.search}`),
+          },
+          (data) => ({
+            icon: () => <GoFile />,
+            tooltip: !data.Description
+              ? 'No description available'
+              : 'View description',
+            onClick: (event, clickedRowData) => {
+              let text = ''
+
+              if (Array.isArray(clickedRowData)) {
+                text = clickedRowData[0].Description
+              } else {
+                text = clickedRowData.Description
+              }
+
+              setDescripModalText(text)
+            },
+            iconProps: {
+              color: data.Description === '' ? 'disabled' : 'primary',
+            },
+            disabled: data.Description === '',
+          }),
+        ]}
+      />
+    </>
   )
 }

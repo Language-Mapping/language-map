@@ -36,6 +36,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
       // @ts-ignore // promoteId is just not anywhere in the source...
       promoteId="ID"
       type="vector"
+      // YO: careful here, it's overriding what's in the MB style JSON...
       url={`mapbox://${mbStyleTileConfig.tilesetId}`}
       id={mbStyleTileConfig.internalSrcID}
     >
@@ -57,12 +58,21 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
           // TODO: change symbol size (???) for selected feat. Evidently cannot
           // set layout properties base on feature-state though, so maybe this:
           // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setlayoutproperty
-          layout = { ...layout, 'icon-size': 0.5 } // 0.5 good with 24x24 SVG
+          // 0.5 good with 24x24 SVG if there is a background circle. Otherwise
+          // a little smaller is better.
+          layout = { ...layout, 'icon-size': 0.4 }
         }
 
         return (
           // TODO: some kind of transition/animation on switch
-          <Layer key={layer.id} {...layer} layout={layout} paint={paint} />
+          <Layer
+            key={layer.id}
+            {...layer}
+            // YO: careful here, it's overriding what's in the MB style JSON...
+            source-layer={mbStyleTileConfig.layerId}
+            layout={layout}
+            paint={paint}
+          />
         )
       })}
       {labelLayers.map((layer: LayerPropsNonBGlayer) => {
@@ -73,7 +83,15 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
           visibility: isActiveLabel ? 'visible' : 'none',
         }
 
-        return <Layer key={layer.id} {...layer} layout={layout} />
+        return (
+          <Layer
+            key={layer.id}
+            {...layer}
+            // YO: careful here, it's overriding what's in the MB style JSON...
+            source-layer={mbStyleTileConfig.layerId}
+            layout={layout}
+          />
+        )
       })}
     </Source>
   )

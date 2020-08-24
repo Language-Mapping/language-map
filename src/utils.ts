@@ -1,4 +1,4 @@
-import { Dispatch } from 'react'
+import { useState, useEffect, Dispatch } from 'react'
 
 import {
   MetadataGroup,
@@ -81,4 +81,31 @@ export const getIDfromURLparams = (url: string): number => {
   const idAsString = urlParams.get('id') as string
 
   return parseInt(idAsString, 10)
+}
+
+export const isURL = (text: string): boolean => text.slice(0, 4) === 'http'
+
+// CRED:
+// https://github.com/mbrn/material-table/issues/709#issuecomment-566097441
+export function useWindowResize(): { width: number; height: number } {
+  const [width, setWidth] = useState(window.innerWidth)
+  const [height, setHeight] = useState(window.innerHeight)
+
+  const listener = () => {
+    setWidth(window.innerWidth)
+    setHeight(window.innerHeight)
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', listener)
+
+    return () => {
+      window.removeEventListener('resize', listener)
+    }
+  }, [])
+
+  return {
+    width,
+    height,
+  }
 }

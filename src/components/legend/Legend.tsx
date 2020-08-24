@@ -2,11 +2,11 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { LegendSwatch } from 'components/legend'
-import { langTypeIconsConfig } from 'components/map/config'
+import { langTypeIconsConfig, MID_BREAKPOINT } from 'components/map/config'
 import { LegendSwatchComponent } from './types'
 
 type LegendComponent = {
-  items: LegendSwatchComponent[]
+  legendItems: LegendSwatchComponent[]
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -16,19 +16,19 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(1),
       marginTop: 0,
       paddingLeft: 4,
-      [theme.breakpoints.up('sm')]: {
+      [theme.breakpoints.up(MID_BREAKPOINT)]: {
         paddingLeft: 10,
       },
     },
   })
 )
 
-export const Legend: FC<LegendComponent> = ({ items }) => {
+export const Legend: FC<LegendComponent> = ({ legendItems }) => {
   const classes = useStyles()
 
   return (
     <ul className={classes.legendRoot}>
-      {items.map((item) => {
+      {legendItems.map((item) => {
         let matchingConfig
 
         if (item.iconID) {

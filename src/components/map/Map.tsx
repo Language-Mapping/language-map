@@ -32,12 +32,15 @@ export const Map: FC<MapTypes.MapComponent> = ({
   const history = useHistory()
   const { state, dispatch } = useContext(GlobalContext)
   const mapRef: React.RefObject<InteractiveMap> = React.createRef()
-  const { selFeatAttribs } = state
-  const isDesktop = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'))
+  const { selFeatAttribs, mapLoaded, langFeatIDs } = state
+  const isDesktop = useMediaQuery((theme: Theme) =>
+    // TODO: this
+    // theme.breakpoints.up(mapConfig.MID_BREAKPOINT)
+    theme.breakpoints.up('sm')
+  )
 
   const [viewport, setViewport] = useState(mapConfig.initialMapState)
   const [mapOffset, setMapOffset] = useState<[number, number]>([0, 0])
-  const [mapLoaded, setMapLoaded] = useState<boolean>(false)
   const [popupOpen, setPopupOpen] = useState<MapTypes.MapPopup | null>(null)
   const [tooltipOpen, setTooltipOpen] = useState<MapTypes.MapTooltip | null>(
     null
@@ -51,6 +54,45 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
     setMapOffset(offset)
   }, [isDesktop])
+
+  // TODO: another file
+  useEffect((): void => {
+    if (!mapRef.current || !mapLoaded) {
+      return
+    }
+
+    const map: mbGlFull.Map = mapRef.current.getMap()
+    const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
+    // TODO: consider usefulness, otherwise remove
+    // const layer =  map.getLayer(name)
+
+    currentLayerNames.forEach((name) => {
+      const currentFilters = map.getFilter(name)
+
+      // Clear it first // TODO: rm if not necessary
+      map.setFilter(name, null)
+
+      let origFilter = []
+
+      // GROSS dude. Gotta be a better way to check?
+      if (currentFilters[0] === 'all') {
+        ;[, origFilter] = currentFilters
+      } else {
+        origFilter = currentFilters
+      }
+
+      if (langFeatIDs === null) {
+        map.setFilter(name, origFilter)
+      } else {
+        map.setFilter(name, [
+          'all',
+          origFilter,
+          // CRED: https://gis.stackexchange.com/a/287629/5824
+          ['in', ['get', 'ID'], ['literal', langFeatIDs]],
+        ])
+      }
+    })
+  }, [langFeatIDs])
 
   useEffect((): void => {
     initLegend(dispatch, state.activeLangSymbGroupId, symbLayers)
@@ -192,7 +234,15 @@ export const Map: FC<MapTypes.MapComponent> = ({
       payload: uniqueRecords,
     })
 
-    setMapLoaded(true)
+    dispatch({
+      type: 'SET_MAP_LOADED',
+      payload: true,
+    })
+
+    map.addControl(
+      new mbGlFull.AttributionControl({ compact: false }),
+      'bottom-right'
+    )
   }
 
   // TODO: chuck it into utils
@@ -212,6 +262,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
         payload: null,
       })
 
+      // TODO: decide /how/whether to force the panel open if nothing is found
       return
     }
 
@@ -231,6 +282,14 @@ export const Map: FC<MapTypes.MapComponent> = ({
   // TODO: into utils if it doesn't require passing 1000 args
   function onMapCtrlClick(actionID: MapTypes.MapControlAction) {
     if (!mapRef.current) {
+      return
+    }
+
+    if (actionID === 'info') {
+      dispatch({
+        type: 'TOGGLE_OFF_CANVAS_NAV',
+      })
+
       return
     }
 
@@ -280,6 +339,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
         ref={mapRef}
         height="100%"
         width="100%"
+        attributionControl={false}
+        mapOptions={{ logoPosition: 'bottom-right' }}
         mapboxApiAccessToken={mapConfig.MAPBOX_TOKEN}
         mapStyle={mapConfig.mbStyleTileConfig.customStyles.light}
         onViewportChange={setViewport}

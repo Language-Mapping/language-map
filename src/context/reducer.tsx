@@ -21,15 +21,15 @@ export const reducer = (
         ...state,
         langSymbGroups: action.payload,
       }
-    case 'SET_ACTIVE_PANEL_INDEX':
-      return {
-        ...state,
-        activePanelIndex: action.payload,
-      }
     case 'SET_BASELAYER':
       return {
         ...state,
         baselayer: action.payload,
+      }
+    case 'SET_LANG_FEAT_IDS':
+      return {
+        ...state,
+        langFeatIDs: action.payload,
       }
     case 'SET_LANG_LAYER_LABELS':
       return {
@@ -39,7 +39,7 @@ export const reducer = (
     case 'SET_LANG_LAYER_LEGEND':
       return {
         ...state,
-        langLegend: action.payload,
+        legendItems: action.payload,
       }
     case 'SET_LANG_LAYER_SYMBOLOGY':
       return {
@@ -51,6 +51,11 @@ export const reducer = (
         ...state,
         selFeatAttribs: action.payload,
       }
+    case 'SET_MAP_LOADED':
+      return {
+        ...state,
+        mapLoaded: action.payload,
+      }
     // TODO: wire up
     case 'TOGGLE_UI_ALERT':
       return {
@@ -59,6 +64,11 @@ export const reducer = (
           ...state.uiAlert,
           ...action.payload,
         },
+      }
+    case 'TOGGLE_OFF_CANVAS_NAV':
+      return {
+        ...state,
+        offCanvasNavOpen: !state.offCanvasNavOpen,
       }
     // TODO: wire up
     case 'TOGGLE_LAYER_VISIBILITY':

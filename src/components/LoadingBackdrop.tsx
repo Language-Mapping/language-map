@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       zIndex: theme.zIndex.drawer + 1,
     },
+    // TODO: follow `spacer` strategy of TopBar to "center" b/t panel and right
     backdropContent: {
       [theme.breakpoints.down('sm')]: {
         position: 'absolute',

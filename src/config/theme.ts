@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core'
 // Always have a hard time finding the Typography variant docs for some reason:
 // https://material-ui.com/components/typography/#component
 
-const HEADING_FONT = 'Gentium Basic, Times, serif'
+const HEADING_FONT = "'Gentium Basic', Times, serif"
 const headings = {
   h1: { fontFamily: HEADING_FONT },
   h2: { fontFamily: HEADING_FONT },
@@ -75,11 +75,7 @@ export const GlobalCss = withStyles({
     '.simpler-font': {
       fontFamily: "'Roboto', sans-serif",
     },
-    // '.obvious-link': {
-    //   color: customTheme.palette.info.main,
-    //   textDecoration: 'none',
-    // },
-    'a:visited, .obvious-link': {
+    'a:not([role="button"]), .obvious-link': {
       color: customTheme.palette.info.main,
       textDecoration: 'none',
     },

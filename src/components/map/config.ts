@@ -1,9 +1,9 @@
 // TODO: rm if only using local, otherwise restore when ready
 // const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
 
-import iconArrowUp from './icons/arrow-up.svg'
+import iconTree from './icons/tree.svg'
 import iconBook from './icons/book.svg'
-import iconBuilding from './icons/building.svg'
+import iconUsers from './icons/users.svg'
 import iconHome from './icons/home.svg'
 import iconMuseum from './icons/museum.svg'
 
@@ -15,8 +15,10 @@ export const mbStyleTileConfig = {
   // styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48',
   // TODO: ^^^ consider local URL, at least during dev ^^^
   symbStyleUrl: '/data/mb-styles.langs.json',
-  layerId: 'languages-08ip3e',
-  tilesetId: 'elalliance.d0yv450e',
+  // layerId: 'languages-08ip3e',
+  layerId: 'jason-schema-no-disp-5eaf8w',
+  // tilesetId: 'elalliance.d0yv450e',
+  tilesetId: 'elalliance.5okvgals',
   internalSrcID: 'languages-src', // arbitrary, set in code, never changes
   // So far this is the only known way to use the custom fonts
   customStyles: {
@@ -24,6 +26,8 @@ export const mbStyleTileConfig = {
     light: 'mapbox://styles/elalliance/ckdovh9us01wz1ipa5fjihv7l',
   },
 }
+
+export const MID_BREAKPOINT = 800 // TODO: uhhh just use theme.breakpoints?
 
 // TODO: rm if only using local, otherwise restore when ready
 // export const symbStyleUrl = `${MB_STYLES_API_URL}/${mbStyleTileConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
@@ -51,9 +55,9 @@ export const postLoadMapView = {
 }
 
 export const langTypeIconsConfig = [
-  { icon: iconArrowUp, id: '_arrow-up' },
+  { icon: iconTree, id: '_tree' },
   { icon: iconBook, id: '_book' },
-  { icon: iconBuilding, id: '_building' },
+  { icon: iconUsers, id: '_users' },
   { icon: iconHome, id: '_home' },
   { icon: iconMuseum, id: '_museum' },
 ]

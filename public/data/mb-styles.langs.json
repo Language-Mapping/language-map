@@ -11,8 +11,8 @@
     },
     "mapbox:groups": {
       "103cfccc2ebe5006e8a8d85a7c7f51d2": { "name": "World Region" },
-      "2320935a76eb23847fedcce356785d97": { "name": "Community Size" },
-      "4c2160b40d77f3e74f58f19e5f9c9007": { "name": "Type" },
+      "2320935a76eb23847fedcce356785d97": { "name": "Size" },
+      "4c2160b40d77f3e74f58f19e5f9c9007": { "name": "Status" },
       "f83891b595f76eb2a1ed376bda0b2c44": { "name": "Labels" }
     },
     "mapbox:uiParadigm": "layers"
@@ -22,7 +22,7 @@
   "bearing": 0,
   "pitch": 0,
   "sources": {
-    "composite": { "url": "mapbox://elalliance.d0yv450e", "type": "vector" }
+    "composite": { "url": "mapbox://elalliance.5okvgals", "type": "vector" }
   },
   "sprite": "mapbox://sprites/elalliance/ckcmivm0r1o491iomlji26c48/07jfodz49iyeho8s3lrozfkfy",
   "glyphs": "mapbox://fonts/elalliance/{fontstack}/{range}.pbf",
@@ -44,7 +44,7 @@
       "metadata": { "mapbox:group": "2320935a76eb23847fedcce356785d97" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Community Size"], [1], true, false],
+      "filter": ["match", ["get", "Size"], [1], true, false],
       "layout": { "visibility": "none" },
       "paint": {
         "circle-color": "#6baed6",
@@ -57,7 +57,7 @@
       "metadata": { "mapbox:group": "2320935a76eb23847fedcce356785d97" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Community Size"], [2], true, false],
+      "filter": ["match", ["get", "Size"], [2], true, false],
       "layout": { "visibility": "none" },
       "paint": {
         "circle-color": "#4292c6",
@@ -70,7 +70,7 @@
       "metadata": { "mapbox:group": "2320935a76eb23847fedcce356785d97" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Community Size"], [3], true, false],
+      "filter": ["match", ["get", "Size"], [3], true, false],
       "layout": { "visibility": "none" },
       "paint": {
         "circle-color": "#2171b5",
@@ -83,7 +83,7 @@
       "metadata": { "mapbox:group": "2320935a76eb23847fedcce356785d97" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Community Size"], [4], true, false],
+      "filter": ["match", ["get", "Size"], [4], true, false],
       "layout": { "visibility": "none" },
       "paint": {
         "circle-color": "#08519c",
@@ -96,7 +96,7 @@
       "metadata": { "mapbox:group": "2320935a76eb23847fedcce356785d97" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Community Size"], [5], true, false],
+      "filter": ["match", ["get", "Size"], [5], true, false],
       "layout": { "visibility": "none" },
       "paint": {
         "circle-color": "#08306b",
@@ -109,21 +109,21 @@
       "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Type"], ["Historical"], true, false],
+      "filter": ["match", ["get", "Status"], ["Historical"], true, false],
       "layout": {
         "icon-image": "_museum"
       },
       "paint": {}
     },
     {
-      "id": "Institutional",
+      "id": "Community",
       "type": "symbol",
       "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Type"], ["Institutional"], true, false],
+      "filter": ["match", ["get", "Status"], ["Community"], true, false],
       "layout": {
-        "icon-image": "_building"
+        "icon-image": "_users"
       },
       "paint": {}
     },
@@ -133,7 +133,7 @@
       "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Type"], ["Liturgical"], true, false],
+      "filter": ["match", ["get", "Status"], ["Liturgical"], true, false],
       "layout": {
         "icon-image": "_book"
       },
@@ -145,7 +145,7 @@
       "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Type"], ["Residential"], true, false],
+      "filter": ["match", ["get", "Status"], ["Residential"], true, false],
       "layout": {
         "icon-image": "_home"
       },
@@ -157,10 +157,9 @@
       "metadata": { "mapbox:group": "4c2160b40d77f3e74f58f19e5f9c9007" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": ["match", ["get", "Type"], ["Reviving"], true, false],
+      "filter": ["match", ["get", "Status"], ["Reviving"], true, false],
       "layout": {
-        "icon-image": "_arrow-up",
-        "icon-rotate": 45
+        "icon-image": "_tree"
       },
       "paint": {}
     },

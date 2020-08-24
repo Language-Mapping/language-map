@@ -1,39 +1,45 @@
 import React, { FC, useContext } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Link, Typography, Divider } from '@material-ui/core'
+import { Typography, Divider } from '@material-ui/core'
 
+import { RouteLocation } from 'components/map/types'
+import { PanelIntro } from 'components/panels'
 import { GlobalContext, LoadingIndicator } from 'components'
+import { DetailsIntro } from './DetailsIntro'
+
+const DATA_TABLE_PATHNAME: RouteLocation = '/table'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    detailsPanelRoot: {
-      paddingTop: theme.spacing(2),
-      paddingBottom: theme.spacing(2),
-    },
     intro: {
-      textAlign: 'center',
       paddingBottom: theme.spacing(1),
+      textAlign: 'center',
     },
-    subheading: {
+    // Gross but it makes `Anashinaabemowin` fit
+    detailsPanelHeading: {
+      fontSize: '2.4rem',
+      [theme.breakpoints.up('sm')]: {
+        fontSize: '3rem',
+      },
+    },
+    detailsSubheading: {
       marginBottom: theme.spacing(1),
     },
     description: {
-      marginTop: theme.spacing(1),
       fontSize: theme.typography.caption.fontSize,
+      marginTop: theme.spacing(1),
     },
   })
 )
-
 export const DetailsPanel: FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getLocation = useLocation() // must exist for routing to work?
+  const { state } = useContext(GlobalContext)
   const classes = useStyles()
-  const { state, dispatch } = useContext(GlobalContext)
 
   // Shaky check to see if features have loaded and are stored globally
   // TODO: use MB's loading events to set this instead
   if (!state.langFeaturesCached.length) {
+    // TODO: skeletons
     return <LoadingIndicator />
   }
 
@@ -42,48 +48,35 @@ export const DetailsPanel: FC = () => {
   // No sel feat details
   if (!selFeatAttribs) {
     return (
-      <p>
-        Click a language community in the map or the{' '}
-        <Link
-          href="javascript;"
-          onClick={(e: React.MouseEvent) => {
-            e.preventDefault()
-            dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: 1 })
-          }}
+      <PanelIntro>
+        Click a language community in the map or visit the{' '}
+        <RouterLink
+          to={DATA_TABLE_PATHNAME}
+          title="Data table of language communities"
         >
           data table
-        </Link>{' '}
-        to learn more.
-      </p>
+        </RouterLink>{' '}
+        to view and filter all communities.
+      </PanelIntro>
     )
   }
 
-  // TODO: deal with this
-  // if (!Object.keys(state.selFeatAttribs).length) {
-  //   return (
-  //     <p>
-  //       Feature with id <b>{parsed.id}</b> not found.
-  //     </p>
-  //   )
-  // }
+  // TODO: deal with `id` present in URL but no match found
+  // const parsed = queryString.parse(window.location.search)
+  // const matchingRecord = state.langFeatures.find(
+  //   (feature) => feature.ID === parsed.id
+  // )
 
+  // TODO: something respectable for styles, aka MUI-something
   return (
-    <div className={classes.detailsPanelRoot}>
-      <Link
-        href="javascript;"
-        onClick={(e: React.MouseEvent) => {
-          e.preventDefault()
-          dispatch({ type: 'SET_ACTIVE_PANEL_INDEX', payload: 1 })
-        }}
-      >
-        {`<`} Back to results
-      </Link>
+    <>
+      <DetailsIntro />
       <div className={classes.intro}>
-        <Typography component="h3" variant="h4">
+        <Typography variant="h3" className={classes.detailsPanelHeading}>
           {selFeatAttribs.Endonym}
         </Typography>
         {selFeatAttribs.Endonym !== selFeatAttribs.Language && (
-          <Typography variant="caption" className={classes.subheading}>
+          <Typography variant="caption" className={classes.detailsSubheading}>
             {`(${selFeatAttribs.Language})`}
           </Typography>
         )}
@@ -97,6 +90,6 @@ export const DetailsPanel: FC = () => {
       <Typography variant="body2" className={classes.description}>
         {selFeatAttribs.Description}
       </Typography>
-    </div>
+    </>
   )
 }

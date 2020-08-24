@@ -1,64 +1,48 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useContext } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import {
-  Link,
-  InputLabel,
-  FormHelperText,
-  FormControl,
-  NativeSelect,
-} from '@material-ui/core'
-import { FaQuestionCircle } from 'react-icons/fa'
+import { Typography } from '@material-ui/core'
+
+import { GlobalContext } from 'components'
+import { LegendPanel } from 'components/legend'
+import { ViewResultsDataBtn } from 'components/results/ViewResultsDataBtn'
+import { SearchByOmnibox } from './SearchByOmnibox'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    // TODO: standardize across other panels
-    filtersPanelRoot: {
-      paddingTop: theme.spacing(2),
-      paddingBottom: theme.spacing(2),
-    },
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-    },
-    defsModalTrigger: {
-      color: theme.palette.info.main,
+    resultsBtnWrap: {
       display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
-      fontSize: 12,
-      '& > svg': {
-        marginRight: 4,
-      },
+      justifyContent: 'center',
+      marginBottom: 8,
     },
   })
 )
-
 export const FiltersPanel: FC = () => {
+  const { state, dispatch } = useContext(GlobalContext)
   const classes = useStyles()
-  const [commType, setCommType] = useState<string>('Historical') // TODO: types
 
+  // TODO: something respectable for styles, aka MUI-something
   return (
-    <div className={classes.filtersPanelRoot}>
-      <Link href="javascript;" className={classes.defsModalTrigger}>
-        <FaQuestionCircle />
-        What do these mean?
-      </Link>
-      <FormControl className={classes.formControl}>
-        <InputLabel htmlFor="comm-type-helper">Type</InputLabel>
-        <NativeSelect
-          value={commType}
-          onChange={(event) => setCommType(event.target.value)}
-        >
-          <option value="Historical">Historical</option>
-          <option value="Liturgical">Liturgical</option>
-          <option value="Institutional">Institutional</option>
-          <option value="Residential">Residential</option>
-          <option value="Reviving">Reviving</option>
-        </NativeSelect>
-        <FormHelperText>
-          How/where the language is currently used
-        </FormHelperText>
-      </FormControl>
-    </div>
+    <>
+      <SearchByOmnibox
+        data={state.langFeatures}
+        enableClear={state.langFeatIDs !== null}
+        clearFilters={() => {
+          // TODO: pick one or the other, not both
+          dispatch({ type: 'SET_LANG_FEAT_IDS', payload: null })
+
+          dispatch({
+            type: 'INIT_LANG_LAYER_FEATURES',
+            payload: state.langFeaturesCached,
+          })
+        }}
+      />
+      <div className={classes.resultsBtnWrap}>
+        <ViewResultsDataBtn />
+      </div>
+      <Typography variant="h5" component="h3">
+        Legend
+      </Typography>
+      <LegendPanel legendItems={state.legendItems} />
+    </>
   )
 }

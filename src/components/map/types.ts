@@ -65,13 +65,16 @@ export type MapEvent = Omit<PointerEvent, 'features'> & {
   features: LangFeature[]
 }
 
+// TODO: enforce in all relevant spots
+// TODO: mv into context/types
+export type RouteLocation = '/' | '/details' | '/table' | '/about' | '/glossary'
+
 export type MapPanel = {
-  active: boolean
   heading: string
   icon: React.ReactNode
   subheading: string
-  summary?: string | React.ReactNode
-  component?: React.ReactNode
+  component: React.ReactNode
+  path: RouteLocation
 }
 
 export type MapPopup = LongLat & {
@@ -92,7 +95,7 @@ export type MapComponent = {
 
 export type LangIconConfig = { icon: string; id: string }
 
-export type MapControlAction = 'home' | 'in' | 'out'
+export type MapControlAction = 'home' | 'in' | 'out' | 'info'
 
 export type FlyToCoords = (
   map: mbGlFull.Map,

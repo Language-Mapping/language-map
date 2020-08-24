@@ -8,9 +8,10 @@ import {
   CloseReason,
 } from '@material-ui/lab'
 import { MdMoreVert, MdClose } from 'react-icons/md'
-import { FiHome, FiZoomIn, FiZoomOut } from 'react-icons/fi'
+import { FiHome, FiZoomIn, FiZoomOut, FiInfo } from 'react-icons/fi'
 
 import { MapControlAction } from './types'
+import { MID_BREAKPOINT } from './config'
 
 type MapCtrlBtnsComponent = {
   // Render prop so we don't have pass a million props to this component
@@ -27,8 +28,13 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mapCtrlsRoot: {
       position: 'absolute',
-      top: 60,
-      right: theme.spacing(1),
+      top: theme.spacing(1),
+      right: 4, // same as left-side page title
+      zIndex: 1100, // above app bar
+      [theme.breakpoints.up('sm')]: {
+        top: theme.spacing(3),
+        right: theme.spacing(3),
+      },
       '& svg': {
         height: '1.5em',
         width: '1.5em',
@@ -49,11 +55,15 @@ const ctrlBtnsConfig = [
   { id: 'in', icon: <FiZoomIn />, name: 'Zoom in' },
   { id: 'out', icon: <FiZoomOut />, name: 'Zoom out' },
   { id: 'home', icon: <FiHome />, name: 'Zoom home' },
+  { id: 'info', icon: <FiInfo />, name: 'About & Info' },
 ] as CtrlBtnConfig[]
 
 export const MapCtrlBtns: FC<MapCtrlBtnsComponent> = ({ onMapCtrlClick }) => {
   const classes = useStyles()
-  const isDesktop = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'))
+  // TODO: pass this down from higher up
+  const isDesktop = useMediaQuery((theme: Theme) =>
+    theme.breakpoints.up(MID_BREAKPOINT)
+  )
   const [open, setOpen] = React.useState(true)
   const size = isDesktop ? 'medium' : 'small'
 
