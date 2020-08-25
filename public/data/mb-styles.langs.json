@@ -189,30 +189,52 @@
       "metadata": { "mapbox:group": "f83891b595f76eb2a1ed376bda0b2c44" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": [
-        "all",
-        [
-          "match",
-          ["get", "Endonym"],
-          [
-            "https://www.dropbox.com/s/088s1kpa26rz1pe/American_Sign_Language_ASL.svg?dl=0"
-          ],
-          false,
-          true
-        ],
-        [
-          "match",
-          ["get", "Endonym"],
-          ["https://www.dropbox.com/s/vhwi767ez3jdvnd/Avestan.svg?dl=0"],
-          false,
-          true
-        ]
-      ],
       "layout": {
         "text-variable-anchor": ["bottom-left", "top-left"],
         "text-radial-offset": 0,
-        "text-field": ["get", "Endonym"],
-        "text-font": ["Noto Sans Regular", "Arial Unicode MS Regular"],
+        "text-field": [
+          "case",
+          ["==", ["slice", ["get", "Endonym"], 0, 4], "http"],
+          ["get", "Language"],
+          ["get", "Endonym"]
+        ],
+        "text-font": [
+          "let",
+          "lang",
+          ["get", "Language"],
+          [
+            "case",
+            ["==", ["var", "lang"], "Buginese"],
+            ["literal", ["Noto Sans Buginese Regular"]],
+            ["==", ["var", "lang"], "Makassarese"],
+            ["literal", ["Noto Sans Buginese Regular"]],
+            ["==", ["var", "lang"], "Coptic"],
+            ["literal", ["Noto Sans Coptic Regular"]],
+            ["==", ["var", "lang"], "Limbu"],
+            ["literal", ["Noto Sans Limbu Regular"]],
+            ["==", ["var", "lang"], "Shan"],
+            ["literal", ["Noto Sans Myanmar Regular"]],
+            ["==", ["var", "lang"], "Mandinka"],
+            ["literal", ["Noto Sans NKo Regular"]],
+            ["==", ["var", "lang"], "Sylheti"],
+            ["literal", ["Noto Sans Syloti Nagri Regular"]],
+            ["==", ["var", "lang"], "Neo-Aramaic"],
+            ["literal", ["Noto Sans Syriac Estrangala Regular"]],
+            ["==", ["var", "lang"], "Dhivehi"],
+            ["literal", ["Noto Sans Thaana Regular"]],
+            ["==", ["var", "lang"], "Tarifit"],
+            ["literal", ["Noto Sans Tifinagh Regular"]],
+            ["==", ["var", "lang"], "Tashelhyt"],
+            ["literal", ["Noto Sans Tifinagh Regular"]],
+            ["==", ["var", "lang"], "Tuareg"],
+            ["literal", ["Noto Sans Tifinagh Regular"]],
+            ["==", ["var", "lang"], "Zuwara"],
+            ["literal", ["Noto Sans Tifinagh Regular"]],
+            ["==", ["var", "lang"], "Vai"],
+            ["literal", ["Noto Sans Vai Regular"]],
+            ["literal", ["Noto Sans Regular", "Arial Unicode MS Regular"]]
+          ]
+        ],
         "text-size": 10,
         "visibility": "none"
       },

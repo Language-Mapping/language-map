@@ -2,7 +2,9 @@ import React, { FC } from 'react'
 import { Popup } from 'react-map-gl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
+
 import { MapPopup as MapPopupType } from './types'
+import { isURL, prettyTruncateList } from '../../utils'
 
 type MapPopupComponent = MapPopupType & {
   setPopupOpen: React.Dispatch<MapPopupType | null>
@@ -37,15 +39,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const MapPopup: FC<MapPopupComponent> = ({
-  longitude,
-  latitude,
-  setPopupOpen,
-  selFeatAttribs,
-}) => {
+export const MapPopup: FC<MapPopupComponent> = (props) => {
   const classes = useStyles()
+  const { longitude, latitude, setPopupOpen, selFeatAttribs } = props
+  const { mapPopupRoot, heading, subHeading } = classes
+  const { Endonym, Language, Neighborhoods } = selFeatAttribs
 
-  // NOTE: the longest legit language or endonym so far is:
+  // NOTE: the longest non-url language or endonym so far is:
   // Cameroonian Pidgin English
 
   return (
@@ -55,16 +55,17 @@ export const MapPopup: FC<MapPopupComponent> = ({
       longitude={longitude}
       latitude={latitude}
       closeOnClick={false} // TODO: fix this madness
-      className={classes.mapPopupRoot}
+      className={mapPopupRoot}
       onClose={() => setPopupOpen(null)}
     >
       <header>
-        <Typography variant="h6" component="h3" className={classes.heading}>
-          {selFeatAttribs['Endonym' || 'Language']}
+        <Typography variant="h6" component="h3" className={heading}>
+          {/* For image-only endos, show language (not much room for pic) */}
+          {isURL(Endonym) ? Language : Endonym}
         </Typography>
-        {selFeatAttribs.Neighborhoods && (
-          <small className={classes.subHeading}>
-            {selFeatAttribs.Neighborhoods.split(', ')}
+        {Neighborhoods && (
+          <small className={subHeading}>
+            {prettyTruncateList(Neighborhoods)}
           </small>
         )}
       </header>

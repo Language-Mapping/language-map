@@ -7,6 +7,9 @@ import {
 } from 'components/map/types'
 import { StoreAction, LangRecordSchema } from './context/types'
 
+// TODO: into config since it's used in multiple places...
+const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
+
 export const getGroupNames = (groupObject: MetadataGroup): string[] =>
   Object.keys(groupObject).map((groupId: string) => groupObject[groupId].name)
 
@@ -53,6 +56,7 @@ export const getMbStyleDocument = async (
     payload: nonLabelsGroups,
   })
 
+  // TODO: consider orig. Region colors for `Status`: https://bit.ly/34szqZe
   // Set group ID of initial active MB Styles group
   dispatch({
     type: 'SET_LANG_LAYER_SYMBOLOGY',
@@ -108,4 +112,36 @@ export function useWindowResize(): { width: number; height: number } {
     width,
     height,
   }
+}
+
+// TODO: look into cookie warnings regarding Dropbox:
+// https://web.dev/samesite-cookies-explained/?utm_source=devtools
+// "dl" stuff takes you to the downloadable version, raw and www to raw. Could
+// just change this in the data but Ross is away and Jason already gave faulty
+// instructions...
+export function correctDropboxURL(url: string): string {
+  const badDropboxHost = 'dl.dropboxusercontent.com'
+  const goodDropboxHost = 'www.dropbox.com'
+  const badDropboxSuffix = 'dl=0'
+  const goodDropboxSuffix = 'raw=1'
+
+  return url
+    .replace(badDropboxHost, goodDropboxHost)
+    .replace(badDropboxSuffix, goodDropboxSuffix)
+}
+
+// e.g. convert "Woodside, Queens" into "Woodside (+1 more)"
+export function prettyTruncateList(
+  text: string,
+  delimiter: string = DEFAULT_DELIM
+): string {
+  const asArray = text.split(delimiter)
+  const firstItem = asArray[0]
+
+  // Single-items do not make sense to have (+0)...
+  if (asArray.length === 1) {
+    return firstItem
+  }
+
+  return `${firstItem} (+${asArray.length - 1} more)`
 }

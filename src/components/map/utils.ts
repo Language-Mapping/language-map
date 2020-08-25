@@ -1,6 +1,7 @@
 import mbGlFull from 'mapbox-gl'
 
 import * as MapTypes from './types'
+import { isURL } from '../../utils'
 
 // One of the problems of using panels which overlap the map is how to deal with
 // "centering", in quotes because it's more "perceived" centering. Offset is
@@ -87,13 +88,14 @@ export function handleHover(
     setTooltipOpen(null)
   } else {
     const { Latitude, Longitude, Endonym, Language } = features[0].properties
+    const isImage = isURL(Endonym)
     target.style.cursor = 'pointer'
 
     setTooltipOpen({
       latitude: Latitude,
       longitude: Longitude,
-      heading: Endonym, // TODO: image if Dropbox/http
-      subHeading: Endonym === Language ? '' : Language,
+      heading: isImage ? Language : Endonym,
+      subHeading: isImage || Endonym === Language ? '' : Language,
     })
   }
 }

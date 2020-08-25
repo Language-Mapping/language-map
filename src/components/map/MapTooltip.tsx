@@ -40,6 +40,7 @@ export const MapTooltip: FC<MapTooltipComponent> = ({
       closeButton={false}
       className={classes.mapTooltipRoot}
     >
+      {/* TODO: better/smaller heading styles */}
       <Typography>{heading}</Typography>
       {subHeading && (
         <Typography variant="caption" className={classes.subHeading}>

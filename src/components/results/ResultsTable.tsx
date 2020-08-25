@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(1),
       flexShrink: 0,
     },
+    // Smaller than the default so that it is not as large as table modal
     descripDialogPaper: {
       margin: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
     },
