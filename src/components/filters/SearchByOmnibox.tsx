@@ -1,112 +1,147 @@
 import React, { FC } from 'react'
-import matchSorter from 'match-sorter'
 import { useHistory } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { TextField, Link, Typography } from '@material-ui/core'
+import matchSorter from 'match-sorter'
+import TextField from '@material-ui/core/TextField'
 import Autocomplete, {
   AutocompleteRenderGroupParams,
 } from '@material-ui/lab/Autocomplete'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
+import ListSubheader from '@material-ui/core/ListSubheader'
+import Typography from '@material-ui/core/Typography'
+import {
+  useTheme,
+  makeStyles,
+  Theme,
+  createStyles,
+} from '@material-ui/core/styles'
+import { VariableSizeList, ListChildComponentProps } from 'react-window'
 import { MdClose } from 'react-icons/md'
-import { TiWarning } from 'react-icons/ti'
 
 import { RouteLocation } from 'components/map/types'
 import { LangRecordSchema } from '../../context/types'
+import { OmniboxResult } from './OmniboxResult'
+import { FiltersWarning } from './FiltersWarning'
 
-type OmniboxComponent = {
+type OmniVirtualProps = {
+  noFiltersSet: boolean
   data: LangRecordSchema[]
-  enableClear: boolean
-  clearFilters: () => void
 }
 
-type FiltersWarningComponent = Pick<OmniboxComponent, 'clearFilters'>
-
 const detailsRoutePath: RouteLocation = '/details'
+const LISTBOX_PADDING = 8 // px
+
+const useStylesDirect = makeStyles({
+  listbox: {
+    boxSizing: 'border-box',
+    '& ul': {
+      padding: 0,
+      margin: 0,
+    },
+  },
+})
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    omniboxRoot: {
-      marginBottom: '1rem',
-      marginTop: '0.5rem',
-    },
-    resultRoot: {
-      fontSize: '1rem',
-    },
-    testinggg: {
-      fontSize: '1rem',
-      color: theme.palette.primary.main,
-      fontWeight: 'bold',
-      lineHeight: 1,
-    },
     omniLabel: {
       color: theme.palette.primary.main,
       fontSize: '1rem', // default causes wrap on small screens
     },
-    filtersWarning: {
-      display: 'flex',
-      alignItems: 'center',
-      fontSize: '.8rem',
-      '& > a': {
-        fontWeight: 'bold',
-      },
-      '& > svg': {
-        marginRight: '0.4em',
-      },
-    },
   })
 )
 
-// The text above the text field. Kind of a fight w/MUI stuff...
+const OuterElementContext = React.createContext({})
+
+// eslint-disable-next-line react/display-name
+const OuterElementType = React.forwardRef<HTMLDivElement>((props, ref) => {
+  const outerProps = React.useContext(OuterElementContext)
+
+  return <div ref={ref} {...props} {...outerProps} />
+})
+
+function renderRow(props: ListChildComponentProps) {
+  const { data, index, style } = props
+
+  return React.cloneElement(data[index], {
+    style: {
+      ...style,
+      top: (style.top as number) + LISTBOX_PADDING,
+    },
+  })
+}
+
+function useResetCache(itemCount: number) {
+  const ref = React.useRef<VariableSizeList>(null)
+
+  React.useEffect(() => {
+    if (ref.current != null) {
+      ref.current.resetAfterIndex(0, true)
+    }
+  }, [itemCount])
+
+  return ref
+}
+
 const OmniLabel: FC = () => {
-  const classes = useStyles()
+  const classesOrig = useStyles()
 
   return (
-    <div className={classes.omniLabel}>
+    <Typography className={classesOrig.omniLabel}>
       Language, endonym, Glottocode, ISO 639-3
-    </div>
-  )
-}
-
-// TODO: new file? mos DEF.
-const Result: FC<{ data: LangRecordSchema }> = (props) => {
-  const classes = useStyles()
-  const { data } = props
-  const { Neighborhoods, Town, Glottocode, 'ISO 639-3': iso } = data
-
-  return (
-    <div className={classes.resultRoot}>
-      <div className={classes.testinggg}> {Neighborhoods || Town}</div>
-      {Glottocode ? <small>Glottocode: {Glottocode}</small> : null}
-      {Glottocode && iso ? ' | ' : null}
-      {iso ? <small>ISO 639-3: {iso}</small> : null}
-    </div>
-  )
-}
-
-// Let user know that they are searching filtered data
-const FiltersWarning: FC<FiltersWarningComponent> = (props) => {
-  const classes = useStyles()
-  const { clearFilters } = props
-
-  return (
-    <Typography className={classes.filtersWarning}>
-      <TiWarning />
-      Data search includes current filters.&nbsp;
-      <Link
-        href="#"
-        onClick={(e: React.MouseEvent) => {
-          e.preventDefault()
-          clearFilters()
-          e.stopPropagation()
-        }}
-      >
-        Clear filters
-      </Link>
     </Typography>
   )
 }
 
-// This basically seems to jack up any nice looking output whatsover, but it IS
-// sorted without having to loop over the entire dataset, only the group.
+// TODO: new file
+// Adapter for react-window
+const ListboxComponent = React.forwardRef<HTMLDivElement>(
+  function ListboxComponent(props, ref) {
+    const { children, ...other } = props
+    const itemData = React.Children.toArray(children)
+    const theme = useTheme()
+    const smUp = useMediaQuery(theme.breakpoints.up('sm'), { noSsr: true })
+    const itemCount = itemData.length
+    const itemSize = smUp ? 36 : 48
+
+    const getChildSize = (child: React.ReactNode) => {
+      if (React.isValidElement(child) && child.type === ListSubheader) {
+        return 48
+      }
+
+      return itemSize
+    }
+
+    const getHeight = () => {
+      if (itemCount > 8) {
+        return 8 * itemSize
+      }
+
+      return itemData.map(getChildSize).reduce((a, b) => a + b, 0)
+    }
+
+    const gridRef = useResetCache(itemCount)
+
+    return (
+      <div ref={ref}>
+        <OuterElementContext.Provider value={other}>
+          <VariableSizeList
+            height={getHeight() + 2 * LISTBOX_PADDING}
+            innerElementType="ul"
+            itemCount={itemCount}
+            itemData={itemData}
+            itemSize={(index) => getChildSize(itemData[index])}
+            outerElementType={OuterElementType}
+            overscanCount={5}
+            ref={gridRef}
+            width="100%"
+          >
+            {renderRow}
+          </VariableSizeList>
+        </OuterElementContext.Provider>
+      </div>
+    )
+  }
+)
+
 const renderGroup = (params: AutocompleteRenderGroupParams) => {
   const { children } = params
   const asArray = React.Children.toArray(children)
@@ -114,7 +149,9 @@ const renderGroup = (params: AutocompleteRenderGroupParams) => {
 
   if (!moreThan1) {
     return [
-      <React.Fragment key={params.key}>{params.group}</React.Fragment>,
+      <ListSubheader key={params.key} component="div">
+        {params.group}
+      </ListSubheader>,
       params.children,
     ]
   }
@@ -131,67 +168,60 @@ const renderGroup = (params: AutocompleteRenderGroupParams) => {
   })
 
   return [
-    <React.Fragment key={params.key}>{params.group}</React.Fragment>,
+    <ListSubheader key={params.key} component="div">
+      {params.group}
+    </ListSubheader>,
     sorted,
   ]
 }
 
-// TODO: rule out that no additional features are needed from match-sorter:
-// https://github.com/kentcdodds/match-sorter
-export const SearchByOmnibox: FC<OmniboxComponent> = (props) => {
+export const SearchByOmnibox: FC<OmniVirtualProps> = (props) => {
+  const { data, noFiltersSet } = props
+  const classes = useStylesDirect()
   const history = useHistory()
-  const classes = useStyles()
-  const { data, enableClear, clearFilters } = props
 
   return (
     <Autocomplete
-      id="language-omnibox"
-      className={classes.omniboxRoot}
-      autoComplete
+      id="virtualize-demo"
+      classes={classes}
+      // autoComplete // TODO: yay or nay?
       autoHighlight
       closeIcon={<MdClose />}
-      // debug // TODO: rm when done
-      defaultValue={null}
-      fullWidth={false}
-      groupBy={(option) => option.Language}
-      renderGroup={renderGroup}
-      options={data}
       size="small"
-      // open
-      ListboxProps={{
-        style: {
-          // marginLeft: 8,
-          // padding: 8,
-        },
-      }}
+      groupBy={(option) => option.Language}
+      options={data}
+      getOptionLabel={(option) => option.Language}
+      renderGroup={renderGroup}
+      renderOption={(option) => <OmniboxResult data={option} />}
       onChange={(event, value) => {
+        // Can't just do <RouterLink>, otherwise keyboard selection no-go...
         if (value) {
           history.push(`${detailsRoutePath}?id=${value.ID}`)
         }
       }}
-      renderOption={(option) => <Result data={option} />}
       filterOptions={(options, { inputValue }) => {
         return matchSorter(options, inputValue, {
           keys: ['Language', 'Endonym', 'ISO 639-3', 'Glottocode'],
           threshold: matchSorter.rankings.WORD_STARTS_WITH,
         })
       }}
+      ListboxComponent={
+        ListboxComponent as React.ComponentType<
+          React.HTMLAttributes<HTMLElement>
+        >
+      }
       renderInput={(params) => (
-        <>
-          <TextField
-            {...params}
-            label={<OmniLabel />}
-            placeholder="Search language communities..."
-            helperText={
-              enableClear && <FiltersWarning clearFilters={clearFilters} />
-            }
-            InputLabelProps={{
-              disableAnimation: true,
-              focused: false,
-              shrink: true,
-            }}
-          />
-        </>
+        <TextField
+          {...params}
+          label={<OmniLabel />}
+          placeholder="Search language communities..."
+          helperText={noFiltersSet ? <FiltersWarning /> : null}
+          InputLabelProps={{
+            disableAnimation: true,
+            focused: false,
+            shrink: true,
+          }}
+        />
       )}
     />
   )
