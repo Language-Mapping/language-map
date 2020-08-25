@@ -1,7 +1,7 @@
 import React from 'react'
+import { VariableSizeList } from 'react-window'
 import { AutocompleteRenderGroupParams } from '@material-ui/lab/Autocomplete'
 import ListSubheader from '@material-ui/core/ListSubheader'
-import { VariableSizeList } from 'react-window'
 
 export function useResetCache(
   itemCount: number

@@ -1,9 +1,8 @@
 import React, { FC } from 'react'
 import { useHistory } from 'react-router-dom'
 import matchSorter from 'match-sorter'
-import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import Typography from '@material-ui/core/Typography'
+import { TextField, Typography } from '@material-ui/core'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { MdClose } from 'react-icons/md'
 
@@ -21,18 +20,29 @@ type SearchByOmniProps = {
 
 const detailsRoutePath: RouteLocation = '/details'
 
-const useStylesDirect = makeStyles({
-  listbox: {
-    boxSizing: 'border-box',
-    '& ul': {
-      padding: 0,
-      margin: 0,
-    },
-  },
-})
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    listbox: {
+      '& ul': {
+        margin: 0,
+        padding: 0,
+      },
+      // Group headings
+      '& .MuiListSubheader-root': {
+        borderBottom: `1px solid ${theme.palette.grey[400]}`,
+        color: theme.palette.common.black,
+        fontFamily: theme.typography.h1.fontFamily,
+        fontSize: '1.1rem',
+        paddingLeft: 12,
+      },
+    },
+    // The <li> items. Not sure why it works via classes and `groupUl` doesn't.
+    option: {
+      borderBottom: `solid 1px ${theme.palette.grey[200]}`,
+      display: 'flex',
+      paddingLeft: 12,
+    },
+    // Label for the text box itself
     omniLabel: {
       color: theme.palette.primary.main,
       fontSize: '1rem', // default causes wrap on small screens
@@ -41,18 +51,20 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const OmniLabel: FC = () => {
-  const classesOrig = useStyles()
+  const classes = useStyles()
 
   return (
-    <Typography className={classesOrig.omniLabel}>
+    <Typography className={classes.omniLabel}>
       Language, endonym, Glottocode, ISO 639-3
     </Typography>
   )
 }
 
+// CRED: https://material-ui.com/components/autocomplete/#virtualization
+// ^^^ definitely wouldn't have gotten the `react-window` virtualization w/o it!
 export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
   const { data, noFiltersSet } = props
-  const classes = useStylesDirect()
+  const classes = useStyles()
   const history = useHistory()
 
   return (
@@ -63,8 +75,9 @@ export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
       autoHighlight
       closeIcon={<MdClose />}
       size="small"
-      groupBy={(option) => option.Language}
       options={data}
+      // open // much more effective than `debug`
+      groupBy={(option) => option.Language}
       getOptionLabel={(option) => option.Language}
       renderGroup={renderGroup}
       renderOption={(option) => <OmniboxResult data={option} />}

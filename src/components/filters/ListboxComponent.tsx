@@ -1,7 +1,5 @@
 import React from 'react'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
-import ListSubheader from '@material-ui/core/ListSubheader'
-import { useTheme } from '@material-ui/core/styles'
+import { ListSubheader } from '@material-ui/core'
 import { VariableSizeList, ListChildComponentProps } from 'react-window'
 
 import { useResetCache } from './utils'
@@ -32,14 +30,18 @@ export const ListboxComponent = React.forwardRef<HTMLDivElement>(
   function ListboxComponent(props, ref) {
     const { children, ...other } = props
     const itemData = React.Children.toArray(children)
-    const theme = useTheme()
-    const smUp = useMediaQuery(theme.breakpoints.up('sm'), { noSsr: true })
     const itemCount = itemData.length
-    const itemSize = smUp ? 36 : 48
+    const itemSize = 48 // orig: smUp ? 24 : 36
 
+    // NOTE: setting the <li> height and `.MuiListSubheader-root` (group
+    // headings) heights here is super fragile since it's not part of the styles
+    // definitions in the Omnibox component. These settings look pretty good
+    // across screen sizes though, with the exception of excessively long
+    // neighborhood values.
     const getChildSize = (child: React.ReactNode) => {
+      // The `Language` group headings
       if (React.isValidElement(child) && child.type === ListSubheader) {
-        return 48
+        return 36
       }
 
       return itemSize
