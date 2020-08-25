@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
       overflow: 'auto',
       padding: '.8rem',
       position: 'relative',
-      transition: '300ms all',
+      // transition: '300ms all',
       opacity: (props: PanelProps) => (props.active && props.panelOpen ? 1 : 0),
       transform: (props: PanelProps) =>
         props.active && props.panelOpen ? 'scaleY(1)' : 'scaleY(0)',
