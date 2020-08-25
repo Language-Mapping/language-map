@@ -3,7 +3,9 @@ import matchSorter from 'match-sorter'
 import { useHistory } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { TextField, Link, Typography } from '@material-ui/core'
-import Autocomplete from '@material-ui/lab/Autocomplete'
+import Autocomplete, {
+  AutocompleteRenderGroupParams,
+} from '@material-ui/lab/Autocomplete'
 import { MdClose } from 'react-icons/md'
 import { TiWarning } from 'react-icons/ti'
 
@@ -55,7 +57,6 @@ const OmniLabel: FC = () => {
   )
 }
 
-// NOTE: the future of this is pending convo:
 // Let user know that they are searching filtered data
 const FiltersWarning: FC<FiltersWarningComponent> = (props) => {
   const classes = useStyles()
@@ -79,6 +80,37 @@ const FiltersWarning: FC<FiltersWarningComponent> = (props) => {
   )
 }
 
+// This basically seems to jack up any nice looking output whatsover, but it IS
+// sorted without having to loop over the entire dataset, only the group.
+const renderGroup = (params: AutocompleteRenderGroupParams) => {
+  const { children } = params
+  const asArray = React.Children.toArray(children)
+  const moreThan1 = React.Children.count(params.children) > 1
+
+  if (!moreThan1) {
+    return [
+      <React.Fragment key={params.key}>{params.group}</React.Fragment>,
+      params.children,
+    ]
+  }
+
+  const sorted = asArray.sort((a, b) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const kidsA = a.props.children.props.children
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const kidsB = b.props.children.props.children
+
+    return kidsA < kidsB ? -1 : 1
+  })
+
+  return [
+    <React.Fragment key={params.key}>{params.group}</React.Fragment>,
+    sorted,
+  ]
+}
+
 // TODO: rule out that no additional features are needed from match-sorter:
 // https://github.com/kentcdodds/match-sorter
 export const SearchByOmnibox: FC<OmniboxComponent> = (props) => {
@@ -97,6 +129,7 @@ export const SearchByOmnibox: FC<OmniboxComponent> = (props) => {
       defaultValue={null}
       fullWidth={false}
       groupBy={(option) => option.Language}
+      renderGroup={renderGroup}
       options={data}
       size="small"
       onChange={(event, value) => {
