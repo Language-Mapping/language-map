@@ -189,29 +189,15 @@
       "metadata": { "mapbox:group": "f83891b595f76eb2a1ed376bda0b2c44" },
       "source": "composite",
       "source-layer": "languages-08ip3e",
-      "filter": [
-        "all",
-        [
-          "match",
-          ["get", "Endonym"],
-          [
-            "https://www.dropbox.com/s/088s1kpa26rz1pe/American_Sign_Language_ASL.svg?dl=0"
-          ],
-          false,
-          true
-        ],
-        [
-          "match",
-          ["get", "Endonym"],
-          ["https://www.dropbox.com/s/vhwi767ez3jdvnd/Avestan.svg?dl=0"],
-          false,
-          true
-        ]
-      ],
       "layout": {
         "text-variable-anchor": ["bottom-left", "top-left"],
         "text-radial-offset": 0,
-        "text-field": ["get", "Endonym"],
+        "text-field": [
+          "case",
+          ["==", ["slice", ["get", "Endonym"], 0, 4], "http"],
+          ["get", "Language"],
+          ["get", "Endonym"]
+        ],
         "text-font": ["Noto Sans Regular", "Arial Unicode MS Regular"],
         "text-size": 10,
         "visibility": "none"
