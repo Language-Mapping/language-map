@@ -28,6 +28,15 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: '1rem',
       marginTop: '0.5rem',
     },
+    resultRoot: {
+      fontSize: '1rem',
+    },
+    testinggg: {
+      fontSize: '1rem',
+      color: theme.palette.primary.main,
+      fontWeight: 'bold',
+      lineHeight: 1,
+    },
     omniLabel: {
       color: theme.palette.primary.main,
       fontSize: '1rem', // default causes wrap on small screens
@@ -53,6 +62,22 @@ const OmniLabel: FC = () => {
   return (
     <div className={classes.omniLabel}>
       Language, endonym, Glottocode, ISO 639-3
+    </div>
+  )
+}
+
+// TODO: new file? mos DEF.
+const Result: FC<{ data: LangRecordSchema }> = (props) => {
+  const classes = useStyles()
+  const { data } = props
+  const { Neighborhoods, Town, Glottocode, 'ISO 639-3': iso } = data
+
+  return (
+    <div className={classes.resultRoot}>
+      <div className={classes.testinggg}> {Neighborhoods || Town}</div>
+      {Glottocode ? <small>Glottocode: {Glottocode}</small> : null}
+      {Glottocode && iso ? ' | ' : null}
+      {iso ? <small>ISO 639-3: {iso}</small> : null}
     </div>
   )
 }
@@ -132,14 +157,19 @@ export const SearchByOmnibox: FC<OmniboxComponent> = (props) => {
       renderGroup={renderGroup}
       options={data}
       size="small"
+      // open
+      ListboxProps={{
+        style: {
+          // marginLeft: 8,
+          // padding: 8,
+        },
+      }}
       onChange={(event, value) => {
         if (value) {
           history.push(`${detailsRoutePath}?id=${value.ID}`)
         }
       }}
-      renderOption={(option) => {
-        return <>{option.Neighborhoods || option.Town}</>
-      }}
+      renderOption={(option) => <Result data={option} />}
       filterOptions={(options, { inputValue }) => {
         return matchSorter(options, inputValue, {
           keys: ['Language', 'Endonym', 'ISO 639-3', 'Glottocode'],
