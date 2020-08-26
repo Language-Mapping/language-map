@@ -7,6 +7,7 @@ import { LegendSwatch } from './types'
 
 type LegendPanelComponent = {
   legendItems: LegendSwatch[]
+  groupName: string
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -18,12 +19,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const LegendPanel: FC<LegendPanelComponent> = ({ legendItems }) => {
+export const LegendPanel: FC<LegendPanelComponent> = (props) => {
+  const { legendItems, groupName } = props
   const classes = useStyles()
 
   // FORMER SUMMARY: Visualize language communities in different ways by
   // changing their symbols and labels below.
-  // FORMER ICON: <GoSettings />
   // TODO: ^^^^^ restore as a heading?
   return (
     <>
@@ -35,7 +36,7 @@ export const LegendPanel: FC<LegendPanelComponent> = ({ legendItems }) => {
           <LayerLabelSelect />
         </Grid>
       </Grid>
-      <Legend legendItems={legendItems} />
+      <Legend legendItems={legendItems} groupName={groupName} />
     </>
   )
 }

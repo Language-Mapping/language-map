@@ -20,6 +20,12 @@ const useStyles = makeStyles((theme: Theme) =>
 export const FiltersPanel: FC = () => {
   const { state } = useContext(GlobalContext)
   const classes = useStyles()
+  const { langSymbGroups, activeLangSymbGroupId } = state
+  /* eslint-disable operator-linebreak */
+  const groupName = langSymbGroups[activeLangSymbGroupId]
+    ? langSymbGroups[activeLangSymbGroupId].name
+    : ''
+  /* eslint-enable operator-linebreak */
 
   // TODO: something respectable for styles, aka MUI-something
   return (
@@ -34,7 +40,7 @@ export const FiltersPanel: FC = () => {
       <Typography variant="h5" component="h3">
         Legend
       </Typography>
-      <LegendPanel legendItems={state.legendItems} />
+      <LegendPanel legendItems={state.legendItems} groupName={groupName} />
     </>
   )
 }

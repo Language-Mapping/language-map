@@ -269,7 +269,7 @@
       "paint": { "circle-color": "#295e5b" }
     },
     {
-      "id": "Australia & New Zealand",
+      "id": "Australia and New Zealand",
       "type": "circle",
       "metadata": { "mapbox:group": "103cfccc2ebe5006e8a8d85a7c7f51d2" },
       "source": "composite",
