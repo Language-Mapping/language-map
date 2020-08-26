@@ -3,20 +3,14 @@ import { Link as RouteLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
+import { panelWidths } from 'components/map/styles'
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     topBarRoot: {
       position: 'relative',
-      [theme.breakpoints.down('sm')]: {
-        // TODO: make it like desktop, as in don't take up the full width on
-        // mobile as it makes the map under it unreachable.
-        marginLeft: theme.spacing(1),
-        zIndex: 1,
-      },
-      [theme.breakpoints.up('sm')]: {
-        display: 'flex',
-        textAlign: 'center',
-      },
+      display: 'flex',
+      textAlign: 'center',
       // Direct children relative position so `zIndex` can be used
       '& > *': {
         position: 'relative',
@@ -27,7 +21,6 @@ const useStyles = makeStyles((theme: Theme) =>
         flexDirection: 'column',
         textDecoration: 'none',
       },
-      // TODO: // [theme.breakpoints.up(MID_BREAKPOINT)]: {}
     },
     // These spacers allow the title to "center" between the side panel and map
     // control buttons via flexbox and the addition of a couple divs.
@@ -35,15 +28,27 @@ const useStyles = makeStyles((theme: Theme) =>
       flex: 1,
       height: 0,
       visibility: 'hidden',
+      display: 'none',
+      [theme.breakpoints.up('md')]: {
+        display: 'block',
+      },
     },
     spacerRight: {
       marginRight: theme.spacing(2),
     },
     spacerLeft: {
-      marginLeft: 500, // TODO: de-fragilize
+      [theme.breakpoints.up('md')]: {
+        marginLeft: panelWidths.mid,
+      },
+      [theme.breakpoints.up('lg')]: {
+        marginLeft: panelWidths.midLarge,
+      },
     },
     title: {
       zIndex: 1,
+      [theme.breakpoints.down('md')]: {
+        marginLeft: theme.spacing(1),
+      },
     },
     titleMain: {
       // lineHeight: 1, // single-line anyway, and allows for reliance on gutter
@@ -63,14 +68,9 @@ const useStyles = makeStyles((theme: Theme) =>
       )`,
     },
     subtitle: {
-      clear: 'both',
       color: theme.palette.grey[800],
       fontSize: '0.32em',
       marginTop: '-0.4em',
-      [theme.breakpoints.down('sm')]: {
-        textAlign: 'left',
-        marginLeft: '2.6em',
-      },
     },
   })
 )

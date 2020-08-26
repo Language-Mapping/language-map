@@ -1,6 +1,5 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useLocation, Switch, Route } from 'react-router-dom'
-import { Box } from '@material-ui/core'
 
 import {
   MapPanel,
@@ -14,12 +13,17 @@ import { LayerPropsNonBGlayer, RouteLocation } from './types'
 import { mbStyleTileConfig } from './config'
 import { useStyles } from './styles'
 import { panelsConfig } from '../../config/panels-config'
-import { getIDfromURLparams, getMbStyleDocument } from '../../utils'
+import {
+  getIDfromURLparams,
+  getMbStyleDocument,
+  useWindowResize,
+} from '../../utils'
 
 export const MapWrap: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
   const [panelOpen, setPanelOpen] = useState(true)
-  const classes = useStyles({ panelOpen, screenHeight: window.innerHeight })
+  const { height } = useWindowResize() // TODO: rm if not using
+  const classes = useStyles({ panelOpen, screenHeight: height })
   const loc = useLocation()
   const [symbLayers, setSymbLayers] = useState<LayerPropsNonBGlayer[]>()
   const [labelLayers, setLabelLayers] = useState<LayerPropsNonBGlayer[]>()
@@ -43,12 +47,13 @@ export const MapWrap: FC = () => {
   }, [])
 
   // Do selected feature stuff on location change
+  // TODO: there's like 3 `return` statements here. How about 1?
   useEffect((): void => {
-    const idFromUrl = getIDfromURLparams(window.location.search)
-
     if (!langFeaturesCached.length) {
       return
     }
+
+    const idFromUrl = getIDfromURLparams(window.location.search)
 
     if (!idFromUrl || idFromUrl === -1) {
       dispatch({
@@ -63,6 +68,7 @@ export const MapWrap: FC = () => {
     // const matchedFeat = state.langFeaturesCached.find(
     //   (feat) => parsed.id === feat.ID.toString()
     // )
+
     const matchingRecord = langFeaturesCached.find(
       (record) => record.ID === idFromUrl
     )
@@ -101,7 +107,7 @@ export const MapWrap: FC = () => {
   }, [panelOpen])
 
   return (
-    <div className={classes.mapWrapRoot}>
+    <div className={classes.appWrapRoot}>
       {symbLayers && labelLayers && (
         <Map
           wrapClassName={classes.mapItselfWrap}
@@ -110,38 +116,35 @@ export const MapWrap: FC = () => {
           baselayer={state.baselayer}
         />
       )}
-      {/* Need the `id` in order to find unique element for `map.setPadding` */}
-      <Box id="map-panels-wrap" className={classes.mapPanelsWrap}>
-        <MapPanel>
-          <MapPanelHeader>
-            {/* Gross but "/" route needs to come last */}
-            {[...panelsConfig].reverse().map((config) => (
-              <MapPanelHeaderChild
-                key={config.heading}
+      <MapPanel screenHeight={height} panelOpen={panelOpen}>
+        <MapPanelHeader>
+          {/* Gross but "/" route needs to come last */}
+          {[...panelsConfig].reverse().map((config) => (
+            <MapPanelHeaderChild
+              key={config.heading}
+              {...config}
+              active={loc.pathname === config.path}
+              panelOpen={panelOpen}
+              setPanelOpen={setPanelOpen}
+            >
+              {config.component}
+            </MapPanelHeaderChild>
+          ))}
+        </MapPanelHeader>
+        <Switch>
+          {panelsConfig.map((config) => (
+            <Route key={config.heading} path={config.path}>
+              <MapPanelContent
                 {...config}
                 active={loc.pathname === config.path}
                 panelOpen={panelOpen}
-                setPanelOpen={setPanelOpen}
               >
                 {config.component}
-              </MapPanelHeaderChild>
-            ))}
-          </MapPanelHeader>
-          <Switch>
-            {panelsConfig.map((config) => (
-              <Route key={config.heading} path={config.path}>
-                <MapPanelContent
-                  {...config}
-                  active={loc.pathname === config.path}
-                  panelOpen={panelOpen}
-                >
-                  {config.component}
-                </MapPanelContent>
-              </Route>
-            ))}
-          </Switch>
-        </MapPanel>
-      </Box>
+              </MapPanelContent>
+            </Route>
+          ))}
+        </Switch>
+      </MapPanel>
     </div>
   )
 }

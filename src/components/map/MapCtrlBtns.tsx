@@ -1,6 +1,5 @@
 import React, { FC } from 'react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
 import {
   SpeedDial,
   SpeedDialIcon,
@@ -11,11 +10,11 @@ import { MdMoreVert, MdClose } from 'react-icons/md'
 import { FiHome, FiZoomIn, FiZoomOut, FiInfo } from 'react-icons/fi'
 
 import { MapControlAction } from './types'
-import { MID_BREAKPOINT } from './config'
 
 type MapCtrlBtnsComponent = {
   // Render prop so we don't have pass a million props to this component
   onMapCtrlClick: (actionID: MapControlAction) => void
+  isDesktop: boolean
 }
 
 type CtrlBtnConfig = {
@@ -58,12 +57,9 @@ const ctrlBtnsConfig = [
   { id: 'info', icon: <FiInfo />, name: 'About & Info' },
 ] as CtrlBtnConfig[]
 
-export const MapCtrlBtns: FC<MapCtrlBtnsComponent> = ({ onMapCtrlClick }) => {
+export const MapCtrlBtns: FC<MapCtrlBtnsComponent> = (props) => {
+  const { isDesktop, onMapCtrlClick } = props
   const classes = useStyles()
-  // TODO: pass this down from higher up
-  const isDesktop = useMediaQuery((theme: Theme) =>
-    theme.breakpoints.up(MID_BREAKPOINT)
-  )
   const [open, setOpen] = React.useState(true)
   const size = isDesktop ? 'medium' : 'small'
 
@@ -106,7 +102,7 @@ export const MapCtrlBtns: FC<MapCtrlBtnsComponent> = ({ onMapCtrlClick }) => {
             e.stopPropagation() // prevent closing the menu
             onMapCtrlClick(action.id)
           }}
-          FabProps={{ size }}
+          FabProps={{ size }} // TODO: uhhhh breakpoints? Why is this needed?
         />
       ))}
     </SpeedDial>

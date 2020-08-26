@@ -106,3 +106,8 @@ export type FlyToCoords = (
   offset: [number, number],
   selFeatAttribs: LangRecordSchema | null
 ) => void
+
+export type UseStyleProps = {
+  panelOpen: boolean
+  screenHeight: number
+}
