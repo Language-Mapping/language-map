@@ -251,7 +251,7 @@
       "source": "composite",
       "source-layer": "languages-08ip3e",
       "filter": ["match", ["get", "World Region"], ["Polynesia"], true, false],
-      "paint": { "circle-color": "#72493b" }
+      "paint": { "circle-color": "#c49a8d" }
     },
     {
       "id": "Northern Europe",
@@ -299,7 +299,7 @@
       "source": "composite",
       "source-layer": "languages-08ip3e",
       "filter": ["match", ["get", "World Region"], ["Melanesia"], true, false],
-      "paint": { "circle-color": "#72493b" }
+      "paint": { "circle-color": "#b68372" }
     },
     {
       "id": "Southern Africa",
