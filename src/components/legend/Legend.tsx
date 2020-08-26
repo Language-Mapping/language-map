@@ -19,15 +19,31 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: 0,
       paddingLeft: 4,
     },
+    // Looks PERFECT on all breakpoints
     groupedLegend: {
       display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gridColumnGap: 4,
       marginTop: theme.spacing(2),
+      gridTemplateColumns: '1fr 1fr',
+      gridTemplateRow: 'auto auto 1fr',
+      gridColumnGap: 4,
+      gridTemplateAreas: `
+      "reg reg"
+      "reg reg"
+      "aus aus"
+      `,
+      // Aus/NZ takes up more space
+      '& > :last-child': {
+        gridArea: 'aus',
+      },
+      [theme.breakpoints.only('sm')]: {
+        gridTemplateColumns:
+          'repeat(4, [col-start] minmax(100px, 1fr) [col-end])',
+      },
     },
     groupedLegendHeading: {
       color: theme.palette.grey[800],
       fontSize: '1.2rem',
+      marginBottom: '.2rem',
     },
   })
 )
