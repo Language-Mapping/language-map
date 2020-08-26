@@ -1,4 +1,5 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC } from 'react'
+import { useQuery } from 'react-query'
 import { useHistory } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
@@ -14,9 +15,7 @@ import {
 } from '@material-ui/core'
 import { MdClose } from 'react-icons/md'
 
-import { fetchContentFromWP } from './utils'
 import { wpAPIsettings } from './config'
-import { RemoteContentState } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,36 +38,45 @@ const createMarkup = (content: string): { __html: string } => ({
 export const AboutPageView: FC = () => {
   const classes = useStyles()
   const history = useHistory()
-
-  // TODO: learn how to use undefined or null as the initial/default type rather
-  // than creating an object for the sake of TS.
-  const [aboutPgContent, setAboutPgContent] = useState<RemoteContentState>({
-    title: null,
-    content: null,
-  })
-  const contentReady =
-    aboutPgContent.title !== null && aboutPgContent.content !== null
   const url = `${wpAPIsettings.pageUrl}/${wpAPIsettings.pageId}`
+
+  const { isLoading, error, data } = useQuery('aboutPage', () =>
+    fetch(`${url}`).then((res) => res.json())
+  )
+
+  // TODO: give this component an aria-something
+  if (isLoading) {
+    return (
+      <Backdrop
+        className={classes.backdrop}
+        open
+        data-testid="about-page-backdrop"
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    )
+  }
 
   const handleClose = () => {
     history.goBack() // TODO: something less gross?
   }
 
-  useEffect(() => {
-    fetchContentFromWP(url, setAboutPgContent)
-  }, [url])
-
-  if (!contentReady) {
-    // TODO: give this component an aria-something
+  // TODO: wire up Sentry
+  // TODO: TS for error (`error.message` is a string)
+  if (error) {
     return (
-      <Backdrop
-        className={classes.backdrop}
+      <Dialog
         open
-        onClick={handleClose}
-        data-testid="about-page-backdrop"
+        onClose={handleClose}
+        aria-labelledby="about-page-err-dialog-title"
+        aria-describedby="about-page-err-dialog-description"
+        maxWidth="md"
       >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+        An error has occurred.{' '}
+        <span role="img" aria-label="man shrugging emoji">
+          🤷‍♂
+        </span>
+      </Dialog>
     )
   }
 
@@ -81,7 +89,7 @@ export const AboutPageView: FC = () => {
       maxWidth="md"
     >
       <DialogTitle id="about-page-dialog-title" disableTypography>
-        <Typography variant="h2">{aboutPgContent?.title}</Typography>
+        <Typography variant="h2">{data.title.rendered}</Typography>
       </DialogTitle>
       <IconButton onClick={handleClose} className={classes.closeBtn}>
         <MdClose />
@@ -89,7 +97,7 @@ export const AboutPageView: FC = () => {
       <DialogContent dividers>
         <div
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={createMarkup(aboutPgContent.content || '')}
+          dangerouslySetInnerHTML={createMarkup(data.content.rendered || '')}
           id="about-page-dialog-description"
         />
       </DialogContent>
