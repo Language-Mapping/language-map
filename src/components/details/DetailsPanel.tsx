@@ -57,14 +57,14 @@ const EndoImageWrap: FC<EndoImageComponent> = (props) => {
 const NoFeatSel: FC = () => {
   return (
     <PanelIntro>
-      Click a language community in the map or visit the{' '}
+      Click a language community in the map or the{' '}
       <RouterLink
         to={DATA_TABLE_PATHNAME}
         title="Data table of language communities"
       >
         data table
-      </RouterLink>{' '}
-      to view and filter all communities.
+      </RouterLink>
+      .
     </PanelIntro>
   )
 }

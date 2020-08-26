@@ -1,111 +1,91 @@
 import React, { FC } from 'react'
-import matchSorter from 'match-sorter'
 import { useHistory } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { TextField, Link, Typography } from '@material-ui/core'
+import matchSorter from 'match-sorter'
 import Autocomplete from '@material-ui/lab/Autocomplete'
+import { TextField, Typography } from '@material-ui/core'
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { MdClose } from 'react-icons/md'
-import { TiWarning } from 'react-icons/ti'
 
 import { RouteLocation } from 'components/map/types'
 import { LangRecordSchema } from '../../context/types'
+import { OmniboxResult } from './OmniboxResult'
+import { FiltersWarning } from './FiltersWarning'
+import { ListboxComponent } from './ListboxComponent'
+import { renderGroup } from './utils'
 
-type OmniboxComponent = {
+type SearchByOmniProps = {
+  noFiltersSet: boolean
   data: LangRecordSchema[]
-  enableClear: boolean
-  clearFilters: () => void
 }
-
-type FiltersWarningComponent = Pick<OmniboxComponent, 'clearFilters'>
 
 const detailsRoutePath: RouteLocation = '/details'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    omniboxRoot: {
-      marginBottom: '1rem',
-      marginTop: '0.5rem',
+    listbox: {
+      '& ul': {
+        margin: 0,
+        padding: 0,
+      },
+      // Group headings
+      '& .MuiListSubheader-root': {
+        borderBottom: `1px solid ${theme.palette.grey[400]}`,
+        color: theme.palette.common.black,
+        fontFamily: theme.typography.h1.fontFamily,
+        fontSize: '1.1rem',
+        paddingLeft: 12,
+      },
     },
+    // The <li> items. Not sure why it works via classes and `groupUl` doesn't.
+    option: {
+      borderBottom: `solid 1px ${theme.palette.grey[200]}`,
+      display: 'flex',
+      paddingLeft: 12,
+    },
+    // Label for the text box itself
     omniLabel: {
       color: theme.palette.primary.main,
       fontSize: '1rem', // default causes wrap on small screens
     },
-    filtersWarning: {
-      display: 'flex',
-      alignItems: 'center',
-      fontSize: '.8rem',
-      '& > a': {
-        fontWeight: 'bold',
-      },
-      '& > svg': {
-        marginRight: '0.4em',
-      },
-    },
   })
 )
 
-// The text above the text field. Kind of a fight w/MUI stuff...
 const OmniLabel: FC = () => {
   const classes = useStyles()
 
   return (
-    <div className={classes.omniLabel}>
+    <Typography className={classes.omniLabel}>
       Language, endonym, Glottocode, ISO 639-3
-    </div>
-  )
-}
-
-// NOTE: the future of this is pending convo:
-// Let user know that they are searching filtered data
-const FiltersWarning: FC<FiltersWarningComponent> = (props) => {
-  const classes = useStyles()
-  const { clearFilters } = props
-
-  return (
-    <Typography className={classes.filtersWarning}>
-      <TiWarning />
-      Data search includes current filters.&nbsp;
-      <Link
-        href="#"
-        onClick={(e: React.MouseEvent) => {
-          e.preventDefault()
-          clearFilters()
-          e.stopPropagation()
-        }}
-      >
-        Clear filters
-      </Link>
     </Typography>
   )
 }
 
-// TODO: rule out that no additional features are needed from match-sorter:
-// https://github.com/kentcdodds/match-sorter
-export const SearchByOmnibox: FC<OmniboxComponent> = (props) => {
-  const history = useHistory()
+// CRED: https://material-ui.com/components/autocomplete/#virtualization
+// ^^^ definitely wouldn't have gotten the `react-window` virtualization w/o it!
+export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
+  const { data, noFiltersSet } = props
   const classes = useStyles()
-  const { data, enableClear, clearFilters } = props
+  const history = useHistory()
 
   return (
     <Autocomplete
-      id="language-omnibox"
-      className={classes.omniboxRoot}
-      autoComplete
+      id="virtualize-demo"
+      classes={classes}
+      // autoComplete // TODO: yay or nay?
       autoHighlight
       closeIcon={<MdClose />}
-      // debug // TODO: rm when done
-      defaultValue={null}
-      fullWidth={false}
-      groupBy={(option) => option.Language}
-      options={data}
       size="small"
+      options={data}
+      // open // much more effective than `debug`
+      groupBy={(option) => option.Language}
+      getOptionLabel={(option) => option.Language}
+      renderGroup={renderGroup}
+      renderOption={(option) => <OmniboxResult data={option} />}
       onChange={(event, value) => {
+        // Can't just do <RouterLink>, otherwise keyboard selection no-go...
         if (value) {
           history.push(`${detailsRoutePath}?id=${value.ID}`)
         }
-      }}
-      renderOption={(option) => {
-        return <>{option.Neighborhoods || option.Town}</>
       }}
       filterOptions={(options, { inputValue }) => {
         return matchSorter(options, inputValue, {
@@ -113,22 +93,23 @@ export const SearchByOmnibox: FC<OmniboxComponent> = (props) => {
           threshold: matchSorter.rankings.WORD_STARTS_WITH,
         })
       }}
+      ListboxComponent={
+        ListboxComponent as React.ComponentType<
+          React.HTMLAttributes<HTMLElement>
+        >
+      }
       renderInput={(params) => (
-        <>
-          <TextField
-            {...params}
-            label={<OmniLabel />}
-            placeholder="Search language communities..."
-            helperText={
-              enableClear && <FiltersWarning clearFilters={clearFilters} />
-            }
-            InputLabelProps={{
-              disableAnimation: true,
-              focused: false,
-              shrink: true,
-            }}
-          />
-        </>
+        <TextField
+          {...params}
+          label={<OmniLabel />}
+          placeholder="Search language communities..."
+          helperText={noFiltersSet ? <FiltersWarning /> : null}
+          InputLabelProps={{
+            disableAnimation: true,
+            focused: false,
+            shrink: true,
+          }}
+        />
       )}
     />
   )

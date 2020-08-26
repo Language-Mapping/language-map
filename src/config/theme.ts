@@ -14,6 +14,13 @@ const headings = {
   h6: { fontFamily: HEADING_FONT },
 }
 
+// BREAKPOINTS: material-ui.com/customization/breakpoints/#default-breakpoints
+// xs, extra-small: 0px
+// sm, small: 600px
+// md, medium: 960px
+// lg, large: 1280px
+// xl, extra-large: 1920px
+
 // Easy access to theme properties when used in `createMuiTheme` overrides
 // CRED: https://stackoverflow.com/a/57127040/1048518
 const customTheme = createMuiTheme({
