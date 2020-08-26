@@ -2,6 +2,7 @@ import { OutlinedTextFieldProps } from '@material-ui/core'
 import { WorldRegionLegend } from './types'
 
 export const commonSelectProps = {
+  fullWidth: true,
   select: true,
   size: 'small',
   InputLabelProps: { disableAnimation: true, focused: true },
