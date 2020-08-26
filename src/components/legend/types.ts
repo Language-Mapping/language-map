@@ -15,7 +15,7 @@ export type LegendSwatchComponent = LegendSwatch & {
 
 export type LegendGroupConfig = {
   [key: string]: string[] | number[]
-}[]
+}
 
 export type UNgeoscheme = 'Africa' | 'Americas' | 'Asia' | 'Europe' | 'Oceania'
 
@@ -26,4 +26,8 @@ export type LegendComponent = {
 
 export type WorldRegionLegend = {
   [key in UNgeoscheme]: WorldRegion[]
+}
+
+export type GroupedLegendProps = LegendComponent & {
+  groupConfig: LegendGroupConfig[]
 }

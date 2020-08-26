@@ -4,7 +4,7 @@ import { Typography } from '@material-ui/core'
 
 import { LegendSwatch } from 'components/legend'
 import { langTypeIconsConfig } from 'components/map/config'
-import { LegendComponent, WorldRegionLegend } from './types'
+import { LegendComponent, WorldRegionLegend, GroupedLegendProps } from './types'
 import { worldRegionLegend } from './config'
 
 const groupedLegendConfigs = {
@@ -19,8 +19,56 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: 0,
       paddingLeft: 4,
     },
+    groupedLegend: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gridColumnGap: 4,
+      marginTop: theme.spacing(2),
+    },
+    groupedLegendHeading: {
+      color: theme.palette.grey[800],
+      fontSize: '1.2rem',
+    },
   })
 )
+
+export const GroupedLegend: FC<GroupedLegendProps> = (props) => {
+  const { groupName, legendItems, groupConfig } = props
+  const classes = useStyles()
+
+  return (
+    <div>
+      <Typography
+        component="h4"
+        variant="h3"
+        className={classes.groupedLegendHeading}
+      >
+        {groupName}
+      </Typography>
+      <ul className={classes.legendRoot}>
+        {/* @ts-ignore */}
+        {groupConfig[groupName].map((item) => {
+          const corresponding = legendItems.find(
+            ({ legendLabel }) => legendLabel === item
+          )
+
+          if (!corresponding) {
+            return <li key={item}>Not found: {item}</li>
+          }
+
+          return (
+            <LegendSwatch
+              key={corresponding.legendLabel}
+              {...corresponding}
+              legendLabel={corresponding.legendLabel}
+              icon={corresponding && corresponding.icon}
+            />
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
 
 export const Legend: FC<LegendComponent> = (props) => {
   const { legendItems, groupName } = props
@@ -29,35 +77,20 @@ export const Legend: FC<LegendComponent> = (props) => {
 
   if (groupConfig) {
     return (
-      <>
+      <div className={classes.groupedLegend}>
         {Object.keys(groupConfig).map((groupHeading) => {
           return (
-            <>
-              <Typography>{groupHeading}</Typography>
-              <ul>
-                {/* @ts-ignore */}
-                {groupConfig[groupHeading].map((item) => {
-                  const corresponding = legendItems.find(
-                    ({ legendLabel }) => legendLabel === item
-                  )
-
-                  if (!corresponding) {
-                    return <li key={item}>Not found: {item}</li>
-                  }
-
-                  return (
-                    <LegendSwatch
-                      key={corresponding.legendLabel}
-                      {...corresponding}
-                      icon={corresponding && corresponding.icon}
-                    />
-                  )
-                })}
-              </ul>
-            </>
+            <GroupedLegend
+              key={groupHeading}
+              groupName={groupHeading}
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              groupConfig={groupConfig}
+              legendItems={legendItems}
+            />
           )
         })}
-      </>
+      </div>
     )
   }
 
