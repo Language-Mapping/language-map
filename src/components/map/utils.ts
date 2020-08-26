@@ -1,5 +1,6 @@
 import mbGlFull from 'mapbox-gl'
 
+import { PAGE_HEADER_ID } from 'components/nav/config'
 import * as MapTypes from './types'
 import { isURL } from '../../utils'
 
@@ -9,7 +10,7 @@ import { isURL } from '../../utils'
 // panel (on mobile) or between the panel and the right side (on desktop).
 export const prepMapOffset = (
   isDesktop: boolean,
-  topBarElemID = 'page-header',
+  topBarElemID = PAGE_HEADER_ID,
   mapPanelsElemeID = 'map-panels-wrap'
 ): [number, number] => {
   const topBarElem = document.getElementById(topBarElemID)

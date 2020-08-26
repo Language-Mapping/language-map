@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
+
 const NavListLink: FC<ListItemComponent> = ({
   url,
   primaryText,

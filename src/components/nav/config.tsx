@@ -2,6 +2,8 @@ import React from 'react'
 import { MdShare, MdHome, MdChat } from 'react-icons/md'
 import { GoGear, GoInfo } from 'react-icons/go'
 
+export const PAGE_HEADER_ID = 'page-header'
+
 export const primaryNavConfig = [
   {
     url: '/',
