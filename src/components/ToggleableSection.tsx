@@ -13,7 +13,7 @@ const useStyles = makeStyles(() =>
     },
     innerContent: {
       flex: (props: ToggleableProps) => (props.show ? 1 : 0),
-      maxHeight: (props: ToggleableProps) => (props.show ? 300 : 0),
+      maxHeight: (props: ToggleableProps) => (props.show ? 500 : 0),
       opacity: (props: ToggleableProps) => (props.show ? 1 : 0),
       height: 'auto',
       overflow: 'hidden',

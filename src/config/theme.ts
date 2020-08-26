@@ -82,7 +82,7 @@ export const GlobalCss = withStyles({
     '.simpler-font': {
       fontFamily: "'Roboto', sans-serif",
     },
-    'a:not([role="button"]), .obvious-link': {
+    a: {
       color: customTheme.palette.info.main,
       textDecoration: 'none',
     },
