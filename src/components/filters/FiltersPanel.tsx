@@ -36,7 +36,9 @@ export const FiltersPanel: FC = () => {
       <div className={classes.resultsBtnWrap}>
         <ViewResultsDataBtn />
       </div>
-      <LegendPanel legendItems={state.legendItems} groupName={groupName} />
+      {state.mapLoaded && (
+        <LegendPanel legendItems={state.legendItems} groupName={groupName} />
+      )}
     </>
   )
 }
