@@ -64,7 +64,7 @@ const NavListLink: FC<ListItemComponent> = ({
 
 export const Nav: FC = () => {
   const classes = useStyles()
-  const [showWelcomeModal, setShowWelcomeModal] = useState(
+  const [showWelcomeChecked, setShowWelcomeChecked] = useState(
     !window.localStorage.hideWelcome
   )
 
@@ -75,7 +75,7 @@ export const Nav: FC = () => {
       window.localStorage.hideWelcome = true
     }
 
-    setShowWelcomeModal(event.target.checked)
+    setShowWelcomeChecked(event.target.checked)
   }
 
   return (
@@ -99,14 +99,13 @@ export const Nav: FC = () => {
           <GoGear />
           Settings
         </h3>
-        <p>Light/dark theme</p>
+        {/* <p>Light/dark theme</p> */}
         <FormControlLabel
           control={
             <Switch
-              checked={showWelcomeModal}
+              checked={showWelcomeChecked}
               onChange={handleChange}
-              name="checkedB"
-              color="primary"
+              name="show-welcome-switch"
             />
           }
           label="Show welcome dialog on startup"

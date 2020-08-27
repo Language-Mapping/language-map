@@ -17,12 +17,10 @@ import {
 } from 'components/about/config'
 
 export const App: FC = () => {
-  const { acceptedTerms, hideWelcome } = window.localStorage
-
   useEffect(() => {
+    queryCache.prefetchQuery(WELCOME_QUERY, fetchWelcome)
     queryCache.prefetchQuery(ABOUT_QUERY, fetchAbout)
     queryCache.prefetchQuery(GLOSSARY_QUERY, fetchGlossary)
-    queryCache.prefetchQuery(WELCOME_QUERY, fetchWelcome)
   }, [])
 
   return (
@@ -30,7 +28,7 @@ export const App: FC = () => {
       <OffCanvasNav />
       <TopBar />
       <main>
-        {(!acceptedTerms || hideWelcome !== 'true') && (
+        {!window.localStorage.hideWelcome && (
           <WelcomeDialog queryName={WELCOME_QUERY} />
         )}
         <Route path={ABOUT_PATHNAME}>
