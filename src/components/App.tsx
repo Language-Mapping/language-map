@@ -4,21 +4,21 @@ import { queryCache } from 'react-query'
 
 import { TopBar, OffCanvasNav } from 'components/nav'
 import { MapWrap } from 'components/map'
-import { RouteLocation } from 'components/map/types'
-import { AboutPageView } from 'components/about'
-import { WpQueryNames } from 'components/about/types'
-
+import { AboutPageView, WelcomeDialog } from 'components/about'
 import { ResultsTable, ResultsModal } from 'components/results'
 import { fetchAbout, fetchGlossary, fetchWelcome } from 'components/about/utils'
-
-const DATA_TABLE_PATHNAME: RouteLocation = '/table'
-const GLOSSARY_PATHNAME: RouteLocation = '/glossary'
-const ABOUT_PATHNAME: RouteLocation = '/about'
-const ABOUT_QUERY: WpQueryNames = 'about'
-const GLOSSARY_QUERY: WpQueryNames = 'glossary'
-const WELCOME_QUERY: WpQueryNames = 'welcome'
+import {
+  DATA_TABLE_PATHNAME,
+  GLOSSARY_PATHNAME,
+  ABOUT_PATHNAME,
+  ABOUT_QUERY,
+  GLOSSARY_QUERY,
+  WELCOME_QUERY,
+} from 'components/about/config'
 
 export const App: FC = () => {
+  const { acceptedTerms, hideWelcome } = window.localStorage
+
   useEffect(() => {
     queryCache.prefetchQuery(ABOUT_QUERY, fetchAbout)
     queryCache.prefetchQuery(GLOSSARY_QUERY, fetchGlossary)
@@ -30,6 +30,9 @@ export const App: FC = () => {
       <OffCanvasNav />
       <TopBar />
       <main>
+        {(!acceptedTerms || hideWelcome !== 'true') && (
+          <WelcomeDialog queryName={WELCOME_QUERY} />
+        )}
         <Route path={ABOUT_PATHNAME}>
           <AboutPageView queryName={ABOUT_QUERY} />
         </Route>
