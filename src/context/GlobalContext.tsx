@@ -3,8 +3,6 @@
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
 import React, { useReducer, createContext, FC } from 'react'
 
-// TODO: once content is ready (WP API?), use `react-query` lib to cache on load
-// and run the fetch in a `useEffect` inside `GlobalProvider`.
 import { reducer } from './reducer'
 import { initialState } from './initialState'
 import { StoreAction, InitialState } from './types'

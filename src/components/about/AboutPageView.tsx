@@ -1,11 +1,10 @@
 import React, { FC } from 'react'
-import { useQuery } from 'react-query'
 import { useHistory } from 'react-router-dom'
+import { useQuery } from 'react-query'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
   Backdrop,
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -15,7 +14,11 @@ import {
 } from '@material-ui/core'
 import { MdClose } from 'react-icons/md'
 
-import { wpAPIsettings } from './config'
+import { WpApiPageResponse, WpQueryNames } from './types'
+
+type AboutPageProps = {
+  queryName: WpQueryNames
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,25 +38,21 @@ const createMarkup = (content: string): { __html: string } => ({
   __html: content,
 })
 
-export const AboutPageView: FC = () => {
+export const AboutPageView: FC<AboutPageProps> = (props) => {
+  const { queryName } = props
   const classes = useStyles()
   const history = useHistory()
-  const url = `${wpAPIsettings.pageUrl}/${wpAPIsettings.pageId}`
+  const { data, isFetching, error } = useQuery(queryName)
+  const wpData = data as WpApiPageResponse
 
-  const { isLoading, error, data } = useQuery('aboutPage', () =>
-    fetch(`${url}`).then((res) => res.json())
-  )
-
-  // TODO: give this component an aria-something
-  if (isLoading) {
+  // TODO: aria-something
+  if (isFetching) {
     return (
       <Backdrop
         className={classes.backdrop}
         open
         data-testid="about-page-backdrop"
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      />
     )
   }
 
@@ -62,16 +61,11 @@ export const AboutPageView: FC = () => {
   }
 
   // TODO: wire up Sentry
+  // TODO: aria
   // TODO: TS for error (`error.message` is a string)
   if (error) {
     return (
-      <Dialog
-        open
-        onClose={handleClose}
-        aria-labelledby="about-page-err-dialog-title"
-        aria-describedby="about-page-err-dialog-description"
-        maxWidth="md"
-      >
+      <Dialog open onClose={handleClose} maxWidth="md">
         An error has occurred.{' '}
         <span role="img" aria-label="man shrugging emoji">
           🤷‍♂
@@ -84,12 +78,12 @@ export const AboutPageView: FC = () => {
     <Dialog
       open
       onClose={handleClose}
-      aria-labelledby="about-page-dialog-title"
-      aria-describedby="about-page-dialog-description"
+      aria-labelledby={`${queryName}-dialog-title`}
+      aria-describedby={`${queryName}-dialog-description`}
       maxWidth="md"
     >
-      <DialogTitle id="about-page-dialog-title" disableTypography>
-        <Typography variant="h2">{data.title.rendered}</Typography>
+      <DialogTitle id={`${queryName}-dialog-title`} disableTypography>
+        <Typography variant="h2">{wpData && wpData.title.rendered}</Typography>
       </DialogTitle>
       <IconButton onClick={handleClose} className={classes.closeBtn}>
         <MdClose />
@@ -97,8 +91,10 @@ export const AboutPageView: FC = () => {
       <DialogContent dividers>
         <div
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={createMarkup(data.content.rendered || '')}
-          id="about-page-dialog-description"
+          dangerouslySetInnerHTML={createMarkup(
+            (wpData && wpData.content.rendered) || ''
+          )}
+          id={`${queryName}-dialog-description`}
         />
       </DialogContent>
       <DialogActions>
