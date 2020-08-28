@@ -14,6 +14,7 @@ import {
 import { FiShare } from 'react-icons/fi'
 import { GoGear } from 'react-icons/go'
 
+import { ShareButtons } from 'components'
 import { primaryNavConfig } from './config'
 
 type ListItemComponent = {
@@ -94,7 +95,7 @@ export const Nav: FC = () => {
         <h3>
           <FiShare /> Share
         </h3>
-        <p>Sharing buttons go here</p>
+        <ShareButtons />
         <h3>
           <GoGear />
           Settings
