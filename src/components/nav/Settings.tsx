@@ -40,11 +40,11 @@ export const Settings: FC<SettingsProps> = (props) => {
     !window.localStorage.hideWelcome
   )
 
+  // Consider this instead:
+  // https://developer.mozilla.org/en-US/docs/Web/API/Storage/setItem
   const handleWelcomeSwitchChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    // event.stopPropagation() // prevent off-canvas from closing
-
     if (event.target.checked) {
       delete window.localStorage.hideWelcome
     } else {
@@ -64,7 +64,6 @@ export const Settings: FC<SettingsProps> = (props) => {
         <GoGear />
         Settings
       </Typography>
-      {/* <p>Light/dark theme</p> */}
       <FormControlLabel
         classes={{
           label: smallerTextClass,

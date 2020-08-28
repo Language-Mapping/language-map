@@ -23,6 +23,17 @@ import { getIDfromURLparams, findFeatureByID } from '../../utils'
 
 const { layerId: sourceLayer, internalSrcID } = mapConfig.mbStyleTileConfig
 
+// Ensure right-to-left languages (Arabic, Hebrew) are shown correctly
+mbGlFull.setRTLTextPlugin(
+  // latest version: https://www.npmjs.com/package/@mapbox/mapbox-gl-rtl-text
+  'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
+  // Yeah not today TS, thanks anyway:
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  null,
+  true // lazy: only load when the map first encounters Hebrew or Arabic text
+)
+
 export const Map: FC<MapTypes.MapComponent> = ({
   symbLayers,
   labelLayers,
