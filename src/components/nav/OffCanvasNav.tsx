@@ -19,11 +19,8 @@ export const OffCanvasNav: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
   const offCanvasOpen = state.offCanvasNavOpen
   const classes = useStyles()
-  const closeIt = () => {
-    dispatch({
-      type: 'TOGGLE_OFF_CANVAS_NAV',
-    })
-  }
+
+  const closeIt = () => dispatch({ type: 'TOGGLE_OFF_CANVAS_NAV' })
 
   const toggleDrawer: ToggleOffCanvasNav = (open) => (event) => {
     if (
@@ -50,12 +47,9 @@ export const OffCanvasNav: FC = () => {
       className={classes.offCanvasNavRoot}
     >
       <div
-        // getByRole returned more than one presentation element
-        data-testid="backdrop"
         role="presentation"
-        className={classes.offCanvasNavList}
         onClick={closeIt}
-        onKeyDown={closeIt}
+        className={classes.offCanvasNavList}
       >
         <Nav />
       </div>

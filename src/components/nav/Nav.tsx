@@ -1,28 +1,18 @@
-import React, { FC, useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { FC } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
-  ListItemIcon,
-  List,
   Divider,
+  Link,
+  List,
   ListItem,
+  ListItemIcon,
   ListItemText,
-  Box,
-  FormControlLabel,
-  Switch,
 } from '@material-ui/core'
-import { FiShare } from 'react-icons/fi'
-import { GoGear } from 'react-icons/go'
+import { GoInfo } from 'react-icons/go'
+import { MdChat } from 'react-icons/md'
 
-import { ShareButtons } from 'components'
-import { primaryNavConfig } from './config'
-
-type ListItemComponent = {
-  url: string
-  primaryText: string
-  secondaryText: string
-  icon: React.ReactNode
-}
+import { Settings } from './Settings'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,81 +27,64 @@ const useStyles = makeStyles((theme: Theme) =>
         height: 30,
       },
     },
-    icon: {
-      minWidth: 'auto', // override default
+    listItemIcon: {
+      color: theme.palette.text.secondary,
       marginRight: theme.spacing(1),
+      minWidth: 'auto', // override default
     },
-    settings: {
-      padding: theme.spacing(2),
+    smallerText: {
+      fontSize: '0.8rem',
     },
   })
 )
 
-const NavListLink: FC<ListItemComponent> = ({
-  url,
-  primaryText,
-  secondaryText,
-  icon,
-}) => {
-  const classes = useStyles()
-
-  return (
-    <Link to={url} className={classes.listLink}>
-      <ListItemIcon className={classes.icon}>{icon}</ListItemIcon>
-      <ListItemText primary={primaryText} secondary={secondaryText} />
-    </Link>
-  )
-}
-
 export const Nav: FC = () => {
   const classes = useStyles()
-  const [showWelcomeChecked, setShowWelcomeChecked] = useState(
-    !window.localStorage.hideWelcome
-  )
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      delete window.localStorage.hideWelcome
-    } else {
-      window.localStorage.hideWelcome = true
-    }
-
-    setShowWelcomeChecked(event.target.checked)
-  }
+  const { listLink, listItemIcon, smallerText } = classes
 
   return (
     <>
       <nav>
         <List>
-          {primaryNavConfig.map((props: ListItemComponent) => (
-            <ListItem button key={props.primaryText}>
-              <NavListLink {...props} />
-            </ListItem>
-          ))}
+          <ListItem button>
+            <Link
+              underline="none"
+              component={RouterLink}
+              to="/about"
+              className={listLink}
+            >
+              <ListItemIcon className={listItemIcon}>
+                <GoInfo />
+              </ListItemIcon>
+              <ListItemText
+                classes={{ secondary: smallerText }}
+                primary="About"
+                secondary="Project background, credits, data sources, and legal info"
+              />
+            </Link>
+          </ListItem>
+          <ListItem button>
+            <Link
+              underline="none"
+              href="https://docs.google.com/forms/d/1CzZK-aKh0kyxR13DGEJ5t8S_mG9Cf2y-jwVviZ35fac"
+              className={listLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <ListItemIcon className={listItemIcon}>
+                <MdChat />
+              </ListItemIcon>
+              <ListItemText
+                classes={{ secondary: smallerText }}
+                primary="Contact & Feedback"
+                secondary="Suggest corrections, report bugs, request new features, and more"
+              />
+            </Link>
+          </ListItem>
         </List>
         <Divider />
       </nav>
-      <Box className={classes.settings}>
-        <h3>
-          <FiShare /> Share
-        </h3>
-        <ShareButtons />
-        <h3>
-          <GoGear />
-          Settings
-        </h3>
-        {/* <p>Light/dark theme</p> */}
-        <FormControlLabel
-          control={
-            <Switch
-              checked={showWelcomeChecked}
-              onChange={handleChange}
-              name="show-welcome-switch"
-            />
-          }
-          label="Show welcome dialog on startup"
-        />
-      </Box>
+      <Settings smallerTextClass={smallerText} />
     </>
   )
 }
