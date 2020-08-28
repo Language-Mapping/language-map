@@ -36,6 +36,7 @@ export const Settings: FC<SettingsProps> = (props) => {
   const classes = useStyles()
   const { switchFormCtrlRoot, settingsRoot, settingsHeading } = classes
 
+  // TODO: consider using`localStorage.getItem('hideWelcome')`
   const [showWelcomeChecked, setShowWelcomeChecked] = useState(
     !window.localStorage.hideWelcome
   )

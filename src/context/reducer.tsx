@@ -79,21 +79,6 @@ export const reducer = (
           [action.payload]: !state.layerVisibility[action.payload],
         },
       }
-    case 'SHOW_SPLASH':
-      if (action.payload === true) {
-        localStorage.setItem('hasSeenSplash', 'true')
-
-        return {
-          ...state,
-          showSplash: action.payload,
-          hasSeenSplash: true,
-        }
-      }
-
-      return {
-        ...state,
-        showSplash: action.payload,
-      }
     default:
       return state
   }

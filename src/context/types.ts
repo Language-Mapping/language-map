@@ -17,7 +17,6 @@ export type StoreAction =
   | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: string }
   | { type: 'SET_MAP_LOADED'; payload: boolean }
   | { type: 'SET_SEL_FEAT_ATTRIBS'; payload: null | LangRecordSchema }
-  | { type: 'SHOW_SPLASH'; payload: boolean }
   | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibility }
   | { type: 'TOGGLE_UI_ALERT'; payload: AlertPayload }
   | { type: 'TOGGLE_OFF_CANVAS_NAV' }
@@ -26,7 +25,6 @@ export type InitialState = {
   activeLangLabelId: string
   activeLangSymbGroupId: string
   baselayer: Baselayer
-  hasSeenSplash: boolean
   langFeatIDs: null | number[]
   langFeatures: LangRecordSchema[]
   langFeaturesCached: LangRecordSchema[]
@@ -37,7 +35,6 @@ export type InitialState = {
   mapLoaded: boolean
   offCanvasNavOpen: boolean
   selFeatAttribs: null | LangRecordSchema
-  showSplash: boolean
   uiAlert: AlertPayload
 }
 
