@@ -37,12 +37,12 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     detailLabel: {
-      color: theme.palette.grey[900],
+      color: theme.palette.text.secondary,
       fontFamily: theme.typography.h1.fontFamily,
       marginRight: 4,
     },
     detailValue: {
-      color: theme.palette.grey[700],
+      color: theme.palette.text.secondary,
       fontSize: '0.9em',
       marginRight: 4,
     },

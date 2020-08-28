@@ -58,6 +58,13 @@ const useStyles = makeStyles((theme: Theme) =>
     panelRoot: {
       display: 'flex',
       flexDirection: 'column',
+      // YES. We really have to go this high up. Tests fail with errors like:
+      // Material-UI: The key `omniboxLabel` provided to the classes prop is not
+      // implemented in ForwardRef(Autocomplete).
+      '& .MuiInputLabel-formControl': {
+        color: theme.palette.primary.main,
+        fontSize: '1rem',
+      },
     },
     panelContent: {
       overflow: 'auto',

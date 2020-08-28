@@ -1,6 +1,5 @@
 import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { fade } from '@material-ui/core/styles/colorManipulator'
 import {
   Button,
   Checkbox,
@@ -17,7 +16,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     welcomeFootRoot: {
       alignItems: 'center',
-      borderTop: `solid 1px ${fade(theme.palette.primary.light, 0.25)}`,
       display: 'grid',
       gridRowGap: 8,
       gridTemplateRows: 'auto auto',
@@ -36,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     haveReadText: {
-      color: theme.palette.grey[600],
+      color: theme.palette.text.secondary,
       fontSize: '0.75em',
       gridArea: 'text',
       justifySelf: 'flex-end',
@@ -44,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginRight: theme.spacing(1),
     },
     showOnStartup: {
-      color: theme.palette.grey[800],
+      color: theme.palette.text.secondary,
       fontSize: '.75rem',
       gridArea: 'checkbox',
       marginLeft: -4, // checkbox icon has ridiculous padding, hard to override

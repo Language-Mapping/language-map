@@ -4,6 +4,9 @@ import { withStyles } from '@material-ui/core'
 // Always have a hard time finding the Typography variant docs for some reason:
 // https://material-ui.com/components/typography/#component
 
+// ...and the default theme:
+// https://material-ui.com/customization/default-theme/#explore
+
 const HEADING_FONT = "'Gentium Basic', Times, serif"
 const headings = {
   h1: { fontFamily: HEADING_FONT },

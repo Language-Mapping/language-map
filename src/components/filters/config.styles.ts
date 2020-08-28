@@ -39,8 +39,10 @@ export const useStyles = makeStyles((theme: Theme) =>
         overflowY: 'hidden',
       },
       '& .MuiToolbar-root:not(.MuiTablePagination-toolbar)': {
-        backgroundColor: theme.palette.grey[100],
-        borderBottom: `solid 1px ${theme.palette.grey[400]}`,
+        borderBottom: `solid 1px ${theme.palette.text.hint}`,
+      },
+      '& .MuiToolbar-root': {
+        backgroundColor: theme.palette.background.default,
       },
       // Don't even know what this is, some kind of spacer or something to do
       // with grouping perhaps (even though it's set to `false` in the table
@@ -52,7 +54,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& .MuiPaper-root > .MuiTable-root': {
         bottom: 0,
         position: 'sticky',
-        backgroundColor: theme.palette.grey[100],
+        backgroundColor: theme.palette.background.default,
         borderBottomRightRadius: 4,
         borderBottomLeftRadius: 4,
       },
@@ -61,7 +63,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       // e.g. the Filter icon at beginning of column filters
       '& .MuiInputAdornment-root': {
-        color: theme.palette.grey[600],
+        color: theme.palette.text.hint,
       },
       // All column headings
       '& .MuiTableCell-head': {

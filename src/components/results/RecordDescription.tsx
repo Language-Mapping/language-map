@@ -7,14 +7,13 @@ const useStyles = makeStyles((theme: Theme) =>
     recDescripRoot: {
       fontFamily: theme.typography.h1.fontFamily,
       marginTop: theme.spacing(2),
-      color: theme.palette.grey[800],
     },
     firstLetter: {
-      color: theme.palette.common.black,
       fontSize: theme.typography.h1.fontSize,
       fontFamily: theme.typography.h1.fontFamily,
       fontWeight: theme.typography.h1.fontWeight,
       lineHeight: 0,
+      marginRight: 4,
     },
     closeBtn: {
       position: 'absolute',

@@ -6,7 +6,7 @@ import { MdClose } from 'react-icons/md'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     closeBtnRoot: {
-      color: theme.palette.grey[500],
+      color: theme.palette.text.secondary,
       padding: theme.spacing(1),
       position: 'absolute',
       right: 4,

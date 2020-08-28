@@ -65,6 +65,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       )`,
     },
     subtitle: {
+      // Steady regardless of light/dark theme BUT not MB background map:
       color: theme.palette.grey[800],
       fontSize: '0.32em',
       marginTop: '-0.4em',

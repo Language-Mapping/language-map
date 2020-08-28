@@ -25,10 +25,10 @@ const useStyles = makeStyles((theme: Theme) =>
     dialogTitle: {
       backgroundColor: theme.palette.primary.main,
       boxShadow: theme.shadows[8],
-      color: theme.palette.background.paper,
+      color: theme.palette.common.white,
       fontSize: '1.8rem',
       textAlign: 'center',
-      textShadow: `1px 1px 2px ${theme.palette.primary.dark}`,
+      textShadow: `1px 1px 3px ${theme.palette.primary.dark}`,
       [theme.breakpoints.down('sm')]: {
         padding: theme.spacing(2),
       },
@@ -69,9 +69,7 @@ export const WelcomeDialog: FC<AboutPageProps> = (props) => {
 
   // TODO: aria-something
   if (isFetching) {
-    return (
-      <Backdrop className={backdrop} open data-testid="about-page-backdrop" />
-    )
+    return <Backdrop className={backdrop} open />
   }
 
   const handleClose = () => {
