@@ -22,6 +22,37 @@ const useStyles = makeStyles((theme: Theme) =>
       color: '#fff',
       zIndex: theme.zIndex.drawer + 1,
     },
+    dialogTitle: {
+      backgroundColor: theme.palette.primary.main,
+      boxShadow: theme.shadows[8],
+      color: theme.palette.background.paper,
+      fontSize: '1.8rem',
+      textAlign: 'center',
+      textShadow: `1px 1px 2px ${theme.palette.primary.dark}`,
+      [theme.breakpoints.down('sm')]: {
+        padding: theme.spacing(2),
+      },
+    },
+    dialogContent: {
+      [theme.breakpoints.down('sm')]: {
+        padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+        '& p': {
+          fontSize: '0.9rem',
+        },
+      },
+    },
+    // Squeeze a bit more room out of the dialog
+    welcomePaper: {
+      [theme.breakpoints.up('sm')]: {
+        marginLeft: theme.spacing(3),
+        marginRight: theme.spacing(3),
+      },
+      [theme.breakpoints.down('sm')]: {
+        marginBottom: 0,
+        marginTop: 0,
+        maxHeight: `calc(100% - ${theme.spacing(4)}px)`,
+      },
+    },
   })
 )
 
@@ -31,7 +62,7 @@ const createMarkup = (content: string): { __html: string } => ({
 export const WelcomeDialog: FC<AboutPageProps> = (props) => {
   const { queryName } = props
   const classes = useStyles()
-  const { backdrop } = classes
+  const { backdrop, dialogTitle, dialogContent, welcomePaper } = classes
   const { data, isFetching, error } = useQuery(queryName)
   const wpData = data as WpApiPageResponse
   const [open, setOpen] = useState<boolean>(true)
@@ -70,13 +101,18 @@ export const WelcomeDialog: FC<AboutPageProps> = (props) => {
       aria-labelledby={`${queryName}-dialog-title`}
       aria-describedby={`${queryName}-dialog-description`}
       maxWidth="md"
+      PaperProps={{ className: welcomePaper }}
     >
-      <DialogTitle id={`${queryName}-dialog-title`}>
+      <DialogTitle
+        id={`${queryName}-dialog-title`}
+        disableTypography
+        className={dialogTitle}
+      >
         <Typography variant="h3" component="h2">
           {wpData && wpData.title.rendered}
         </Typography>
       </DialogTitle>
-      <DialogContent dividers>
+      <DialogContent dividers className={dialogContent}>
         <div
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={createMarkup(

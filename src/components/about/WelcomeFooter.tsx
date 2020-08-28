@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { fade } from '@material-ui/core/styles/colorManipulator'
 import {
   Button,
   Checkbox,
@@ -16,10 +17,11 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     welcomeFootRoot: {
       alignItems: 'center',
+      borderTop: `solid 1px ${fade(theme.palette.primary.light, 0.25)}`,
       display: 'grid',
       gridRowGap: 8,
       gridTemplateRows: 'auto auto',
-      padding: 12,
+      padding: '10px 12px',
       gridTemplateAreas: `
       "checkbox btn"
       "text text"
