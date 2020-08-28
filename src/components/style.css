@@ -1,0 +1,5 @@
+a {
+  /* Same as theme.palette.info.main but this avoids need for `withStyles` */
+  color: hsl(207deg 90% 54%);
+  text-decoration: none;
+}

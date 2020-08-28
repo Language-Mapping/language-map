@@ -1,5 +1,4 @@
 import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles'
-import { withStyles } from '@material-ui/core'
 
 // Always have a hard time finding the Typography variant docs for some reason:
 // https://material-ui.com/components/typography/#component
@@ -24,10 +23,15 @@ const headings = {
 // lg, large: 1280px
 // xl, extra-large: 1920px
 
+// YO: if you want to try the switch again, this seemed to be on the right
+// track, "just" need to wire it up w/state and responsive fonts and all the
+// other shtuff: `export function customTheme(type: PaletteType)`
+
 // Easy access to theme properties when used in `createMuiTheme` overrides
 // CRED: https://stackoverflow.com/a/57127040/1048518
 const customTheme = createMuiTheme({
   palette: {
+    type: 'dark',
     primary: {
       light: '#66ab9d',
       main: '#409685',
@@ -62,7 +66,7 @@ const customTheme = createMuiTheme({
 customTheme.overrides = {
   MuiInput: {
     root: {
-      fontSize: customTheme.typography.body2.fontSize,
+      fontSize: customTheme.typography.body2.fontSize, // default inputs: huge
     },
   },
   MuiDialog: {
@@ -72,24 +76,5 @@ customTheme.overrides = {
     },
   },
 }
-
-export const GlobalCss = withStyles({
-  // @global is handled by jss-plugin-global.
-  '@global': {
-    body: {
-      margin: 0,
-    },
-    p: {
-      fontSize: customTheme.typography.fontSize,
-    },
-    '.simpler-font': {
-      fontFamily: "'Roboto', sans-serif",
-    },
-    a: {
-      color: customTheme.palette.info.main,
-      textDecoration: 'none',
-    },
-  },
-})(() => null)
 
 export const theme = responsiveFontSizes(customTheme)
