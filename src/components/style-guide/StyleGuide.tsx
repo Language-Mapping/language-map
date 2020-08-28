@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
         marginBottom: theme.spacing(4),
       },
       '& .MuiPaper-root .MuiPaper-root > h3:first-child': {
-        borderBottomColor: theme.palette.grey[600],
+        borderBottomColor: theme.palette.text.secondary,
         borderBottomStyle: 'dotted',
         borderBottomWidth: 1,
       },

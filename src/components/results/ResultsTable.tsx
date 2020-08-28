@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     titleIcon: {
       fontSize: '0.6em',
-      color: theme.palette.grey[700],
+      color: theme.palette.text.secondary,
       marginRight: theme.spacing(1),
       flexShrink: 0,
     },

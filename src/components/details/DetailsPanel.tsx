@@ -34,7 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: '95%',
     },
     neighborhoods: {
-      color: theme.palette.grey[800],
       fontSize: '0.8rem',
       fontStyle: 'italic',
     },

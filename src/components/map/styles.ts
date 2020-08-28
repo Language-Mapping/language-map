@@ -49,6 +49,12 @@ export const useStyles = makeStyles((theme: Theme) =>
         position: 'relative',
         top: -2,
       },
+      '& .mapboxgl-popup-tip': {
+        borderTopColor: theme.palette.background.paper,
+      },
+      '& .mapboxgl-popup-content': {
+        backgroundColor: theme.palette.background.paper,
+      },
     },
     // The actual map container
     mapItselfWrap: {
@@ -57,12 +63,13 @@ export const useStyles = makeStyles((theme: Theme) =>
       top: 0,
       width: '100%',
     },
-    closePanel: {
-      color: theme.palette.common.white,
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      zIndex: 2,
-    },
+    // TODO: restore or use up/down arrows or something else
+    // closePanel: {
+    //   color: theme.palette.common.white,
+    //   position: 'absolute',
+    //   right: theme.spacing(1),
+    //   top: theme.spacing(1),
+    //   zIndex: 2,
+    // },
   })
 )

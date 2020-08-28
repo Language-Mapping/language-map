@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
         lineHeight: '16px',
         top: 2,
         right: 4,
-        color: theme.palette.grey[600],
+        color: theme.palette.text.hint,
       },
     },
     heading: {

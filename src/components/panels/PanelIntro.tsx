@@ -5,8 +5,8 @@ import { Divider } from '@material-ui/core'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelIntroRoot: {
+      color: theme.palette.text.secondary,
       fontSize: 12,
-      color: theme.palette.grey[600],
       marginTop: 0,
       marginBottom: theme.spacing(1),
       // e.g. route links

@@ -1,2 +1,2 @@
 export * from './AboutPageView'
-export * from './GlossaryDialog'
+export * from './WelcomeDialog'

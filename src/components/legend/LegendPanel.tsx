@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: 4,
     },
     legendCtrlsDescrip: {
-      color: theme.palette.grey[600],
+      color: theme.palette.text.secondary,
       fontSize: '0.7rem',
     },
     worldMap: {
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(1),
     },
     worldMapDescrip: {
-      color: theme.palette.grey[600],
+      color: theme.palette.text.secondary,
       fontSize: '0.7rem',
       marginBottom: theme.spacing(1),
     },

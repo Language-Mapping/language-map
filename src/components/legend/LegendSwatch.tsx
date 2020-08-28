@@ -7,9 +7,9 @@ import { LegendSwatchComponent } from './types'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     legendSwatchRoot: {
+      alignItems: 'center',
       display: 'grid',
       gridTemplateColumns: '24px 1fr',
-      alignItems: 'center',
       justifyItems: 'center',
       marginBottom: (props: { type: 'symbol' | string }) =>
         props.type === 'symbol' ? theme.spacing(1) : 0,
@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     legendLabel: {
       justifySelf: 'flex-start',
-      color: theme.palette.grey[800],
     },
   })
 )

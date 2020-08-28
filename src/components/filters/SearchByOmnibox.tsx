@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { useHistory } from 'react-router-dom'
 import matchSorter from 'match-sorter'
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import { TextField, Typography } from '@material-ui/core'
+import { TextField } from '@material-ui/core'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { MdClose } from 'react-icons/md'
 
@@ -29,8 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       // Group headings
       '& .MuiListSubheader-root': {
-        borderBottom: `1px solid ${theme.palette.grey[400]}`,
-        color: theme.palette.common.black,
+        borderBottom: `1px solid ${theme.palette.text.hint}`,
         fontFamily: theme.typography.h1.fontFamily,
         fontSize: '1.1rem',
         paddingLeft: 12,
@@ -38,27 +37,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     // The <li> items. Not sure why it works via classes and `groupUl` doesn't.
     option: {
-      borderBottom: `solid 1px ${theme.palette.grey[200]}`,
+      borderBottom: `solid 1px ${theme.palette.text.hint}`,
       display: 'flex',
       paddingLeft: 12,
     },
-    // Label for the text box itself
-    omniLabel: {
-      color: theme.palette.primary.main,
-      fontSize: '1rem', // default causes wrap on small screens
-    },
   })
 )
-
-const OmniLabel: FC = () => {
-  const classes = useStyles()
-
-  return (
-    <Typography className={classes.omniLabel}>
-      Language, endonym, Glottocode, ISO 639-3
-    </Typography>
-  )
-}
 
 // CRED: https://material-ui.com/components/autocomplete/#virtualization
 // ^^^ definitely wouldn't have gotten the `react-window` virtualization w/o it!
@@ -81,6 +65,7 @@ export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
       getOptionLabel={(option) => option.Language}
       renderGroup={renderGroup}
       renderOption={(option) => <OmniboxResult data={option} />}
+      openOnFocus
       onChange={(event, value) => {
         // Can't just do <RouterLink>, otherwise keyboard selection no-go...
         if (value) {
@@ -101,12 +86,11 @@ export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
       renderInput={(params) => (
         <TextField
           {...params}
-          label={<OmniLabel />}
+          label="Language, endonym, Glottocode, ISO 639-3"
           placeholder="Search language communities..."
           helperText={noFiltersSet ? <FiltersWarning /> : null}
           InputLabelProps={{
             disableAnimation: true,
-            focused: false,
             shrink: true,
           }}
         />

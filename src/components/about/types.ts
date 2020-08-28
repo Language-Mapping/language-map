@@ -11,3 +11,5 @@ export type RemoteContentState = {
   title: string | null
   content: string | null
 }
+
+export type WpQueryNames = 'about' | 'glossary' | 'welcome'

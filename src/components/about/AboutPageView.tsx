@@ -1,10 +1,10 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC } from 'react'
 import { useHistory } from 'react-router-dom'
+import { useQuery } from 'react-query'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
   Backdrop,
   Button,
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -14,9 +14,11 @@ import {
 } from '@material-ui/core'
 import { MdClose } from 'react-icons/md'
 
-import { fetchContentFromWP } from './utils'
-import { wpAPIsettings } from './config'
-import { RemoteContentState } from './types'
+import { WpApiPageResponse, WpQueryNames } from './types'
+
+type AboutPageProps = {
+  queryName: WpQueryNames
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,39 +38,39 @@ const createMarkup = (content: string): { __html: string } => ({
   __html: content,
 })
 
-export const AboutPageView: FC = () => {
+export const AboutPageView: FC<AboutPageProps> = (props) => {
+  const { queryName } = props
   const classes = useStyles()
   const history = useHistory()
+  const { data, isFetching, error } = useQuery(queryName)
+  const wpData = data as WpApiPageResponse
 
-  // TODO: learn how to use undefined or null as the initial/default type rather
-  // than creating an object for the sake of TS.
-  const [aboutPgContent, setAboutPgContent] = useState<RemoteContentState>({
-    title: null,
-    content: null,
-  })
-  const contentReady =
-    aboutPgContent.title !== null && aboutPgContent.content !== null
-  const url = `${wpAPIsettings.pageUrl}/${wpAPIsettings.pageId}`
+  // TODO: aria-something
+  if (isFetching) {
+    return (
+      <Backdrop
+        className={classes.backdrop}
+        open
+        data-testid="about-page-backdrop" // TODO: something?
+      />
+    )
+  }
 
   const handleClose = () => {
     history.goBack() // TODO: something less gross?
   }
 
-  useEffect(() => {
-    fetchContentFromWP(url, setAboutPgContent)
-  }, [url])
-
-  if (!contentReady) {
-    // TODO: give this component an aria-something
+  // TODO: wire up Sentry
+  // TODO: aria
+  // TODO: TS for error (`error.message` is a string)
+  if (error) {
     return (
-      <Backdrop
-        className={classes.backdrop}
-        open
-        onClick={handleClose}
-        data-testid="about-page-backdrop"
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Dialog open onClose={handleClose} maxWidth="md">
+        An error has occurred.{' '}
+        <span role="img" aria-label="man shrugging emoji">
+          🤷‍♂
+        </span>
+      </Dialog>
     )
   }
 
@@ -76,12 +78,12 @@ export const AboutPageView: FC = () => {
     <Dialog
       open
       onClose={handleClose}
-      aria-labelledby="about-page-dialog-title"
-      aria-describedby="about-page-dialog-description"
+      aria-labelledby={`${queryName}-dialog-title`}
+      aria-describedby={`${queryName}-dialog-description`}
       maxWidth="md"
     >
-      <DialogTitle id="about-page-dialog-title" disableTypography>
-        <Typography variant="h2">{aboutPgContent?.title}</Typography>
+      <DialogTitle id={`${queryName}-dialog-title`} disableTypography>
+        <Typography variant="h2">{wpData && wpData.title.rendered}</Typography>
       </DialogTitle>
       <IconButton onClick={handleClose} className={classes.closeBtn}>
         <MdClose />
@@ -89,8 +91,10 @@ export const AboutPageView: FC = () => {
       <DialogContent dividers>
         <div
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={createMarkup(aboutPgContent.content || '')}
-          id="about-page-dialog-description"
+          dangerouslySetInnerHTML={createMarkup(
+            (wpData && wpData.content.rendered) || ''
+          )}
+          id={`${queryName}-dialog-description`}
         />
       </DialogContent>
       <DialogActions>

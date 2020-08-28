@@ -41,7 +41,6 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     groupedLegendHeading: {
-      color: theme.palette.grey[800],
       fontSize: '1.2rem',
       marginBottom: '.2rem',
     },

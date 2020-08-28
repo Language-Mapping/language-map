@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     emojiFlag: {
       '& > img': {
         height: '100%',
-        outline: 'solid #eee 1px', // to ensure outer white shapes are seen
+        outline: `solid 1px ${theme.palette.divider}`, // to ensure outer white shapes are seen
       },
     },
   })
