@@ -9,6 +9,7 @@ import { LayerSymbSelect, LayerLabelSelect, Legend } from 'components/legend'
 import { ToggleableSection } from 'components'
 import { RouteLocation } from 'components/map/types'
 import { LegendSwatch } from './types'
+import { WorldRegionMap } from './WorldRegionMap'
 
 const GLOSSARY_PATHNAME: RouteLocation = '/glossary'
 
@@ -17,12 +18,13 @@ type LegendPanelComponent = {
   groupName: string
 }
 
-const WORLD_MAP_IMG_SRC =
-  'https://i1.wp.com/languagemapping.org/wp-content/uploads/2020/08/worldLangsMap.jpg?w=884&ssl=1'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mainLegendHeading: {
-      display: 'inline-block',
+      flex: 1,
+    },
+    legendHeadings: {
+      display: 'flex',
     },
     changeLegendLink: {
       alignItems: 'center',
@@ -43,52 +45,8 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.secondary,
       fontSize: '0.7rem',
     },
-    worldMap: {
-      maxWidth: '100%',
-      marginTop: theme.spacing(1),
-    },
-    worldMapDescrip: {
-      color: theme.palette.text.secondary,
-      fontSize: '0.7rem',
-      marginBottom: theme.spacing(1),
-    },
   })
 )
-
-const WorldMap: FC = () => {
-  const classes = useStyles()
-
-  return (
-    <>
-      <Typography className={classes.worldMapDescrip}>
-        This map was based on the{' '}
-        <a
-          href="https://en.wikipedia.org/wiki/United_Nations_geoscheme"
-          target="_blank"
-          rel="noopener noreferrer"
-          title="UN geoscheme wikipedia page"
-        >
-          United Nations geoscheme
-        </a>
-        . You can also view the{' '}
-        <a
-          href={WORLD_MAP_IMG_SRC}
-          target="_blank"
-          rel="noopener noreferrer"
-          title="World regions map image"
-        >
-          full-size version
-        </a>{' '}
-        in a new tab.
-      </Typography>
-      <img
-        src={WORLD_MAP_IMG_SRC}
-        alt="Global regions based on UN geoscheme"
-        className={classes.worldMap}
-      />
-    </>
-  )
-}
 
 export const LegendPanel: FC<LegendPanelComponent> = (props) => {
   const { legendItems, groupName } = props
@@ -99,6 +57,7 @@ export const LegendPanel: FC<LegendPanelComponent> = (props) => {
     legendCtrls,
     legendCtrlsDescrip,
     mainLegendHeading,
+    legendHeadings,
   } = classes
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.only('xs'))
   const [showLegend, setShowLegend] = useState<boolean>(false)
@@ -110,44 +69,45 @@ export const LegendPanel: FC<LegendPanelComponent> = (props) => {
 
   return (
     <>
-      <Typography variant="h5" component="h3" className={mainLegendHeading}>
-        Legend
-      </Typography>
-      <Link
-        href="#"
-        className={changeLegendLink}
-        onClick={(e: React.MouseEvent) => {
-          e.preventDefault()
-          if (showWorldMap) {
-            setShowWorldMap(false) // otherwise you can't see options on mobile
-            setShowLegend(true)
-          } else {
-            setShowLegend(!showLegend)
-          }
-        }}
-      >
-        <GoGear />
-        Options
-      </Link>
-      <Link
-        href="#"
-        className={changeLegendLink}
-        style={{ display: 'inline-flex' }}
-        onClick={(e: React.MouseEvent) => {
-          e.preventDefault()
+      <div className={legendHeadings}>
+        <Typography variant="h5" component="h3" className={mainLegendHeading}>
+          Legend
+        </Typography>
+        <Link
+          href="#"
+          className={changeLegendLink}
+          onClick={(e: React.MouseEvent) => {
+            e.preventDefault()
 
-          if (isMobile && showLegend) {
-            setShowLegend(false)
-          }
+            if (isMobile && showLegend) {
+              setShowLegend(false)
+            }
 
-          setShowWorldMap(!showWorldMap)
-        }}
-      >
-        <FaGlobeAmericas />
-        Show world map
-      </Link>
+            setShowWorldMap(!showWorldMap)
+          }}
+        >
+          <FaGlobeAmericas />
+          Show world map
+        </Link>
+        <Link
+          href="#"
+          className={changeLegendLink}
+          onClick={(e: React.MouseEvent) => {
+            e.preventDefault()
+            if (showWorldMap) {
+              setShowWorldMap(false) // otherwise you can't see options on mobile
+              setShowLegend(true)
+            } else {
+              setShowLegend(!showLegend)
+            }
+          }}
+        >
+          <GoGear />
+          Options
+        </Link>
+      </div>
       <ToggleableSection show={showWorldMap}>
-        <WorldMap />
+        <WorldRegionMap />
       </ToggleableSection>
       <ToggleableSection show={showLegend}>
         <Grid container spacing={2} className={legendCtrls}>

@@ -75,8 +75,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
           />
         )
       })}
-      {/* TODO: upload Southern Asia fonts (???) to MB */}
-      {/* https://www.google.com/get/noto/#sans-tibt */}
+      {/* TODO: set "text-size" value based on zoom level */}
       {labelLayers.map((layer: LayerPropsNonBGlayer) => {
         const isActiveLabel = layer.id === activeLangLabelId
 
