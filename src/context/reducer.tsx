@@ -56,6 +56,11 @@ export const reducer = (
         ...state,
         mapLoaded: action.payload,
       }
+    case 'SET_PANEL_STATE':
+      return {
+        ...state,
+        panelState: action.payload,
+      }
     // TODO: wire up
     case 'TOGGLE_UI_ALERT':
       return {

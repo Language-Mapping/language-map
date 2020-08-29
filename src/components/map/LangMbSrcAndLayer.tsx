@@ -5,6 +5,9 @@ import { Source, Layer } from 'react-map-gl'
 import { LayerPropsNonBGlayer } from './types'
 import { mbStyleTileConfig } from './config'
 
+// Ongoing fonts to check
+// Tokpe Gola
+
 type SourceAndLayerComponent = {
   symbLayers: LayerPropsNonBGlayer[]
   labelLayers: LayerPropsNonBGlayer[]

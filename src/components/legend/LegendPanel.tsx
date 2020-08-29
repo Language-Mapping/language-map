@@ -1,17 +1,13 @@
-import React, { FC, useEffect, useState } from 'react'
-import { useLocation, Link as RouterLink } from 'react-router-dom'
-import { Link, Grid, Typography, useMediaQuery } from '@material-ui/core'
+import React, { FC, useState } from 'react'
+import { Link, Grid, Typography } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { FaGlobeAmericas } from 'react-icons/fa'
 import { GoGear } from 'react-icons/go'
 
 import { LayerSymbSelect, LayerLabelSelect, Legend } from 'components/legend'
 import { ToggleableSection } from 'components'
-import { RouteLocation } from 'components/map/types'
 import { LegendSwatch } from './types'
 import { WorldRegionMap } from './WorldRegionMap'
-
-const GLOSSARY_PATHNAME: RouteLocation = '/glossary'
 
 type LegendPanelComponent = {
   legendItems: LegendSwatch[]
@@ -21,20 +17,27 @@ type LegendPanelComponent = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mainLegendHeading: {
-      flex: 1,
+      marginRight: '0.4rem',
     },
     legendHeadings: {
+      marginTop: '1rem',
       display: 'flex',
     },
     changeLegendLink: {
       alignItems: 'center',
       display: 'inline-flex',
-      fontSize: '0.8em',
-      marginLeft: theme.spacing(1),
+      fontSize: '0.8rem',
       '& svg': {
-        marginRight: 2,
+        marginRight: 4,
       },
+    },
+    hideOnDesktop: {
       [theme.breakpoints.up('sm')]: {
+        display: 'none',
+      },
+    },
+    desktopOnly: {
+      [theme.breakpoints.down('xs')]: {
         display: 'none',
       },
     },
@@ -48,24 +51,40 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+export const LegendCtrls: FC = (props) => {
+  const classes = useStyles()
+  const { legendCtrls, legendCtrlsDescrip } = classes
+
+  return (
+    <Grid container spacing={2} className={legendCtrls}>
+      <Grid item>
+        <Typography className={legendCtrlsDescrip}>
+          Visualize language communities in different ways by changing their
+          symbols and labels below.
+        </Typography>
+      </Grid>
+      <Grid item xs={6}>
+        <LayerSymbSelect />
+      </Grid>
+      <Grid item xs={6}>
+        <LayerLabelSelect />
+      </Grid>
+    </Grid>
+  )
+}
+
 export const LegendPanel: FC<LegendPanelComponent> = (props) => {
   const { legendItems, groupName } = props
-  const loc = useLocation()
   const classes = useStyles()
   const {
     changeLegendLink,
-    legendCtrls,
-    legendCtrlsDescrip,
     mainLegendHeading,
     legendHeadings,
+    hideOnDesktop,
+    desktopOnly,
   } = classes
-  const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.only('xs'))
   const [showLegend, setShowLegend] = useState<boolean>(false)
   const [showWorldMap, setShowWorldMap] = useState<boolean>(false)
-
-  // Bit of a lag on desktop but the alternative of two separate components with
-  // CSS-based breakpoints instead of `useMediaQuery` seemed overkill.
-  useEffect((): void => setShowLegend(!isMobile), [isMobile])
 
   return (
     <>
@@ -75,61 +94,37 @@ export const LegendPanel: FC<LegendPanelComponent> = (props) => {
         </Typography>
         <Link
           href="#"
-          className={changeLegendLink}
+          className={`${changeLegendLink} ${hideOnDesktop}`}
           onClick={(e: React.MouseEvent) => {
             e.preventDefault()
-
-            if (isMobile && showLegend) {
-              setShowLegend(false)
-            }
-
-            setShowWorldMap(!showWorldMap)
-          }}
-        >
-          <FaGlobeAmericas />
-          Show world map
-        </Link>
-        <Link
-          href="#"
-          className={changeLegendLink}
-          onClick={(e: React.MouseEvent) => {
-            e.preventDefault()
-            if (showWorldMap) {
-              setShowWorldMap(false) // otherwise you can't see options on mobile
-              setShowLegend(true)
-            } else {
-              setShowLegend(!showLegend)
-            }
+            setShowLegend(!showLegend)
           }}
         >
           <GoGear />
           Options
         </Link>
       </div>
+      <ToggleableSection show={showLegend}>
+        <LegendCtrls />
+      </ToggleableSection>
+      <div className={desktopOnly}>
+        <LegendCtrls />
+      </div>
+      <Legend legendItems={legendItems} groupName={groupName} />
+      <Link
+        href="#"
+        className={changeLegendLink}
+        onClick={(e: React.MouseEvent) => {
+          e.preventDefault()
+          setShowWorldMap(!showWorldMap)
+        }}
+      >
+        <FaGlobeAmericas />
+        Show world map
+      </Link>
       <ToggleableSection show={showWorldMap}>
         <WorldRegionMap />
       </ToggleableSection>
-      <ToggleableSection show={showLegend}>
-        <Grid container spacing={2} className={legendCtrls}>
-          <Grid item>
-            <Typography className={legendCtrlsDescrip}>
-              Visualize language communities in different ways by changing their
-              symbols and labels below, or{' '}
-              <Link to={GLOSSARY_PATHNAME + loc.search} component={RouterLink}>
-                click here
-              </Link>{' '}
-              to learn more.
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <LayerSymbSelect />
-          </Grid>
-          <Grid item xs={6}>
-            <LayerLabelSelect />
-          </Grid>
-        </Grid>
-      </ToggleableSection>
-      <Legend legendItems={legendItems} groupName={groupName} />
     </>
   )
 }

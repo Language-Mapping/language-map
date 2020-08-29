@@ -6,6 +6,8 @@ import { Color } from '@material-ui/lab/Alert'
 import { MetadataGroup, Baselayer } from 'components/map/types'
 import { LegendSwatch } from 'components/legend/types'
 
+export type PanelState = 'default' | 'maximized' | 'minimized'
+
 export type StoreAction =
   | { type: 'INIT_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | { type: 'INIT_LANG_LAYER_LABEL_OPTIONS'; payload: string[] }
@@ -16,6 +18,7 @@ export type StoreAction =
   | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatch[] }
   | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: string }
   | { type: 'SET_MAP_LOADED'; payload: boolean }
+  | { type: 'SET_PANEL_STATE'; payload: PanelState }
   | { type: 'SET_SEL_FEAT_ATTRIBS'; payload: null | LangRecordSchema }
   | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibility }
   | { type: 'TOGGLE_UI_ALERT'; payload: AlertPayload }
@@ -34,6 +37,7 @@ export type InitialState = {
   layerVisibility: LayerVisibility // TODO: rm everywhere if not using
   mapLoaded: boolean
   offCanvasNavOpen: boolean
+  panelState: PanelState
   selFeatAttribs: null | LangRecordSchema
   uiAlert: AlertPayload
 }

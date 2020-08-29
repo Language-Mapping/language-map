@@ -1,4 +1,5 @@
-import React, { FC } from 'react'
+import React, { FC, useContext } from 'react'
+import { useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Box, Paper } from '@material-ui/core'
 
@@ -7,6 +8,10 @@ import {
   MOBILE_PANEL_HEADER_HEIGHT,
   panelWidths,
 } from 'components/map/styles'
+import { GlobalContext } from 'components'
+import { MapPanelHeader, MapPanelHeaderChild } from 'components/panels'
+import { DetailsIntro } from 'components/details'
+import { panelsConfig } from '../../config/panels-config'
 
 type MapPanelProps = {
   active?: boolean
@@ -17,6 +22,7 @@ type MapPanelProps = {
 type PanelContentComponent = Partial<MapPanelProps> & {
   heading: string
 }
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mapPanelsWrap: {
@@ -56,8 +62,6 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     panelRoot: {
-      display: 'flex',
-      flexDirection: 'column',
       // YES. We really have to go this high up. Tests fail with errors like:
       // Material-UI: The key `omniboxLabel` provided to the classes prop is not
       // implemented in ForwardRef(Autocomplete).
@@ -66,24 +70,24 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: '1rem',
       },
     },
+    contentWrap: {
+      padding: '1rem 0',
+      display: 'flex',
+      flexDirection: 'column',
+    },
     panelContent: {
-      overflow: 'auto',
-      padding: '.8rem',
-      position: 'relative',
-      // transition: '300ms max-height', // TODO: restore or remove
+      paddingLeft: '0.8rem',
+      paddingRight: '0.8rem',
+      transition: '300ms opacity',
       opacity: (props: MapPanelProps) =>
         props.active && props.panelOpen ? 1 : 0,
       transform: (props: MapPanelProps) =>
         props.active && props.panelOpen ? 'scaleY(1)' : 'scaleY(0)',
-      // TODO: restore or remove
-      // maxHeight: (props: PanelProps) =>
-      //   props.active && props.panelOpen ? '100%' : 0,
-      [theme.breakpoints.up('sm')]: {
-        padding: theme.spacing(2),
-      },
+      maxHeight: (props: MapPanelProps) =>
+        props.active && props.panelOpen ? '100%' : 0,
       [theme.breakpoints.up('lg')]: {
-        paddingLeft: theme.spacing(3),
-        paddingRight: theme.spacing(3),
+        paddingLeft: '1.25rem',
+        paddingRight: '1.25rem',
       },
     },
   })
@@ -98,14 +102,43 @@ export const MapPanelContent: FC<PanelContentComponent> = (props) => {
 }
 
 export const MapPanel: FC<MapPanelProps> = (props) => {
-  const { children, screenHeight, panelOpen } = props
-  const classes = useStyles({ screenHeight, panelOpen })
+  const { state } = useContext(GlobalContext)
+  const loc = useLocation()
+  const { screenHeight } = props
+  const classes = useStyles({
+    screenHeight,
+    panelOpen: state.panelState === 'default',
+  })
 
   // Need the `id` in order to find unique element for `map.setPadding`
   return (
     <Box id="map-panels-wrap" className={classes.mapPanelsWrap}>
       <Paper className={classes.panelRoot} elevation={14}>
-        {children}
+        <MapPanelHeader>
+          {/* Gross but "/" route needs to come last */}
+          {[...panelsConfig].reverse().map((config) => (
+            <MapPanelHeaderChild
+              key={config.heading}
+              {...config}
+              active={loc.pathname === config.path}
+            >
+              {config.component}
+            </MapPanelHeaderChild>
+          ))}
+        </MapPanelHeader>
+        <DetailsIntro />
+        <div className={classes.contentWrap}>
+          {panelsConfig.map((config) => (
+            <MapPanelContent
+              key={config.heading}
+              {...config}
+              active={loc.pathname === config.path}
+              panelOpen={state.panelState === 'default'}
+            >
+              {config.component}
+            </MapPanelContent>
+          ))}
+        </div>
       </Paper>
     </Box>
   )
