@@ -71,9 +71,12 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     contentWrap: {
-      padding: '1rem 0',
-      display: 'flex',
-      flexDirection: 'column',
+      position: 'relative',
+      paddingBottom: '1rem',
+      top: DESKTOP_PANEL_HEADER_HEIGHT,
+      [theme.breakpoints.down('xs')]: {
+        top: MOBILE_PANEL_HEADER_HEIGHT,
+      },
     },
     panelContent: {
       paddingLeft: '0.8rem',
@@ -85,7 +88,7 @@ const useStyles = makeStyles((theme: Theme) =>
         props.active && props.panelOpen ? 'scaleY(1)' : 'scaleY(0)',
       maxHeight: (props: MapPanelProps) =>
         props.active && props.panelOpen ? '100%' : 0,
-      [theme.breakpoints.up('lg')]: {
+      [theme.breakpoints.up('sm')]: {
         paddingLeft: '1.25rem',
         paddingRight: '1.25rem',
       },
@@ -126,8 +129,8 @@ export const MapPanel: FC<MapPanelProps> = (props) => {
             </MapPanelHeaderChild>
           ))}
         </MapPanelHeader>
-        <DetailsIntro />
         <div className={classes.contentWrap}>
+          <DetailsIntro />
           {panelsConfig.map((config) => (
             <MapPanelContent
               key={config.heading}

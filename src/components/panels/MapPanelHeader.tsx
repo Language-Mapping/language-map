@@ -33,20 +33,29 @@ const useCloseBtnStyles = makeStyles((theme: Theme) =>
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    // The wrapper
     panelHeaderRoot: {
       alignItems: 'center',
-      backgroundColor: theme.palette.primary.main,
       color: theme.palette.common.white,
       display: 'flex',
       flexShrink: 0,
       height: DESKTOP_PANEL_HEADER_HEIGHT,
       justifyContent: 'center',
-      position: 'sticky',
+      position: 'absolute',
       textAlign: 'center',
       top: 0,
+      width: '100%',
       zIndex: 1,
       '& a, a:visited': {
         color: `${theme.palette.common.white} !important`, // constant fight!
+      },
+      // GROSS: fragile
+      '& > a:first-of-type': {
+        borderTopLeftRadius: theme.shape.borderRadius,
+      },
+      // GROSS: fragile
+      '& > a:last-of-type': {
+        borderTopRightRadius: theme.shape.borderRadius,
       },
       [theme.breakpoints.down('xs')]: {
         height: MOBILE_PANEL_HEADER_HEIGHT,
@@ -60,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       padding: `${theme.spacing(1)}px 0.75rem`,
       transition: '300ms background-color',
-      [theme.breakpoints.up('sm')]: {
+      [theme.breakpoints.up('lg')]: {
         fontSize: '1.85rem',
         padding: `${theme.spacing(1)}px 1rem`,
       },

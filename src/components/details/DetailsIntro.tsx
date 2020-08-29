@@ -22,10 +22,12 @@ const useStyles = makeStyles((theme: Theme) =>
       listStyle: 'none',
       margin: 0,
       marginBottom: '0.25rem',
-      paddingBottom: '0.25rem',
       paddingLeft: 0,
       paddingRight: 0,
-      paddingTop: '0.25rem',
+      [theme.breakpoints.up('sm')]: {
+        paddingBottom: '0.25rem',
+        paddingTop: '0.25rem',
+      },
       '& [role="button"], button': {
         color: fade(theme.palette.primary.light, 0.85),
         flex: 1,
