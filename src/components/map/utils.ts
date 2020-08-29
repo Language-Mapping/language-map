@@ -120,3 +120,38 @@ export const addLangTypeIconsToMap = (
     img.src = icon
   })
 }
+
+export const filterLayersByFeatIDs = (
+  map: Map,
+  layerNames: string[],
+  langFeatIDs: null | number[]
+): void => {
+  layerNames.forEach((name) => {
+    const currentFilters = map.getFilter(name)
+
+    // Clear it first // TODO: rm if not necessary
+    map.setFilter(name, null)
+
+    let origFilter = []
+
+    // TODO: consider usefulness, otherwise remove:
+    // const layer =  map.getLayer(name)
+    // GROSS dude. Gotta be a better way to check?
+    if (currentFilters[0] === 'all') {
+      ;[, origFilter] = currentFilters
+    } else {
+      origFilter = currentFilters
+    }
+
+    if (langFeatIDs === null) {
+      map.setFilter(name, origFilter)
+    } else {
+      map.setFilter(name, [
+        'all',
+        origFilter,
+        // CRED: https://gis.stackexchange.com/a/287629/5824
+        ['in', ['get', 'ID'], ['literal', langFeatIDs]],
+      ])
+    }
+  })
+}
