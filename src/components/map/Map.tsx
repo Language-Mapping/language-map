@@ -2,8 +2,7 @@ import React, { FC, useState, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { AttributionControl, Map as MbMap, setRTLTextPlugin } from 'mapbox-gl'
 import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
-import { Theme } from '@material-ui/core/styles'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
+import { useTheme } from '@material-ui/core/styles'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
@@ -19,7 +18,11 @@ import * as MapTypes from './types'
 import * as mapUtils from './utils'
 import * as mapConfig from './config'
 import { LangRecordSchema } from '../../context/types'
-import { getIDfromURLparams, findFeatureByID } from '../../utils'
+import {
+  getIDfromURLparams,
+  findFeatureByID,
+  useWindowResize,
+} from '../../utils'
 
 const { layerId: sourceLayer, internalSrcID } = mapConfig.mbStyleTileConfig
 
@@ -33,7 +36,7 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
     // Yeah not today TS, thanks anyway:
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    null,
+    null, // supposed to be an error-handling function
     true // lazy: only load when the map first encounters Hebrew or Arabic text
   )
 }
@@ -48,23 +51,26 @@ export const Map: FC<MapTypes.MapComponent> = ({
   const { state, dispatch } = useContext(GlobalContext)
   const mapRef: React.RefObject<InteractiveMap> = React.createRef()
   const { selFeatAttribs, mapLoaded, langFeatIDs } = state
-  const isDesktop = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'))
-
+  const theme = useTheme()
+  const [isDesktop, setIsDesktop] = useState<boolean>(false)
+  const { width, height } = useWindowResize()
   const [viewport, setViewport] = useState(mapConfig.initialMapState)
   const [mapOffset, setMapOffset] = useState<[number, number]>([0, 0])
   const [popupOpen, setPopupOpen] = useState<MapTypes.MapPopup | null>(null)
   const [tooltipOpen, setTooltipOpen] = useState<MapTypes.MapTooltip | null>(
     null
   )
-
   /* eslint-disable react-hooks/exhaustive-deps */
   // ^^^^^ otherwise it wants things like mapRef and dispatch 24/7
   // Set the offset for transitions like `flyTo` and `easeTo`
   useEffect((): void => {
-    const offset = mapUtils.prepMapOffset(isDesktop)
+    const deskBreakPoint = theme.breakpoints.values.md
+    const wideFella = width >= deskBreakPoint
+    const offset = mapUtils.prepMapOffset(wideFella)
 
+    setIsDesktop(wideFella)
     setMapOffset(offset)
-  }, [isDesktop])
+  }, [width, height])
 
   // TODO: another file
   useEffect((): void => {
@@ -105,6 +111,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
     })
   }, [langFeatIDs])
 
+  // TODO: put in... legend?
   useEffect((): void => {
     initLegend(dispatch, state.activeLangSymbGroupId, symbLayers)
   }, [state.activeLangSymbGroupId])
@@ -385,7 +392,9 @@ export const Map: FC<MapTypes.MapComponent> = ({
         )}
       </MapGL>
       <MapCtrlBtns
+        mapRef={mapRef}
         isDesktop={isDesktop}
+        setViewport={setViewport}
         onMapCtrlClick={(actionID: MapTypes.MapControlAction) => {
           onMapCtrlClick(actionID)
         }}

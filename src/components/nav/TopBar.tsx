@@ -17,19 +17,17 @@ export const TopBar: FC = () => {
     topBarRoot,
   } = classes
 
+  // Need the `id` in order to find unique element for `map.setPadding`
   return (
-    <>
-      {/* Need the `id` in order to find unique element for `map.setPadding` */}
-      <header className={topBarRoot} id={PAGE_HEADER_ID}>
-        <div className={`${spacerDesktop} ${spacerLeft}`} />
-        <Typography variant="h2" component="h1" className={title}>
-          <RouteLink to="/">
-            <span className={titleMain}>Languages</span>
-            <span className={subtitle}>of New York City</span>
-          </RouteLink>
-        </Typography>
-        <div className={`${spacerDesktop} ${spacerRight}`} />
-      </header>
-    </>
+    <header className={topBarRoot} id={PAGE_HEADER_ID}>
+      <div className={`${spacerDesktop} ${spacerLeft}`} />
+      <Typography variant="h2" component="h1" className={title}>
+        <RouteLink to="/">
+          <span className={titleMain}>Languages</span>
+          <span className={subtitle}>of New York City</span>
+        </RouteLink>
+      </Typography>
+      <div className={`${spacerDesktop} ${spacerRight}`} />
+    </header>
   )
 }

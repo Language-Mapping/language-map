@@ -101,7 +101,7 @@ export type MapComponent = {
 
 export type LangIconConfig = { icon: string; id: string }
 
-export type MapControlAction = 'home' | 'in' | 'out' | 'info'
+export type MapControlAction = 'home' | 'in' | 'out' | 'info' | 'loc-search'
 
 export type FlyToCoords = (
   map: Map,
