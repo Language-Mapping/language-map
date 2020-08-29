@@ -1,7 +1,7 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import { AttributionControl, Map as MbMap, setRTLTextPlugin } from 'mapbox-gl'
 import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
-import * as mbGlFull from 'mapbox-gl'
 import { Theme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
@@ -23,16 +23,20 @@ import { getIDfromURLparams, findFeatureByID } from '../../utils'
 
 const { layerId: sourceLayer, internalSrcID } = mapConfig.mbStyleTileConfig
 
-// Ensure right-to-left languages (Arabic, Hebrew) are shown correctly
-mbGlFull.setRTLTextPlugin(
-  // latest version: https://www.npmjs.com/package/@mapbox/mapbox-gl-rtl-text
-  'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
-  // Yeah not today TS, thanks anyway:
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  null,
-  true // lazy: only load when the map first encounters Hebrew or Arabic text
-)
+// Jest or whatever CANNOT find this plugin. And importing it from
+// `react-map-gl` is useless as well.
+if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
+  // Ensure right-to-left languages (Arabic, Hebrew) are shown correctly
+  setRTLTextPlugin(
+    // latest version: https://www.npmjs.com/package/@mapbox/mapbox-gl-rtl-text
+    'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
+    // Yeah not today TS, thanks anyway:
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    null,
+    true // lazy: only load when the map first encounters Hebrew or Arabic text
+  )
+}
 
 export const Map: FC<MapTypes.MapComponent> = ({
   symbLayers,
@@ -68,7 +72,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
       return
     }
 
-    const map: mbGlFull.Map = mapRef.current.getMap()
+    const map: MbMap = mapRef.current.getMap()
     const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
     // TODO: consider usefulness, otherwise remove
     // const layer =  map.getLayer(name)
@@ -111,7 +115,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
   // custom styles vs. default MB in terms of fonts/glyps and icons/images
   useEffect((): void => {
     if (mapRef.current) {
-      const map: mbGlFull.Map = mapRef.current.getMap()
+      const map: MbMap = mapRef.current.getMap()
       mapUtils.addLangTypeIconsToMap(map, mapConfig.langTypeIconsConfig)
     }
   }, [baselayer]) // baselayer may be irrelevant if only using Light BG
@@ -123,7 +127,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
       return
     }
 
-    const map: mbGlFull.Map = mapRef.current.getMap()
+    const map: MbMap = mapRef.current.getMap()
 
     // Deselect all features
     clearAllSelFeats(map)
@@ -150,7 +154,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
   /* eslint-enable react-hooks/exhaustive-deps */
 
   // TODO: animate selected feature
-  function setSelFeatState(map: mbGlFull.Map, id: number, selected: boolean) {
+  function setSelFeatState(map: MbMap, id: number, selected: boolean) {
     map.setFeatureState(
       { sourceLayer, source: internalSrcID, id },
       { selected }
@@ -246,10 +250,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
       payload: true,
     })
 
-    map.addControl(
-      new mbGlFull.AttributionControl({ compact: false }),
-      'bottom-right'
-    )
+    map.addControl(new AttributionControl({ compact: false }), 'bottom-right')
   }
 
   // TODO: chuck it into utils
@@ -281,7 +282,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
   }
 
   // Assumes map is ready
-  function clearAllSelFeats(map: mbGlFull.Map) {
+  function clearAllSelFeats(map: MbMap) {
     // TODO: add `selected` key?
     map.removeFeatureState({ source: internalSrcID, sourceLayer })
   }
@@ -300,7 +301,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
       return
     }
 
-    const map: mbGlFull.Map = mapRef.current.getMap()
+    const map: MbMap = mapRef.current.getMap()
 
     setPopupOpen(null) // otherwise janky lag while map is moving
 

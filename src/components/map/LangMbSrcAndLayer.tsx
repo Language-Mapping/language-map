@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import * as mbGlFull from 'mapbox-gl'
+import { CirclePaint, AnyLayout } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
 import { LayerPropsNonBGlayer } from './types'
@@ -23,7 +23,7 @@ const commonCirclePaint = {
     3,
     0,
   ],
-} as mbGlFull.CirclePaint
+} as CirclePaint
 
 // NOTE: it did not seem to work when using two different Styles with the same
 // dataset unless waiting until there is something to put into <Source>.
@@ -82,7 +82,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
       {labelLayers.map((layer: LayerPropsNonBGlayer) => {
         const isActiveLabel = layer.id === activeLangLabelId
 
-        const layout: mbGlFull.AnyLayout = {
+        const layout: AnyLayout = {
           ...layer.layout,
           visibility: isActiveLabel ? 'visible' : 'none',
         }
