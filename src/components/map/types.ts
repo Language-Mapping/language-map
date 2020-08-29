@@ -1,4 +1,4 @@
-import { PointerEvent, LayerProps } from 'react-map-gl'
+import { PointerEvent, InteractiveMap, LayerProps } from 'react-map-gl'
 import {
   CircleLayout,
   CirclePaint,
@@ -116,4 +116,22 @@ export type FlyToCoords = (
 export type UseStyleProps = {
   panelOpen: boolean
   screenHeight: number
+}
+
+export type GeocodeResult = {
+  result: { center: [number, number] }
+}
+
+export type MapCtrlBtnsProps = {
+  isDesktop: boolean
+  mapOffset: [number, number]
+  mapRef: React.RefObject<InteractiveMap>
+  onMapCtrlClick: (actionID: MapControlAction) => void
+}
+
+export type CtrlBtnConfig = {
+  id: MapControlAction
+  icon: React.ReactNode
+  name: string
+  customFn?: boolean
 }

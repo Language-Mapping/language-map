@@ -365,8 +365,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
       </MapGL>
       <MapCtrlBtns
         mapRef={mapRef}
+        mapOffset={mapOffset}
         isDesktop={isDesktop}
-        setViewport={setViewport}
         onMapCtrlClick={(actionID: MapTypes.MapControlAction) => {
           onMapCtrlClick(actionID)
         }}

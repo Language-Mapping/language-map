@@ -1,6 +1,6 @@
-import React, { FC, useCallback } from 'react'
+import React, { FC } from 'react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { InteractiveMap, ViewportProps } from 'react-map-gl'
+import { Popover, Box } from '@material-ui/core'
 import Geocoder from 'react-map-gl-geocoder'
 import {
   SpeedDial,
@@ -14,23 +14,9 @@ import { FiHome, FiZoomIn, FiZoomOut, FiInfo } from 'react-icons/fi'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
-import { MapControlAction } from './types'
-import { MAPBOX_TOKEN } from './config'
-
-type MapCtrlBtnsProps = {
-  // Render prop so we don't have pass a million props to this component
-  onMapCtrlClick: (actionID: MapControlAction) => void
-  isDesktop: boolean
-  setViewport: React.Dispatch<ViewportProps>
-  mapRef: React.RefObject<InteractiveMap>
-}
-
-type CtrlBtnConfig = {
-  id: MapControlAction
-  icon: React.ReactNode
-  name: string
-  customFn?: boolean
-}
+import { flyToCoords } from './utils'
+import { MapCtrlBtnsProps, CtrlBtnConfig, GeocodeResult } from './types'
+import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,6 +42,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+    layersMenuPaper: {
+      overflow: 'visible',
+    },
   })
 )
 
@@ -73,12 +62,16 @@ const ctrlBtnsConfig = [
 ] as CtrlBtnConfig[]
 
 export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
-  const { isDesktop, onMapCtrlClick, mapRef, setViewport } = props
+  const { isDesktop, onMapCtrlClick, mapRef, mapOffset } = props
   const classes = useStyles()
   const [speedDialOpen, setSpeedDialOpen] = React.useState(true)
-  const [locSearchOpen, setLocSearchOpen] = React.useState<boolean>(false)
   const size = isDesktop ? 'medium' : 'small'
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const layersMenuOpen = Boolean(anchorEl)
+
+  const handleSpeedDialRootClick = () => setSpeedDialOpen(!speedDialOpen)
+  const handleLayersMenuClose = () => setAnchorEl(null)
 
   const handleClose = (
     e: React.SyntheticEvent<Record<string, unknown>, Event>,
@@ -94,46 +87,50 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
     setSpeedDialOpen(false)
   }
 
-  const handleRootClick = () => {
-    setSpeedDialOpen(!speedDialOpen)
-  }
-
-  const handleGeocoderViewportChange = useCallback((newViewport) => {
-    const geocoderDefaultOverrides = { transitionDuration: 1000 }
-
-    return handleViewportChange({
-      ...newViewport,
-      ...geocoderDefaultOverrides,
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const handleViewportChange = useCallback(
-    (newViewport) => setViewport(newViewport),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  )
-
   return (
     <>
-      <div
-        ref={geocoderContainerRef}
-        style={{
-          position: 'absolute',
-          top: 20,
-          left: 20,
-          zIndex: 1,
-          display: locSearchOpen ? 'block' : 'none',
+      <Popover
+        id="layers-menu"
+        anchorEl={anchorEl}
+        open={layersMenuOpen}
+        onClose={handleLayersMenuClose}
+        PaperProps={{
+          className: classes.layersMenuPaper,
+        }}
+        transformOrigin={{
+          vertical: 'center',
+          horizontal: 'right',
         }}
       >
-        <Geocoder
-          mapRef={mapRef}
-          onViewportChange={handleGeocoderViewportChange}
-          containerRef={geocoderContainerRef}
-          mapboxApiAccessToken={MAPBOX_TOKEN}
-          position="top-left"
-        />
-      </div>
+        <Box padding={2} width={300}>
+          <div ref={geocoderContainerRef} />
+          <Geocoder
+            mapRef={mapRef}
+            countries="us"
+            types="address,poi,postcode,locality,place,neighborhood"
+            placeholder="Search locations..."
+            containerRef={geocoderContainerRef}
+            mapboxApiAccessToken={MAPBOX_TOKEN}
+            proximity={NYC_LAT_LONG}
+            onResult={(geocodeResult: GeocodeResult) => {
+              handleLayersMenuClose()
+
+              if (mapRef.current) {
+                flyToCoords(
+                  mapRef.current.getMap(),
+                  {
+                    latitude: geocodeResult.result.center[1],
+                    longitude: geocodeResult.result.center[0],
+                    zoom: 14,
+                  },
+                  mapOffset,
+                  null
+                )
+              }
+            }}
+          />
+        </Box>
+      </Popover>
       <SpeedDial
         ariaLabel="Map control buttons"
         className={classes.mapCtrlsRoot}
@@ -142,7 +139,7 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
         open={speedDialOpen}
         direction="down"
         FabProps={{ size }}
-        onClick={handleRootClick}
+        onClick={handleSpeedDialRootClick}
       >
         {ctrlBtnsConfig.map((action) => (
           <SpeedDialAction
@@ -150,6 +147,7 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
             key={action.name}
             icon={action.icon}
             tooltipTitle={action.name}
+            FabProps={{ size }} // TODO: uhhhh breakpoints? Why is this needed?
             onClick={(e) => {
               e.stopPropagation() // prevent closing the menu
 
@@ -157,10 +155,9 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
               if (!action.customFn) {
                 onMapCtrlClick(action.id)
               } else {
-                setLocSearchOpen(!locSearchOpen)
+                setAnchorEl(e.currentTarget)
               }
             }}
-            FabProps={{ size }} // TODO: uhhhh breakpoints? Why is this needed?
           />
         ))}
       </SpeedDial>

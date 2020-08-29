@@ -27,6 +27,8 @@ export const mbStyleTileConfig = {
   },
 }
 
+export const NYC_LAT_LONG = { latitude: 40.7128, longitude: -74.006 }
+
 // TODO: rm if only using local, otherwise restore when ready
 // export const symbStyleUrl = `${MB_STYLES_API_URL}/${mbStyleTileConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
 // Unsure why it needs the type here but not for feature coords..
