@@ -91,6 +91,9 @@ const useStyles = makeStyles((theme: Theme) =>
     headerBtns: {
       position: 'absolute',
       right: '0.25rem',
+      [theme.breakpoints.up('sm')]: {
+        right: '.75rem',
+      },
     },
   })
 )

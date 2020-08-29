@@ -26,7 +26,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         display: 'flex',
         transition: '300ms transform',
         // FINE-TUNE AWARD 2020 (fits baaaarely on iPhone X, super fragile!)
-        [theme.breakpoints.down('xs')]: {
+        [theme.breakpoints.down('sm')]: {
           left: 8,
           transform: (props: UseStyleProps) => {
             if (!props.panelOpen) {

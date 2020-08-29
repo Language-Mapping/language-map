@@ -75,11 +75,16 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& .MuiTableCell-head:first-of-type': {
         textAlign: 'left !important', // sick of trying to fight the plugin
         // TODO: restore width to 75ish if reinstating "View in map" btn
-        width: '55px !important', // sick of trying to fight the plugin
+        width: '10px !important', // sick of trying to fight the plugin
+        padding: 0,
+      },
+      '& .MuiTableBody-root .MuiTableRow-root .MuiTableCell-root:first-of-type': {
+        padding: '0 !important',
+        width: '10px !important',
       },
       // Default cushion of non-dense table cell is 16px
       '& .MuiTableCell-root': {
-        padding: '12px 10px',
+        padding: '0.5rem',
       },
       // Pagination
       '& .MuiTableCell-footer': {
@@ -101,11 +106,13 @@ export const useStyles = makeStyles((theme: Theme) =>
       // All icons in and out of table. Icons inherit color and size from it.
       '& .MuiIconButton-root': {
         // fontSize: '1.4rem', // TODO: rm if not using
-        padding: theme.spacing(1),
       },
       // ...otherwise it overrides the `disabled` Action buttons
       '& table .MuiIconButton-root:not([disabled]), .MuiToolbar-root .MuiIconButton-root:not([disabled])': {
         color: theme.palette.primary.main,
+      },
+      '& table .MuiIconButton-root, .MuiToolbar-root .MuiIconButton-root': {
+        paddingRight: 4,
       },
       '& .MuiTableSortLabel-icon': {
         flexShrink: 0, // prevents tiny arrows on columns w/wrapped headings
@@ -129,9 +136,10 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     // Squeeze a bit more room out of the dialog
     resultsModalPaper: {
-      marginBottom: 0,
-      marginTop: 0,
       maxHeight: `calc(100% - ${theme.spacing(2)}px)`,
+      [theme.breakpoints.only('xs')]: {
+        margin: '0 8px',
+      },
     },
   })
 )

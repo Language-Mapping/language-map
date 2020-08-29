@@ -15,13 +15,16 @@ import {
 
 export const MapWrap: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
-  const [panelOpen, setPanelOpen] = useState(true)
-  const { height } = useWindowResize() // TODO: rm if not using
-  const classes = useStyles({ panelOpen, screenHeight: height })
   const loc = useLocation()
+  const { height } = useWindowResize() // TODO: rm if not using
   const [symbLayers, setSymbLayers] = useState<LayerPropsNonBGlayer[]>()
   const [labelLayers, setLabelLayers] = useState<LayerPropsNonBGlayer[]>()
   const { langFeaturesCached } = state
+
+  const classes = useStyles({
+    panelOpen: state.panelState === 'default',
+    screenHeight: height,
+  })
 
   // Fetch MB Style doc
   useEffect(() => {
@@ -86,12 +89,6 @@ export const MapWrap: FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc.search])
-
-  // Open panel as needed (may have been some conflicts/redundancy with
-  // `location`, and still redundancy but it does work)
-  useEffect((): void => {
-    setPanelOpen(panelOpen)
-  }, [panelOpen])
 
   return (
     <div className={classes.appWrapRoot}>

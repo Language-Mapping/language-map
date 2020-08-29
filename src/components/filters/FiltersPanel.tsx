@@ -1,4 +1,5 @@
 import React, { FC, useContext } from 'react'
+import { Typography } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
 import { LegendPanel } from 'components/legend'
@@ -15,7 +16,10 @@ export const FiltersPanel: FC = () => {
 
   // TODO: something respectable for styles, aka MUI-something
   return (
-    <>
+    <div style={{ marginTop: 12 }}>
+      <Typography variant="h5" component="h3">
+        Search
+      </Typography>
       <SearchByOmnibox
         data={state.langFeatures}
         noFiltersSet={state.langFeatIDs !== null}
@@ -23,6 +27,6 @@ export const FiltersPanel: FC = () => {
       {state.mapLoaded && (
         <LegendPanel legendItems={state.legendItems} groupName={groupName} />
       )}
-    </>
+    </div>
   )
 }

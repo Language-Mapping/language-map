@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     detailsIntroRoot: {
       alignItems: 'center',
-      borderBottomColor: fade(theme.palette.primary.light, 0.35),
+      borderBottomColor: theme.palette.divider,
       borderBottomStyle: 'solid',
       borderBottomWidth: 1,
       display: 'flex',
