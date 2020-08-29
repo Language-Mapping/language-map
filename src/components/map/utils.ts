@@ -1,4 +1,4 @@
-import mbGlFull from 'mapbox-gl'
+import { Map } from 'mapbox-gl'
 
 import { PAGE_HEADER_ID } from 'components/nav/config'
 import * as MapTypes from './types'
@@ -103,7 +103,7 @@ export function handleHover(
 
 // TODO: recycle the icons if it makes sense
 export const addLangTypeIconsToMap = (
-  map: mbGlFull.Map,
+  map: Map,
   iconsConfig: MapTypes.LangIconConfig[]
 ): void => {
   iconsConfig.forEach((config) => {

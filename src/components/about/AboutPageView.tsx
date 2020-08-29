@@ -31,6 +31,12 @@ const useStyles = makeStyles((theme: Theme) =>
       zIndex: theme.zIndex.drawer + 1,
       color: '#fff',
     },
+    dialogContent: {
+      '& img': {
+        height: 'auto',
+        maxWidth: '100%',
+      },
+    },
   })
 )
 
@@ -88,7 +94,7 @@ export const AboutPageView: FC<AboutPageProps> = (props) => {
       <IconButton onClick={handleClose} className={classes.closeBtn}>
         <MdClose />
       </IconButton>
-      <DialogContent dividers>
+      <DialogContent dividers className={classes.dialogContent}>
         <div
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={createMarkup(

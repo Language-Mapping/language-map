@@ -1,5 +1,11 @@
 import { PointerEvent, LayerProps } from 'react-map-gl'
-import * as mbGlFull from 'mapbox-gl'
+import {
+  CircleLayout,
+  CirclePaint,
+  Map,
+  SymbolLayout,
+  SymbolPaint,
+} from 'mapbox-gl'
 
 import { LangRecordSchema } from 'context/types'
 
@@ -32,8 +38,8 @@ export type LayerPropsPlusMeta = Omit<
     'mapbox:group': keyof MetadataGroup
   }
   type: 'circle' | 'symbol' | 'background'
-  layout: mbGlFull.CircleLayout | mbGlFull.SymbolLayout
-  paint: mbGlFull.CirclePaint | mbGlFull.SymbolPaint
+  layout: CircleLayout | SymbolLayout
+  paint: CirclePaint | SymbolPaint
 }
 
 // Same but only circle or symbol types
@@ -98,7 +104,7 @@ export type LangIconConfig = { icon: string; id: string }
 export type MapControlAction = 'home' | 'in' | 'out' | 'info'
 
 export type FlyToCoords = (
-  map: mbGlFull.Map,
+  map: Map,
   settings: {
     zoom?: number | 10.25
     disregardCurrZoom?: boolean // e.g. when using map controls

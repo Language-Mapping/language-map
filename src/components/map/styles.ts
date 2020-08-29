@@ -26,13 +26,14 @@ export const useStyles = makeStyles((theme: Theme) =>
         display: 'flex',
         transition: '300ms transform',
         // FINE-TUNE AWARD 2020 (fits baaaarely on iPhone X, super fragile!)
-        [theme.breakpoints.down('xs')]: {
+        [theme.breakpoints.down('sm')]: {
           left: 8,
           transform: (props: UseStyleProps) => {
             if (!props.panelOpen) {
               return `translateY(calc(-${MOBILE_PANEL_HEADER_HEIGHT} + 2px))`
             }
 
+            // This right here needs some kind of `useResize`
             return `translateY(calc(-${props.screenHeight / 2}px + 2px))`
           },
         },
@@ -63,13 +64,5 @@ export const useStyles = makeStyles((theme: Theme) =>
       top: 0,
       width: '100%',
     },
-    // TODO: restore or use up/down arrows or something else
-    // closePanel: {
-    //   color: theme.palette.common.white,
-    //   position: 'absolute',
-    //   right: theme.spacing(1),
-    //   top: theme.spacing(1),
-    //   zIndex: 2,
-    // },
   })
 )

@@ -1,9 +1,12 @@
 import React, { FC } from 'react'
-import * as mbGlFull from 'mapbox-gl'
+import { CirclePaint, AnyLayout } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
 import { LayerPropsNonBGlayer } from './types'
 import { mbStyleTileConfig } from './config'
+
+// Ongoing fonts to check
+// Tokpe Gola
 
 type SourceAndLayerComponent = {
   symbLayers: LayerPropsNonBGlayer[]
@@ -20,7 +23,7 @@ const commonCirclePaint = {
     3,
     0,
   ],
-} as mbGlFull.CirclePaint
+} as CirclePaint
 
 // NOTE: it did not seem to work when using two different Styles with the same
 // dataset unless waiting until there is something to put into <Source>.
@@ -75,12 +78,11 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
           />
         )
       })}
-      {/* TODO: upload Southern Asia fonts (???) to MB */}
-      {/* https://www.google.com/get/noto/#sans-tibt */}
+      {/* TODO: set "text-size" value based on zoom level */}
       {labelLayers.map((layer: LayerPropsNonBGlayer) => {
         const isActiveLabel = layer.id === activeLangLabelId
 
-        const layout: mbGlFull.AnyLayout = {
+        const layout: AnyLayout = {
           ...layer.layout,
           visibility: isActiveLabel ? 'visible' : 'none',
         }

@@ -56,6 +56,11 @@ export const reducer = (
         ...state,
         mapLoaded: action.payload,
       }
+    case 'SET_PANEL_STATE':
+      return {
+        ...state,
+        panelState: action.payload,
+      }
     // TODO: wire up
     case 'TOGGLE_UI_ALERT':
       return {
@@ -78,21 +83,6 @@ export const reducer = (
           ...state.layerVisibility,
           [action.payload]: !state.layerVisibility[action.payload],
         },
-      }
-    case 'SHOW_SPLASH':
-      if (action.payload === true) {
-        localStorage.setItem('hasSeenSplash', 'true')
-
-        return {
-          ...state,
-          showSplash: action.payload,
-          hasSeenSplash: true,
-        }
-      }
-
-      return {
-        ...state,
-        showSplash: action.payload,
       }
     default:
       return state

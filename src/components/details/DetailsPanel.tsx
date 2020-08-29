@@ -4,9 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Divider } from '@material-ui/core'
 
 import { RouteLocation } from 'components/map/types'
-import { PanelIntro } from 'components/panels'
 import { GlobalContext, LoadingIndicator } from 'components'
-import { DetailsIntro } from './DetailsIntro'
 import { isURL, correctDropboxURL, prettyTruncateList } from '../../utils'
 
 type EndoImageComponent = {
@@ -55,7 +53,7 @@ const EndoImageWrap: FC<EndoImageComponent> = (props) => {
 
 const NoFeatSel: FC = () => {
   return (
-    <PanelIntro>
+    <small>
       Click a language community in the map or the{' '}
       <RouterLink
         to={DATA_TABLE_PATHNAME}
@@ -64,7 +62,7 @@ const NoFeatSel: FC = () => {
         data table
       </RouterLink>
       .
-    </PanelIntro>
+    </small>
   )
 }
 
@@ -99,7 +97,6 @@ export const DetailsPanel: FC = () => {
   // TODO: something respectable for styles, aka MUI-something
   return (
     <>
-      <DetailsIntro />
       <div className={intro}>
         {(isImage && <EndoImageWrap url={Endonym} alt={Language} />) || (
           <Typography variant="h3" className={detailsPanelHeading}>
