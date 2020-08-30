@@ -7,13 +7,11 @@ import { useTheme } from '@material-ui/core/styles'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext, LoadingBackdrop } from 'components'
-import {
-  LangMbSrcAndLayer,
-  MapPopup,
-  MapTooltip,
-  MapCtrlBtns,
-} from 'components/map'
 import { initLegend } from 'components/legend/utils'
+import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
+import { MapPopup } from './MapPopup'
+import { MapTooltip } from './MapTooltip'
+import { MapCtrlBtns } from './MapCtrlBtns'
 import * as MapTypes from './types'
 import * as mapUtils from './utils'
 import * as mapConfig from './config'

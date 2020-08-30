@@ -73,6 +73,23 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
   const handleSpeedDialRootClick = () => setSpeedDialOpen(!speedDialOpen)
   const handleLayersMenuClose = () => setAnchorEl(null)
 
+  const handleGeocodeResult = (geocodeResult: GeocodeResult) => {
+    handleLayersMenuClose()
+
+    if (mapRef.current) {
+      flyToCoords(
+        mapRef.current.getMap(),
+        {
+          latitude: geocodeResult.result.center[1],
+          longitude: geocodeResult.result.center[0],
+          zoom: 14,
+        },
+        mapOffset,
+        null
+      )
+    }
+  }
+
   const handleClose = (
     e: React.SyntheticEvent<Record<string, unknown>, Event>,
     reason: CloseReason
@@ -107,27 +124,14 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
           <Geocoder
             mapRef={mapRef}
             countries="us"
+            // TODO: confirm:
+            // https://docs.mapbox.com/api/search/#data-types
             types="address,poi,postcode,locality,place,neighborhood"
             placeholder="Search locations..."
             containerRef={geocoderContainerRef}
             mapboxApiAccessToken={MAPBOX_TOKEN}
             proximity={NYC_LAT_LONG}
-            onResult={(geocodeResult: GeocodeResult) => {
-              handleLayersMenuClose()
-
-              if (mapRef.current) {
-                flyToCoords(
-                  mapRef.current.getMap(),
-                  {
-                    latitude: geocodeResult.result.center[1],
-                    longitude: geocodeResult.result.center[0],
-                    zoom: 14,
-                  },
-                  mapOffset,
-                  null
-                )
-              }
-            }}
+            onResult={handleGeocodeResult}
           />
         </Box>
       </Popover>
