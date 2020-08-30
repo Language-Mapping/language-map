@@ -11,6 +11,7 @@ const initialMapStates = {
   langFeaturesCached: [],
   langLabels: [],
   legendItems: [],
+  legendSymbols: {},
   langSymbGroups: {},
 }
 

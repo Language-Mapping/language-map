@@ -3,15 +3,24 @@
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
 import { Color } from '@material-ui/lab/Alert'
 
-import { MetadataGroup, Baselayer } from 'components/map/types'
+import {
+  MetadataGroup,
+  Baselayer,
+  LayerPropsNonBGlayer,
+} from 'components/map/types'
 import { LegendSwatch } from 'components/legend/types'
 
 export type PanelState = 'default' | 'maximized' | 'minimized'
+
+export type LegendSymbols = {
+  [key: string]: Partial<LayerPropsNonBGlayer>
+}
 
 export type StoreAction =
   | { type: 'INIT_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | { type: 'INIT_LANG_LAYER_LABEL_OPTIONS'; payload: string[] }
   | { type: 'INIT_LANG_LAYER_SYMB_OPTIONS'; payload: MetadataGroup }
+  | { type: 'INIT_LEGEND_SYMBOLS'; payload: LegendSymbols }
   | { type: 'SET_BASELAYER'; payload: Baselayer }
   | { type: 'SET_LANG_FEAT_IDS'; payload: number[] | null }
   | { type: 'SET_LANG_LAYER_LABELS'; payload: string }
@@ -32,6 +41,7 @@ export type InitialState = {
   langFeaturesCached: LangRecordSchema[]
   langLabels: string[]
   legendItems: LegendSwatch[]
+  legendSymbols: LegendSymbols
   langSymbGroups: MetadataGroup
   mapLoaded: boolean
   offCanvasNavOpen: boolean

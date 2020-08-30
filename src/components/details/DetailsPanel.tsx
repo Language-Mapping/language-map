@@ -1,9 +1,13 @@
 import React, { FC, useContext } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography, Divider } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
+import { LegendSwatch } from 'components/legend'
+import { RecordDescription } from 'components/results'
 import { isURL, correctDropboxURL, prettyTruncateList } from '../../utils'
+// TODO: cell strength bars for Size
+// import { COMM_SIZE_COL_MAP } from 'components/results/config'
 
 type EndoImageComponent = {
   url: string
@@ -13,8 +17,9 @@ type EndoImageComponent = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     intro: {
-      padding: '0.5em',
+      padding: '1em 0',
       textAlign: 'center',
+      borderBottom: `solid 1px ${theme.palette.divider}`,
     },
     // Gross but it makes `Anashinaabemowin` fit
     detailsPanelHeading: {
@@ -33,7 +38,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     description: {
       fontSize: theme.typography.caption.fontSize,
-      marginTop: theme.spacing(1),
+      padding: '0 0.25rem',
+      marginBottom: '2.4rem',
+    },
+    prettyFlex: {
+      display: 'flex',
+      justifyContent: 'center',
     },
   })
 )
@@ -48,15 +58,11 @@ const EndoImageWrap: FC<EndoImageComponent> = (props) => {
 }
 
 const NoFeatSel: FC = () => {
-  const classes = useStyles()
-
   return (
-    <div className={classes.intro}>
-      <small>
-        No community selected. Click a language community in the map or the data
-        table to see detailed information.
-      </small>
-    </div>
+    <small>
+      No community selected. Click a point in the map or a row in the data table
+      to see detailed information.
+    </small>
   )
 }
 
@@ -73,9 +79,21 @@ export const DetailsPanel: FC = () => {
   // No sel feat details
   if (!selFeatAttribs) return <NoFeatSel />
 
-  const { Endonym, Language, Neighborhoods, Description } = selFeatAttribs
+  const {
+    Endonym,
+    Language,
+    Neighborhoods,
+    Description,
+    // Size, // TODO: cell strength bars for Size
+    Town,
+    'World Region': WorldRegion,
+  } = selFeatAttribs
   const { detailsPanelHeading, intro, description, neighborhoods } = classes
   const isImage = isURL(Endonym)
+  const regionSwatchColor =
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    state.legendSymbols[WorldRegion].paint['circle-color']
 
   // TODO: deal with `id` present in URL but no match found
   // const parsed = queryString.parse(window.location.search)
@@ -83,7 +101,6 @@ export const DetailsPanel: FC = () => {
   //   (feature) => feature.ID === parsed.id
   // )
 
-  // TODO: something respectable for styles, aka MUI-something
   return (
     <>
       <div className={intro}>
@@ -97,15 +114,21 @@ export const DetailsPanel: FC = () => {
             {Language}
           </Typography>
         )}
-        {Neighborhoods && (
-          <Typography className={neighborhoods}>
-            {prettyTruncateList(Neighborhoods)}
-          </Typography>
-        )}
+        <Typography className={neighborhoods}>
+          {Neighborhoods ? prettyTruncateList(Neighborhoods) : Town}
+        </Typography>
+        <div className={classes.prettyFlex}>
+          <LegendSwatch
+            legendLabel={WorldRegion}
+            component="div"
+            backgroundColor={regionSwatchColor}
+            type="circle"
+          />
+          {/* TODO: cell strength bars for Size */}
+        </div>
       </div>
-      <Divider />
       <Typography variant="body2" className={description}>
-        {Description}
+        <RecordDescription text={Description} />
       </Typography>
     </>
   )

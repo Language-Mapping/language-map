@@ -11,6 +11,7 @@ export type LegendSwatch = {
 // Same as the regular swatch but will have SVG element if it is a symbol
 export type LegendSwatchComponent = LegendSwatch & {
   icon?: string
+  component?: React.ElementType
 }
 
 export type LegendGroupConfig = {

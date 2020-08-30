@@ -21,6 +21,11 @@ export const reducer = (
         ...state,
         langSymbGroups: action.payload,
       }
+    case 'INIT_LEGEND_SYMBOLS':
+      return {
+        ...state,
+        legendSymbols: action.payload,
+      }
     case 'SET_BASELAYER':
       return {
         ...state,
