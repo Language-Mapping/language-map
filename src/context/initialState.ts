@@ -12,11 +12,6 @@ const initialMapStates = {
   langLabels: [],
   legendItems: [],
   langSymbGroups: {},
-  layerVisibility: {
-    languages: true,
-    counties: false,
-    neighborhoods: false,
-  },
 }
 
 export const initialState = {

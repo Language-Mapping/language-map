@@ -1,10 +1,8 @@
 import React, { FC, useContext } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Divider } from '@material-ui/core'
 
-import { RouteLocation } from 'components/map/types'
-import { GlobalContext, LoadingIndicator } from 'components'
+import { GlobalContext } from 'components'
 import { isURL, correctDropboxURL, prettyTruncateList } from '../../utils'
 
 type EndoImageComponent = {
@@ -12,12 +10,10 @@ type EndoImageComponent = {
   alt: string
 }
 
-const DATA_TABLE_PATHNAME: RouteLocation = '/table'
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     intro: {
-      paddingBottom: theme.spacing(1),
+      padding: '0.5em',
       textAlign: 'center',
     },
     // Gross but it makes `Anashinaabemowin` fit
@@ -52,17 +48,15 @@ const EndoImageWrap: FC<EndoImageComponent> = (props) => {
 }
 
 const NoFeatSel: FC = () => {
+  const classes = useStyles()
+
   return (
-    <small>
-      Click a language community in the map or the{' '}
-      <RouterLink
-        to={DATA_TABLE_PATHNAME}
-        title="Data table of language communities"
-      >
-        data table
-      </RouterLink>
-      .
-    </small>
+    <div className={classes.intro}>
+      <small>
+        No community selected. Click a language community in the map or the data
+        table to see detailed information.
+      </small>
+    </div>
   )
 }
 
@@ -72,17 +66,12 @@ export const DetailsPanel: FC = () => {
 
   // Shaky check to see if features have loaded and are stored globally
   // TODO: use MB's loading events to set this instead
-  if (!state.langFeaturesCached.length) {
-    // TODO: skeletons
-    return <LoadingIndicator />
-  }
+  if (!state.langFeaturesCached.length) return null
 
   const { selFeatAttribs } = state
 
   // No sel feat details
-  if (!selFeatAttribs) {
-    return <NoFeatSel />
-  }
+  if (!selFeatAttribs) return <NoFeatSel />
 
   const { Endonym, Language, Neighborhoods, Description } = selFeatAttribs
   const { detailsPanelHeading, intro, description, neighborhoods } = classes

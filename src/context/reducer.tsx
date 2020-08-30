@@ -75,15 +75,6 @@ export const reducer = (
         ...state,
         offCanvasNavOpen: !state.offCanvasNavOpen,
       }
-    // TODO: wire up
-    case 'TOGGLE_LAYER_VISIBILITY':
-      return {
-        ...state,
-        layerVisibility: {
-          ...state.layerVisibility,
-          [action.payload]: !state.layerVisibility[action.payload],
-        },
-      }
     default:
       return state
   }

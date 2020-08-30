@@ -42,6 +42,12 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+    popoverContent: {
+      padding: '1em 0.75em',
+      width: 300,
+      display: 'flex',
+      justifyContent: 'center',
+    },
     layersMenuPaper: {
       overflow: 'visible',
     },
@@ -119,7 +125,7 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
           horizontal: 'right',
         }}
       >
-        <Box padding={2} width={300}>
+        <Box className={classes.popoverContent}>
           <div ref={geocoderContainerRef} />
           <Geocoder
             mapRef={mapRef}

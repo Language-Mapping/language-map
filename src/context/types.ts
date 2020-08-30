@@ -20,7 +20,6 @@ export type StoreAction =
   | { type: 'SET_MAP_LOADED'; payload: boolean }
   | { type: 'SET_PANEL_STATE'; payload: PanelState }
   | { type: 'SET_SEL_FEAT_ATTRIBS'; payload: null | LangRecordSchema }
-  | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibility }
   | { type: 'TOGGLE_UI_ALERT'; payload: AlertPayload }
   | { type: 'TOGGLE_OFF_CANVAS_NAV' }
 
@@ -34,7 +33,6 @@ export type InitialState = {
   langLabels: string[]
   legendItems: LegendSwatch[]
   langSymbGroups: MetadataGroup
-  layerVisibility: LayerVisibility // TODO: rm everywhere if not using
   mapLoaded: boolean
   offCanvasNavOpen: boolean
   panelState: PanelState
@@ -56,14 +54,6 @@ export type AlertPayload = {
 //    KEEP TRACK OF WHAT IS CUSTOM AND WHAT IS GENERIC WHENEVER POSSIBLE.
 //
 // ========================================================================== //
-
-// TODO: use `keyof` to restrict possible values appropriately in other
-// components if needed. Remove this type if unused.
-export type LayerVisibility = {
-  languages: boolean
-  neighborhoods: boolean
-  counties: boolean
-}
 
 export type WorldRegion =
   | 'Australia and New Zealand' // maybe issues w/ampersand
