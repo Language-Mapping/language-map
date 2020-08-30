@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { Popover, Box } from '@material-ui/core'
+import { Link, Button, Typography, Popover, Box } from '@material-ui/core'
 import Geocoder from 'react-map-gl-geocoder'
 import {
   SpeedDial,
@@ -43,13 +43,22 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     popoverContent: {
-      padding: '1em 0.75em',
+      padding: '1em',
       width: 300,
-      display: 'flex',
-      justifyContent: 'center',
+    },
+    popoverContentHeading: {
+      marginTop: '.5rem',
+    },
+    popoverContentText: {
+      marginBottom: '.75em',
+      fontSize: '0.8em',
     },
     layersMenuPaper: {
       overflow: 'visible',
+    },
+    locationBtnWrap: {
+      display: 'flex',
+      justifyContent: 'center',
     },
   })
 )
@@ -66,6 +75,62 @@ const ctrlBtnsConfig = [
   },
   { id: 'info', icon: <FiInfo />, name: 'About & Info' },
 ] as CtrlBtnConfig[]
+
+export const LocationSearchContent: FC = (props) => {
+  const { children } = props
+  const classes = useStyles()
+
+  return (
+    <Box className={classes.popoverContent}>
+      <Typography variant="h4" component="h3">
+        Location Search
+      </Typography>
+      <Typography
+        variant="h6"
+        component="h4"
+        className={classes.popoverContentHeading}
+      >
+        Search by place
+      </Typography>
+      <Typography className={classes.popoverContentText}>
+        <small>
+          Address, city, neighborhood, postal code, or landmark/placename.{' '}
+          <Link
+            href="https://docs.mapbox.com/api/search/#data-types"
+            target="_blank"
+          >
+            @Ross maybe others?
+          </Link>
+        </small>
+      </Typography>
+      {children}
+      <Typography
+        variant="h6"
+        component="h4"
+        className={classes.popoverContentHeading}
+      >
+        My Location
+      </Typography>
+      <Typography className={classes.popoverContentText}>
+        <small>
+          Search by your current location (your info will not be stored or
+          shared in any way).
+        </small>
+      </Typography>
+      <div className={classes.locationBtnWrap}>
+        <Button
+          // eslint-disable-next-line no-alert
+          onClick={() => alert('You. Are. Here. 🤯')}
+          variant="contained"
+          size="small"
+          color="primary"
+        >
+          Zoom to current
+        </Button>
+      </div>
+    </Box>
+  )
+}
 
 export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
   const { isDesktop, onMapCtrlClick, mapRef, mapOffset } = props
@@ -88,7 +153,7 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
         {
           latitude: geocodeResult.result.center[1],
           longitude: geocodeResult.result.center[0],
-          zoom: 14,
+          zoom: 13,
         },
         mapOffset,
         null
@@ -125,7 +190,7 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
           horizontal: 'right',
         }}
       >
-        <Box className={classes.popoverContent}>
+        <LocationSearchContent>
           <div ref={geocoderContainerRef} />
           <Geocoder
             mapRef={mapRef}
@@ -139,7 +204,7 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
             proximity={NYC_LAT_LONG}
             onResult={handleGeocodeResult}
           />
-        </Box>
+        </LocationSearchContent>
       </Popover>
       <SpeedDial
         ariaLabel="Map control buttons"

@@ -41,7 +41,9 @@ export const RecordDescription: FC<{ text: string }> = (props) => {
           <span className={classes.body}>{text.slice(1)}</span>
         </>
       )}
-      {!text && 'No description available'}
+      {!text && (
+        <div style={{ textAlign: 'center' }}>No description available</div>
+      )}
     </Typography>
   )
 }
