@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { Link, Button, Typography, Popover, Box } from '@material-ui/core'
+import { Typography, Popover, Box } from '@material-ui/core'
 import Geocoder from 'react-map-gl-geocoder'
 import {
   SpeedDial,
@@ -82,52 +82,18 @@ export const LocationSearchContent: FC = (props) => {
 
   return (
     <Box className={classes.popoverContent}>
-      <Typography variant="h4" component="h3">
-        Location Search
-      </Typography>
-      <Typography
-        variant="h6"
-        component="h4"
-        className={classes.popoverContentHeading}
-      >
-        Search by place
+      <Typography variant="h5" component="h3">
+        Search by location
       </Typography>
       <Typography className={classes.popoverContentText}>
         <small>
-          Address, city, neighborhood, postal code, or landmark/placename.{' '}
-          <Link
-            href="https://docs.mapbox.com/api/search/#data-types"
-            target="_blank"
-          >
-            @Ross maybe others?
-          </Link>
+          Enter an address, municipality, neighborhood, postal code, landmark,
+          or other point of interest. Note that this project's focus is on the
+          New York City metro area and surrounding locations, so no communities
+          will be found outside that extent.
         </small>
       </Typography>
       {children}
-      <Typography
-        variant="h6"
-        component="h4"
-        className={classes.popoverContentHeading}
-      >
-        My Location
-      </Typography>
-      <Typography className={classes.popoverContentText}>
-        <small>
-          Search by your current location (your info will not be stored or
-          shared in any way).
-        </small>
-      </Typography>
-      <div className={classes.locationBtnWrap}>
-        <Button
-          // eslint-disable-next-line no-alert
-          onClick={() => alert('You. Are. Here. 🤯')}
-          variant="contained"
-          size="small"
-          color="primary"
-        >
-          Zoom to current
-        </Button>
-      </div>
     </Box>
   )
 }
@@ -198,7 +164,7 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
             // TODO: confirm:
             // https://docs.mapbox.com/api/search/#data-types
             types="address,poi,postcode,locality,place,neighborhood"
-            placeholder="Search locations..."
+            placeholder="Enter a location..."
             containerRef={geocoderContainerRef}
             mapboxApiAccessToken={MAPBOX_TOKEN}
             proximity={NYC_LAT_LONG}
