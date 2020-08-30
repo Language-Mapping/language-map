@@ -1,4 +1,5 @@
 import React, { FC, useContext } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
@@ -57,11 +58,38 @@ const EndoImageWrap: FC<EndoImageComponent> = (props) => {
   return <img src={url} alt={alt} className={classes.endoImage} />
 }
 
+const RandomLink: FC = () => {
+  const { state } = useContext(GlobalContext)
+  const { langFeatIDs, langFeaturesCached } = state
+
+  if (langFeatIDs && !langFeatIDs.length) {
+    return null
+  }
+
+  let randoIndex = 1
+  let id = 1
+
+  if (langFeatIDs === null) {
+    randoIndex = Math.floor(Math.random() * langFeaturesCached?.length) + 1
+    id = langFeaturesCached[randoIndex].ID
+  } else {
+    randoIndex = Math.floor(Math.random() * langFeatIDs?.length) + 1
+    id = langFeatIDs[randoIndex]
+  }
+
+  return (
+    <>
+      , or{' '}
+      <RouterLink to={`/details?id=${id}`}>try a random community</RouterLink>
+    </>
+  )
+}
+
 const NoFeatSel: FC = () => {
   return (
     <small>
       No community selected. Click a point in the map or a row in the data table
-      to see detailed information.
+      <RandomLink />.
     </small>
   )
 }
