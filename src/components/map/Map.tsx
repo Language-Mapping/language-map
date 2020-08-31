@@ -1,11 +1,7 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { AttributionControl, Map as MbMap, setRTLTextPlugin } from 'mapbox-gl'
-import MapGL, {
-  InteractiveMap,
-  MapLoadEvent,
-  WebMercatorViewport,
-} from 'react-map-gl'
+import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
 import { useTheme } from '@material-ui/core/styles'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -76,9 +72,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
   // TODO: another file
   useEffect((): void => {
-    if (!mapRef.current || !mapLoaded) {
-      return
-    }
+    if (!mapRef.current || !mapLoaded) return
 
     const map: MbMap = mapRef.current.getMap()
     const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
@@ -105,18 +99,14 @@ export const Map: FC<MapTypes.MapComponent> = ({
   // Do selected feature stuff on sel feat change or map load
   useEffect((): void => {
     // Map not ready
-    if (!mapRef.current || !mapLoaded) {
-      return
-    }
+    if (!mapRef.current || !mapLoaded) return
 
     const map: MbMap = mapRef.current.getMap()
 
     // Deselect all features
     clearAllSelFeats(map)
 
-    if (!selFeatAttribs) {
-      return
-    }
+    if (!selFeatAttribs) return
 
     // NOTE: won't get this far on load even if feature is selected. The timing
     // and order of the whole process prevent that. Make feature appear selected
@@ -179,7 +169,10 @@ export const Map: FC<MapTypes.MapComponent> = ({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const langSrcBounds = map.getSource('languages-src').bounds
-    map.fitBounds(langSrcBounds) // ensure all feats are visible
+
+    // Ensure all feats are visible. TODO: start from actual layer bounds
+    // somehow, then zoom is not needed.
+    map.fitBounds(langSrcBounds)
 
     const idFromUrl = getIDfromURLparams(window.location.search)
     const cacheOfIDs: number[] = []
@@ -208,53 +201,20 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
     // NOTE: could not get this into the same `useEffect` that handles when
     // selFeatAttribs or mapLoaded are changed with an MB error/crash.
-    if (!matchingRecord) {
-      const wmViewport = new WebMercatorViewport({
-        width,
-        height,
-      }).fitBounds(config.initialBounds, {
-        padding: {
-          bottom: isDesktop ? mapOffset[1] : height / 2,
-          left: isDesktop ? mapOffset[0] : 0,
-          right: 0,
-          top: 0,
-        },
-      })
-
-      const { latitude, longitude, zoom } = wmViewport
-
-      // Don't really need the `flyToCoords` util for this first one
-      map.flyTo(
-        {
-          essential: true,
-          center: { lng: longitude, lat: latitude },
-          zoom,
-        },
-        { selFeatAttribs, forceViewportUpdate: true }
-      )
-    }
+    if (!matchingRecord) flyHome()
 
     // TODO: set paint property
     // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
 
-    dispatch({
-      type: 'INIT_LANG_LAYER_FEATURES',
-      payload: uniqueRecords,
-    })
-
-    dispatch({
-      type: 'SET_MAP_LOADED',
-      payload: true,
-    })
+    dispatch({ type: 'INIT_LANG_LAYER_FEATURES', payload: uniqueRecords })
+    dispatch({ type: 'SET_MAP_LOADED', payload: true })
 
     map.addControl(new AttributionControl({ compact: false }), 'bottom-right')
   }
 
   function onNativeClick(event: MapTypes.MapEvent): void {
     // Map not ready
-    if (!mapRef || !mapRef.current || !mapLoaded) {
-      return
-    }
+    if (!mapRef || !mapRef.current || !mapLoaded) return
 
     // No language features under click, clear the route. Note that this keeps
     // the `id` in the URL if there is already a selected feature, which feels a
@@ -281,11 +241,30 @@ export const Map: FC<MapTypes.MapComponent> = ({
     map.removeFeatureState({ source: internalSrcID, sourceLayer })
   }
 
+  function flyHome() {
+    if (!mapRef.current) return
+
+    const map: MbMap = mapRef.current.getMap()
+    const { latitude, longitude, zoom } = utils.getWebMercSettings(
+      width,
+      height,
+      isDesktop,
+      mapOffset
+    )
+
+    // Don't really need the `flyToCoords` util for this first one
+    map.flyTo(
+      {
+        center: { lng: longitude, lat: latitude },
+        zoom,
+      },
+      { selFeatAttribs, forceViewportUpdate: true }
+    )
+  }
+
   // TODO: into utils if it doesn't require passing 1000 args
   function onMapCtrlClick(actionID: MapTypes.MapControlAction) {
-    if (!mapRef.current) {
-      return
-    }
+    if (!mapRef.current) return
 
     if (actionID === 'info') {
       dispatch({
@@ -300,17 +279,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
     setPopupOpen(null) // otherwise janky lag while map is moving
 
     if (actionID === 'home') {
-      const configKey = isDesktop ? 'desktop' : 'mobile'
-
-      utils.flyToCoords(
-        map,
-        {
-          ...config.postLoadMapView[configKey],
-          disregardCurrZoom: true,
-        },
-        mapOffset,
-        selFeatAttribs
-      )
+      flyHome()
 
       return // assumes `in` or `out` from here down
     }

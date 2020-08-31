@@ -1,7 +1,9 @@
 import { Map } from 'mapbox-gl'
+import { WebMercatorViewport } from 'react-map-gl'
 
 import { PAGE_HEADER_ID } from 'components/nav/config'
 import * as MapTypes from './types'
+import { initialBounds } from './config'
 import { isURL } from '../../utils'
 
 // One of the problems of using panels which overlap the map is how to deal with
@@ -60,8 +62,6 @@ export const flyToCoords: MapTypes.FlyToCoords = (
 
   map.flyTo(
     {
-      // Animation considered essential with respect to prefers-reduced-motion
-      essential: true,
       center: { lng, lat },
       offset,
       zoom: zoomToUse,
@@ -153,5 +153,24 @@ export const filterLayersByFeatIDs = (
         ['in', ['get', 'ID'], ['literal', langFeatIDs]],
       ])
     }
+  })
+}
+
+export const getWebMercSettings = (
+  width: number,
+  height: number,
+  isDesktop: boolean,
+  mapOffset: [number, number]
+): { latitude: number; longitude: number; zoom: number } => {
+  return new WebMercatorViewport({
+    width,
+    height,
+  }).fitBounds(initialBounds, {
+    padding: {
+      bottom: isDesktop ? mapOffset[1] : height / 2,
+      left: isDesktop ? mapOffset[0] : 0,
+      right: 0,
+      top: 0,
+    },
   })
 }

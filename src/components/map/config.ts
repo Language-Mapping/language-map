@@ -52,20 +52,6 @@ export const initialBounds = [
   [-73.767185, 40.892251],
 ] as [[number, number], [number, number]]
 
-// After the `fitBounds` happens and gets all the features into state
-export const postLoadMapView = {
-  desktop: {
-    latitude: 40.7186,
-    longitude: -73.9079,
-    zoom: 10.76,
-  },
-  mobile: {
-    latitude: 40.7293,
-    longitude: -73.9059,
-    zoom: 9.39,
-  },
-}
-
 export const langTypeIconsConfig = [
   { icon: iconTree, id: '_tree' },
   { icon: iconBook, id: '_book' },
