@@ -116,7 +116,6 @@ export const DetailsPanel: FC = () => {
     Town,
     Audio: audio,
     Video: video,
-    'Story Map': story,
     'World Region': WorldRegion,
   } = selFeatAttribs
   const { detailsPanelHeading, intro, description, neighborhoods } = classes
@@ -158,7 +157,7 @@ export const DetailsPanel: FC = () => {
           />
           {/* TODO: cell strength bars for Size */}
         </div>
-        <Media {...{ audio, video, story }} />
+        <Media {...{ audio, video, language: Language }} />
       </div>
       <Typography variant="body2" className={description}>
         <RecordDescription text={Description} />

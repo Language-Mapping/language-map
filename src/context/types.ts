@@ -121,7 +121,6 @@ export type LangRecordSchema = InternalUse & {
   Description: string // not all will be populated until end August
   Video?: string // TODO: TS for URL?
   Audio?: string // TODO: TS for URL?
-  'Story Map'?: string // TODO: TS for URL?
   Town: string
   County: string
   'ISO 639-3'?: string

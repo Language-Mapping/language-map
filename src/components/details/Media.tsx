@@ -1,20 +1,21 @@
 import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Button } from '@material-ui/core'
-import { FiVideo, FiMap } from 'react-icons/fi'
+import { Container, Button, Typography } from '@material-ui/core'
+import { FiVideo } from 'react-icons/fi'
 import { AiOutlineSound } from 'react-icons/ai'
 
 import { SimpleDialog } from 'components'
 
-type MediaKey = 'video' | 'audio' | 'story'
+type MediaKey = 'video' | 'audio'
 
 type MediaProps = {
+  language: string
   audio?: string
-  story?: string
   video?: string
 }
 
 type MediaChildProps = {
+  title?: string
   url: string
 }
 
@@ -26,56 +27,85 @@ type MediaListItemProps = {
   handleClick: () => void
 }
 
-type StyleProps = Pick<MediaListItemProps, 'disabled'>
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mediaRoot: {
-      display: 'flex',
-      listStyle: 'none',
-      padding: 0,
-      margin: 0,
-      justifyContent: 'center',
       columnGap: '1rem',
+      display: 'flex',
+      justifyContent: 'center',
+      listStyle: 'none',
+      margin: 0,
+      padding: 0,
     },
     mediaLink: {
-      fontSize: '0.8em',
-      display: 'flex',
       alignItems: 'center',
+      display: 'flex',
+      fontSize: '0.8em',
       textTransform: 'none',
       '& svg': {
         marginRight: '0.5em',
       },
     },
-    endoModalRoot: {
+    modalRoot: {
+      textAlign: 'center',
       // Cheap way to override `DialogContent`
       '& .MuiDialogContent-root': {
-        alignItems: 'center',
+        justifyContent: 'center',
         display: 'flex',
         flexDirection: 'column',
-        textAlign: 'center',
+        [theme.breakpoints.only('xs')]: {
+          paddingLeft: 0,
+          paddingRight: 0,
+        },
       },
     },
-    // Smaller than the default so that it is not as large as table modal
-    endoModalPaper: {
-      margin: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
+    dialogContent: {
+      marginTop: '1em',
+      marginBottom: '1em',
+    },
+    // CRED: this is almost a standard based on search results
+    videoContainer: {
+      height: 0,
+      paddingBottom: '56.25%', // 16:9
+      paddingTop: 25,
+      position: 'relative',
+      '& iframe, object, embed': {
+        height: '100%',
+        left: 0,
+        position: 'absolute',
+        top: 0,
+        width: '100%',
+      },
     },
   })
 )
 
 const YouTubeVideo: FC<MediaChildProps> = (props) => {
-  const { url } = props
+  const classes = useStyles()
+  const { url, title } = props
 
-  return <div>{url}</div>
+  // Proper syntax:
+  // https://www.youtube.com/embed/A6XUVjK9W4o
+  // https://www.youtube.com/embed/videoseries?list=PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG
+  const urlPrepped = url.replace(
+    'https://www.youtube.com/playlist',
+    'https://www.youtube.com/embed/videoseries'
+  )
+
+  return (
+    <div className={classes.videoContainer}>
+      <iframe
+        title={title}
+        src={urlPrepped}
+        frameBorder="0"
+        allow="encrypted-media"
+        allowFullScreen
+      />
+    </div>
+  )
 }
 
 const SoundCloudAudio: FC<MediaChildProps> = (props) => {
-  const { url } = props
-
-  return <div>{url}</div>
-}
-
-const StoryMap: FC<MediaChildProps> = (props) => {
   const { url } = props
 
   return <div>{url}</div>
@@ -103,27 +133,44 @@ const MediaListItem: FC<MediaListItemProps> = (props) => {
 const config = [
   { label: 'Video', icon: <FiVideo />, type: 'video' },
   { label: 'Audio', icon: <AiOutlineSound />, type: 'audio' },
-  { label: 'Story Map', icon: <FiMap />, type: 'story' },
 ] as Omit<MediaListItemProps, 'setDialogContent'>[]
 
 export const Media: FC<MediaProps> = (props) => {
-  const { audio, video, story } = props
+  const { audio, video, language } = props
   const classes = useStyles()
   const [dialogContent, setDialogContent] = useState<MediaKey | null>(null)
 
   return (
     <>
       <SimpleDialog
+        fullScreen
+        maxWidth="xl"
         open={dialogContent !== null}
-        className={classes.endoModalRoot}
+        className={classes.modalRoot}
         onClose={() => setDialogContent(null)}
-        PaperProps={{
-          className: classes.endoModalPaper,
-        }}
       >
-        {dialogContent === 'video' && video && <YouTubeVideo url={video} />}
-        {dialogContent === 'audio' && audio && <SoundCloudAudio url={audio} />}
-        {dialogContent === 'story' && story && <StoryMap url={story} />}
+        <Typography variant="h3">{language}</Typography>
+        <Container
+          maxWidth="lg"
+          disableGutters
+          className={classes.dialogContent}
+        >
+          {dialogContent === 'video' && video && (
+            <YouTubeVideo title={language} url={video} />
+          )}
+          {dialogContent === 'audio' && audio && (
+            <SoundCloudAudio url={audio} />
+          )}
+        </Container>
+        <div>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => setDialogContent(null)}
+          >
+            Back to map
+          </Button>
+        </div>
       </SimpleDialog>
       <ul className={classes.mediaRoot}>
         {config.map((item) => (
