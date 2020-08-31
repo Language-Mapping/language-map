@@ -1,7 +1,11 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { AttributionControl, Map as MbMap, setRTLTextPlugin } from 'mapbox-gl'
-import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
+import MapGL, {
+  InteractiveMap,
+  MapLoadEvent,
+  WebMercatorViewport,
+} from 'react-map-gl'
 import { useTheme } from '@material-ui/core/styles'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -13,8 +17,8 @@ import { MapPopup } from './MapPopup'
 import { MapTooltip } from './MapTooltip'
 import { MapCtrlBtns } from './MapCtrlBtns'
 import * as MapTypes from './types'
-import * as mapUtils from './utils'
-import * as mapConfig from './config'
+import * as utils from './utils'
+import * as config from './config'
 import { LangRecordSchema } from '../../context/types'
 import {
   getIDfromURLparams,
@@ -22,7 +26,7 @@ import {
   useWindowResize,
 } from '../../utils'
 
-const { layerId: sourceLayer, internalSrcID } = mapConfig.mbStyleTileConfig
+const { layerId: sourceLayer, internalSrcID } = config.mbStyleTileConfig
 
 // Jest or whatever CANNOT find this plugin. And importing it from
 // `react-map-gl` is useless as well.
@@ -52,7 +56,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
   const theme = useTheme()
   const [isDesktop, setIsDesktop] = useState<boolean>(false)
   const { width, height } = useWindowResize()
-  const [viewport, setViewport] = useState(mapConfig.initialMapState)
+  const [viewport, setViewport] = useState(config.initialMapState)
   const [mapOffset, setMapOffset] = useState<[number, number]>([0, 0])
   const [popupOpen, setPopupOpen] = useState<MapTypes.MapPopup | null>(null)
   const [tooltipOpen, setTooltipOpen] = useState<MapTypes.MapTooltip | null>(
@@ -64,7 +68,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
   useEffect((): void => {
     const deskBreakPoint = theme.breakpoints.values.md
     const wideFella = width >= deskBreakPoint
-    const offset = mapUtils.prepMapOffset(wideFella)
+    const offset = utils.prepMapOffset(wideFella)
 
     setIsDesktop(wideFella)
     setMapOffset(offset)
@@ -79,7 +83,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
     const map: MbMap = mapRef.current.getMap()
     const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
 
-    mapUtils.filterLayersByFeatIDs(map, currentLayerNames, langFeatIDs)
+    utils.filterLayersByFeatIDs(map, currentLayerNames, langFeatIDs)
   }, [langFeatIDs])
 
   // TODO: put in... legend?
@@ -94,7 +98,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
   useEffect((): void => {
     if (mapRef.current) {
       const map: MbMap = mapRef.current.getMap()
-      mapUtils.addLangTypeIconsToMap(map, mapConfig.langTypeIconsConfig)
+      utils.addLangTypeIconsToMap(map, config.langTypeIconsConfig)
     }
   }, [baselayer]) // baselayer may be irrelevant if only using Light BG
 
@@ -122,7 +126,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
     setPopupOpen(null)
     setSelFeatState(map, ID, true)
 
-    mapUtils.flyToCoords(
+    utils.flyToCoords(
       map,
       { latitude, longitude, zoom: 12 },
       mapOffset,
@@ -140,7 +144,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
   }
 
   function onHover(event: MapTypes.MapEvent) {
-    mapUtils.handleHover(event, internalSrcID, setTooltipOpen)
+    utils.handleHover(event, internalSrcID, setTooltipOpen)
   }
 
   // Runs only once and kicks off the whole thinig
@@ -205,13 +209,28 @@ export const Map: FC<MapTypes.MapComponent> = ({
     // NOTE: could not get this into the same `useEffect` that handles when
     // selFeatAttribs or mapLoaded are changed with an MB error/crash.
     if (!matchingRecord) {
-      const configKey = isDesktop ? 'desktop' : 'mobile'
+      const wmViewport = new WebMercatorViewport({
+        width,
+        height,
+      }).fitBounds(config.initialBounds, {
+        padding: {
+          bottom: isDesktop ? mapOffset[1] : height / 2,
+          left: isDesktop ? mapOffset[0] : 0,
+          right: 0,
+          top: 0,
+        },
+      })
 
-      mapUtils.flyToCoords(
-        map,
-        { ...mapConfig.postLoadMapView[configKey] },
-        mapOffset,
-        null
+      const { latitude, longitude, zoom } = wmViewport
+
+      // Don't really need the `flyToCoords` util for this first one
+      map.flyTo(
+        {
+          essential: true,
+          center: { lng: longitude, lat: latitude },
+          zoom,
+        },
+        { selFeatAttribs, forceViewportUpdate: true }
       )
     }
 
@@ -241,16 +260,14 @@ export const Map: FC<MapTypes.MapComponent> = ({
     // the `id` in the URL if there is already a selected feature, which feels a
     // little weird, but it's much better than relying on a dummy route like
     // `id=-1`. Still not the greatest so keep an eye out for a better solution.
-    if (!mapUtils.areLangFeatsUnderCursor(event.features, internalSrcID)) {
+    if (!utils.areLangFeatsUnderCursor(event.features, internalSrcID)) {
       dispatch({
         type: 'SET_SEL_FEAT_ATTRIBS',
         payload: null,
       })
 
-      // TODO: decide /how/whether to force the panel open if nothing is found
       return
     }
-
     setTooltipOpen(null) // super annoying if tooltip stays intact after a click
     setPopupOpen(null)
 
@@ -285,10 +302,10 @@ export const Map: FC<MapTypes.MapComponent> = ({
     if (actionID === 'home') {
       const configKey = isDesktop ? 'desktop' : 'mobile'
 
-      mapUtils.flyToCoords(
+      utils.flyToCoords(
         map,
         {
-          ...mapConfig.postLoadMapView[configKey],
+          ...config.postLoadMapView[configKey],
           disregardCurrZoom: true,
         },
         mapOffset,
@@ -300,7 +317,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
     const { zoom, latitude, longitude } = viewport
 
-    mapUtils.flyToCoords(
+    utils.flyToCoords(
       map,
       {
         latitude,
@@ -326,8 +343,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
         width="100%"
         attributionControl={false}
         mapOptions={{ logoPosition: 'bottom-right' }}
-        mapboxApiAccessToken={mapConfig.MAPBOX_TOKEN}
-        mapStyle={mapConfig.mbStyleTileConfig.customStyles.light}
+        mapboxApiAccessToken={config.MAPBOX_TOKEN}
+        mapStyle={config.mbStyleTileConfig.customStyles.light}
         onViewportChange={setViewport}
         onClick={onNativeClick} // TODO: mv into utils
         onHover={onHover}

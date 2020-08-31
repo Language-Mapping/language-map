@@ -34,11 +34,23 @@ export const NYC_LAT_LONG = { latitude: 40.7128, longitude: -74.006 }
 // Unsure why it needs the type here but not for feature coords..
 const mapCenter = [-73.96, 40.7128] as [number, number]
 
+// Ideally we'd just start from the bounds of the languages layer, because what
+// happens is:
+// 1) initial state used
+// 2) zoom to extent of bounds to get all features into state
+// 3) zoom to initialBounds
 export const initialMapState = {
   latitude: mapCenter[1],
   longitude: mapCenter[0],
   zoom: 5,
 }
+
+// This is for #3 above. It should include the 5 boroughs and bits of NJ, and
+// centered on Manhattan.
+export const initialBounds = [
+  [-74.19564, 40.574533],
+  [-73.767185, 40.892251],
+] as [[number, number], [number, number]]
 
 // After the `fitBounds` happens and gets all the features into state
 export const postLoadMapView = {
