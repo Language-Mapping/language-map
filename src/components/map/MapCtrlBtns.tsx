@@ -1,7 +1,6 @@
 import React, { FC } from 'react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { Typography, Popover, Box } from '@material-ui/core'
-import Geocoder from 'react-map-gl-geocoder'
+import { Typography, Box } from '@material-ui/core'
 import {
   SpeedDial,
   SpeedDialIcon,
@@ -14,9 +13,8 @@ import { FiHome, FiZoomIn, FiZoomOut, FiInfo } from 'react-icons/fi'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
-import { flyToCoords } from './utils'
-import { MapCtrlBtnsProps, CtrlBtnConfig, GeocodeResult } from './types'
-import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
+import { MapCtrlBtnsProps, CtrlBtnConfig } from './types'
+import { GeocoderPopout } from './GeocoderPopout'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -103,29 +101,9 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
   const classes = useStyles()
   const [speedDialOpen, setSpeedDialOpen] = React.useState(true)
   const size = isDesktop ? 'medium' : 'small'
-  const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
-  const layersMenuOpen = Boolean(anchorEl)
 
   const handleSpeedDialRootClick = () => setSpeedDialOpen(!speedDialOpen)
-  const handleLayersMenuClose = () => setAnchorEl(null)
-
-  const handleGeocodeResult = (geocodeResult: GeocodeResult) => {
-    handleLayersMenuClose()
-
-    if (mapRef.current) {
-      flyToCoords(
-        mapRef.current.getMap(),
-        {
-          latitude: geocodeResult.result.center[1],
-          longitude: geocodeResult.result.center[0],
-          zoom: 13,
-        },
-        mapOffset,
-        null
-      )
-    }
-  }
 
   const handleClose = (
     e: React.SyntheticEvent<Record<string, unknown>, Event>,
@@ -143,35 +121,7 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
 
   return (
     <>
-      <Popover
-        id="layers-menu"
-        anchorEl={anchorEl}
-        open={layersMenuOpen}
-        onClose={handleLayersMenuClose}
-        PaperProps={{
-          className: classes.layersMenuPaper,
-        }}
-        transformOrigin={{
-          vertical: 'center',
-          horizontal: 'right',
-        }}
-      >
-        <LocationSearchContent>
-          <div ref={geocoderContainerRef} />
-          <Geocoder
-            mapRef={mapRef}
-            countries="us"
-            // TODO: confirm:
-            // https://docs.mapbox.com/api/search/#data-types
-            types="address,poi,postcode,locality,place,neighborhood"
-            placeholder="Enter a location..."
-            containerRef={geocoderContainerRef}
-            mapboxApiAccessToken={MAPBOX_TOKEN}
-            proximity={NYC_LAT_LONG}
-            onResult={handleGeocodeResult}
-          />
-        </LocationSearchContent>
-      </Popover>
+      <GeocoderPopout {...{ anchorEl, setAnchorEl, mapOffset, mapRef }} />
       <SpeedDial
         ariaLabel="Map control buttons"
         className={classes.mapCtrlsRoot}
