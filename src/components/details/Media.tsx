@@ -105,10 +105,15 @@ const YouTubeVideo: FC<MediaChildProps> = (props) => {
   )
 }
 
-const SoundCloudAudio: FC<MediaChildProps> = (props) => {
+const Audio: FC<MediaChildProps> = (props) => {
   const { url } = props
 
-  return <div>{url}</div>
+  return (
+    // eslint-disable-next-line jsx-a11y/media-has-caption
+    <audio controls src={url}>
+      Your browser does not support the audio element.
+    </audio>
+  )
 }
 
 const MediaListItem: FC<MediaListItemProps> = (props) => {
@@ -159,9 +164,7 @@ export const Media: FC<MediaProps> = (props) => {
           {dialogContent === 'video' && video && (
             <YouTubeVideo title={language} url={video} />
           )}
-          {dialogContent === 'audio' && audio && (
-            <SoundCloudAudio url={audio} />
-          )}
+          {dialogContent === 'audio' && audio && <Audio url={audio} />}
         </Container>
         <div>
           <Button
