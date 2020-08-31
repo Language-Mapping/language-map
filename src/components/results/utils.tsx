@@ -98,7 +98,10 @@ export function renderWorldRegionColumn(
 // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
 // properly (blanks last, regardless of direction)
 // CRED: https://stackoverflow.com/a/29829361/1048518
-export function sortNeighbs(a: LangRecordSchema, b: LangRecordSchema) {
+export function sortNeighbs(
+  a: LangRecordSchema,
+  b: LangRecordSchema
+): 0 | 1 | -1 {
   if (a.Neighborhoods === b.Neighborhoods) {
     return 0
   }
