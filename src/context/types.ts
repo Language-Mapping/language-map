@@ -115,7 +115,7 @@ export type LangRecordSchema = InternalUse & {
   Size: CommunitySize
   Status: Statuses
   'World Region': WorldRegion
-  Countries: string // TODO: confirm required
+  Countries: string
   'Global Speaker Total'?: number // string in MB tileset b/c some blanks
   'Language Family': string
   Description: string // not all will be populated until end August

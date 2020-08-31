@@ -5,21 +5,31 @@ import { Typography } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
 import { LegendSwatch } from 'components/legend'
-import { RecordDescription } from 'components/results'
+import { RecordDescription, CountryListItemWithFlag } from 'components/results'
+import { CountryCodes } from 'components/results/types'
+import countryCodes from 'components/results/config.emojis.json'
 import { isURL, correctDropboxURL, prettyTruncateList } from '../../utils'
 import { Media } from './Media'
+
 // TODO: cell strength bars for Size
 // import { COMM_SIZE_COL_MAP } from 'components/results/config'
+
+// TODO: share it
+const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
 
 type EndoImageComponent = {
   url: string
   alt: string
 }
 
+type CountriesWithFlagsProps = {
+  countries: string
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     intro: {
-      padding: '1em 0',
+      padding: '0.75em 0',
       textAlign: 'center',
       borderBottom: `solid 1px ${theme.palette.divider}`,
     },
@@ -35,7 +45,10 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: '95%',
     },
     neighborhoods: {
-      fontSize: '0.8rem',
+      // fontSize: '0.8rem',
+      // fontSize: theme.typography.caption.fontSize,
+      fontSize: '0.75em',
+      color: theme.palette.text.secondary,
       fontStyle: 'italic',
     },
     description: {
@@ -43,9 +56,34 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '0 0.25rem',
       marginBottom: '2.4rem',
     },
-    prettyFlex: {
-      display: 'flex',
+    region: {
+      display: 'inline-flex',
       justifyContent: 'center',
+      padding: '0.25rem 4.5em',
+      paddingBottom: 0,
+      marginTop: '0.45em',
+      borderTop: `dashed 1px ${theme.palette.divider}`,
+    },
+    countriesList: {
+      padding: 0,
+      margin: 0,
+      listStyle: 'none',
+      // fontSize: theme.typography.caption.fontSize,
+      fontSize: '0.75em',
+      display: 'flex',
+      columnGap: '0.5em',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontStyle: 'italic',
+      color: theme.palette.text.secondary,
+      '& > * + *': {
+        marginLeft: '0.5em',
+      },
+      '& li': {
+        marginTop: 0,
+        fontSize: '0.85em',
+        color: theme.palette.text.secondary,
+      },
     },
   })
 )
@@ -94,6 +132,33 @@ const NoFeatSel: FC = () => {
   )
 }
 
+const CountriesWithFlags: FC<CountriesWithFlagsProps> = (props) => {
+  const { countries: unParsed } = props
+  const classes = useStyles()
+  const countryCodesTyped = countryCodes as CountryCodes // TODO: defeat this
+  const countries = unParsed.split(DEFAULT_DELIM)
+
+  const countriesWithFlags = countries.map((country) => {
+    if (countryCodesTyped[country]) {
+      return countryCodesTyped[country]
+    }
+
+    return '' // there SHOULD be a match but if not then just use blank
+  })
+
+  return (
+    <ul className={classes.countriesList}>
+      {countriesWithFlags.map((countryWithFlag, i) => (
+        <CountryListItemWithFlag
+          key={countries[i]}
+          countryCode={countryWithFlag}
+          name={countries[i]}
+        />
+      ))}
+    </ul>
+  )
+}
+
 export const DetailsPanel: FC = () => {
   const { state } = useContext(GlobalContext)
   const classes = useStyles()
@@ -114,6 +179,7 @@ export const DetailsPanel: FC = () => {
     Description,
     // Size, // TODO: cell strength bars for Size
     Town,
+    Countries,
     Audio: audio,
     Video: video,
     'World Region': WorldRegion,
@@ -148,7 +214,7 @@ export const DetailsPanel: FC = () => {
         <Typography className={neighborhoods}>
           {Neighborhoods ? prettyTruncateList(Neighborhoods) : Town}
         </Typography>
-        <div className={classes.prettyFlex}>
+        <div className={classes.region}>
           <LegendSwatch
             legendLabel={WorldRegion}
             component="div"
@@ -157,6 +223,8 @@ export const DetailsPanel: FC = () => {
           />
           {/* TODO: cell strength bars for Size */}
         </div>
+        {/* <CountriesWithFlags countries={Countries} /> */}
+        <div className={classes.countriesList}>{Countries}</div>
         <Media {...{ audio, video, language: Language }} />
       </div>
       <Typography variant="body2" className={description}>

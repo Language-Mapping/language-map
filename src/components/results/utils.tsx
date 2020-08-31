@@ -14,10 +14,6 @@ const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
 export function renderCountriesColumn(
   data: LangRecordSchema
 ): string | React.ReactNode {
-  if (!data.Countries) {
-    return ''
-  }
-
   const countryCodesTyped = countryCodes as CountryCodes // TODO: defeat this
   const countries = data.Countries.split(DEFAULT_DELIM)
 
