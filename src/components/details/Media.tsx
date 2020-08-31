@@ -119,6 +119,7 @@ const MediaListItem: FC<MediaListItemProps> = (props) => {
     <li>
       <Button
         size="small"
+        color="primary"
         className={classes.mediaLink}
         disabled={disabled}
         onClick={(e: React.MouseEvent) => handleClick()}
