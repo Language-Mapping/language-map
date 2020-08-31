@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useContext } from 'react'
 import { Map } from 'mapbox-gl'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Popover, Box } from '@material-ui/core'
@@ -6,6 +6,7 @@ import Geocoder from 'react-map-gl-geocoder'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
+import { GlobalContext } from 'components'
 import { flyToCoords, getWebMercSettings } from './utils'
 import { MapCtrlBtnsProps, GeocodeResult } from './types'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
@@ -45,6 +46,7 @@ type GeocoderProps = Omit<MapCtrlBtnsProps, 'onMapCtrlClick'> & {
 }
 
 export const GeocoderPopout: FC<GeocoderProps> = (props) => {
+  const { state } = useContext(GlobalContext)
   const { anchorEl, setAnchorEl, mapOffset, mapRef, isDesktop } = props
   const classes = useStyles()
   const layersMenuOpen = Boolean(anchorEl)
@@ -81,13 +83,18 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
           center: { lng: longitude, lat: latitude },
           zoom,
         },
-        { forceViewportUpdate: true }
+        {
+          forceViewportUpdate: true,
+          selFeatAttribs: state.selFeatAttribs,
+          fromPoly: true,
+        }
       )
     } else {
       flyToCoords(
         mapRef.current.getMap(),
         { latitude: center[1], longitude: center[0], zoom: 15 },
-        mapOffset
+        mapOffset,
+        state.selFeatAttribs
       )
     }
   }

@@ -109,7 +109,8 @@ export type FlyToCoords = (
     zoom?: number | 10.25
     disregardCurrZoom?: boolean // e.g. when using map controls
   } & LongLat,
-  offset: [number, number]
+  offset: [number, number],
+  selFeatAttribs: LangRecordSchema | null
 ) => void
 
 export type UseStyleProps = {

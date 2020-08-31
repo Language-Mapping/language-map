@@ -34,7 +34,12 @@ export const prepMapOffset = (
   return [(sidePanelWidth + sidePanelGutter) / 2, topBarHeight / 2]
 }
 
-export const flyToCoords: MapTypes.FlyToCoords = (map, settings, offset) => {
+export const flyToCoords: MapTypes.FlyToCoords = (
+  map,
+  settings,
+  offset,
+  selFeatAttribs
+) => {
   const {
     zoom: targetZoom,
     latitude: lat,
@@ -43,8 +48,9 @@ export const flyToCoords: MapTypes.FlyToCoords = (map, settings, offset) => {
   } = settings
   const currentZoom = map.getZoom()
   const customEventData = {
-    disregardCurrZoom,
     forceViewportUpdate: true, // to keep state in sync
+    selFeatAttribs, // popup data
+    disregardCurrZoom,
   }
   let zoomToUse = targetZoom
 

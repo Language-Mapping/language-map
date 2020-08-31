@@ -113,10 +113,14 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
     const { ID, Latitude: latitude, Longitude: longitude } = selFeatAttribs
 
-    setPopupOpen(null)
     setSelFeatState(map, ID, true)
 
-    utils.flyToCoords(map, { latitude, longitude, zoom: 12 }, mapOffset)
+    utils.flyToCoords(
+      map,
+      { latitude, longitude, zoom: 12 },
+      mapOffset,
+      selFeatAttribs
+    )
   }, [selFeatAttribs, mapLoaded])
   /* eslint-enable react-hooks/exhaustive-deps */
 
@@ -136,31 +140,6 @@ export const Map: FC<MapTypes.MapComponent> = ({
   function onLoad(mapLoadEvent: MapLoadEvent) {
     const { target: map } = mapLoadEvent
 
-    // Maintain viewport state sync if needed (e.g. after things like `flyTo`),
-    // otherwise the map shifts back to previous position after panning or
-    // zooming.
-    map.on('moveend', function onMoveEnd(zoomEndEvent) {
-      // No custom event data, regular move event
-      if (zoomEndEvent.forceViewportUpdate) {
-        setViewport({
-          ...viewport, // spreading just in case bearing or pitch are added
-          zoom: map.getZoom(),
-          latitude: map.getCenter().lat,
-          longitude: map.getCenter().lng,
-        })
-      }
-    })
-
-    map.on('zoomend', function onMoveEnd(zoomEndEvent) {
-      if (selFeatAttribs && !map.isMoving()) {
-        setPopupOpen({
-          latitude: zoomEndEvent.selFeatAttribs.Latitude,
-          longitude: zoomEndEvent.selFeatAttribs.Longitude,
-          selFeatAttribs: zoomEndEvent.selFeatAttribs,
-        })
-      }
-    })
-
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const langSrcBounds = map.getSource('languages-src').bounds
@@ -173,7 +152,6 @@ export const Map: FC<MapTypes.MapComponent> = ({
     const cacheOfIDs: number[] = []
     const uniqueRecords: LangRecordSchema[] = []
     const rawLangFeats = map.querySourceFeatures(internalSrcID, { sourceLayer })
-
     // Just the properties for table/results, don't need GeoJSON cruft. Also
     // need to make sure each ID is unique as there have been initial data
     // inconsistencies, and more importantly MB may have feature duplication if
@@ -205,6 +183,38 @@ export const Map: FC<MapTypes.MapComponent> = ({
     dispatch({ type: 'SET_MAP_LOADED', payload: true })
 
     map.addControl(new AttributionControl({ compact: false }), 'bottom-right')
+
+    // Maintain viewport state sync if needed (e.g. after things like `flyTo`),
+    // otherwise the map shifts back to previous position after panning or
+    // zooming.
+    map.on('moveend', function onMoveEnd(zoomEndEvent) {
+      // No custom event data, regular move event
+      if (zoomEndEvent.forceViewportUpdate) {
+        setViewport({
+          ...viewport, // spreading just in case bearing or pitch are added
+          zoom: map.getZoom(),
+          latitude: map.getCenter().lat,
+          longitude: map.getCenter().lng,
+        })
+      }
+    })
+
+    // Close popup on the start of moving so no jank
+    map.on('movestart', function onMoveStart(zoomEndEvent) {
+      if (zoomEndEvent.selFeatAttribs) setPopupOpen(null)
+    })
+
+    map.on('zoomend', function onMoveEnd(zoomEndEvent) {
+      const { selFeatAttribs: attribs } = zoomEndEvent
+
+      if (attribs && !map.isMoving()) {
+        setPopupOpen({
+          latitude: attribs.Latitude,
+          longitude: attribs.Longitude,
+          selFeatAttribs: attribs,
+        })
+      }
+    })
   }
 
   function onNativeClick(event: MapTypes.MapEvent): void {
@@ -223,8 +233,9 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
       return
     }
+
     setTooltipOpen(null) // super annoying if tooltip stays intact after a click
-    setPopupOpen(null)
+    setPopupOpen(null) // closed by movestate anyway, but smoother this way
 
     // TODO: use `initialEntries` in <MemoryRouter> to test routing
     history.push(`/details?id=${event.features[0].properties.ID}`)
@@ -267,31 +278,25 @@ export const Map: FC<MapTypes.MapComponent> = ({
       dispatch({
         type: 'TOGGLE_OFF_CANVAS_NAV',
       })
-
-      return
-    }
-
-    const map: MbMap = mapRef.current.getMap()
-
-    setPopupOpen(null) // otherwise janky lag while map is moving
-
-    if (actionID === 'home') {
+    } else if (actionID === 'home') {
       flyHome()
+    } else {
+      // Assumes `in` or `out` from here down...
 
-      return // assumes `in` or `out` from here down
+      const map: MbMap = mapRef.current.getMap()
+      const { zoom } = viewport
+
+      utils.flyToCoords(
+        map,
+        {
+          ...viewport,
+          zoom: actionID === 'in' ? zoom + 1 : zoom - 1,
+          disregardCurrZoom: true,
+        },
+        [0, 0],
+        selFeatAttribs
+      )
     }
-
-    const { zoom } = viewport
-
-    utils.flyToCoords(
-      map,
-      {
-        ...viewport,
-        zoom: actionID === 'in' ? zoom + 1 : zoom - 1,
-        disregardCurrZoom: true,
-      },
-      [0, 0]
-    )
   }
 
   return (
