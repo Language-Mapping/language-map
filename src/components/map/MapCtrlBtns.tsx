@@ -7,21 +7,13 @@ import {
   CloseReason,
 } from '@material-ui/lab'
 import { MdMoreVert, MdClose } from 'react-icons/md'
+import { BiMapPin } from 'react-icons/bi'
 import { FiHome, FiZoomIn, FiZoomOut, FiInfo } from 'react-icons/fi'
 
-import { MapControlAction } from './types'
+import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
-type MapCtrlBtnsComponent = {
-  // Render prop so we don't have pass a million props to this component
-  onMapCtrlClick: (actionID: MapControlAction) => void
-  isDesktop: boolean
-}
-
-type CtrlBtnConfig = {
-  id: MapControlAction
-  icon: React.ReactNode
-  name: string
-}
+import { MapCtrlBtnsProps, CtrlBtnConfig } from './types'
+import { GeocoderPopout } from './GeocoderPopout'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,14 +46,23 @@ const ctrlBtnsConfig = [
   { id: 'in', icon: <FiZoomIn />, name: 'Zoom in' },
   { id: 'out', icon: <FiZoomOut />, name: 'Zoom out' },
   { id: 'home', icon: <FiHome />, name: 'Zoom home' },
+  {
+    id: 'loc-search',
+    icon: <BiMapPin />,
+    name: 'Search by location',
+    customFn: true,
+  },
   { id: 'info', icon: <FiInfo />, name: 'About & Info' },
 ] as CtrlBtnConfig[]
 
-export const MapCtrlBtns: FC<MapCtrlBtnsComponent> = (props) => {
-  const { isDesktop, onMapCtrlClick } = props
+export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
+  const { isDesktop, onMapCtrlClick, mapRef, mapOffset } = props
   const classes = useStyles()
-  const [open, setOpen] = React.useState(true)
+  const [speedDialOpen, setSpeedDialOpen] = React.useState(true)
   const size = isDesktop ? 'medium' : 'small'
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+
+  const handleSpeedDialRootClick = () => setSpeedDialOpen(!speedDialOpen)
 
   const handleClose = (
     e: React.SyntheticEvent<Record<string, unknown>, Event>,
@@ -74,37 +75,44 @@ export const MapCtrlBtns: FC<MapCtrlBtnsComponent> = (props) => {
       return
     }
 
-    setOpen(false)
-  }
-
-  const handleRootClick = () => {
-    setOpen(!open)
+    setSpeedDialOpen(false)
   }
 
   return (
-    <SpeedDial
-      ariaLabel="Map control buttons"
-      className={classes.mapCtrlsRoot}
-      icon={<SpeedDialIcon openIcon={<MdClose />} icon={<MdMoreVert />} />}
-      onClose={handleClose}
-      open={open}
-      direction="down"
-      FabProps={{ size }}
-      onClick={handleRootClick}
-    >
-      {ctrlBtnsConfig.map((action) => (
-        <SpeedDialAction
-          className={classes.speedDialAction}
-          key={action.name}
-          icon={action.icon}
-          tooltipTitle={action.name}
-          onClick={(e) => {
-            e.stopPropagation() // prevent closing the menu
-            onMapCtrlClick(action.id)
-          }}
-          FabProps={{ size }} // TODO: uhhhh breakpoints? Why is this needed?
-        />
-      ))}
-    </SpeedDial>
+    <>
+      <GeocoderPopout
+        {...{ anchorEl, setAnchorEl, mapOffset, mapRef, isDesktop }}
+      />
+      <SpeedDial
+        ariaLabel="Map control buttons"
+        className={classes.mapCtrlsRoot}
+        icon={<SpeedDialIcon openIcon={<MdClose />} icon={<MdMoreVert />} />}
+        onClose={handleClose}
+        open={speedDialOpen}
+        direction="down"
+        FabProps={{ size }}
+        onClick={handleSpeedDialRootClick}
+      >
+        {ctrlBtnsConfig.map((action) => (
+          <SpeedDialAction
+            className={classes.speedDialAction}
+            key={action.name}
+            icon={action.icon}
+            tooltipTitle={action.name}
+            FabProps={{ size }} // TODO: uhhhh breakpoints? Why is this needed?
+            onClick={(e) => {
+              e.stopPropagation() // prevent closing the menu
+
+              // GROSS
+              if (!action.customFn) {
+                onMapCtrlClick(action.id)
+              } else {
+                setAnchorEl(e.currentTarget)
+              }
+            }}
+          />
+        ))}
+      </SpeedDial>
+    </>
   )
 }

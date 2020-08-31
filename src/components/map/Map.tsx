@@ -2,26 +2,27 @@ import React, { FC, useState, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { AttributionControl, Map as MbMap, setRTLTextPlugin } from 'mapbox-gl'
 import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
-import { Theme } from '@material-ui/core/styles'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
+import { useTheme } from '@material-ui/core/styles'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext, LoadingBackdrop } from 'components'
-import {
-  LangMbSrcAndLayer,
-  MapPopup,
-  MapTooltip,
-  MapCtrlBtns,
-} from 'components/map'
 import { initLegend } from 'components/legend/utils'
+import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
+import { MapPopup } from './MapPopup'
+import { MapTooltip } from './MapTooltip'
+import { MapCtrlBtns } from './MapCtrlBtns'
 import * as MapTypes from './types'
-import * as mapUtils from './utils'
-import * as mapConfig from './config'
+import * as utils from './utils'
+import * as config from './config'
 import { LangRecordSchema } from '../../context/types'
-import { getIDfromURLparams, findFeatureByID } from '../../utils'
+import {
+  getIDfromURLparams,
+  findFeatureByID,
+  useWindowResize,
+} from '../../utils'
 
-const { layerId: sourceLayer, internalSrcID } = mapConfig.mbStyleTileConfig
+const { layerId: sourceLayer, internalSrcID } = config.mbStyleTileConfig
 
 // Jest or whatever CANNOT find this plugin. And importing it from
 // `react-map-gl` is useless as well.
@@ -33,7 +34,7 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
     // Yeah not today TS, thanks anyway:
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    null,
+    null, // supposed to be an error-handling function
     true // lazy: only load when the map first encounters Hebrew or Arabic text
   )
 }
@@ -48,63 +49,38 @@ export const Map: FC<MapTypes.MapComponent> = ({
   const { state, dispatch } = useContext(GlobalContext)
   const mapRef: React.RefObject<InteractiveMap> = React.createRef()
   const { selFeatAttribs, mapLoaded, langFeatIDs } = state
-  const isDesktop = useMediaQuery((theme: Theme) => theme.breakpoints.up('md'))
-
-  const [viewport, setViewport] = useState(mapConfig.initialMapState)
+  const theme = useTheme()
+  const [isDesktop, setIsDesktop] = useState<boolean>(false)
+  const { width, height } = useWindowResize()
+  const [viewport, setViewport] = useState(config.initialMapState)
   const [mapOffset, setMapOffset] = useState<[number, number]>([0, 0])
   const [popupOpen, setPopupOpen] = useState<MapTypes.MapPopup | null>(null)
   const [tooltipOpen, setTooltipOpen] = useState<MapTypes.MapTooltip | null>(
     null
   )
-
   /* eslint-disable react-hooks/exhaustive-deps */
   // ^^^^^ otherwise it wants things like mapRef and dispatch 24/7
   // Set the offset for transitions like `flyTo` and `easeTo`
   useEffect((): void => {
-    const offset = mapUtils.prepMapOffset(isDesktop)
+    const deskBreakPoint = theme.breakpoints.values.md
+    const wideFella = width >= deskBreakPoint
+    const offset = utils.prepMapOffset(wideFella)
 
+    setIsDesktop(wideFella)
     setMapOffset(offset)
-  }, [isDesktop])
+  }, [width, height])
 
   // TODO: another file
   useEffect((): void => {
-    if (!mapRef.current || !mapLoaded) {
-      return
-    }
+    if (!mapRef.current || !mapLoaded) return
 
     const map: MbMap = mapRef.current.getMap()
     const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
-    // TODO: consider usefulness, otherwise remove
-    // const layer =  map.getLayer(name)
 
-    currentLayerNames.forEach((name) => {
-      const currentFilters = map.getFilter(name)
-
-      // Clear it first // TODO: rm if not necessary
-      map.setFilter(name, null)
-
-      let origFilter = []
-
-      // GROSS dude. Gotta be a better way to check?
-      if (currentFilters[0] === 'all') {
-        ;[, origFilter] = currentFilters
-      } else {
-        origFilter = currentFilters
-      }
-
-      if (langFeatIDs === null) {
-        map.setFilter(name, origFilter)
-      } else {
-        map.setFilter(name, [
-          'all',
-          origFilter,
-          // CRED: https://gis.stackexchange.com/a/287629/5824
-          ['in', ['get', 'ID'], ['literal', langFeatIDs]],
-        ])
-      }
-    })
+    utils.filterLayersByFeatIDs(map, currentLayerNames, langFeatIDs)
   }, [langFeatIDs])
 
+  // TODO: put in... legend?
   useEffect((): void => {
     initLegend(dispatch, state.activeLangSymbGroupId, symbLayers)
   }, [state.activeLangSymbGroupId])
@@ -116,35 +92,30 @@ export const Map: FC<MapTypes.MapComponent> = ({
   useEffect((): void => {
     if (mapRef.current) {
       const map: MbMap = mapRef.current.getMap()
-      mapUtils.addLangTypeIconsToMap(map, mapConfig.langTypeIconsConfig)
+      utils.addLangTypeIconsToMap(map, config.langTypeIconsConfig)
     }
   }, [baselayer]) // baselayer may be irrelevant if only using Light BG
 
   // Do selected feature stuff on sel feat change or map load
   useEffect((): void => {
     // Map not ready
-    if (!mapRef.current || !mapLoaded) {
-      return
-    }
+    if (!mapRef.current || !mapLoaded) return
 
     const map: MbMap = mapRef.current.getMap()
 
     // Deselect all features
     clearAllSelFeats(map)
 
-    if (!selFeatAttribs) {
-      return
-    }
+    if (!selFeatAttribs) return
 
     // NOTE: won't get this far on load even if feature is selected. The timing
     // and order of the whole process prevent that. Make feature appear selected
 
     const { ID, Latitude: latitude, Longitude: longitude } = selFeatAttribs
 
-    setPopupOpen(null)
     setSelFeatState(map, ID, true)
 
-    mapUtils.flyToCoords(
+    utils.flyToCoords(
       map,
       { latitude, longitude, zoom: 12 },
       mapOffset,
@@ -153,7 +124,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
   }, [selFeatAttribs, mapLoaded])
   /* eslint-enable react-hooks/exhaustive-deps */
 
-  // TODO: animate selected feature
+  // TODO: higher zIndex on selected feature
   function setSelFeatState(map: MbMap, id: number, selected: boolean) {
     map.setFeatureState(
       { sourceLayer, source: internalSrcID, id },
@@ -162,48 +133,25 @@ export const Map: FC<MapTypes.MapComponent> = ({
   }
 
   function onHover(event: MapTypes.MapEvent) {
-    mapUtils.handleHover(event, internalSrcID, setTooltipOpen)
+    utils.handleHover(event, internalSrcID, setTooltipOpen)
   }
 
   // Runs only once and kicks off the whole thinig
   function onLoad(mapLoadEvent: MapLoadEvent) {
     const { target: map } = mapLoadEvent
 
-    // Maintain viewport state sync if needed (e.g. after things like `flyTo`),
-    // otherwise the map shifts back to previous position after panning or
-    // zooming.
-    map.on('moveend', function onMoveEnd(zoomEndEvent) {
-      // No custom event data, regular move event
-      if (zoomEndEvent.forceViewportUpdate) {
-        setViewport({
-          ...viewport, // spreading just in case bearing or pitch are added
-          zoom: map.getZoom(),
-          latitude: map.getCenter().lat,
-          longitude: map.getCenter().lng,
-        })
-      }
-    })
-
-    map.on('zoomend', function onMoveEnd(zoomEndEvent) {
-      if (zoomEndEvent.selFeatAttribs && !map.isMoving()) {
-        setPopupOpen({
-          latitude: zoomEndEvent.selFeatAttribs.Latitude,
-          longitude: zoomEndEvent.selFeatAttribs.Longitude,
-          selFeatAttribs: zoomEndEvent.selFeatAttribs,
-        })
-      }
-    })
-
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const langSrcBounds = map.getSource('languages-src').bounds
-    map.fitBounds(langSrcBounds) // ensure all feats are visible
+
+    // Ensure all feats are visible. TODO: start from actual layer bounds
+    // somehow, then zoom is not needed.
+    map.fitBounds(langSrcBounds)
 
     const idFromUrl = getIDfromURLparams(window.location.search)
     const cacheOfIDs: number[] = []
     const uniqueRecords: LangRecordSchema[] = []
     const rawLangFeats = map.querySourceFeatures(internalSrcID, { sourceLayer })
-
     // Just the properties for table/results, don't need GeoJSON cruft. Also
     // need to make sure each ID is unique as there have been initial data
     // inconsistencies, and more importantly MB may have feature duplication if
@@ -226,56 +174,68 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
     // NOTE: could not get this into the same `useEffect` that handles when
     // selFeatAttribs or mapLoaded are changed with an MB error/crash.
-    if (!matchingRecord) {
-      const configKey = isDesktop ? 'desktop' : 'mobile'
-
-      mapUtils.flyToCoords(
-        map,
-        { ...mapConfig.postLoadMapView[configKey] },
-        mapOffset,
-        null
-      )
-    }
+    if (!matchingRecord) flyHome()
 
     // TODO: set paint property
     // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
 
-    dispatch({
-      type: 'INIT_LANG_LAYER_FEATURES',
-      payload: uniqueRecords,
-    })
-
-    dispatch({
-      type: 'SET_MAP_LOADED',
-      payload: true,
-    })
+    dispatch({ type: 'INIT_LANG_LAYER_FEATURES', payload: uniqueRecords })
+    dispatch({ type: 'SET_MAP_LOADED', payload: true })
 
     map.addControl(new AttributionControl({ compact: false }), 'bottom-right')
+
+    // Maintain viewport state sync if needed (e.g. after things like `flyTo`),
+    // otherwise the map shifts back to previous position after panning or
+    // zooming.
+    map.on('moveend', function onMoveEnd(zoomEndEvent) {
+      // No custom event data, regular move event
+      if (zoomEndEvent.forceViewportUpdate) {
+        setViewport({
+          ...viewport, // spreading just in case bearing or pitch are added
+          zoom: map.getZoom(),
+          latitude: map.getCenter().lat,
+          longitude: map.getCenter().lng,
+        })
+      }
+    })
+
+    // Close popup on the start of moving so no jank
+    map.on('movestart', function onMoveStart(zoomEndEvent) {
+      if (zoomEndEvent.selFeatAttribs) setPopupOpen(null)
+    })
+
+    map.on('zoomend', function onMoveEnd(zoomEndEvent) {
+      const { selFeatAttribs: attribs } = zoomEndEvent
+
+      if (attribs && !map.isMoving()) {
+        setPopupOpen({
+          latitude: attribs.Latitude,
+          longitude: attribs.Longitude,
+          selFeatAttribs: attribs,
+        })
+      }
+    })
   }
 
-  // TODO: chuck it into utils
   function onNativeClick(event: MapTypes.MapEvent): void {
     // Map not ready
-    if (!mapRef || !mapRef.current || !mapLoaded) {
-      return
-    }
+    if (!mapRef || !mapRef.current || !mapLoaded) return
 
     // No language features under click, clear the route. Note that this keeps
     // the `id` in the URL if there is already a selected feature, which feels a
     // little weird, but it's much better than relying on a dummy route like
     // `id=-1`. Still not the greatest so keep an eye out for a better solution.
-    if (!mapUtils.areLangFeatsUnderCursor(event.features, internalSrcID)) {
+    if (!utils.areLangFeatsUnderCursor(event.features, internalSrcID)) {
       dispatch({
         type: 'SET_SEL_FEAT_ATTRIBS',
         payload: null,
       })
 
-      // TODO: decide /how/whether to force the panel open if nothing is found
       return
     }
 
     setTooltipOpen(null) // super annoying if tooltip stays intact after a click
-    setPopupOpen(null)
+    setPopupOpen(null) // closed by movestate anyway, but smoother this way
 
     // TODO: use `initialEntries` in <MemoryRouter> to test routing
     history.push(`/details?id=${event.features[0].properties.ID}`)
@@ -287,53 +247,56 @@ export const Map: FC<MapTypes.MapComponent> = ({
     map.removeFeatureState({ source: internalSrcID, sourceLayer })
   }
 
+  function flyHome() {
+    if (!mapRef.current) return
+
+    const map: MbMap = mapRef.current.getMap()
+    const { latitude, longitude, zoom } = utils.getWebMercSettings(
+      width,
+      height,
+      isDesktop,
+      mapOffset,
+      config.initialBounds
+    )
+
+    // Don't really need the `flyToCoords` util for this first one
+    map.flyTo(
+      {
+        essential: true, // not THAT essential if you... don't like cool things
+        center: { lng: longitude, lat: latitude },
+        zoom,
+      },
+      { selFeatAttribs, forceViewportUpdate: true }
+    )
+  }
+
   // TODO: into utils if it doesn't require passing 1000 args
   function onMapCtrlClick(actionID: MapTypes.MapControlAction) {
-    if (!mapRef.current) {
-      return
-    }
+    if (!mapRef.current) return
 
     if (actionID === 'info') {
       dispatch({
         type: 'TOGGLE_OFF_CANVAS_NAV',
       })
+    } else if (actionID === 'home') {
+      flyHome()
+    } else {
+      // Assumes `in` or `out` from here down...
 
-      return
-    }
+      const map: MbMap = mapRef.current.getMap()
+      const { zoom } = viewport
 
-    const map: MbMap = mapRef.current.getMap()
-
-    setPopupOpen(null) // otherwise janky lag while map is moving
-
-    if (actionID === 'home') {
-      const configKey = isDesktop ? 'desktop' : 'mobile'
-
-      mapUtils.flyToCoords(
+      utils.flyToCoords(
         map,
         {
-          ...mapConfig.postLoadMapView[configKey],
+          ...viewport,
+          zoom: actionID === 'in' ? zoom + 1 : zoom - 1,
           disregardCurrZoom: true,
         },
-        mapOffset,
+        [0, 0],
         selFeatAttribs
       )
-
-      return // assumes `in` or `out` from here down
     }
-
-    const { zoom, latitude, longitude } = viewport
-
-    mapUtils.flyToCoords(
-      map,
-      {
-        latitude,
-        longitude,
-        zoom: actionID === 'in' ? zoom + 1 : zoom - 1,
-        disregardCurrZoom: true,
-      },
-      [0, 0],
-      selFeatAttribs
-    )
   }
 
   return (
@@ -349,8 +312,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
         width="100%"
         attributionControl={false}
         mapOptions={{ logoPosition: 'bottom-right' }}
-        mapboxApiAccessToken={mapConfig.MAPBOX_TOKEN}
-        mapStyle={mapConfig.mbStyleTileConfig.customStyles.light}
+        mapboxApiAccessToken={config.MAPBOX_TOKEN}
+        mapStyle={config.mbStyleTileConfig.customStyles.light}
         onViewportChange={setViewport}
         onClick={onNativeClick} // TODO: mv into utils
         onHover={onHover}
@@ -385,6 +348,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
         )}
       </MapGL>
       <MapCtrlBtns
+        mapRef={mapRef}
+        mapOffset={mapOffset}
         isDesktop={isDesktop}
         onMapCtrlClick={(actionID: MapTypes.MapControlAction) => {
           onMapCtrlClick(actionID)

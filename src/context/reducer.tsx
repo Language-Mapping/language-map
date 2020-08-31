@@ -21,6 +21,11 @@ export const reducer = (
         ...state,
         langSymbGroups: action.payload,
       }
+    case 'INIT_LEGEND_SYMBOLS':
+      return {
+        ...state,
+        legendSymbols: action.payload,
+      }
     case 'SET_BASELAYER':
       return {
         ...state,
@@ -74,15 +79,6 @@ export const reducer = (
       return {
         ...state,
         offCanvasNavOpen: !state.offCanvasNavOpen,
-      }
-    // TODO: wire up
-    case 'TOGGLE_LAYER_VISIBILITY':
-      return {
-        ...state,
-        layerVisibility: {
-          ...state.layerVisibility,
-          [action.payload]: !state.layerVisibility[action.payload],
-        },
       }
     default:
       return state

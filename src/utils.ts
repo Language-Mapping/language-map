@@ -71,6 +71,22 @@ export const getMbStyleDocument = async (
 
   setLabelLayers(labelsLayers)
   setSymbLayers(notTheBgLayerOrLabels)
+
+  const legend = notTheBgLayerOrLabels.reduce((all, thisOne) => {
+    return {
+      ...all,
+      [thisOne.id as string]: {
+        paint: thisOne.paint,
+        type: thisOne.type,
+        layout: thisOne.layout,
+      },
+    }
+  }, {})
+
+  dispatch({
+    type: 'INIT_LEGEND_SYMBOLS',
+    payload: legend,
+  })
 }
 
 export const findFeatureByID = (

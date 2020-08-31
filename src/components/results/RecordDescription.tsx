@@ -9,11 +9,16 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: theme.spacing(2),
     },
     firstLetter: {
+      display: 'inline-block',
       fontSize: theme.typography.h1.fontSize,
       fontFamily: theme.typography.h1.fontFamily,
       fontWeight: theme.typography.h1.fontWeight,
       lineHeight: 0,
       marginRight: 4,
+      marginTop: '1rem',
+    },
+    body: {
+      fontSize: '0.85em',
     },
     closeBtn: {
       position: 'absolute',
@@ -33,10 +38,12 @@ export const RecordDescription: FC<{ text: string }> = (props) => {
       {text && (
         <>
           <span className={classes.firstLetter}>{text[0]}</span>
-          {text.slice(1)}
+          <span className={classes.body}>{text.slice(1)}</span>
         </>
       )}
-      {!text && 'No description available'}
+      {!text && (
+        <div style={{ textAlign: 'center' }}>No description available</div>
+      )}
     </Typography>
   )
 }

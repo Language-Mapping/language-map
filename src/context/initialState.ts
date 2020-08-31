@@ -11,12 +11,8 @@ const initialMapStates = {
   langFeaturesCached: [],
   langLabels: [],
   legendItems: [],
+  legendSymbols: {},
   langSymbGroups: {},
-  layerVisibility: {
-    languages: true,
-    counties: false,
-    neighborhoods: false,
-  },
 }
 
 export const initialState = {

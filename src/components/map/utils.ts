@@ -1,4 +1,5 @@
 import { Map } from 'mapbox-gl'
+import { WebMercatorViewport } from 'react-map-gl'
 
 import { PAGE_HEADER_ID } from 'components/nav/config'
 import * as MapTypes from './types'
@@ -60,8 +61,7 @@ export const flyToCoords: MapTypes.FlyToCoords = (
 
   map.flyTo(
     {
-      // Animation considered essential with respect to prefers-reduced-motion
-      essential: true,
+      essential: true, // not THAT essential if you... don't like cool things
       center: { lng, lat },
       offset,
       zoom: zoomToUse,
@@ -118,5 +118,60 @@ export const addLangTypeIconsToMap = (
     const img = new Image(48, 48) // src files are 24x24 viewbox
     img.onload = () => map.addImage(id, img)
     img.src = icon
+  })
+}
+
+export const filterLayersByFeatIDs = (
+  map: Map,
+  layerNames: string[],
+  langFeatIDs: null | number[]
+): void => {
+  layerNames.forEach((name) => {
+    const currentFilters = map.getFilter(name)
+
+    // Clear it first // TODO: rm if not necessary
+    map.setFilter(name, null)
+
+    let origFilter = []
+
+    // TODO: consider usefulness, otherwise remove:
+    // const layer =  map.getLayer(name)
+    // GROSS dude. Gotta be a better way to check?
+    if (currentFilters[0] === 'all') {
+      ;[, origFilter] = currentFilters
+    } else {
+      origFilter = currentFilters
+    }
+
+    if (langFeatIDs === null) {
+      map.setFilter(name, origFilter)
+    } else {
+      map.setFilter(name, [
+        'all',
+        origFilter,
+        // CRED: https://gis.stackexchange.com/a/287629/5824
+        ['in', ['get', 'ID'], ['literal', langFeatIDs]],
+      ])
+    }
+  })
+}
+
+export const getWebMercSettings = (
+  width: number,
+  height: number,
+  isDesktop: boolean,
+  mapOffset: [number, number],
+  bounds: MapTypes.BoundsArray
+): { latitude: number; longitude: number; zoom: number } => {
+  return new WebMercatorViewport({
+    width,
+    height,
+  }).fitBounds(bounds, {
+    padding: {
+      bottom: isDesktop ? mapOffset[1] : height / 2,
+      left: isDesktop ? mapOffset[0] : 0,
+      right: 0,
+      top: 0,
+    },
   })
 }

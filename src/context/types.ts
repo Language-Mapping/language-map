@@ -3,15 +3,24 @@
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
 import { Color } from '@material-ui/lab/Alert'
 
-import { MetadataGroup, Baselayer } from 'components/map/types'
+import {
+  MetadataGroup,
+  Baselayer,
+  LayerPropsNonBGlayer,
+} from 'components/map/types'
 import { LegendSwatch } from 'components/legend/types'
 
 export type PanelState = 'default' | 'maximized' | 'minimized'
+
+export type LegendSymbols = {
+  [key: string]: Partial<LayerPropsNonBGlayer>
+}
 
 export type StoreAction =
   | { type: 'INIT_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | { type: 'INIT_LANG_LAYER_LABEL_OPTIONS'; payload: string[] }
   | { type: 'INIT_LANG_LAYER_SYMB_OPTIONS'; payload: MetadataGroup }
+  | { type: 'INIT_LEGEND_SYMBOLS'; payload: LegendSymbols }
   | { type: 'SET_BASELAYER'; payload: Baselayer }
   | { type: 'SET_LANG_FEAT_IDS'; payload: number[] | null }
   | { type: 'SET_LANG_LAYER_LABELS'; payload: string }
@@ -20,7 +29,6 @@ export type StoreAction =
   | { type: 'SET_MAP_LOADED'; payload: boolean }
   | { type: 'SET_PANEL_STATE'; payload: PanelState }
   | { type: 'SET_SEL_FEAT_ATTRIBS'; payload: null | LangRecordSchema }
-  | { type: 'TOGGLE_LAYER_VISIBILITY'; payload: keyof LayerVisibility }
   | { type: 'TOGGLE_UI_ALERT'; payload: AlertPayload }
   | { type: 'TOGGLE_OFF_CANVAS_NAV' }
 
@@ -33,8 +41,8 @@ export type InitialState = {
   langFeaturesCached: LangRecordSchema[]
   langLabels: string[]
   legendItems: LegendSwatch[]
+  legendSymbols: LegendSymbols
   langSymbGroups: MetadataGroup
-  layerVisibility: LayerVisibility // TODO: rm everywhere if not using
   mapLoaded: boolean
   offCanvasNavOpen: boolean
   panelState: PanelState
@@ -56,14 +64,6 @@ export type AlertPayload = {
 //    KEEP TRACK OF WHAT IS CUSTOM AND WHAT IS GENERIC WHENEVER POSSIBLE.
 //
 // ========================================================================== //
-
-// TODO: use `keyof` to restrict possible values appropriately in other
-// components if needed. Remove this type if unused.
-export type LayerVisibility = {
-  languages: boolean
-  neighborhoods: boolean
-  counties: boolean
-}
 
 export type WorldRegion =
   | 'Australia and New Zealand' // maybe issues w/ampersand

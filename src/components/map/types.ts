@@ -1,4 +1,4 @@
-import { PointerEvent, LayerProps } from 'react-map-gl'
+import { PointerEvent, InteractiveMap, LayerProps } from 'react-map-gl'
 import {
   CircleLayout,
   CirclePaint,
@@ -101,7 +101,7 @@ export type MapComponent = {
 
 export type LangIconConfig = { icon: string; id: string }
 
-export type MapControlAction = 'home' | 'in' | 'out' | 'info'
+export type MapControlAction = 'home' | 'in' | 'out' | 'info' | 'loc-search'
 
 export type FlyToCoords = (
   map: Map,
@@ -117,3 +117,26 @@ export type UseStyleProps = {
   panelOpen: boolean
   screenHeight: number
 }
+
+export type GeocodeResult = {
+  result: {
+    center: [number, number]
+    bbox?: [number, number, number, number]
+  }
+}
+
+export type MapCtrlBtnsProps = {
+  isDesktop: boolean
+  mapOffset: [number, number]
+  mapRef: React.RefObject<InteractiveMap>
+  onMapCtrlClick: (actionID: MapControlAction) => void
+}
+
+export type CtrlBtnConfig = {
+  id: MapControlAction
+  icon: React.ReactNode
+  name: string
+  customFn?: boolean
+}
+
+export type BoundsArray = [[number, number], [number, number]]

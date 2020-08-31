@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.primary.main,
       display: 'flex',
       fontSize: '1em',
-      fontWeight: 'bold',
       lineHeight: 1,
       marginTop: 4,
       '& svg': {
@@ -37,8 +36,8 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     detailLabel: {
-      color: theme.palette.text.secondary,
       fontFamily: theme.typography.h1.fontFamily,
+      color: theme.palette.text.primary,
       marginRight: 4,
     },
     detailValue: {

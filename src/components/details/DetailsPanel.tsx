@@ -1,24 +1,26 @@
 import React, { FC, useContext } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography, Divider } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 
-import { RouteLocation } from 'components/map/types'
-import { GlobalContext, LoadingIndicator } from 'components'
+import { GlobalContext } from 'components'
+import { LegendSwatch } from 'components/legend'
+import { RecordDescription } from 'components/results'
 import { isURL, correctDropboxURL, prettyTruncateList } from '../../utils'
+// TODO: cell strength bars for Size
+// import { COMM_SIZE_COL_MAP } from 'components/results/config'
 
 type EndoImageComponent = {
   url: string
   alt: string
 }
 
-const DATA_TABLE_PATHNAME: RouteLocation = '/table'
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     intro: {
-      paddingBottom: theme.spacing(1),
+      padding: '1em 0',
       textAlign: 'center',
+      borderBottom: `solid 1px ${theme.palette.divider}`,
     },
     // Gross but it makes `Anashinaabemowin` fit
     detailsPanelHeading: {
@@ -37,7 +39,12 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     description: {
       fontSize: theme.typography.caption.fontSize,
-      marginTop: theme.spacing(1),
+      padding: '0 0.25rem',
+      marginBottom: '2.4rem',
+    },
+    prettyFlex: {
+      display: 'flex',
+      justifyContent: 'center',
     },
   })
 )
@@ -51,17 +58,37 @@ const EndoImageWrap: FC<EndoImageComponent> = (props) => {
   return <img src={url} alt={alt} className={classes.endoImage} />
 }
 
+const RandomLink: FC = () => {
+  const { state } = useContext(GlobalContext)
+  const { langFeatIDs, langFeaturesCached } = state
+
+  if (langFeatIDs && !langFeatIDs.length) {
+    return null
+  }
+
+  let randoIndex = 1
+  let id = 1
+
+  if (langFeatIDs === null) {
+    randoIndex = Math.floor(Math.random() * langFeaturesCached?.length) + 1
+    id = langFeaturesCached[randoIndex].ID
+  } else {
+    randoIndex = Math.floor(Math.random() * langFeatIDs?.length) + 1
+    id = langFeatIDs[randoIndex]
+  }
+
+  return (
+    <>
+      , or <RouterLink to={`/details?id=${id}`}>try one at random</RouterLink>
+    </>
+  )
+}
+
 const NoFeatSel: FC = () => {
   return (
     <small>
-      Click a language community in the map or the{' '}
-      <RouterLink
-        to={DATA_TABLE_PATHNAME}
-        title="Data table of language communities"
-      >
-        data table
-      </RouterLink>
-      .
+      No community selected. Click a community in the map, in the data table
+      <RandomLink />.
     </small>
   )
 }
@@ -72,21 +99,28 @@ export const DetailsPanel: FC = () => {
 
   // Shaky check to see if features have loaded and are stored globally
   // TODO: use MB's loading events to set this instead
-  if (!state.langFeaturesCached.length) {
-    // TODO: skeletons
-    return <LoadingIndicator />
-  }
+  if (!state.langFeaturesCached.length) return null
 
   const { selFeatAttribs } = state
 
   // No sel feat details
-  if (!selFeatAttribs) {
-    return <NoFeatSel />
-  }
+  if (!selFeatAttribs) return <NoFeatSel />
 
-  const { Endonym, Language, Neighborhoods, Description } = selFeatAttribs
+  const {
+    Endonym,
+    Language,
+    Neighborhoods,
+    Description,
+    // Size, // TODO: cell strength bars for Size
+    Town,
+    'World Region': WorldRegion,
+  } = selFeatAttribs
   const { detailsPanelHeading, intro, description, neighborhoods } = classes
   const isImage = isURL(Endonym)
+  const regionSwatchColor =
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    state.legendSymbols[WorldRegion].paint['circle-color']
 
   // TODO: deal with `id` present in URL but no match found
   // const parsed = queryString.parse(window.location.search)
@@ -94,7 +128,6 @@ export const DetailsPanel: FC = () => {
   //   (feature) => feature.ID === parsed.id
   // )
 
-  // TODO: something respectable for styles, aka MUI-something
   return (
     <>
       <div className={intro}>
@@ -108,15 +141,22 @@ export const DetailsPanel: FC = () => {
             {Language}
           </Typography>
         )}
-        {Neighborhoods && (
-          <Typography className={neighborhoods}>
-            {prettyTruncateList(Neighborhoods)}
-          </Typography>
-        )}
+        {/* TODO: make "+4 more clickable to toggle popover" */}
+        <Typography className={neighborhoods}>
+          {Neighborhoods ? prettyTruncateList(Neighborhoods) : Town}
+        </Typography>
+        <div className={classes.prettyFlex}>
+          <LegendSwatch
+            legendLabel={WorldRegion}
+            component="div"
+            backgroundColor={regionSwatchColor}
+            type="circle"
+          />
+          {/* TODO: cell strength bars for Size */}
+        </div>
       </div>
-      <Divider />
       <Typography variant="body2" className={description}>
-        {Description}
+        <RecordDescription text={Description} />
       </Typography>
     </>
   )

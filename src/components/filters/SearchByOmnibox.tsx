@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
       // Group headings
       '& .MuiListSubheader-root': {
         borderBottom: `1px solid ${theme.palette.text.hint}`,
+        color: theme.palette.text.primary,
         fontFamily: theme.typography.h1.fontFamily,
         fontSize: '1.1rem',
         paddingLeft: 12,
@@ -37,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     // The <li> items. Not sure why it works via classes and `groupUl` doesn't.
     option: {
-      borderBottom: `solid 1px ${theme.palette.text.hint}`,
+      borderBottom: `solid 1px ${theme.palette.divider}`,
       display: 'flex',
       paddingLeft: 12,
     },
