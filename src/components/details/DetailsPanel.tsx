@@ -7,6 +7,7 @@ import { GlobalContext } from 'components'
 import { LegendSwatch } from 'components/legend'
 import { RecordDescription } from 'components/results'
 import { isURL, correctDropboxURL, prettyTruncateList } from '../../utils'
+import { Media } from './Media'
 // TODO: cell strength bars for Size
 // import { COMM_SIZE_COL_MAP } from 'components/results/config'
 
@@ -113,6 +114,9 @@ export const DetailsPanel: FC = () => {
     Description,
     // Size, // TODO: cell strength bars for Size
     Town,
+    Audio: audio,
+    Video: video,
+    'Story Map': story,
     'World Region': WorldRegion,
   } = selFeatAttribs
   const { detailsPanelHeading, intro, description, neighborhoods } = classes
@@ -154,6 +158,7 @@ export const DetailsPanel: FC = () => {
           />
           {/* TODO: cell strength bars for Size */}
         </div>
+        <Media {...{ audio, video, story }} />
       </div>
       <Typography variant="body2" className={description}>
         <RecordDescription text={Description} />

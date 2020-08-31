@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+
 import { Dialog, DialogContent, DialogProps } from '@material-ui/core'
 import { DialogCloseBtn } from 'components'
 
