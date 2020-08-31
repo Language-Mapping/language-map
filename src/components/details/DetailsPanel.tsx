@@ -79,8 +79,7 @@ const RandomLink: FC = () => {
 
   return (
     <>
-      , or{' '}
-      <RouterLink to={`/details?id=${id}`}>try a random community</RouterLink>
+      , or <RouterLink to={`/details?id=${id}`}>try one at random</RouterLink>
     </>
   )
 }
@@ -88,7 +87,7 @@ const RandomLink: FC = () => {
 const NoFeatSel: FC = () => {
   return (
     <small>
-      No community selected. Click a point in the map or a row in the data table
+      No community selected. Click a community in the map, in the data table
       <RandomLink />.
     </small>
   )
@@ -142,6 +141,7 @@ export const DetailsPanel: FC = () => {
             {Language}
           </Typography>
         )}
+        {/* TODO: make "+4 more clickable to toggle popover" */}
         <Typography className={neighborhoods}>
           {Neighborhoods ? prettyTruncateList(Neighborhoods) : Town}
         </Typography>

@@ -31,9 +31,7 @@ const LocationSearchContent: FC = (props) => {
       <Typography className={classes.popoverContentText}>
         <small>
           Enter an address, municipality, neighborhood, postal code, landmark,
-          or other point of interest. Note that this project's focus is on the
-          New York City metro area and surrounding locations, so no communities
-          will be found outside that extent.
+          or other point of interest within the New York City metro area.
         </small>
       </Typography>
       {children}
