@@ -1,5 +1,6 @@
 // TODO: rm if only using local, otherwise restore when ready
 // const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
+import { BoundsArray } from './types'
 
 import iconTree from './icons/tree.svg'
 import iconBook from './icons/book.svg'
@@ -50,7 +51,7 @@ export const initialMapState = {
 export const initialBounds = [
   [-74.19564, 40.574533],
   [-73.767185, 40.892251],
-] as [[number, number], [number, number]]
+] as BoundsArray
 
 export const langTypeIconsConfig = [
   { icon: iconTree, id: '_tree' },

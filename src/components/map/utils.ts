@@ -3,7 +3,6 @@ import { WebMercatorViewport } from 'react-map-gl'
 
 import { PAGE_HEADER_ID } from 'components/nav/config'
 import * as MapTypes from './types'
-import { initialBounds } from './config'
 import { isURL } from '../../utils'
 
 // One of the problems of using panels which overlap the map is how to deal with
@@ -35,12 +34,7 @@ export const prepMapOffset = (
   return [(sidePanelWidth + sidePanelGutter) / 2, topBarHeight / 2]
 }
 
-export const flyToCoords: MapTypes.FlyToCoords = (
-  map,
-  settings,
-  offset,
-  selFeatAttribs
-) => {
+export const flyToCoords: MapTypes.FlyToCoords = (map, settings, offset) => {
   const {
     zoom: targetZoom,
     latitude: lat,
@@ -49,9 +43,8 @@ export const flyToCoords: MapTypes.FlyToCoords = (
   } = settings
   const currentZoom = map.getZoom()
   const customEventData = {
-    forceViewportUpdate: true, // to keep state in sync
-    selFeatAttribs, // popup data
     disregardCurrZoom,
+    forceViewportUpdate: true, // to keep state in sync
   }
   let zoomToUse = targetZoom
 
@@ -62,6 +55,7 @@ export const flyToCoords: MapTypes.FlyToCoords = (
 
   map.flyTo(
     {
+      essential: true, // not THAT essential if you... don't like cool things
       center: { lng, lat },
       offset,
       zoom: zoomToUse,
@@ -160,12 +154,13 @@ export const getWebMercSettings = (
   width: number,
   height: number,
   isDesktop: boolean,
-  mapOffset: [number, number]
+  mapOffset: [number, number],
+  bounds: MapTypes.BoundsArray
 ): { latitude: number; longitude: number; zoom: number } => {
   return new WebMercatorViewport({
     width,
     height,
-  }).fitBounds(initialBounds, {
+  }).fitBounds(bounds, {
     padding: {
       bottom: isDesktop ? mapOffset[1] : height / 2,
       left: isDesktop ? mapOffset[0] : 0,

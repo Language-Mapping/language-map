@@ -116,16 +116,11 @@ export const Map: FC<MapTypes.MapComponent> = ({
     setPopupOpen(null)
     setSelFeatState(map, ID, true)
 
-    utils.flyToCoords(
-      map,
-      { latitude, longitude, zoom: 12 },
-      mapOffset,
-      selFeatAttribs
-    )
+    utils.flyToCoords(map, { latitude, longitude, zoom: 12 }, mapOffset)
   }, [selFeatAttribs, mapLoaded])
   /* eslint-enable react-hooks/exhaustive-deps */
 
-  // TODO: animate selected feature
+  // TODO: higher zIndex on selected feature
   function setSelFeatState(map: MbMap, id: number, selected: boolean) {
     map.setFeatureState(
       { sourceLayer, source: internalSrcID, id },
@@ -157,7 +152,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
     })
 
     map.on('zoomend', function onMoveEnd(zoomEndEvent) {
-      if (zoomEndEvent.selFeatAttribs && !map.isMoving()) {
+      if (selFeatAttribs && !map.isMoving()) {
         setPopupOpen({
           latitude: zoomEndEvent.selFeatAttribs.Latitude,
           longitude: zoomEndEvent.selFeatAttribs.Longitude,
@@ -249,12 +244,14 @@ export const Map: FC<MapTypes.MapComponent> = ({
       width,
       height,
       isDesktop,
-      mapOffset
+      mapOffset,
+      config.initialBounds
     )
 
     // Don't really need the `flyToCoords` util for this first one
     map.flyTo(
       {
+        essential: true, // not THAT essential if you... don't like cool things
         center: { lng: longitude, lat: latitude },
         zoom,
       },
@@ -284,18 +281,16 @@ export const Map: FC<MapTypes.MapComponent> = ({
       return // assumes `in` or `out` from here down
     }
 
-    const { zoom, latitude, longitude } = viewport
+    const { zoom } = viewport
 
     utils.flyToCoords(
       map,
       {
-        latitude,
-        longitude,
+        ...viewport,
         zoom: actionID === 'in' ? zoom + 1 : zoom - 1,
         disregardCurrZoom: true,
       },
-      [0, 0],
-      selFeatAttribs
+      [0, 0]
     )
   }
 

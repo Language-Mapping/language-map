@@ -1,6 +1,5 @@
 import React, { FC } from 'react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { Typography, Box } from '@material-ui/core'
 import {
   SpeedDial,
   SpeedDialIcon,
@@ -40,24 +39,6 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
-    popoverContent: {
-      padding: '1em',
-      width: 300,
-    },
-    popoverContentHeading: {
-      marginTop: '.5rem',
-    },
-    popoverContentText: {
-      marginBottom: '.75em',
-      fontSize: '0.8em',
-    },
-    layersMenuPaper: {
-      overflow: 'visible',
-    },
-    locationBtnWrap: {
-      display: 'flex',
-      justifyContent: 'center',
-    },
   })
 )
 
@@ -73,28 +54,6 @@ const ctrlBtnsConfig = [
   },
   { id: 'info', icon: <FiInfo />, name: 'About & Info' },
 ] as CtrlBtnConfig[]
-
-export const LocationSearchContent: FC = (props) => {
-  const { children } = props
-  const classes = useStyles()
-
-  return (
-    <Box className={classes.popoverContent}>
-      <Typography variant="h5" component="h3">
-        Search by location
-      </Typography>
-      <Typography className={classes.popoverContentText}>
-        <small>
-          Enter an address, municipality, neighborhood, postal code, landmark,
-          or other point of interest. Note that this project's focus is on the
-          New York City metro area and surrounding locations, so no communities
-          will be found outside that extent.
-        </small>
-      </Typography>
-      {children}
-    </Box>
-  )
-}
 
 export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
   const { isDesktop, onMapCtrlClick, mapRef, mapOffset } = props
@@ -121,7 +80,9 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
 
   return (
     <>
-      <GeocoderPopout {...{ anchorEl, setAnchorEl, mapOffset, mapRef }} />
+      <GeocoderPopout
+        {...{ anchorEl, setAnchorEl, mapOffset, mapRef, isDesktop }}
+      />
       <SpeedDial
         ariaLabel="Map control buttons"
         className={classes.mapCtrlsRoot}

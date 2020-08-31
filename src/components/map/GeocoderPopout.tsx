@@ -1,13 +1,15 @@
 import React, { FC } from 'react'
+import { Map } from 'mapbox-gl'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Popover, Box } from '@material-ui/core'
 import Geocoder from 'react-map-gl-geocoder'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
-import { flyToCoords } from './utils'
+import { flyToCoords, getWebMercSettings } from './utils'
 import { MapCtrlBtnsProps, GeocodeResult } from './types'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
+import { useWindowResize } from '../../utils'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,32 +41,55 @@ const LocationSearchContent: FC = (props) => {
   )
 }
 
-type GeocoderProps = Pick<MapCtrlBtnsProps, 'mapRef' | 'mapOffset'> & {
+type GeocoderProps = Omit<MapCtrlBtnsProps, 'onMapCtrlClick'> & {
   anchorEl: null | HTMLElement
   setAnchorEl: React.Dispatch<null | HTMLElement>
 }
 
 export const GeocoderPopout: FC<GeocoderProps> = (props) => {
-  const { anchorEl, setAnchorEl, mapOffset, mapRef } = props
+  const { anchorEl, setAnchorEl, mapOffset, mapRef, isDesktop } = props
   const classes = useStyles()
   const layersMenuOpen = Boolean(anchorEl)
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
+  const { width, height } = useWindowResize()
 
   const handleLayersMenuClose = () => setAnchorEl(null)
 
   const handleGeocodeResult = (geocodeResult: GeocodeResult) => {
     handleLayersMenuClose()
 
-    if (mapRef.current) {
+    if (!mapRef.current) return
+
+    const { center, bbox } = geocodeResult.result
+
+    if (bbox) {
+      const { latitude, longitude, zoom } = getWebMercSettings(
+        width,
+        height,
+        isDesktop,
+        mapOffset,
+        [
+          [bbox[0], bbox[1]],
+          [bbox[2], bbox[3]],
+        ]
+      )
+
+      const map: Map = mapRef.current.getMap()
+
+      map.flyTo(
+        {
+          // Not THAT essential if you... don't like cool things
+          essential: true,
+          center: { lng: longitude, lat: latitude },
+          zoom,
+        },
+        { forceViewportUpdate: true }
+      )
+    } else {
       flyToCoords(
         mapRef.current.getMap(),
-        {
-          latitude: geocodeResult.result.center[1],
-          longitude: geocodeResult.result.center[0],
-          zoom: 15, // TODO: bounds
-        },
-        mapOffset,
-        null
+        { latitude: center[1], longitude: center[0], zoom: 15 },
+        mapOffset
       )
     }
   }

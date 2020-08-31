@@ -109,8 +109,7 @@ export type FlyToCoords = (
     zoom?: number | 10.25
     disregardCurrZoom?: boolean // e.g. when using map controls
   } & LongLat,
-  offset: [number, number],
-  selFeatAttribs: LangRecordSchema | null
+  offset: [number, number]
 ) => void
 
 export type UseStyleProps = {
@@ -119,7 +118,10 @@ export type UseStyleProps = {
 }
 
 export type GeocodeResult = {
-  result: { center: [number, number] }
+  result: {
+    center: [number, number]
+    bbox?: [number, number, number, number]
+  }
 }
 
 export type MapCtrlBtnsProps = {
@@ -135,3 +137,5 @@ export type CtrlBtnConfig = {
   name: string
   customFn?: boolean
 }
+
+export type BoundsArray = [[number, number], [number, number]]
