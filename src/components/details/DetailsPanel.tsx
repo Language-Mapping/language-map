@@ -132,7 +132,7 @@ const NoFeatSel: FC = () => {
   )
 }
 
-const CountriesWithFlags: FC<CountriesWithFlagsProps> = (props) => {
+export const CountriesWithFlags: FC<CountriesWithFlagsProps> = (props) => {
   const { countries: unParsed } = props
   const classes = useStyles()
   const countryCodesTyped = countryCodes as CountryCodes // TODO: defeat this
