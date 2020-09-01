@@ -22,6 +22,9 @@ const detailsRoutePath: RouteLocation = '/details'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      marginBottom: '1em',
+    },
     listbox: {
       '& ul': {
         margin: 0,

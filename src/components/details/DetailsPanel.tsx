@@ -20,12 +20,14 @@ type EndoImageComponent = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     intro: {
-      padding: '0.65rem 0',
+      padding: '0.65em 0 0.3em',
       textAlign: 'center',
       borderBottom: `solid 1px ${theme.palette.divider}`,
+      marginBottom: '1em',
     },
     // Gross but it makes `Anashinaabemowin` fit
     detailsPanelHeading: {
+      // TODO: cool if you can make this work: position: 'sticky', top: '3rem',
       fontSize: '2.4rem',
       [theme.breakpoints.up('sm')]: {
         fontSize: '3rem',
@@ -43,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
     description: {
       fontSize: theme.typography.caption.fontSize,
       padding: '0 0.25rem',
-      marginBottom: '2.4rem',
+      // marginBottom: '2.4rem', // bad for Explore on mobile!
     },
     region: {
       display: 'inline-flex',

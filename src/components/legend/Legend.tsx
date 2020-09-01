@@ -40,10 +40,6 @@ const useStyles = makeStyles((theme: Theme) =>
           'repeat(4, [col-start] minmax(100px, 1fr) [col-end])',
       },
     },
-    groupedLegendHeading: {
-      fontSize: '1.2rem',
-      marginBottom: '.2rem',
-    },
   })
 )
 
@@ -53,11 +49,7 @@ export const GroupedLegend: FC<GroupedLegendProps> = (props) => {
 
   return (
     <div>
-      <Typography
-        component="h4"
-        variant="h3"
-        className={classes.groupedLegendHeading}
-      >
+      <Typography component="h4" variant="h6">
         {groupName}
       </Typography>
       <ul className={classes.legendRoot}>

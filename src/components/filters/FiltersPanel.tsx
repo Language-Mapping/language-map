@@ -16,7 +16,7 @@ export const FiltersPanel: FC = () => {
 
   // TODO: something respectable for styles, aka MUI-something
   return (
-    <div style={{ marginTop: 12 }}>
+    <>
       <Typography variant="h5" component="h3">
         Search
       </Typography>
@@ -24,9 +24,12 @@ export const FiltersPanel: FC = () => {
         data={state.langFeatures}
         noFiltersSet={state.langFeatIDs !== null}
       />
+      <Typography variant="h5" component="h3">
+        Legend
+      </Typography>
       {state.mapLoaded && (
         <LegendPanel legendItems={state.legendItems} groupName={groupName} />
       )}
-    </div>
+    </>
   )
 }

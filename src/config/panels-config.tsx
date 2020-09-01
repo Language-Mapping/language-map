@@ -1,6 +1,6 @@
 import React from 'react'
-import { FaFilter } from 'react-icons/fa'
 import { TiDocumentText } from 'react-icons/ti'
+import { ImSearch } from 'react-icons/im'
 
 import { FiltersPanel } from 'components/filters'
 import { DetailsPanel } from 'components/details'
@@ -17,7 +17,7 @@ export const panelsConfig = [
   {
     heading: 'Explore',
     subheading: 'and query language data',
-    icon: <FaFilter />,
+    icon: <ImSearch />,
     component: <FiltersPanel />,
     path: '/',
   },
