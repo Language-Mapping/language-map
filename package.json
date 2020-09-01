@@ -16,6 +16,7 @@
     "@types/react-map-gl": "^5.2.7",
     "@types/react-router-dom": "^5.1.5",
     "@types/react-window": "^1.8.2",
+    "@types/webfontloader": "^1.6.32",
     "jest-canvas-mock": "^2.2.0",
     "match-sorter": "^4.2.0",
     "material-table": "^1.66.0",
@@ -29,7 +30,8 @@
     "react-scripts": "3.4.1",
     "react-share": "^4.2.1",
     "react-window": "^1.8.5",
-    "typescript": "3.9.5"
+    "typescript": "3.9.5",
+    "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^3.6.0",

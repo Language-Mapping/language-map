@@ -6,8 +6,19 @@ import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles'
 // ...and the default theme:
 // https://material-ui.com/customization/default-theme/#explore
 
-const HEADING_FONT =
-  "Buginese, Chiki, Coptic, Limbu, MeeteiMayek, Myanmar, NKo, Sinhala, Sylhoti, SyriacEstrangela, Thaana, Tifinagh, Vai, 'Gentium Basic', Times, serif"
+import { fontFamilies } from './fonts'
+
+const customEndoFonts = fontFamilies.join(',')
+const HEADING_FONT = `'Gentium Basic', ${customEndoFonts}, Times, serif`
+const bodyFonts = `
+  'Noto Sans',
+  ${customEndoFonts},
+  Roboto,
+  'Helvetica Neue',
+  Arial,
+  sans-serif
+`
+
 const headings = {
   h1: { fontFamily: HEADING_FONT },
   h2: { fontFamily: HEADING_FONT },
@@ -47,26 +58,7 @@ const customTheme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: [
-      'Buginese',
-      'Chiki',
-      'Coptic',
-      'Limbu',
-      'MeeteiMayek',
-      'Myanmar',
-      'NKo',
-      'Sinhala',
-      'Sylhoti',
-      'SyriacEstrangela',
-      'Thaana',
-      'Tifinagh',
-      'Vai',
-      'Noto Sans',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-    ].join(','),
+    fontFamily: bodyFonts,
     fontSize: 16,
     ...headings,
   },

@@ -4,67 +4,12 @@ a {
   text-decoration: none;
 }
 
+/*
+ Google-hosted CDN for early-access fonts (NKo only one not found):
+ https://fonts.google.com/earlyaccess
+*/
 @font-face {
-  font-family: 'Buginese';
-  src: url('/fonts/NotoSansBuginese-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Chiki';
-  src: url('/fonts/NotoSansOlChiki-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Coptic';
-  src: url('/fonts/NotoSansCoptic-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Limbu';
-  src: url('/fonts/NotoSansLimbu-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'MeeteiMayek';
-  src: url('/fonts/NotoSansMeeteiMayek-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Myanmar';
-  src: url('/fonts/NotoSansMyanmar-Regular.ttf') format('truetype');
-}
-
-@font-face {
+  font-display: swap;
   font-family: 'NKo';
   src: url('/fonts/NotoSansNKo-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Sinhala';
-  src: url('/fonts/NotoSansSinhala-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Sylhoti';
-  src: url('/fonts/NotoSansSylotiNagri-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'SyriacEstrangela';
-  src: url('/fonts/NotoSansSyriacEstrangela-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Thaana';
-  src: url('/fonts/NotoSansThaana-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Tifinagh';
-  src: url('/fonts/NotoSansTifinagh-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Vai';
-  src: url('/fonts/NotoSansVai-Regular.ttf') format('truetype');
 }
