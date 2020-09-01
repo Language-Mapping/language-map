@@ -3,7 +3,6 @@ import { WebMercatorViewport } from 'react-map-gl'
 
 import { PAGE_HEADER_ID } from 'components/nav/config'
 import * as MapTypes from './types'
-import { isURL } from '../../utils'
 
 // One of the problems of using panels which overlap the map is how to deal with
 // "centering", in quotes because it's more "perceived" centering. Offset is
@@ -88,15 +87,20 @@ export function handleHover(
     target.style.cursor = 'default'
     setTooltipOpen(null)
   } else {
-    const { Latitude, Longitude, Endonym, Language } = features[0].properties
-    const isImage = isURL(Endonym)
+    const {
+      Latitude,
+      Longitude,
+      Endonym,
+      Language,
+      'Font Image Alt': altImage,
+    } = features[0].properties
     target.style.cursor = 'pointer'
 
     setTooltipOpen({
       latitude: Latitude,
       longitude: Longitude,
-      heading: isImage ? Language : Endonym,
-      subHeading: isImage || Endonym === Language ? '' : Language,
+      heading: altImage ? Language : Endonym,
+      subHeading: altImage || Endonym === Language ? '' : Language,
     })
   }
 }

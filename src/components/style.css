@@ -3,3 +3,13 @@ a {
   color: hsl(207deg 90% 54%);
   text-decoration: none;
 }
+
+/*
+ Google-hosted CDN for early-access fonts (NKo only one not found):
+ https://fonts.google.com/earlyaccess
+*/
+@font-face {
+  font-display: swap;
+  font-family: 'NKo';
+  src: url('/fonts/NotoSansNKo-Regular.ttf') format('truetype');
+}

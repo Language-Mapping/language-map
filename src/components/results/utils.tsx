@@ -1,12 +1,9 @@
 import React from 'react'
 
-import { isURL } from '../../utils'
 import { LangRecordSchema } from '../../context/types'
 import countryCodes from './config.emojis.json'
-
 import { CountryCodes } from './types'
 import { CountryListItemWithFlag } from './CountryListItemWithFlag'
-
 import { EndoImageModal } from './EndoImageModal'
 
 const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
@@ -14,10 +11,6 @@ const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
 export function renderCountriesColumn(
   data: LangRecordSchema
 ): string | React.ReactNode {
-  if (!data.Countries) {
-    return ''
-  }
-
   const countryCodesTyped = countryCodes as CountryCodes // TODO: defeat this
   const countries = data.Countries.split(DEFAULT_DELIM)
 
@@ -47,11 +40,13 @@ export function renderCountriesColumn(
 export function renderEndoColumn(
   data: LangRecordSchema
 ): string | React.ReactNode {
-  if (!isURL(data.Endonym)) {
+  if (!data['Font Image Alt']) {
     return data.Endonym
   }
 
-  return <EndoImageModal url={data.Endonym} language={data.Language} />
+  return (
+    <EndoImageModal url={data['Font Image Alt']} language={data.Language} />
+  )
 }
 
 export function renderGlobalSpeakColumn(
@@ -102,7 +97,10 @@ export function renderWorldRegionColumn(
 // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
 // properly (blanks last, regardless of direction)
 // CRED: https://stackoverflow.com/a/29829361/1048518
-export function sortNeighbs(a: LangRecordSchema, b: LangRecordSchema) {
+export function sortNeighbs(
+  a: LangRecordSchema,
+  b: LangRecordSchema
+): 0 | 1 | -1 {
   if (a.Neighborhoods === b.Neighborhoods) {
     return 0
   }

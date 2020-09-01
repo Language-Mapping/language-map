@@ -71,6 +71,11 @@ export const icons = {
   ViewColumn: MdViewColumn,
 } as Icons
 
+// TODO: "IMLocation looks good if you need something to replace the asterisk
+// next to local items in the table. For Data Table & Filter, I’d probably use
+// that same three-bullet list you have next to Data. And for turning off the
+// filter, how about RIFilterOffFill?"
+
 // 25px : 200char = decent ratio
 export const columns = [
   {

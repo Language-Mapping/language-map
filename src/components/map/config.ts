@@ -9,16 +9,14 @@ import iconHome from './icons/home.svg'
 import iconMuseum from './icons/museum.svg'
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MB_TOKEN
+
+// If needed (e.g. Boundaries doesn't work out), Maya uploaded Neighborhoods:
+// ID: elalliance.2qroh9fu
+// Layer ID: neighborhoods-09jg0v
+
 export const mbStyleTileConfig = {
-  // NOTE: Draft does NOT seem to be reliable or real-time
-  // styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48/draft',
-  // TODO: rm if only using local, otherwise restore when ready
-  // styleUrl: 'elalliance/ckcmivm0r1o491iomlji26c48',
-  // TODO: ^^^ consider local URL, at least during dev ^^^
   symbStyleUrl: '/data/mb-styles.langs.json',
-  // layerId: 'languages-08ip3e',
-  layerId: 'jason-schema-no-disp-5eaf8w',
-  // tilesetId: 'elalliance.d0yv450e',
+  layerId: 'jason-schema-no-disp-5eaf8w', // TODO: a dev/deploy-only instance!
   tilesetId: 'elalliance.5okvgals',
   internalSrcID: 'languages-src', // arbitrary, set in code, never changes
   // So far this is the only known way to use the custom fonts
@@ -30,8 +28,6 @@ export const mbStyleTileConfig = {
 
 export const NYC_LAT_LONG = { latitude: 40.7128, longitude: -74.006 }
 
-// TODO: rm if only using local, otherwise restore when ready
-// export const symbStyleUrl = `${MB_STYLES_API_URL}/${mbStyleTileConfig.styleUrl}?access_token=${MAPBOX_TOKEN}`
 // Unsure why it needs the type here but not for feature coords..
 const mapCenter = [-73.96, 40.7128] as [number, number]
 
@@ -40,6 +36,9 @@ const mapCenter = [-73.96, 40.7128] as [number, number]
 // 1) initial state used
 // 2) zoom to extent of bounds to get all features into state
 // 3) zoom to initialBounds
+//
+// https://docs.mapbox.com/api/maps/#example-response-retrieve-tilejson-metadata
+// ^^^ can get the bounds first this way
 export const initialMapState = {
   latitude: mapCenter[1],
   longitude: mapCenter[0],

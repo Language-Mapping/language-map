@@ -6,7 +6,19 @@ import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles'
 // ...and the default theme:
 // https://material-ui.com/customization/default-theme/#explore
 
-const HEADING_FONT = "'Gentium Basic', Times, serif"
+import { fontFamilies } from './fonts'
+
+const customEndoFonts = fontFamilies.join(',')
+const HEADING_FONT = `'Gentium Basic', ${customEndoFonts}, Times, serif`
+const bodyFonts = `
+  'Noto Sans',
+  ${customEndoFonts},
+  Roboto,
+  'Helvetica Neue',
+  Arial,
+  sans-serif
+`
+
 const headings = {
   h1: { fontFamily: HEADING_FONT },
   h2: { fontFamily: HEADING_FONT },
@@ -46,13 +58,7 @@ const customTheme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: [
-      'Noto Sans',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-    ].join(','),
+    fontFamily: bodyFonts,
     fontSize: 16,
     ...headings,
   },

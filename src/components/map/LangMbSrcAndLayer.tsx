@@ -79,6 +79,9 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
         )
       })}
       {/* TODO: set "text-size" value based on zoom level */}
+      {/* TODO: make expressions less redundant, AND make it config-driven so
+      that the font stuff is not so tangled up in the MB config (totally
+      separate file may be best) */}
       {labelLayers.map((layer: LayerPropsNonBGlayer) => {
         const isActiveLabel = layer.id === activeLangLabelId
 

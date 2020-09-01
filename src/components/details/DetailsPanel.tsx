@@ -6,7 +6,9 @@ import { Typography } from '@material-ui/core'
 import { GlobalContext } from 'components'
 import { LegendSwatch } from 'components/legend'
 import { RecordDescription } from 'components/results'
-import { isURL, correctDropboxURL, prettyTruncateList } from '../../utils'
+import { correctDropboxURL } from '../../utils' // TODO: put back if needed
+import { Media } from './Media'
+
 // TODO: cell strength bars for Size
 // import { COMM_SIZE_COL_MAP } from 'components/results/config'
 
@@ -18,12 +20,14 @@ type EndoImageComponent = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     intro: {
-      padding: '1em 0',
+      padding: '0.65em 0 0.3em',
       textAlign: 'center',
       borderBottom: `solid 1px ${theme.palette.divider}`,
+      marginBottom: '1em',
     },
     // Gross but it makes `Anashinaabemowin` fit
     detailsPanelHeading: {
+      // TODO: cool if you can make this work: position: 'sticky', top: '3rem',
       fontSize: '2.4rem',
       [theme.breakpoints.up('sm')]: {
         fontSize: '3rem',
@@ -34,17 +38,43 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: '95%',
     },
     neighborhoods: {
-      fontSize: '0.8rem',
+      fontSize: '0.75em',
+      color: theme.palette.text.secondary,
       fontStyle: 'italic',
     },
     description: {
       fontSize: theme.typography.caption.fontSize,
       padding: '0 0.25rem',
-      marginBottom: '2.4rem',
+      // marginBottom: '2.4rem', // bad for Explore on mobile!
     },
-    prettyFlex: {
-      display: 'flex',
+    region: {
+      display: 'inline-flex',
       justifyContent: 'center',
+      padding: '0.25rem 4.5em',
+      paddingBottom: 0,
+      marginTop: '0.45em',
+      borderTop: `dashed 1px ${theme.palette.divider}`,
+    },
+    countriesList: {
+      padding: 0,
+      margin: 0,
+      listStyle: 'none',
+      // fontSize: theme.typography.caption.fontSize,
+      fontSize: '0.75em',
+      display: 'flex',
+      columnGap: '0.5em',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontStyle: 'italic',
+      color: theme.palette.text.secondary,
+      '& > * + *': {
+        marginLeft: '0.5em',
+      },
+      '& li': {
+        marginTop: 0,
+        fontSize: '0.85em',
+        color: theme.palette.text.secondary,
+      },
     },
   })
 )
@@ -113,10 +143,13 @@ export const DetailsPanel: FC = () => {
     Description,
     // Size, // TODO: cell strength bars for Size
     Town,
+    Countries,
+    Audio: audio,
+    Video: video,
+    'Font Image Alt': altImage,
     'World Region': WorldRegion,
   } = selFeatAttribs
   const { detailsPanelHeading, intro, description, neighborhoods } = classes
-  const isImage = isURL(Endonym)
   const regionSwatchColor =
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -131,7 +164,7 @@ export const DetailsPanel: FC = () => {
   return (
     <>
       <div className={intro}>
-        {(isImage && <EndoImageWrap url={Endonym} alt={Language} />) || (
+        {(altImage && <EndoImageWrap url={altImage} alt={Language} />) || (
           <Typography variant="h3" className={detailsPanelHeading}>
             {Endonym}
           </Typography>
@@ -143,9 +176,9 @@ export const DetailsPanel: FC = () => {
         )}
         {/* TODO: make "+4 more clickable to toggle popover" */}
         <Typography className={neighborhoods}>
-          {Neighborhoods ? prettyTruncateList(Neighborhoods) : Town}
+          {Neighborhoods || Town}
         </Typography>
-        <div className={classes.prettyFlex}>
+        <div className={classes.region}>
           <LegendSwatch
             legendLabel={WorldRegion}
             component="div"
@@ -154,6 +187,9 @@ export const DetailsPanel: FC = () => {
           />
           {/* TODO: cell strength bars for Size */}
         </div>
+        {/* <CountriesWithFlags countries={Countries} /> */}
+        <div className={classes.countriesList}>{Countries}</div>
+        <Media {...{ audio, video, language: Language }} />
       </div>
       <Typography variant="body2" className={description}>
         <RecordDescription text={Description} />
