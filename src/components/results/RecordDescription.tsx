@@ -33,6 +33,8 @@ export const RecordDescription: FC<{ text: string }> = (props) => {
   const classes = useStyles()
   const { text } = props
 
+  // TODO: regex to make sure first char is not spesh char, e.g. `"` like with
+  // the Pugliese description (sounds like a Tom Clancy novel)
   return (
     <Typography className={classes.recDescripRoot}>
       {text && (

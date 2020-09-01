@@ -119,6 +119,13 @@ const Audio: FC<MediaChildProps> = (props) => {
 const MediaListItem: FC<MediaListItemProps> = (props) => {
   const { label, icon, handleClick, disabled } = props
   const classes = useStyles()
+  let title = ''
+
+  if (label === 'Audio') {
+    title = 'Listen to audio for this community'
+  } else if (label === 'Video') {
+    title = 'Watch video for this community'
+  }
 
   return (
     <li>
@@ -127,6 +134,7 @@ const MediaListItem: FC<MediaListItemProps> = (props) => {
         color="primary"
         className={classes.mediaLink}
         disabled={disabled}
+        title={disabled ? '' : title}
         onClick={(e: React.MouseEvent) => handleClick()}
       >
         {icon}
@@ -146,11 +154,12 @@ export const Media: FC<MediaProps> = (props) => {
   const classes = useStyles()
   const [dialogContent, setDialogContent] = useState<MediaKey | null>(null)
 
+  // TODO: not full width dialog for audio
   return (
     <>
       <SimpleDialog
-        fullScreen
-        maxWidth="xl"
+        fullScreen={dialogContent !== 'audio'}
+        maxWidth={dialogContent === 'audio' ? 'md' : 'xl'}
         open={dialogContent !== null}
         className={classes.modalRoot}
         onClose={() => setDialogContent(null)}
