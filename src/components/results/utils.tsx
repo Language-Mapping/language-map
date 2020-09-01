@@ -1,12 +1,9 @@
 import React from 'react'
 
-import { isURL } from '../../utils'
 import { LangRecordSchema } from '../../context/types'
 import countryCodes from './config.emojis.json'
-
 import { CountryCodes } from './types'
 import { CountryListItemWithFlag } from './CountryListItemWithFlag'
-
 import { EndoImageModal } from './EndoImageModal'
 
 const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
@@ -43,11 +40,13 @@ export function renderCountriesColumn(
 export function renderEndoColumn(
   data: LangRecordSchema
 ): string | React.ReactNode {
-  if (!isURL(data.Endonym)) {
+  if (!data['Font Image Alt']) {
     return data.Endonym
   }
 
-  return <EndoImageModal url={data.Endonym} language={data.Language} />
+  return (
+    <EndoImageModal url={data['Font Image Alt']} language={data.Language} />
+  )
 }
 
 export function renderGlobalSpeakColumn(

@@ -13,21 +13,20 @@ export const useStyles = makeStyles((theme: Theme) =>
         // Search bar
         '& .MuiToolbar-root .MuiTextField-root': {
           flexShrink: 1,
-          paddingLeft: 0,
-          order: 4,
           minWidth: 200,
+          order: 4,
           width: '70%',
         },
         '& [class^=MTableToolbar-spacer]': {
           display: 'none',
         },
         '& .MuiToolbar-root:not(.MuiTablePagination-toolbar)': {
-          padding: theme.spacing(1),
+          borderTopLeftRadius: 4,
+          borderTopRightRadius: 4,
           flexWrap: 'wrap',
           justifyContent: 'space-around',
           minHeight: 90,
-          borderTopRightRadius: 4,
-          borderTopLeftRadius: 4,
+          padding: theme.spacing(1),
         },
         // Top bar title, free actions; footer pag.
         '& .MuiToolbar-root > :last-child': {
@@ -111,9 +110,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& table .MuiIconButton-root:not([disabled]), .MuiToolbar-root .MuiIconButton-root:not([disabled])': {
         color: theme.palette.primary.main,
       },
-      '& table .MuiIconButton-root, .MuiToolbar-root .MuiIconButton-root': {
-        paddingRight: 4,
-      },
       '& .MuiTableSortLabel-icon': {
         flexShrink: 0, // prevents tiny arrows on columns w/wrapped headings
       },
@@ -122,6 +118,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         marginRight: theme.spacing(4),
       },
       // Handy reference for potentially useful selectors
+      // '& table .MuiIconButton-root, .MuiToolbar-root .MuiIconButton-root':{},
       // '& .MuiTableCell-head:not(:first-of-type)': {}, // non-actions headings
       // '& .MuiToolbar-root > :first-child': {}, // top bar title?
       // '& .MuiTableCell-root:first-child': {}, // actions column cells

@@ -4,7 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
 import { MapPopup as MapPopupType } from './types'
-import { isURL, prettyTruncateList } from '../../utils'
+import { prettyTruncateList } from '../../utils'
 
 type MapPopupComponent = MapPopupType & {
   setPopupOpen: React.Dispatch<MapPopupType | null>
@@ -43,7 +43,12 @@ export const MapPopup: FC<MapPopupComponent> = (props) => {
   const classes = useStyles()
   const { longitude, latitude, setPopupOpen, selFeatAttribs } = props
   const { mapPopupRoot, heading, subHeading } = classes
-  const { Endonym, Language, Neighborhoods } = selFeatAttribs
+  const {
+    Endonym,
+    Language,
+    Neighborhoods,
+    'Font Image Alt': altImage,
+  } = selFeatAttribs
 
   // NOTE: the longest non-url language or endonym so far is:
   // Cameroonian Pidgin English
@@ -61,7 +66,7 @@ export const MapPopup: FC<MapPopupComponent> = (props) => {
       <header>
         <Typography variant="h6" component="h3" className={heading}>
           {/* For image-only endos, show language (not much room for pic) */}
-          {isURL(Endonym) ? Language : Endonym}
+          {altImage ? Language : Endonym}
         </Typography>
         {Neighborhoods && (
           <small className={subHeading}>

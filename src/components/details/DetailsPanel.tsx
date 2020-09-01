@@ -5,31 +5,24 @@ import { Typography } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
 import { LegendSwatch } from 'components/legend'
-import { RecordDescription, CountryListItemWithFlag } from 'components/results'
-import { CountryCodes } from 'components/results/types'
-import countryCodes from 'components/results/config.emojis.json'
-import { isURL, correctDropboxURL, prettyTruncateList } from '../../utils'
+import { RecordDescription } from 'components/results'
+import { correctDropboxURL } from '../../utils'
 import { Media } from './Media'
 
 // TODO: cell strength bars for Size
 // import { COMM_SIZE_COL_MAP } from 'components/results/config'
 
 // TODO: share it
-const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
 
 type EndoImageComponent = {
   url: string
   alt: string
 }
 
-type CountriesWithFlagsProps = {
-  countries: string
-}
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     intro: {
-      padding: '0.75em 0',
+      padding: '0.65rem 0',
       textAlign: 'center',
       borderBottom: `solid 1px ${theme.palette.divider}`,
     },
@@ -45,8 +38,6 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: '95%',
     },
     neighborhoods: {
-      // fontSize: '0.8rem',
-      // fontSize: theme.typography.caption.fontSize,
       fontSize: '0.75em',
       color: theme.palette.text.secondary,
       fontStyle: 'italic',
@@ -132,33 +123,6 @@ const NoFeatSel: FC = () => {
   )
 }
 
-export const CountriesWithFlags: FC<CountriesWithFlagsProps> = (props) => {
-  const { countries: unParsed } = props
-  const classes = useStyles()
-  const countryCodesTyped = countryCodes as CountryCodes // TODO: defeat this
-  const countries = unParsed.split(DEFAULT_DELIM)
-
-  const countriesWithFlags = countries.map((country) => {
-    if (countryCodesTyped[country]) {
-      return countryCodesTyped[country]
-    }
-
-    return '' // there SHOULD be a match but if not then just use blank
-  })
-
-  return (
-    <ul className={classes.countriesList}>
-      {countriesWithFlags.map((countryWithFlag, i) => (
-        <CountryListItemWithFlag
-          key={countries[i]}
-          countryCode={countryWithFlag}
-          name={countries[i]}
-        />
-      ))}
-    </ul>
-  )
-}
-
 export const DetailsPanel: FC = () => {
   const { state } = useContext(GlobalContext)
   const classes = useStyles()
@@ -182,10 +146,10 @@ export const DetailsPanel: FC = () => {
     Countries,
     Audio: audio,
     Video: video,
+    'Font Image Alt': altImage,
     'World Region': WorldRegion,
   } = selFeatAttribs
   const { detailsPanelHeading, intro, description, neighborhoods } = classes
-  const isImage = isURL(Endonym)
   const regionSwatchColor =
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -200,7 +164,7 @@ export const DetailsPanel: FC = () => {
   return (
     <>
       <div className={intro}>
-        {(isImage && <EndoImageWrap url={Endonym} alt={Language} />) || (
+        {(altImage && <EndoImageWrap url={altImage} alt={Language} />) || (
           <Typography variant="h3" className={detailsPanelHeading}>
             {Endonym}
           </Typography>
@@ -212,7 +176,7 @@ export const DetailsPanel: FC = () => {
         )}
         {/* TODO: make "+4 more clickable to toggle popover" */}
         <Typography className={neighborhoods}>
-          {Neighborhoods ? prettyTruncateList(Neighborhoods) : Town}
+          {Neighborhoods || Town}
         </Typography>
         <div className={classes.region}>
           <LegendSwatch
