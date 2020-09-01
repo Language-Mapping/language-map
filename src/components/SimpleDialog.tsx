@@ -23,6 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+// TODO: don't make close go back in history, or some other smooth way:
+// https://stackoverflow.com/questions/47409586
 export const SimpleDialog: FC<DialogProps> = (props) => {
   const classes = useStyles()
   const { onClose, children } = props

@@ -92,3 +92,18 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 - Anything in _package.json_
 - [Country flags](https://github.com/hjnilsson/country-flags)
+
+## TODOs
+
+### Fonts documentation
+
+1. How it all works
+2. MB Studio uploads vs. UI
+3. Truly img-only instances (ASL, maybe Mongolian, etc.) w/SVG fallback
+4. If it works: `@font-face` in CSS, and using it in _theme.ts_.
+5. Relationship betwee img-only (the dataset col) and how code checks for it: if `Font Image Alt` is empty then use Endonym, otherwise use img. Places in code that use this: Details, table, popups, tooltips (others?)
+6. Probably something I'm missing.
+
+### Development
+
+Set up [quicker debugging](https://code.visualstudio.com/updates/v1_48#_debug-open-link-command).
