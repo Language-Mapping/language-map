@@ -146,7 +146,7 @@ export const DetailsPanel: FC = () => {
     Countries,
     Audio: audio,
     Video: video,
-    'Font Image Alt': altImage,
+    // 'Font Image Alt': altImage,
     'World Region': WorldRegion,
   } = selFeatAttribs
   const { detailsPanelHeading, intro, description, neighborhoods } = classes
@@ -164,11 +164,15 @@ export const DetailsPanel: FC = () => {
   return (
     <>
       <div className={intro}>
-        {(altImage && <EndoImageWrap url={altImage} alt={Language} />) || (
+        {/* TODO: */}
+        {/* {(altImage && <EndoImageWrap url={altImage} alt={Language} />) || (
           <Typography variant="h3" className={detailsPanelHeading}>
             {Endonym}
           </Typography>
-        )}
+        )} */}
+        <Typography variant="h3" className={detailsPanelHeading}>
+          {Endonym}
+        </Typography>
         {Endonym !== Language && (
           <Typography variant="caption" component="p">
             {Language}
