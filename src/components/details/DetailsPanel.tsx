@@ -6,13 +6,11 @@ import { Typography } from '@material-ui/core'
 import { GlobalContext } from 'components'
 import { LegendSwatch } from 'components/legend'
 import { RecordDescription } from 'components/results'
-// import { correctDropboxURL } from '../../utils' // TODO: put back if needed
+import { correctDropboxURL } from '../../utils' // TODO: put back if needed
 import { Media } from './Media'
 
 // TODO: cell strength bars for Size
 // import { COMM_SIZE_COL_MAP } from 'components/results/config'
-
-// TODO: share it
 
 type EndoImageComponent = {
   url: string
@@ -80,14 +78,13 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 // Mongolian, ASL, etc. have URLs to images
-// TODO: put back after testing!
-// const EndoImageWrap: FC<EndoImageComponent> = (props) => {
-//   const classes = useStyles()
-//   const { url: origUrl, alt } = props
-//   const url = correctDropboxURL(origUrl)
+const EndoImageWrap: FC<EndoImageComponent> = (props) => {
+  const classes = useStyles()
+  const { url: origUrl, alt } = props
+  const url = correctDropboxURL(origUrl)
 
-//   return <img src={url} alt={alt} className={classes.endoImage} />
-// }
+  return <img src={url} alt={alt} className={classes.endoImage} />
+}
 
 const RandomLink: FC = () => {
   const { state } = useContext(GlobalContext)
@@ -147,7 +144,7 @@ export const DetailsPanel: FC = () => {
     Countries,
     Audio: audio,
     Video: video,
-    // 'Font Image Alt': altImage,
+    'Font Image Alt': altImage,
     'World Region': WorldRegion,
   } = selFeatAttribs
   const { detailsPanelHeading, intro, description, neighborhoods } = classes
@@ -165,15 +162,11 @@ export const DetailsPanel: FC = () => {
   return (
     <>
       <div className={intro}>
-        {/* TODO: */}
-        {/* {(altImage && <EndoImageWrap url={altImage} alt={Language} />) || (
+        {(altImage && <EndoImageWrap url={altImage} alt={Language} />) || (
           <Typography variant="h3" className={detailsPanelHeading}>
             {Endonym}
           </Typography>
-        )} */}
-        <Typography variant="h3" className={detailsPanelHeading}>
-          {Endonym}
-        </Typography>
+        )}
         {Endonym !== Language && (
           <Typography variant="caption" component="p">
             {Language}
