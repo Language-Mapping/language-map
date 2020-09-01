@@ -6,7 +6,7 @@ import { Typography } from '@material-ui/core'
 import { GlobalContext } from 'components'
 import { LegendSwatch } from 'components/legend'
 import { RecordDescription } from 'components/results'
-import { correctDropboxURL } from '../../utils'
+// import { correctDropboxURL } from '../../utils' // TODO: put back if needed
 import { Media } from './Media'
 
 // TODO: cell strength bars for Size
@@ -80,13 +80,14 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 // Mongolian, ASL, etc. have URLs to images
-const EndoImageWrap: FC<EndoImageComponent> = (props) => {
-  const classes = useStyles()
-  const { url: origUrl, alt } = props
-  const url = correctDropboxURL(origUrl)
+// TODO: put back after testing!
+// const EndoImageWrap: FC<EndoImageComponent> = (props) => {
+//   const classes = useStyles()
+//   const { url: origUrl, alt } = props
+//   const url = correctDropboxURL(origUrl)
 
-  return <img src={url} alt={alt} className={classes.endoImage} />
-}
+//   return <img src={url} alt={alt} className={classes.endoImage} />
+// }
 
 const RandomLink: FC = () => {
   const { state } = useContext(GlobalContext)
