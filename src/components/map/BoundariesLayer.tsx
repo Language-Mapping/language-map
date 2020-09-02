@@ -69,13 +69,19 @@ const ourNeighbsLine = {
 // ID: elalliance.2qroh9fu
 // Layer ID: neighborhoods-09jg0v
 
-export const BoundariesLayer: FC = () => {
+type BoundariesLayerProps = {
+  beforeId: string
+}
+
+export const BoundariesLayer: FC<BoundariesLayerProps> = (props) => {
+  const { beforeId } = props
+
   return (
     <>
       {/* TODO: url and id into config! */}
       <Source type="vector" url="mapbox://elalliance.2qroh9fu" id="neighb-poly">
-        <Layer {...ourNeighbsLine} />
-        <Layer {...ourNeighbs} />
+        <Layer beforeId={beforeId} {...ourNeighbsLine} />
+        <Layer beforeId={beforeId} {...ourNeighbs} />
       </Source>
     </>
   )

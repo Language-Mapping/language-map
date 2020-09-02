@@ -322,14 +322,24 @@ export const Map: FC<MapTypes.MapComponent> = ({
           onLoad(mapLoadEvent)
         }}
       >
-        {state.neighbLayerVisible && <BoundariesLayer />}
         {symbLayers && labelLayers && (
-          <LangMbSrcAndLayer
-            symbLayers={symbLayers}
-            labelLayers={labelLayers}
-            activeLangSymbGroupId={state.activeLangSymbGroupId}
-            activeLangLabelId={state.activeLangLabelId}
-          />
+          <>
+            <LangMbSrcAndLayer
+              symbLayers={symbLayers}
+              labelLayers={labelLayers}
+              activeLangSymbGroupId={state.activeLangSymbGroupId}
+              activeLangLabelId={state.activeLangLabelId}
+            />
+            {state.neighbLayerVisible && (
+              <BoundariesLayer
+                beforeId={
+                  state.legendItems.length
+                    ? state.legendItems[0].legendLabel
+                    : ''
+                }
+              />
+            )}
+          </>
         )}
         {selFeatAttribs && popupOpen && (
           <MapPopup
