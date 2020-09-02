@@ -20,12 +20,12 @@ const bodyFonts = `
 `
 
 const headings = {
-  h1: { fontFamily: HEADING_FONT },
-  h2: { fontFamily: HEADING_FONT },
-  h3: { fontFamily: HEADING_FONT },
-  h4: { fontFamily: HEADING_FONT },
-  h5: { fontFamily: HEADING_FONT },
-  h6: { fontFamily: HEADING_FONT },
+  h1: { fontFamily: HEADING_FONT, fontWeight: 700 },
+  h2: { fontFamily: HEADING_FONT, fontWeight: 700 },
+  h3: { fontFamily: HEADING_FONT, fontWeight: 700 },
+  h4: { fontFamily: HEADING_FONT, fontWeight: 700 },
+  h5: { fontFamily: HEADING_FONT, fontWeight: 700 },
+  h6: { fontFamily: HEADING_FONT, fontWeight: 700 },
 }
 
 // BREAKPOINTS: material-ui.com/customization/breakpoints/#default-breakpoints

@@ -9,7 +9,10 @@ import { fontFamilies as families, fontUrls as urls } from './config/fonts'
 
 WebFont.load({
   google: {
-    families: ['Gentium Basic:700', 'Noto Sans:ital,wght@0,400;0,700;1,400'],
+    families: [
+      'Gentium Basic:400,700',
+      'Noto Sans:ital,wght@0,400;0,700;1,400',
+    ],
   },
   // CRED: https://stackoverflow.com/a/50073148/1048518
   custom: {
