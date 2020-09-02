@@ -29,6 +29,7 @@ export type StoreAction =
   | { type: 'SET_MAP_LOADED'; payload: boolean }
   | { type: 'SET_PANEL_STATE'; payload: PanelState }
   | { type: 'SET_SEL_FEAT_ATTRIBS'; payload: null | LangRecordSchema }
+  | { type: 'TOGGLE_NEIGHB_LAYER' }
   | { type: 'TOGGLE_UI_ALERT'; payload: AlertPayload }
   | { type: 'TOGGLE_OFF_CANVAS_NAV' }
 
@@ -40,9 +41,10 @@ export type InitialState = {
   langFeatures: LangRecordSchema[]
   langFeaturesCached: LangRecordSchema[]
   langLabels: string[]
+  langSymbGroups: MetadataGroup
   legendItems: LegendSwatch[]
   legendSymbols: LegendSymbols
-  langSymbGroups: MetadataGroup
+  neighbLayerVisible: boolean
   mapLoaded: boolean
   offCanvasNavOpen: boolean
   panelState: PanelState

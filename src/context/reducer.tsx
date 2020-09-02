@@ -66,6 +66,11 @@ export const reducer = (
         ...state,
         panelState: action.payload,
       }
+    case 'TOGGLE_NEIGHB_LAYER':
+      return {
+        ...state,
+        neighbLayerVisible: !state.neighbLayerVisible,
+      }
     // TODO: wire up
     case 'TOGGLE_UI_ALERT':
       return {

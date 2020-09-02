@@ -2,17 +2,18 @@ import { InitialState } from 'context/types'
 
 // Somewhat project-specific, consider putting in separate file
 const initialMapStates = {
-  activeLangSymbGroupId: '',
   activeLangLabelId: '',
+  activeLangSymbGroupId: '',
   baselayer: 'light',
-  panelState: 'default',
   langFeatIDs: null,
   langFeatures: [],
   langFeaturesCached: [],
   langLabels: [],
+  langSymbGroups: {},
   legendItems: [],
   legendSymbols: {},
-  langSymbGroups: {},
+  neighbLayerVisible: false,
+  panelState: 'default',
 }
 
 export const initialState = {

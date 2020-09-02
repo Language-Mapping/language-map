@@ -1,7 +1,13 @@
 import React, { FC, useContext } from 'react'
 import { Map } from 'mapbox-gl'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { Typography, Popover, Box } from '@material-ui/core'
+import {
+  Typography,
+  FormControlLabel,
+  Popover,
+  Box,
+  Switch,
+} from '@material-ui/core'
 import Geocoder from 'react-map-gl-geocoder'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
@@ -17,6 +23,13 @@ const useStyles = makeStyles((theme: Theme) =>
     popoverContent: { padding: '1em', width: 300 },
     popoverContentText: { marginBottom: '.75em', fontSize: '0.8em' },
     layersMenuPaper: { overflow: 'visible' },
+    switchFormCtrlRoot: {
+      marginLeft: 0,
+      marginTop: '0.8em',
+    },
+    smallerText: {
+      fontSize: '0.8rem',
+    },
   })
 )
 
@@ -46,15 +59,17 @@ type GeocoderProps = Omit<MapCtrlBtnsProps, 'onMapCtrlClick'> & {
 }
 
 export const GeocoderPopout: FC<GeocoderProps> = (props) => {
-  const { state } = useContext(GlobalContext)
+  const { state, dispatch } = useContext(GlobalContext)
   const { anchorEl, setAnchorEl, mapOffset, mapRef, isDesktop } = props
   const classes = useStyles()
+  const { smallerText, switchFormCtrlRoot } = classes
   const layersMenuOpen = Boolean(anchorEl)
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
   const { width, height } = useWindowResize()
 
   const handleLayersMenuClose = () => setAnchorEl(null)
 
+  // TODO: most def different file
   const handleGeocodeResult = (geocodeResult: GeocodeResult) => {
     handleLayersMenuClose()
 
@@ -110,6 +125,24 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
     >
       <LocationSearchContent>
         <div ref={geocoderContainerRef} />
+        <FormControlLabel
+          classes={{
+            label: smallerText,
+            root: switchFormCtrlRoot,
+          }}
+          // Prevent off-canvas from closing (but we want that to happen for all
+          // the other elements in the off-canvas).
+          onClick={(event) => event.stopPropagation()}
+          control={
+            <Switch
+              checked={state.neighbLayerVisible}
+              onChange={() => dispatch({ type: 'TOGGLE_NEIGHB_LAYER' })}
+              name="show-welcome-switch"
+              size="small"
+            />
+          }
+          label="Show neighborhoods"
+        />
         <Geocoder
           containerRef={geocoderContainerRef}
           countries="us"

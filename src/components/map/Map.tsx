@@ -12,6 +12,7 @@ import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { MapPopup } from './MapPopup'
 import { MapTooltip } from './MapTooltip'
 import { MapCtrlBtns } from './MapCtrlBtns'
+import { BoundariesLayer } from './BoundariesLayer'
 import * as MapTypes from './types'
 import * as utils from './utils'
 import * as config from './config'
@@ -321,6 +322,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
           onLoad(mapLoadEvent)
         }}
       >
+        {state.neighbLayerVisible && <BoundariesLayer />}
         {symbLayers && labelLayers && (
           <LangMbSrcAndLayer
             symbLayers={symbLayers}

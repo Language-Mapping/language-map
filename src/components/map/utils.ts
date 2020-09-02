@@ -85,7 +85,19 @@ export function handleHover(
 
   if (!areLangFeatsUnderCursor(features, sourceID)) {
     target.style.cursor = 'default'
-    setTooltipOpen(null)
+
+    if (features.length && ['neighb-poly'].includes(features[0].source)) {
+      setTooltipOpen({
+        latitude: event.lngLat[1],
+        longitude: event.lngLat[0],
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        heading: features[0].properties.Neighborho,
+        subHeading: '',
+      })
+    } else {
+      setTooltipOpen(null)
+    }
   } else {
     const {
       Latitude,
