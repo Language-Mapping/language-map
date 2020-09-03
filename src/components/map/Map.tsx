@@ -346,17 +346,24 @@ export const Map: FC<MapTypes.MapComponent> = ({
       >
         {symbLayers && labelLayers && (
           <>
+            {/* TODO: put back!! */}
             {/* symbLayers && state.neighbLayerVisible &&  */}
             {symbLayers && (
-              <BoundariesLayer
-                beforeId={
-                  /* eslint-disable operator-linebreak */
-                  state.legendItems.length
-                    ? state.legendItems[0].legendLabel
-                    : ''
-                  /* eslint-enable operator-linebreak */
-                }
-              />
+              <>
+                {[neighbConfig, countiesConfig].map((boundaryConfig) => (
+                  <BoundariesLayer
+                    key={boundaryConfig.source.id}
+                    {...boundaryConfig}
+                    beforeId={
+                      /* eslint-disable operator-linebreak */
+                      state.legendItems.length
+                        ? state.legendItems[0].legendLabel
+                        : ''
+                      /* eslint-enable operator-linebreak */
+                    }
+                  />
+                ))}
+              </>
             )}
             <LangMbSrcAndLayer
               {...{ symbLayers, labelLayers }}

@@ -144,3 +144,6 @@ export const getWebMercSettings = (
     },
   })
 }
+
+export const fetchBoundariesLookup = async (path: string): Promise<void> =>
+  (await fetch(path)).json()

@@ -75,6 +75,7 @@ const neighbLyrSrc = {
 }
 
 export const neighbConfig = {
+  lookupPath: '/data/lookup-tables/loc4-v3-new-york.json',
   source: {
     id: neighbSrcID,
     url: 'mapbox://mapbox.boundaries-loc4-v3',
@@ -106,6 +107,7 @@ const countiesLyrSrc = {
 }
 
 export const countiesConfig = {
+  lookupPath: '/data/lookup-tables/adm2-v3-counties.json',
   source: {
     id: countiesSrcID,
     url: 'mapbox://mapbox.boundaries-adm2-v3',

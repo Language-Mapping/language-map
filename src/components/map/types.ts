@@ -16,7 +16,11 @@ import * as GeoJSON from 'geojson'
 import { LangRecordSchema } from 'context/types'
 
 export type Baselayer = 'dark' | 'light' // assumes using Mapbox style
-export type BoundaryConfig = { source: SourceWithPromoteID; layers: Layer[] }
+export type BoundaryConfig = {
+  source: SourceWithPromoteID
+  layers: Layer[]
+  lookupPath: string
+}
 export type BoundsArray = [[number, number], [number, number]]
 export type LangIconConfig = { icon: string; id: string }
 export type Layer = LayerProps & { 'source-layer': string }
@@ -141,4 +145,14 @@ export type BoundsConfig = {
   isDesktop: boolean
   mapOffset: [number, number]
   width: number
+}
+
+export type MbBoundaryLookup = {
+  [key: string]: {
+    feature_id: number
+    centroid: [number, number]
+    bounds: [number, number, number, number]
+    name?: string // neighb and county have it, but `names` is ideal in counties
+    names?: { en: string[] } // only counties has this
+  }
 }
