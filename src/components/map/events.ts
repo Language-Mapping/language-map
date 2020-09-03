@@ -4,10 +4,10 @@ import * as config from './config'
 import * as MapTypes from './types'
 import { LangRecordSchema } from '../../context/types'
 
-const { neighbConfig } = config
-const neighSrcId = neighbConfig.source.id
-const neighPolyID = neighbConfig.layers[0]['source-layer']
 const { langSrcID } = config.mbStyleTileConfig
+const { neighbConfig, countiesConfig } = config
+const neighSrcId = neighbConfig.source.id
+const countiesSrcId = countiesConfig.source.id
 
 export function onHover(
   event: MapTypes.MapEvent,
@@ -16,14 +16,14 @@ export function onHover(
 ): void {
   const { features, target } = event
   const topMostFeature = features[0]
+  const oneOfOurs = [langSrcID, neighSrcId, countiesSrcId].includes(
+    topMostFeature.source
+  )
 
   // Close tooltip no matter what
   setTooltipOpen(null)
 
-  if (
-    !topMostFeature ||
-    ![langSrcID, neighSrcId].includes(topMostFeature.source)
-  ) {
+  if (!topMostFeature || !oneOfOurs) {
     target.style.cursor = 'default'
 
     return
@@ -33,11 +33,24 @@ export function onHover(
 
   // Not Language points. Clear feature state then set to `hover`.
   if (topMostFeature.source !== langSrcID) {
-    map.removeFeatureState({ source: neighSrcId, sourceLayer: neighPolyID })
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore // TODO: defeat
+    const sourceLayer = topMostFeature.layer['source-layer']
+
+    map.removeFeatureState({
+      source: neighSrcId,
+      sourceLayer: neighbConfig.layers[0]['source-layer'],
+    })
+
+    map.removeFeatureState({
+      source: countiesSrcId,
+      sourceLayer: countiesConfig.layers[0]['source-layer'],
+    })
+
     map.setFeatureState(
       {
-        sourceLayer: neighPolyID,
-        source: neighSrcId,
+        sourceLayer,
+        source: topMostFeature.source,
         id: topMostFeature.id,
       },
       { hover: true }

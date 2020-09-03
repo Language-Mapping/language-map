@@ -15,24 +15,20 @@ import * as GeoJSON from 'geojson'
 
 import { LangRecordSchema } from 'context/types'
 
-export type LongLat = {
-  longitude: number
-  latitude: number
-}
+export type Baselayer = 'dark' | 'light' // assumes using Mapbox style
+export type BoundaryConfig = { source: SourceWithPromoteID; layers: Layer[] }
+export type BoundsArray = [[number, number], [number, number]]
+export type LangIconConfig = { icon: string; id: string }
+export type Layer = LayerProps & { 'source-layer': string }
+export type LongLat = { longitude: number; latitude: number }
+export type MapControlAction = 'home' | 'in' | 'out' | 'info' | 'loc-search'
+export type MapViewportState = { zoom: number } & LongLat
 
-export type MapViewportState = {
-  zoom: number
-} & LongLat
-
-// Assumes using Mapbox style
-export type Baselayer = 'dark' | 'light'
+// TODO: 1. enforce in all relevant spots, 2. mv into context/types
+export type RouteLocation = '/' | '/details' | '/table' | '/about' | '/glossary'
 
 // MB Styles API individual group in the `metadata` of JSON response
-export type MetadataGroup = {
-  [mbGroupIdHash: string]: {
-    name: string
-  }
-}
+export type MetadataGroup = { [mbGroupIdHash: string]: { name: string } }
 
 // `metadata` prop has MB Studio group ID and appears to only be part of the
 // Style API, not the Style Spec.
@@ -40,9 +36,7 @@ export type LayerPropsPlusMeta = Omit<
   LayerProps,
   'type' | 'paint' | 'layout'
 > & {
-  metadata: {
-    'mapbox:group': keyof MetadataGroup
-  }
+  metadata: { 'mapbox:group': keyof MetadataGroup }
   type: 'circle' | 'symbol' | 'background'
   layout: CircleLayout | SymbolLayout
   paint: CirclePaint | SymbolPaint
@@ -55,9 +49,7 @@ export type LayerPropsNonBGlayer = Omit<LayerPropsPlusMeta, 'type'> & {
 
 // API response from Styles API. Not the same as what comes back in map.target
 export type MbResponse = {
-  metadata: {
-    'mapbox:groups': MetadataGroup
-  }
+  metadata: { 'mapbox:groups': MetadataGroup }
   layers: LayerPropsPlusMeta[]
 }
 
@@ -69,26 +61,17 @@ export type LangFeature = {
   source: string
   sourceLayer: string
   type: 'Feature' | 'hmmmmmm'
-  state: {
-    alsoHmmmm: boolean
-  }
+  state: { alsoHmmmm: boolean }
 }
 
 export type NeighFeat = Omit<LangFeature, 'properties' | 'geometry'> & {
   geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon
-  properties: {
-    Name: string
-    ID: number
-  }
+  properties: { Name: string; ID: number }
 }
 
 export type MapEvent = Omit<PointerEvent, 'features'> & {
   features: LangFeature[] | NeighFeat[]
 }
-
-// TODO: enforce in all relevant spots
-// TODO: mv into context/types
-export type RouteLocation = '/' | '/details' | '/table' | '/about' | '/glossary'
 
 export type MapPanel = {
   heading: string
@@ -98,9 +81,7 @@ export type MapPanel = {
   path: RouteLocation
 }
 
-export type MapPopup = LongLat & {
-  selFeatAttribs: LangRecordSchema
-}
+export type MapPopup = LongLat & { selFeatAttribs: LangRecordSchema }
 
 export type MapTooltip = LongLat & {
   heading: string
@@ -113,10 +94,6 @@ export type MapComponent = {
   symbLayers: LayerPropsNonBGlayer[]
   labelLayers: LayerPropsNonBGlayer[]
 }
-
-export type LangIconConfig = { icon: string; id: string }
-
-export type MapControlAction = 'home' | 'in' | 'out' | 'info' | 'loc-search'
 
 export type FlyToCoords = (
   map: Map,
@@ -153,8 +130,6 @@ export type CtrlBtnConfig = {
   name: string
   customFn?: boolean
 }
-
-export type BoundsArray = [[number, number], [number, number]]
 
 export type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
   id: string

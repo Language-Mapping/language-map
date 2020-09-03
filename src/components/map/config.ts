@@ -1,5 +1,3 @@
-import { LayerProps } from 'react-map-gl'
-
 import * as MapTypes from './types'
 
 // `Status` icons
@@ -8,10 +6,6 @@ import iconBook from './icons/book.svg'
 import iconUsers from './icons/users.svg'
 import iconHome from './icons/home.svg'
 import iconMuseum from './icons/museum.svg'
-
-type Layer = LayerProps & {
-  'source-layer': string
-}
 
 // Unsure why it needs the type here but not for feature coords..
 const mapCenter = [-73.96, 40.7128] as [number, number]
@@ -59,8 +53,8 @@ export const langTypeIconsConfig = [
   { icon: iconMuseum, id: '_museum' },
 ]
 
-const neighbSrcID = 'neighborhoods'
-const neighbLyrID = 'boundaries_locality_4'
+// `symbol-sort-order` useful maybe:
+// https://stackoverflow.com/a/59103558/1048518
 const neighbPaint = {
   'fill-color': 'orange',
   'fill-opacity': [
@@ -73,6 +67,13 @@ const neighbPaint = {
   ],
 }
 
+const neighbSrcID = 'neighborhoods'
+const neighbLyrSrc = {
+  source: neighbSrcID,
+  'source-layer': 'boundaries_locality_4',
+  minzoom: 9,
+}
+
 export const neighbConfig = {
   source: {
     id: neighbSrcID,
@@ -82,27 +83,51 @@ export const neighbConfig = {
     {
       id: 'neighb-poly',
       type: 'fill',
-      source: neighbSrcID,
       paint: neighbPaint,
-      'source-layer': neighbLyrID,
+      ...neighbLyrSrc,
     },
     {
       id: 'neighb-line',
       type: 'line',
-      source: neighbSrcID,
+      ...neighbLyrSrc,
       paint: {
         'line-color': 'orange',
         'line-opacity': 0.4,
       },
-      'source-layer': neighbLyrID,
-      // `symbol-sort-order` useful maybe:
-      // https://stackoverflow.com/a/59103558/1048518
     },
   ],
-} as {
-  source: MapTypes.SourceWithPromoteID
-  layers: Layer[]
+} as MapTypes.BoundaryConfig
+
+const countiesSrcID = 'counties'
+const countiesLyrSrc = {
+  source: countiesSrcID,
+  'source-layer': 'boundaries_admin_2',
+  minzoom: 7,
 }
+
+export const countiesConfig = {
+  source: {
+    id: countiesSrcID,
+    url: 'mapbox://mapbox.boundaries-adm2-v3',
+  },
+  layers: [
+    {
+      id: 'counties-poly',
+      type: 'fill',
+      paint: neighbPaint,
+      ...countiesLyrSrc,
+    },
+    {
+      id: 'counties-line',
+      type: 'line',
+      ...countiesLyrSrc,
+      paint: {
+        'line-color': 'orange',
+        'line-opacity': 0.4,
+      },
+    },
+  ],
+} as MapTypes.BoundaryConfig
 
 // If using Boundaries... WE NEED TWO POLYGON LAYERS:
 // boundaries_locality_2 and boundaries_locality_4:
