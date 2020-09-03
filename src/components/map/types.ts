@@ -64,13 +64,13 @@ export type LangFeature = {
   state: { alsoHmmmm: boolean }
 }
 
-export type NeighFeat = Omit<LangFeature, 'properties' | 'geometry'> & {
+export type BoundaryFeat = Omit<LangFeature, 'properties' | 'geometry'> & {
   geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon
   properties: { Name: string; ID: number }
 }
 
 export type MapEvent = Omit<PointerEvent, 'features'> & {
-  features: LangFeature[] | NeighFeat[]
+  features: LangFeature[] | BoundaryFeat[]
 }
 
 export type MapPanel = {
@@ -134,4 +134,11 @@ export type CtrlBtnConfig = {
 export type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
   id: string
   promoteId?: string
+}
+
+export type BoundsConfig = {
+  height: number
+  isDesktop: boolean
+  mapOffset: [number, number]
+  width: number
 }

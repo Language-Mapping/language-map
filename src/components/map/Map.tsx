@@ -4,7 +4,6 @@ import {
   AttributionControl,
   Map as MbMap,
   setRTLTextPlugin,
-  LngLatBounds,
   VectorSource,
   LngLatBoundsLike,
 } from 'mapbox-gl'
@@ -20,6 +19,7 @@ import { MapPopup } from './MapPopup'
 import { MapTooltip } from './MapTooltip'
 import { MapCtrlBtns } from './MapCtrlBtns'
 import { BoundariesLayer } from './BoundariesLayer'
+
 import * as MapTypes from './types'
 import * as utils from './utils'
 import * as config from './config'
@@ -31,10 +31,10 @@ import {
   useWindowResize,
 } from '../../utils'
 
-const { neighbConfig } = config
-const neighSrcId = neighbConfig.source.id
-const neighPolyID = neighbConfig.layers[0]['source-layer']
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
+const { neighbConfig, countiesConfig } = config
+const neighSrcId = neighbConfig.source.id
+const countiesSrcId = countiesConfig.source.id
 
 // Jest or whatever CANNOT find this plugin. And importing it from
 // `react-map-gl` is useless as well.
@@ -230,84 +230,28 @@ export const Map: FC<MapTypes.MapComponent> = ({
     })
   }
 
-  // WOW: 100 lines in one function! // TODO: other file❗️
   function onNativeClick(event: MapTypes.MapEvent): void {
     if (!mapRef || !mapRef.current || !mapLoaded) return
 
     const { features } = event
-    const sourcesToCheck = [langSrcID, neighbConfig.source.id]
+    const sourcesToCheck = [langSrcID, neighSrcId, countiesSrcId]
+    const topFeat = features[0]
 
     // Nothing under the click, or nothing we care about
-    if (!features.length || !sourcesToCheck.includes(features[0].source)) {
+    if (!topFeat || !sourcesToCheck.includes(topFeat.source)) {
       // Clear sel feat no matter what
       dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
 
       return
     }
 
-    const topFeat = features[0]
-    const isNeighborhood = topFeat.source === neighbConfig.source.id
+    const isBoundary = [neighSrcId, countiesSrcId].includes(topFeat.source)
 
-    if (isNeighborhood) {
+    if (isBoundary) {
       const map: MbMap = mapRef.current.getMap()
-      const neighFeat = topFeat as MapTypes.NeighFeat
+      const boundsConfig = { width, height, isDesktop, mapOffset }
 
-      map.removeFeatureState({ source: neighSrcId, sourceLayer })
-
-      map.setFeatureState(
-        {
-          sourceLayer: neighPolyID,
-          source: neighSrcId,
-          id: neighFeat.properties.ID,
-        },
-        { selected: true }
-      )
-
-      const { type, coordinates } = neighFeat.geometry
-      let polyCoords
-
-      if (type === 'MultiPolygon') {
-        // eslint-disable-next-line prefer-destructuring
-        // TODO: fix
-        // polyCoords = coordinates[0][0]
-        // eslint-disable-next-line no-alert
-        alert('sorry, multi-polygons not ready yet!')
-      } else if (type === 'Polygon') {
-        // eslint-disable-next-line prefer-destructuring
-        polyCoords = coordinates[0]
-      }
-
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const clickedFeatBounds = polyCoords.reduce(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        (allBounds: LngLatBounds, thisSet) => allBounds.extend(thisSet),
-        new LngLatBounds()
-      )
-
-      const { latitude, longitude, zoom } = utils.getWebMercSettings(
-        width,
-        height,
-        isDesktop,
-        mapOffset,
-        clickedFeatBounds.toArray(),
-        /* eslint-disable operator-linebreak */
-        isDesktop
-          ? { top: 60, bottom: 60, right: 60, left: 60 + mapOffset[0] * 2 }
-          : { top: 30, bottom: height / 2 + 30, left: 30, right: 30 }
-        /* eslint-enable operator-linebreak */
-      )
-
-      map.flyTo(
-        {
-          // Not THAT essential if you... don't like cool things
-          essential: true,
-          center: { lng: longitude, lat: latitude },
-          zoom,
-        },
-        { selFeatAttribs, forceViewportUpdate: true }
-      )
+      events.handleBoundaryClick(map, topFeat, boundsConfig, selFeatAttribs)
     } else {
       const langFeat = topFeat as MapTypes.LangFeature
 
