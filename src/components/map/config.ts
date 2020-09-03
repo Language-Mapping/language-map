@@ -1,7 +1,6 @@
-// TODO: rm if only using local, otherwise restore when ready
-// const MB_STYLES_API_URL = 'https://api.mapbox.com/styles/v1'
-import { BoundsArray } from './types'
+import { SourceProps, LayerProps } from 'react-map-gl'
 
+import { BoundsArray } from './types'
 import iconTree from './icons/tree.svg'
 import iconBook from './icons/book.svg'
 import iconUsers from './icons/users.svg'
@@ -9,10 +8,6 @@ import iconHome from './icons/home.svg'
 import iconMuseum from './icons/museum.svg'
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MB_TOKEN
-
-// If needed (e.g. Boundaries doesn't work out), Maya uploaded Neighborhoods:
-// ID: elalliance.2qroh9fu
-// Layer ID: neighborhoods-09jg0v
 
 export const mbStyleTileConfig = {
   symbStyleUrl: '/data/mb-styles.langs.json',
@@ -60,8 +55,59 @@ export const langTypeIconsConfig = [
   { icon: iconMuseum, id: '_museum' },
 ]
 
-// Looks handy?
-// https://api.mapbox.com/v4/elalliance.d0yv450e.json?secure&access_token=pk.eyJ1IjoiZWxhbGxpYW5jZSIsImEiOiJja2M1Nmd6YnYwZXQ4MnJvYjd6MnJsb25lIn0.AC_4h4BmJCg2YvlygXzLxQ
+type Layer = LayerProps & {
+  'source-layer': string
+}
+
+const neighbSrcID = 'neighborhoods'
+const neighbLyrID = 'nbrhdCty-9ovubc'
+
+export const neighbConfig = {
+  source: {
+    id: neighbSrcID,
+    url: 'mapbox://elalliance.8602t751',
+    promoteId: 'ID',
+  },
+  layers: [
+    {
+      id: 'neighb-poly',
+      type: 'fill',
+      source: neighbSrcID,
+      paint: {
+        'fill-color': 'orange',
+        'fill-opacity': [
+          'case',
+          ['boolean', ['feature-state', 'selected'], false],
+          0.54,
+          ['boolean', ['feature-state', 'hover'], false],
+          0.44,
+          0.14,
+        ],
+      },
+      'source-layer': neighbLyrID,
+    },
+    {
+      id: 'neighb-line',
+      type: 'line',
+      source: neighbSrcID,
+      paint: {
+        'line-color': 'orange',
+        'line-opacity': 0.4,
+      },
+      'source-layer': neighbLyrID,
+      // `symbol-sort-order` useful maybe:
+      // https://stackoverflow.com/a/59103558/1048518
+    },
+  ],
+} as {
+  source: Omit<SourceProps, 'id'> & { id: string; promoteId?: string }
+  layers: Layer[]
+}
+
+// If using Boundaries... WE NEED TWO POLYGON LAYERS:
+// boundaries_locality_2 and boundaries_locality_4:
+// loc2: cities/CDPs with parent_1 = USLOC17W but NOT an ID of USLOC23651000
+// loc4: neighborhoods with parent_2 = USLOC23651000
 
 // For icons? Fonts?
 // https://github.com/mapbox/tiny-sdf
@@ -71,3 +117,6 @@ export const langTypeIconsConfig = [
 
 // STYLE
 // https://api.mapbox.com/styles/v1/elalliance/ckcmivm0r1o491iomlji26c48?access_token=pk.eyJ1IjoiZWxhbGxpYW5jZSIsImEiOiJja2M1Nmd6YnYwZXQ4MnJvYjd6MnJsb25lIn0.AC_4h4BmJCg2YvlygXzLxQ
+
+// Looks handy?
+// https://api.mapbox.com/v4/elalliance.d0yv450e.json?secure&access_token=pk.eyJ1IjoiZWxhbGxpYW5jZSIsImEiOiJja2M1Nmd6YnYwZXQ4MnJvYjd6MnJsb25lIn0.AC_4h4BmJCg2YvlygXzLxQ

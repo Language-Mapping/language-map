@@ -69,54 +69,6 @@ export const flyToCoords: MapTypes.FlyToCoords = (
   )
 }
 
-// Only if features exist and the top one matches the language source ID
-export const areLangFeatsUnderCursor = (
-  features: MapTypes.LangFeature[],
-  internalSrcID: string
-): boolean =>
-  features && features.length !== 0 && features[0].source === internalSrcID
-
-export function handleHover(
-  event: MapTypes.MapEvent,
-  sourceID: string,
-  setTooltipOpen: React.Dispatch<MapTypes.MapTooltip | null>
-): void {
-  const { features, target } = event
-
-  if (!areLangFeatsUnderCursor(features, sourceID)) {
-    target.style.cursor = 'default'
-
-    if (features.length && ['neighb-poly'].includes(features[0].source)) {
-      setTooltipOpen({
-        latitude: event.lngLat[1],
-        longitude: event.lngLat[0],
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        heading: features[0].properties.Neighborho,
-        subHeading: '',
-      })
-    } else {
-      setTooltipOpen(null)
-    }
-  } else {
-    const {
-      Latitude,
-      Longitude,
-      Endonym,
-      Language,
-      'Font Image Alt': altImage,
-    } = features[0].properties
-    target.style.cursor = 'pointer'
-
-    setTooltipOpen({
-      latitude: Latitude,
-      longitude: Longitude,
-      heading: altImage ? Language : Endonym,
-      subHeading: altImage || Endonym === Language ? '' : Language,
-    })
-  }
-}
-
 // TODO: recycle the icons if it makes sense
 export const addLangTypeIconsToMap = (
   map: Map,
@@ -177,13 +129,14 @@ export const getWebMercSettings = (
   height: number,
   isDesktop: boolean,
   mapOffset: [number, number],
-  bounds: MapTypes.BoundsArray
+  bounds: MapTypes.BoundsArray,
+  padding?: { top: number; bottom: number; left: number; right: number }
 ): { latitude: number; longitude: number; zoom: number } => {
   return new WebMercatorViewport({
     width,
     height,
   }).fitBounds(bounds, {
-    padding: {
+    padding: padding || {
       bottom: isDesktop ? mapOffset[1] : height / 2,
       left: isDesktop ? mapOffset[0] : 0,
       right: 0,

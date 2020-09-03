@@ -6,6 +6,7 @@ import {
   SymbolLayout,
   SymbolPaint,
 } from 'mapbox-gl'
+import * as GeoJSON from 'geojson'
 
 import { LangRecordSchema } from 'context/types'
 
@@ -57,6 +58,7 @@ export type MbResponse = {
 
 export type LangFeature = {
   id: number
+  geometry: GeoJSON.Geometry
   layer: LayerPropsPlusMeta
   properties: LangRecordSchema
   source: string
@@ -67,8 +69,16 @@ export type LangFeature = {
   }
 }
 
+export type NeighFeat = Omit<LangFeature, 'properties' | 'geometry'> & {
+  geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon
+  properties: {
+    Name: string
+    ID: number
+  }
+}
+
 export type MapEvent = Omit<PointerEvent, 'features'> & {
-  features: LangFeature[]
+  features: LangFeature[] | NeighFeat[]
 }
 
 // TODO: enforce in all relevant spots

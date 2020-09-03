@@ -1,6 +1,13 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { AttributionControl, Map as MbMap, setRTLTextPlugin } from 'mapbox-gl'
+import {
+  AttributionControl,
+  Map as MbMap,
+  setRTLTextPlugin,
+  LngLatBounds,
+  VectorSource,
+  LngLatBoundsLike,
+} from 'mapbox-gl'
 import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
 import { useTheme } from '@material-ui/core/styles'
 
@@ -23,6 +30,9 @@ import {
   useWindowResize,
 } from '../../utils'
 
+const { neighbConfig } = config
+const neighSrcId = neighbConfig.source.id
+const neighPolyID = neighbConfig.layers[0]['source-layer']
 const { layerId: sourceLayer, internalSrcID } = config.mbStyleTileConfig
 
 // Jest or whatever CANNOT find this plugin. And importing it from
@@ -34,8 +44,7 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
     'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
     // Yeah not today TS, thanks anyway:
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    null, // supposed to be an error-handling function
+    (error): Error => error, // supposed to be an error-handling function
     true // lazy: only load when the map first encounters Hebrew or Arabic text
   )
 }
@@ -104,7 +113,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
     const map: MbMap = mapRef.current.getMap()
 
-    // Deselect all features
+    // Deselect any language features
     clearAllSelFeats(map)
 
     if (!selFeatAttribs) return
@@ -122,8 +131,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
       mapOffset,
       selFeatAttribs
     )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selFeatAttribs, mapLoaded])
-  /* eslint-enable react-hooks/exhaustive-deps */
 
   // TODO: higher zIndex on selected feature
   function setSelFeatState(map: MbMap, id: number, selected: boolean) {
@@ -134,25 +143,76 @@ export const Map: FC<MapTypes.MapComponent> = ({
   }
 
   function onHover(event: MapTypes.MapEvent) {
-    utils.handleHover(event, internalSrcID, setTooltipOpen)
+    if (!mapRef.current || !mapLoaded) return
+
+    const { features, target } = event
+    const topMostFeature = features[0]
+    const featThatMatters = [internalSrcID, neighbConfig.source.id].includes(
+      topMostFeature.source
+    )
+
+    // Set cursor
+    if (topMostFeature && featThatMatters) {
+      target.style.cursor = 'pointer'
+    } else {
+      target.style.cursor = 'default'
+    }
+
+    if (!topMostFeature || !featThatMatters) return
+
+    // Language points
+    if (topMostFeature.source === internalSrcID) {
+      const {
+        Latitude,
+        Longitude,
+        Endonym,
+        Language,
+        'Font Image Alt': altImage,
+      } = features[0].properties as LangRecordSchema
+
+      setTooltipOpen({
+        latitude: Latitude,
+        longitude: Longitude,
+        heading: altImage ? Language : Endonym,
+        subHeading: altImage || Endonym === Language ? '' : Language,
+      })
+
+      return
+    }
+
+    const map: MbMap = mapRef.current.getMap()
+    const featAsNeighFeat = topMostFeature as MapTypes.NeighFeat
+    const id = featAsNeighFeat.properties.ID
+
+    // Clear neighborhoods feature state then set to `hover`
+    map.removeFeatureState({ source: neighSrcId, sourceLayer: neighPolyID })
+    map.setFeatureState(
+      {
+        sourceLayer: neighPolyID,
+        source: neighSrcId,
+        id,
+      },
+      { hover: true }
+    )
+
+    // Close tooltip since no language point under hover
+    setTooltipOpen(null)
   }
 
   // Runs only once and kicks off the whole thinig
   function onLoad(mapLoadEvent: MapLoadEvent) {
     const { target: map } = mapLoadEvent
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const langSrcBounds = map.getSource('languages-src').bounds
-
-    // Ensure all feats are visible. TODO: start from actual layer bounds
-    // somehow, then zoom is not needed.
-    map.fitBounds(langSrcBounds)
-
+    const langSrc = map.getSource('languages-src') as VectorSource
+    const langSrcBounds = langSrc.bounds as LngLatBoundsLike
     const idFromUrl = getIDfromURLparams(window.location.search)
     const cacheOfIDs: number[] = []
     const uniqueRecords: LangRecordSchema[] = []
     const rawLangFeats = map.querySourceFeatures(internalSrcID, { sourceLayer })
+
+    // TODO: start from actual layer bounds somehow, then zoom is not needed.
+    map.fitBounds(langSrcBounds) // ensure all feats are visible.
+
     // Just the properties for table/results, don't need GeoJSON cruft. Also
     // need to make sure each ID is unique as there have been initial data
     // inconsistencies, and more importantly MB may have feature duplication if
@@ -183,7 +243,10 @@ export const Map: FC<MapTypes.MapComponent> = ({
     dispatch({ type: 'INIT_LANG_LAYER_FEATURES', payload: uniqueRecords })
     dispatch({ type: 'SET_MAP_LOADED', payload: true })
 
+    // Give MB some well-deserved cred
     map.addControl(new AttributionControl({ compact: false }), 'bottom-right')
+
+    // TODO: put all these init events below into `utils.events.ts`
 
     // Maintain viewport state sync if needed (e.g. after things like `flyTo`),
     // otherwise the map shifts back to previous position after panning or
@@ -218,28 +281,99 @@ export const Map: FC<MapTypes.MapComponent> = ({
     })
   }
 
+  // WOW: 100 lines in one function! // TODO: other file❗️
   function onNativeClick(event: MapTypes.MapEvent): void {
-    // Map not ready
     if (!mapRef || !mapRef.current || !mapLoaded) return
 
-    // No language features under click, clear the route. Note that this keeps
-    // the `id` in the URL if there is already a selected feature, which feels a
-    // little weird, but it's much better than relying on a dummy route like
-    // `id=-1`. Still not the greatest so keep an eye out for a better solution.
-    if (!utils.areLangFeatsUnderCursor(event.features, internalSrcID)) {
-      dispatch({
-        type: 'SET_SEL_FEAT_ATTRIBS',
-        payload: null,
-      })
+    const { features } = event
+    const sourcesToCheck = [internalSrcID, neighbConfig.source.id]
+
+    // Nothing under the click, or nothing we care about
+    if (!features.length || !sourcesToCheck.includes(features[0].source)) {
+      // Clear sel feat no matter what
+      dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
 
       return
     }
 
+    const topFeat = features[0]
+    const isNeighborhood = topFeat.source === neighbConfig.source.id
+
+    if (isNeighborhood) {
+      const map: MbMap = mapRef.current.getMap()
+      const neighFeat = topFeat as MapTypes.NeighFeat
+
+      map.removeFeatureState({ source: neighSrcId, sourceLayer })
+
+      map.setFeatureState(
+        {
+          sourceLayer: neighPolyID,
+          source: neighSrcId,
+          id: neighFeat.properties.ID,
+        },
+        { selected: true }
+      )
+
+      const { type, coordinates } = neighFeat.geometry
+      let polyCoords
+
+      if (type === 'MultiPolygon') {
+        // eslint-disable-next-line prefer-destructuring
+        // TODO: fix
+        // polyCoords = coordinates[0][0]
+        // eslint-disable-next-line no-alert
+        alert('sorry, multi-polygons not ready yet!')
+      } else if (type === 'Polygon') {
+        // eslint-disable-next-line prefer-destructuring
+        polyCoords = coordinates[0]
+      }
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const clickedFeatBounds = polyCoords.reduce(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        (allBounds: LngLatBounds, thisSet) => allBounds.extend(thisSet),
+        new LngLatBounds()
+      )
+
+      const { latitude, longitude, zoom } = utils.getWebMercSettings(
+        width,
+        height,
+        isDesktop,
+        mapOffset,
+        clickedFeatBounds.toArray(),
+        /* eslint-disable operator-linebreak */
+        isDesktop
+          ? { top: 60, bottom: 60, right: 60, left: 60 + mapOffset[0] * 2 }
+          : { top: 30, bottom: height / 2 + 30, left: 30, right: 30 }
+        /* eslint-enable operator-linebreak */
+      )
+
+      map.flyTo(
+        {
+          // Not THAT essential if you... don't like cool things
+          essential: true,
+          center: { lng: longitude, lat: latitude },
+          zoom,
+        },
+        { selFeatAttribs, forceViewportUpdate: true }
+      )
+    } else {
+      const langFeat = topFeat as MapTypes.LangFeature
+
+      // TODO: use `initialEntries` in <MemoryRouter> to test routing
+      history.push(`/details?id=${langFeat.properties.ID}`)
+    }
+
+    // TODO: rm if not needed
+    // No language features under click, clear the route. Note that this keeps
+    // the `id` in the URL if there is already a selected feature, which feels a
+    // little weird, but it's much better than relying on a dummy route like
+    // `id=-1`. Still not the greatest so keep an eye out for a better solution.
+
     setTooltipOpen(null) // super annoying if tooltip stays intact after a click
     setPopupOpen(null) // closed by movestate anyway, but smoother this way
-
-    // TODO: use `initialEntries` in <MemoryRouter> to test routing
-    history.push(`/details?id=${event.features[0].properties.ID}`)
   }
 
   // Assumes map is ready
@@ -264,8 +398,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
     map.flyTo(
       {
         essential: true, // not THAT essential if you... don't like cool things
-        center: { lng: longitude, lat: latitude },
         zoom,
+        center: { lng: longitude, lat: latitude },
       },
       { selFeatAttribs, forceViewportUpdate: true }
     )
@@ -276,9 +410,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
     if (!mapRef.current) return
 
     if (actionID === 'info') {
-      dispatch({
-        type: 'TOGGLE_OFF_CANVAS_NAV',
-      })
+      dispatch({ type: 'TOGGLE_OFF_CANVAS_NAV' })
     } else if (actionID === 'home') {
       flyHome()
     } else {
@@ -304,9 +436,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
     <div className={wrapClassName}>
       {!mapLoaded && <LoadingBackdrop />}
       <MapGL
-        // TODO: show MB attribution text (not logo) on mobile
-        className="mb-language-map"
         {...viewport}
+        className="mb-language-map"
         clickRadius={4} // much comfier for small points on small screens
         ref={mapRef}
         height="100%"
@@ -316,7 +447,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
         mapboxApiAccessToken={config.MAPBOX_TOKEN}
         mapStyle={config.mbStyleTileConfig.customStyles.light}
         onViewportChange={setViewport}
-        onClick={onNativeClick} // TODO: mv into utils
+        onClick={(event: MapTypes.MapEvent) => onNativeClick(event)}
         onHover={onHover}
         onLoad={(mapLoadEvent) => {
           onLoad(mapLoadEvent)
@@ -324,45 +455,33 @@ export const Map: FC<MapTypes.MapComponent> = ({
       >
         {symbLayers && labelLayers && (
           <>
-            <LangMbSrcAndLayer
-              symbLayers={symbLayers}
-              labelLayers={labelLayers}
-              activeLangSymbGroupId={state.activeLangSymbGroupId}
-              activeLangLabelId={state.activeLangLabelId}
-            />
-            {state.neighbLayerVisible && (
+            {symbLayers && state.neighbLayerVisible && (
               <BoundariesLayer
                 beforeId={
+                  /* eslint-disable operator-linebreak */
                   state.legendItems.length
                     ? state.legendItems[0].legendLabel
                     : ''
+                  /* eslint-enable operator-linebreak */
                 }
               />
             )}
+            <LangMbSrcAndLayer
+              {...{ symbLayers, labelLayers }}
+              activeLangSymbGroupId={state.activeLangSymbGroupId}
+              activeLangLabelId={state.activeLangLabelId}
+            />
           </>
         )}
         {selFeatAttribs && popupOpen && (
-          <MapPopup
-            setPopupOpen={setPopupOpen}
-            longitude={popupOpen.longitude}
-            latitude={popupOpen.latitude}
-            selFeatAttribs={selFeatAttribs}
-          />
+          <MapPopup {...popupOpen} {...{ setPopupOpen, selFeatAttribs }} />
         )}
         {isDesktop && tooltipOpen && (
-          <MapTooltip
-            setTooltipOpen={setTooltipOpen}
-            longitude={tooltipOpen.longitude}
-            latitude={tooltipOpen.latitude}
-            heading={tooltipOpen.heading}
-            subHeading={tooltipOpen.subHeading}
-          />
+          <MapTooltip setTooltipOpen={setTooltipOpen} {...tooltipOpen} />
         )}
       </MapGL>
       <MapCtrlBtns
-        mapRef={mapRef}
-        mapOffset={mapOffset}
-        isDesktop={isDesktop}
+        {...{ mapRef, mapOffset, isDesktop }}
         onMapCtrlClick={(actionID: MapTypes.MapControlAction) => {
           onMapCtrlClick(actionID)
         }}
