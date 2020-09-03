@@ -1,4 +1,9 @@
-import { PointerEvent, InteractiveMap, LayerProps } from 'react-map-gl'
+import {
+  SourceProps,
+  PointerEvent,
+  InteractiveMap,
+  LayerProps,
+} from 'react-map-gl'
 import {
   CircleLayout,
   CirclePaint,
@@ -150,3 +155,8 @@ export type CtrlBtnConfig = {
 }
 
 export type BoundsArray = [[number, number], [number, number]]
+
+export type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
+  id: string
+  promoteId?: string
+}

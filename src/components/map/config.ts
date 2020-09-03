@@ -1,30 +1,34 @@
-import { SourceProps, LayerProps } from 'react-map-gl'
+import { LayerProps } from 'react-map-gl'
 
-import { BoundsArray } from './types'
+import * as MapTypes from './types'
+
+// `Status` icons
 import iconTree from './icons/tree.svg'
 import iconBook from './icons/book.svg'
 import iconUsers from './icons/users.svg'
 import iconHome from './icons/home.svg'
 import iconMuseum from './icons/museum.svg'
 
-export const MAPBOX_TOKEN = process.env.REACT_APP_MB_TOKEN
+type Layer = LayerProps & {
+  'source-layer': string
+}
 
+// Unsure why it needs the type here but not for feature coords..
+const mapCenter = [-73.96, 40.7128] as [number, number]
+
+export const NYC_LAT_LONG = { latitude: 40.7128, longitude: -74.006 }
+export const MAPBOX_TOKEN = process.env.REACT_APP_MB_TOKEN
 export const mbStyleTileConfig = {
   symbStyleUrl: '/data/mb-styles.langs.json',
   layerId: 'jason-schema-no-disp-5eaf8w', // TODO: a dev/deploy-only instance!
   tilesetId: 'elalliance.5okvgals',
-  internalSrcID: 'languages-src', // arbitrary, set in code, never changes
+  langSrcID: 'languages-src', // arbitrary, set in code, never changes
   // So far this is the only known way to use the custom fonts
   customStyles: {
     dark: 'mapbox://styles/elalliance/ckdqj968x01ot19lf5yg472f2',
     light: 'mapbox://styles/elalliance/ckdovh9us01wz1ipa5fjihv7l',
   },
 }
-
-export const NYC_LAT_LONG = { latitude: 40.7128, longitude: -74.006 }
-
-// Unsure why it needs the type here but not for feature coords..
-const mapCenter = [-73.96, 40.7128] as [number, number]
 
 // Ideally we'd just start from the bounds of the languages layer, because what
 // happens is:
@@ -45,7 +49,7 @@ export const initialMapState = {
 export const initialBounds = [
   [-74.19564, 40.574533],
   [-73.767185, 40.892251],
-] as BoundsArray
+] as MapTypes.BoundsArray
 
 export const langTypeIconsConfig = [
   { icon: iconTree, id: '_tree' },
@@ -55,35 +59,31 @@ export const langTypeIconsConfig = [
   { icon: iconMuseum, id: '_museum' },
 ]
 
-type Layer = LayerProps & {
-  'source-layer': string
-}
-
 const neighbSrcID = 'neighborhoods'
-const neighbLyrID = 'nbrhdCty-9ovubc'
+const neighbLyrID = 'boundaries_locality_4'
+const neighbPaint = {
+  'fill-color': 'orange',
+  'fill-opacity': [
+    'case',
+    ['boolean', ['feature-state', 'selected'], false],
+    0.54,
+    ['boolean', ['feature-state', 'hover'], false],
+    0.44,
+    0.14,
+  ],
+}
 
 export const neighbConfig = {
   source: {
     id: neighbSrcID,
-    url: 'mapbox://elalliance.8602t751',
-    promoteId: 'ID',
+    url: 'mapbox://mapbox.boundaries-loc4-v3',
   },
   layers: [
     {
       id: 'neighb-poly',
       type: 'fill',
       source: neighbSrcID,
-      paint: {
-        'fill-color': 'orange',
-        'fill-opacity': [
-          'case',
-          ['boolean', ['feature-state', 'selected'], false],
-          0.54,
-          ['boolean', ['feature-state', 'hover'], false],
-          0.44,
-          0.14,
-        ],
-      },
+      paint: neighbPaint,
       'source-layer': neighbLyrID,
     },
     {
@@ -100,7 +100,7 @@ export const neighbConfig = {
     },
   ],
 } as {
-  source: Omit<SourceProps, 'id'> & { id: string; promoteId?: string }
+  source: MapTypes.SourceWithPromoteID
   layers: Layer[]
 }
 

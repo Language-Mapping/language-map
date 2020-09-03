@@ -23,6 +23,7 @@ import { BoundariesLayer } from './BoundariesLayer'
 import * as MapTypes from './types'
 import * as utils from './utils'
 import * as config from './config'
+import * as events from './events'
 import { LangRecordSchema } from '../../context/types'
 import {
   getIDfromURLparams,
@@ -33,7 +34,7 @@ import {
 const { neighbConfig } = config
 const neighSrcId = neighbConfig.source.id
 const neighPolyID = neighbConfig.layers[0]['source-layer']
-const { layerId: sourceLayer, internalSrcID } = config.mbStyleTileConfig
+const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
 
 // Jest or whatever CANNOT find this plugin. And importing it from
 // `react-map-gl` is useless as well.
@@ -136,67 +137,15 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
   // TODO: higher zIndex on selected feature
   function setSelFeatState(map: MbMap, id: number, selected: boolean) {
-    map.setFeatureState(
-      { sourceLayer, source: internalSrcID, id },
-      { selected }
-    )
+    map.setFeatureState({ sourceLayer, source: langSrcID, id }, { selected })
   }
 
   function onHover(event: MapTypes.MapEvent) {
     if (!mapRef.current || !mapLoaded) return
 
-    const { features, target } = event
-    const topMostFeature = features[0]
-    const featThatMatters = [internalSrcID, neighbConfig.source.id].includes(
-      topMostFeature.source
-    )
-
-    // Set cursor
-    if (topMostFeature && featThatMatters) {
-      target.style.cursor = 'pointer'
-    } else {
-      target.style.cursor = 'default'
-    }
-
-    if (!topMostFeature || !featThatMatters) return
-
-    // Language points
-    if (topMostFeature.source === internalSrcID) {
-      const {
-        Latitude,
-        Longitude,
-        Endonym,
-        Language,
-        'Font Image Alt': altImage,
-      } = features[0].properties as LangRecordSchema
-
-      setTooltipOpen({
-        latitude: Latitude,
-        longitude: Longitude,
-        heading: altImage ? Language : Endonym,
-        subHeading: altImage || Endonym === Language ? '' : Language,
-      })
-
-      return
-    }
-
     const map: MbMap = mapRef.current.getMap()
-    const featAsNeighFeat = topMostFeature as MapTypes.NeighFeat
-    const id = featAsNeighFeat.properties.ID
 
-    // Clear neighborhoods feature state then set to `hover`
-    map.removeFeatureState({ source: neighSrcId, sourceLayer: neighPolyID })
-    map.setFeatureState(
-      {
-        sourceLayer: neighPolyID,
-        source: neighSrcId,
-        id,
-      },
-      { hover: true }
-    )
-
-    // Close tooltip since no language point under hover
-    setTooltipOpen(null)
+    events.onHover(event, setTooltipOpen, map)
   }
 
   // Runs only once and kicks off the whole thinig
@@ -208,7 +157,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
     const idFromUrl = getIDfromURLparams(window.location.search)
     const cacheOfIDs: number[] = []
     const uniqueRecords: LangRecordSchema[] = []
-    const rawLangFeats = map.querySourceFeatures(internalSrcID, { sourceLayer })
+    const rawLangFeats = map.querySourceFeatures(langSrcID, { sourceLayer })
 
     // TODO: start from actual layer bounds somehow, then zoom is not needed.
     map.fitBounds(langSrcBounds) // ensure all feats are visible.
@@ -286,7 +235,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
     if (!mapRef || !mapRef.current || !mapLoaded) return
 
     const { features } = event
-    const sourcesToCheck = [internalSrcID, neighbConfig.source.id]
+    const sourcesToCheck = [langSrcID, neighbConfig.source.id]
 
     // Nothing under the click, or nothing we care about
     if (!features.length || !sourcesToCheck.includes(features[0].source)) {
@@ -379,7 +328,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
   // Assumes map is ready
   function clearAllSelFeats(map: MbMap) {
     // TODO: add `selected` key?
-    map.removeFeatureState({ source: internalSrcID, sourceLayer })
+    map.removeFeatureState({ source: langSrcID, sourceLayer })
   }
 
   function flyHome() {
@@ -449,13 +398,12 @@ export const Map: FC<MapTypes.MapComponent> = ({
         onViewportChange={setViewport}
         onClick={(event: MapTypes.MapEvent) => onNativeClick(event)}
         onHover={onHover}
-        onLoad={(mapLoadEvent) => {
-          onLoad(mapLoadEvent)
-        }}
+        onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
       >
         {symbLayers && labelLayers && (
           <>
-            {symbLayers && state.neighbLayerVisible && (
+            {/* symbLayers && state.neighbLayerVisible &&  */}
+            {symbLayers && (
               <BoundariesLayer
                 beforeId={
                   /* eslint-disable operator-linebreak */
