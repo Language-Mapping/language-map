@@ -1,4 +1,4 @@
-import { Map, LngLatBounds } from 'mapbox-gl'
+import { Map } from 'mapbox-gl'
 
 import * as config from './config'
 import * as utils from './utils'
@@ -81,7 +81,8 @@ export function handleBoundaryClick(
   map: Map,
   topMostFeat: MapTypes.LangFeature | MapTypes.BoundaryFeat,
   boundsConfig: MapTypes.BoundsConfig,
-  selFeatAttribs: null | LangRecordSchema
+  selFeatAttribs: null | LangRecordSchema,
+  lookup?: MapTypes.MbBoundaryLookup[]
 ): void {
   const boundaryFeat = topMostFeat as MapTypes.BoundaryFeat
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -107,39 +108,25 @@ export function handleBoundaryClick(
     { selected: true }
   )
 
-  const { type, coordinates } = boundaryFeat.geometry
-  let polyCoords
+  if (!lookup) return
 
-  if (type === 'MultiPolygon') {
-    // eslint-disable-next-line prefer-destructuring
-    // TODO: fix
-    // polyCoords = coordinates[0][0]
-    // eslint-disable-next-line no-alert
-    alert('sorry, multi-polygons not ready yet!')
-
-    return
-  }
-
-  if (type === 'Polygon') {
-    ;[polyCoords] = coordinates
-  }
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const clickedFeatBounds = polyCoords.reduce(
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    (allBounds: LngLatBounds, thisSet) => allBounds.extend(thisSet),
-    new LngLatBounds()
+  const matchingRecord = lookup.find(
+    (record) => topMostFeat.id === record.feature_id
   )
 
+  if (!matchingRecord) return // ya never knowww
+
+  const { bounds } = matchingRecord
   const { width, height, isDesktop, mapOffset } = boundsConfig
   const { latitude, longitude, zoom } = utils.getWebMercSettings(
     width,
     height,
     isDesktop,
     mapOffset,
-    clickedFeatBounds.toArray(),
+    [
+      [bounds[0], bounds[1]],
+      [bounds[2], bounds[3]],
+    ],
     /* eslint-disable operator-linebreak */
     isDesktop
       ? { top: 60, bottom: 60, right: 60, left: 60 + mapOffset[0] * 2 }

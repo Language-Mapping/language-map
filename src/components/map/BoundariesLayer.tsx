@@ -12,7 +12,7 @@ type BoundariesLayerProps = {
 export const BoundariesLayer: FC<BoundariesLayerProps> = (props) => {
   const { beforeId, source, layers, lookupPath } = props
   const { data, isFetching, error } = useQuery(source.id)
-  const lookup = data as MapTypes.MbBoundaryLookup
+  const lookup = data as MapTypes.MbBoundaryLookup[]
   const [recordIDs, setRecordIDs] = useState<number[]>()
 
   useEffect(() => {
@@ -25,9 +25,7 @@ export const BoundariesLayer: FC<BoundariesLayerProps> = (props) => {
   useEffect(() => {
     if (isFetching) return
 
-    const listOfIDs = Object.keys(lookup).map(
-      (record) => lookup[record].feature_id
-    )
+    const listOfIDs = lookup.map((record) => record.feature_id)
 
     setRecordIDs(listOfIDs)
     // eslint-disable-next-line react-hooks/exhaustive-deps

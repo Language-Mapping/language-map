@@ -68,9 +68,13 @@ export type LangFeature = {
   state: { alsoHmmmm: boolean }
 }
 
-export type BoundaryFeat = Omit<LangFeature, 'properties' | 'geometry'> & {
+export type BoundaryFeat = Omit<
+  LangFeature,
+  'properties' | 'geometry' | 'source'
+> & {
   geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon
   properties: { Name: string; ID: number }
+  source: 'neighorhoods' | 'counties'
 }
 
 export type MapEvent = Omit<PointerEvent, 'features'> & {
@@ -148,11 +152,9 @@ export type BoundsConfig = {
 }
 
 export type MbBoundaryLookup = {
-  [key: string]: {
-    feature_id: number
-    centroid: [number, number]
-    bounds: [number, number, number, number]
-    name?: string // neighb and county have it, but `names` is ideal in counties
-    names?: { en: string[] } // only counties has this
-  }
+  feature_id: number
+  centroid: [number, number]
+  bounds: [number, number, number, number]
+  name?: string // neighb and county have it, but `names` is ideal in counties
+  names?: { en: string[] } // only counties has this
 }

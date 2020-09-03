@@ -1,4 +1,5 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
+import { useQuery } from 'react-query'
 import { useHistory } from 'react-router-dom'
 import {
   AttributionControl,
@@ -59,7 +60,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
   const history = useHistory()
   const { state, dispatch } = useContext(GlobalContext)
   const mapRef: React.RefObject<InteractiveMap> = React.createRef()
-  const { selFeatAttribs, mapLoaded, langFeatIDs } = state
+  const { selFeatAttribs, mapLoaded } = state
   const theme = useTheme()
   const [isDesktop, setIsDesktop] = useState<boolean>(false)
   const { width, height } = useWindowResize()
@@ -69,6 +70,11 @@ export const Map: FC<MapTypes.MapComponent> = ({
   const [tooltipOpen, setTooltipOpen] = useState<MapTypes.MapTooltip | null>(
     null
   )
+  const lookups = {
+    counties: useQuery<MapTypes.MbBoundaryLookup[]>(countiesSrcId).data,
+    neighborhoods: useQuery<MapTypes.MbBoundaryLookup[]>(neighSrcId).data,
+  }
+
   /* eslint-disable react-hooks/exhaustive-deps */
   // ^^^^^ otherwise it wants things like mapRef and dispatch 24/7
   // Set the offset for transitions like `flyTo` and `easeTo`
@@ -88,8 +94,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
     const map: MbMap = mapRef.current.getMap()
     const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
 
-    utils.filterLayersByFeatIDs(map, currentLayerNames, langFeatIDs)
-  }, [langFeatIDs])
+    utils.filterLayersByFeatIDs(map, currentLayerNames, state.langFeatIDs)
+  }, [state.langFeatIDs])
 
   // TODO: put in... legend?
   useEffect((): void => {
@@ -250,8 +256,15 @@ export const Map: FC<MapTypes.MapComponent> = ({
     if (isBoundary) {
       const map: MbMap = mapRef.current.getMap()
       const boundsConfig = { width, height, isDesktop, mapOffset }
+      const lookup = lookups[topFeat.source as 'neighborhoods' | 'counties']
 
-      events.handleBoundaryClick(map, topFeat, boundsConfig, selFeatAttribs)
+      events.handleBoundaryClick(
+        map,
+        topFeat,
+        boundsConfig,
+        selFeatAttribs,
+        lookup
+      )
     } else {
       const langFeat = topFeat as MapTypes.LangFeature
 
