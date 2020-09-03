@@ -20,7 +20,7 @@ import { useWindowResize } from '../../utils'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    popoverContent: { padding: '1em', width: 300 },
+    popoverContent: { padding: '1em', width: 310 },
     popoverContentText: { marginBottom: '.75em', fontSize: '0.8em' },
     layersMenuPaper: { overflow: 'visible' },
     switchFormCtrlRoot: {
@@ -141,7 +141,7 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
               size="small"
             />
           }
-          label="Show neighborhoods"
+          label="Show neighborhoods and counties"
         />
         <Geocoder
           containerRef={geocoderContainerRef}
@@ -149,7 +149,7 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
           mapboxApiAccessToken={MAPBOX_TOKEN}
           mapRef={mapRef}
           onResult={handleGeocodeResult}
-          placeholder="Enter a location..."
+          placeholder="Enter a location"
           proximity={NYC_LAT_LONG}
           types="address,poi,postcode,locality,place,neighborhood"
         />

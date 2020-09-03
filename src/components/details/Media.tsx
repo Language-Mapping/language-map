@@ -189,7 +189,6 @@ export const Media: FC<MediaProps> = (props) => {
       <ul className={classes.mediaRoot}>
         {config.map((item) => (
           <MediaListItem
-            // @ts-ignore
             key={item.label}
             disabled={props[item.type] === ''}
             {...item}
@@ -198,7 +197,8 @@ export const Media: FC<MediaProps> = (props) => {
         ))}
         <MediaListItem
           {...{ label: 'Share', icon: <FiShare />, type: 'share' }}
-          handleClick={() => null}
+          // eslint-disable-next-line no-alert
+          handleClick={() => alert('share not ready yet!')}
         />
       </ul>
     </>
