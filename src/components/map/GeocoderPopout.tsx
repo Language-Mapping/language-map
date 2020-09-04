@@ -13,7 +13,7 @@ import Geocoder from 'react-map-gl-geocoder'
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 import { GlobalContext } from 'components'
-import { flyToCoords, getWebMercSettings } from './utils'
+import { getWebMercSettings } from './utils'
 import { MapCtrlBtnsProps, GeocodeResult } from './types'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
@@ -73,9 +73,16 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
   const handleGeocodeResult = (geocodeResult: GeocodeResult) => {
     handleLayersMenuClose()
 
+    const { center, bbox } = geocodeResult.result
+
     if (!mapRef.current) return
 
-    const { center, bbox } = geocodeResult.result
+    const map: Map = mapRef.current.getMap()
+
+    const geocodeMarkerLatLon = {
+      latitude: center[1],
+      longitude: center[0],
+    }
 
     if (bbox) {
       const { latitude, longitude, zoom } = getWebMercSettings(
@@ -86,14 +93,16 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
         [
           [bbox[0], bbox[1]],
           [bbox[2], bbox[3]],
-        ]
+        ],
+        /* eslint-disable operator-linebreak */
+        isDesktop
+          ? { top: 60, bottom: 60, right: 60, left: 60 + mapOffset[0] * 2 }
+          : { top: 30, bottom: height / 2 + 30, left: 30, right: 30 }
+        /* eslint-enable operator-linebreak */
       )
-
-      const map: Map = mapRef.current.getMap()
 
       map.flyTo(
         {
-          // Not THAT essential if you... don't like cool things
           essential: true,
           center: { lng: longitude, lat: latitude },
           zoom,
@@ -101,15 +110,21 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
         {
           forceViewportUpdate: true,
           selFeatAttribs: state.selFeatAttribs,
-          fromPoly: true,
+          geocodeMarkerLatLon,
         }
       )
     } else {
-      flyToCoords(
-        mapRef.current.getMap(),
-        { latitude: center[1], longitude: center[0], zoom: 15 },
-        mapOffset,
-        state.selFeatAttribs
+      map.flyTo(
+        {
+          essential: true,
+          center: { lng: center[1], lat: center[0] },
+          zoom: 15,
+        },
+        {
+          forceViewportUpdate: true,
+          selFeatAttribs: state.selFeatAttribs,
+          geocodeMarkerLatLon,
+        }
       )
     }
   }

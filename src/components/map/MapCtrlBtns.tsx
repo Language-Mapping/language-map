@@ -81,7 +81,13 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
   return (
     <>
       <GeocoderPopout
-        {...{ anchorEl, setAnchorEl, mapOffset, mapRef, isDesktop }}
+        {...{
+          anchorEl,
+          setAnchorEl,
+          mapOffset,
+          mapRef,
+          isDesktop,
+        }}
       />
       <SpeedDial
         ariaLabel="Map control buttons"

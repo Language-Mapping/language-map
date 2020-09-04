@@ -8,8 +8,9 @@ import {
   VectorSource,
   LngLatBoundsLike,
 } from 'mapbox-gl'
-import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
+import MapGL, { Marker, InteractiveMap, MapLoadEvent } from 'react-map-gl'
 import { useTheme } from '@material-ui/core/styles'
+import { IoIosPin } from 'react-icons/io'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
@@ -25,6 +26,7 @@ import * as MapTypes from './types'
 import * as utils from './utils'
 import * as config from './config'
 import * as events from './events'
+
 import { LangRecordSchema } from '../../context/types'
 import {
   getIDfromURLparams,
@@ -59,7 +61,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
 }) => {
   const history = useHistory()
   const { state, dispatch } = useContext(GlobalContext)
-  const mapRef: React.RefObject<InteractiveMap> = React.createRef()
+  const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
   const { selFeatAttribs, mapLoaded } = state
   const theme = useTheme()
   const [isDesktop, setIsDesktop] = useState<boolean>(false)
@@ -71,6 +73,10 @@ export const Map: FC<MapTypes.MapComponent> = ({
   const [tooltipOpen, setTooltipOpen] = useState<MapTypes.MapTooltip | null>(
     null
   )
+  const [geocodeMarker, setGeocodeMarker] = useState<null | {
+    longitude: number
+    latitude: number
+  }>()
   const lookups = {
     counties: useQuery<MapTypes.MbBoundaryLookup[]>(countiesSrcId).data,
     neighborhoods: useQuery<MapTypes.MbBoundaryLookup[]>(neighSrcId).data,
@@ -221,34 +227,50 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
     // Close popup on the start of moving so no jank
     map.on('movestart', function onMoveStart(zoomEndEvent) {
+      if (zoomEndEvent.geocodeMarkerLatLon) setGeocodeMarker(null)
       if (zoomEndEvent.selFeatAttribs || zoomEndEvent.popupBasics)
         setPopupVisible(false)
     })
 
     map.on('zoomend', function onMoveEnd(zoomEndEvent) {
-      const { selFeatAttribs: attribs, popupBasics } = zoomEndEvent as {
+      const {
+        selFeatAttribs: attribs,
+        popupBasics,
+        geocodeMarkerLatLon,
+      } = zoomEndEvent as {
         selFeatAttribs?: LangRecordSchema
         popupBasics?: MapTypes.PopupClean
+        geocodeMarkerLatLon?: {
+          latitude: number
+          longitude: number
+        }
       }
 
-      if (!map.isMoving()) {
-        if (attribs) {
-          setPopupVisible(true)
-          setPopupContent({
-            latitude: attribs.Latitude,
-            longitude: attribs.Longitude,
-            ...utils.prepSelLangFeatPopup(attribs),
-          })
-        } else if (popupBasics) {
-          setPopupVisible(true)
-          setPopupContent({ ...popupBasics })
-        }
+      if (map.isMoving()) return
+
+      if (attribs) {
+        setPopupVisible(true)
+        setPopupContent({
+          latitude: attribs.Latitude,
+          longitude: attribs.Longitude,
+          ...utils.prepSelLangFeatPopup(attribs),
+        })
+      } else if (popupBasics) {
+        setPopupVisible(true)
+        setPopupContent({ ...popupBasics })
+      }
+
+      if (geocodeMarkerLatLon) {
+        setGeocodeMarker(geocodeMarkerLatLon)
       }
     })
   }
 
   function onNativeClick(event: MapTypes.MapEvent): void {
     if (!mapRef || !mapRef.current || !mapLoaded) return
+
+    // Clear geocoder marker
+    setGeocodeMarker(null)
 
     const { features } = event
     const sourcesToCheck = [langSrcID, neighSrcId, countiesSrcId]
@@ -375,33 +397,34 @@ export const Map: FC<MapTypes.MapComponent> = ({
         onHover={onHover}
         onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
       >
-        {symbLayers && labelLayers && (
+        {geocodeMarker && (
+          <Marker {...geocodeMarker} className="geocode-marker">
+            <IoIosPin />
+          </Marker>
+        )}
+        {symbLayers && state.neighbLayerVisible && (
           <>
-            {/* TODO: put back!! */}
-            {/* {symbLayers && ( */}
-            {symbLayers && state.neighbLayerVisible && (
-              <>
-                {[neighbConfig, countiesConfig].map((boundaryConfig) => (
-                  <BoundariesLayer
-                    key={boundaryConfig.source.id}
-                    {...boundaryConfig}
-                    beforeId={
-                      /* eslint-disable operator-linebreak */
-                      state.legendItems.length
-                        ? state.legendItems[0].legendLabel
-                        : ''
-                      /* eslint-enable operator-linebreak */
-                    }
-                  />
-                ))}
-              </>
-            )}
-            <LangMbSrcAndLayer
-              {...{ symbLayers, labelLayers }}
-              activeLangSymbGroupId={state.activeLangSymbGroupId}
-              activeLangLabelId={state.activeLangLabelId}
-            />
+            {[neighbConfig, countiesConfig].map((boundaryConfig) => (
+              <BoundariesLayer
+                key={boundaryConfig.source.id}
+                {...boundaryConfig}
+                beforeId={
+                  /* eslint-disable operator-linebreak */
+                  state.legendItems.length
+                    ? state.legendItems[0].legendLabel
+                    : ''
+                  /* eslint-enable operator-linebreak */
+                }
+              />
+            ))}
           </>
+        )}
+        {symbLayers && labelLayers && (
+          <LangMbSrcAndLayer
+            {...{ symbLayers, labelLayers }}
+            activeLangSymbGroupId={state.activeLangSymbGroupId}
+            activeLangLabelId={state.activeLangLabelId}
+          />
         )}
         {popupVisible && popupContent && (
           <MapPopup

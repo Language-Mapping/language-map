@@ -60,9 +60,9 @@ const neighbPaint = {
   'fill-opacity': [
     'case',
     ['boolean', ['feature-state', 'selected'], false],
-    0.54,
-    ['boolean', ['feature-state', 'hover'], false],
     0.44,
+    ['boolean', ['feature-state', 'hover'], false],
+    0.29,
     0.14,
   ],
 }

@@ -121,11 +121,13 @@ export function handleBoundaryClick(
   const { bounds, name, names, centroid } = matchingRecord
   const text = name || (names ? names.en[0] : '')
   const { width, height, isDesktop, mapOffset } = boundsConfig
+
   const popupBasics: MapTypes.PopupClean = {
     heading: text,
     latitude: centroid[1],
     longitude: centroid[0],
   }
+
   const { latitude, longitude, zoom } = utils.getWebMercSettings(
     width,
     height,

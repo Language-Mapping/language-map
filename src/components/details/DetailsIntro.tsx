@@ -66,6 +66,7 @@ export const DetailsIntro: FC = () => {
           startIcon={<TiDocumentDelete />}
           disabled={!state.selFeatAttribs}
           onClick={() =>
+            // TODO: can't this just be a route to `/details` ???
             dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
           }
         >

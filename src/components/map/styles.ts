@@ -56,6 +56,10 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& .mapboxgl-popup-content': {
         backgroundColor: theme.palette.background.paper,
       },
+      '& .geocode-marker': {
+        color: theme.palette.primary.main,
+        fontSize: 24,
+      },
     },
     // The actual map container
     mapItselfWrap: {
