@@ -20,9 +20,10 @@ export function onHover(
 ): void {
   const { features, target } = event
   const topMostFeat = features[0]
-  const oneOfOurs = [langSrcID, neighSrcId, countiesSrcId].includes(
-    topMostFeat.source
-  )
+  const oneOfOurs =
+    topMostFeat &&
+    topMostFeat.source &&
+    [langSrcID, neighSrcId, countiesSrcId].includes(topMostFeat.source)
 
   // Close tooltip no matter what
   setTooltipOpen(null)
@@ -93,6 +94,7 @@ export function handleBoundaryClick(
     source: neighSrcId,
     sourceLayer: neighPolyID,
   })
+  // }, 'hover') // NOTE: could not get this to work properly anywhere
 
   map.removeFeatureState({
     source: countiesSrcId,
@@ -116,8 +118,14 @@ export function handleBoundaryClick(
 
   if (!matchingRecord) return // ya never knowww
 
-  const { bounds } = matchingRecord
+  const { bounds, name, names, centroid } = matchingRecord
+  const text = name || (names ? names.en[0] : '')
   const { width, height, isDesktop, mapOffset } = boundsConfig
+  const popupBasics: MapTypes.PopupClean = {
+    heading: text,
+    latitude: centroid[1],
+    longitude: centroid[0],
+  }
   const { latitude, longitude, zoom } = utils.getWebMercSettings(
     width,
     height,
@@ -141,6 +149,6 @@ export function handleBoundaryClick(
       center: { lng: longitude, lat: latitude },
       zoom,
     },
-    { selFeatAttribs, forceViewportUpdate: true }
+    { forceViewportUpdate: true, popupBasics }
   )
 }

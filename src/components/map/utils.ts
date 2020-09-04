@@ -3,6 +3,8 @@ import { WebMercatorViewport } from 'react-map-gl'
 
 import { PAGE_HEADER_ID } from 'components/nav/config'
 import * as MapTypes from './types'
+import { LangRecordSchema } from '../../context/types'
+import { prettyTruncateList } from '../../utils'
 
 // One of the problems of using panels which overlap the map is how to deal with
 // "centering", in quotes because it's more "perceived" centering. Offset is
@@ -147,3 +149,20 @@ export const getWebMercSettings = (
 
 export const fetchBoundariesLookup = async (path: string): Promise<void> =>
   (await fetch(path)).json()
+
+export const prepSelLangFeatPopup = (
+  selFeatAttribs: LangRecordSchema
+): { heading: string; subheading: string } => {
+  const {
+    Endonym,
+    Language,
+    Neighborhoods,
+    'Font Image Alt': altImage,
+  } = selFeatAttribs
+
+  // For image-only endos, show language (not much room for pic)
+  const heading = altImage ? Language : Endonym
+  const subheading = Neighborhoods ? prettyTruncateList(Neighborhoods) : ''
+
+  return { heading, subheading }
+}

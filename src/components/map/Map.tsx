@@ -66,7 +66,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
   const { width, height } = useWindowResize()
   const [viewport, setViewport] = useState(config.initialMapState)
   const [mapOffset, setMapOffset] = useState<[number, number]>([0, 0])
-  const [popupOpen, setPopupOpen] = useState<MapTypes.MapPopup | null>(null)
+  const [popupVisible, setPopupVisible] = useState<boolean>(false)
+  const [popupContent, setPopupContent] = useState<MapTypes.PopupClean>()
   const [tooltipOpen, setTooltipOpen] = useState<MapTypes.MapTooltip | null>(
     null
   )
@@ -220,18 +221,27 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
     // Close popup on the start of moving so no jank
     map.on('movestart', function onMoveStart(zoomEndEvent) {
-      if (zoomEndEvent.selFeatAttribs) setPopupOpen(null)
+      if (zoomEndEvent.selFeatAttribs) setPopupVisible(false)
     })
 
     map.on('zoomend', function onMoveEnd(zoomEndEvent) {
-      const { selFeatAttribs: attribs } = zoomEndEvent
+      const { selFeatAttribs: attribs, popupBasics } = zoomEndEvent as {
+        selFeatAttribs?: LangRecordSchema
+        popupBasics?: MapTypes.PopupClean
+      }
 
-      if (attribs && !map.isMoving()) {
-        setPopupOpen({
-          latitude: attribs.Latitude,
-          longitude: attribs.Longitude,
-          selFeatAttribs: attribs,
-        })
+      if (!map.isMoving()) {
+        if (attribs) {
+          setPopupVisible(true)
+          setPopupContent({
+            latitude: attribs.Latitude,
+            longitude: attribs.Longitude,
+            ...utils.prepSelLangFeatPopup(attribs),
+          })
+        } else if (popupBasics) {
+          setPopupVisible(true)
+          setPopupContent({ ...popupBasics })
+        }
       }
     })
   }
@@ -279,7 +289,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
     // `id=-1`. Still not the greatest so keep an eye out for a better solution.
 
     setTooltipOpen(null) // super annoying if tooltip stays intact after a click
-    setPopupOpen(null) // closed by movestate anyway, but smoother this way
+    setPopupVisible(false) // closed by movestart anyway, but smoother this way
   }
 
   // Assumes map is ready
@@ -360,8 +370,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
         {symbLayers && labelLayers && (
           <>
             {/* TODO: put back!! */}
-            {/* symbLayers && state.neighbLayerVisible &&  */}
-            {symbLayers && (
+            {/* {symbLayers && ( */}
+            {symbLayers && state.neighbLayerVisible && (
               <>
                 {[neighbConfig, countiesConfig].map((boundaryConfig) => (
                   <BoundariesLayer
@@ -385,8 +395,14 @@ export const Map: FC<MapTypes.MapComponent> = ({
             />
           </>
         )}
-        {selFeatAttribs && popupOpen && (
-          <MapPopup {...popupOpen} {...{ setPopupOpen, selFeatAttribs }} />
+        {popupVisible && popupContent && (
+          <MapPopup
+            latitude={popupContent.latitude}
+            longitude={popupContent.longitude}
+            heading={popupContent.heading}
+            subheading={popupContent.subheading}
+            setPopupVisible={setPopupVisible}
+          />
         )}
         {isDesktop && tooltipOpen && (
           <MapTooltip setTooltipOpen={setTooltipOpen} {...tooltipOpen} />

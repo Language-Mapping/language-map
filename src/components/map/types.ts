@@ -89,8 +89,6 @@ export type MapPanel = {
   path: RouteLocation
 }
 
-export type MapPopup = LongLat & { selFeatAttribs: LangRecordSchema }
-
 export type MapTooltip = LongLat & {
   heading: string
   subHeading: string
@@ -157,4 +155,11 @@ export type MbBoundaryLookup = {
   bounds: [number, number, number, number]
   name?: string // neighb and county have it, but `names` is ideal in counties
   names?: { en: string[] } // only counties has this
+}
+
+export type PopupClean = {
+  heading: string
+  latitude: number
+  longitude: number
+  subheading?: string
 }

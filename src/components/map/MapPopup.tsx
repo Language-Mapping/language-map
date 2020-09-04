@@ -3,11 +3,10 @@ import { Popup } from 'react-map-gl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
-import { MapPopup as MapPopupType } from './types'
-import { prettyTruncateList } from '../../utils'
+import * as MapTypes from './types'
 
-type MapPopupComponent = MapPopupType & {
-  setPopupOpen: React.Dispatch<MapPopupType | null>
+type MapPopupComponent = MapTypes.PopupClean & {
+  setPopupVisible: React.Dispatch<boolean>
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -29,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
         color: theme.palette.text.hint,
       },
     },
-    heading: {
+    popupHeading: {
       lineHeight: 1.2,
     },
     subHeading: {
@@ -41,14 +40,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const MapPopup: FC<MapPopupComponent> = (props) => {
   const classes = useStyles()
-  const { longitude, latitude, setPopupOpen, selFeatAttribs } = props
-  const { mapPopupRoot, heading, subHeading } = classes
-  const {
-    Endonym,
-    Language,
-    Neighborhoods,
-    'Font Image Alt': altImage,
-  } = selFeatAttribs
+  const { longitude, latitude, setPopupVisible, heading, subheading } = props
+  const { mapPopupRoot, popupHeading, subHeading } = classes
 
   // NOTE: the longest non-url language or endonym so far is:
   // Cameroonian Pidgin English
@@ -61,18 +54,13 @@ export const MapPopup: FC<MapPopupComponent> = (props) => {
       latitude={latitude}
       closeOnClick={false} // TODO: fix this madness
       className={mapPopupRoot}
-      onClose={() => setPopupOpen(null)}
+      onClose={() => setPopupVisible(false)}
     >
       <header>
-        <Typography variant="h6" component="h3" className={heading}>
-          {/* For image-only endos, show language (not much room for pic) */}
-          {altImage ? Language : Endonym}
+        <Typography variant="h6" component="h3" className={popupHeading}>
+          {heading}
         </Typography>
-        {Neighborhoods && (
-          <small className={subHeading}>
-            {prettyTruncateList(Neighborhoods)}
-          </small>
-        )}
+        {subheading && <small className={subHeading}>{subheading}</small>}
       </header>
     </Popup>
   )
