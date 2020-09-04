@@ -221,7 +221,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
     // Close popup on the start of moving so no jank
     map.on('movestart', function onMoveStart(zoomEndEvent) {
-      if (zoomEndEvent.selFeatAttribs) setPopupVisible(false)
+      if (zoomEndEvent.selFeatAttribs || zoomEndEvent.popupBasics)
+        setPopupVisible(false)
     })
 
     map.on('zoomend', function onMoveEnd(zoomEndEvent) {
@@ -310,14 +311,18 @@ export const Map: FC<MapTypes.MapComponent> = ({
       config.initialBounds
     )
 
-    // Don't really need the `flyToCoords` util for this first one
     map.flyTo(
       {
         essential: true, // not THAT essential if you... don't like cool things
         zoom,
         center: { lng: longitude, lat: latitude },
       },
-      { selFeatAttribs, forceViewportUpdate: true }
+      {
+        // Total hack
+        selFeatAttribs: popupContent ? null : selFeatAttribs,
+        forceViewportUpdate: true,
+        popupBasics: popupContent,
+      }
     )
   }
 
@@ -335,15 +340,18 @@ export const Map: FC<MapTypes.MapComponent> = ({
       const map: MbMap = mapRef.current.getMap()
       const { zoom } = viewport
 
-      utils.flyToCoords(
-        map,
+      map.flyTo(
         {
-          ...viewport,
+          essential: true, // not THAT essential if you... don't like cool things
           zoom: actionID === 'in' ? zoom + 1 : zoom - 1,
-          disregardCurrZoom: true,
+          center: map.getCenter(),
         },
-        [0, 0],
-        selFeatAttribs
+        {
+          // Total hack
+          selFeatAttribs: popupContent ? null : selFeatAttribs,
+          forceViewportUpdate: true,
+          popupBasics: popupContent,
+        }
       )
     }
   }
