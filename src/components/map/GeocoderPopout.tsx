@@ -13,7 +13,7 @@ import Geocoder from 'react-map-gl-geocoder'
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 import { GlobalContext } from 'components'
-import { getWebMercSettings } from './utils'
+import { getWebMercViewport } from './utils'
 import { MapCtrlBtnsProps, GeocodeResult } from './types'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
@@ -85,21 +85,21 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
     }
 
     if (bbox) {
-      const { latitude, longitude, zoom } = getWebMercSettings(
+      const { latitude, longitude, zoom } = getWebMercViewport({
         width,
         height,
         isDesktop,
         mapOffset,
-        [
+        bounds: [
           [bbox[0], bbox[1]],
           [bbox[2], bbox[3]],
         ],
         /* eslint-disable operator-linebreak */
-        isDesktop
+        padding: isDesktop
           ? { top: 60, bottom: 60, right: 60, left: 60 + mapOffset[0] * 2 }
-          : { top: 30, bottom: height / 2 + 30, left: 30, right: 30 }
+          : { top: 30, bottom: height / 2 + 30, left: 30, right: 30 },
         /* eslint-enable operator-linebreak */
-      )
+      })
 
       map.flyTo(
         {

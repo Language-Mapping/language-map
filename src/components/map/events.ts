@@ -78,13 +78,12 @@ export function onHover(
   }
 }
 
-export function handleBoundaryClick(
-  map: Map,
-  topMostFeat: MapTypes.LangFeature | MapTypes.BoundaryFeat,
-  boundsConfig: MapTypes.BoundsConfig,
-  selFeatAttribs: null | LangRecordSchema,
-  lookup?: MapTypes.MbBoundaryLookup[]
-): void {
+export const handleBoundaryClick: MapTypes.HandleBoundaryClick = (
+  map,
+  topMostFeat,
+  boundsConfig,
+  lookup
+) => {
   const boundaryFeat = topMostFeat as MapTypes.BoundaryFeat
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // TODO: defeat
@@ -122,27 +121,27 @@ export function handleBoundaryClick(
   const text = name || (names ? names.en[0] : '')
   const { width, height, isDesktop, mapOffset } = boundsConfig
 
-  const popupBasics: MapTypes.PopupClean = {
+  const popupBasics: MapTypes.PopupSettings = {
     heading: text,
     latitude: centroid[1],
     longitude: centroid[0],
   }
 
-  const { latitude, longitude, zoom } = utils.getWebMercSettings(
+  const { latitude, longitude, zoom } = utils.getWebMercViewport({
     width,
     height,
     isDesktop,
     mapOffset,
-    [
+    bounds: [
       [bounds[0], bounds[1]],
       [bounds[2], bounds[3]],
     ],
     /* eslint-disable operator-linebreak */
-    isDesktop
+    padding: isDesktop
       ? { top: 60, bottom: 60, right: 60, left: 60 + mapOffset[0] * 2 }
-      : { top: 30, bottom: height / 2 + 30, left: 30, right: 30 }
+      : { top: 30, bottom: height / 2 + 30, left: 30, right: 30 },
     /* eslint-enable operator-linebreak */
-  )
+  })
 
   map.flyTo(
     {

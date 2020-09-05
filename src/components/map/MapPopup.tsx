@@ -5,7 +5,7 @@ import { Typography } from '@material-ui/core'
 
 import * as MapTypes from './types'
 
-type MapPopupComponent = MapTypes.PopupClean & {
+type MapPopupComponent = MapTypes.PopupSettings & {
   setPopupVisible: React.Dispatch<boolean>
 }
 

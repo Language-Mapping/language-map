@@ -5,6 +5,8 @@ import {
   LayerProps,
 } from 'react-map-gl'
 import {
+  LngLatLike,
+  MapEventType,
   CircleLayout,
   CirclePaint,
   Map,
@@ -16,17 +18,13 @@ import * as GeoJSON from 'geojson'
 import { LangRecordSchema } from 'context/types'
 
 export type Baselayer = 'dark' | 'light' // assumes using Mapbox style
-export type BoundaryConfig = {
-  source: SourceWithPromoteID
-  layers: Layer[]
-  lookupPath: string
-}
 export type BoundsArray = [[number, number], [number, number]]
 export type LangIconConfig = { icon: string; id: string }
 export type Layer = LayerProps & { 'source-layer': string }
 export type LongLat = { longitude: number; latitude: number }
+export type LongLatAndZoom = LongLat & { zoom: number }
 export type MapControlAction = 'home' | 'in' | 'out' | 'info' | 'loc-search'
-export type MapViewportState = { zoom: number } & LongLat
+export type MapViewportState = LongLatAndZoom
 
 // TODO: 1. enforce in all relevant spots, 2. mv into context/types
 export type RouteLocation = '/' | '/details' | '/table' | '/about' | '/glossary'
@@ -44,6 +42,12 @@ export type LayerPropsPlusMeta = Omit<
   type: 'circle' | 'symbol' | 'background'
   layout: CircleLayout | SymbolLayout
   paint: CirclePaint | SymbolPaint
+}
+
+export type BoundaryConfig = {
+  source: SourceWithPromoteID
+  layers: Layer[]
+  lookupPath: string
 }
 
 // Same but only circle or symbol types
@@ -101,6 +105,10 @@ export type MapComponent = {
   labelLayers: LayerPropsNonBGlayer[]
 }
 
+export type GetWebMercSettings = (
+  settings: Omit<BoundsConfig, 'bounds'> & { bounds: BoundsArray }
+) => LongLatAndZoom
+
 export type FlyToCoords = (
   map: Map,
   settings: {
@@ -109,6 +117,12 @@ export type FlyToCoords = (
   } & LongLat,
   offset: [number, number],
   selFeatAttribs: LangRecordSchema | null
+) => void
+
+export type FlySomewhereGracefully = (
+  map: Map,
+  settings: BoundsConfig,
+  popupContent: PopupContent | null
 ) => void
 
 export type UseStyleProps = {
@@ -147,6 +161,8 @@ export type BoundsConfig = {
   isDesktop: boolean
   mapOffset: [number, number]
   width: number
+  bounds?: BoundsArray
+  padding?: { top: number; bottom: number; left: number; right: number }
 }
 
 export type MbBoundaryLookup = {
@@ -157,9 +173,33 @@ export type MbBoundaryLookup = {
   names?: { en: string[] } // only counties has this
 }
 
-export type PopupClean = {
+export type PopupContent = {
   heading: string
-  latitude: number
-  longitude: number
   subheading?: string
 }
+
+export type PopupSettings = PopupContent & LongLat
+
+export type CustomEventData = MapEventType & {
+  popupSettings: PopupSettings | null
+  forceViewportUpdate?: boolean | true
+  geocodeMarkerLatLon?: LongLat
+}
+
+export type PrepPopupContent = (
+  selFeatAttribs: LangRecordSchema | null,
+  popupHeading: string | null
+) => PopupContent | null
+
+export type HandleBoundaryClick = (
+  map: Map,
+  topMostFeat: LangFeature | BoundaryFeat,
+  boundsConfig: BoundsConfig,
+  lookup?: MbBoundaryLookup[]
+) => void
+
+export type JustFly = (
+  map: Map,
+  settings: LongLatAndZoom & { offset?: [number, number]; around?: LngLatLike },
+  popupContent: PopupContent | null
+) => void

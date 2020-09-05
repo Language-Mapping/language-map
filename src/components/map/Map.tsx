@@ -69,7 +69,10 @@ export const Map: FC<MapTypes.MapComponent> = ({
   const [viewport, setViewport] = useState(config.initialMapState)
   const [mapOffset, setMapOffset] = useState<[number, number]>([0, 0])
   const [popupVisible, setPopupVisible] = useState<boolean>(false)
-  const [popupContent, setPopupContent] = useState<MapTypes.PopupClean>()
+  const [
+    popupSettings,
+    setPopupSettings,
+  ] = useState<MapTypes.PopupSettings | null>(null)
   const [tooltipOpen, setTooltipOpen] = useState<MapTypes.MapTooltip | null>(
     null
   )
@@ -139,11 +142,10 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
     setSelFeatState(map, ID, true)
 
-    utils.flyToCoords(
+    utils.justFly(
       map,
       { latitude, longitude, zoom: 12 },
-      mapOffset,
-      selFeatAttribs
+      utils.prepPopupContent(selFeatAttribs, null)
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selFeatAttribs, mapLoaded])
@@ -232,32 +234,17 @@ export const Map: FC<MapTypes.MapComponent> = ({
         setPopupVisible(false)
     })
 
-    map.on('zoomend', function onMoveEnd(zoomEndEvent) {
+    map.on('zoomend', function onMoveEnd(customEventData) {
       const {
-        selFeatAttribs: attribs,
-        popupBasics,
+        popupSettings: popupParams,
         geocodeMarkerLatLon,
-      } = zoomEndEvent as {
-        selFeatAttribs?: LangRecordSchema
-        popupBasics?: MapTypes.PopupClean
-        geocodeMarkerLatLon?: {
-          latitude: number
-          longitude: number
-        }
-      }
+      } = customEventData
 
       if (map.isMoving()) return
 
-      if (attribs) {
+      if (popupParams) {
         setPopupVisible(true)
-        setPopupContent({
-          latitude: attribs.Latitude,
-          longitude: attribs.Longitude,
-          ...utils.prepSelLangFeatPopup(attribs),
-        })
-      } else if (popupBasics) {
-        setPopupVisible(true)
-        setPopupContent({ ...popupBasics })
+        setPopupSettings(popupParams)
       }
 
       if (geocodeMarkerLatLon) {
@@ -278,7 +265,6 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
     // Nothing under the click, or nothing we care about
     if (!topFeat || !sourcesToCheck.includes(topFeat.source)) {
-      // Clear sel feat no matter what
       dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
 
       return
@@ -291,13 +277,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
       const boundsConfig = { width, height, isDesktop, mapOffset }
       const lookup = lookups[topFeat.source as 'neighborhoods' | 'counties']
 
-      events.handleBoundaryClick(
-        map,
-        topFeat,
-        boundsConfig,
-        selFeatAttribs,
-        lookup
-      )
+      events.handleBoundaryClick(map, topFeat, boundsConfig, lookup)
     } else {
       const langFeat = topFeat as MapTypes.LangFeature
 
@@ -325,27 +305,37 @@ export const Map: FC<MapTypes.MapComponent> = ({
     if (!mapRef.current) return
 
     const map: MbMap = mapRef.current.getMap()
-    const { latitude, longitude, zoom } = utils.getWebMercSettings(
+
+    utils.justFly(
+      map,
+      getWebMercShtuff(config.initialBounds),
+      getPopupContent()
+    )
+  }
+
+  function getPopupContent() {
+    const content = utils.prepPopupContent(
+      selFeatAttribs,
+      popupSettings ? popupSettings.heading : null
+    )
+
+    if (content) {
+      return { heading: content.heading, subheading: content.subheading }
+    }
+
+    return null
+  }
+
+  function getWebMercShtuff(
+    boundsToFit: MapTypes.BoundsArray
+  ): MapTypes.LongLatAndZoom {
+    return utils.getWebMercViewport({
       width,
       height,
       isDesktop,
       mapOffset,
-      config.initialBounds
-    )
-
-    map.flyTo(
-      {
-        essential: true, // not THAT essential if you... don't like cool things
-        zoom,
-        center: { lng: longitude, lat: latitude },
-      },
-      {
-        // Total hack
-        selFeatAttribs: popupContent ? null : selFeatAttribs,
-        forceViewportUpdate: true,
-        popupBasics: popupContent,
-      }
-    )
+      bounds: boundsToFit,
+    })
   }
 
   // TODO: into utils if it doesn't require passing 1000 args
@@ -360,20 +350,32 @@ export const Map: FC<MapTypes.MapComponent> = ({
       // Assumes `in` or `out` from here down...
 
       const map: MbMap = mapRef.current.getMap()
-      const { zoom } = viewport
+      const { zoom, latitude, longitude } = viewport
 
-      map.flyTo(
+      const newWidth = width - mapOffset[0] * 2
+      const newHeight = height - mapOffset[1] * 2
+      const pos = [newWidth / 2, newHeight / 2] as [number, number]
+
+      // Basically create a behind-the-scenes viewport based on the dimensions
+      // and position of the perceived available viewport.
+      const pseudoViewportCenter = utils.getWebMercMapCenter({
+        lngLat: [longitude, latitude],
+        pos,
+        width: newWidth,
+        height: height - mapOffset[1] * 2,
+        zoom,
+      })
+
+      utils.justFly(
+        map,
         {
-          essential: true, // not THAT essential if you... don't like cool things
+          around: pseudoViewportCenter,
+          latitude: pseudoViewportCenter[1],
+          longitude: pseudoViewportCenter[0],
+          offset: mapOffset,
           zoom: actionID === 'in' ? zoom + 1 : zoom - 1,
-          center: map.getCenter(),
         },
-        {
-          // Total hack
-          selFeatAttribs: popupContent ? null : selFeatAttribs,
-          forceViewportUpdate: true,
-          popupBasics: popupContent,
-        }
+        getPopupContent()
       )
     }
   }
@@ -426,14 +428,8 @@ export const Map: FC<MapTypes.MapComponent> = ({
             activeLangLabelId={state.activeLangLabelId}
           />
         )}
-        {popupVisible && popupContent && (
-          <MapPopup
-            latitude={popupContent.latitude}
-            longitude={popupContent.longitude}
-            heading={popupContent.heading}
-            subheading={popupContent.subheading}
-            setPopupVisible={setPopupVisible}
-          />
+        {popupVisible && popupSettings && (
+          <MapPopup {...popupSettings} setPopupVisible={setPopupVisible} />
         )}
         {isDesktop && tooltipOpen && (
           <MapTooltip setTooltipOpen={setTooltipOpen} {...tooltipOpen} />

@@ -3,7 +3,6 @@ import { WebMercatorViewport } from 'react-map-gl'
 
 import { PAGE_HEADER_ID } from 'components/nav/config'
 import * as MapTypes from './types'
-import { LangRecordSchema } from '../../context/types'
 import { prettyTruncateList } from '../../utils'
 
 // One of the problems of using panels which overlap the map is how to deal with
@@ -76,8 +75,8 @@ export const addLangTypeIconsToMap = (
   map: Map,
   iconsConfig: MapTypes.LangIconConfig[]
 ): void => {
-  iconsConfig.forEach((config) => {
-    const { id, icon } = config
+  iconsConfig.forEach((iconConfig) => {
+    const { id, icon } = iconConfig
 
     if (map.hasImage(id)) {
       map.removeImage(id)
@@ -126,14 +125,9 @@ export const filterLayersByFeatIDs = (
   })
 }
 
-export const getWebMercSettings = (
-  width: number,
-  height: number,
-  isDesktop: boolean,
-  mapOffset: [number, number],
-  bounds: MapTypes.BoundsArray,
-  padding?: { top: number; bottom: number; left: number; right: number }
-): { latitude: number; longitude: number; zoom: number } => {
+export const getWebMercViewport: MapTypes.GetWebMercSettings = (params) => {
+  const { width, height, isDesktop, mapOffset, bounds, padding } = params
+
   return new WebMercatorViewport({
     width,
     height,
@@ -147,12 +141,37 @@ export const getWebMercSettings = (
   })
 }
 
+type Gar = {
+  lngLat: [number, number]
+  pos: [number, number]
+  width: number
+  height: number
+  zoom: number
+}
+
+export const getWebMercMapCenter = (params: Gar): [number, number] => {
+  // const { width, height, isDesktop, mapOffset, bounds, padding } = params
+  const { lngLat, pos, width, height, zoom } = params
+
+  return new WebMercatorViewport({
+    width,
+    height,
+    latitude: lngLat[1],
+    longitude: lngLat[0],
+    zoom,
+  }).getMapCenterByLngLatPosition({ lngLat, pos })
+}
+
 export const fetchBoundariesLookup = async (path: string): Promise<void> =>
   (await fetch(path)).json()
 
-export const prepSelLangFeatPopup = (
-  selFeatAttribs: LangRecordSchema
-): { heading: string; subheading: string } => {
+export const prepPopupContent: MapTypes.PrepPopupContent = (
+  selFeatAttribs,
+  popupHeading
+) => {
+  if (popupHeading) return { heading: popupHeading }
+  if (!selFeatAttribs) return null
+
   const {
     Endonym,
     Language,
@@ -165,4 +184,30 @@ export const prepSelLangFeatPopup = (
   const subheading = Neighborhoods ? prettyTruncateList(Neighborhoods) : ''
 
   return { heading, subheading }
+}
+
+export const justFly: MapTypes.JustFly = (map, settings, popupContent) => {
+  const { zoom, longitude, latitude, offset, around } = settings
+
+  // // Only zoom to the default if current zoom is higher than that
+  // if (!disregardCurrZoom && targetZoom && currentZoom > targetZoom) {
+  //   zoomToUse = currentZoom
+  // }
+
+  const yo = offset ? { offset } : { center: { lng: longitude, lat: latitude } }
+  /* eslint-disable operator-linebreak */
+  const popupSettings = popupContent
+    ? { latitude, longitude, ...popupContent }
+    : null
+  /* eslint-enable operator-linebreak */
+
+  map.flyTo(
+    {
+      essential: true,
+      zoom,
+      around: around || [longitude, latitude],
+      ...yo,
+    },
+    { forceViewportUpdate: true, popupSettings } as MapTypes.CustomEventData
+  )
 }
