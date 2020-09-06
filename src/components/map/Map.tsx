@@ -1,6 +1,6 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useQuery } from 'react-query'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import {
   AttributionControl,
   Map as MbMap,
@@ -8,13 +8,17 @@ import {
   VectorSource,
   LngLatBoundsLike,
 } from 'mapbox-gl'
-import MapGL, { Marker, InteractiveMap, MapLoadEvent } from 'react-map-gl'
-import { useTheme } from '@material-ui/core/styles'
+import MapGL, {
+  WebMercatorViewport,
+  Marker,
+  InteractiveMap,
+  MapLoadEvent,
+} from 'react-map-gl'
 import { IoIosPin } from 'react-icons/io'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import { GlobalContext, LoadingBackdrop } from 'components'
+import { GlobalContext } from 'components'
 import { initLegend } from 'components/legend/utils'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { MapPopup } from './MapPopup'
@@ -35,7 +39,7 @@ import {
 } from '../../utils'
 
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
-const { neighbConfig, countiesConfig } = config
+const { neighbConfig, countiesConfig, boundariesLayerIDs } = config
 const neighSrcId = neighbConfig.source.id
 const countiesSrcId = countiesConfig.source.id
 
@@ -53,21 +57,17 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
   )
 }
 
-export const Map: FC<MapTypes.MapComponent> = ({
-  symbLayers,
-  labelLayers,
-  baselayer,
-  wrapClassName,
-}) => {
+export const Map: FC<MapTypes.MapComponent> = (props) => {
+  const { symbLayers, labelLayers, baselayer, mapWrapClassName } = props
   const history = useHistory()
+  const loc = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
+  const { width, height } = useWindowResize() // TODO: use viewport?
+  const [isDesktop] = useState<boolean>(false)
+
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
   const { selFeatAttribs, mapLoaded } = state
-  const theme = useTheme()
-  const [isDesktop, setIsDesktop] = useState<boolean>(false)
-  const { width, height } = useWindowResize()
   const [viewport, setViewport] = useState(config.initialMapState)
-  const [mapOffset, setMapOffset] = useState<[number, number]>([0, 0])
   const [popupVisible, setPopupVisible] = useState<boolean>(false)
   const [
     popupSettings,
@@ -85,17 +85,13 @@ export const Map: FC<MapTypes.MapComponent> = ({
     neighborhoods: useQuery<MapTypes.MbBoundaryLookup[]>(neighSrcId).data,
   }
 
+  const interactiveLayerIds = React.useMemo(
+    () => symbLayers.map((symbLayer) => symbLayer.id),
+    [symbLayers]
+  )
+
   /* eslint-disable react-hooks/exhaustive-deps */
   // ^^^^^ otherwise it wants things like mapRef and dispatch 24/7
-  // Set the offset for transitions like `flyTo` and `easeTo`
-  useEffect((): void => {
-    const deskBreakPoint = theme.breakpoints.values.md
-    const wideFella = width >= deskBreakPoint
-    const offset = utils.prepMapOffset(wideFella)
-
-    setIsDesktop(wideFella)
-    setMapOffset(offset)
-  }, [width, height])
 
   // TODO: another file
   useEffect((): void => {
@@ -132,21 +128,35 @@ export const Map: FC<MapTypes.MapComponent> = ({
 
     // Deselect any language features
     clearAllSelFeats(map)
+    setTooltipOpen(null) // super annoying if tooltip stays intact after a click
+    setPopupVisible(false) // closed by movestart anyway, but smoother this way}
 
     if (!selFeatAttribs) return
 
     // NOTE: won't get this far on load even if feature is selected. The timing
     // and order of the whole process prevent that. Make feature appear selected
 
-    const { ID, Latitude: latitude, Longitude: longitude } = selFeatAttribs
+    const { ID, Latitude, Longitude } = selFeatAttribs
 
     setSelFeatState(map, ID, true)
+    // TODO: make this a thing again: `disregardCurrZoom: true`
 
-    utils.justFly(
-      map,
-      { latitude, longitude, zoom: 12 },
-      utils.prepPopupContent(selFeatAttribs, null)
+    map.flyTo(
+      {
+        essential: true,
+        zoom: 14,
+        center: { lon: Longitude, lat: Latitude },
+      },
+      {
+        forceViewportUpdate: true,
+        /* eslint-disable operator-linebreak */
+        popupSettings: popupVisible
+          ? { Latitude, Longitude, ...getPopupContent() }
+          : null,
+        /* eslint-enable operator-linebreak */
+      }
     )
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selFeatAttribs, mapLoaded])
 
@@ -158,9 +168,10 @@ export const Map: FC<MapTypes.MapComponent> = ({
   function onHover(event: MapTypes.MapEvent) {
     if (!mapRef.current || !mapLoaded) return
 
-    const map: MbMap = mapRef.current.getMap()
-
-    events.onHover(event, setTooltipOpen, map)
+    events.onHover(event, setTooltipOpen, mapRef.current.getMap(), {
+      lang: interactiveLayerIds,
+      boundaries: boundariesLayerIDs,
+    })
   }
 
   // Runs only once and kicks off the whole thinig
@@ -230,8 +241,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
     // Close popup on the start of moving so no jank
     map.on('movestart', function onMoveStart(zoomEndEvent) {
       if (zoomEndEvent.geocodeMarkerLatLon) setGeocodeMarker(null)
-      if (zoomEndEvent.selFeatAttribs || zoomEndEvent.popupBasics)
-        setPopupVisible(false)
+      if (zoomEndEvent.popupSettings) setPopupVisible(false)
     })
 
     map.on('zoomend', function onMoveEnd(customEventData) {
@@ -253,46 +263,48 @@ export const Map: FC<MapTypes.MapComponent> = ({
     })
   }
 
-  function onNativeClick(event: MapTypes.MapEvent): void {
-    if (!mapRef || !mapRef.current || !mapLoaded) return
+  function onClick(event: MapTypes.MapEvent): void {
+    if (!mapRef.current || !mapLoaded) return
 
-    // Clear geocoder marker
-    setGeocodeMarker(null)
+    setGeocodeMarker(null) // clear geocoder marker
 
-    const { features } = event
-    const sourcesToCheck = [langSrcID, neighSrcId, countiesSrcId]
-    const topFeat = features[0]
+    const map: MbMap = mapRef.current.getMap()
+    const topLangFeat = utils.langFeatsUnderClick(event.point, map, {
+      lang: interactiveLayerIds,
+    })[0]
 
     // Nothing under the click, or nothing we care about
-    if (!topFeat || !sourcesToCheck.includes(topFeat.source)) {
+    // if (!topFeat || !sourcesToCheck.includes(topFeat.source)) {
+    if (!topLangFeat) {
+      history.push(loc.pathname)
+
       dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
-
-      return
-    }
-
-    const isBoundary = [neighSrcId, countiesSrcId].includes(topFeat.source)
-
-    if (isBoundary) {
-      const map: MbMap = mapRef.current.getMap()
-      const boundsConfig = { width, height, isDesktop, mapOffset }
-      const lookup = lookups[topFeat.source as 'neighborhoods' | 'counties']
-
-      events.handleBoundaryClick(map, topFeat, boundsConfig, lookup)
     } else {
-      const langFeat = topFeat as MapTypes.LangFeature
+      const langFeat = topLangFeat as MapTypes.LangFeature
+      const DETAILS_PATH = '/details' as MapTypes.RouteLocation
 
       // TODO: use `initialEntries` in <MemoryRouter> to test routing
-      history.push(`/details?id=${langFeat.properties.ID}`)
+      history.push(`${DETAILS_PATH}?id=${langFeat.properties.ID}`)
+
+      return // prevent boundary click underneath
     }
 
-    // TODO: rm if not needed
-    // No language features under click, clear the route. Note that this keeps
-    // the `id` in the URL if there is already a selected feature, which feels a
-    // little weird, but it's much better than relying on a dummy route like
-    // `id=-1`. Still not the greatest so keep an eye out for a better solution.
+    const boundariesClicked = map.queryRenderedFeatures(event.point, {
+      layers: boundariesLayerIDs,
+    }) as MapTypes.BoundaryFeat[]
 
-    setTooltipOpen(null) // super annoying if tooltip stays intact after a click
-    setPopupVisible(false) // closed by movestart anyway, but smoother this way
+    if (boundariesClicked.length) {
+      const boundsConfig = { width, height, isDesktop }
+      const lookup =
+        lookups[boundariesClicked[0].source as 'neighborhoods' | 'counties']
+
+      events.handleBoundaryClick(
+        map,
+        boundariesClicked[0],
+        boundsConfig,
+        lookup
+      )
+    }
   }
 
   // Assumes map is ready
@@ -305,11 +317,28 @@ export const Map: FC<MapTypes.MapComponent> = ({
     if (!mapRef.current) return
 
     const map: MbMap = mapRef.current.getMap()
+    const padding = isDesktop ? 50 : 10
+    const webMercViewport = new WebMercatorViewport({
+      width,
+      height,
+    }).fitBounds(config.initialBounds, { padding })
 
-    utils.justFly(
-      map,
-      getWebMercShtuff(config.initialBounds),
-      getPopupContent()
+    const { latitude, longitude, zoom } = webMercViewport
+
+    map.flyTo(
+      {
+        essential: true,
+        zoom,
+        center: { lon: longitude, lat: latitude },
+      },
+      {
+        forceViewportUpdate: true,
+        /* eslint-disable operator-linebreak */
+        popupSettings: popupVisible
+          ? { latitude, longitude, ...getPopupContent() }
+          : null,
+        /* eslint-enable operator-linebreak */
+      }
     )
   }
 
@@ -326,18 +355,6 @@ export const Map: FC<MapTypes.MapComponent> = ({
     return null
   }
 
-  function getWebMercShtuff(
-    boundsToFit: MapTypes.BoundsArray
-  ): MapTypes.LongLatAndZoom {
-    return utils.getWebMercViewport({
-      width,
-      height,
-      isDesktop,
-      mapOffset,
-      bounds: boundsToFit,
-    })
-  }
-
   // TODO: into utils if it doesn't require passing 1000 args
   function onMapCtrlClick(actionID: MapTypes.MapControlAction) {
     if (!mapRef.current) return
@@ -352,50 +369,35 @@ export const Map: FC<MapTypes.MapComponent> = ({
       const map: MbMap = mapRef.current.getMap()
       const { zoom, latitude, longitude } = viewport
 
-      const newWidth = width - mapOffset[0] * 2
-      const newHeight = height - mapOffset[1] * 2
-      const pos = [newWidth / 2, newHeight / 2] as [number, number]
-
-      // Basically create a behind-the-scenes viewport based on the dimensions
-      // and position of the perceived available viewport.
-      const pseudoViewportCenter = utils.getWebMercMapCenter({
-        lngLat: [longitude, latitude],
-        pos,
-        width: newWidth,
-        height: height - mapOffset[1] * 2,
-        zoom,
-      })
-
-      utils.justFly(
-        map,
+      map.flyTo(
         {
-          around: pseudoViewportCenter,
-          latitude: pseudoViewportCenter[1],
-          longitude: pseudoViewportCenter[0],
-          offset: mapOffset,
+          essential: true,
           zoom: actionID === 'in' ? zoom + 1 : zoom - 1,
+          center: { lon: longitude, lat: latitude },
         },
-        getPopupContent()
+        {
+          forceViewportUpdate: true,
+          /* eslint-disable operator-linebreak */
+          popupSettings: popupVisible
+            ? { latitude, longitude, ...getPopupContent() }
+            : null,
+          /* eslint-enable operator-linebreak */
+        }
       )
     }
   }
 
   return (
-    <div className={wrapClassName}>
-      {!mapLoaded && <LoadingBackdrop />}
+    <div className={mapWrapClassName}>
       <MapGL
         {...viewport}
-        className="mb-language-map"
-        clickRadius={4} // much comfier for small points on small screens
+        {...config.mapProps}
         ref={mapRef}
-        height="100%"
-        width="100%"
-        attributionControl={false}
-        mapOptions={{ logoPosition: 'bottom-right' }}
-        mapboxApiAccessToken={config.MAPBOX_TOKEN}
-        mapStyle={config.mbStyleTileConfig.customStyles.light}
+        interactiveLayerIds={boundariesLayerIDs.concat(
+          (state.neighbLayerVisible && interactiveLayerIds) || []
+        )}
         onViewportChange={setViewport}
-        onClick={(event: MapTypes.MapEvent) => onNativeClick(event)}
+        onClick={(event: MapTypes.MapEvent) => onClick(event)}
         onHover={onHover}
         onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
       >
@@ -404,6 +406,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
             <IoIosPin />
           </Marker>
         )}
+        {/* TODO: put back */}
         {symbLayers && state.neighbLayerVisible && (
           <>
             {[neighbConfig, countiesConfig].map((boundaryConfig) => (
@@ -436,7 +439,7 @@ export const Map: FC<MapTypes.MapComponent> = ({
         )}
       </MapGL>
       <MapCtrlBtns
-        {...{ mapRef, mapOffset, isDesktop }}
+        {...{ mapRef, isDesktop }}
         onMapCtrlClick={(actionID: MapTypes.MapControlAction) => {
           onMapCtrlClick(actionID)
         }}

@@ -6,6 +6,7 @@ import {
 } from 'react-map-gl'
 import {
   LngLatLike,
+  MapboxGeoJSONFeature,
   MapEventType,
   CircleLayout,
   CirclePaint,
@@ -20,11 +21,14 @@ import { LangRecordSchema } from 'context/types'
 export type Baselayer = 'dark' | 'light' // assumes using Mapbox style
 export type BoundsArray = [[number, number], [number, number]]
 export type LangIconConfig = { icon: string; id: string }
-export type Layer = LayerProps & { 'source-layer': string }
+export type Layer = LayerProps & { 'source-layer': string; id: string }
 export type LongLat = { longitude: number; latitude: number }
 export type LongLatAndZoom = LongLat & { zoom: number }
 export type MapControlAction = 'home' | 'in' | 'out' | 'info' | 'loc-search'
 export type MapViewportState = LongLatAndZoom
+type Padding =
+  | number
+  | { top: number; bottom: number; left: number; right: number }
 
 // TODO: 1. enforce in all relevant spots, 2. mv into context/types
 export type RouteLocation = '/' | '/details' | '/table' | '/about' | '/glossary'
@@ -36,8 +40,9 @@ export type MetadataGroup = { [mbGroupIdHash: string]: { name: string } }
 // Style API, not the Style Spec.
 export type LayerPropsPlusMeta = Omit<
   LayerProps,
-  'type' | 'paint' | 'layout'
+  'type' | 'paint' | 'layout' | 'id'
 > & {
+  id: string
   metadata: { 'mapbox:group': keyof MetadataGroup }
   type: 'circle' | 'symbol' | 'background'
   layout: CircleLayout | SymbolLayout
@@ -100,24 +105,26 @@ export type MapTooltip = LongLat & {
 
 export type MapComponent = {
   baselayer: Baselayer
-  wrapClassName: string
   symbLayers: LayerPropsNonBGlayer[]
   labelLayers: LayerPropsNonBGlayer[]
+  mapWrapClassName: string
 }
 
-export type GetWebMercSettings = (
-  settings: Omit<BoundsConfig, 'bounds'> & { bounds: BoundsArray }
+export type GetWebMercViewport = (
+  settings: Omit<BoundsConfig, 'bounds'> & {
+    bounds: BoundsArray
+    padding?: Padding
+  }
 ) => LongLatAndZoom
 
-export type FlyToCoords = (
-  map: Map,
-  settings: {
-    zoom?: number | 10.25
-    disregardCurrZoom?: boolean // e.g. when using map controls
-  } & LongLat,
-  offset: [number, number],
-  selFeatAttribs: LangRecordSchema | null
-) => void
+export type GetWebMercCenter = (params: {
+  height: number
+  lngLat: [number, number]
+  pos: [number, number]
+  width: number
+  zoom: number
+  padding?: Padding
+}) => [number, number]
 
 export type FlySomewhereGracefully = (
   map: Map,
@@ -125,10 +132,7 @@ export type FlySomewhereGracefully = (
   popupContent: PopupContent | null
 ) => void
 
-export type UseStyleProps = {
-  panelOpen: boolean
-  screenHeight: number
-}
+export type UseStyleProps = { panelOpen: boolean }
 
 export type GeocodeResult = {
   result: {
@@ -139,7 +143,6 @@ export type GeocodeResult = {
 
 export type MapCtrlBtnsProps = {
   isDesktop: boolean
-  mapOffset: [number, number]
   mapRef: React.RefObject<InteractiveMap>
   onMapCtrlClick: (actionID: MapControlAction) => void
 }
@@ -159,10 +162,9 @@ export type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
 export type BoundsConfig = {
   height: number
   isDesktop: boolean
-  mapOffset: [number, number]
   width: number
   bounds?: BoundsArray
-  padding?: { top: number; bottom: number; left: number; right: number }
+  padding?: Padding
 }
 
 export type MbBoundaryLookup = {
@@ -198,8 +200,32 @@ export type HandleBoundaryClick = (
   lookup?: MbBoundaryLookup[]
 ) => void
 
+type SetTooltipOpen = React.Dispatch<MapTooltip | null>
+type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
+
+type ExtraFlyOptions = {
+  offset?: [number, number]
+  around?: LngLatLike
+  disregardCurrZoom?: boolean
+}
+
 export type JustFly = (
   map: Map,
-  settings: LongLatAndZoom & { offset?: [number, number]; around?: LngLatLike },
+  settings: LongLatAndZoom & ExtraFlyOptions,
   popupContent: PopupContent | null
 ) => void
+
+export type OnHover = (
+  event: MapEvent,
+  setTooltipOpen: SetTooltipOpen,
+  map: Map,
+  interactiveLayerIds: InteractiveLayerIds
+) => void
+
+export type ClearStuff = (map: Map, setTooltipOpen?: SetTooltipOpen) => void
+
+export type LangFeatsUnderClick = (
+  point: [number, number],
+  map: Map,
+  interactiveLayerIds: Omit<InteractiveLayerIds, 'boundaries'>
+) => MapboxGeoJSONFeature[]

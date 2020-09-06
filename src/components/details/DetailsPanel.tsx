@@ -191,7 +191,7 @@ export const DetailsPanel: FC = () => {
         <div className={classes.countriesList}>{Countries}</div>
         <Media {...{ audio, video, language: Language }} />
       </div>
-      <Typography variant="body2" className={description}>
+      <Typography variant="body2" className={description} component="div">
         <RecordDescription text={Description} />
       </Typography>
     </>

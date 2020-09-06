@@ -1,73 +1,48 @@
-import { Map } from 'mapbox-gl'
+import { WebMercatorViewport } from 'react-map-gl'
 
-import * as config from './config'
 import * as utils from './utils'
 import * as MapTypes from './types'
 import { LangRecordSchema } from '../../context/types'
 
-const { langSrcID } = config.mbStyleTileConfig
-const { neighbConfig, countiesConfig } = config
+export const onHover: MapTypes.OnHover = (
+  event,
+  setTooltipOpen,
+  map,
+  interactiveLayerIds
+) => {
+  const { point, target } = event
 
-const countiesSrcId = countiesConfig.source.id
-const neighSrcId = neighbConfig.source.id
-const countiesPolyID = countiesConfig.layers[0]['source-layer']
-const neighPolyID = neighbConfig.layers[0]['source-layer']
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore // not showing up even though it's typed... 🤔
+  if (event.pointerType === 'touch') return // "hover" is weird on touchscreens
 
-export function onHover(
-  event: MapTypes.MapEvent,
-  setTooltipOpen: React.Dispatch<MapTypes.MapTooltip | null>,
-  map: Map
-): void {
-  const { features, target } = event
-  const topMostFeat = features[0]
-  const oneOfOurs =
-    topMostFeat &&
-    topMostFeat.source &&
-    [langSrcID, neighSrcId, countiesSrcId].includes(topMostFeat.source)
+  // Close tooltip and clear stuff no matter what
+  utils.clearStuff(map, setTooltipOpen)
 
-  // Close tooltip no matter what
-  setTooltipOpen(null)
+  const langsHovered = utils.langFeatsUnderClick(
+    event.point,
+    map,
+    interactiveLayerIds
+  )
 
-  if (!topMostFeat || !oneOfOurs) {
+  const boundariesHovered = map.queryRenderedFeatures(point, {
+    layers: interactiveLayerIds.boundaries,
+  })
+
+  if (langsHovered.length || boundariesHovered.length) {
+    target.style.cursor = 'pointer'
+  } else {
     target.style.cursor = 'default'
-
-    return
   }
 
-  target.style.cursor = 'pointer'
-
-  // Not Language points. Clear feature state then set to `hover`.
-  if (topMostFeat.source !== langSrcID) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore // TODO: defeat
-    const sourceLayer = topMostFeat.layer['source-layer']
-
-    map.removeFeatureState({
-      source: neighSrcId,
-      sourceLayer: neighPolyID,
-    })
-
-    map.removeFeatureState({
-      source: countiesSrcId,
-      sourceLayer: countiesPolyID,
-    })
-
-    map.setFeatureState(
-      {
-        sourceLayer,
-        source: topMostFeat.source,
-        id: topMostFeat.id,
-      },
-      { hover: true }
-    )
-  } else {
+  if (langsHovered.length) {
     const {
       Latitude,
       Longitude,
       Endonym,
       Language,
       'Font Image Alt': altImage,
-    } = features[0].properties as LangRecordSchema
+    } = langsHovered[0].properties as LangRecordSchema
 
     setTooltipOpen({
       latitude: Latitude,
@@ -75,6 +50,21 @@ export function onHover(
       heading: altImage ? Language : Endonym,
       subHeading: altImage || Endonym === Language ? '' : Language,
     })
+  }
+
+  if (boundariesHovered.length) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore // TODO: defeat
+    const sourceLayer = boundariesHovered[0].layer['source-layer']
+
+    map.setFeatureState(
+      {
+        sourceLayer,
+        source: boundariesHovered[0].source,
+        id: boundariesHovered[0].id,
+      },
+      { hover: true }
+    )
   }
 }
 
@@ -84,21 +74,12 @@ export const handleBoundaryClick: MapTypes.HandleBoundaryClick = (
   boundsConfig,
   lookup
 ) => {
-  const boundaryFeat = topMostFeat as MapTypes.BoundaryFeat
+  const boundaryFeat = topMostFeat
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // TODO: defeat
   const sourceLayer = topMostFeat.layer['source-layer']
 
-  map.removeFeatureState({
-    source: neighSrcId,
-    sourceLayer: neighPolyID,
-  })
-  // }, 'hover') // NOTE: could not get this to work properly anywhere
-
-  map.removeFeatureState({
-    source: countiesSrcId,
-    sourceLayer: countiesPolyID,
-  })
+  utils.clearStuff(map)
 
   map.setFeatureState(
     {
@@ -119,37 +100,31 @@ export const handleBoundaryClick: MapTypes.HandleBoundaryClick = (
 
   const { bounds, name, names, centroid } = matchingRecord
   const text = name || (names ? names.en[0] : '')
-  const { width, height, isDesktop, mapOffset } = boundsConfig
+  const { width, height, isDesktop } = boundsConfig
 
-  const popupBasics: MapTypes.PopupSettings = {
+  const popupSettings: MapTypes.PopupSettings = {
     heading: text,
     latitude: centroid[1],
     longitude: centroid[0],
   }
 
-  const { latitude, longitude, zoom } = utils.getWebMercViewport({
+  const { latitude, longitude, zoom } = new WebMercatorViewport({
     width,
     height,
-    isDesktop,
-    mapOffset,
-    bounds: [
+  }).fitBounds(
+    [
       [bounds[0], bounds[1]],
       [bounds[2], bounds[3]],
     ],
-    /* eslint-disable operator-linebreak */
-    padding: isDesktop
-      ? { top: 60, bottom: 60, right: 60, left: 60 + mapOffset[0] * 2 }
-      : { top: 30, bottom: height / 2 + 30, left: 30, right: 30 },
-    /* eslint-enable operator-linebreak */
-  })
+    { padding: isDesktop ? 50 : 30 }
+  )
 
   map.flyTo(
     {
-      // Not THAT essential if you... don't like cool things
       essential: true,
-      center: { lng: longitude, lat: latitude },
       zoom,
+      center: { lon: longitude, lat: latitude },
     },
-    { forceViewportUpdate: true, popupBasics }
+    { forceViewportUpdate: true, popupSettings }
   )
 }

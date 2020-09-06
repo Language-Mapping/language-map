@@ -1,5 +1,7 @@
 import React, { FC, useContext } from 'react'
 import { Map } from 'mapbox-gl'
+import { WebMercatorViewport } from 'react-map-gl'
+import Geocoder from 'react-map-gl-geocoder'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import {
   Typography,
@@ -8,12 +10,10 @@ import {
   Box,
   Switch,
 } from '@material-ui/core'
-import Geocoder from 'react-map-gl-geocoder'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 import { GlobalContext } from 'components'
-import { getWebMercViewport } from './utils'
 import { MapCtrlBtnsProps, GeocodeResult } from './types'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
@@ -60,7 +60,7 @@ type GeocoderProps = Omit<MapCtrlBtnsProps, 'onMapCtrlClick'> & {
 
 export const GeocoderPopout: FC<GeocoderProps> = (props) => {
   const { state, dispatch } = useContext(GlobalContext)
-  const { anchorEl, setAnchorEl, mapOffset, mapRef, isDesktop } = props
+  const { anchorEl, setAnchorEl, mapRef, isDesktop } = props
   const classes = useStyles()
   const { smallerText, switchFormCtrlRoot } = classes
   const layersMenuOpen = Boolean(anchorEl)
@@ -85,21 +85,16 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
     }
 
     if (bbox) {
-      const { latitude, longitude, zoom } = getWebMercViewport({
+      const { latitude, longitude, zoom } = new WebMercatorViewport({
         width,
         height,
-        isDesktop,
-        mapOffset,
-        bounds: [
+      }).fitBounds(
+        [
           [bbox[0], bbox[1]],
           [bbox[2], bbox[3]],
         ],
-        /* eslint-disable operator-linebreak */
-        padding: isDesktop
-          ? { top: 60, bottom: 60, right: 60, left: 60 + mapOffset[0] * 2 }
-          : { top: 30, bottom: height / 2 + 30, left: 30, right: 30 },
-        /* eslint-enable operator-linebreak */
-      })
+        { padding: isDesktop ? 50 : 30 }
+      )
 
       map.flyTo(
         {
@@ -110,7 +105,7 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
         {
           forceViewportUpdate: true,
           selFeatAttribs: state.selFeatAttribs,
-          geocodeMarkerLatLon,
+          // geocodeMarkerLatLon,
         }
       )
     } else {

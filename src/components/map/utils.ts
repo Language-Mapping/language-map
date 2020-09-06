@@ -1,74 +1,9 @@
 import { Map } from 'mapbox-gl'
 import { WebMercatorViewport } from 'react-map-gl'
 
-import { PAGE_HEADER_ID } from 'components/nav/config'
 import * as MapTypes from './types'
+import * as config from './config'
 import { prettyTruncateList } from '../../utils'
-
-// One of the problems of using panels which overlap the map is how to deal with
-// "centering", in quotes because it's more "perceived" centering. Offset is
-// needed to make a panned-to selected feature centered between the header and
-// panel (on mobile) or between the panel and the right side (on desktop).
-export const prepMapOffset = (
-  isDesktop: boolean,
-  topBarElemID = PAGE_HEADER_ID,
-  mapPanelsElemeID = 'map-panels-wrap'
-): [number, number] => {
-  const topBarElem = document.getElementById(topBarElemID)
-  const topBarHeight = topBarElem ? topBarElem.offsetHeight : 60
-
-  if (!isDesktop) {
-    // NOTE: very important to use `innerHeight` here! Otherwise the buttons,
-    // address bar, etc. are not taken into account.
-    const halfScreenHeight = window.innerHeight / 2
-    const visibleViewportHt = halfScreenHeight - topBarHeight
-    const vertOffset = -1 * (visibleViewportHt / 2)
-
-    return [0, vertOffset]
-  }
-
-  const sidePanelElem = document.getElementById(mapPanelsElemeID)
-  const sidePanelWidth = sidePanelElem ? sidePanelElem.scrollWidth : 60
-  const sidePanelGutter = sidePanelElem ? sidePanelElem.offsetLeft : 16
-
-  return [(sidePanelWidth + sidePanelGutter) / 2, topBarHeight / 2]
-}
-
-export const flyToCoords: MapTypes.FlyToCoords = (
-  map,
-  settings,
-  offset,
-  selFeatAttribs
-) => {
-  const {
-    zoom: targetZoom,
-    latitude: lat,
-    longitude: lng,
-    disregardCurrZoom,
-  } = settings
-  const currentZoom = map.getZoom()
-  const customEventData = {
-    forceViewportUpdate: true, // to keep state in sync
-    selFeatAttribs, // popup data
-    disregardCurrZoom,
-  }
-  let zoomToUse = targetZoom
-
-  // Only zoom to the default if current zoom is higher than that
-  if (!disregardCurrZoom && targetZoom && currentZoom > targetZoom) {
-    zoomToUse = currentZoom
-  }
-
-  map.flyTo(
-    {
-      essential: true, // not THAT essential if you... don't like cool things
-      center: { lng, lat },
-      offset,
-      zoom: zoomToUse,
-    },
-    customEventData
-  )
-}
 
 // TODO: recycle the icons if it makes sense
 export const addLangTypeIconsToMap = (
@@ -125,41 +60,13 @@ export const filterLayersByFeatIDs = (
   })
 }
 
-export const getWebMercViewport: MapTypes.GetWebMercSettings = (params) => {
-  const { width, height, isDesktop, mapOffset, bounds, padding } = params
+export const getWebMercViewport: MapTypes.GetWebMercViewport = (params) => {
+  const { width, height, bounds, padding } = params
 
   return new WebMercatorViewport({
     width,
     height,
-  }).fitBounds(bounds, {
-    padding: padding || {
-      bottom: isDesktop ? mapOffset[1] : height / 2,
-      left: isDesktop ? mapOffset[0] : 0,
-      right: 0,
-      top: 0,
-    },
-  })
-}
-
-type Gar = {
-  lngLat: [number, number]
-  pos: [number, number]
-  width: number
-  height: number
-  zoom: number
-}
-
-export const getWebMercMapCenter = (params: Gar): [number, number] => {
-  // const { width, height, isDesktop, mapOffset, bounds, padding } = params
-  const { lngLat, pos, width, height, zoom } = params
-
-  return new WebMercatorViewport({
-    width,
-    height,
-    latitude: lngLat[1],
-    longitude: lngLat[0],
-    zoom,
-  }).getMapCenterByLngLatPosition({ lngLat, pos })
+  }).fitBounds(bounds, padding ? { padding } : {})
 }
 
 export const fetchBoundariesLookup = async (path: string): Promise<void> =>
@@ -187,27 +94,100 @@ export const prepPopupContent: MapTypes.PrepPopupContent = (
 }
 
 export const justFly: MapTypes.JustFly = (map, settings, popupContent) => {
-  const { zoom, longitude, latitude, offset, around } = settings
+  const {
+    zoom: targetZoom,
+    longitude,
+    latitude,
+    offset,
+    around,
+    disregardCurrZoom,
+  } = settings
+  const currentZoom = map.getZoom()
+  let zoom = targetZoom
 
-  // // Only zoom to the default if current zoom is higher than that
-  // if (!disregardCurrZoom && targetZoom && currentZoom > targetZoom) {
-  //   zoomToUse = currentZoom
-  // }
+  // Only zoom to the default if current zoom is higher than that
+  if (disregardCurrZoom && currentZoom > targetZoom) zoom = currentZoom
 
-  const yo = offset ? { offset } : { center: { lng: longitude, lat: latitude } }
   /* eslint-disable operator-linebreak */
   const popupSettings = popupContent
     ? { latitude, longitude, ...popupContent }
     : null
   /* eslint-enable operator-linebreak */
+  const final = {
+    essential: true,
+    zoom,
+    around: around || [longitude, latitude],
+    offset: offset || [0, 0],
+    // center: { lng: longitude, lat: latitude },
+  }
 
-  map.flyTo(
+  map.flyTo(final, {
+    forceViewportUpdate: true,
+    popupSettings,
+  } as MapTypes.CustomEventData)
+}
+
+export const flyToBounds: MapTypes.JustFly = (map, settings, popupContent) => {
+  const {
+    zoom: targetZoom,
+    longitude,
+    latitude,
+    offset,
+    around,
+    disregardCurrZoom,
+  } = settings
+  const currentZoom = map.getZoom()
+  let zoom = targetZoom
+
+  // Only zoom to the default if current zoom is higher than that
+  if (disregardCurrZoom && currentZoom > targetZoom) zoom = currentZoom
+
+  /* eslint-disable operator-linebreak */
+  const popupSettings = popupContent
+    ? { latitude, longitude, ...popupContent }
+    : null
+  /* eslint-enable operator-linebreak */
+  const final = {
+    essential: true,
+    zoom,
+    around: around || [longitude, latitude],
+    offset: offset || [0, 0],
+    // center: { lng: longitude, lat: latitude },
+  }
+
+  map.flyTo(final, {
+    forceViewportUpdate: true,
+    popupSettings,
+  } as MapTypes.CustomEventData)
+}
+
+export const langFeatsUnderClick: MapTypes.LangFeatsUnderClick = (
+  point,
+  map,
+  interactiveLayerIds
+) => {
+  return map.queryRenderedFeatures(
+    [
+      [point[0], point[1]],
+      [point[0], point[1]],
+    ],
     {
-      essential: true,
-      zoom,
-      around: around || [longitude, latitude],
-      ...yo,
-    },
-    { forceViewportUpdate: true, popupSettings } as MapTypes.CustomEventData
+      layers: interactiveLayerIds.lang,
+    }
   )
+}
+
+export const clearStuff: MapTypes.ClearStuff = (map, setTooltipOpen) => {
+  if (setTooltipOpen) setTooltipOpen(null)
+
+  map.removeFeatureState({
+    source: config.neighSrcId,
+    sourceLayer: config.neighPolyID,
+  })
+  // }, 'hover') // NOTE: could not get this to work properly anywhere
+
+  map.removeFeatureState({
+    source: config.countiesSrcId,
+    sourceLayer: config.countiesPolyID,
+  })
 }

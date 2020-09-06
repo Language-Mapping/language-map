@@ -5,10 +5,7 @@ import { Box, Typography, IconButton } from '@material-ui/core'
 import { MdKeyboardArrowDown } from 'react-icons/md'
 import { AiFillQuestionCircle } from 'react-icons/ai'
 
-import {
-  MOBILE_PANEL_HEADER_HEIGHT,
-  DESKTOP_PANEL_HEADER_HEIGHT,
-} from 'components/map/styles'
+import { DESKTOP_PANEL_HEADER_HEIGHT } from 'components/map/styles'
 import { MapPanel } from 'components/panels/types'
 import { GlobalContext } from 'components'
 
@@ -41,7 +38,8 @@ const useStyles = makeStyles((theme: Theme) =>
       flexShrink: 0,
       height: DESKTOP_PANEL_HEADER_HEIGHT,
       justifyContent: 'center',
-      position: 'absolute',
+      position: 'sticky',
+      bottom: 0,
       textAlign: 'center',
       top: 0,
       width: '100%',
@@ -49,17 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
       '& a, a:visited': {
         color: `${theme.palette.common.white} !important`, // constant fight!
       },
-      // GROSS: fragile
-      '& > a:first-of-type': {
-        borderTopLeftRadius: theme.shape.borderRadius,
-      },
-      // GROSS: fragile
-      '& > a:last-of-type': {
-        borderTopRightRadius: theme.shape.borderRadius,
-      },
-      [theme.breakpoints.down('xs')]: {
-        height: MOBILE_PANEL_HEADER_HEIGHT,
-      },
+      [theme.breakpoints.down('xs')]: { height: '3rem' },
     },
     mainHeading: {
       alignItems: 'center',
@@ -112,10 +100,7 @@ const PanelCloseBtn: FC = (props) => {
         const nextPanelState =
           state.panelState === 'default' ? 'minimized' : 'default'
 
-        dispatch({
-          type: 'SET_PANEL_STATE',
-          payload: nextPanelState,
-        })
+        dispatch({ type: 'SET_PANEL_STATE', payload: nextPanelState })
       }}
     >
       <MdKeyboardArrowDown />
@@ -157,10 +142,7 @@ export const MapPanelHeaderChild: FC<PanelHeaderComponent> = (props) => {
         onClick={() => {
           // Open the panel
           if (state.panelState === 'minimized') {
-            dispatch({
-              type: 'SET_PANEL_STATE',
-              payload: 'default',
-            })
+            dispatch({ type: 'SET_PANEL_STATE', payload: 'default' })
           }
         }}
       >

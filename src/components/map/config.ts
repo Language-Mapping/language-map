@@ -38,6 +38,17 @@ export const initialMapState = {
   zoom: 5,
 }
 
+export const mapProps = {
+  attributionControl: false,
+  className: 'mb-language-map',
+  clickRadius: 4, // much comfier for small points on small screens
+  height: '100%',
+  mapboxApiAccessToken: MAPBOX_TOKEN,
+  mapOptions: { logoPosition: 'bottom-left' },
+  mapStyle: mbStyleTileConfig.customStyles.light,
+  width: '100%',
+}
+
 // This is for #3 above. It should include the 5 boroughs and bits of NJ, and
 // centered on Manhattan.
 export const initialBounds = [
@@ -130,6 +141,16 @@ export const countiesConfig = {
     },
   ],
 } as MapTypes.BoundaryConfig
+
+export const boundariesLayerIDs = [
+  neighbConfig.layers[0].id,
+  countiesConfig.layers[0].id,
+]
+
+export const countiesSrcId = countiesConfig.source.id
+export const neighSrcId = neighbConfig.source.id
+export const countiesPolyID = countiesConfig.layers[0]['source-layer']
+export const neighPolyID = neighbConfig.layers[0]['source-layer']
 
 // If using Boundaries... WE NEED TWO POLYGON LAYERS:
 // boundaries_locality_2 and boundaries_locality_4:
