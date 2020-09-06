@@ -17,7 +17,9 @@ export const onHover: MapTypes.OnHover = (
   if (event.pointerType === 'touch') return // "hover" is weird on touchscreens
 
   // Close tooltip and clear stuff no matter what
-  utils.clearStuff(map, setTooltipOpen)
+  setTooltipOpen(null)
+
+  if (interactiveLayerIds.boundaries.length) utils.clearStuff(map)
 
   const langsHovered = utils.langFeatsUnderClick(
     event.point,
@@ -25,9 +27,13 @@ export const onHover: MapTypes.OnHover = (
     interactiveLayerIds
   )
 
-  const boundariesHovered = map.queryRenderedFeatures(point, {
-    layers: interactiveLayerIds.boundaries,
-  })
+  /* eslint-disable operator-linebreak */
+  const boundariesHovered = interactiveLayerIds.boundaries.length
+    ? map.queryRenderedFeatures(point, {
+        layers: interactiveLayerIds.boundaries,
+      })
+    : []
+  /* eslint-enable operator-linebreak */
 
   if (langsHovered.length || boundariesHovered.length) {
     target.style.cursor = 'pointer'

@@ -142,7 +142,7 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
           onClick={(event) => event.stopPropagation()}
           control={
             <Switch
-              checked={state.neighbLayerVisible}
+              checked={state.boundariesLayerVisible}
               onChange={() => dispatch({ type: 'TOGGLE_NEIGHB_LAYER' })}
               name="show-welcome-switch"
               size="small"

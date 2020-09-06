@@ -170,7 +170,7 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
 
     events.onHover(event, setTooltipOpen, mapRef.current.getMap(), {
       lang: interactiveLayerIds,
-      boundaries: boundariesLayerIDs,
+      boundaries: [], // state.boundariesLayerVisible ? boundariesLayerIDs : [],
     })
   }
 
@@ -289,6 +289,8 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
       return // prevent boundary click underneath
     }
 
+    if (!state.boundariesLayerVisible) return
+
     const boundariesClicked = map.queryRenderedFeatures(event.point, {
       layers: boundariesLayerIDs,
     }) as MapTypes.BoundaryFeat[]
@@ -394,7 +396,7 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
         {...config.mapProps}
         ref={mapRef}
         interactiveLayerIds={boundariesLayerIDs.concat(
-          (state.neighbLayerVisible && interactiveLayerIds) || []
+          (state.boundariesLayerVisible && interactiveLayerIds) || []
         )}
         onViewportChange={setViewport}
         onClick={(event: MapTypes.MapEvent) => onClick(event)}
@@ -407,7 +409,7 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
           </Marker>
         )}
         {/* TODO: put back */}
-        {symbLayers && state.neighbLayerVisible && (
+        {symbLayers && state.boundariesLayerVisible && (
           <>
             {[neighbConfig, countiesConfig].map((boundaryConfig) => (
               <BoundariesLayer

@@ -69,7 +69,7 @@ export const reducer = (
     case 'TOGGLE_NEIGHB_LAYER':
       return {
         ...state,
-        neighbLayerVisible: !state.neighbLayerVisible,
+        boundariesLayerVisible: !state.boundariesLayerVisible,
       }
     // TODO: wire up
     case 'TOGGLE_UI_ALERT':
