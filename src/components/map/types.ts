@@ -5,7 +5,7 @@ import {
   LayerProps,
 } from 'react-map-gl'
 import {
-  LngLatLike,
+  // LngLatLike, // TODO: use more often
   MapboxGeoJSONFeature,
   MapEventType,
   CircleLayout,
@@ -18,6 +18,12 @@ import * as GeoJSON from 'geojson'
 
 import { LangRecordSchema } from 'context/types'
 
+type SetTooltip = React.Dispatch<MapTooltip | null>
+type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
+type Padding =
+  | number
+  | { top: number; bottom: number; left: number; right: number }
+
 export type Baselayer = 'dark' | 'light' // assumes using Mapbox style
 export type BoundsArray = [[number, number], [number, number]]
 export type LangIconConfig = { icon: string; id: string }
@@ -26,9 +32,8 @@ export type LongLat = { longitude: number; latitude: number }
 export type LongLatAndZoom = LongLat & { zoom: number }
 export type MapControlAction = 'home' | 'in' | 'out' | 'info' | 'loc-search'
 export type MapViewportState = LongLatAndZoom
-type Padding =
-  | number
-  | { top: number; bottom: number; left: number; right: number }
+export type PopupSettings = PopupContent & LongLat
+export type GeocodeMarker = LongLat & { text: string }
 
 // TODO: 1. enforce in all relevant spots, 2. mv into context/types
 export type RouteLocation = '/' | '/details' | '/table' | '/about' | '/glossary'
@@ -137,6 +142,7 @@ export type UseStyleProps = { panelOpen: boolean }
 export type GeocodeResult = {
   result: {
     center: [number, number]
+    text: string
     bbox?: [number, number, number, number]
   }
 }
@@ -167,7 +173,7 @@ export type BoundsConfig = {
   padding?: Padding
 }
 
-export type MbBoundaryLookup = {
+export type BoundaryLookup = {
   feature_id: number
   centroid: [number, number]
   bounds: [number, number, number, number]
@@ -180,12 +186,10 @@ export type PopupContent = {
   subheading?: string
 }
 
-export type PopupSettings = PopupContent & LongLat
-
 export type CustomEventData = MapEventType & {
   popupSettings: PopupSettings | null
   forceViewportUpdate?: boolean | true
-  geocodeMarkerLatLon?: LongLat
+  geocodeMarker?: GeocodeMarker
 }
 
 export type PrepPopupContent = (
@@ -197,32 +201,32 @@ export type HandleBoundaryClick = (
   map: Map,
   topMostFeat: LangFeature | BoundaryFeat,
   boundsConfig: BoundsConfig,
-  lookup?: MbBoundaryLookup[]
+  lookup?: BoundaryLookup[]
 ) => void
 
-type SetTooltipOpen = React.Dispatch<MapTooltip | null>
-type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
-
-type ExtraFlyOptions = {
-  offset?: [number, number]
-  around?: LngLatLike
-  disregardCurrZoom?: boolean
-}
-
-export type JustFly = (
+export type FlyToBounds = (
   map: Map,
-  settings: LongLatAndZoom & ExtraFlyOptions,
+  settings: Omit<BoundsConfig, 'isDesktop'> & {
+    bounds: BoundsArray
+  },
   popupContent: PopupContent | null
+) => void
+
+export type FlyToPoint = (
+  map: Map,
+  settings: LongLatAndZoom & { disregardCurrZoom?: boolean },
+  popupContent: PopupContent | null,
+  geocodeMarkerText?: string
 ) => void
 
 export type OnHover = (
   event: MapEvent,
-  setTooltipOpen: SetTooltipOpen,
+  setTooltip: SetTooltip,
   map: Map,
   interactiveLayerIds: InteractiveLayerIds
 ) => void
 
-export type ClearStuff = (map: Map, setTooltipOpen?: SetTooltipOpen) => void
+export type ClearStuff = (map: Map) => void
 
 export type LangFeatsUnderClick = (
   point: [number, number],

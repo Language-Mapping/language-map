@@ -1,12 +1,10 @@
-import { WebMercatorViewport } from 'react-map-gl'
-
 import * as utils from './utils'
 import * as MapTypes from './types'
 import { LangRecordSchema } from '../../context/types'
 
 export const onHover: MapTypes.OnHover = (
   event,
-  setTooltipOpen,
+  setTooltip,
   map,
   interactiveLayerIds
 ) => {
@@ -17,9 +15,9 @@ export const onHover: MapTypes.OnHover = (
   if (event.pointerType === 'touch') return // "hover" is weird on touchscreens
 
   // Close tooltip and clear stuff no matter what
-  setTooltipOpen(null)
+  setTooltip(null)
 
-  if (interactiveLayerIds.boundaries.length) utils.clearStuff(map)
+  if (interactiveLayerIds.boundaries.length) utils.clearBoundaries(map)
 
   const langsHovered = utils.langFeatsUnderClick(
     event.point,
@@ -42,20 +40,19 @@ export const onHover: MapTypes.OnHover = (
   }
 
   if (langsHovered.length) {
-    const {
-      Latitude,
-      Longitude,
-      Endonym,
-      Language,
-      'Font Image Alt': altImage,
-    } = langsHovered[0].properties as LangRecordSchema
+    const { Endonym, Language, 'Font Image Alt': altImage } = langsHovered[0]
+      .properties as LangRecordSchema
 
-    setTooltipOpen({
-      latitude: Latitude,
-      longitude: Longitude,
+    /* eslint-disable @typescript-eslint/ban-ts-comment */
+    setTooltip({
+      // @ts-ignore // TODO: defeat
+      latitude: langsHovered[0].geometry.coordinates[1],
+      // @ts-ignore // TODO: defeat
+      longitude: langsHovered[0].geometry.coordinates[0],
       heading: altImage ? Language : Endonym,
       subHeading: altImage || Endonym === Language ? '' : Language,
     })
+    /* eslint-enable @typescript-eslint/ban-ts-comment */
   }
 
   if (boundariesHovered.length) {
@@ -85,7 +82,7 @@ export const handleBoundaryClick: MapTypes.HandleBoundaryClick = (
   // @ts-ignore // TODO: defeat
   const sourceLayer = topMostFeat.layer['source-layer']
 
-  utils.clearStuff(map)
+  utils.clearBoundaries(map)
 
   map.setFeatureState(
     {
@@ -104,33 +101,19 @@ export const handleBoundaryClick: MapTypes.HandleBoundaryClick = (
 
   if (!matchingRecord) return // ya never knowww
 
-  const { bounds, name, names, centroid } = matchingRecord
+  const { bounds, name, names } = matchingRecord
+  const { width, height } = boundsConfig
   const text = name || (names ? names.en[0] : '')
-  const { width, height, isDesktop } = boundsConfig
 
-  const popupSettings: MapTypes.PopupSettings = {
-    heading: text,
-    latitude: centroid[1],
-    longitude: centroid[0],
-  }
-
-  const { latitude, longitude, zoom } = new WebMercatorViewport({
-    width,
+  const settings = {
     height,
-  }).fitBounds(
-    [
+    width,
+    bounds: [
       [bounds[0], bounds[1]],
       [bounds[2], bounds[3]],
-    ],
-    { padding: isDesktop ? 50 : 30 }
-  )
+    ] as MapTypes.BoundsArray,
+    padding: 50,
+  }
 
-  map.flyTo(
-    {
-      essential: true,
-      zoom,
-      center: { lon: longitude, lat: latitude },
-    },
-    { forceViewportUpdate: true, popupSettings }
-  )
+  utils.flyToBounds(map, settings, { heading: text })
 }

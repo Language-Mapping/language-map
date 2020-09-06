@@ -23,16 +23,11 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& .mapboxgl-popup-content': {
         backgroundColor: theme.palette.background.paper,
       },
-      '& .geocode-marker': {
-        color: theme.palette.primary.main,
-        fontSize: 24,
-      },
     },
     // The actual map container
     mapWrap: {
-      width: '100%',
-      height: '100%',
-      flex: 1,
+      flexGrow: 1,
+      flexShrink: 0,
       [theme.breakpoints.down('sm')]: { height: '50%' },
     },
   })

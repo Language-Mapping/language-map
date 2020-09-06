@@ -6,7 +6,7 @@ import { Typography } from '@material-ui/core'
 import { MapTooltip as MapTooltipType } from './types'
 
 type MapTooltipComponent = MapTooltipType & {
-  setTooltipOpen: React.Dispatch<MapTooltipType | null>
+  setTooltip: React.Dispatch<MapTooltipType | null>
 }
 
 const useStyles = makeStyles((theme: Theme) =>

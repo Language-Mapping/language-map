@@ -44,7 +44,7 @@ export type InitialState = {
   langSymbGroups: MetadataGroup
   legendItems: LegendSwatch[]
   legendSymbols: LegendSymbols
-  boundariesLayerVisible: boolean
+  boundariesLayersVisible: boolean
   mapLoaded: boolean
   offCanvasNavOpen: boolean
   panelState: PanelState

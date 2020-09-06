@@ -1,6 +1,7 @@
 import React, { FC, useContext } from 'react'
 import { Map } from 'mapbox-gl'
-import { WebMercatorViewport } from 'react-map-gl'
+// TODO: use the web merc center method so that popups are not offset on mobile
+// import { WebMercatorViewport } from 'react-map-gl'
 import Geocoder from 'react-map-gl-geocoder'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import {
@@ -17,6 +18,8 @@ import { GlobalContext } from 'components'
 import { MapCtrlBtnsProps, GeocodeResult } from './types'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
+import * as utils from './utils'
+import * as MapTypes from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,14 +56,14 @@ const LocationSearchContent: FC = (props) => {
   )
 }
 
-type GeocoderProps = Omit<MapCtrlBtnsProps, 'onMapCtrlClick'> & {
+type GeocoderProps = Omit<MapCtrlBtnsProps, 'onMapCtrlClick' | 'isDesktop'> & {
   anchorEl: null | HTMLElement
   setAnchorEl: React.Dispatch<null | HTMLElement>
 }
 
 export const GeocoderPopout: FC<GeocoderProps> = (props) => {
   const { state, dispatch } = useContext(GlobalContext)
-  const { anchorEl, setAnchorEl, mapRef, isDesktop } = props
+  const { anchorEl, setAnchorEl, mapRef } = props
   const classes = useStyles()
   const { smallerText, switchFormCtrlRoot } = classes
   const layersMenuOpen = Boolean(anchorEl)
@@ -73,51 +76,36 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
   const handleGeocodeResult = (geocodeResult: GeocodeResult) => {
     handleLayersMenuClose()
 
-    const { center, bbox } = geocodeResult.result
-
     if (!mapRef.current) return
 
     const map: Map = mapRef.current.getMap()
-
-    const geocodeMarkerLatLon = { latitude: center[1], longitude: center[0] }
-
-    const shared = {
-      forceViewportUpdate: true,
-      selFeatAttribs: state.selFeatAttribs,
-    }
+    const { center, bbox, text } = geocodeResult.result
 
     if (bbox) {
-      const { latitude, longitude, zoom } = new WebMercatorViewport({
-        width,
+      // TODO:
+      // if (geocodeResult.result.place_type[0] === 'neighborhood') {
+      //   special things...
+      // }
+      const settings = {
         height,
-      }).fitBounds(
-        [
+        width,
+        bounds: [
           [bbox[0], bbox[1]],
           [bbox[2], bbox[3]],
-        ],
-        { padding: isDesktop ? 50 : 30 }
-      )
+        ] as MapTypes.BoundsArray,
+        padding: 25,
+      }
 
-      map.flyTo(
-        {
-          essential: true,
-          center: { lng: longitude, lat: latitude },
-          zoom,
-        },
-        shared
-      )
+      utils.flyToBounds(map, settings, null)
     } else {
-      map.flyTo(
-        {
-          essential: true,
-          center,
-          zoom: 15,
-        },
-        {
-          ...shared,
-          geocodeMarkerLatLon,
-        }
-      )
+      const settings = {
+        latitude: center[1],
+        longitude: center[0],
+        zoom: 15,
+        disregardCurrZoom: true,
+      }
+
+      utils.flyToPoint(map, settings, null, text)
     }
   }
 
@@ -133,16 +121,13 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
       <LocationSearchContent>
         <div ref={geocoderContainerRef} />
         <FormControlLabel
-          classes={{
-            label: smallerText,
-            root: switchFormCtrlRoot,
-          }}
+          classes={{ label: smallerText, root: switchFormCtrlRoot }}
           // Prevent off-canvas from closing (but we want that to happen for all
           // the other elements in the off-canvas).
           onClick={(event) => event.stopPropagation()}
           control={
             <Switch
-              checked={state.boundariesLayerVisible}
+              checked={state.boundariesLayersVisible}
               onChange={() => dispatch({ type: 'TOGGLE_NEIGHB_LAYER' })}
               name="show-welcome-switch"
               size="small"

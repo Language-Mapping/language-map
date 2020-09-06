@@ -14,6 +14,8 @@ const useStyles = makeStyles((theme: Theme) =>
     mapPopupRoot: {
       textAlign: 'center',
       minWidth: 150,
+      maxWidth: 250,
+      wordWrap: 'break-word',
       '& .mapboxgl-popup-content': {
         // Leave room for "x" close button
         padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
@@ -49,10 +51,9 @@ export const MapPopup: FC<MapPopupComponent> = (props) => {
   return (
     <Popup
       tipSize={10}
-      anchor="bottom"
       longitude={longitude}
       latitude={latitude}
-      closeOnClick={false} // TODO: fix this madness
+      closeOnClick={false}
       className={mapPopupRoot}
       onClose={() => setPopupVisible(false)}
     >

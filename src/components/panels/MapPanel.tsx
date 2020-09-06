@@ -20,6 +20,7 @@ type PanelContentComponent = Partial<MapPanelProps> & {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mapPanelsWrap: {
+      backgroundColor: theme.palette.background.paper,
       display: 'flex',
       flexDirection: 'column',
       transition: '300ms flex-basis',

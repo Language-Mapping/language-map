@@ -93,72 +93,59 @@ export const prepPopupContent: MapTypes.PrepPopupContent = (
   return { heading, subheading }
 }
 
-export const justFly: MapTypes.JustFly = (map, settings, popupContent) => {
-  const {
-    zoom: targetZoom,
-    longitude,
-    latitude,
-    offset,
-    around,
-    disregardCurrZoom,
-  } = settings
-  const currentZoom = map.getZoom()
-  let zoom = targetZoom
+export const flyToBounds: MapTypes.FlyToBounds = (
+  map,
+  { height, width, bounds },
+  popupContent
+) => {
+  let popupSettings = null
 
-  // Only zoom to the default if current zoom is higher than that
-  if (disregardCurrZoom && currentZoom > targetZoom) zoom = currentZoom
+  const webMercViewport = new WebMercatorViewport({
+    width,
+    height,
+  }).fitBounds(bounds, { padding: 50 })
+  const { latitude, longitude, zoom } = webMercViewport
 
-  /* eslint-disable operator-linebreak */
-  const popupSettings = popupContent
-    ? { latitude, longitude, ...popupContent }
-    : null
-  /* eslint-enable operator-linebreak */
-  const final = {
-    essential: true,
-    zoom,
-    around: around || [longitude, latitude],
-    offset: offset || [0, 0],
-    // center: { lng: longitude, lat: latitude },
-  }
+  if (popupContent) popupSettings = { latitude, longitude, ...popupContent }
 
-  map.flyTo(final, {
+  map.flyTo({ essential: true, zoom, center: [longitude, latitude] }, {
     forceViewportUpdate: true,
     popupSettings,
   } as MapTypes.CustomEventData)
 }
 
-export const flyToBounds: MapTypes.JustFly = (map, settings, popupContent) => {
-  const {
-    zoom: targetZoom,
-    longitude,
-    latitude,
-    offset,
-    around,
-    disregardCurrZoom,
-  } = settings
-  const currentZoom = map.getZoom()
+export const flyToPoint: MapTypes.FlyToPoint = (
+  map,
+  { latitude, longitude, zoom: targetZoom, disregardCurrZoom },
+  popupContent,
+  geocodeMarkerText
+) => {
   let zoom = targetZoom
+  let popupSettings = null
+
+  const currentZoom = map.getZoom()
 
   // Only zoom to the default if current zoom is higher than that
   if (disregardCurrZoom && currentZoom > targetZoom) zoom = currentZoom
+  if (popupContent) popupSettings = { latitude, longitude, ...popupContent }
 
-  /* eslint-disable operator-linebreak */
-  const popupSettings = popupContent
-    ? { latitude, longitude, ...popupContent }
-    : null
-  /* eslint-enable operator-linebreak */
-  const final = {
-    essential: true,
-    zoom,
-    around: around || [longitude, latitude],
-    offset: offset || [0, 0],
-    // center: { lng: longitude, lat: latitude },
-  }
-
-  map.flyTo(final, {
+  const customEventData = {
     forceViewportUpdate: true,
     popupSettings,
-  } as MapTypes.CustomEventData)
+  } as MapTypes.CustomEventData
+
+  if (geocodeMarkerText) {
+    customEventData.geocodeMarker = {
+      longitude,
+      latitude,
+      text: geocodeMarkerText,
+    }
+  }
+
+  map.flyTo(
+    { essential: true, zoom, center: [longitude, latitude] },
+    customEventData
+  )
 }
 
 export const langFeatsUnderClick: MapTypes.LangFeatsUnderClick = (
@@ -168,8 +155,8 @@ export const langFeatsUnderClick: MapTypes.LangFeatsUnderClick = (
 ) => {
   return map.queryRenderedFeatures(
     [
-      [point[0], point[1]],
-      [point[0], point[1]],
+      [point[0] - 5, point[1] - 5],
+      [point[0] + 5, point[1] + 5],
     ],
     {
       layers: interactiveLayerIds.lang,
@@ -177,9 +164,7 @@ export const langFeatsUnderClick: MapTypes.LangFeatsUnderClick = (
   )
 }
 
-export const clearStuff: MapTypes.ClearStuff = (map, setTooltipOpen) => {
-  if (setTooltipOpen) setTooltipOpen(null)
-
+export const clearBoundaries: MapTypes.ClearStuff = (map) => {
   map.removeFeatureState({
     source: config.neighSrcId,
     sourceLayer: config.neighPolyID,

@@ -6,13 +6,14 @@ import * as utils from './utils'
 import * as MapTypes from './types'
 
 type BoundariesLayerProps = {
+  visible: boolean
   beforeId?: string
 } & MapTypes.BoundaryConfig
 
 export const BoundariesLayer: FC<BoundariesLayerProps> = (props) => {
-  const { beforeId, source, layers, lookupPath } = props
+  const { beforeId, source, layers, lookupPath, visible } = props
   const { data, isFetching, error } = useQuery(source.id)
-  const lookup = data as MapTypes.MbBoundaryLookup[]
+  const lookup = data as MapTypes.BoundaryLookup[]
   const [recordIDs, setRecordIDs] = useState<number[]>()
 
   useEffect(() => {
@@ -40,6 +41,10 @@ export const BoundariesLayer: FC<BoundariesLayerProps> = (props) => {
           key={layer.id}
           beforeId={beforeId}
           {...layer}
+          layout={{
+            ...layer.layout,
+            visibility: visible ? 'visible' : 'none',
+          }}
           filter={['in', ['id'], ['literal', recordIDs]]}
         />
       ))}

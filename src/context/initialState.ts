@@ -12,7 +12,7 @@ const initialMapStates = {
   langSymbGroups: {},
   legendItems: [],
   legendSymbols: {},
-  boundariesLayerVisible: false,
+  boundariesLayersVisible: false,
   panelState: 'default',
 }
 

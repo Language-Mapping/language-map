@@ -85,7 +85,6 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
           anchorEl,
           setAnchorEl,
           mapRef,
-          isDesktop,
         }}
       />
       <SpeedDial

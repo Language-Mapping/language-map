@@ -50,7 +50,7 @@ export const mapProps = {
 }
 
 // This is for #3 above. It should include the 5 boroughs and bits of NJ, and
-// centered on Manhattan.
+// centered on Manhattan. // TODO: improve this now that no more offsets
 export const initialBounds = [
   [-74.19564, 40.574533],
   [-73.767185, 40.892251],
@@ -82,7 +82,7 @@ const neighbSrcID = 'neighborhoods'
 const neighbLyrSrc = {
   source: neighbSrcID,
   'source-layer': 'boundaries_locality_4',
-  minzoom: 9,
+  minzoom: 8,
 }
 
 export const neighbConfig = {
@@ -114,7 +114,7 @@ const countiesSrcID = 'counties'
 const countiesLyrSrc = {
   source: countiesSrcID,
   'source-layer': 'boundaries_admin_2',
-  minzoom: 7,
+  minzoom: 6, // thanks Suffolk County
 }
 
 export const countiesConfig = {
