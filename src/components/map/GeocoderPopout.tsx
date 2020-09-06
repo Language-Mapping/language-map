@@ -79,9 +79,11 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
 
     const map: Map = mapRef.current.getMap()
 
-    const geocodeMarkerLatLon = {
-      latitude: center[1],
-      longitude: center[0],
+    const geocodeMarkerLatLon = { latitude: center[1], longitude: center[0] }
+
+    const shared = {
+      forceViewportUpdate: true,
+      selFeatAttribs: state.selFeatAttribs,
     }
 
     if (bbox) {
@@ -102,22 +104,17 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
           center: { lng: longitude, lat: latitude },
           zoom,
         },
-        {
-          forceViewportUpdate: true,
-          selFeatAttribs: state.selFeatAttribs,
-          // geocodeMarkerLatLon,
-        }
+        shared
       )
     } else {
       map.flyTo(
         {
           essential: true,
-          center: { lng: center[1], lat: center[0] },
+          center,
           zoom: 15,
         },
         {
-          forceViewportUpdate: true,
-          selFeatAttribs: state.selFeatAttribs,
+          ...shared,
           geocodeMarkerLatLon,
         }
       )
