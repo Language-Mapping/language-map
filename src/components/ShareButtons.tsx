@@ -1,7 +1,7 @@
 // CRED: for the majority of this file:
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/src/components/ShareButtons.tsx
 import React, { FC } from 'react'
-import { Grid } from '@material-ui/core'
+import { Grid, GridSpacing } from '@material-ui/core'
 import {
   EmailIcon,
   EmailShareButton,
@@ -19,6 +19,7 @@ import {
 
 type ShareBtnProps = {
   source?: string
+  spacing?: GridSpacing
   summary?: string
   title?: string
   url?: string
@@ -38,13 +39,14 @@ export const ShareButtons: FC<ShareBtnProps> = (props) => {
     summary = DEFAULT_SUMMARY,
     title = DEFAULT_TITLE,
     url = DEFAULT_URL,
+    spacing = 1,
   } = props
 
   return (
     <Grid
       container
-      spacing={2}
       justify="center"
+      spacing={spacing}
       wrap="nowrap"
       alignItems="center"
     >

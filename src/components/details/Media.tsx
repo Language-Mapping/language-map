@@ -213,7 +213,7 @@ export const Media: FC<MediaProps> = (props) => {
       </ul>
       {showShareBtns && (
         <div className={classes.shareBtns}>
-          <ShareButtons />
+          <ShareButtons spacing={2} />
         </div>
       )}
     </>
