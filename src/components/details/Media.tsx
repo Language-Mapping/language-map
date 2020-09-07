@@ -13,11 +13,12 @@ type MediaProps = {
   share?: string
   audio?: string
   video?: string
+  description?: string
 }
 
 type MediaChildProps = {
-  title?: string
   url: string
+  title?: string
 }
 
 type MediaListItemProps = {
@@ -85,8 +86,13 @@ const useStyles = makeStyles((theme: Theme) =>
     shareBtns: {
       transition: '300ms all',
       margin: '8px 0',
-      maxHeight: (props: StyleProps) => (props.showShareBtns ? 60 : 0),
+      textAlign: 'center',
+      maxHeight: (props: StyleProps) => (props.showShareBtns ? 75 : 0),
       opacity: (props: StyleProps) => (props.showShareBtns ? 1 : 0),
+    },
+    shareBtnHeading: {
+      fontSize: '0.8em',
+      marginBottom: '0.5em',
     },
   })
 )
@@ -161,10 +167,12 @@ const config = [
 ] as Omit<MediaListItemProps, 'setDialogContent'>[]
 
 export const Media: FC<MediaProps> = (props) => {
-  const { audio, video, language } = props
+  const { audio, video, language, description } = props
   const [dialogContent, setDialogContent] = useState<MediaKey | null>(null)
   const [showShareBtns, setShowShareBtns] = useState<boolean>(false)
   const classes = useStyles({ showShareBtns })
+
+  const shareSrcAndTitle = `${language} --- NYC Language Diversity Map`
 
   // TODO: not full width dialog for audio
   return (
@@ -213,7 +221,16 @@ export const Media: FC<MediaProps> = (props) => {
       </ul>
       {showShareBtns && (
         <div className={classes.shareBtns}>
-          <ShareButtons spacing={2} />
+          <Typography className={classes.shareBtnHeading}>
+            Share this {language} community:
+          </Typography>
+          <ShareButtons
+            spacing={2}
+            source={shareSrcAndTitle}
+            summary={description}
+            title={shareSrcAndTitle}
+            url={window.location.href}
+          />
         </div>
       )}
     </>

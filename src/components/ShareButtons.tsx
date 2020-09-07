@@ -56,7 +56,7 @@ export const ShareButtons: FC<ShareBtnProps> = (props) => {
         </FacebookShareButton>
       </Grid>
       <Grid item>
-        <TwitterShareButton url={url} title={`${title} ${summary}`}>
+        <TwitterShareButton url={url} title={`${title}\n\n${summary}`}>
           <TwitterIcon {...sharedProps} />
         </TwitterShareButton>
       </Grid>
