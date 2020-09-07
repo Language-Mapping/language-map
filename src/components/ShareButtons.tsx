@@ -17,54 +17,72 @@ import {
   WhatsappShareButton,
 } from 'react-share'
 
-const url = 'https://map.languagemapping.org/'
-const title = 'New York City Linguistic Diversity Map'
-const summary =
+type ShareBtnProps = {
+  source?: string
+  summary?: string
+  title?: string
+  url?: string
+}
+
+const DEFAULT_URL = 'https://map.languagemapping.org/'
+const DEFAULT_TITLE = 'New York City Linguistic Diversity Map'
+const DEFAULT_SUMMARY =
   'An interactive map of language diversity in York City, one of the world’s most linguistically diverse metropolitan areas.'
-const sourceAkaAppName = 'NYC Language Diversity Map'
+const DEFAULT_SOURCE = 'NYC Language Diversity Map'
 
-const ShareButtonConfig = [
-  <FacebookShareButton key="facebook" url={url} quote={summary}>
-    <FacebookIcon size={32} round />
-  </FacebookShareButton>,
-  <TwitterShareButton key="twitter" url={url} title={`${title} ${summary}`}>
-    <TwitterIcon size={32} round />
-  </TwitterShareButton>,
-  <WhatsappShareButton key="whatsapp" url={url} title={title}>
-    <WhatsappIcon size={32} round />
-  </WhatsappShareButton>,
-  <LinkedinShareButton
-    key="linkedin"
-    url={url}
-    title={title}
-    summary={summary}
-    source={sourceAkaAppName}
-  >
-    <LinkedinIcon size={32} round />
-  </LinkedinShareButton>,
-  <RedditShareButton key="reddit" url={url} title={title}>
-    <RedditIcon size={32} round />
-  </RedditShareButton>,
-  <EmailShareButton key="email" url={url} subject={title} body={summary}>
-    <EmailIcon size={32} round />
-  </EmailShareButton>,
-]
+const sharedProps = { size: 32, round: true }
 
-export const ShareButtons: FC = () => {
+export const ShareButtons: FC<ShareBtnProps> = (props) => {
+  const {
+    source = DEFAULT_SOURCE,
+    summary = DEFAULT_SUMMARY,
+    title = DEFAULT_TITLE,
+    url = DEFAULT_URL,
+  } = props
+
   return (
     <Grid
       container
-      spacing={1}
+      spacing={2}
       justify="center"
       wrap="nowrap"
       alignItems="center"
     >
-      {ShareButtonConfig.map((item, i) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <Grid key={i} item>
-          {item}
-        </Grid>
-      ))}
+      <Grid item>
+        <FacebookShareButton url={url} quote={summary}>
+          <FacebookIcon {...sharedProps} />
+        </FacebookShareButton>
+      </Grid>
+      <Grid item>
+        <TwitterShareButton url={url} title={`${title} ${summary}`}>
+          <TwitterIcon {...sharedProps} />
+        </TwitterShareButton>
+      </Grid>
+      <Grid item>
+        <WhatsappShareButton url={url} title={title}>
+          <WhatsappIcon {...sharedProps} />
+        </WhatsappShareButton>
+      </Grid>
+      <Grid item>
+        <LinkedinShareButton
+          url={url}
+          title={title}
+          summary={summary}
+          source={source}
+        >
+          <LinkedinIcon {...sharedProps} />
+        </LinkedinShareButton>
+      </Grid>
+      <Grid item>
+        <RedditShareButton url={url} title={title}>
+          <RedditIcon {...sharedProps} />
+        </RedditShareButton>
+      </Grid>
+      <Grid item>
+        <EmailShareButton url={url} subject={title} body={summary}>
+          <EmailIcon {...sharedProps} />
+        </EmailShareButton>
+      </Grid>
     </Grid>
   )
 }
