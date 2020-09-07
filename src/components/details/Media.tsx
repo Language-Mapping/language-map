@@ -4,7 +4,7 @@ import { Container, Button, Typography } from '@material-ui/core'
 import { FiVideo, FiShare } from 'react-icons/fi'
 import { AiOutlineSound } from 'react-icons/ai'
 
-import { SimpleDialog } from 'components'
+import { SimpleDialog, ShareButtons } from 'components'
 
 type MediaKey = 'video' | 'audio' | 'share'
 
@@ -13,11 +13,12 @@ type MediaProps = {
   share?: string
   audio?: string
   video?: string
+  description?: string
 }
 
 type MediaChildProps = {
-  title?: string
   url: string
+  title?: string
 }
 
 type MediaListItemProps = {
@@ -26,6 +27,10 @@ type MediaListItemProps = {
   type: MediaKey
   disabled?: boolean
   handleClick: () => void
+}
+
+type StyleProps = {
+  showShareBtns?: boolean
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -78,11 +83,22 @@ const useStyles = makeStyles((theme: Theme) =>
         width: '100%',
       },
     },
+    shareBtns: {
+      transition: '300ms all',
+      margin: '8px 0',
+      textAlign: 'center',
+      maxHeight: (props: StyleProps) => (props.showShareBtns ? 75 : 0),
+      opacity: (props: StyleProps) => (props.showShareBtns ? 1 : 0),
+    },
+    shareBtnHeading: {
+      fontSize: '0.8em',
+      marginBottom: '0.5em',
+    },
   })
 )
 
 const YouTubeVideo: FC<MediaChildProps> = (props) => {
-  const classes = useStyles()
+  const classes = useStyles({})
   const { url, title } = props
 
   // Proper syntax:
@@ -106,6 +122,7 @@ const YouTubeVideo: FC<MediaChildProps> = (props) => {
   )
 }
 
+// ID 646 has the only audio file to date
 const Audio: FC<MediaChildProps> = (props) => {
   const { url } = props
 
@@ -119,7 +136,7 @@ const Audio: FC<MediaChildProps> = (props) => {
 
 const MediaListItem: FC<MediaListItemProps> = (props) => {
   const { label, icon, handleClick, disabled } = props
-  const classes = useStyles()
+  const classes = useStyles({})
   let title = ''
 
   if (label === 'Audio') {
@@ -151,11 +168,12 @@ const config = [
 ] as Omit<MediaListItemProps, 'setDialogContent'>[]
 
 export const Media: FC<MediaProps> = (props) => {
-  const { audio, video, language } = props
-  const classes = useStyles()
+  const { audio, video, language, description } = props
   const [dialogContent, setDialogContent] = useState<MediaKey | null>(null)
+  const [showShareBtns, setShowShareBtns] = useState<boolean>(false)
+  const classes = useStyles({ showShareBtns })
+  const shareSrcAndTitle = `${language} - Languages of New York City Map`
 
-  // TODO: not full width dialog for audio
   return (
     <>
       <SimpleDialog
@@ -197,10 +215,23 @@ export const Media: FC<MediaProps> = (props) => {
         ))}
         <MediaListItem
           {...{ label: 'Share', icon: <FiShare />, type: 'share' }}
-          // eslint-disable-next-line no-alert
-          handleClick={() => alert('share not ready yet!')}
+          handleClick={() => setShowShareBtns(!showShareBtns)}
         />
       </ul>
+      {showShareBtns && (
+        <div className={classes.shareBtns}>
+          <Typography className={classes.shareBtnHeading}>
+            Share this {language} community:
+          </Typography>
+          <ShareButtons
+            spacing={2}
+            source={shareSrcAndTitle}
+            summary={description}
+            title={shareSrcAndTitle}
+            url={window.location.href}
+          />
+        </div>
+      )}
     </>
   )
 }

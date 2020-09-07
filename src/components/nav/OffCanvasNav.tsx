@@ -1,19 +1,21 @@
 import React, { FC, useContext } from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Drawer } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
 import { Nav } from 'components/nav'
 import { ToggleOffCanvasNav } from './types'
 
-const useStyles = makeStyles({
-  offCanvasNavRoot: {
-    cursor: 'pointer',
-  },
-  offCanvasNavList: {
-    width: 290,
-  },
-})
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    offCanvasNavRoot: {
+      cursor: 'pointer',
+    },
+    offCanvasNavList: {
+      width: 300,
+    },
+  })
+)
 
 export const OffCanvasNav: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)

@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.secondary,
       fontStyle: 'italic',
     },
-    description: {
+    descripSection: {
       fontSize: theme.typography.caption.fontSize,
       padding: '0 0.25rem',
       // marginBottom: '2.4rem', // bad for Explore on mobile!
@@ -59,7 +59,6 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 0,
       margin: 0,
       listStyle: 'none',
-      // fontSize: theme.typography.caption.fontSize,
       fontSize: '0.75em',
       display: 'flex',
       columnGap: '0.5em',
@@ -138,9 +137,9 @@ export const DetailsPanel: FC = () => {
 
   const {
     Endonym,
-    Language,
+    Language: language,
     Neighborhoods,
-    Description,
+    Description: description,
     // Size, // TODO: cell strength bars for Size
     Town,
     Countries,
@@ -149,7 +148,7 @@ export const DetailsPanel: FC = () => {
     'Font Image Alt': altImage,
     'World Region': WorldRegion,
   } = selFeatAttribs
-  const { detailsPanelHeading, intro, description, neighborhoods } = classes
+  const { detailsPanelHeading, intro, descripSection, neighborhoods } = classes
   const regionSwatchColor =
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -164,17 +163,16 @@ export const DetailsPanel: FC = () => {
   return (
     <>
       <div className={intro}>
-        {(altImage && <EndoImageWrap url={altImage} alt={Language} />) || (
+        {(altImage && <EndoImageWrap url={altImage} alt={language} />) || (
           <Typography variant="h3" className={detailsPanelHeading}>
             {Endonym}
           </Typography>
         )}
-        {Endonym !== Language && (
+        {Endonym !== language && (
           <Typography variant="caption" component="p">
-            {Language}
+            {language}
           </Typography>
         )}
-        {/* TODO: make "+4 more clickable to toggle popover" */}
         <Typography className={neighborhoods}>
           {Neighborhoods || Town}
         </Typography>
@@ -187,12 +185,18 @@ export const DetailsPanel: FC = () => {
           />
           {/* TODO: cell strength bars for Size */}
         </div>
-        {/* <CountriesWithFlags countries={Countries} /> */}
         <div className={classes.countriesList}>{Countries}</div>
-        <Media {...{ audio, video, language: Language }} />
+        <Media
+          {...{
+            audio,
+            video,
+            language,
+            description,
+          }}
+        />
       </div>
-      <Typography variant="body2" className={description} component="div">
-        <RecordDescription text={Description} />
+      <Typography variant="body2" className={descripSection} component="div">
+        <RecordDescription text={description} />
       </Typography>
     </>
   )
