@@ -4,8 +4,11 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import WebFont from 'webfontloader'
 
 import { App, ProvidersWrap } from 'components'
+import {
+  fontFamilies as families,
+  fontUrls as urls,
+} from 'components/config/fonts'
 import * as serviceWorker from './serviceWorker'
-import { fontFamilies as families, fontUrls as urls } from './config/fonts'
 
 WebFont.load({
   google: {

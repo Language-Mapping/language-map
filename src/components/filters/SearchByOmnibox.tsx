@@ -6,7 +6,7 @@ import { TextField } from '@material-ui/core'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { MdClose } from 'react-icons/md'
 
-import { RouteLocation } from 'components/map/types'
+import { paths as routes } from 'components/config/routes'
 import { LangRecordSchema } from '../../context/types'
 import { OmniboxResult } from './OmniboxResult'
 import { FiltersWarning } from './FiltersWarning'
@@ -17,8 +17,6 @@ type SearchByOmniProps = {
   noFiltersSet: boolean
   data: LangRecordSchema[]
 }
-
-const detailsRoutePath: RouteLocation = '/details'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -73,7 +71,7 @@ export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
       onChange={(event, value) => {
         // Can't just do <RouterLink>, otherwise keyboard selection no-go...
         if (value) {
-          history.push(`${detailsRoutePath}?id=${value.ID}`)
+          history.push(`${routes.details}?id=${value.ID}`)
         }
       }}
       filterOptions={(options, { inputValue }) => {

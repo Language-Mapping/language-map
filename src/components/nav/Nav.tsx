@@ -12,6 +12,7 @@ import {
 import { GoInfo } from 'react-icons/go'
 import { MdChat } from 'react-icons/md'
 
+import { paths as routes } from 'components/config/routes'
 import { Settings } from './Settings'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -50,7 +51,7 @@ export const Nav: FC = () => {
             <Link
               underline="none"
               component={RouterLink}
-              to="/about"
+              to={routes.about}
               className={listLink}
             >
               <ListItemIcon className={listItemIcon}>

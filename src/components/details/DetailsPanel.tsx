@@ -6,6 +6,7 @@ import { Typography } from '@material-ui/core'
 import { GlobalContext } from 'components'
 import { LegendSwatch } from 'components/legend'
 import { RecordDescription } from 'components/results'
+import { paths as routes } from 'components/config/routes'
 import { correctDropboxURL } from '../../utils' // TODO: put back if needed
 import { Media } from './Media'
 
@@ -108,7 +109,10 @@ const RandomLink: FC = () => {
 
   return (
     <>
-      , or <RouterLink to={`/details?id=${id}`}>try one at random</RouterLink>
+      , or{' '}
+      <RouterLink to={`${routes.details}?id=${id}`}>
+        try one at random
+      </RouterLink>
     </>
   )
 }

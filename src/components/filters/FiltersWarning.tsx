@@ -4,9 +4,7 @@ import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Link, Typography } from '@material-ui/core'
 import { TiWarning } from 'react-icons/ti'
 
-import { RouteLocation } from 'components/map/types'
-
-const detailsRoutePath: RouteLocation = '/details'
+import { paths as routes } from 'components/config/routes'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -28,7 +26,7 @@ const useStyles = makeStyles(() =>
 export const FiltersWarning: FC = () => {
   const loc = useLocation()
   const classes = useStyles()
-  const tableRoute = `${detailsRoutePath}${loc.search}`
+  const tableRoute = `${routes.details}${loc.search}`
 
   return (
     <Typography className={classes.filtersWarning}>

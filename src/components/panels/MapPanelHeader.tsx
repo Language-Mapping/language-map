@@ -8,6 +8,7 @@ import { AiFillQuestionCircle } from 'react-icons/ai'
 import { DESKTOP_PANEL_HEADER_HEIGHT } from 'components/map/styles'
 import { MapPanel } from 'components/panels/types'
 import { GlobalContext } from 'components'
+import { paths as routes } from 'components/config/routes'
 
 type PanelHeaderProps = {
   active?: boolean
@@ -30,7 +31,6 @@ const useCloseBtnStyles = makeStyles((theme: Theme) =>
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    // The wrapper
     panelHeaderRoot: {
       alignItems: 'center',
       color: theme.palette.common.white,
@@ -116,7 +116,7 @@ const OpenGlossaryBtn: FC = (props) => {
     <IconButton
       size="small"
       onClick={() => {
-        history.push(`/glossary${loc.search}`)
+        history.push(`${routes.glossary}${loc.search}`)
       }}
     >
       <AiFillQuestionCircle />

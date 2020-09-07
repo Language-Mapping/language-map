@@ -1,4 +1,3 @@
-import { RouteLocation } from 'components/map/types'
 import { WpQueryNames } from './types'
 
 export const WP_API_PAGES_ENDPOINT =
@@ -9,11 +8,6 @@ export const wpConfigs = [
   { name: 'glossary', pageID: 209 },
   { name: 'welcome', pageID: 225 },
 ] as { name: WpQueryNames; pageID: number }[]
-
-// Route paths
-export const DATA_TABLE_PATHNAME: RouteLocation = '/table'
-export const GLOSSARY_PATHNAME: RouteLocation = '/glossary'
-export const ABOUT_PATHNAME: RouteLocation = '/about'
 
 // Unique `react-query` names (used in pre-fetch)
 export const ABOUT_QUERY: WpQueryNames = 'about'

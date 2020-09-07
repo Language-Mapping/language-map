@@ -35,9 +35,6 @@ export type MapViewportState = LongLatAndZoom
 export type PopupSettings = PopupContent & LongLat
 export type GeocodeMarker = LongLat & { text: string }
 
-// TODO: 1. enforce in all relevant spots, 2. mv into context/types
-export type RouteLocation = '/' | '/details' | '/table' | '/about' | '/glossary'
-
 // MB Styles API individual group in the `metadata` of JSON response
 export type MetadataGroup = { [mbGroupIdHash: string]: { name: string } }
 
@@ -93,14 +90,6 @@ export type BoundaryFeat = Omit<
 
 export type MapEvent = Omit<PointerEvent, 'features'> & {
   features: LangFeature[] | BoundaryFeat[]
-}
-
-export type MapPanel = {
-  heading: string
-  icon: React.ReactNode
-  subheading: string
-  component: React.ReactNode
-  path: RouteLocation
 }
 
 export type MapTooltip = LongLat & {

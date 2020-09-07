@@ -4,7 +4,7 @@ import { ImSearch } from 'react-icons/im'
 
 import { FiltersPanel } from 'components/filters'
 import { DetailsPanel } from 'components/details'
-import { MapPanel } from 'components/map/types'
+import { MapPanel } from 'components/panels/types'
 
 export const panelsConfig = [
   {

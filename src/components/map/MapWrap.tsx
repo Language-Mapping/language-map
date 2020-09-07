@@ -4,7 +4,8 @@ import { useLocation } from 'react-router-dom'
 import { MapPanel } from 'components/panels'
 import { Map } from 'components/map'
 import { GlobalContext, LoadingBackdrop } from 'components'
-import { LayerPropsNonBGlayer, RouteLocation } from './types'
+import { paths as routes } from 'components/config/routes'
+import { LayerPropsNonBGlayer } from './types'
 import { mbStyleTileConfig } from './config'
 import { useStyles } from './styles'
 import { getIDfromURLparams, getMbStyleDocument } from '../../utils'
@@ -73,9 +74,7 @@ export const MapWrap: FC = () => {
 
   // Open panel for relevant routes
   useEffect((): void => {
-    const DETAILS_PATH = '/details' as RouteLocation
-
-    if (loc.pathname === DETAILS_PATH) {
+    if (loc.pathname === routes.details) {
       dispatch({ type: 'SET_PANEL_STATE', payload: 'default' })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

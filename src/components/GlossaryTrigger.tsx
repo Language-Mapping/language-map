@@ -4,6 +4,8 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Link } from '@material-ui/core'
 import { FaQuestionCircle } from 'react-icons/fa'
 
+import { paths as routes } from 'components/config/routes'
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     glossaryTriggerRoot: {
@@ -25,7 +27,7 @@ export const GlossaryTrigger: FC = () => {
   return (
     <Link
       component={RouterLink}
-      to={`/glossary${loc.search}`}
+      to={`${routes.glossary}${loc.search}`}
       className={classes.glossaryTriggerRoot}
     >
       <FaQuestionCircle />

@@ -15,6 +15,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext } from 'components'
 import { initLegend } from 'components/legend/utils'
+import { paths as routes } from 'components/config/routes'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { MapPopup } from './MapPopup'
 import { MapTooltip } from './MapTooltip'
@@ -267,10 +268,9 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
       dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
     } else {
       const langFeat = topLangFeat as MapTypes.LangFeature
-      const DETAILS_PATH = '/details' as MapTypes.RouteLocation
 
       // TODO: use `initialEntries` in <MemoryRouter> to test routing
-      history.push(`${DETAILS_PATH}?id=${langFeat.properties.ID}`)
+      history.push(`${routes.details}?id=${langFeat.properties.ID}`)
 
       return // prevent boundary click underneath
     }

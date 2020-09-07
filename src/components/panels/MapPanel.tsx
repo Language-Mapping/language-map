@@ -4,9 +4,9 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Box } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
-import { MapPanelHeader, MapPanelHeaderChild } from 'components/panels'
-import { DetailsIntro } from 'components/details'
-import { panelsConfig } from '../../config/panels-config'
+import { MapPanelHeader, MapPanelHeaderChild } from './MapPanelHeader'
+import { PanelIntro } from './PanelIntro'
+import { panelsConfig } from './config'
 
 type MapPanelProps = {
   active?: boolean
@@ -86,7 +86,7 @@ export const MapPanel: FC<MapPanelProps> = (props) => {
         ))}
       </MapPanelHeader>
       <div className={classes.contentWrap}>
-        <DetailsIntro />
+        <PanelIntro />
         {panelsConfig.map((config) => (
           <MapPanelContent
             key={config.heading}
