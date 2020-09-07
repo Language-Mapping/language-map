@@ -173,7 +173,6 @@ export const DetailsPanel: FC = () => {
             {language}
           </Typography>
         )}
-        {/* TODO: make "+4 more clickable to toggle popover" */}
         <Typography className={neighborhoods}>
           {Neighborhoods || Town}
         </Typography>

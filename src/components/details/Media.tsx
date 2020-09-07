@@ -122,6 +122,7 @@ const YouTubeVideo: FC<MediaChildProps> = (props) => {
   )
 }
 
+// ID 646 has the only audio file to date
 const Audio: FC<MediaChildProps> = (props) => {
   const { url } = props
 
@@ -171,10 +172,8 @@ export const Media: FC<MediaProps> = (props) => {
   const [dialogContent, setDialogContent] = useState<MediaKey | null>(null)
   const [showShareBtns, setShowShareBtns] = useState<boolean>(false)
   const classes = useStyles({ showShareBtns })
+  const shareSrcAndTitle = `${language} - Languages of New York City Map`
 
-  const shareSrcAndTitle = `${language} --- NYC Language Diversity Map`
-
-  // TODO: not full width dialog for audio
   return (
     <>
       <SimpleDialog
