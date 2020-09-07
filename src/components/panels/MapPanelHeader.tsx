@@ -1,24 +1,19 @@
 import React, { FC, useContext } from 'react'
-import { useLocation, Link as RouterLink, useHistory } from 'react-router-dom'
+import { useLocation, Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Box, Typography, IconButton } from '@material-ui/core'
-import { MdKeyboardArrowDown } from 'react-icons/md'
-import { AiFillQuestionCircle } from 'react-icons/ai'
+import { FiChevronDown } from 'react-icons/fi'
 
 import { DESKTOP_PANEL_HEADER_HEIGHT } from 'components/map/styles'
 import { MapPanel } from 'components/panels/types'
 import { GlobalContext } from 'components'
-import { paths as routes } from 'components/config/routes'
 
-type PanelHeaderProps = {
-  active?: boolean
-}
-
+type PanelHeaderProps = { active?: boolean }
 type PanelHeaderComponent = Omit<MapPanel, 'component'> & {
   active: boolean
 }
 
-const useCloseBtnStyles = makeStyles((theme: Theme) =>
+const useCloseBtnStyles = makeStyles(() =>
   createStyles({
     panelCloseBtn: {
       transition: '300ms transform',
@@ -78,15 +73,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     headerBtns: {
       position: 'absolute',
-      right: '0.25rem',
+      right: '0.5em',
       [theme.breakpoints.up('sm')]: {
-        right: '.75rem',
+        right: '1em',
       },
     },
   })
 )
 
-const PanelCloseBtn: FC = (props) => {
+const PanelCloseBtn: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
   const classes = useCloseBtnStyles({
     panelOpen: state.panelState === 'default',
@@ -94,7 +89,8 @@ const PanelCloseBtn: FC = (props) => {
 
   return (
     <IconButton
-      size="small"
+      edge="end"
+      color="inherit"
       className={classes.panelCloseBtn}
       onClick={() => {
         const nextPanelState =
@@ -103,23 +99,7 @@ const PanelCloseBtn: FC = (props) => {
         dispatch({ type: 'SET_PANEL_STATE', payload: nextPanelState })
       }}
     >
-      <MdKeyboardArrowDown />
-    </IconButton>
-  )
-}
-
-const OpenGlossaryBtn: FC = (props) => {
-  const loc = useLocation()
-  const history = useHistory()
-
-  return (
-    <IconButton
-      size="small"
-      onClick={() => {
-        history.push(`${routes.glossary}${loc.search}`)
-      }}
-    >
-      <AiFillQuestionCircle />
+      <FiChevronDown />
     </IconButton>
   )
 }
@@ -161,7 +141,6 @@ export const MapPanelHeader: FC = (props) => {
     <Box component="header" className={classes.panelHeaderRoot}>
       <div className={classes.headerBtns}>
         <PanelCloseBtn />
-        <OpenGlossaryBtn />
       </div>
       {children}
     </Box>

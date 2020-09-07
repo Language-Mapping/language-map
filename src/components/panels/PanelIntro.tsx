@@ -3,6 +3,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Button } from '@material-ui/core'
 import { TiDocumentText, TiDocumentDelete } from 'react-icons/ti'
+import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { GlobalContext } from 'components'
 import { paths as routes } from 'components/config/routes'
@@ -15,27 +16,32 @@ const useStyles = makeStyles((theme: Theme) =>
       borderBottomColor: theme.palette.divider,
       borderBottomStyle: 'solid',
       borderBottomWidth: 1,
-      display: 'flex',
-      justifyContent: 'space-around',
+      display: 'grid',
+      gridTemplateColumns: 'auto auto 1fr',
+      justifyItems: 'flex-end',
       listStyle: 'none',
       margin: 0,
       marginBottom: '0.25rem',
-      paddingLeft: 0,
-      paddingRight: 0,
+      paddingLeft: 8,
+      paddingRight: 8,
       position: 'sticky',
       top: 0,
       zIndex: 1,
       [theme.breakpoints.up('sm')]: {
+        gridColumnGap: 8,
         paddingBottom: '0.25rem',
         paddingTop: '0.25rem',
+        paddingLeft: 16,
+        paddingRight: 16,
       },
-      '& .MuiButton-startIcon': {
-        marginRight: 4,
+      [theme.breakpoints.only('sm')]: {
+        gridColumnGap: 12,
       },
+      '& .MuiButton-startIcon': { marginRight: 4 },
     },
     introBtn: {
-      flex: 1,
       textTransform: 'none',
+      [theme.breakpoints.down('xs')]: { fontSize: '0.85em' },
     },
   })
 )
@@ -71,6 +77,19 @@ export const PanelIntro: FC = () => {
           to={routes.details}
         >
           Clear selected
+        </Button>
+      </li>
+      <li>
+        <Button
+          title="Glossary of common terms"
+          className={classes.introBtn}
+          color="primary"
+          component={RouterLink}
+          size="small"
+          startIcon={<AiOutlineQuestionCircle />}
+          to={routes.glossary}
+        >
+          Help
         </Button>
       </li>
     </ul>
