@@ -9,9 +9,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       textAlign: 'center',
       // Direct children relative position so `zIndex` can be used
-      '& > *': {
-        position: 'relative',
-      },
+      '& > *': { position: 'relative' },
       '& a, & a:visited': {
         color: `${theme.palette.common.black} !important`,
         display: 'inline-flex',
@@ -26,26 +24,16 @@ export const useStyles = makeStyles((theme: Theme) =>
       height: 0,
       visibility: 'hidden',
       display: 'none',
-      [theme.breakpoints.up('md')]: {
-        display: 'block',
-      },
+      [theme.breakpoints.up('md')]: { display: 'block' },
     },
-    spacerRight: {
-      marginRight: theme.spacing(2),
-    },
+    spacerRight: { marginRight: theme.spacing(2) },
     spacerLeft: {
-      [theme.breakpoints.up('md')]: {
-        marginLeft: panelWidths.mid,
-      },
-      [theme.breakpoints.up('lg')]: {
-        marginLeft: panelWidths.midLarge,
-      },
+      [theme.breakpoints.up('md')]: { marginLeft: panelWidths.mid },
+      [theme.breakpoints.up('lg')]: { marginLeft: panelWidths.midLarge },
     },
     title: {
       zIndex: 1,
-      [theme.breakpoints.down('md')]: {
-        marginLeft: theme.spacing(1),
-      },
+      [theme.breakpoints.down('md')]: { marginLeft: theme.spacing(1) },
     },
     titleMain: {
       // lineHeight: 1, // single-line anyway, and allows for reliance on gutter

@@ -41,7 +41,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
       type="vector"
       // YO: careful here, it's overriding what's in the MB style JSON...
       url={`mapbox://${mbStyleTileConfig.tilesetId}`}
-      id={mbStyleTileConfig.internalSrcID}
+      id={mbStyleTileConfig.langSrcID}
     >
       {symbLayers.map((layer: LayerPropsNonBGlayer) => {
         let { paint, layout } = layer

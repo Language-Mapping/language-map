@@ -2,18 +2,19 @@ import React, { FC, useContext } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Button } from '@material-ui/core'
-import { fade } from '@material-ui/core/styles/colorManipulator'
 import { TiDocumentText, TiDocumentDelete } from 'react-icons/ti'
 
 import { RouteLocation } from 'components/map/types'
 import { GlobalContext } from 'components'
 
 const DATA_TABLE_PATHNAME: RouteLocation = '/table'
+const DETAILS_PATH: RouteLocation = '/details'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     detailsIntroRoot: {
       alignItems: 'center',
+      backgroundColor: theme.palette.background.paper,
       borderBottomColor: theme.palette.divider,
       borderBottomStyle: 'solid',
       borderBottomWidth: 1,
@@ -24,24 +25,26 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: '0.25rem',
       paddingLeft: 0,
       paddingRight: 0,
+      position: 'sticky',
+      top: 0,
+      zIndex: 1,
       [theme.breakpoints.up('sm')]: {
         paddingBottom: '0.25rem',
         paddingTop: '0.25rem',
-      },
-      '& [role="button"], button': {
-        color: fade(theme.palette.primary.light, 0.85),
-        flex: 1,
-        textTransform: 'none',
       },
       '& .MuiButton-startIcon': {
         marginRight: 4,
       },
     },
+    introBtn: {
+      flex: 1,
+      textTransform: 'none',
+    },
   })
 )
 
 export const DetailsIntro: FC = () => {
-  const { state, dispatch } = useContext(GlobalContext)
+  const { state } = useContext(GlobalContext)
   const classes = useStyles()
 
   return (
@@ -49,9 +52,10 @@ export const DetailsIntro: FC = () => {
       <li>
         <Button
           title="Data table of language communities"
+          className={classes.introBtn}
+          color="primary"
           component={RouterLink}
           size="small"
-          color="default"
           startIcon={<TiDocumentText />}
           to={DATA_TABLE_PATHNAME}
         >
@@ -61,13 +65,13 @@ export const DetailsIntro: FC = () => {
       <li>
         <Button
           title="Clear currently selected community"
+          className={classes.introBtn}
+          color="primary"
+          component={RouterLink}
+          disabled={state.selFeatAttribs === null}
           size="small"
-          color="default"
           startIcon={<TiDocumentDelete />}
-          disabled={!state.selFeatAttribs}
-          onClick={() =>
-            dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
-          }
+          to={DETAILS_PATH}
         >
           Clear selected
         </Button>

@@ -1,15 +1,16 @@
 import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Container, Button, Typography } from '@material-ui/core'
-import { FiVideo } from 'react-icons/fi'
+import { FiVideo, FiShare } from 'react-icons/fi'
 import { AiOutlineSound } from 'react-icons/ai'
 
 import { SimpleDialog } from 'components'
 
-type MediaKey = 'video' | 'audio'
+type MediaKey = 'video' | 'audio' | 'share'
 
 type MediaProps = {
   language: string
+  share?: string
   audio?: string
   video?: string
 }
@@ -194,6 +195,11 @@ export const Media: FC<MediaProps> = (props) => {
             handleClick={() => setDialogContent(item.type)}
           />
         ))}
+        <MediaListItem
+          {...{ label: 'Share', icon: <FiShare />, type: 'share' }}
+          // eslint-disable-next-line no-alert
+          handleClick={() => alert('share not ready yet!')}
+        />
       </ul>
     </>
   )

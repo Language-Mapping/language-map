@@ -56,7 +56,7 @@ const ctrlBtnsConfig = [
 ] as CtrlBtnConfig[]
 
 export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
-  const { isDesktop, onMapCtrlClick, mapRef, mapOffset } = props
+  const { isDesktop, onMapCtrlClick, mapRef } = props
   const classes = useStyles()
   const [speedDialOpen, setSpeedDialOpen] = React.useState(true)
   const size = isDesktop ? 'medium' : 'small'
@@ -81,7 +81,11 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
   return (
     <>
       <GeocoderPopout
-        {...{ anchorEl, setAnchorEl, mapOffset, mapRef, isDesktop }}
+        {...{
+          anchorEl,
+          setAnchorEl,
+          mapRef,
+        }}
       />
       <SpeedDial
         ariaLabel="Map control buttons"

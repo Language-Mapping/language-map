@@ -40,7 +40,7 @@
     // last configuration in the extends array.
     "plugin:prettier/recommended"
   ],
-  "ignorePatterns": ["scratch", "src/serviceWorker.ts"],
+  "ignorePatterns": ["scratch", "src/serviceWorker.ts", "build"],
   "rules": {
     "array-bracket-newline": [
       "error",

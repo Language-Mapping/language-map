@@ -3,27 +3,21 @@ import { useLocation } from 'react-router-dom'
 
 import { MapPanel } from 'components/panels'
 import { Map } from 'components/map'
-import { GlobalContext } from 'components'
+import { GlobalContext, LoadingBackdrop } from 'components'
 import { LayerPropsNonBGlayer, RouteLocation } from './types'
 import { mbStyleTileConfig } from './config'
 import { useStyles } from './styles'
-import {
-  getIDfromURLparams,
-  getMbStyleDocument,
-  useWindowResize,
-} from '../../utils'
+import { getIDfromURLparams, getMbStyleDocument } from '../../utils'
 
 export const MapWrap: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
   const loc = useLocation()
-  const { height } = useWindowResize() // TODO: rm if not using
   const [symbLayers, setSymbLayers] = useState<LayerPropsNonBGlayer[]>()
   const [labelLayers, setLabelLayers] = useState<LayerPropsNonBGlayer[]>()
   const { langFeaturesCached } = state
 
   const classes = useStyles({
     panelOpen: state.panelState === 'default',
-    screenHeight: height,
   })
 
   // Fetch MB Style doc
@@ -82,25 +76,23 @@ export const MapWrap: FC = () => {
     const DETAILS_PATH = '/details' as RouteLocation
 
     if (loc.pathname === DETAILS_PATH) {
-      dispatch({
-        type: 'SET_PANEL_STATE',
-        payload: 'default',
-      })
+      dispatch({ type: 'SET_PANEL_STATE', payload: 'default' })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc.search])
 
   return (
-    <div className={classes.appWrapRoot}>
+    <main className={classes.appWrapRoot}>
+      {!state.mapLoaded && <LoadingBackdrop />}
+      <MapPanel />
       {symbLayers && labelLayers && (
         <Map
-          wrapClassName={classes.mapItselfWrap}
+          mapWrapClassName={classes.mapWrap}
           symbLayers={symbLayers}
           labelLayers={labelLayers}
           baselayer={state.baselayer}
         />
       )}
-      <MapPanel screenHeight={height} />
-    </div>
+    </main>
   )
 }

@@ -1,0 +1,1634 @@
+[
+  {
+    "feature_id": 661211369,
+    "name": "South Ozone Park",
+    "centroid": [-73.8144, 40.6772],
+    "bounds": [-73.8343, 40.6625, -73.788, 40.6918]
+  },
+  {
+    "feature_id": 664357097,
+    "name": "Wakefield",
+    "centroid": [-73.85, 40.8991],
+    "bounds": [-73.8621, 40.8883, -73.8334, 40.91]
+  },
+  {
+    "feature_id": 665143529,
+    "name": "Clifton",
+    "centroid": [-74.0755, 40.6189],
+    "bounds": [-74.0811, 40.6142, -74.0691, 40.6236]
+  },
+  {
+    "feature_id": 667633897,
+    "name": "Mill Basin",
+    "centroid": [-73.9131, 40.6109],
+    "bounds": [-73.9246, 40.6028, -73.901, 40.6199]
+  },
+  {
+    "feature_id": 669141225,
+    "name": "Fordham",
+    "centroid": [-73.8962, 40.8619],
+    "bounds": [-73.9033, 40.8542, -73.8854, 40.8692]
+  },
+  {
+    "feature_id": 669206761,
+    "name": "Richmond Valley",
+    "centroid": [-74.2354, 40.5182],
+    "bounds": [-74.2468, 40.5104, -74.2235, 40.5259]
+  },
+  {
+    "feature_id": 671631593,
+    "name": "Hillcrest",
+    "centroid": [-73.8003, 40.723],
+    "bounds": [-73.8109, 40.7159, -73.7904, 40.7301]
+  },
+  {
+    "feature_id": 674842857,
+    "name": "Chelsea-Travis",
+    "centroid": [-74.195, 40.59],
+    "bounds": [-74.2069, 40.5769, -74.178, 40.6026]
+  },
+  {
+    "feature_id": 674908393,
+    "name": "Pelham Gardens",
+    "centroid": [-73.8457, 40.8651],
+    "bounds": [-73.8558, 40.8561, -73.8266, 40.8737]
+  },
+  {
+    "feature_id": 676808937,
+    "name": "Rockaway Park",
+    "centroid": [-73.8349, 40.5804],
+    "bounds": [-73.8509, 40.5724, -73.8174, 40.5884]
+  },
+  {
+    "feature_id": 676940009,
+    "name": "Columbus Circle",
+    "centroid": [-73.9921, 40.7683],
+    "bounds": [-74.0015, 40.7624, -73.9823, 40.7741]
+  },
+  {
+    "feature_id": 677005545,
+    "name": "Jacob Riis Park",
+    "centroid": [-73.8743, 40.5668],
+    "bounds": [-73.8907, 40.5587, -73.8624, 40.5748]
+  },
+  {
+    "feature_id": 680151273,
+    "name": "Fresh Meadows",
+    "centroid": [-73.7857, 40.7338],
+    "bounds": [-73.8053, 40.7223, -73.7566, 40.745]
+  },
+  {
+    "feature_id": 680216809,
+    "name": "Briarwood",
+    "centroid": [-73.8149, 40.7122],
+    "bounds": [-73.8273, 40.704, -73.8028, 40.72]
+  },
+  {
+    "feature_id": 682379497,
+    "name": "Tudor City",
+    "centroid": [-73.9721, 40.7473],
+    "bounds": [-73.9779, 40.743, -73.9668, 40.7515]
+  },
+  {
+    "feature_id": 691292393,
+    "name": "Marble Hill",
+    "centroid": [-73.9113, 40.8753],
+    "bounds": [-73.9154, 40.8715, -73.9071, 40.8791]
+  },
+  {
+    "feature_id": 69290217,
+    "name": "Stapleton",
+    "centroid": [-74.0778, 40.6237],
+    "bounds": [-74.0878, 40.6133, -74.0703, 40.6341]
+  },
+  {
+    "feature_id": 694175977,
+    "name": "Marine Park",
+    "centroid": [-73.9264, 40.6042],
+    "bounds": [-73.9448, 40.5861, -73.8988, 40.6223]
+  },
+  {
+    "feature_id": 699287785,
+    "name": "Auburndale",
+    "centroid": [-73.7914, 40.7509],
+    "bounds": [-73.8046, 40.7382, -73.7759, 40.7635]
+  },
+  {
+    "feature_id": 699353321,
+    "name": "Manhattanville",
+    "centroid": [-73.9535, 40.8155],
+    "bounds": [-73.9619, 40.8108, -73.9482, 40.8234]
+  },
+  {
+    "feature_id": 700795113,
+    "name": "Arrochar",
+    "centroid": [-74.0727, 40.5972],
+    "bounds": [-74.0836, 40.5905, -74.0618, 40.6041]
+  },
+  {
+    "feature_id": 704596201,
+    "name": "Van Cortlandt Park",
+    "centroid": [-73.8866, 40.8971],
+    "bounds": [-73.8999, 40.8828, -73.8679, 40.9113]
+  },
+  {
+    "feature_id": 71190761,
+    "name": "Upper West Side",
+    "centroid": [-73.9766, 40.7874],
+    "bounds": [-73.9971, 40.7678, -73.9584, 40.8063]
+  },
+  {
+    "feature_id": 711739625,
+    "name": "North Riverdale",
+    "centroid": [-73.9052, 40.9084],
+    "bounds": [-73.9156, 40.901, -73.8964, 40.9158]
+  },
+  {
+    "feature_id": 715671785,
+    "name": "Mott Haven",
+    "centroid": [-73.9184, 40.8117],
+    "bounds": [-73.9334, 40.8037, -73.903, 40.8196]
+  },
+  {
+    "feature_id": 716130537,
+    "name": "Ocean Hill",
+    "centroid": [-73.9099, 40.6772],
+    "bounds": [-73.9227, 40.6671, -73.9033, 40.687]
+  },
+  {
+    "feature_id": 722618601,
+    "name": "Woodside",
+    "centroid": [-73.9035, 40.7507],
+    "bounds": [-73.9175, 40.7354, -73.8946, 40.7658]
+  },
+  {
+    "feature_id": 724584681,
+    "name": "Westchester Heights",
+    "centroid": [-73.8424, 40.8453],
+    "bounds": [-73.8551, 40.8341, -73.8328, 40.8565]
+  },
+  {
+    "feature_id": 726485225,
+    "name": "East Jamaica Bay Islands",
+    "centroid": [-73.8283, 40.6271],
+    "bounds": [-73.8452, 40.588, -73.794, 40.6414]
+  },
+  {
+    "feature_id": 727075049,
+    "name": "Grant City",
+    "centroid": [-74.1058, 40.579],
+    "bounds": [-74.1168, 40.5719, -74.096, 40.5859]
+  },
+  {
+    "feature_id": 732055785,
+    "name": "West Farms",
+    "centroid": [-73.8818, 40.8428],
+    "bounds": [-73.8861, 40.8364, -73.8717, 40.8491]
+  },
+  {
+    "feature_id": 732121321,
+    "name": "St. George",
+    "centroid": [-74.0783, 40.6435],
+    "bounds": [-74.0899, 40.6372, -74.0685, 40.6498]
+  },
+  {
+    "feature_id": 733300969,
+    "name": "Huguenot",
+    "centroid": [-74.1888, 40.5299],
+    "bounds": [-74.207, 40.5158, -74.1733, 40.5463]
+  },
+  {
+    "feature_id": 73353449,
+    "name": "Crown Heights",
+    "centroid": [-73.9425, 40.6727],
+    "bounds": [-73.9644, 40.6633, -73.9218, 40.6812]
+  },
+  {
+    "feature_id": 735856873,
+    "name": "Inwood",
+    "centroid": [-73.9207, 40.8666],
+    "bounds": [-73.9336, 40.8552, -73.9096, 40.8784]
+  },
+  {
+    "feature_id": 738543849,
+    "name": "Middle Village",
+    "centroid": [-73.8785, 40.7186],
+    "bounds": [-73.8945, 40.7054, -73.8594, 40.7317]
+  },
+  {
+    "feature_id": 739526889,
+    "name": "Coney Island",
+    "centroid": [-73.9909, 40.5769],
+    "bounds": [-74.0139, 40.5699, -73.9668, 40.5838]
+  },
+  {
+    "feature_id": 743393513,
+    "name": "Throggs Neck",
+    "centroid": [-73.822, 40.82],
+    "bounds": [-73.8423, 40.8033, -73.7893, 40.8367]
+  },
+  {
+    "feature_id": 744114409,
+    "name": "West Village",
+    "centroid": [-74.0078, 40.736],
+    "bounds": [-74.0152, 40.7286, -73.9997, 40.7433]
+  },
+  {
+    "feature_id": 744179945,
+    "name": "Old Town",
+    "centroid": [-74.0923, 40.5939],
+    "bounds": [-74.1008, 40.5861, -74.0824, 40.6018]
+  },
+  {
+    "feature_id": 744245481,
+    "name": "Springfield Gardens",
+    "centroid": [-73.7597, 40.6577],
+    "bounds": [-73.7896, 40.6458, -73.7401, 40.6674]
+  },
+  {
+    "feature_id": 752306409,
+    "name": "Murray Hill",
+    "centroid": [-73.9797, 40.7496],
+    "bounds": [-73.9847, 40.7459, -73.9743, 40.7537]
+  },
+  {
+    "feature_id": 754272489,
+    "name": "Governors Island",
+    "centroid": [-74.0188, 40.6882],
+    "bounds": [-74.0276, 40.683, -74.0109, 40.6942]
+  },
+  {
+    "feature_id": 756041961,
+    "name": "Soundview",
+    "centroid": [-73.8729, 40.8258],
+    "bounds": [-73.8874, 40.8137, -73.8568, 40.8377]
+  },
+  {
+    "feature_id": 758008041,
+    "name": "Parkchester",
+    "centroid": [-73.8628, 40.838],
+    "bounds": [-73.8737, 40.8329, -73.8516, 40.843]
+  },
+  {
+    "feature_id": 760105193,
+    "name": "Canarsie",
+    "centroid": [-73.8995, 40.6393],
+    "bounds": [-73.9198, 40.6216, -73.8763, 40.6574]
+  },
+  {
+    "feature_id": 76564713,
+    "name": "Grymes Hill",
+    "centroid": [-74.0925, 40.6201],
+    "bounds": [-74.1036, 40.6088, -74.083, 40.6312]
+  },
+  {
+    "feature_id": 773212393,
+    "name": "Mariner's Harbor",
+    "centroid": [-74.1554, 40.6365],
+    "bounds": [-74.1667, 40.6249, -74.1427, 40.6448]
+  },
+  {
+    "feature_id": 774392041,
+    "name": "Cobble Hill",
+    "centroid": [-73.9965, 40.6875],
+    "bounds": [-74.0007, 40.6837, -73.9925, 40.6912]
+  },
+  {
+    "feature_id": 778717417,
+    "name": "Cambria Heights",
+    "centroid": [-73.7354, 40.6926],
+    "bounds": [-73.7449, 40.6835, -73.7254, 40.7013]
+  },
+  {
+    "feature_id": 779962601,
+    "name": "Woodhaven",
+    "centroid": [-73.8565, 40.691],
+    "bounds": [-73.8688, 40.6833, -73.8443, 40.6984]
+  },
+  {
+    "feature_id": 783763689,
+    "name": "Hunts Point",
+    "centroid": [-73.8852, 40.8113],
+    "bounds": [-73.903, 40.7946, -73.8673, 40.8227]
+  },
+  {
+    "feature_id": 785336553,
+    "name": "New Brighton",
+    "centroid": [-74.0907, 40.6401],
+    "bounds": [-74.0973, 40.6317, -74.0865, 40.6482]
+  },
+  {
+    "feature_id": 78661865,
+    "name": "Corona",
+    "centroid": [-73.8606, 40.7462],
+    "bounds": [-73.8737, 40.7341, -73.8472, 40.7584]
+  },
+  {
+    "feature_id": 791562473,
+    "name": "Boerum Hill",
+    "centroid": [-73.9865, 40.686],
+    "bounds": [-73.994, 40.6813, -73.9781, 40.6903]
+  },
+  {
+    "feature_id": 794773737,
+    "name": "Morningside Heights",
+    "centroid": [-73.9607, 40.8106],
+    "bounds": [-73.9718, 40.8013, -73.9526, 40.8195]
+  },
+  {
+    "feature_id": 799820009,
+    "name": "Fort Hamilton",
+    "centroid": [-74.0318, 40.6136],
+    "bounds": [-74.0428, 40.6017, -74.0179, 40.6257]
+  },
+  {
+    "feature_id": 801327337,
+    "name": "College Point",
+    "centroid": [-73.838, 40.7813],
+    "bounds": [-73.8601, 40.7645, -73.8245, 40.798]
+  },
+  {
+    "feature_id": 804473065,
+    "name": "Jamaica Estates",
+    "centroid": [-73.7832, 40.7198],
+    "bounds": [-73.7936, 40.7107, -73.7736, 40.7292]
+  },
+  {
+    "feature_id": 824068329,
+    "name": "Mill Rock Park",
+    "centroid": [-73.9384, 40.7805],
+    "bounds": [-73.9405, 40.7786, -73.9367, 40.7823]
+  },
+  {
+    "feature_id": 831146217,
+    "name": "Emerson Hill",
+    "centroid": [-74.1232, 40.6013],
+    "bounds": [-74.1324, 40.5915, -74.0906, 40.6111]
+  },
+  {
+    "feature_id": 831408361,
+    "name": "Silver Lake",
+    "centroid": [-74.0986, 40.6246],
+    "bounds": [-74.1099, 40.6164, -74.0889, 40.6329]
+  },
+  {
+    "feature_id": 835864809,
+    "name": "Flatbush",
+    "centroid": [-73.9577, 40.6425],
+    "bounds": [-73.9721, 40.6287, -73.9445, 40.6556]
+  },
+  {
+    "feature_id": 840517865,
+    "name": "Flushing Meadows Corona Park",
+    "centroid": [-73.8437, 40.7416],
+    "bounds": [-73.8554, 40.7167, -73.8261, 40.7658]
+  },
+  {
+    "feature_id": 850807017,
+    "name": "Sutton Place",
+    "centroid": [-73.9644, 40.7582],
+    "bounds": [-73.971, 40.7542, -73.9578, 40.7623]
+  },
+  {
+    "feature_id": 851462377,
+    "name": "Breezy Point",
+    "centroid": [-73.9259, 40.5534],
+    "bounds": [-73.9415, 40.5408, -73.9092, 40.5659]
+  },
+  {
+    "feature_id": 854083817,
+    "name": "Oakwood",
+    "centroid": [-74.1147, 40.5587],
+    "bounds": [-74.1303, 40.5466, -74.0998, 40.5705]
+  },
+  {
+    "feature_id": 860244201,
+    "name": "Bergen Beach",
+    "centroid": [-73.8981, 40.6141],
+    "bounds": [-73.9103, 40.6045, -73.8886, 40.6237]
+  },
+  {
+    "feature_id": 862537961,
+    "name": "Bensonhurst",
+    "centroid": [-73.9872, 40.6128],
+    "bounds": [-74.0018, 40.5967, -73.9721, 40.6277]
+  },
+  {
+    "feature_id": 862603497,
+    "name": "Midtown",
+    "centroid": [-73.9788, 40.7601],
+    "bounds": [-73.9899, 40.7516, -73.9681, 40.7682]
+  },
+  {
+    "feature_id": 870533353,
+    "name": "East Elmhurst",
+    "centroid": [-73.8805, 40.7632],
+    "bounds": [-73.9035, 40.7542, -73.8514, 40.7722]
+  },
+  {
+    "feature_id": 87967977,
+    "name": "Belmont",
+    "centroid": [-73.886, 40.8587],
+    "bounds": [-73.8914, 40.8511, -73.88, 40.8663]
+  },
+  {
+    "feature_id": 885213417,
+    "name": "Laurelton",
+    "centroid": [-73.7414, 40.6792],
+    "bounds": [-73.758, 40.6658, -73.7258, 40.6932]
+  },
+  {
+    "feature_id": 906774761,
+    "name": "Pelham Bay Park",
+    "centroid": [-73.8092, 40.8683],
+    "bounds": [-73.8274, 40.8457, -73.7737, 40.8895]
+  },
+  {
+    "feature_id": 912738537,
+    "name": "Red Hook",
+    "centroid": [-74.0102, 40.6755],
+    "bounds": [-74.0209, 40.6638, -73.9985, 40.687]
+  },
+  {
+    "feature_id": 914901225,
+    "name": "Pomonok",
+    "centroid": [-73.8079, 40.7329],
+    "bounds": [-73.8112, 40.7272, -73.8046, 40.7387]
+  },
+  {
+    "feature_id": 915032297,
+    "name": "Georgetown",
+    "centroid": [-73.9107, 40.6252],
+    "bounds": [-73.9185, 40.6178, -73.9014, 40.632]
+  },
+  {
+    "feature_id": 91834601,
+    "name": "Greenwich Village",
+    "centroid": [-73.996, 40.7323],
+    "bounds": [-74.0053, 40.7259, -73.9873, 40.7391]
+  },
+  {
+    "feature_id": 920209641,
+    "name": "Clinton",
+    "centroid": [-73.9977, 40.7601],
+    "bounds": [-74.0079, 40.7523, -73.9863, 40.7682]
+  },
+  {
+    "feature_id": 943802601,
+    "name": "East New York",
+    "centroid": [-73.8785, 40.6653],
+    "bounds": [-73.9043, 40.6352, -73.8557, 40.6952]
+  },
+  {
+    "feature_id": 943868137,
+    "name": "East Tremont",
+    "centroid": [-73.8919, 40.8482],
+    "bounds": [-73.9027, 40.8404, -73.8824, 40.8562]
+  },
+  {
+    "feature_id": 952518889,
+    "name": "Clason Point",
+    "centroid": [-73.8578, 40.8097],
+    "bounds": [-73.871, 40.8036, -73.8467, 40.8158]
+  },
+  {
+    "feature_id": 956778729,
+    "name": "DUMBO",
+    "centroid": [-73.9901, 40.7036],
+    "bounds": [-73.9961, 40.7006, -73.9845, 40.7065]
+  },
+  {
+    "feature_id": 964643049,
+    "name": "University Heights",
+    "centroid": [-73.9069, 40.8639],
+    "bounds": [-73.9186, 40.8538, -73.8971, 40.8734]
+  },
+  {
+    "feature_id": 965495017,
+    "name": "Roosevelt Island",
+    "centroid": [-73.9504, 40.7611],
+    "bounds": [-73.9625, 40.7485, -73.9391, 40.7738]
+  },
+  {
+    "feature_id": 965560553,
+    "name": "New Utrecht",
+    "centroid": [-74.0039, 40.6161],
+    "bounds": [-74.0116, 40.6059, -73.9978, 40.6244]
+  },
+  {
+    "feature_id": 966150377,
+    "name": "Flushing",
+    "centroid": [-73.8284, 40.7572],
+    "bounds": [-73.8395, 40.7384, -73.8027, 40.776]
+  },
+  {
+    "feature_id": 966281449,
+    "name": "Castleton Corners",
+    "centroid": [-74.1246, 40.6179],
+    "bounds": [-74.1321, 40.6085, -74.1176, 40.6274]
+  },
+  {
+    "feature_id": 970017001,
+    "name": "Eastchester",
+    "centroid": [-73.8322, 40.8844],
+    "bounds": [-73.8417, 40.8759, -73.8166, 40.8927]
+  },
+  {
+    "feature_id": 974276841,
+    "name": "Garment District",
+    "centroid": [-73.9887, 40.7511],
+    "bounds": [-73.9953, 40.7463, -73.981, 40.7574]
+  },
+  {
+    "feature_id": 974342377,
+    "name": "Country Club",
+    "centroid": [-73.8202, 40.8421],
+    "bounds": [-73.8257, 40.8355, -73.8108, 40.8488]
+  },
+  {
+    "feature_id": 976898281,
+    "name": "Lower East Side",
+    "centroid": [-73.9831, 40.7159],
+    "bounds": [-74.0052, 40.7075, -73.9726, 40.7243]
+  },
+  {
+    "feature_id": 982337769,
+    "name": "High Bridge",
+    "centroid": [-73.9272, 40.8369],
+    "bounds": [-73.9343, 40.8281, -73.9141, 40.8457]
+  },
+  {
+    "feature_id": 985942249,
+    "name": "NoHo",
+    "centroid": [-73.9938, 40.7275],
+    "bounds": [-73.9975, 40.7242, -73.9899, 40.7309]
+  },
+  {
+    "feature_id": 988104937,
+    "name": "Lighthouse Hill",
+    "centroid": [-74.1364, 40.577],
+    "bounds": [-74.1487, 40.5697, -74.1267, 40.5834]
+  },
+  {
+    "feature_id": 989546729,
+    "name": "Central Park",
+    "centroid": [-73.9659, 40.7823],
+    "bounds": [-73.9817, 40.7645, -73.9493, 40.8007]
+  },
+  {
+    "feature_id": 994986217,
+    "name": "Utopia",
+    "centroid": [-73.7874, 40.7296],
+    "bounds": [-73.7936, 40.7259, -73.7812, 40.7331]
+  },
+  {
+    "feature_id": 1000622313,
+    "name": "Fort Tilden",
+    "centroid": [-73.8984, 40.5603],
+    "bounds": [-73.9108, 40.5541, -73.8869, 40.5664]
+  },
+  {
+    "feature_id": 1001539817,
+    "name": "New Dorp",
+    "centroid": [-74.1163, 40.5747],
+    "bounds": [-74.1271, 40.5643, -74.1064, 40.5853]
+  },
+  {
+    "feature_id": 1014057193,
+    "name": "Richmond Town",
+    "centroid": [-74.137, 40.5676],
+    "bounds": [-74.153, 40.5588, -74.1209, 40.5763]
+  },
+  {
+    "feature_id": 1015433449,
+    "name": "Pleasant Plains",
+    "centroid": [-74.2184, 40.5174],
+    "bounds": [-74.2289, 40.5016, -74.2097, 40.5323]
+  },
+  {
+    "feature_id": 1023101161,
+    "name": "Rikers Island",
+    "centroid": [-73.8827, 40.7919],
+    "bounds": [-73.8936, 40.7845, -73.87, 40.7992]
+  },
+  {
+    "feature_id": 1023232233,
+    "name": "Brooklyn Heights",
+    "centroid": [-73.996, 40.6968],
+    "bounds": [-74.0048, 40.6896, -73.9903, 40.7042]
+  },
+  {
+    "feature_id": 1025132777,
+    "name": "Bedford Park",
+    "centroid": [-73.8891, 40.8751],
+    "bounds": [-73.9012, 40.8649, -73.8795, 40.8854]
+  },
+  {
+    "feature_id": 1028016361,
+    "name": "Roxbury",
+    "centroid": [-73.8911, 40.5669],
+    "bounds": [-73.8966, 40.5643, -73.8857, 40.5693]
+  },
+  {
+    "feature_id": 1033849065,
+    "name": "Clove Lake",
+    "centroid": [-74.1144, 40.6205],
+    "bounds": [-74.1231, 40.6137, -74.1036, 40.6277]
+  },
+  {
+    "feature_id": 10373353,
+    "name": "Park Hill",
+    "centroid": [-74.0833, 40.6114],
+    "bounds": [-74.0904, 40.6061, -74.0765, 40.6178]
+  },
+  {
+    "feature_id": 1036601577,
+    "name": "Greenridge",
+    "centroid": [-74.1862, 40.5598],
+    "bounds": [-74.1991, 40.5535, -74.1708, 40.5662]
+  },
+  {
+    "feature_id": 103762153,
+    "name": "Prince's Bay",
+    "centroid": [-74.2032, 40.5225],
+    "bounds": [-74.2182, 40.5088, -74.1875, 40.5365]
+  },
+  {
+    "feature_id": 103827689,
+    "name": "Floyd Bennett Field",
+    "centroid": [-73.8933, 40.5912],
+    "bounds": [-73.9123, 40.5759, -73.8756, 40.6064]
+  },
+  {
+    "feature_id": 1042499817,
+    "name": "Hart Island",
+    "centroid": [-73.7708, 40.8525],
+    "bounds": [-73.7734, 40.8441, -73.7644, 40.8609]
+  },
+  {
+    "feature_id": 1044793577,
+    "name": "Ridgewood",
+    "centroid": [-73.9027, 40.7025],
+    "bounds": [-73.9221, 40.6917, -73.878, 40.7134]
+  },
+  {
+    "feature_id": 1056393449,
+    "name": "Bay Ridge",
+    "centroid": [-74.0293, 40.6308],
+    "bounds": [-74.0426, 40.6197, -74.0159, 40.6417]
+  },
+  {
+    "feature_id": 1064913129,
+    "name": "Woodlawn",
+    "centroid": [-73.8719, 40.8914],
+    "bounds": [-73.8804, 40.88, -73.8601, 40.903]
+  },
+  {
+    "feature_id": 1065830633,
+    "name": "Windsor Terrace",
+    "centroid": [-73.9769, 40.6529],
+    "bounds": [-73.984, 40.6474, -73.9714, 40.6609]
+  },
+  {
+    "feature_id": 106973417,
+    "name": "Annadale",
+    "centroid": [-74.1734, 40.5338],
+    "bounds": [-74.1872, 40.5213, -74.1599, 40.5468]
+  },
+  {
+    "feature_id": 1069697257,
+    "name": "Bulls Head",
+    "centroid": [-74.1665, 40.6066],
+    "bounds": [-74.1782, 40.5924, -74.1536, 40.6208]
+  },
+  {
+    "feature_id": 1081690345,
+    "name": "Jackson Heights",
+    "centroid": [-73.8842, 40.7516],
+    "bounds": [-73.8986, 40.7465, -73.8695, 40.7568]
+  },
+  {
+    "feature_id": 1083263209,
+    "name": "Carnegie Hill",
+    "centroid": [-73.9561, 40.7834],
+    "bounds": [-73.9606, 40.7795, -73.9511, 40.7881]
+  },
+  {
+    "feature_id": 1085884649,
+    "name": "Brownsville",
+    "centroid": [-73.9111, 40.6639],
+    "bounds": [-73.9243, 40.6512, -73.8996, 40.6754]
+  },
+  {
+    "feature_id": 108677353,
+    "name": "Howard Beach",
+    "centroid": [-73.8457, 40.6574],
+    "bounds": [-73.8632, 40.6434, -73.8261, 40.6717]
+  },
+  {
+    "feature_id": 1087785193,
+    "name": "Co-op City",
+    "centroid": [-73.8285, 40.8724],
+    "bounds": [-73.8353, 40.8594, -73.8171, 40.8854]
+  },
+  {
+    "feature_id": 1094797545,
+    "name": "Tompkinsville",
+    "centroid": [-74.0842, 40.6334],
+    "bounds": [-74.0905, 40.6286, -74.069, 40.6383]
+  },
+  {
+    "feature_id": 1100957929,
+    "name": "Bayside",
+    "centroid": [-73.7707, 40.7617],
+    "bounds": [-73.7958, 40.7435, -73.7439, 40.7795]
+  },
+  {
+    "feature_id": 1102465257,
+    "name": "Fort Wadsworth",
+    "centroid": [-74.0585, 40.6014],
+    "bounds": [-74.0658, 40.5933, -74.0514, 40.6094]
+  },
+  {
+    "feature_id": 1102530793,
+    "name": "Gerritsen Beach",
+    "centroid": [-73.9281, 40.593],
+    "bounds": [-73.9342, 40.5852, -73.9176, 40.601]
+  },
+  {
+    "feature_id": 1105086697,
+    "name": "Malba",
+    "centroid": [-73.8275, 40.7923],
+    "bounds": [-73.833, 40.7866, -73.8235, 40.798]
+  },
+  {
+    "feature_id": 1113278697,
+    "name": "Butler Manor",
+    "centroid": [-74.2283, 40.5066],
+    "bounds": [-74.2363, 40.5001, -74.2214, 40.5132]
+  },
+  {
+    "feature_id": 115165417,
+    "name": "Grasmere - Concord",
+    "centroid": [-74.0852, 40.6033],
+    "bounds": [-74.1009, 40.5976, -74.0691, 40.6089]
+  },
+  {
+    "feature_id": 12273897,
+    "name": "Kew Gardens Hills",
+    "centroid": [-73.8225, 40.7303],
+    "bounds": [-73.8371, 40.7173, -73.8091, 40.7434]
+  },
+  {
+    "feature_id": 12339433,
+    "name": "Bloomfield",
+    "centroid": [-74.1849, 40.6179],
+    "bounds": [-74.2037, 40.5998, -74.1676, 40.6358]
+  },
+  {
+    "feature_id": 127027433,
+    "name": "Bay Terrace",
+    "centroid": [-74.1356, 40.5563],
+    "bounds": [-74.1452, 40.5479, -74.1281, 40.565]
+  },
+  {
+    "feature_id": 129059049,
+    "name": "Fresh Kills Park",
+    "centroid": [-74.1809, 40.5791],
+    "bounds": [-74.1925, 40.5625, -74.1672, 40.5985]
+  },
+  {
+    "feature_id": 129124585,
+    "name": "Williamsbridge",
+    "centroid": [-73.8602, 40.8757],
+    "bounds": [-73.8712, 40.8568, -73.8383, 40.8949]
+  },
+  {
+    "feature_id": 138627305,
+    "name": "Kensington",
+    "centroid": [-73.974, 40.6377],
+    "bounds": [-73.9891, 40.6276, -73.9668, 40.6483]
+  },
+  {
+    "feature_id": 140724457,
+    "name": "Fieldston",
+    "centroid": [-73.9025, 40.8954],
+    "bounds": [-73.9086, 40.8889, -73.8964, 40.9018]
+  },
+  {
+    "feature_id": 144918761,
+    "name": "Meiers Corners",
+    "centroid": [-74.1468, 40.6165],
+    "bounds": [-74.1528, 40.608, -74.1299, 40.6249]
+  },
+  {
+    "feature_id": 148588777,
+    "name": "Hamilton Heights",
+    "centroid": [-73.9518, 40.8252],
+    "bounds": [-73.9604, 40.8172, -73.9415, 40.835]
+  },
+  {
+    "feature_id": 150489321,
+    "name": "Homecrest",
+    "centroid": [-73.9566, 40.6015],
+    "bounds": [-73.9623, 40.5916, -73.9502, 40.6106]
+  },
+  {
+    "feature_id": 150554857,
+    "name": "Riverdale",
+    "centroid": [-73.9136, 40.8948],
+    "bounds": [-73.9215, 40.8852, -73.8978, 40.9042]
+  },
+  {
+    "feature_id": 156125417,
+    "name": "Midland Beach",
+    "centroid": [-74.0881, 40.5763],
+    "bounds": [-74.102, 40.5663, -74.0754, 40.5861]
+  },
+  {
+    "feature_id": 158288105,
+    "name": "Chelsea",
+    "centroid": [-74.0045, 40.7477],
+    "bounds": [-74.013, 40.7377, -73.9914, 40.7577]
+  },
+  {
+    "feature_id": 177948905,
+    "name": "Douglaston-Little Neck",
+    "centroid": [-73.7386, 40.7636],
+    "bounds": [-73.7588, 40.7437, -73.7137, 40.7836]
+  },
+  {
+    "feature_id": 184699113,
+    "name": "Flatlands",
+    "centroid": [-73.9299, 40.6272],
+    "bounds": [-73.9454, 40.6114, -73.9165, 40.6428]
+  },
+  {
+    "feature_id": 185485545,
+    "name": "Queens Village",
+    "centroid": [-73.7404, 40.7126],
+    "bounds": [-73.7642, 40.6932, -73.7255, 40.7324]
+  },
+  {
+    "feature_id": 186927337,
+    "name": "Randall Manor",
+    "centroid": [-74.1007, 40.6389],
+    "bounds": [-74.1091, 40.6306, -74.0924, 40.6466]
+  },
+  {
+    "feature_id": 196167913,
+    "name": "Park Slope",
+    "centroid": [-73.9797, 40.671],
+    "bounds": [-73.9929, 40.6574, -73.9695, 40.6848]
+  },
+  {
+    "feature_id": 196954345,
+    "name": "Turtle Bay",
+    "centroid": [-73.9685, 40.7531],
+    "bounds": [-73.9759, 40.7479, -73.9611, 40.7584]
+  },
+  {
+    "feature_id": 197871849,
+    "name": "Carroll Gardens",
+    "centroid": [-73.9994, 40.6795],
+    "bounds": [-74.0035, 40.6725, -73.9913, 40.6865]
+  },
+  {
+    "feature_id": 200362217,
+    "name": "Financial District",
+    "centroid": [-74.0082, 40.7062],
+    "bounds": [-74.0186, 40.6988, -73.9981, 40.7136]
+  },
+  {
+    "feature_id": 200427753,
+    "name": "Richmond Hill",
+    "centroid": [-73.8301, 40.695],
+    "bounds": [-73.8489, 40.6853, -73.8111, 40.704]
+  },
+  {
+    "feature_id": 202590441,
+    "name": "Rockaway Beach",
+    "centroid": [-73.8133, 40.5878],
+    "bounds": [-73.8216, 40.5812, -73.8051, 40.5945]
+  },
+  {
+    "feature_id": 202655977,
+    "name": "Forest Hills",
+    "centroid": [-73.8527, 40.7188],
+    "bounds": [-73.8593, 40.6975, -73.8263, 40.7401]
+  },
+  {
+    "feature_id": 204556521,
+    "name": "East Harlem",
+    "centroid": [-73.9373, 40.8006],
+    "bounds": [-73.9559, 40.7824, -73.928, 40.8183]
+  },
+  {
+    "feature_id": 205998313,
+    "name": "Bay Terrace",
+    "centroid": [-73.7813, 40.7864],
+    "bounds": [-73.7924, 40.7762, -73.7672, 40.7969]
+  },
+  {
+    "feature_id": 206063849,
+    "name": "Little Italy",
+    "centroid": [-73.9963, 40.7211],
+    "bounds": [-74.0001, 40.7177, -73.9927, 40.7252]
+  },
+  {
+    "feature_id": 219367657,
+    "name": "Sunset Park",
+    "centroid": [-74.0111, 40.6465],
+    "bounds": [-74.0377, 40.6311, -73.9937, 40.6616]
+  },
+  {
+    "feature_id": 235817193,
+    "name": "Port Richmond",
+    "centroid": [-74.1344, 40.6332],
+    "bounds": [-74.1462, 40.6242, -74.1213, 40.6428]
+  },
+  {
+    "feature_id": 237979881,
+    "name": "East Flatbush",
+    "centroid": [-73.929, 40.6487],
+    "bounds": [-73.9472, 40.6308, -73.9075, 40.6664]
+  },
+  {
+    "feature_id": 238373097,
+    "name": "Van Nest",
+    "centroid": [-73.865, 40.8452],
+    "bounds": [-73.8731, 40.8384, -73.8553, 40.8522]
+  },
+  {
+    "feature_id": 238438633,
+    "name": "Baychester",
+    "centroid": [-73.8409, 40.8713],
+    "bounds": [-73.8534, 40.8617, -73.8294, 40.8809]
+  },
+  {
+    "feature_id": 239880425,
+    "name": "Astoria Heights",
+    "centroid": [-73.8922, 40.772],
+    "bounds": [-73.9007, 40.7663, -73.8878, 40.7787]
+  },
+  {
+    "feature_id": 240011497,
+    "name": "Castle Hill",
+    "centroid": [-73.8487, 40.8193],
+    "bounds": [-73.8597, 40.8096, -73.8394, 40.8285]
+  },
+  {
+    "feature_id": 243812585,
+    "name": "Ocean Parkway",
+    "centroid": [-73.9747, 40.6207],
+    "bounds": [-73.9871, 40.6086, -73.9623, 40.6323]
+  },
+  {
+    "feature_id": 250431721,
+    "name": "Williamsburg",
+    "centroid": [-73.9458, 40.7127],
+    "bounds": [-73.9756, 40.6977, -73.9207, 40.7278]
+  },
+  {
+    "feature_id": 250890473,
+    "name": "Morris Heights",
+    "centroid": [-73.9169, 40.8516],
+    "bounds": [-73.9286, 40.8447, -73.9072, 40.8588]
+  },
+  {
+    "feature_id": 257902825,
+    "name": "Gramercy",
+    "centroid": [-73.9784, 40.739],
+    "bounds": [-73.9885, 40.7316, -73.9705, 40.7466]
+  },
+  {
+    "feature_id": 262031593,
+    "name": "Far Rockaway",
+    "centroid": [-73.7549, 40.6016],
+    "bounds": [-73.7902, 40.5816, -73.7372, 40.6215]
+  },
+  {
+    "feature_id": 275138793,
+    "name": "Pelham Bay",
+    "centroid": [-73.8318, 40.8424],
+    "bounds": [-73.8426, 40.8281, -73.824, 40.8566]
+  },
+  {
+    "feature_id": 275269865,
+    "name": "Arden Heights",
+    "centroid": [-74.1899, 40.5497],
+    "bounds": [-74.2048, 40.5401, -74.1763, 40.5602]
+  },
+  {
+    "feature_id": 276646121,
+    "name": "Downtown",
+    "centroid": [-73.9868, 40.6935],
+    "bounds": [-73.9921, 40.6853, -73.9784, 40.7016]
+  },
+  {
+    "feature_id": 279464169,
+    "name": "Murray Hill",
+    "centroid": [-73.8078, 40.7649],
+    "bounds": [-73.827, 40.753, -73.7869, 40.7768]
+  },
+  {
+    "feature_id": 280643817,
+    "name": "Port Morris",
+    "centroid": [-73.9157, 40.8036],
+    "bounds": [-73.9335, 40.7957, -73.9019, 40.8114]
+  },
+  {
+    "feature_id": 283396329,
+    "name": "New Dorp Beach",
+    "centroid": [-74.0993, 40.5662],
+    "bounds": [-74.1101, 40.5581, -74.09, 40.5742]
+  },
+  {
+    "feature_id": 284248297,
+    "name": "Tottenville",
+    "centroid": [-74.2456, 40.5063],
+    "bounds": [-74.2565, 40.495, -74.2327, 40.5176]
+  },
+  {
+    "feature_id": 286345449,
+    "name": "Prospect Lefferts Gardens",
+    "centroid": [-73.955, 40.6589],
+    "bounds": [-73.9631, 40.6541, -73.9472, 40.6641]
+  },
+  {
+    "feature_id": 295520489,
+    "name": "Bath Beach",
+    "centroid": [-73.9947, 40.5956],
+    "bounds": [-74.0192, 40.5788, -73.9826, 40.6127]
+  },
+  {
+    "feature_id": 295782633,
+    "name": "Columbia Street Waterfront District",
+    "centroid": [-74.0044, 40.6864],
+    "bounds": [-74.009, 40.6792, -73.9979, 40.6935]
+  },
+  {
+    "feature_id": 297879785,
+    "name": "Hunters Point",
+    "centroid": [-73.9474, 40.7465],
+    "bounds": [-73.9635, 40.7372, -73.9344, 40.7559]
+  },
+  {
+    "feature_id": 299387113,
+    "name": "Longwood",
+    "centroid": [-73.8964, 40.8196],
+    "bounds": [-73.9045, 40.8098, -73.8859, 40.8294]
+  },
+  {
+    "feature_id": 299518185,
+    "name": "Spuyten Duyvil",
+    "centroid": [-73.9173, 40.8809],
+    "bounds": [-73.926, 40.875, -73.9047, 40.8875]
+  },
+  {
+    "feature_id": 307775721,
+    "name": "Eltingville",
+    "centroid": [-74.1675, 40.5449],
+    "bounds": [-74.181, 40.5264, -74.1447, 40.5632]
+  },
+  {
+    "feature_id": 310921449,
+    "name": "Belle Harbor",
+    "centroid": [-73.8537, 40.5756],
+    "bounds": [-73.8618, 40.5681, -73.8449, 40.5829]
+  },
+  {
+    "feature_id": 311052521,
+    "name": "Brighton Beach",
+    "centroid": [-73.9611, 40.5784],
+    "bounds": [-73.9696, 40.5722, -73.9528, 40.5848]
+  },
+  {
+    "feature_id": 3164393,
+    "name": "Fresh Kills",
+    "centroid": [-74.2001, 40.5688],
+    "bounds": [-74.2136, 40.5573, -74.1885, 40.5802]
+  },
+  {
+    "feature_id": 322586857,
+    "name": "Whitestone",
+    "centroid": [-73.8094, 40.7873],
+    "bounds": [-73.8364, 40.7729, -73.7852, 40.8016]
+  },
+  {
+    "feature_id": 326519017,
+    "name": "Holliswood",
+    "centroid": [-73.7683, 40.7207],
+    "bounds": [-73.7772, 40.7152, -73.7594, 40.7263]
+  },
+  {
+    "feature_id": 328485097,
+    "name": "Rochdale",
+    "centroid": [-73.7702, 40.6748],
+    "bounds": [-73.7892, 40.666, -73.7534, 40.6837]
+  },
+  {
+    "feature_id": 329599209,
+    "name": "Elm Park",
+    "centroid": [-74.148, 40.6312],
+    "bounds": [-74.1527, 40.6276, -74.1428, 40.6348]
+  },
+  {
+    "feature_id": 336218345,
+    "name": "Bronx Park",
+    "centroid": [-73.8758, 40.8594],
+    "bounds": [-73.884, 40.8421, -73.8704, 40.8771]
+  },
+  {
+    "feature_id": 338184425,
+    "name": "Chinatown",
+    "centroid": [-73.9975, 40.7163],
+    "bounds": [-74.003, 40.7139, -73.9922, 40.7193]
+  },
+  {
+    "feature_id": 342116585,
+    "name": "Concourse",
+    "centroid": [-73.9183, 40.8314],
+    "bounds": [-73.9338, 40.818, -73.9028, 40.8451]
+  },
+  {
+    "feature_id": 344606953,
+    "name": "Jamaica",
+    "centroid": [-73.797, 40.694],
+    "bounds": [-73.8173, 40.6718, -73.7702, 40.7152]
+  },
+  {
+    "feature_id": 356993257,
+    "name": "Arverne",
+    "centroid": [-73.799, 40.594],
+    "bounds": [-73.8097, 40.5836, -73.7852, 40.6046]
+  },
+  {
+    "feature_id": 358959337,
+    "name": "Astoria",
+    "centroid": [-73.9165, 40.7706],
+    "bounds": [-73.9514, 40.7494, -73.8902, 40.7918]
+  },
+  {
+    "feature_id": 360728809,
+    "name": "John F. Kennedy International Airport",
+    "centroid": [-73.7709, 40.6357],
+    "bounds": [-73.8325, 40.6061, -73.7468, 40.6653]
+  },
+  {
+    "feature_id": 362432745,
+    "name": "Unionport",
+    "centroid": [-73.8483, 40.8336],
+    "bounds": [-73.8626, 40.826, -73.8392, 40.8412]
+  },
+  {
+    "feature_id": 376129769,
+    "name": "Navy Yard",
+    "centroid": [-73.9765, 40.7021],
+    "bounds": [-73.9813, 40.6978, -73.9697, 40.7067]
+  },
+  {
+    "feature_id": 377899241,
+    "name": "Battery Park",
+    "centroid": [-74.0165, 40.7117],
+    "bounds": [-74.0203, 40.7037, -74.0124, 40.7196]
+  },
+  {
+    "feature_id": 381044969,
+    "name": "La Guardia Airport",
+    "centroid": [-73.8728, 40.7754],
+    "bounds": [-73.8898, 40.7641, -73.8505, 40.7867]
+  },
+  {
+    "feature_id": 383142121,
+    "name": "Clinton Hill",
+    "centroid": [-73.9646, 40.6891],
+    "bounds": [-73.9708, 40.6799, -73.9582, 40.6982]
+  },
+  {
+    "feature_id": 391399657,
+    "name": "New Springville",
+    "centroid": [-74.1332, 40.5927],
+    "bounds": [-74.1459, 40.5783, -74.1202, 40.6084]
+  },
+  {
+    "feature_id": 398805225,
+    "name": "Todt Hill",
+    "centroid": [-74.1107, 40.5908],
+    "bounds": [-74.1223, 40.5782, -74.0914, 40.6031]
+  },
+  {
+    "feature_id": 405424361,
+    "name": "Jamaica Hills",
+    "centroid": [-73.8002, 40.7134],
+    "bounds": [-73.8078, 40.7078, -73.7908, 40.7191]
+  },
+  {
+    "feature_id": 406014185,
+    "name": "Liberty Island",
+    "centroid": [-74.0452, 40.6899],
+    "bounds": [-74.0473, 40.6885, -74.0435, 40.6912]
+  },
+  {
+    "feature_id": 412371177,
+    "name": "Borough Park",
+    "centroid": [-73.9934, 40.6332],
+    "bounds": [-74.0103, 40.6219, -73.9781, 40.6468]
+  },
+  {
+    "feature_id": 420432105,
+    "name": "West Jamaica Bay Islands",
+    "centroid": [-73.8719, 40.622],
+    "bounds": [-73.8808, 40.5947, -73.8335, 40.6402]
+  },
+  {
+    "feature_id": 421873897,
+    "name": "Prospect Heights",
+    "centroid": [-73.9681, 40.6774],
+    "bounds": [-73.9773, 40.6714, -73.9625, 40.684]
+  },
+  {
+    "feature_id": 423119081,
+    "name": "Woodrow",
+    "centroid": [-74.2147, 40.5365],
+    "bounds": [-74.2246, 40.5315, -74.2045, 40.5421]
+  },
+  {
+    "feature_id": 423971049,
+    "name": "Wingate",
+    "centroid": [-73.9394, 40.6597],
+    "bounds": [-73.9482, 40.6556, -73.9309, 40.6643]
+  },
+  {
+    "feature_id": 425740521,
+    "name": "Gravesend",
+    "centroid": [-73.973, 40.5959],
+    "bounds": [-73.987, 40.5823, -73.9602, 40.6097]
+  },
+  {
+    "feature_id": 430459113,
+    "name": "Melrose",
+    "centroid": [-73.9137, 40.818],
+    "bounds": [-73.9252, 40.8123, -73.9013, 40.8239]
+  },
+  {
+    "feature_id": 430852329,
+    "name": "Fort Greene",
+    "centroid": [-73.9757, 40.6914],
+    "bounds": [-73.987, 40.6819, -73.9676, 40.7023]
+  },
+  {
+    "feature_id": 444483817,
+    "name": "La Tourette Park",
+    "centroid": [-74.1541, 40.5747],
+    "bounds": [-74.1708, 40.5602, -74.1324, 40.588]
+  },
+  {
+    "feature_id": 463358185,
+    "name": "Westerleigh",
+    "centroid": [-74.1368, 40.6194],
+    "bounds": [-74.1424, 40.6126, -74.1307, 40.6264]
+  },
+  {
+    "feature_id": 463423721,
+    "name": "Prospect Park",
+    "centroid": [-73.9708, 40.6618],
+    "bounds": [-73.9794, 40.6505, -73.961, 40.6731]
+  },
+  {
+    "feature_id": 46418153,
+    "name": "Bedford Stuyvesant",
+    "centroid": [-73.9404, 40.6887],
+    "bounds": [-73.962, 40.6767, -73.9163, 40.7008]
+  },
+  {
+    "feature_id": 473057513,
+    "name": "Bushwick",
+    "centroid": [-73.9176, 40.6939],
+    "bounds": [-73.9413, 40.6789, -73.8965, 40.7089]
+  },
+  {
+    "feature_id": 476858601,
+    "name": "Dyker Heights",
+    "centroid": [-74.0117, 40.6217],
+    "bounds": [-74.0248, 40.6064, -73.9991, 40.6345]
+  },
+  {
+    "feature_id": 477448425,
+    "name": "Morris Park",
+    "centroid": [-73.8547, 40.8506],
+    "bounds": [-73.8714, 40.843, -73.8353, 40.8581]
+  },
+  {
+    "feature_id": 480921833,
+    "name": "Rego Park",
+    "centroid": [-73.8621, 40.7222],
+    "bounds": [-73.8716, 40.7074, -73.8517, 40.7368]
+  },
+  {
+    "feature_id": 483870953,
+    "name": "Greenpoint",
+    "centroid": [-73.9487, 40.7289],
+    "bounds": [-73.9632, 40.7184, -73.9292, 40.7395]
+  },
+  {
+    "feature_id": 485509353,
+    "name": "Harlem",
+    "centroid": [-73.9426, 40.815],
+    "bounds": [-73.9597, 40.7969, -73.9331, 40.8309]
+  },
+  {
+    "feature_id": 492194025,
+    "name": "Vinegar Hill",
+    "centroid": [-73.982, 40.7046],
+    "bounds": [-73.9847, 40.7023, -73.979, 40.7068]
+  },
+  {
+    "feature_id": 494225641,
+    "name": "Stuyvesant Town",
+    "centroid": [-73.976, 40.7309],
+    "bounds": [-73.9823, 40.7267, -73.9705, 40.735]
+  },
+  {
+    "feature_id": 495012073,
+    "name": "Glen Oaks",
+    "centroid": [-73.7168, 40.7504],
+    "bounds": [-73.7327, 40.7409, -73.7017, 40.7599]
+  },
+  {
+    "feature_id": 495143145,
+    "name": "Forest Hills Gardens",
+    "centroid": [-73.8421, 40.715],
+    "bounds": [-73.8493, 40.7102, -73.8343, 40.7195]
+  },
+  {
+    "feature_id": 496060649,
+    "name": "Sunnyside",
+    "centroid": [-74.1061, 40.6144],
+    "bounds": [-74.1192, 40.6102, -74.0982, 40.6188]
+  },
+  {
+    "feature_id": 504318185,
+    "name": "Oakland Gardens",
+    "centroid": [-73.7539, 40.7401],
+    "bounds": [-73.7715, 40.7263, -73.7328, 40.7534]
+  },
+  {
+    "feature_id": 50481385,
+    "name": "Floral park",
+    "centroid": [-73.7081, 40.74],
+    "bounds": [-73.7177, 40.7272, -73.7003, 40.7525]
+  },
+  {
+    "feature_id": 506415337,
+    "name": "Dongan Hills",
+    "centroid": [-74.0978, 40.5853],
+    "bounds": [-74.1053, 40.5794, -74.0909, 40.5911]
+  },
+  {
+    "feature_id": 508512489,
+    "name": "Blissville",
+    "centroid": [-73.9388, 40.734],
+    "bounds": [-73.9466, 40.7283, -73.9312, 40.7395]
+  },
+  {
+    "feature_id": 513689833,
+    "name": "Washington Heights",
+    "centroid": [-73.9375, 40.8475],
+    "bounds": [-73.9509, 40.8276, -73.9219, 40.8674]
+  },
+  {
+    "feature_id": 517884137,
+    "name": "Flatiron District",
+    "centroid": [-73.9877, 40.7426],
+    "bounds": [-73.9971, 40.7342, -73.9796, 40.7498]
+  },
+  {
+    "feature_id": 525748457,
+    "name": "West Brighton",
+    "centroid": [-74.1162, 40.6335],
+    "bounds": [-74.1274, 40.6208, -74.0982, 40.6465]
+  },
+  {
+    "feature_id": 527190249,
+    "name": "South Beach",
+    "centroid": [-74.0776, 40.5867],
+    "bounds": [-74.0911, 40.577, -74.059, 40.5965]
+  },
+  {
+    "feature_id": 534595817,
+    "name": "Sunnyside",
+    "centroid": [-73.9285, 40.7408],
+    "bounds": [-73.9418, 40.7278, -73.9095, 40.7539]
+  },
+  {
+    "feature_id": 536496361,
+    "name": "Broad Channel",
+    "centroid": [-73.8189, 40.6067],
+    "bounds": [-73.8287, 40.5938, -73.8132, 40.6196]
+  },
+  {
+    "feature_id": 536561897,
+    "name": "Heartland Village",
+    "centroid": [-74.16, 40.582],
+    "bounds": [-74.1727, 40.569, -74.1446, 40.5965]
+  },
+  {
+    "feature_id": 538396905,
+    "name": "Great Kills",
+    "centroid": [-74.1275, 40.5494],
+    "bounds": [-74.163, 40.5283, -74.1134, 40.5705]
+  },
+  {
+    "feature_id": 543574249,
+    "name": "Hollis",
+    "centroid": [-73.7645, 40.7088],
+    "bounds": [-73.7774, 40.6964, -73.7487, 40.7212]
+  },
+  {
+    "feature_id": 547768553,
+    "name": "Gowanus",
+    "centroid": [-73.9909, 40.6756],
+    "bounds": [-73.9989, 40.6655, -73.9806, 40.6855]
+  },
+  {
+    "feature_id": 550324457,
+    "name": "Bellerose",
+    "centroid": [-73.7287, 40.7313],
+    "bounds": [-73.7467, 40.7185, -73.7106, 40.744]
+  },
+  {
+    "feature_id": 552290537,
+    "name": "Norwood",
+    "centroid": [-73.8754, 40.8776],
+    "bounds": [-73.8852, 40.8678, -73.8684, 40.8877]
+  },
+  {
+    "feature_id": 553732329,
+    "name": "Randals-Wards Island",
+    "centroid": [-73.9234, 40.7912],
+    "bounds": [-73.937, 40.7801, -73.9129, 40.8023]
+  },
+  {
+    "feature_id": 557533417,
+    "name": "Midwood",
+    "centroid": [-73.9526, 40.6202],
+    "bounds": [-73.9659, 40.6097, -73.9365, 40.6307]
+  },
+  {
+    "feature_id": 560875753,
+    "name": "Willowbrook",
+    "centroid": [-74.1497, 40.6028],
+    "bounds": [-74.1632, 40.59, -74.1358, 40.6154]
+  },
+  {
+    "feature_id": 565201129,
+    "name": "Tribeca",
+    "centroid": [-74.0072, 40.7175],
+    "bounds": [-74.0173, 40.7114, -74.0005, 40.7264]
+  },
+  {
+    "feature_id": 571689193,
+    "name": "Maspeth",
+    "centroid": [-73.9069, 40.729],
+    "bounds": [-73.9292, 40.7122, -73.8849, 40.7459]
+  },
+  {
+    "feature_id": 571754729,
+    "name": "City Island",
+    "centroid": [-73.7864, 40.8484],
+    "bounds": [-73.7934, 40.8354, -73.7803, 40.8614]
+  },
+  {
+    "feature_id": 577915113,
+    "name": "Manhattan Beach",
+    "centroid": [-73.9425, 40.5783],
+    "bounds": [-73.9551, 40.5733, -73.9302, 40.5828]
+  },
+  {
+    "feature_id": 578636009,
+    "name": "Glendale",
+    "centroid": [-73.875, 40.6979],
+    "bounds": [-73.9018, 40.6824, -73.8528, 40.7133]
+  },
+  {
+    "feature_id": 583551209,
+    "name": "Graniteville",
+    "centroid": [-74.1577, 40.6201],
+    "bounds": [-74.1688, 40.6123, -74.1462, 40.6274]
+  },
+  {
+    "feature_id": 589318377,
+    "name": "Kew Gardens",
+    "centroid": [-73.8281, 40.7079],
+    "bounds": [-73.8417, 40.7001, -73.8173, 40.7156]
+  },
+  {
+    "feature_id": 59787497,
+    "name": "Ozone Park",
+    "centroid": [-73.8454, 40.6778],
+    "bounds": [-73.8663, 40.664, -73.8247, 40.6914]
+  },
+  {
+    "feature_id": 59853033,
+    "name": "Rossville",
+    "centroid": [-74.216, 40.5474],
+    "bounds": [-74.2368, 40.5408, -74.1974, 40.559]
+  },
+  {
+    "feature_id": 599869673,
+    "name": "Elmhurst",
+    "centroid": [-73.8783, 40.7389],
+    "bounds": [-73.8951, 40.7281, -73.8645, 40.7492]
+  },
+  {
+    "feature_id": 605767913,
+    "name": "Greenwood",
+    "centroid": [-73.9977, 40.6582],
+    "bounds": [-74.0159, 40.6441, -73.9803, 40.6718]
+  },
+  {
+    "feature_id": 607865065,
+    "name": "Tremont",
+    "centroid": [-73.904, 40.8516],
+    "bounds": [-73.9141, 40.8445, -73.8954, 40.8589]
+  },
+  {
+    "feature_id": 610617577,
+    "name": "Prospect Park South",
+    "centroid": [-73.9668, 40.6469],
+    "bounds": [-73.9708, 40.6438, -73.9634, 40.6493]
+  },
+  {
+    "feature_id": 624969961,
+    "name": "Rosedale",
+    "centroid": [-73.7364, 40.6581],
+    "bounds": [-73.7546, 40.6331, -73.7251, 40.6826]
+  },
+  {
+    "feature_id": 625494249,
+    "name": "Kingsbridge",
+    "centroid": [-73.9032, 40.8788],
+    "bounds": [-73.9117, 40.8707, -73.8938, 40.887]
+  },
+  {
+    "feature_id": 627460329,
+    "name": "Port Ivory",
+    "centroid": [-74.1801, 40.6343],
+    "bounds": [-74.1965, 40.6211, -74.166, 40.6459]
+  },
+  {
+    "feature_id": 627525865,
+    "name": "Rosebank",
+    "centroid": [-74.0683, 40.6124],
+    "bounds": [-74.0812, 40.6028, -74.0586, 40.6221]
+  },
+  {
+    "feature_id": 627591401,
+    "name": "SoHo",
+    "centroid": [-74.0022, 40.7247],
+    "bounds": [-74.0161, 40.719, -73.9956, 40.7295]
+  },
+  {
+    "feature_id": 627656937,
+    "name": "Charleston",
+    "centroid": [-74.2353, 40.5391],
+    "bounds": [-74.2489, 40.5249, -74.2241, 40.5532]
+  },
+  {
+    "feature_id": 637356265,
+    "name": "East Village",
+    "centroid": [-73.9813, 40.7261],
+    "bounds": [-73.9926, 40.7185, -73.9707, 40.7337]
+  },
+  {
+    "feature_id": 638601449,
+    "name": "Shore Acres",
+    "centroid": [-74.0602, 40.6101],
+    "bounds": [-74.0633, 40.6072, -74.0565, 40.6126]
+  },
+  {
+    "feature_id": 644172009,
+    "name": "Upper East Side",
+    "centroid": [-73.956, 40.7719],
+    "bounds": [-73.9733, 40.758, -73.941, 40.786]
+  },
+  {
+    "feature_id": 645679337,
+    "name": "St. Albans",
+    "centroid": [-73.7627, 40.6913],
+    "bounds": [-73.7838, 40.6789, -73.745, 40.7044]
+  },
+  {
+    "feature_id": 650397929,
+    "name": "Neponsit",
+    "centroid": [-73.8619, 40.5716],
+    "bounds": [-73.8672, 40.5659, -73.8563, 40.5777]
+  },
+  {
+    "feature_id": 650463465,
+    "name": "South Bronx",
+    "centroid": [-73.8972, 40.8322],
+    "bounds": [-73.9176, 40.8204, -73.8806, 40.8445]
+  }
+]

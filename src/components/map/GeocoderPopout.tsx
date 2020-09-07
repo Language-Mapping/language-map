@@ -1,22 +1,38 @@
 import React, { FC, useContext } from 'react'
 import { Map } from 'mapbox-gl'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { Typography, Popover, Box } from '@material-ui/core'
+// TODO: use the web merc center method so that popups are not offset on mobile
+// import { WebMercatorViewport } from 'react-map-gl'
 import Geocoder from 'react-map-gl-geocoder'
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
+import {
+  Typography,
+  FormControlLabel,
+  Popover,
+  Box,
+  Switch,
+} from '@material-ui/core'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 import { GlobalContext } from 'components'
-import { flyToCoords, getWebMercSettings } from './utils'
 import { MapCtrlBtnsProps, GeocodeResult } from './types'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
+import * as utils from './utils'
+import * as MapTypes from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    popoverContent: { padding: '1em', width: 300 },
+    popoverContent: { padding: '1em', width: 310 },
     popoverContentText: { marginBottom: '.75em', fontSize: '0.8em' },
     layersMenuPaper: { overflow: 'visible' },
+    switchFormCtrlRoot: {
+      marginLeft: 0,
+      marginTop: '0.8em',
+    },
+    smallerText: {
+      fontSize: '0.8rem',
+    },
   })
 )
 
@@ -40,62 +56,56 @@ const LocationSearchContent: FC = (props) => {
   )
 }
 
-type GeocoderProps = Omit<MapCtrlBtnsProps, 'onMapCtrlClick'> & {
+type GeocoderProps = Omit<MapCtrlBtnsProps, 'onMapCtrlClick' | 'isDesktop'> & {
   anchorEl: null | HTMLElement
   setAnchorEl: React.Dispatch<null | HTMLElement>
 }
 
 export const GeocoderPopout: FC<GeocoderProps> = (props) => {
-  const { state } = useContext(GlobalContext)
-  const { anchorEl, setAnchorEl, mapOffset, mapRef, isDesktop } = props
+  const { state, dispatch } = useContext(GlobalContext)
+  const { anchorEl, setAnchorEl, mapRef } = props
   const classes = useStyles()
+  const { smallerText, switchFormCtrlRoot } = classes
   const layersMenuOpen = Boolean(anchorEl)
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
   const { width, height } = useWindowResize()
 
   const handleLayersMenuClose = () => setAnchorEl(null)
 
+  // TODO: most def different file
   const handleGeocodeResult = (geocodeResult: GeocodeResult) => {
     handleLayersMenuClose()
 
     if (!mapRef.current) return
 
-    const { center, bbox } = geocodeResult.result
+    const map: Map = mapRef.current.getMap()
+    const { center, bbox, text } = geocodeResult.result
 
     if (bbox) {
-      const { latitude, longitude, zoom } = getWebMercSettings(
-        width,
+      // TODO:
+      // if (geocodeResult.result.place_type[0] === 'neighborhood') {
+      //   special things...
+      // }
+      const settings = {
         height,
-        isDesktop,
-        mapOffset,
-        [
+        width,
+        bounds: [
           [bbox[0], bbox[1]],
           [bbox[2], bbox[3]],
-        ]
-      )
+        ] as MapTypes.BoundsArray,
+        padding: 25,
+      }
 
-      const map: Map = mapRef.current.getMap()
-
-      map.flyTo(
-        {
-          // Not THAT essential if you... don't like cool things
-          essential: true,
-          center: { lng: longitude, lat: latitude },
-          zoom,
-        },
-        {
-          forceViewportUpdate: true,
-          selFeatAttribs: state.selFeatAttribs,
-          fromPoly: true,
-        }
-      )
+      utils.flyToBounds(map, settings, null)
     } else {
-      flyToCoords(
-        mapRef.current.getMap(),
-        { latitude: center[1], longitude: center[0], zoom: 15 },
-        mapOffset,
-        state.selFeatAttribs
-      )
+      const settings = {
+        latitude: center[1],
+        longitude: center[0],
+        zoom: 15,
+        disregardCurrZoom: true,
+      }
+
+      utils.flyToPoint(map, settings, null, text)
     }
   }
 
@@ -110,13 +120,28 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
     >
       <LocationSearchContent>
         <div ref={geocoderContainerRef} />
+        <FormControlLabel
+          classes={{ label: smallerText, root: switchFormCtrlRoot }}
+          // Prevent off-canvas from closing (but we want that to happen for all
+          // the other elements in the off-canvas).
+          onClick={(event) => event.stopPropagation()}
+          control={
+            <Switch
+              checked={state.boundariesLayersVisible}
+              onChange={() => dispatch({ type: 'TOGGLE_NEIGHB_LAYER' })}
+              name="show-welcome-switch"
+              size="small"
+            />
+          }
+          label="Show neighborhoods and counties"
+        />
         <Geocoder
           containerRef={geocoderContainerRef}
           countries="us"
           mapboxApiAccessToken={MAPBOX_TOKEN}
           mapRef={mapRef}
           onResult={handleGeocodeResult}
-          placeholder="Enter a location..."
+          placeholder="Enter a location"
           proximity={NYC_LAT_LONG}
           types="address,poi,postcode,locality,place,neighborhood"
         />

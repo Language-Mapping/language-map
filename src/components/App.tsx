@@ -27,23 +27,21 @@ export const App: FC = () => {
     <>
       <OffCanvasNav />
       <TopBar />
-      <main>
-        {!window.localStorage.hideWelcome && (
-          <WelcomeDialog queryName={WELCOME_QUERY} />
-        )}
-        <Route path={ABOUT_PATHNAME}>
-          <AboutPageView queryName={ABOUT_QUERY} />
-        </Route>
-        <Route path={DATA_TABLE_PATHNAME}>
-          <ResultsModal>
-            <ResultsTable />
-          </ResultsModal>
-        </Route>
-        <Route path={GLOSSARY_PATHNAME}>
-          <AboutPageView queryName={GLOSSARY_QUERY} />
-        </Route>
-        <MapWrap />
-      </main>
+      {!window.localStorage.hideWelcome && (
+        <WelcomeDialog queryName={WELCOME_QUERY} />
+      )}
+      <Route path={ABOUT_PATHNAME}>
+        <AboutPageView queryName={ABOUT_QUERY} />
+      </Route>
+      <Route path={DATA_TABLE_PATHNAME}>
+        <ResultsModal>
+          <ResultsTable />
+        </ResultsModal>
+      </Route>
+      <Route path={GLOSSARY_PATHNAME}>
+        <AboutPageView queryName={GLOSSARY_QUERY} />
+      </Route>
+      <MapWrap />
     </>
   )
 }

@@ -3,11 +3,10 @@ import { Popup } from 'react-map-gl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
-import { MapPopup as MapPopupType } from './types'
-import { prettyTruncateList } from '../../utils'
+import * as MapTypes from './types'
 
-type MapPopupComponent = MapPopupType & {
-  setPopupOpen: React.Dispatch<MapPopupType | null>
+type MapPopupComponent = MapTypes.PopupSettings & {
+  setPopupVisible: React.Dispatch<boolean>
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -15,6 +14,8 @@ const useStyles = makeStyles((theme: Theme) =>
     mapPopupRoot: {
       textAlign: 'center',
       minWidth: 150,
+      maxWidth: 250,
+      wordWrap: 'break-word',
       '& .mapboxgl-popup-content': {
         // Leave room for "x" close button
         padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
         color: theme.palette.text.hint,
       },
     },
-    heading: {
+    popupHeading: {
       lineHeight: 1.2,
     },
     subHeading: {
@@ -41,14 +42,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const MapPopup: FC<MapPopupComponent> = (props) => {
   const classes = useStyles()
-  const { longitude, latitude, setPopupOpen, selFeatAttribs } = props
-  const { mapPopupRoot, heading, subHeading } = classes
-  const {
-    Endonym,
-    Language,
-    Neighborhoods,
-    'Font Image Alt': altImage,
-  } = selFeatAttribs
+  const { longitude, latitude, setPopupVisible, heading, subheading } = props
+  const { mapPopupRoot, popupHeading, subHeading } = classes
 
   // NOTE: the longest non-url language or endonym so far is:
   // Cameroonian Pidgin English
@@ -56,23 +51,17 @@ export const MapPopup: FC<MapPopupComponent> = (props) => {
   return (
     <Popup
       tipSize={10}
-      anchor="bottom"
       longitude={longitude}
       latitude={latitude}
-      closeOnClick={false} // TODO: fix this madness
+      closeOnClick={false}
       className={mapPopupRoot}
-      onClose={() => setPopupOpen(null)}
+      onClose={() => setPopupVisible(false)}
     >
       <header>
-        <Typography variant="h6" component="h3" className={heading}>
-          {/* For image-only endos, show language (not much room for pic) */}
-          {altImage ? Language : Endonym}
+        <Typography variant="h6" component="h3" className={popupHeading}>
+          {heading}
         </Typography>
-        {Neighborhoods && (
-          <small className={subHeading}>
-            {prettyTruncateList(Neighborhoods)}
-          </small>
-        )}
+        {subheading && <small className={subHeading}>{subheading}</small>}
       </header>
     </Popup>
   )
