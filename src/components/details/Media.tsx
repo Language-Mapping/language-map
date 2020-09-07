@@ -4,7 +4,7 @@ import { Container, Button, Typography } from '@material-ui/core'
 import { FiVideo, FiShare } from 'react-icons/fi'
 import { AiOutlineSound } from 'react-icons/ai'
 
-import { SimpleDialog } from 'components'
+import { SimpleDialog, ShareButtons } from 'components'
 
 type MediaKey = 'video' | 'audio' | 'share'
 
@@ -26,6 +26,10 @@ type MediaListItemProps = {
   type: MediaKey
   disabled?: boolean
   handleClick: () => void
+}
+
+type StyleProps = {
+  showShareBtns?: boolean
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -78,11 +82,17 @@ const useStyles = makeStyles((theme: Theme) =>
         width: '100%',
       },
     },
+    shareBtns: {
+      transition: '300ms all',
+      margin: '8px 0',
+      maxHeight: (props: StyleProps) => (props.showShareBtns ? 60 : 0),
+      opacity: (props: StyleProps) => (props.showShareBtns ? 1 : 0),
+    },
   })
 )
 
 const YouTubeVideo: FC<MediaChildProps> = (props) => {
-  const classes = useStyles()
+  const classes = useStyles({})
   const { url, title } = props
 
   // Proper syntax:
@@ -119,7 +129,7 @@ const Audio: FC<MediaChildProps> = (props) => {
 
 const MediaListItem: FC<MediaListItemProps> = (props) => {
   const { label, icon, handleClick, disabled } = props
-  const classes = useStyles()
+  const classes = useStyles({})
   let title = ''
 
   if (label === 'Audio') {
@@ -152,8 +162,9 @@ const config = [
 
 export const Media: FC<MediaProps> = (props) => {
   const { audio, video, language } = props
-  const classes = useStyles()
   const [dialogContent, setDialogContent] = useState<MediaKey | null>(null)
+  const [showShareBtns, setShowShareBtns] = useState<boolean>(false)
+  const classes = useStyles({ showShareBtns })
 
   // TODO: not full width dialog for audio
   return (
@@ -197,10 +208,14 @@ export const Media: FC<MediaProps> = (props) => {
         ))}
         <MediaListItem
           {...{ label: 'Share', icon: <FiShare />, type: 'share' }}
-          // eslint-disable-next-line no-alert
-          handleClick={() => alert('share not ready yet!')}
+          handleClick={() => setShowShareBtns(!showShareBtns)}
         />
       </ul>
+      {showShareBtns && (
+        <div className={classes.shareBtns}>
+          <ShareButtons />
+        </div>
+      )}
     </>
   )
 }
