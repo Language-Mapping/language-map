@@ -9,7 +9,12 @@ import {
   VectorSource,
   LngLatBoundsLike,
 } from 'mapbox-gl'
-import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
+import MapGL, {
+  InteractiveMap,
+  MapLoadEvent,
+  ViewportProps,
+  ViewState,
+} from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
@@ -37,8 +42,6 @@ import {
 
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
 const { neighbConfig, countiesConfig, boundariesLayerIDs } = config
-const neighSrcId = neighbConfig.source.id
-const countiesSrcId = countiesConfig.source.id
 
 // Jest or whatever CANNOT find this plugin. And importing it from
 // `react-map-gl` is useless as well.
@@ -60,7 +63,7 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
   const { state, dispatch } = useContext(GlobalContext)
   const theme = useTheme()
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
-  const { width, height } = useWindowResize() // TODO: use viewport?
+  const { width } = useWindowResize() // TODO: use viewport?
   const isDesktop = width >= theme.breakpoints.values.md
   const { selFeatAttribs, mapLoaded, activeLangSymbGroupId } = state
 
@@ -69,7 +72,9 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
     geocodeMarker,
     setGeocodeMarker,
   ] = useState<MapTypes.GeocodeMarker | null>()
-  const [viewport, setViewport] = useState(config.initialMapState)
+  const [viewport, setViewport] = useState<Partial<ViewportProps> & ViewState>(
+    config.initialMapState
+  )
   const [popupVisible, setPopupVisible] = useState<boolean>(false)
   const [tooltip, setTooltip] = useState<MapTypes.MapTooltip | null>(null)
   const [
@@ -79,8 +84,10 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
 
   // Lookup tables // TODO: into <Boundaries> somehow. Not needed on load!
   const lookups = {
-    counties: useQuery<MapTypes.BoundaryLookup[]>(countiesSrcId).data,
-    neighborhoods: useQuery<MapTypes.BoundaryLookup[]>(neighSrcId).data,
+    counties: useQuery<MapTypes.BoundaryLookup[]>(countiesConfig.source.id)
+      .data,
+    neighborhoods: useQuery<MapTypes.BoundaryLookup[]>(neighbConfig.source.id)
+      .data,
   }
 
   const interactiveLayerIds = React.useMemo(
@@ -282,16 +289,14 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
     }) as MapTypes.BoundaryFeat[]
 
     if (boundariesClicked.length) {
-      const boundsConfig = { width, height, isDesktop }
+      const dimensions = {
+        width: viewport.width as number,
+        height: viewport.height as number,
+      }
       const lookup =
         lookups[boundariesClicked[0].source as 'neighborhoods' | 'counties']
 
-      events.handleBoundaryClick(
-        map,
-        boundariesClicked[0],
-        boundsConfig,
-        lookup
-      )
+      events.handleBoundaryClick(map, boundariesClicked[0], dimensions, lookup)
     }
   }
 
@@ -306,8 +311,8 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
     nuclearClear()
 
     const settings = {
-      height,
-      width,
+      height: viewport.height as number,
+      width: viewport.width as number,
       bounds: config.initialBounds,
       padding: 25,
     }
@@ -384,7 +389,7 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
         )}
       </MapGL>
       <MapCtrlBtns
-        {...{ mapRef, isDesktop }}
+        {...{ mapRef }}
         onMapCtrlClick={(actionID: MapTypes.MapControlAction) => {
           onMapCtrlClick(actionID)
         }}

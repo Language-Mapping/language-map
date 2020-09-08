@@ -120,12 +120,6 @@ export type GetWebMercCenter = (params: {
   padding?: Padding
 }) => [number, number]
 
-export type FlySomewhereGracefully = (
-  map: Map,
-  settings: BoundsConfig,
-  popupContent: PopupContent | null
-) => void
-
 export type UseStyleProps = { panelOpen: boolean }
 
 export type GeocodeResult = {
@@ -137,7 +131,6 @@ export type GeocodeResult = {
 }
 
 export type MapCtrlBtnsProps = {
-  isDesktop: boolean
   mapRef: React.RefObject<InteractiveMap>
   onMapCtrlClick: (actionID: MapControlAction) => void
 }
@@ -156,7 +149,6 @@ export type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
 
 export type BoundsConfig = {
   height: number
-  isDesktop: boolean
   width: number
   bounds?: BoundsArray
   padding?: Padding
@@ -195,7 +187,7 @@ export type HandleBoundaryClick = (
 
 export type FlyToBounds = (
   map: Map,
-  settings: Omit<BoundsConfig, 'isDesktop'> & {
+  settings: BoundsConfig & {
     bounds: BoundsArray
   },
   popupContent: PopupContent | null

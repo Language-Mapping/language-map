@@ -23,8 +23,8 @@ const useStyles = makeStyles((theme: Theme) =>
       right: 4, // same as left-side page title
       zIndex: 1100, // above app bar
       [theme.breakpoints.up('sm')]: {
-        top: theme.spacing(3),
-        right: theme.spacing(3),
+        top: theme.spacing(2),
+        right: theme.spacing(2),
       },
       '& svg': {
         height: '1.5em',
@@ -56,10 +56,9 @@ const ctrlBtnsConfig = [
 ] as CtrlBtnConfig[]
 
 export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
-  const { isDesktop, onMapCtrlClick, mapRef } = props
+  const { onMapCtrlClick, mapRef } = props
   const classes = useStyles()
   const [speedDialOpen, setSpeedDialOpen] = React.useState(true)
-  const size = isDesktop ? 'medium' : 'small'
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
   const handleSpeedDialRootClick = () => setSpeedDialOpen(!speedDialOpen)
@@ -94,7 +93,7 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
         onClose={handleClose}
         open={speedDialOpen}
         direction="down"
-        FabProps={{ size }}
+        FabProps={{ size: 'small' }}
         onClick={handleSpeedDialRootClick}
       >
         {ctrlBtnsConfig.map((action) => (
@@ -103,7 +102,7 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
             key={action.name}
             icon={action.icon}
             tooltipTitle={action.name}
-            FabProps={{ size }} // TODO: uhhhh breakpoints? Why is this needed?
+            FabProps={{ size: 'small' }} // TODO: uhhhh breakpoints? Why is this needed?
             onClick={(e) => {
               e.stopPropagation() // prevent closing the menu
 

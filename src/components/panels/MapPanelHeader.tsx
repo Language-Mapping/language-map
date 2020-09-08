@@ -4,7 +4,10 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Box, Typography, IconButton } from '@material-ui/core'
 import { FiChevronDown } from 'react-icons/fi'
 
-import { DESKTOP_PANEL_HEADER_HEIGHT } from 'components/map/styles'
+import {
+  DESKTOP_PANEL_HEADER_HEIGHT,
+  MOBILE_PANEL_HEADER_HEIGHT,
+} from 'components/map/styles'
 import { MapPanel } from 'components/panels/types'
 import { GlobalContext } from 'components'
 
@@ -13,13 +16,16 @@ type PanelHeaderComponent = Omit<MapPanel, 'component'> & {
   active: boolean
 }
 
-const useCloseBtnStyles = makeStyles(() =>
+const useCloseBtnStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelCloseBtn: {
       transition: '300ms transform',
       transformOrigin: 'center center',
       transform: (props: { panelOpen: boolean }) =>
         props.panelOpen ? 'rotate(0deg)' : 'rotate(180deg)',
+      [theme.breakpoints.up('sm')]: {
+        display: 'none',
+      },
     },
   })
 )
@@ -42,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
       '& a, a:visited': {
         color: `${theme.palette.common.white} !important`, // constant fight!
       },
-      [theme.breakpoints.down('xs')]: { height: '3rem' },
+      [theme.breakpoints.down('sm')]: { height: MOBILE_PANEL_HEADER_HEIGHT },
     },
     mainHeading: {
       alignItems: 'center',
@@ -58,11 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       backgroundColor: (props: PanelHeaderProps) =>
         props.active ? theme.palette.primary.dark : theme.palette.primary.light,
-      '& svg': {
-        marginRight: 6,
-        height: '0.8em',
-        width: '0.8em',
-      },
+      '& svg': { marginRight: 6, height: '0.8em', width: '0.8em' },
       '&:hover': {
         backgroundColor: (props: PanelHeaderProps) => {
           const { dark, main } = theme.palette.primary
@@ -74,9 +76,7 @@ const useStyles = makeStyles((theme: Theme) =>
     headerBtns: {
       position: 'absolute',
       right: '0.5em',
-      [theme.breakpoints.up('sm')]: {
-        right: '1em',
-      },
+      [theme.breakpoints.up('sm')]: { right: '1em' },
     },
   })
 )

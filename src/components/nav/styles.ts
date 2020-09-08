@@ -19,6 +19,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     // These spacers allow the title to "center" between the side panel and map
     // control buttons via flexbox and the addition of a couple divs.
+    // TODO: make it right
     spacerDesktop: {
       flex: 1,
       height: 0,

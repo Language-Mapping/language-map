@@ -1,10 +1,9 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import { MapPanel } from 'components/panels'
+import { MapPanel, FabPanelToggle } from 'components/panels'
 import { Map } from 'components/map'
 import { GlobalContext, LoadingBackdrop } from 'components'
-import { paths as routes } from 'components/config/routes'
 import { LayerPropsNonBGlayer } from './types'
 import { mbStyleTileConfig } from './config'
 import { useStyles } from './styles'
@@ -44,10 +43,7 @@ export const MapWrap: FC = () => {
     const idFromUrl = getIDfromURLparams(loc.search)
 
     if (!langFeaturesCached.length || !idFromUrl) {
-      dispatch({
-        type: 'SET_SEL_FEAT_ATTRIBS',
-        payload: null,
-      })
+      dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
 
       return
     }
@@ -72,26 +68,29 @@ export const MapWrap: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc.search, state.langFeaturesCached.length])
 
-  // Open panel for relevant routes
-  useEffect((): void => {
-    if (loc.pathname === routes.details) {
-      dispatch({ type: 'SET_PANEL_STATE', payload: 'default' })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loc.search])
+  // Open panel for relevant routes // TODO: something
+  // useEffect((): void => {
+  //   if (loc.pathname === routes.details) {
+  //     dispatch({ type: 'SET_PANEL_STATE', payload: 'default' })
+  //   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [loc.search])
 
   return (
-    <main className={classes.appWrapRoot}>
+    <>
       {!state.mapLoaded && <LoadingBackdrop />}
-      <MapPanel />
-      {symbLayers && labelLayers && (
-        <Map
-          mapWrapClassName={classes.mapWrap}
-          symbLayers={symbLayers}
-          labelLayers={labelLayers}
-          baselayer={state.baselayer}
-        />
-      )}
-    </main>
+      <FabPanelToggle />
+      <main className={classes.appWrapRoot}>
+        <MapPanel />
+        {symbLayers && labelLayers && (
+          <Map
+            mapWrapClassName={classes.mapWrap}
+            symbLayers={symbLayers}
+            labelLayers={labelLayers}
+            baselayer={state.baselayer}
+          />
+        )}
+      </main>
+    </>
   )
 }
