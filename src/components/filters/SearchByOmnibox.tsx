@@ -43,6 +43,10 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       paddingLeft: 12,
     },
+    inputRoot: {
+      // Decrease placeholder font size but prevent unwanted iOS zoom on focus
+      '& input:not(:focus)': { fontSize: '0.8em' },
+    },
   })
 )
 
@@ -57,22 +61,18 @@ export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
     <Autocomplete
       id="virtualize-demo"
       classes={classes}
-      // autoComplete // TODO: yay or nay?
-      autoHighlight
       closeIcon={<MdClose />}
-      size="small"
-      options={data}
+      blurOnSelect="touch" // helps to resolve iOS zoom issue. Don't... touch!
       // open // much more effective than `debug`
-      groupBy={(option) => option.Language}
       getOptionLabel={(option) => option.Language}
+      groupBy={(option) => option.Language}
+      options={data}
       renderGroup={renderGroup}
       renderOption={(option) => <OmniboxResult data={option} />}
-      openOnFocus
+      size="small"
       onChange={(event, value) => {
         // Can't just do <RouterLink>, otherwise keyboard selection no-go...
-        if (value) {
-          history.push(`${routes.details}?id=${value.ID}`)
-        }
+        if (value) history.push(`${routes.details}?id=${value.ID}`)
       }}
       filterOptions={(options, { inputValue }) => {
         return matchSorter(options, inputValue, {
@@ -88,13 +88,9 @@ export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Language, endonym, Glottocode, ISO 639-3"
-          placeholder="Search language communities..."
+          placeholder="Language, endonym, Glottocode, or ISO 639-3"
           helperText={noFiltersSet ? <FiltersWarning /> : null}
-          InputLabelProps={{
-            disableAnimation: true,
-            shrink: true,
-          }}
+          InputLabelProps={{ disableAnimation: true, shrink: true }}
         />
       )}
     />
