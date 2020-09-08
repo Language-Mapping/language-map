@@ -24,6 +24,8 @@ const useStyles = makeStyles((theme: Theme) =>
     panelsRoot: {
       backgroundColor: theme.palette.background.paper,
       transition: theme.transitions.easing.easeInOut,
+      display: 'flex',
+      flexDirection: 'column',
       [theme.breakpoints.down('sm')]: {
         order: 2,
         flex: ({ panelOpen }: MapPanelProps) =>
