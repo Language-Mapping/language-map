@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const LoadingBackdrop: FC = () => {
   const classes = useStyles()
-  const navClasses = useNavStyles()
+  const navClasses = useNavStyles({ panelOpen: true })
 
   return (
     <Backdrop className={classes.backdropRoot} open>

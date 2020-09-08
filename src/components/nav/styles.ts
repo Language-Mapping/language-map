@@ -1,6 +1,9 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { panelWidths } from 'components/panels/config'
+import { smoothToggleTransition } from '../../utils'
+
+type NavStyleProps = { panelOpen: boolean }
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,18 +22,25 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     // These spacers allow the title to "center" between the side panel and map
     // control buttons via flexbox and the addition of a couple divs.
-    // TODO: make it right
     spacerDesktop: {
       flex: 1,
       height: 0,
       visibility: 'hidden',
       display: 'none',
+      transition: (props: NavStyleProps) =>
+        smoothToggleTransition(theme, props.panelOpen),
       [theme.breakpoints.up('md')]: { display: 'block' },
     },
     spacerRight: { marginRight: theme.spacing(2) },
     spacerLeft: {
-      [theme.breakpoints.up('md')]: { marginLeft: panelWidths.mid },
-      [theme.breakpoints.up('lg')]: { marginLeft: panelWidths.midLarge },
+      [theme.breakpoints.up('md')]: {
+        marginLeft: (props: NavStyleProps) =>
+          props.panelOpen ? panelWidths.mid : 0,
+      },
+      [theme.breakpoints.up('lg')]: {
+        marginLeft: (props: NavStyleProps) =>
+          props.panelOpen ? panelWidths.midLarge : 0,
+      },
     },
     title: {
       zIndex: 1,

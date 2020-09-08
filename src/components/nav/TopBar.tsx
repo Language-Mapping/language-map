@@ -1,13 +1,15 @@
-import React, { FC } from 'react'
+import React, { FC, useContext } from 'react'
 import { Link as RouteLink } from 'react-router-dom'
 import { Typography } from '@material-ui/core'
 
 import { paths as routes } from 'components/config/routes'
+import { GlobalContext } from 'components'
 import { PAGE_HEADER_ID } from './config'
 import { useStyles } from './styles'
 
 export const TopBar: FC = () => {
-  const classes = useStyles()
+  const { state } = useContext(GlobalContext)
+  const classes = useStyles({ panelOpen: state.panelState === 'default' })
   const {
     spacerDesktop,
     spacerLeft,
