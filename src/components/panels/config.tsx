@@ -11,17 +11,17 @@ export const panelWidths = { mid: 450, midLarge: 600 }
 
 export const panelsConfig = [
   {
-    heading: 'Details',
-    subheading: 'of selected community',
-    icon: <TiDocumentText />,
-    component: <DetailsPanel />,
-    path: '/details',
-  },
-  {
     heading: 'Explore',
     subheading: 'and query language data',
     icon: <ImSearch />,
     component: <FiltersPanel />,
     path: '/',
+  },
+  {
+    heading: 'Details',
+    subheading: 'of selected community',
+    icon: <TiDocumentText />,
+    component: <DetailsPanel />,
+    path: '/details',
   },
 ] as MapPanel[]

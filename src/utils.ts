@@ -1,4 +1,5 @@
 import { useState, useEffect, Dispatch } from 'react'
+import { Theme } from '@material-ui/core/styles'
 
 import {
   MetadataGroup,
@@ -160,4 +161,21 @@ export function prettyTruncateList(
   }
 
   return `${firstItem} (+${asArray.length - 1} more)`
+}
+
+// CRED: for `theme.transitions.create` example:
+// https://medium.com/@octaviocoria/custom-css-transitions-with-react-material-ui-5d41cb2e7c5#fecb
+export const smoothToggleTransition = (
+  theme: Theme,
+  open?: boolean
+): string => {
+  const { transitions } = theme
+  /* eslint-disable operator-linebreak */
+  const duration = open
+    ? transitions.duration.leavingScreen
+    : transitions.duration.enteringScreen
+  /* eslint-enable operator-linebreak */
+  const easing = open ? transitions.easing.easeIn : transitions.easing.easeOut
+
+  return transitions.create('all', { duration, easing })
 }

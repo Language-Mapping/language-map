@@ -6,6 +6,7 @@ import { FiChevronRight } from 'react-icons/fi'
 
 import { GlobalContext } from 'components'
 import { panelWidths } from 'components/panels/config'
+import { smoothToggleTransition } from '../../utils'
 
 type FabStyle = { panelOpen: boolean }
 
@@ -15,18 +16,10 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       top: theme.spacing(2),
       left: theme.spacing(2),
-      transition: theme.transitions.create('transform', {
-        duration: theme.transitions.duration.standard,
-        easing: theme.transitions.easing.easeInOut,
-      }),
       zIndex: 1,
       '& svg': {
         height: '1.5em',
         width: '1.5em',
-        transition: theme.transitions.create('transform', {
-          duration: theme.transitions.duration.standard,
-          easing: theme.transitions.easing.easeInOut,
-        }),
         transform: (props: FabStyle) =>
           props.panelOpen ? 'rotateY(180deg)' : 'rotateY(0)',
       },
@@ -46,6 +39,10 @@ const useStyles = makeStyles((theme: Theme) =>
         display: 'none',
       },
     },
+    smoothTrans: {
+      transition: (props: { panelOpen: boolean }) =>
+        smoothToggleTransition(theme, props.panelOpen),
+    },
   })
 )
 
@@ -55,11 +52,12 @@ export const FabPanelToggle: FC = () => {
   const classes = useStyles({ panelOpen })
 
   return (
-    <div className={classes.fabPanelToggleRoot}>
+    <div className={`${classes.fabPanelToggleRoot} ${classes.smoothTrans}`}>
       <Fab
         color="primary"
         size="small"
         aria-label="toggle panel"
+        className={classes.smoothTrans}
         onClick={() =>
           dispatch({
             type: 'SET_PANEL_STATE',
@@ -67,7 +65,7 @@ export const FabPanelToggle: FC = () => {
           })
         }
       >
-        <FiChevronRight />
+        <FiChevronRight className={classes.smoothTrans} />
       </Fab>
     </div>
   )

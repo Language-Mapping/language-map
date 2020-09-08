@@ -12,9 +12,11 @@ import {
 import { MapPanelHeader, MapPanelHeaderChild } from './MapPanelHeader'
 import { PanelIntro } from './PanelIntro'
 import { panelsConfig } from './config'
+import { smoothToggleTransition } from '../../utils'
 
 type MapPanelProps = {
   active?: boolean
+  first?: boolean
   panelOpen?: boolean
 }
 
@@ -28,10 +30,8 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.background.paper,
       display: 'flex',
       flexDirection: 'column',
-      transition: theme.transitions.create('all', {
-        duration: theme.transitions.duration.standard,
-        easing: theme.transitions.easing.easeInOut,
-      }),
+      transition: (props: MapPanelProps) =>
+        smoothToggleTransition(theme, props.panelOpen),
       [theme.breakpoints.down('sm')]: {
         order: 2,
         flex: ({ panelOpen }: MapPanelProps) =>
@@ -64,32 +64,43 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: '1rem',
       },
     },
-    contentWrap: { overflowY: 'auto', paddingBottom: '1rem' },
+    contentWrap: {
+      display: 'flex',
+      overflowX: 'hidden',
+      overflowY: 'auto',
+      paddingBottom: '1rem',
+      width: '200%',
+    },
     panelContent: {
-      paddingLeft: '0.8rem',
-      paddingRight: '0.8rem',
-      // TODO: look into everything here down...
-      transition: '300ms opacity',
+      padding: '0.25rem 0.8rem',
+      width: '100%',
+      transition: (props: MapPanelProps) =>
+        smoothToggleTransition(theme, props.active),
       opacity: (props: MapPanelProps) => (props.active ? 1 : 0),
-      // props.active && props.panelOpen ? 1 : 0, // DO THESE MATTER?
-      transform: (props: MapPanelProps) =>
-        props.active ? 'scaleY(1)' : 'scaleY(0)',
-      // TODO: replace this with a left/right transform!
-      maxHeight: (props: MapPanelProps) => (props.active ? '100%' : 0),
-      [theme.breakpoints.up('sm')]: {
-        paddingLeft: '1.25rem',
-        paddingRight: '1.25rem',
+      // Slide in/out left/right when active based on active and first
+      transform: (props: MapPanelProps) => {
+        if (props.active && props.first) return 'translateX(0)' // 1st, active
+        if (props.first) return 'translateX(-100%)' // 1st, inactive
+        if (props.active) return 'translateX(-100%)' // 2nd, active
+
+        return 'translateX(100%)' // 2nd, inactive
       },
+      [theme.breakpoints.up('sm')]: { padding: '1rem' },
+      [theme.breakpoints.up('xl')]: { padding: '1.25rem' }, // tons of room
     },
   })
 )
 
 // TODO: no need for separate component if render props are used on parent
 export const MapPanelContent: FC<PanelContentComponent> = (props) => {
-  const { active, children, panelOpen } = props
-  const classes = useStyles({ active, panelOpen })
+  const { active, children, panelOpen, first } = props
+  const classes = useStyles({ active, panelOpen, first })
 
-  return <Box className={classes.panelContent}>{children}</Box>
+  return (
+    <Box id={first ? 'first' : 'second'} className={classes.panelContent}>
+      {children}
+    </Box>
+  )
 }
 
 export const MapPanel: FC<MapPanelProps> = (props) => {
@@ -101,8 +112,7 @@ export const MapPanel: FC<MapPanelProps> = (props) => {
   return (
     <Box id="map-panels-wrap" className={classes.panelsRoot}>
       <MapPanelHeader>
-        {/* Gross but "/" route needs to come last */}
-        {[...panelsConfig].reverse().map((config) => (
+        {[...panelsConfig].map((config) => (
           <MapPanelHeaderChild
             key={config.heading}
             {...config}
@@ -112,14 +122,15 @@ export const MapPanel: FC<MapPanelProps> = (props) => {
           </MapPanelHeaderChild>
         ))}
       </MapPanelHeader>
+      <PanelIntro />
       <div className={classes.contentWrap}>
-        <PanelIntro />
-        {panelsConfig.map((config) => (
+        {panelsConfig.map((config, i) => (
           <MapPanelContent
             key={config.heading}
             {...config}
             active={loc.pathname === config.path}
             panelOpen={state.panelState === 'default'}
+            first={i === 0}
           >
             {config.component}
           </MapPanelContent>

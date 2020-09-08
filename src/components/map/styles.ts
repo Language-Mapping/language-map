@@ -1,12 +1,9 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { MOBILE_PANEL_HEADER_HEIGHT } from 'components/panels/config'
+import { smoothToggleTransition } from '../../utils'
 
 type MapPanelProps = { panelOpen?: boolean }
-
-// TODO: standardize transitions (currently in here, map panels, and Fab)
-// CRED: for `theme.transitions.create` example:
-// https://medium.com/@octaviocoria/custom-css-transitions-with-react-material-ui-5d41cb2e7c5#fecb
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,10 +25,8 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     mapWrap: {
       width: '100%',
-      transition: theme.transitions.create('all', {
-        duration: theme.transitions.duration.standard,
-        easing: theme.transitions.easing.easeInOut,
-      }),
+      transition: (props: MapPanelProps) =>
+        smoothToggleTransition(theme, props.panelOpen),
       [theme.breakpoints.up('sm')]: {
         flexGrow: ({ panelOpen }: MapPanelProps) => (panelOpen ? 0 : 2),
         height: '100%',
