@@ -1,5 +1,5 @@
 import React, { FC, useContext } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Button } from '@material-ui/core'
 import { TiDocumentText, TiDocumentDelete } from 'react-icons/ti'
@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const PanelIntro: FC = () => {
   const { state } = useContext(GlobalContext)
   const classes = useStyles()
+  const loc = useLocation()
 
   return (
     <ul className={classes.panelIntroRoot}>
@@ -60,7 +61,7 @@ export const PanelIntro: FC = () => {
           component={RouterLink}
           size="small"
           startIcon={<TiDocumentText />}
-          to={routes.table} // TODO: include current id
+          to={routes.table + loc.search}
         >
           Data Table & Filters
         </Button>
@@ -74,7 +75,7 @@ export const PanelIntro: FC = () => {
           disabled={state.selFeatAttribs === null}
           size="small"
           startIcon={<TiDocumentDelete />}
-          to={routes.details}
+          to={loc.pathname}
         >
           Clear selected
         </Button>
@@ -87,7 +88,7 @@ export const PanelIntro: FC = () => {
           component={RouterLink}
           size="small"
           startIcon={<AiOutlineQuestionCircle />}
-          to={routes.glossary}
+          to={routes.glossary + loc.search}
         >
           Help
         </Button>
