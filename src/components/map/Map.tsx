@@ -57,7 +57,7 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
 }
 
 export const Map: FC<MapTypes.MapComponent> = (props) => {
-  const { symbLayers, labelLayers, baselayer, mapWrapClassName } = props
+  const { symbLayers, labelLayers, baselayer } = props
   const history = useHistory()
   const loc = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
@@ -349,7 +349,7 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
   }
 
   return (
-    <div className={mapWrapClassName}>
+    <>
       <MapGL
         {...viewport}
         {...config.mapProps}
@@ -394,6 +394,6 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
           onMapCtrlClick(actionID)
         }}
       />
-    </div>
+    </>
   )
 }

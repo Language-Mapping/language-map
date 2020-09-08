@@ -80,12 +80,13 @@ export const MapWrap: FC = () => {
       <main className={classes.appWrapRoot}>
         <MapPanel />
         {symbLayers && labelLayers && (
-          <Map
-            mapWrapClassName={classes.mapWrap}
-            symbLayers={symbLayers}
-            labelLayers={labelLayers}
-            baselayer={state.baselayer}
-          />
+          <div className={classes.mapWrap}>
+            <Map
+              symbLayers={symbLayers}
+              labelLayers={labelLayers}
+              baselayer={state.baselayer}
+            />
+          </div>
         )}
       </main>
     </>

@@ -99,9 +99,8 @@ export type MapTooltip = LongLat & {
 
 export type MapComponent = {
   baselayer: Baselayer
-  symbLayers: LayerPropsNonBGlayer[]
   labelLayers: LayerPropsNonBGlayer[]
-  mapWrapClassName: string
+  symbLayers: LayerPropsNonBGlayer[]
 }
 
 export type GetWebMercViewport = (
