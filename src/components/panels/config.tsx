@@ -6,6 +6,9 @@ import { FiltersPanel } from 'components/filters'
 import { DetailsPanel } from 'components/details'
 import { MapPanel } from 'components/panels/types'
 
+export const MOBILE_PANEL_HEADER_HEIGHT = '3rem'
+export const panelWidths = { mid: 450, midLarge: 600 }
+
 export const panelsConfig = [
   {
     heading: 'Details',

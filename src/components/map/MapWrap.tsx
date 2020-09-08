@@ -38,7 +38,6 @@ export const MapWrap: FC = () => {
   }, [])
 
   // Do selected feature stuff on location change
-  // TODO: there's like 3 `return` statements here. How about 1?
   useEffect((): void => {
     const idFromUrl = getIDfromURLparams(loc.search)
 
@@ -49,9 +48,7 @@ export const MapWrap: FC = () => {
     }
 
     // TODO: handle scenario where feature exists in cached but not filtered
-    // const matchedFeat = state.langFeaturesCached.find(
-    //   (feat) => parsed.id === feat.ID.toString()
-    // )
+    // const matchedFeat = state.langFeaturesCached.find()
 
     const matchingRecord = langFeaturesCached.find(
       (row) => row.ID === idFromUrl

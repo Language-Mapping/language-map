@@ -5,7 +5,7 @@ import Fab from '@material-ui/core/Fab'
 import { FiChevronRight } from 'react-icons/fi'
 
 import { GlobalContext } from 'components'
-import { panelWidths } from 'components/map/styles'
+import { panelWidths } from 'components/panels/config'
 
 type FabStyle = { panelOpen: boolean }
 
@@ -15,14 +15,20 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       top: theme.spacing(2),
       left: theme.spacing(2),
-      transition: '300ms transform',
+      transition: theme.transitions.create('transform', {
+        duration: theme.transitions.duration.standard,
+        easing: theme.transitions.easing.easeInOut,
+      }),
       zIndex: 1,
       '& svg': {
         height: '1.5em',
         width: '1.5em',
-        transition: '300ms transform',
+        transition: theme.transitions.create('transform', {
+          duration: theme.transitions.duration.standard,
+          easing: theme.transitions.easing.easeInOut,
+        }),
         transform: (props: FabStyle) =>
-          props.panelOpen ? 'rotate(180deg)' : 'rotate(0)',
+          props.panelOpen ? 'rotateY(180deg)' : 'rotateY(0)',
       },
       [theme.breakpoints.up('md')]: {
         transform: (props: FabStyle) =>

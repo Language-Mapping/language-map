@@ -4,10 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Box, Typography, IconButton } from '@material-ui/core'
 import { FiChevronDown } from 'react-icons/fi'
 
-import {
-  DESKTOP_PANEL_HEADER_HEIGHT,
-  MOBILE_PANEL_HEADER_HEIGHT,
-} from 'components/map/styles'
+import { MOBILE_PANEL_HEADER_HEIGHT } from 'components/panels/config'
 import { MapPanel } from 'components/panels/types'
 import { GlobalContext } from 'components'
 
@@ -37,7 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.common.white,
       display: 'flex',
       flexShrink: 0,
-      height: DESKTOP_PANEL_HEADER_HEIGHT,
       justifyContent: 'center',
       position: 'sticky',
       bottom: 0,

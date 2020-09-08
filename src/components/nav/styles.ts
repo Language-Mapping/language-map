@@ -1,6 +1,6 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import { panelWidths } from 'components/map/styles'
+import { panelWidths } from 'components/panels/config'
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({

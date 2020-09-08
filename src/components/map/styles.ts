@@ -1,16 +1,15 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-export const MOBILE_PANEL_HEADER_HEIGHT = '3rem'
-export const DESKTOP_PANEL_HEADER_HEIGHT = '3.5rem'
-export const panelWidths = { mid: 450, midLarge: 600 }
+import { MOBILE_PANEL_HEADER_HEIGHT } from 'components/panels/config'
 
-type MapPanelProps = {
-  panelOpen?: boolean
-}
+type MapPanelProps = { panelOpen?: boolean }
+
+// TODO: standardize transitions (currently in here, map panels, and Fab)
+// CRED: for `theme.transitions.create` example:
+// https://medium.com/@octaviocoria/custom-css-transitions-with-react-material-ui-5d41cb2e7c5#fecb
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    // formerly `mapWrapRoot`...
     appWrapRoot: {
       bottom: 0,
       left: 0,
@@ -27,12 +26,14 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       [theme.breakpoints.down('sm')]: { flexDirection: 'column' },
     },
-    // The actual map container
     mapWrap: {
-      transition: theme.transitions.easing.easeInOut,
       width: '100%',
+      transition: theme.transitions.create('all', {
+        duration: theme.transitions.duration.standard,
+        easing: theme.transitions.easing.easeInOut,
+      }),
       [theme.breakpoints.up('sm')]: {
-        flexGrow: ({ panelOpen }: MapPanelProps) => (panelOpen ? 1 : 100),
+        flexGrow: ({ panelOpen }: MapPanelProps) => (panelOpen ? 0 : 2),
         height: '100%',
       },
       [theme.breakpoints.down('sm')]: {

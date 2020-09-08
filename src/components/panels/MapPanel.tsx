@@ -5,7 +5,10 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Box } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
-import { panelWidths, MOBILE_PANEL_HEADER_HEIGHT } from 'components/map/styles'
+import {
+  MOBILE_PANEL_HEADER_HEIGHT,
+  panelWidths,
+} from 'components/panels/config'
 import { MapPanelHeader, MapPanelHeaderChild } from './MapPanelHeader'
 import { PanelIntro } from './PanelIntro'
 import { panelsConfig } from './config'
@@ -23,21 +26,19 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelsRoot: {
       backgroundColor: theme.palette.background.paper,
-      transition: theme.transitions.easing.easeInOut,
       display: 'flex',
       flexDirection: 'column',
+      transition: theme.transitions.create('all', {
+        duration: theme.transitions.duration.standard,
+        easing: theme.transitions.easing.easeInOut,
+      }),
       [theme.breakpoints.down('sm')]: {
         order: 2,
         flex: ({ panelOpen }: MapPanelProps) =>
           panelOpen ? `1 0 calc(50% - ${MOBILE_PANEL_HEADER_HEIGHT})` : 0,
         maxHeight: ({ panelOpen }: MapPanelProps) =>
           panelOpen ? '50%' : MOBILE_PANEL_HEADER_HEIGHT,
-        transform: ({ panelOpen }: MapPanelProps) =>
-          panelOpen
-            ? 'translateY(0%)'
-            : `translateY(calc(100% - ${MOBILE_PANEL_HEADER_HEIGHT}))`,
       },
-      // [theme.breakpoints.up('sm')]: { order: 1 },
       [theme.breakpoints.up('md')]: {
         opacity: ({ panelOpen }: MapPanelProps) => (panelOpen ? 1 : 0),
         transform: ({ panelOpen }: MapPanelProps) =>
