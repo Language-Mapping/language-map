@@ -52,8 +52,8 @@ export const mapProps = {
 // This is for #3 above. It should include the 5 boroughs and bits of NJ, and
 // centered on Manhattan. // TODO: improve this now that no more offsets
 export const initialBounds = [
-  [-74.19564, 40.574533],
-  [-73.767185, 40.892251],
+  [-74.1, 40.58],
+  [-73.767185, 40.89],
 ] as MapTypes.BoundsArray
 
 export const langTypeIconsConfig = [
