@@ -14,7 +14,7 @@ export const MapWrap: FC = () => {
   const loc = useLocation()
   const [symbLayers, setSymbLayers] = useState<LayerPropsNonBGlayer[]>()
   const [labelLayers, setLabelLayers] = useState<LayerPropsNonBGlayer[]>()
-  const { langFeaturesCached } = state
+  const { langFeatures } = state
 
   const classes = useStyles({
     panelOpen: state.panelState === 'default',
@@ -41,18 +41,16 @@ export const MapWrap: FC = () => {
   useEffect((): void => {
     const idFromUrl = getIDfromURLparams(loc.search)
 
-    if (!langFeaturesCached.length || !idFromUrl) {
+    if (!langFeatures.length || !idFromUrl) {
       dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
 
       return
     }
 
     // TODO: handle scenario where feature exists in cached but not filtered
-    // const matchedFeat = state.langFeaturesCached.find()
+    // const matchedFeat = state.langFeatures.find()
 
-    const matchingRecord = langFeaturesCached.find(
-      (row) => row.ID === idFromUrl
-    )
+    const matchingRecord = langFeatures.find((row) => row.ID === idFromUrl)
 
     if (matchingRecord) {
       document.title = `${matchingRecord.Language as string} - NYC Languages`
@@ -63,7 +61,7 @@ export const MapWrap: FC = () => {
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loc.search, state.langFeaturesCached.length])
+  }, [loc.search, state.langFeatures.length])
 
   // Open panel for relevant routes // TODO: something
   // useEffect((): void => {

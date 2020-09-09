@@ -39,7 +39,6 @@ export type InitialState = {
   baselayer: Baselayer
   langFeatIDs: null | number[]
   langFeatures: LangRecordSchema[]
-  langFeaturesCached: LangRecordSchema[]
   langLabels: string[]
   langSymbGroups: MetadataGroup
   legendItems: LegendSwatch[]

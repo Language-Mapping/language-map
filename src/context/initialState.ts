@@ -7,7 +7,6 @@ const initialMapStates = {
   baselayer: 'light',
   langFeatIDs: null,
   langFeatures: [],
-  langFeaturesCached: [],
   langLabels: [],
   langSymbGroups: {},
   legendItems: [],

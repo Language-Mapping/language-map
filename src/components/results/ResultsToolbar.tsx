@@ -60,12 +60,7 @@ export const ResultsToolbar: FC<ResultsToolbarProps> = (props) => {
       ),
     })
 
-    dispatch({
-      type: 'INIT_LANG_LAYER_FEATURES',
-      payload: tableRef.current.dataManager.filteredData,
-    })
-
-    history.push(`${routes.home}${loc.search}`) // TODO: get last route somehow
+    history.push(routes.home)
   }
 
   return (

@@ -5,7 +5,7 @@ import { queryCache } from 'react-query'
 import { TopBar, OffCanvasNav } from 'components/nav'
 import { MapWrap } from 'components/map'
 import { AboutPageView, WelcomeDialog } from 'components/about'
-import { ResultsTable, ResultsModal } from 'components/results'
+import { ResultsModal } from 'components/results'
 import { fetchAbout, fetchGlossary, fetchWelcome } from 'components/about/utils'
 import { paths as routes } from 'components/config/routes'
 import {
@@ -32,9 +32,7 @@ export const App: FC = () => {
         <AboutPageView queryName={ABOUT_QUERY} />
       </Route>
       <Route path={routes.table}>
-        <ResultsModal>
-          <ResultsTable />
-        </ResultsModal>
+        <ResultsModal />
       </Route>
       <Route path={routes.glossary}>
         <AboutPageView queryName={GLOSSARY_QUERY} />

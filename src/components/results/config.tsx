@@ -15,6 +15,7 @@ import {
 import * as Types from './types'
 import * as utils from './utils'
 import { LocalColumnTitle } from './LocalColumnTitle'
+import { GlobalSpeakSlider } from './GlobalSpeakSlider'
 
 export const COMM_SIZE_COL_MAP = {
   1: 'Smallest',
@@ -37,7 +38,6 @@ export const localization: Localization = {
 export const options = {
   actionsColumnIndex: 0,
   columnsButton: true,
-  doubleHorizontalScroll: true,
   draggable: true, // kinda clunky
   filtering: true,
   grouping: false, // kinda clunky
@@ -50,6 +50,7 @@ export const options = {
   thirdSortClick: false,
   // TODO: rm unused, or keep for reference
   // actionsCellStyle: {}, // semi-useful but ended up with `!important` anyway
+  // doubleHorizontalScroll: true,
   // headerStyle: { position: 'sticky', top: 0 },
   // filterCellStyle: { backgroundColor: 'yellow' }, // works
   // filterRowStyle: { backgroundColor: 'red' }, // works, but sticky 2 tricky!
@@ -84,6 +85,8 @@ export const columns = [
     // Average: 9.3, Longest: 31
     title: 'Language',
     field: 'Language',
+    editable: 'never',
+    export: false,
     defaultSort: 'asc',
     searchable: true,
   },
@@ -91,6 +94,8 @@ export const columns = [
     // Average: 8.5, Longest: 26, Longest full: Anashinaabemowin
     title: 'Endonym',
     field: 'Endonym',
+    editable: 'never',
+    export: false,
     disableClick: true, // TODO: use this if we want row clicks again
     render: utils.renderEndoColumn,
     searchable: true,
@@ -99,6 +104,8 @@ export const columns = [
     // Average: 13, Longest: 25 (thanks AUS & NZ...)
     title: 'World Region',
     field: 'World Region',
+    editable: 'never',
+    export: false,
     render: utils.renderWorldRegionColumn,
     searchable: true,
     headerStyle: {
@@ -112,6 +119,8 @@ export const columns = [
     // https://material-ui.com/components/autocomplete/#country-select
     title: 'Countries',
     field: 'Countries',
+    editable: 'never',
+    export: false,
     render: utils.renderCountriesColumn,
     searchable: true,
     headerStyle: {
@@ -122,11 +131,16 @@ export const columns = [
     // Longest: 20
     title: 'Global Speakers', // the only abbrev so far
     field: 'Global Speaker Total',
+    editable: 'never',
+    export: false,
     // defaultSort: 'asc', // TODO: make this work
     // customSort: utils.sortNeighbs, // TODO: this
     render: utils.renderGlobalSpeakColumn,
     searchable: false,
     type: 'numeric',
+    filterComponent: function customFilter(props) {
+      return <GlobalSpeakSlider />
+    },
     headerStyle: {
       paddingLeft: 0,
       whiteSpace: 'nowrap',
@@ -136,6 +150,8 @@ export const columns = [
     // Average: 10, Longest: 23 but preserve hyphenated Athabaskan-Eyak-Tlingit
     title: 'Language Family',
     field: 'Language Family',
+    editable: 'never',
+    export: false,
     searchable: true,
     headerStyle: {
       whiteSpace: 'nowrap',
@@ -145,6 +161,8 @@ export const columns = [
     // Average: 12, Longest: 26
     title: <LocalColumnTitle text="Neighborhoods" />,
     field: 'Neighborhoods',
+    editable: 'never',
+    export: false,
     searchable: true,
     render: utils.renderNeighbColumn,
     customSort: utils.sortNeighbs,
@@ -153,6 +171,8 @@ export const columns = [
     // Longest: 14
     title: <LocalColumnTitle text="Size" />,
     field: 'Size',
+    editable: 'never',
+    export: false,
     align: 'left',
     lookup: COMM_SIZE_COL_MAP,
     render: (data) => COMM_SIZE_COL_MAP[data.Size],
@@ -162,6 +182,8 @@ export const columns = [
     // Longest: 13
     title: <LocalColumnTitle text="Status" />,
     field: 'Status',
+    editable: 'never',
+    export: false,
     searchable: false,
     lookup: {
       Community: 'Community',
@@ -175,18 +197,24 @@ export const columns = [
   {
     title: 'Description',
     field: 'Description',
+    editable: 'never',
+    export: false,
     hidden: true,
     searchable: true,
   },
   {
     title: 'Glottocode',
     field: 'Glottocode',
+    editable: 'never',
+    export: false,
     hidden: true,
     searchable: true,
   },
   {
     title: 'ISO 639-3',
     field: 'ISO 639-3',
+    editable: 'never',
+    export: false,
     hidden: true,
     searchable: true,
   },

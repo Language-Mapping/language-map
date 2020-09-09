@@ -215,8 +215,8 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
     // TODO: set paint property
     // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
 
-    dispatch({ type: 'INIT_LANG_LAYER_FEATURES', payload: uniqueRecords })
     dispatch({ type: 'SET_MAP_LOADED', payload: true })
+    dispatch({ type: 'INIT_LANG_LAYER_FEATURES', payload: uniqueRecords })
 
     // Give MB some well-deserved cred
     map.addControl(new AttributionControl({ compact: false }), 'bottom-right')

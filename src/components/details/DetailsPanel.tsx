@@ -90,7 +90,7 @@ const EndoImageWrap: FC<EndoImageComponent> = (props) => {
 
 const RandomLink: FC = () => {
   const { state } = useContext(GlobalContext)
-  const { langFeatIDs, langFeaturesCached } = state
+  const { langFeatIDs, langFeatures } = state
 
   if (langFeatIDs && !langFeatIDs.length) {
     return null
@@ -100,8 +100,8 @@ const RandomLink: FC = () => {
   let id = 1
 
   if (langFeatIDs === null) {
-    randoIndex = Math.floor(Math.random() * langFeaturesCached?.length) + 1
-    id = langFeaturesCached[randoIndex].ID
+    randoIndex = Math.floor(Math.random() * langFeatures?.length) + 1
+    id = langFeatures[randoIndex].ID
   } else {
     randoIndex = Math.floor(Math.random() * langFeatIDs?.length) + 1
     id = langFeatIDs[randoIndex]
@@ -132,7 +132,7 @@ export const DetailsPanel: FC = () => {
 
   // Shaky check to see if features have loaded and are stored globally
   // TODO: use MB's loading events to set this instead
-  if (!state.langFeaturesCached.length) return null
+  if (!state.langFeatures.length) return null
 
   const { selFeatAttribs } = state
 
