@@ -1,4 +1,4 @@
-import { RouteLocation } from 'components/map/types'
+import { RouteLocation } from 'components/config/types'
 
 export type MapPanel = {
   heading: string

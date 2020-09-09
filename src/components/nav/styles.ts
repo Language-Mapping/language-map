@@ -1,6 +1,9 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import { panelWidths } from 'components/map/styles'
+import { panelWidths } from 'components/panels/config'
+import { smoothToggleTransition } from '../../utils'
+
+type NavStyleProps = { panelOpen: boolean }
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,15 +24,18 @@ export const useStyles = makeStyles((theme: Theme) =>
     // control buttons via flexbox and the addition of a couple divs.
     spacerDesktop: {
       flex: 1,
-      height: 0,
       visibility: 'hidden',
-      display: 'none',
-      [theme.breakpoints.up('md')]: { display: 'block' },
+      transition: (props: NavStyleProps) =>
+        smoothToggleTransition(theme, props.panelOpen),
+      [theme.breakpoints.down('sm')]: { display: 'none' },
     },
-    spacerRight: { marginRight: theme.spacing(2) },
     spacerLeft: {
-      [theme.breakpoints.up('md')]: { marginLeft: panelWidths.mid },
-      [theme.breakpoints.up('lg')]: { marginLeft: panelWidths.midLarge },
+      marginLeft: (props: NavStyleProps) =>
+        props.panelOpen ? panelWidths.mid : 0,
+      [theme.breakpoints.up('xl')]: {
+        marginLeft: (props: NavStyleProps) =>
+          props.panelOpen ? panelWidths.midLarge : 0,
+      },
     },
     title: {
       zIndex: 1,

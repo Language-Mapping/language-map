@@ -1,15 +1,22 @@
+/* eslint-disable operator-linebreak */
 import React, { FC, useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Box } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
-import { MapPanelHeader, MapPanelHeaderChild } from 'components/panels'
-import { DetailsIntro } from 'components/details'
-import { panelsConfig } from '../../config/panels-config'
+import {
+  MOBILE_PANEL_HEADER_HEIGHT,
+  panelWidths,
+} from 'components/panels/config'
+import { MapPanelHeader, MapPanelHeaderChild } from './MapPanelHeader'
+import { PanelIntro } from './PanelIntro'
+import { panelsConfig } from './config'
+import { smoothToggleTransition } from '../../utils'
 
 type MapPanelProps = {
   active?: boolean
+  first?: boolean
   panelOpen?: boolean
 }
 
@@ -19,17 +26,37 @@ type PanelContentComponent = Partial<MapPanelProps> & {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    mapPanelsWrap: {
+    panelsRoot: {
       backgroundColor: theme.palette.background.paper,
       display: 'flex',
       flexDirection: 'column',
-      transition: '300ms flex-basis',
-      width: '100%',
-      [theme.breakpoints.up('md')]: { width: 450 },
-      [theme.breakpoints.up('xl')]: { width: 600 },
+      transition: (props: MapPanelProps) =>
+        smoothToggleTransition(theme, props.panelOpen),
       [theme.breakpoints.down('sm')]: {
-        flexBasis: ({ panelOpen }) => (panelOpen ? '50%' : 60),
         order: 2,
+        flex: ({ panelOpen }: MapPanelProps) =>
+          panelOpen ? `1 0 calc(50% - ${MOBILE_PANEL_HEADER_HEIGHT})` : 0,
+        maxHeight: ({ panelOpen }: MapPanelProps) =>
+          panelOpen ? '50%' : MOBILE_PANEL_HEADER_HEIGHT,
+      },
+      [theme.breakpoints.up('md')]: {
+        opacity: ({ panelOpen }: MapPanelProps) => (panelOpen ? 1 : 0),
+        transform: ({ panelOpen }: MapPanelProps) =>
+          panelOpen ? 'translateX(0%)' : `translateX(-${panelWidths.mid}px)`,
+        maxWidth: ({ panelOpen }: MapPanelProps) =>
+          panelOpen ? panelWidths.mid : 0,
+        flex: ({ panelOpen }: MapPanelProps) =>
+          panelOpen ? `1 0 ${panelWidths.mid}px` : 0,
+      },
+      [theme.breakpoints.up('xl')]: {
+        transform: ({ panelOpen }: MapPanelProps) =>
+          panelOpen
+            ? 'translateX(0%)'
+            : `translateX(-${panelWidths.midLarge}px)`,
+        maxWidth: ({ panelOpen }: MapPanelProps) =>
+          panelOpen ? panelWidths.midLarge : 0,
+        flex: ({ panelOpen }: MapPanelProps) =>
+          panelOpen ? `1 0 ${panelWidths.midLarge}px` : 0,
       },
       '& .MuiPaper-root': { height: '100%', overflowY: 'auto' },
       '& .MuiInputLabel-formControl': {
@@ -37,32 +64,43 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: '1rem',
       },
     },
-    contentWrap: { overflowY: 'auto', paddingBottom: '1rem' },
+    contentWrap: {
+      display: 'flex',
+      overflowX: 'hidden',
+      overflowY: 'auto',
+      paddingBottom: '1rem',
+      width: '200%',
+    },
     panelContent: {
-      paddingLeft: '0.8rem',
-      paddingRight: '0.8rem',
-      // TODO: look into everything here down...
-      transition: '300ms opacity',
-      opacity: (props: MapPanelProps) =>
-        props.active && props.panelOpen ? 1 : 0,
-      transform: (props: MapPanelProps) =>
-        props.active && props.panelOpen ? 'scaleY(1)' : 'scaleY(0)',
-      maxHeight: (props: MapPanelProps) =>
-        props.active && props.panelOpen ? '100%' : 0,
-      [theme.breakpoints.up('sm')]: {
-        paddingLeft: '1.25rem',
-        paddingRight: '1.25rem',
+      padding: '0.25rem 0.8rem',
+      width: '100%',
+      transition: (props: MapPanelProps) =>
+        smoothToggleTransition(theme, props.active),
+      opacity: (props: MapPanelProps) => (props.active ? 1 : 0),
+      // Slide in/out left/right when active based on active and first
+      transform: (props: MapPanelProps) => {
+        if (props.active && props.first) return 'translateX(0)' // 1st, active
+        if (props.first) return 'translateX(-100%)' // 1st, inactive
+        if (props.active) return 'translateX(-100%)' // 2nd, active
+
+        return 'translateX(100%)' // 2nd, inactive
       },
+      [theme.breakpoints.up('sm')]: { padding: '1rem' },
+      [theme.breakpoints.up('xl')]: { padding: '1.25rem' }, // tons of room
     },
   })
 )
 
 // TODO: no need for separate component if render props are used on parent
 export const MapPanelContent: FC<PanelContentComponent> = (props) => {
-  const { active, children, panelOpen } = props
-  const classes = useStyles({ active, panelOpen })
+  const { active, children, panelOpen, first } = props
+  const classes = useStyles({ active, panelOpen, first })
 
-  return <Box className={classes.panelContent}>{children}</Box>
+  return (
+    <Box id={first ? 'first' : 'second'} className={classes.panelContent}>
+      {children}
+    </Box>
+  )
 }
 
 export const MapPanel: FC<MapPanelProps> = (props) => {
@@ -72,10 +110,9 @@ export const MapPanel: FC<MapPanelProps> = (props) => {
 
   // Need the `id` in order to find unique element for `map.setPadding`
   return (
-    <Box id="map-panels-wrap" className={classes.mapPanelsWrap}>
+    <Box id="map-panels-wrap" className={classes.panelsRoot}>
       <MapPanelHeader>
-        {/* Gross but "/" route needs to come last */}
-        {[...panelsConfig].reverse().map((config) => (
+        {[...panelsConfig].map((config) => (
           <MapPanelHeaderChild
             key={config.heading}
             {...config}
@@ -85,14 +122,15 @@ export const MapPanel: FC<MapPanelProps> = (props) => {
           </MapPanelHeaderChild>
         ))}
       </MapPanelHeader>
+      <PanelIntro />
       <div className={classes.contentWrap}>
-        <DetailsIntro />
-        {panelsConfig.map((config) => (
+        {panelsConfig.map((config, i) => (
           <MapPanelContent
             key={config.heading}
             {...config}
             active={loc.pathname === config.path}
             panelOpen={state.panelState === 'default'}
+            first={i === 0}
           >
             {config.component}
           </MapPanelContent>

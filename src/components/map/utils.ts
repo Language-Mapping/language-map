@@ -3,7 +3,6 @@ import { WebMercatorViewport } from 'react-map-gl'
 
 import * as MapTypes from './types'
 import * as config from './config'
-import { prettyTruncateList } from '../../utils'
 
 // TODO: recycle the icons if it makes sense
 export const addLangTypeIconsToMap = (
@@ -79,18 +78,12 @@ export const prepPopupContent: MapTypes.PrepPopupContent = (
   if (popupHeading) return { heading: popupHeading }
   if (!selFeatAttribs) return null
 
-  const {
-    Endonym,
-    Language,
-    Neighborhoods,
-    'Font Image Alt': altImage,
-  } = selFeatAttribs
+  const { Endonym, Language, 'Font Image Alt': altImage } = selFeatAttribs
 
-  // For image-only endos, show language (not much room for pic)
-  const heading = altImage ? Language : Endonym
-  const subheading = Neighborhoods ? prettyTruncateList(Neighborhoods) : ''
-
-  return { heading, subheading }
+  return {
+    heading: altImage ? Language : Endonym,
+    subheading: altImage || Endonym === Language ? '' : Language,
+  }
 }
 
 export const flyToBounds: MapTypes.FlyToBounds = (

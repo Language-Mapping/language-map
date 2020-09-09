@@ -18,7 +18,7 @@ export const FiltersPanel: FC = () => {
   return (
     <>
       <Typography variant="h5" component="h3">
-        Search
+        Search language communities
       </Typography>
       <SearchByOmnibox
         data={state.langFeatures}

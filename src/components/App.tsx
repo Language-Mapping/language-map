@@ -7,10 +7,8 @@ import { MapWrap } from 'components/map'
 import { AboutPageView, WelcomeDialog } from 'components/about'
 import { ResultsTable, ResultsModal } from 'components/results'
 import { fetchAbout, fetchGlossary, fetchWelcome } from 'components/about/utils'
+import { paths as routes } from 'components/config/routes'
 import {
-  DATA_TABLE_PATHNAME,
-  GLOSSARY_PATHNAME,
-  ABOUT_PATHNAME,
   ABOUT_QUERY,
   GLOSSARY_QUERY,
   WELCOME_QUERY,
@@ -30,15 +28,15 @@ export const App: FC = () => {
       {!window.localStorage.hideWelcome && (
         <WelcomeDialog queryName={WELCOME_QUERY} />
       )}
-      <Route path={ABOUT_PATHNAME}>
+      <Route path={routes.about}>
         <AboutPageView queryName={ABOUT_QUERY} />
       </Route>
-      <Route path={DATA_TABLE_PATHNAME}>
+      <Route path={routes.table}>
         <ResultsModal>
           <ResultsTable />
         </ResultsModal>
       </Route>
-      <Route path={GLOSSARY_PATHNAME}>
+      <Route path={routes.glossary}>
         <AboutPageView queryName={GLOSSARY_QUERY} />
       </Route>
       <MapWrap />

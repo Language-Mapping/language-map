@@ -1,4 +1,4 @@
-# NYC Linguistic Diversity Map
+# Languages of New York City Map
 
 > This project will become an interactive map of New York City’s linguistic
 > diversity, using data collected by the Endangered Language Alliance (ELA).

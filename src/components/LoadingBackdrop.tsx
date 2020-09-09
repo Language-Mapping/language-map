@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const LoadingBackdrop: FC = () => {
   const classes = useStyles()
-  const navClasses = useNavStyles()
+  const navClasses = useNavStyles({ panelOpen: true })
 
   return (
     <Backdrop className={classes.backdropRoot} open>
@@ -43,9 +43,7 @@ export const LoadingBackdrop: FC = () => {
           </Typography>
           <CircularProgress color="inherit" size={38} />
         </div>
-        <div
-          className={`${navClasses.spacerDesktop} ${navClasses.spacerRight}`}
-        />
+        <div className={navClasses.spacerDesktop} />
       </div>
     </Backdrop>
   )

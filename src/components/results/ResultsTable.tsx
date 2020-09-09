@@ -11,6 +11,7 @@ import { TiThList } from 'react-icons/ti'
 import { FaMapMarkedAlt } from 'react-icons/fa'
 
 import { GlobalContext, SimpleDialog } from 'components'
+import { paths as routes } from 'components/config/routes'
 import * as config from './config'
 import { MuiTableWithDataMgr } from './types'
 import { RecordDescription } from './RecordDescription'
@@ -93,7 +94,7 @@ export const ResultsTable: FC = () => {
         title={<Title />}
         onRowClick={(event, rowData) => {
           if (rowData) {
-            history.push(`/details?id=${rowData.ID}`)
+            history.push(`${routes.details}?id=${rowData.ID}`)
           }
         }}
         onFilterChange={() => setMapFiltersBtnDisbled(false)}

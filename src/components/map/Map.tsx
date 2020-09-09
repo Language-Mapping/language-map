@@ -9,15 +9,20 @@ import {
   VectorSource,
   LngLatBoundsLike,
 } from 'mapbox-gl'
-import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
+import MapGL, {
+  InteractiveMap,
+  MapLoadEvent,
+  ViewportProps,
+  ViewState,
+} from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext } from 'components'
 import { initLegend } from 'components/legend/utils'
+import { paths as routes } from 'components/config/routes'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { MapPopup } from './MapPopup'
-import { MapTooltip } from './MapTooltip'
 import { MapCtrlBtns } from './MapCtrlBtns'
 import { BoundariesLayer } from './BoundariesLayer'
 import { GeocodeMarker } from './GeocodeMarker'
@@ -36,8 +41,6 @@ import {
 
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
 const { neighbConfig, countiesConfig, boundariesLayerIDs } = config
-const neighSrcId = neighbConfig.source.id
-const countiesSrcId = countiesConfig.source.id
 
 // Jest or whatever CANNOT find this plugin. And importing it from
 // `react-map-gl` is useless as well.
@@ -53,14 +56,17 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
 }
 
 export const Map: FC<MapTypes.MapComponent> = (props) => {
-  const { symbLayers, labelLayers, baselayer, mapWrapClassName } = props
+  const { symbLayers, labelLayers, baselayer } = props
   const history = useHistory()
   const loc = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
   const theme = useTheme()
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
-  const { width, height } = useWindowResize() // TODO: use viewport?
-  const isDesktop = width >= theme.breakpoints.values.md
+  const { width } = useWindowResize() // TODO: use viewport?
+  const [isDesktop, setIsDesktop] = useState<boolean>(
+    width >= theme.breakpoints.values.md
+  )
+
   const { selFeatAttribs, mapLoaded, activeLangSymbGroupId } = state
 
   // Local states
@@ -68,9 +74,13 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
     geocodeMarker,
     setGeocodeMarker,
   ] = useState<MapTypes.GeocodeMarker | null>()
-  const [viewport, setViewport] = useState(config.initialMapState)
-  const [popupVisible, setPopupVisible] = useState<boolean>(false)
-  const [tooltip, setTooltip] = useState<MapTypes.MapTooltip | null>(null)
+  const [viewport, setViewport] = useState<Partial<ViewportProps> & ViewState>(
+    config.initialMapState
+  )
+  const [
+    tooltipSettings,
+    setTooltipSettings,
+  ] = useState<MapTypes.PopupSettings | null>(null)
   const [
     popupSettings,
     setPopupSettings,
@@ -78,8 +88,10 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
 
   // Lookup tables // TODO: into <Boundaries> somehow. Not needed on load!
   const lookups = {
-    counties: useQuery<MapTypes.BoundaryLookup[]>(countiesSrcId).data,
-    neighborhoods: useQuery<MapTypes.BoundaryLookup[]>(neighSrcId).data,
+    counties: useQuery<MapTypes.BoundaryLookup[]>(countiesConfig.source.id)
+      .data,
+    neighborhoods: useQuery<MapTypes.BoundaryLookup[]>(neighbConfig.source.id)
+      .data,
   }
 
   const interactiveLayerIds = React.useMemo(
@@ -104,6 +116,11 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
     (): void => initLegend(dispatch, activeLangSymbGroupId, symbLayers),
     [activeLangSymbGroupId]
   )
+
+  // On width change, determine whether or not the view is desktop
+  useEffect((): void => {
+    setIsDesktop(width >= theme.breakpoints.values.md)
+  }, [width])
 
   // (Re)load symbol icons. Must be done whenever `baselayer` is changed,
   // otherwise the images no longer exist.
@@ -144,19 +161,14 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
     )
 
     // TODO: make popups on mobile not off-center
-    const popupParams = utils.prepPopupContent(
-      selFeatAttribs,
-      null
-    ) as MapTypes.PopupContent
-
-    utils.flyToPoint(map, settings, popupParams)
+    utils.flyToPoint(map, settings, utils.prepPopupContent(selFeatAttribs))
   }, [selFeatAttribs, mapLoaded])
   /* eslint-enable react-hooks/exhaustive-deps */
 
   function onHover(event: MapTypes.MapEvent) {
     if (!mapRef.current || !mapLoaded) return
 
-    events.onHover(event, setTooltip, mapRef.current.getMap(), {
+    events.onHover(event, setTooltipSettings, mapRef.current.getMap(), {
       lang: interactiveLayerIds,
       boundaries: boundariesLayerIDs,
     })
@@ -240,12 +252,10 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
       if (map.isMoving()) return
 
       setPopupSettings(null)
-      setPopupVisible(false)
 
       if (geocodeMarkerParams) setGeocodeMarker(geocodeMarkerParams)
 
       if (popupParams as MapTypes.PopupSettings) {
-        setPopupVisible(true)
         setPopupSettings(popupParams)
       }
     })
@@ -267,10 +277,9 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
       dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
     } else {
       const langFeat = topLangFeat as MapTypes.LangFeature
-      const DETAILS_PATH = '/details' as MapTypes.RouteLocation
 
       // TODO: use `initialEntries` in <MemoryRouter> to test routing
-      history.push(`${DETAILS_PATH}?id=${langFeat.properties.ID}`)
+      history.push(`${routes.details}?id=${langFeat.properties.ID}`)
 
       return // prevent boundary click underneath
     }
@@ -282,44 +291,35 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
     }) as MapTypes.BoundaryFeat[]
 
     if (boundariesClicked.length) {
-      const boundsConfig = { width, height, isDesktop }
+      const dimensions = {
+        width: viewport.width as number,
+        height: viewport.height as number,
+      }
       const lookup =
         lookups[boundariesClicked[0].source as 'neighborhoods' | 'counties']
 
-      events.handleBoundaryClick(
-        map,
-        boundariesClicked[0],
-        boundsConfig,
-        lookup
-      )
+      events.handleBoundaryClick(map, boundariesClicked[0], dimensions, lookup)
     }
   }
 
   const nuclearClear = () => {
     setPopupSettings(null)
-    setPopupVisible(false)
     setGeocodeMarker(null)
-    setTooltip(null)
+    setTooltipSettings(null)
   }
 
   const flyHome = (map: MbMap): void => {
     nuclearClear()
 
     const settings = {
-      height,
-      width,
+      height: map.getContainer().clientHeight,
+      width: map.getContainer().clientWidth,
       bounds: config.initialBounds,
       padding: 25,
     }
 
     utils.flyToBounds(map, settings, null)
   }
-
-  const getPopupContent = () =>
-    utils.prepPopupContent(
-      selFeatAttribs,
-      popupSettings ? popupSettings.heading : null
-    )
 
   // TODO: into utils if it doesn't require passing 1000 args
   function onMapCtrlClick(actionID: MapTypes.MapControlAction) {
@@ -338,13 +338,16 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
       utils.flyToPoint(
         map,
         { ...viewport, zoom: actionID === 'in' ? zoom + 1 : zoom - 1 },
-        getPopupContent()
+        utils.prepPopupContent(
+          selFeatAttribs,
+          popupSettings ? popupSettings.heading : null
+        )
       )
     }
   }
 
   return (
-    <div className={mapWrapClassName}>
+    <>
       <MapGL
         {...viewport}
         {...config.mapProps}
@@ -375,20 +378,26 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
             activeLangLabelId={state.activeLangLabelId}
           />
         )}
-        {popupVisible && popupSettings && (
-          <MapPopup {...popupSettings} setPopupVisible={setPopupVisible} />
+        {popupSettings && (
+          <MapPopup
+            {...popupSettings}
+            setVisible={() => setPopupSettings(null)}
+          />
         )}
         {/* BAD CHECK, should be checking for touch capabilities */}
-        {isDesktop && tooltip && (
-          <MapTooltip setTooltip={setTooltip} {...tooltip} />
+        {isDesktop && tooltipSettings && (
+          <MapPopup
+            {...tooltipSettings}
+            setVisible={() => setTooltipSettings(null)}
+          />
         )}
       </MapGL>
       <MapCtrlBtns
-        {...{ mapRef, isDesktop }}
+        {...{ mapRef }}
         onMapCtrlClick={(actionID: MapTypes.MapControlAction) => {
           onMapCtrlClick(actionID)
         }}
       />
-    </div>
+    </>
   )
 }

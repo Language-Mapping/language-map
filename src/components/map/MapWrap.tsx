@@ -1,10 +1,10 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import { MapPanel } from 'components/panels'
+import { MapPanel, FabPanelToggle } from 'components/panels'
 import { Map } from 'components/map'
 import { GlobalContext, LoadingBackdrop } from 'components'
-import { LayerPropsNonBGlayer, RouteLocation } from './types'
+import { LayerPropsNonBGlayer } from './types'
 import { mbStyleTileConfig } from './config'
 import { useStyles } from './styles'
 import { getIDfromURLparams, getMbStyleDocument } from '../../utils'
@@ -38,23 +38,17 @@ export const MapWrap: FC = () => {
   }, [])
 
   // Do selected feature stuff on location change
-  // TODO: there's like 3 `return` statements here. How about 1?
   useEffect((): void => {
     const idFromUrl = getIDfromURLparams(loc.search)
 
     if (!langFeaturesCached.length || !idFromUrl) {
-      dispatch({
-        type: 'SET_SEL_FEAT_ATTRIBS',
-        payload: null,
-      })
+      dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
 
       return
     }
 
     // TODO: handle scenario where feature exists in cached but not filtered
-    // const matchedFeat = state.langFeaturesCached.find(
-    //   (feat) => parsed.id === feat.ID.toString()
-    // )
+    // const matchedFeat = state.langFeaturesCached.find()
 
     const matchingRecord = langFeaturesCached.find(
       (row) => row.ID === idFromUrl
@@ -71,28 +65,30 @@ export const MapWrap: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc.search, state.langFeaturesCached.length])
 
-  // Open panel for relevant routes
-  useEffect((): void => {
-    const DETAILS_PATH = '/details' as RouteLocation
-
-    if (loc.pathname === DETAILS_PATH) {
-      dispatch({ type: 'SET_PANEL_STATE', payload: 'default' })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loc.search])
+  // Open panel for relevant routes // TODO: something
+  // useEffect((): void => {
+  //   if (loc.pathname === routes.details) {
+  //     dispatch({ type: 'SET_PANEL_STATE', payload: 'default' })
+  //   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [loc.search])
 
   return (
-    <main className={classes.appWrapRoot}>
+    <>
       {!state.mapLoaded && <LoadingBackdrop />}
-      <MapPanel />
-      {symbLayers && labelLayers && (
-        <Map
-          mapWrapClassName={classes.mapWrap}
-          symbLayers={symbLayers}
-          labelLayers={labelLayers}
-          baselayer={state.baselayer}
-        />
-      )}
-    </main>
+      <FabPanelToggle />
+      <main className={classes.appWrapRoot}>
+        <MapPanel />
+        {symbLayers && labelLayers && (
+          <div className={classes.mapWrap}>
+            <Map
+              symbLayers={symbLayers}
+              labelLayers={labelLayers}
+              baselayer={state.baselayer}
+            />
+          </div>
+        )}
+      </main>
+    </>
   )
 }

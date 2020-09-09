@@ -6,7 +6,7 @@ import { Typography } from '@material-ui/core'
 import * as MapTypes from './types'
 
 type MapPopupComponent = MapTypes.PopupSettings & {
-  setPopupVisible: React.Dispatch<boolean>
+  setVisible: () => void
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -37,12 +37,18 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: theme.typography.caption.fontSize,
       fontStyle: 'italic',
     },
+    // FROM TOOLTIP // TODO: rm if not using, otherwise incorporate
+    // mapTooltipRoot: {
+    //   textAlign: 'center',
+    //   '& .mapboxgl-popup-content': { padding: 6 },
+    // },
+    // subheading: { display: 'block', fontStyle: 'italic', fontSize: 12 },
   })
 )
 
 export const MapPopup: FC<MapPopupComponent> = (props) => {
   const classes = useStyles()
-  const { longitude, latitude, setPopupVisible, heading, subheading } = props
+  const { longitude, latitude, setVisible, heading, subheading } = props
   const { mapPopupRoot, popupHeading, subHeading } = classes
 
   // NOTE: the longest non-url language or endonym so far is:
@@ -55,7 +61,7 @@ export const MapPopup: FC<MapPopupComponent> = (props) => {
       latitude={latitude}
       closeOnClick={false}
       className={mapPopupRoot}
-      onClose={() => setPopupVisible(false)}
+      onClose={() => setVisible()}
     >
       <header>
         <Typography variant="h6" component="h3" className={popupHeading}>

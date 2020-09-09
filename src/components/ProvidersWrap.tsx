@@ -3,7 +3,7 @@ import { CssBaseline } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
 
 import './style.css'
-import { theme } from '../config/theme'
+import { theme } from './config/theme'
 import { GlobalProvider } from '../context'
 
 // Everything the app needs except Routes. This makes it testable and reusable

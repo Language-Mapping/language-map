@@ -18,7 +18,6 @@ import * as GeoJSON from 'geojson'
 
 import { LangRecordSchema } from 'context/types'
 
-type SetTooltip = React.Dispatch<MapTooltip | null>
 type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
 type Padding =
   | number
@@ -32,11 +31,9 @@ export type LongLat = { longitude: number; latitude: number }
 export type LongLatAndZoom = LongLat & { zoom: number }
 export type MapControlAction = 'home' | 'in' | 'out' | 'info' | 'loc-search'
 export type MapViewportState = LongLatAndZoom
+export type PopupContent = { heading: string; subheading?: string }
 export type PopupSettings = PopupContent & LongLat
 export type GeocodeMarker = LongLat & { text: string }
-
-// TODO: 1. enforce in all relevant spots, 2. mv into context/types
-export type RouteLocation = '/' | '/details' | '/table' | '/about' | '/glossary'
 
 // MB Styles API individual group in the `metadata` of JSON response
 export type MetadataGroup = { [mbGroupIdHash: string]: { name: string } }
@@ -95,24 +92,10 @@ export type MapEvent = Omit<PointerEvent, 'features'> & {
   features: LangFeature[] | BoundaryFeat[]
 }
 
-export type MapPanel = {
-  heading: string
-  icon: React.ReactNode
-  subheading: string
-  component: React.ReactNode
-  path: RouteLocation
-}
-
-export type MapTooltip = LongLat & {
-  heading: string
-  subHeading: string
-}
-
 export type MapComponent = {
   baselayer: Baselayer
-  symbLayers: LayerPropsNonBGlayer[]
   labelLayers: LayerPropsNonBGlayer[]
-  mapWrapClassName: string
+  symbLayers: LayerPropsNonBGlayer[]
 }
 
 export type GetWebMercViewport = (
@@ -131,12 +114,6 @@ export type GetWebMercCenter = (params: {
   padding?: Padding
 }) => [number, number]
 
-export type FlySomewhereGracefully = (
-  map: Map,
-  settings: BoundsConfig,
-  popupContent: PopupContent | null
-) => void
-
 export type UseStyleProps = { panelOpen: boolean }
 
 export type GeocodeResult = {
@@ -148,7 +125,6 @@ export type GeocodeResult = {
 }
 
 export type MapCtrlBtnsProps = {
-  isDesktop: boolean
   mapRef: React.RefObject<InteractiveMap>
   onMapCtrlClick: (actionID: MapControlAction) => void
 }
@@ -167,7 +143,6 @@ export type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
 
 export type BoundsConfig = {
   height: number
-  isDesktop: boolean
   width: number
   bounds?: BoundsArray
   padding?: Padding
@@ -181,11 +156,6 @@ export type BoundaryLookup = {
   names?: { en: string[] } // only counties has this
 }
 
-export type PopupContent = {
-  heading: string
-  subheading?: string
-}
-
 export type CustomEventData = MapEventType & {
   popupSettings: PopupSettings | null
   forceViewportUpdate?: boolean | true
@@ -194,7 +164,7 @@ export type CustomEventData = MapEventType & {
 
 export type PrepPopupContent = (
   selFeatAttribs: LangRecordSchema | null,
-  popupHeading: string | null
+  popupHeading?: string | null
 ) => PopupContent | null
 
 export type HandleBoundaryClick = (
@@ -206,7 +176,7 @@ export type HandleBoundaryClick = (
 
 export type FlyToBounds = (
   map: Map,
-  settings: Omit<BoundsConfig, 'isDesktop'> & {
+  settings: BoundsConfig & {
     bounds: BoundsArray
   },
   popupContent: PopupContent | null
@@ -221,7 +191,7 @@ export type FlyToPoint = (
 
 export type OnHover = (
   event: MapEvent,
-  setTooltip: SetTooltip,
+  setTooltip: React.Dispatch<PopupSettings | null>, // same as popup now
   map: Map,
   interactiveLayerIds: InteractiveLayerIds
 ) => void

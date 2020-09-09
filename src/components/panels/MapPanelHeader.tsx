@@ -1,18 +1,14 @@
 import React, { FC, useContext } from 'react'
-import { useLocation, Link as RouterLink, useHistory } from 'react-router-dom'
+import { useLocation, Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Box, Typography, IconButton } from '@material-ui/core'
-import { MdKeyboardArrowDown } from 'react-icons/md'
-import { AiFillQuestionCircle } from 'react-icons/ai'
+import { FiChevronDown } from 'react-icons/fi'
 
-import { DESKTOP_PANEL_HEADER_HEIGHT } from 'components/map/styles'
+import { MOBILE_PANEL_HEADER_HEIGHT } from 'components/panels/config'
 import { MapPanel } from 'components/panels/types'
 import { GlobalContext } from 'components'
 
-type PanelHeaderProps = {
-  active?: boolean
-}
-
+type PanelHeaderProps = { active?: boolean }
 type PanelHeaderComponent = Omit<MapPanel, 'component'> & {
   active: boolean
 }
@@ -20,23 +16,24 @@ type PanelHeaderComponent = Omit<MapPanel, 'component'> & {
 const useCloseBtnStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelCloseBtn: {
+      position: 'absolute',
+      right: '0.5em',
       transition: '300ms transform',
       transformOrigin: 'center center',
       transform: (props: { panelOpen: boolean }) =>
         props.panelOpen ? 'rotate(0deg)' : 'rotate(180deg)',
+      [theme.breakpoints.up('md')]: { display: 'none' },
     },
   })
 )
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    // The wrapper
     panelHeaderRoot: {
       alignItems: 'center',
       color: theme.palette.common.white,
       display: 'flex',
       flexShrink: 0,
-      height: DESKTOP_PANEL_HEADER_HEIGHT,
       justifyContent: 'center',
       position: 'sticky',
       bottom: 0,
@@ -47,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
       '& a, a:visited': {
         color: `${theme.palette.common.white} !important`, // constant fight!
       },
-      [theme.breakpoints.down('xs')]: { height: '3rem' },
+      [theme.breakpoints.down('sm')]: { height: MOBILE_PANEL_HEADER_HEIGHT },
     },
     mainHeading: {
       alignItems: 'center',
@@ -63,11 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       backgroundColor: (props: PanelHeaderProps) =>
         props.active ? theme.palette.primary.dark : theme.palette.primary.light,
-      '& svg': {
-        marginRight: 6,
-        height: '0.8em',
-        width: '0.8em',
-      },
+      '& svg': { marginRight: 6, height: '0.8em', width: '0.8em' },
       '&:hover': {
         backgroundColor: (props: PanelHeaderProps) => {
           const { dark, main } = theme.palette.primary
@@ -76,17 +69,10 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
-    headerBtns: {
-      position: 'absolute',
-      right: '0.25rem',
-      [theme.breakpoints.up('sm')]: {
-        right: '.75rem',
-      },
-    },
   })
 )
 
-const PanelCloseBtn: FC = (props) => {
+const PanelCloseBtn: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
   const classes = useCloseBtnStyles({
     panelOpen: state.panelState === 'default',
@@ -94,7 +80,8 @@ const PanelCloseBtn: FC = (props) => {
 
   return (
     <IconButton
-      size="small"
+      edge="end"
+      color="inherit"
       className={classes.panelCloseBtn}
       onClick={() => {
         const nextPanelState =
@@ -103,23 +90,7 @@ const PanelCloseBtn: FC = (props) => {
         dispatch({ type: 'SET_PANEL_STATE', payload: nextPanelState })
       }}
     >
-      <MdKeyboardArrowDown />
-    </IconButton>
-  )
-}
-
-const OpenGlossaryBtn: FC = (props) => {
-  const loc = useLocation()
-  const history = useHistory()
-
-  return (
-    <IconButton
-      size="small"
-      onClick={() => {
-        history.push(`/glossary${loc.search}`)
-      }}
-    >
-      <AiFillQuestionCircle />
+      <FiChevronDown />
     </IconButton>
   )
 }
@@ -159,10 +130,7 @@ export const MapPanelHeader: FC = (props) => {
 
   return (
     <Box component="header" className={classes.panelHeaderRoot}>
-      <div className={classes.headerBtns}>
-        <PanelCloseBtn />
-        <OpenGlossaryBtn />
-      </div>
+      <PanelCloseBtn />
       {children}
     </Box>
   )
