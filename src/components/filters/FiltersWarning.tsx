@@ -12,12 +12,7 @@ const useStyles = makeStyles(() =>
       display: 'flex', // TODO: probably not flex, only need for icon vert align
       alignItems: 'center',
       fontSize: '.8rem',
-      '& > a': {
-        fontWeight: 'bold',
-      },
-      '& > svg': {
-        marginRight: '0.4em',
-      },
+      '& > svg': { marginRight: '0.4em' },
     },
   })
 )
@@ -26,14 +21,14 @@ const useStyles = makeStyles(() =>
 export const FiltersWarning: FC = () => {
   const loc = useLocation()
   const classes = useStyles()
-  const tableRoute = `${routes.details}${loc.search}`
+  const tableRoute = `${routes.table}${loc.search}`
 
   return (
     <Typography className={classes.filtersWarning}>
       <TiWarning />
       Data search includes current filters.&nbsp;
       <Link component={RouterLink} to={tableRoute}>
-        View in data table
+        View data table
       </Link>
     </Typography>
   )

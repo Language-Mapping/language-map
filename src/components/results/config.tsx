@@ -1,3 +1,4 @@
+import React from 'react'
 import { Icons, Localization } from 'material-table'
 import { FaFilter } from 'react-icons/fa'
 import {
@@ -13,6 +14,7 @@ import {
 
 import * as Types from './types'
 import * as utils from './utils'
+import { LocalColumnTitle } from './LocalColumnTitle'
 
 export const COMM_SIZE_COL_MAP = {
   1: 'Smallest',
@@ -141,7 +143,7 @@ export const columns = [
   },
   {
     // Average: 12, Longest: 26
-    title: '*Neighborhoods',
+    title: <LocalColumnTitle text="Neighborhoods" />,
     field: 'Neighborhoods',
     searchable: true,
     render: utils.renderNeighbColumn,
@@ -149,7 +151,7 @@ export const columns = [
   },
   {
     // Longest: 14
-    title: '*Size',
+    title: <LocalColumnTitle text="Size" />,
     field: 'Size',
     align: 'left',
     lookup: COMM_SIZE_COL_MAP,
@@ -158,7 +160,7 @@ export const columns = [
   },
   {
     // Longest: 13
-    title: '*Status',
+    title: <LocalColumnTitle text="Status" />,
     field: 'Status',
     searchable: false,
     lookup: {

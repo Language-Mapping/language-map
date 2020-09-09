@@ -13,9 +13,9 @@ export const useStyles = makeStyles((theme: Theme) =>
         // Search bar
         '& .MuiToolbar-root .MuiTextField-root': {
           flexShrink: 1,
-          minWidth: 200,
-          order: 4,
-          width: '70%',
+          // minWidth: 200,
+          // order: 4,
+          maxWidth: 150,
         },
         '& [class^=MTableToolbar-spacer]': {
           display: 'none',
@@ -23,26 +23,28 @@ export const useStyles = makeStyles((theme: Theme) =>
         '& .MuiToolbar-root:not(.MuiTablePagination-toolbar)': {
           borderTopLeftRadius: 4,
           borderTopRightRadius: 4,
-          flexWrap: 'wrap',
-          justifyContent: 'space-around',
-          minHeight: 90,
-          padding: theme.spacing(1),
+          // flexWrap: 'wrap',
+          // justifyContent: 'space-around',
+          // minHeight: 90,
+          // padding: theme.spacing(1),
         },
         // Top bar title, free actions; footer pag.
         '& .MuiToolbar-root > :last-child': {
-          marginRight: theme.spacing(1),
+          // marginRight: theme.spacing(1),
         },
       },
       // Not apparent at all screen sizes
       '& .MuiPaper-root': {
-        overflowY: 'hidden',
+        // overflowY: 'hidden',
       },
-      '& .MuiToolbar-root:not(.MuiTablePagination-toolbar)': {
-        borderBottom: `solid 1px ${theme.palette.text.hint}`,
-      },
-      '& .MuiToolbar-root': {
-        backgroundColor: theme.palette.background.default,
-      },
+      // Top bar
+      // '& .MuiToolbar-root:not(.MuiTablePagination-toolbar)': {
+      //   borderBottom: `solid 1px ${theme.palette.text.hint}`,
+      // },
+      // Top bar
+      // '& .MuiToolbar-root': {
+      //   backgroundColor: theme.palette.background.default,
+      // },
       // Don't even know what this is, some kind of spacer or something to do
       // with grouping perhaps (even though it's set to `false` in the table
       // options), but either way itseems useless.
@@ -114,9 +116,9 @@ export const useStyles = makeStyles((theme: Theme) =>
         flexShrink: 0, // prevents tiny arrows on columns w/wrapped headings
       },
       // Top bar title, free actions; footer pag.
-      '& .MuiToolbar-root > :last-child': {
-        marginRight: theme.spacing(4),
-      },
+      // '& .MuiToolbar-root > :last-child': {
+      // marginRight: theme.spacing(4),
+      // },
       // Handy reference for potentially useful selectors
       // '& table .MuiIconButton-root, .MuiToolbar-root .MuiIconButton-root':{},
       // '& .MuiTableCell-head:not(:first-of-type)': {}, // non-actions headings
@@ -135,7 +137,9 @@ export const useStyles = makeStyles((theme: Theme) =>
     resultsModalPaper: {
       maxHeight: `calc(100% - ${theme.spacing(2)}px)`,
       [theme.breakpoints.only('xs')]: {
-        margin: '0 8px',
+        // margin: '0 8px',
+        maxHeight: '100%',
+        margin: 0,
       },
     },
   })
