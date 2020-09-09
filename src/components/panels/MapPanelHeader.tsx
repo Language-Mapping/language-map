@@ -16,13 +16,13 @@ type PanelHeaderComponent = Omit<MapPanel, 'component'> & {
 const useCloseBtnStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelCloseBtn: {
+      position: 'absolute',
+      right: '0.5em',
       transition: '300ms transform',
       transformOrigin: 'center center',
       transform: (props: { panelOpen: boolean }) =>
         props.panelOpen ? 'rotate(0deg)' : 'rotate(180deg)',
-      [theme.breakpoints.up('sm')]: {
-        display: 'none',
-      },
+      [theme.breakpoints.up('md')]: { display: 'none' },
     },
   })
 )
@@ -68,11 +68,6 @@ const useStyles = makeStyles((theme: Theme) =>
           return props.active ? dark : main
         },
       },
-    },
-    headerBtns: {
-      position: 'absolute',
-      right: '0.5em',
-      [theme.breakpoints.up('sm')]: { right: '1em' },
     },
   })
 )
@@ -135,9 +130,7 @@ export const MapPanelHeader: FC = (props) => {
 
   return (
     <Box component="header" className={classes.panelHeaderRoot}>
-      <div className={classes.headerBtns}>
-        <PanelCloseBtn />
-      </div>
+      <PanelCloseBtn />
       {children}
     </Box>
   )
