@@ -13,7 +13,6 @@ export const TopBar: FC = () => {
   const {
     spacerDesktop,
     spacerLeft,
-    spacerRight,
     subtitle,
     title,
     titleMain,
@@ -30,7 +29,7 @@ export const TopBar: FC = () => {
           <span className={subtitle}>of New York City</span>
         </RouteLink>
       </Typography>
-      <div className={`${spacerDesktop} ${spacerRight}`} />
+      <div className={spacerDesktop} />
     </header>
   )
 }

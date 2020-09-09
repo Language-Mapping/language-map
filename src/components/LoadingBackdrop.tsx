@@ -43,9 +43,7 @@ export const LoadingBackdrop: FC = () => {
           </Typography>
           <CircularProgress color="inherit" size={38} />
         </div>
-        <div
-          className={`${navClasses.spacerDesktop} ${navClasses.spacerRight}`}
-        />
+        <div className={navClasses.spacerDesktop} />
       </div>
     </Backdrop>
   )

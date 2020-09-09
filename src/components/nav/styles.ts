@@ -24,20 +24,15 @@ export const useStyles = makeStyles((theme: Theme) =>
     // control buttons via flexbox and the addition of a couple divs.
     spacerDesktop: {
       flex: 1,
-      height: 0,
       visibility: 'hidden',
-      display: 'none',
       transition: (props: NavStyleProps) =>
         smoothToggleTransition(theme, props.panelOpen),
-      [theme.breakpoints.up('md')]: { display: 'block' },
+      [theme.breakpoints.down('sm')]: { display: 'none' },
     },
-    spacerRight: { marginRight: theme.spacing(2) },
     spacerLeft: {
-      [theme.breakpoints.up('md')]: {
-        marginLeft: (props: NavStyleProps) =>
-          props.panelOpen ? panelWidths.mid : 0,
-      },
-      [theme.breakpoints.up('lg')]: {
+      marginLeft: (props: NavStyleProps) =>
+        props.panelOpen ? panelWidths.mid : 0,
+      [theme.breakpoints.up('xl')]: {
         marginLeft: (props: NavStyleProps) =>
           props.panelOpen ? panelWidths.midLarge : 0,
       },
