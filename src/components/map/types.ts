@@ -18,7 +18,6 @@ import * as GeoJSON from 'geojson'
 
 import { LangRecordSchema } from 'context/types'
 
-type SetTooltip = React.Dispatch<MapTooltip | null>
 type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
 type Padding =
   | number
@@ -32,6 +31,7 @@ export type LongLat = { longitude: number; latitude: number }
 export type LongLatAndZoom = LongLat & { zoom: number }
 export type MapControlAction = 'home' | 'in' | 'out' | 'info' | 'loc-search'
 export type MapViewportState = LongLatAndZoom
+export type PopupContent = { heading: string; subheading?: string }
 export type PopupSettings = PopupContent & LongLat
 export type GeocodeMarker = LongLat & { text: string }
 
@@ -90,11 +90,6 @@ export type BoundaryFeat = Omit<
 
 export type MapEvent = Omit<PointerEvent, 'features'> & {
   features: LangFeature[] | BoundaryFeat[]
-}
-
-export type MapTooltip = LongLat & {
-  heading: string
-  subHeading: string
 }
 
 export type MapComponent = {
@@ -161,11 +156,6 @@ export type BoundaryLookup = {
   names?: { en: string[] } // only counties has this
 }
 
-export type PopupContent = {
-  heading: string
-  subheading?: string
-}
-
 export type CustomEventData = MapEventType & {
   popupSettings: PopupSettings | null
   forceViewportUpdate?: boolean | true
@@ -174,7 +164,7 @@ export type CustomEventData = MapEventType & {
 
 export type PrepPopupContent = (
   selFeatAttribs: LangRecordSchema | null,
-  popupHeading: string | null
+  popupHeading?: string | null
 ) => PopupContent | null
 
 export type HandleBoundaryClick = (
@@ -201,7 +191,7 @@ export type FlyToPoint = (
 
 export type OnHover = (
   event: MapEvent,
-  setTooltip: SetTooltip,
+  setTooltip: React.Dispatch<PopupSettings | null>, // same as popup now
   map: Map,
   interactiveLayerIds: InteractiveLayerIds
 ) => void

@@ -23,7 +23,6 @@ import { initLegend } from 'components/legend/utils'
 import { paths as routes } from 'components/config/routes'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { MapPopup } from './MapPopup'
-import { MapTooltip } from './MapTooltip'
 import { MapCtrlBtns } from './MapCtrlBtns'
 import { BoundariesLayer } from './BoundariesLayer'
 import { GeocodeMarker } from './GeocodeMarker'
@@ -64,7 +63,10 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
   const theme = useTheme()
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
   const { width } = useWindowResize() // TODO: use viewport?
-  const isDesktop = width >= theme.breakpoints.values.md
+  const [isDesktop, setIsDesktop] = useState<boolean>(
+    width >= theme.breakpoints.values.md
+  )
+
   const { selFeatAttribs, mapLoaded, activeLangSymbGroupId } = state
 
   // Local states
@@ -75,8 +77,10 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
   const [viewport, setViewport] = useState<Partial<ViewportProps> & ViewState>(
     config.initialMapState
   )
-  const [popupVisible, setPopupVisible] = useState<boolean>(false)
-  const [tooltip, setTooltip] = useState<MapTypes.MapTooltip | null>(null)
+  const [
+    tooltipSettings,
+    setTooltipSettings,
+  ] = useState<MapTypes.PopupSettings | null>(null)
   const [
     popupSettings,
     setPopupSettings,
@@ -112,6 +116,11 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
     (): void => initLegend(dispatch, activeLangSymbGroupId, symbLayers),
     [activeLangSymbGroupId]
   )
+
+  // On width change, determine whether or not the view is desktop
+  useEffect((): void => {
+    setIsDesktop(width >= theme.breakpoints.values.md)
+  }, [width])
 
   // (Re)load symbol icons. Must be done whenever `baselayer` is changed,
   // otherwise the images no longer exist.
@@ -152,19 +161,14 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
     )
 
     // TODO: make popups on mobile not off-center
-    const popupParams = utils.prepPopupContent(
-      selFeatAttribs,
-      null
-    ) as MapTypes.PopupContent
-
-    utils.flyToPoint(map, settings, popupParams)
+    utils.flyToPoint(map, settings, utils.prepPopupContent(selFeatAttribs))
   }, [selFeatAttribs, mapLoaded])
   /* eslint-enable react-hooks/exhaustive-deps */
 
   function onHover(event: MapTypes.MapEvent) {
     if (!mapRef.current || !mapLoaded) return
 
-    events.onHover(event, setTooltip, mapRef.current.getMap(), {
+    events.onHover(event, setTooltipSettings, mapRef.current.getMap(), {
       lang: interactiveLayerIds,
       boundaries: boundariesLayerIDs,
     })
@@ -248,12 +252,10 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
       if (map.isMoving()) return
 
       setPopupSettings(null)
-      setPopupVisible(false)
 
       if (geocodeMarkerParams) setGeocodeMarker(geocodeMarkerParams)
 
       if (popupParams as MapTypes.PopupSettings) {
-        setPopupVisible(true)
         setPopupSettings(popupParams)
       }
     })
@@ -302,29 +304,22 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
 
   const nuclearClear = () => {
     setPopupSettings(null)
-    setPopupVisible(false)
     setGeocodeMarker(null)
-    setTooltip(null)
+    setTooltipSettings(null)
   }
 
   const flyHome = (map: MbMap): void => {
     nuclearClear()
 
     const settings = {
-      height: viewport.height as number,
-      width: viewport.width as number,
+      height: map.getContainer().clientHeight,
+      width: map.getContainer().clientWidth,
       bounds: config.initialBounds,
       padding: 25,
     }
 
     utils.flyToBounds(map, settings, null)
   }
-
-  const getPopupContent = () =>
-    utils.prepPopupContent(
-      selFeatAttribs,
-      popupSettings ? popupSettings.heading : null
-    )
 
   // TODO: into utils if it doesn't require passing 1000 args
   function onMapCtrlClick(actionID: MapTypes.MapControlAction) {
@@ -343,7 +338,10 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
       utils.flyToPoint(
         map,
         { ...viewport, zoom: actionID === 'in' ? zoom + 1 : zoom - 1 },
-        getPopupContent()
+        utils.prepPopupContent(
+          selFeatAttribs,
+          popupSettings ? popupSettings.heading : null
+        )
       )
     }
   }
@@ -380,12 +378,18 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
             activeLangLabelId={state.activeLangLabelId}
           />
         )}
-        {popupVisible && popupSettings && (
-          <MapPopup {...popupSettings} setPopupVisible={setPopupVisible} />
+        {popupSettings && (
+          <MapPopup
+            {...popupSettings}
+            setVisible={() => setPopupSettings(null)}
+          />
         )}
         {/* BAD CHECK, should be checking for touch capabilities */}
-        {isDesktop && tooltip && (
-          <MapTooltip setTooltip={setTooltip} {...tooltip} />
+        {isDesktop && tooltipSettings && (
+          <MapPopup
+            {...tooltipSettings}
+            setVisible={() => setTooltipSettings(null)}
+          />
         )}
       </MapGL>
       <MapCtrlBtns

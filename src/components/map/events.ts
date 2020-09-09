@@ -40,8 +40,11 @@ export const onHover: MapTypes.OnHover = (
   }
 
   if (langsHovered.length) {
-    const { Endonym, Language, 'Font Image Alt': altImage } = langsHovered[0]
-      .properties as LangRecordSchema
+    const headingAndSubheading = utils.prepPopupContent(
+      langsHovered[0].properties as LangRecordSchema
+    )
+
+    if (!headingAndSubheading) return // should also be something tho...
 
     /* eslint-disable @typescript-eslint/ban-ts-comment */
     setTooltip({
@@ -49,8 +52,7 @@ export const onHover: MapTypes.OnHover = (
       latitude: langsHovered[0].geometry.coordinates[1],
       // @ts-ignore // TODO: defeat
       longitude: langsHovered[0].geometry.coordinates[0],
-      heading: altImage ? Language : Endonym,
-      subHeading: altImage || Endonym === Language ? '' : Language,
+      ...headingAndSubheading,
     })
     /* eslint-enable @typescript-eslint/ban-ts-comment */
   }
