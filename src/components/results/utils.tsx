@@ -53,8 +53,12 @@ export function renderGlobalSpeakColumn(
   data: LangRecordSchema
 ): string | React.ReactNode {
   return (
-    !data['Global Speaker Total'] ||
-    data['Global Speaker Total'].toLocaleString()
+    !data['Global Speaker Total'] || (
+      // Right-aligned number w/left-aligned column heading was requested
+      <div style={{ paddingRight: 16 }}>
+        {data['Global Speaker Total'].toLocaleString()}
+      </div>
+    )
   )
 }
 

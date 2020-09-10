@@ -57,8 +57,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
         tableRef={tableRef}
         options={{
           ...options,
-          // maxBodyHeight: height - 120, // TODO: more exact for mobile and desk
-          // maxBodyHeight: 'calc(100vh - 73px - 32px - 53px - 20px)',
+          // maxBodyHeight: height - 120, // TODO: something if still bad scroll
         }}
         columns={columns}
         localization={localization}

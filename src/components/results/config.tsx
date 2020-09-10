@@ -2,19 +2,59 @@ import React from 'react'
 import { Icons, Localization } from 'material-table'
 import { FaFilter } from 'react-icons/fa'
 import {
-  MdSearch,
-  MdClear,
+  MdArrowUpward,
+  MdCheck,
   MdChevronLeft,
   MdChevronRight,
-  MdLastPage,
+  MdClear,
   MdFirstPage,
-  MdArrowUpward,
+  MdLastPage,
+  MdSearch,
   MdViewColumn,
+  MdRemove,
 } from 'react-icons/md'
 
 import * as Types from './types'
 import * as utils from './utils'
+import { WorldRegion, Statuses } from '../../context/types'
 import { LocalColumnTitle } from './LocalColumnTitle'
+
+const COMM_STATUS_LOOKUP = {
+  Community: 'Community',
+  Historical: 'Historical',
+  Liturgical: 'Liturgical',
+  Residential: 'Residential',
+  Reviving: 'Reviving',
+} as {
+  [key in Statuses]: Statuses
+}
+
+const WORLD_REGION_LOOKUP = {
+  'Australia and New Zealand': 'Australia and New Zealand',
+  Caribbean: 'Caribbean',
+  'Central America': 'Central America',
+  'Central Asia': 'Central Asia',
+  'Eastern Africa': 'Eastern Africa',
+  'Eastern Asia': 'Eastern Asia',
+  'Eastern Europe': 'Eastern Europe',
+  Melanesia: 'Melanesia',
+  Micronesia: 'Micronesia',
+  'Middle Africa': 'Middle Africa',
+  'Northern Africa': 'Northern Africa',
+  'Northern America': 'Northern America',
+  'Northern Europe': 'Northern Europe',
+  Polynesia: 'Polynesia',
+  'South America': 'South America',
+  'Southeastern Asia': 'Southeastern Asia',
+  'Southern Africa': 'Southern Africa',
+  'Southern Asia': 'Southern Asia',
+  'Southern Europe': 'Southern Europe',
+  'Western Africa': 'Western Africa',
+  'Western Asia': 'Western Asia',
+  'Western Europe': 'Western Europe',
+} as {
+  [key in WorldRegion]: WorldRegion
+}
 
 export const COMM_SIZE_COL_MAP = {
   1: 'Smallest',
@@ -61,6 +101,7 @@ export const options = {
 } as Types.TableOptions
 
 export const icons = {
+  Check: MdCheck,
   DetailPanel: MdChevronRight,
   Filter: FaFilter,
   FirstPage: MdFirstPage,
@@ -70,6 +111,7 @@ export const icons = {
   ResetSearch: MdClear,
   Search: MdSearch,
   SortArrow: MdArrowUpward,
+  ThirdStateCheck: MdRemove,
   ViewColumn: MdViewColumn,
 } as Icons
 
@@ -105,11 +147,10 @@ export const columns = [
     field: 'World Region',
     editable: 'never',
     export: false,
+    lookup: WORLD_REGION_LOOKUP,
     render: utils.renderWorldRegionColumn,
     searchable: true,
-    headerStyle: {
-      whiteSpace: 'nowrap',
-    },
+    headerStyle: { whiteSpace: 'nowrap' },
   },
   {
     // Average: 8.5, Longest: 35 (w/o big Congos: Average: 8, Longest: 24)
@@ -133,14 +174,16 @@ export const columns = [
     editable: 'never',
     export: false,
     // defaultSort: 'asc', // TODO: make this work
-    // customSort: utils.sortNeighbs, // TODO: this
+    // customSort: utils.sortNeighbs, // TODO: blanks last
     render: utils.renderGlobalSpeakColumn,
     searchable: false,
     filtering: false,
     type: 'numeric',
+    // Right-aligned number w/left-aligned column heading was requested
     headerStyle: {
-      paddingLeft: 0,
       whiteSpace: 'nowrap',
+      paddingRight: 0,
+      flexDirection: 'row',
     },
   },
   {
@@ -182,13 +225,16 @@ export const columns = [
     editable: 'never',
     export: false,
     searchable: false,
-    lookup: {
-      Community: 'Community',
-      Historical: 'Historical',
-      Liturgical: 'Liturgical',
-      Residential: 'Residential',
-      Reviving: 'Reviving',
-    },
+    lookup: COMM_STATUS_LOOKUP,
+  },
+  {
+    title: 'Has video',
+    field: 'Video',
+    editable: 'never',
+    export: false,
+    searchable: false,
+    type: 'boolean',
+    headerStyle: { whiteSpace: 'nowrap' },
   },
   // All hidden from here down
   {
