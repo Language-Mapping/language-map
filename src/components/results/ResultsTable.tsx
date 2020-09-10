@@ -1,17 +1,19 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable react/display-name */
-import React, { FC, useContext, useState } from 'react'
+import React, { FC, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import MaterialTable from 'material-table'
 import { GoFile } from 'react-icons/go'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
-import { GlobalContext, SimpleDialog } from 'components'
+import { SimpleDialog } from 'components'
 import { paths as routes } from 'components/config/routes'
-import * as config from './config'
-import { MuiTableWithDataMgr, CloseTableProps } from './types'
+import { MuiTableWithDataMgr } from './types'
 import { ResultsToolbar } from './ResultsToolbar'
+
+import * as Types from './types'
+import * as config from './config'
 
 import { RecordDescription } from './RecordDescription'
 // import { useWindowResize } from '../../utils' // TODO: rm if not using
@@ -27,9 +29,8 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const ResultsTable: FC<CloseTableProps> = (props) => {
-  const { closeTable } = props
-  const { state } = useContext(GlobalContext)
+export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
+  const { closeTable, data: tableData } = props
   const classes = useStyles()
   const history = useHistory()
   const loc = useLocation()
@@ -61,7 +62,7 @@ export const ResultsTable: FC<CloseTableProps> = (props) => {
         }}
         columns={columns}
         localization={localization}
-        data={state.langFeatures}
+        data={tableData}
         onRowClick={(event, rowData) => {
           if (rowData) {
             history.push(`${routes.details}?id=${rowData.ID}`)

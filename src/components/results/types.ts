@@ -24,3 +24,7 @@ export type CountryCodes = {
 export type CloseTableProps = {
   closeTable: () => void
 }
+
+export type ResultsTableProps = CloseTableProps & {
+  data: LangRecordSchema[]
+}
