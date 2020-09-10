@@ -15,7 +15,6 @@ import {
 import * as Types from './types'
 import * as utils from './utils'
 import { LocalColumnTitle } from './LocalColumnTitle'
-import { GlobalSpeakSlider } from './GlobalSpeakSlider'
 
 export const COMM_SIZE_COL_MAP = {
   1: 'Smallest',
@@ -45,8 +44,7 @@ export const options = {
   pageSize: 10,
   pageSizeOptions: [5, 10, 20, 50],
   searchFieldAlignment: 'left',
-  // searchFieldStyle: {}, // TODO: rm if not using
-  search: true,
+  showTitle: false,
   thirdSortClick: false,
   // TODO: rm unused, or keep for reference
   // actionsCellStyle: {}, // semi-useful but ended up with `!important` anyway
@@ -58,6 +56,7 @@ export const options = {
   // padding: 'dense', // dense leads to choppier inconsistent row height
   // rowStyle: { backgroundColor: 'turquoise' }, // works
   // searchFieldVariant: 'outlined', // meh, too big
+  // searchFieldStyle: {}, // the actual text inside search box
   // tableLayout: 'fixed', // can set widths, but `fixed` = for bad Actions col
 } as Types.TableOptions
 
@@ -137,10 +136,8 @@ export const columns = [
     // customSort: utils.sortNeighbs, // TODO: this
     render: utils.renderGlobalSpeakColumn,
     searchable: false,
+    filtering: false,
     type: 'numeric',
-    filterComponent: function customFilter(props) {
-      return <GlobalSpeakSlider />
-    },
     headerStyle: {
       paddingLeft: 0,
       whiteSpace: 'nowrap',

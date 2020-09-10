@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     closeBtnRoot: {
       color: theme.palette.text.primary,
-      padding: theme.spacing(1),
+      padding: 4, // theme.spacing(1),
       position: 'absolute',
       right: 4,
       top: 4,

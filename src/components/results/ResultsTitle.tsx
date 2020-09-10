@@ -10,6 +10,9 @@ const useStyles = makeStyles((theme: Theme) =>
     tableTitleRoot: {
       display: 'flex',
       alignItems: 'center',
+      [theme.breakpoints.down('sm')]: {
+        '& .MuiFormControl-root': { paddingLeft: 8 },
+      },
     },
     titleIcon: {
       fontSize: '0.6em',

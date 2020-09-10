@@ -18,6 +18,8 @@ type SearchByOmniProps = {
   data: LangRecordSchema[]
 }
 
+// TODO: maybe this: https://github.com/mui-org/material-ui/issues/4393
+// ...to make sure it fits on iPhone?
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
