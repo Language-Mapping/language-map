@@ -1,15 +1,16 @@
 import React, { FC, useContext } from 'react'
-import { Link as RouterLink, useHistory, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { MTableToolbar, MaterialTableProps } from 'material-table'
 import { Button } from '@material-ui/core'
-import { FaMapMarkerAlt, FaMapMarkedAlt } from 'react-icons/fa'
+import { BiMapPin } from 'react-icons/bi'
+import { FaMapMarkedAlt } from 'react-icons/fa'
 import { RiFilterOffFill } from 'react-icons/ri'
 
 import { GlobalContext } from 'components'
 import { paths as routes } from 'components/config/routes'
 import { ResultsTitle } from './ResultsTitle'
-import { MuiTableWithDataMgr } from './types'
+import { MuiTableWithDataMgr, CloseTableProps } from './types'
 import { LangRecordSchema } from '../../context/types'
 
 export const useStyles = makeStyles((theme: Theme) =>
@@ -39,10 +40,11 @@ export const useStyles = makeStyles((theme: Theme) =>
     resultsTitleWrap: {
       display: 'flex',
       '& [class^=MTableToolbar-actions]': { flexShrink: 0 },
-      '& .MuiToolbar-root': { flexBasis: '70%' },
+      '& .MuiToolbar-root': { flexBasis: '100%' },
       [theme.breakpoints.down('sm')]: {
         '& .MuiToolbar-regular': {
           paddingLeft: '0.5em',
+          paddingRight: 0,
         },
       },
       // outline: 'solid red 1px',
@@ -52,7 +54,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       '& svg': { color: theme.palette.primary.main, marginRight: 4 },
     },
-    subtleText: {
+    localCommLegend: {
       color: theme.palette.text.secondary,
       textAlign: 'center',
       display: 'flex',
@@ -60,6 +62,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.75em',
       justifyContent: 'center',
       // outline: 'solid gold 1px',
+      '& svg': { fontSize: '1.2em' },
       [theme.breakpoints.up('sm')]: {
         marginTop: 0,
         justifySelf: 'flex-end',
@@ -73,20 +76,21 @@ export const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       // outline: 'solid green 1px',
     },
+    toolbarBtn: {
+      textTransform: 'none',
+    },
   })
 )
 
 type ResultsToolbarProps = MaterialTableProps<LangRecordSchema> & {
-  mapFiltersBtnDisabled: boolean
   tableRef: React.RefObject<MuiTableWithDataMgr>
-}
+} & CloseTableProps
 
 export const ResultsToolbar: FC<ResultsToolbarProps> = (props) => {
-  const { tableRef, mapFiltersBtnDisabled } = props
+  const { tableRef, closeTable } = props
   const { dispatch } = useContext(GlobalContext)
   const classes = useStyles()
   const history = useHistory()
-  const loc = useLocation()
 
   function mapFilterBtnClick(): void {
     if (!tableRef || !tableRef.current) return
@@ -100,6 +104,7 @@ export const ResultsToolbar: FC<ResultsToolbarProps> = (props) => {
     })
 
     history.push(routes.home)
+    closeTable()
   }
 
   return (
@@ -110,17 +115,18 @@ export const ResultsToolbar: FC<ResultsToolbarProps> = (props) => {
       </div>
       <div className={classes.toolbarBtns}>
         <Button
+          className={classes.toolbarBtn}
           title="Set table filters and return to map"
           color="secondary"
           variant="contained"
-          disabled={mapFiltersBtnDisabled}
           size="small"
           startIcon={<FaMapMarkedAlt />}
           onClick={() => mapFilterBtnClick()}
         >
-          Map Filtered Data
+          View results in map
         </Button>
         <Button
+          className={classes.toolbarBtn}
           title="Clear table filters"
           color="secondary"
           variant="contained"
@@ -131,12 +137,8 @@ export const ResultsToolbar: FC<ResultsToolbarProps> = (props) => {
           Clear all
         </Button>
       </div>
-      <small className={`${classes.localIndicator} ${classes.subtleText}`}>
-        <FaMapMarkerAlt /> Local community data&nbsp;&nbsp;
-        {/* <RouterLink to={routes.glossary + loc.search}>What's this?</RouterLink> */}
-        <RouterLink to={routes.glossary + loc.search}>
-          Help and glossary
-        </RouterLink>
+      <small className={`${classes.localIndicator} ${classes.localCommLegend}`}>
+        <BiMapPin /> Local community data
       </small>
     </div>
   )

@@ -1,18 +1,18 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable react/display-name */
 import React, { FC, useContext, useState } from 'react'
-// import { useHistory, useLocation } from 'react-router-dom'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import MaterialTable from 'material-table'
 import { GoFile } from 'react-icons/go'
-// import { AiOutlineQuestionCircle } from 'react-icons/ai'
+import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { GlobalContext, SimpleDialog } from 'components'
 import { paths as routes } from 'components/config/routes'
 import * as config from './config'
-import { MuiTableWithDataMgr } from './types'
+import { MuiTableWithDataMgr, CloseTableProps } from './types'
 import { ResultsToolbar } from './ResultsToolbar'
+
 import { RecordDescription } from './RecordDescription'
 // import { useWindowResize } from '../../utils' // TODO: rm if not using
 
@@ -27,16 +27,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const ResultsTable: FC = () => {
+export const ResultsTable: FC<CloseTableProps> = (props) => {
+  const { closeTable } = props
   const { state } = useContext(GlobalContext)
   const classes = useStyles()
   const history = useHistory()
-  // const loc = useLocation()
+  const loc = useLocation()
   // const { height } = useWindowResize() // TODO: rm if not using
   const [descripModalText, setDescripModalText] = useState<string>('')
-  const [mapFiltersBtnDisabled, setMapFiltersBtnDisbled] = useState<boolean>(
-    true
-  )
   const tableRef = React.useRef<MuiTableWithDataMgr>(null)
 
   // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
@@ -65,28 +63,31 @@ export const ResultsTable: FC = () => {
         localization={localization}
         data={state.langFeatures}
         onRowClick={(event, rowData) => {
-          if (rowData) history.push(`${routes.details}?id=${rowData.ID}`)
+          if (rowData) {
+            history.push(`${routes.details}?id=${rowData.ID}`)
+            closeTable()
+          }
         }}
         components={{
-          Toolbar: (props) => (
+          Toolbar: (toolbarProps) => (
             <ResultsToolbar
-              {...props}
-              mapFiltersBtnDisabled={mapFiltersBtnDisabled}
+              {...toolbarProps}
+              closeTable={closeTable}
               tableRef={tableRef}
             />
           ),
         }}
-        onFilterChange={() => setMapFiltersBtnDisbled(false)}
+        // onFilterChange={() => setMapFiltersBtnDisbled(false)} // TODO: this
         // TODO: rm if not using (not even sure what triggers it)
         // onQueryChange={() => setMapFiltersBtnDisbled(false)}
         // TODO: all into config
         actions={[
-          // {
-          //   icon: () => <AiOutlineQuestionCircle />,
-          //   tooltip: 'Help and glossary',
-          //   isFreeAction: true,
-          //   onClick: () => history.push(`/glossary${loc.search}`),
-          // },
+          {
+            icon: () => <AiOutlineQuestionCircle />,
+            tooltip: 'Help and glossary',
+            isFreeAction: true,
+            onClick: () => history.push(`/glossary${loc.search}`),
+          },
           (data) => ({
             icon: () => <GoFile />,
             tooltip: !data.Description

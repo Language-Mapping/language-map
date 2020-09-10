@@ -1,7 +1,7 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import { MapPanel, FabPanelToggle } from 'components/panels'
+import { FabPanelToggle } from 'components/panels'
 import { Map } from 'components/map'
 import { GlobalContext, LoadingBackdrop } from 'components'
 import { LayerPropsNonBGlayer } from './types'
@@ -9,7 +9,8 @@ import { mbStyleTileConfig } from './config'
 import { useStyles } from './styles'
 import { getIDfromURLparams, getMbStyleDocument } from '../../utils'
 
-export const MapWrap: FC = () => {
+export const MapWrap: FC = (props) => {
+  const { children } = props
   const { state, dispatch } = useContext(GlobalContext)
   const loc = useLocation()
   const [symbLayers, setSymbLayers] = useState<LayerPropsNonBGlayer[]>()
@@ -76,7 +77,8 @@ export const MapWrap: FC = () => {
       {!state.mapLoaded && <LoadingBackdrop />}
       <FabPanelToggle />
       <main className={classes.appWrapRoot}>
-        <MapPanel />
+        {/* children should just be MapPanel */}
+        {children}
         {symbLayers && labelLayers && (
           <div className={classes.mapWrap}>
             <Map

@@ -10,7 +10,6 @@ import {
   panelWidths,
 } from 'components/panels/config'
 import { MapPanelHeader, MapPanelHeaderChild } from './MapPanelHeader'
-import { PanelIntro } from './PanelIntro'
 import { panelsConfig } from './config'
 import { smoothToggleTransition } from '../../utils'
 
@@ -104,6 +103,7 @@ export const MapPanelContent: FC<PanelContentComponent> = (props) => {
 }
 
 export const MapPanel: FC<MapPanelProps> = (props) => {
+  const { children } = props
   const { state } = useContext(GlobalContext)
   const loc = useLocation()
   const classes = useStyles({ panelOpen: state.panelState === 'default' })
@@ -122,7 +122,8 @@ export const MapPanel: FC<MapPanelProps> = (props) => {
           </MapPanelHeaderChild>
         ))}
       </MapPanelHeader>
-      <PanelIntro />
+      {/* children should just be PanelIntro */}
+      {children}
       <div className={classes.contentWrap}>
         {panelsConfig.map((config, i) => (
           <MapPanelContent

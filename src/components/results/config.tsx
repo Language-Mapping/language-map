@@ -29,7 +29,7 @@ export const localization: Localization = {
     actions: '',
   },
   toolbar: {
-    searchPlaceholder: 'Search data...',
+    searchPlaceholder: 'Search...',
   },
 }
 

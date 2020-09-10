@@ -1,9 +1,10 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { Route } from 'react-router-dom'
 import { queryCache } from 'react-query'
 
 import { TopBar, OffCanvasNav } from 'components/nav'
 import { MapWrap } from 'components/map'
+import { MapPanel, PanelIntro } from 'components/panels'
 import { AboutPageView, WelcomeDialog } from 'components/about'
 import { ResultsModal } from 'components/results'
 import { fetchAbout, fetchGlossary, fetchWelcome } from 'components/about/utils'
@@ -15,6 +16,11 @@ import {
 } from 'components/about/config'
 
 export const App: FC = () => {
+  const [tableOpen, setTableOpen] = useState<boolean>(false)
+
+  const openTable = (): void => setTableOpen(true)
+  const closeTable = (): void => setTableOpen(false)
+
   useEffect(() => {
     queryCache.prefetchQuery(WELCOME_QUERY, fetchWelcome)
     queryCache.prefetchQuery(ABOUT_QUERY, fetchAbout)
@@ -31,13 +37,15 @@ export const App: FC = () => {
       <Route path={routes.about}>
         <AboutPageView queryName={ABOUT_QUERY} />
       </Route>
-      <Route path={routes.table}>
-        <ResultsModal />
-      </Route>
+      <ResultsModal open={tableOpen} closeTable={closeTable} />
       <Route path={routes.glossary}>
         <AboutPageView queryName={GLOSSARY_QUERY} />
       </Route>
-      <MapWrap />
+      <MapWrap>
+        <MapPanel>
+          <PanelIntro openTable={openTable} />
+        </MapPanel>
+      </MapWrap>
     </>
   )
 }

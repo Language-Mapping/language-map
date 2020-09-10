@@ -14,7 +14,6 @@ import { ListboxComponent } from './ListboxComponent'
 import { renderGroup } from './utils'
 
 type SearchByOmniProps = {
-  noFiltersSet: boolean
   data: LangRecordSchema[]
 }
 
@@ -55,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) =>
 // CRED: https://material-ui.com/components/autocomplete/#virtualization
 // ^^^ definitely wouldn't have gotten the `react-window` virtualization w/o it!
 export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
-  const { data, noFiltersSet } = props
+  const { data } = props
   const classes = useStyles()
   const history = useHistory()
 
@@ -92,7 +91,7 @@ export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
         <TextField
           {...params}
           placeholder="Language, endonym, Glottocode, or ISO 639-3"
-          helperText={noFiltersSet ? <FiltersWarning /> : null}
+          helperText={<FiltersWarning />}
           InputLabelProps={{ disableAnimation: true, shrink: true }}
         />
       )}

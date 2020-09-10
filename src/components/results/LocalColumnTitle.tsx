@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { FaMapMarkerAlt } from 'react-icons/fa'
+import { BiMapPin } from 'react-icons/bi'
 
 import { useStyles } from './ResultsToolbar'
 
@@ -9,7 +9,7 @@ export const LocalColumnTitle: FC<{ text: string }> = (props) => {
 
   return (
     <div className={classes.localIndicator}>
-      <FaMapMarkerAlt /> {text}
+      <BiMapPin /> {text}
     </div>
   )
 }

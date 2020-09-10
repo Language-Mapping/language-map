@@ -1,23 +1,23 @@
 import React, { FC } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
 import { Dialog } from '@material-ui/core'
 
 import { useStyles } from 'components/filters/config.styles'
-import { DialogCloseBtn } from 'components'
+import { CloseTableProps } from './types'
 import { ResultsTable } from './ResultsTable'
 
-export const ResultsModal: FC = (props) => {
-  const classes = useStyles()
-  const history = useHistory()
-  const loc = useLocation()
+type ResultsModalProps = CloseTableProps & {
+  open: boolean
+}
 
-  const handleClose = () => {
-    history.push(`/${loc.search}`)
-  }
+export const ResultsModal: FC<ResultsModalProps> = (props) => {
+  const { open, closeTable } = props
+  const classes = useStyles()
+
+  const handleClose = (): void => closeTable()
 
   return (
     <Dialog
-      open
+      open={open}
       className={`${classes.resultsModalRoot}`}
       onClose={handleClose}
       aria-labelledby="results-modal-dialog-title"
@@ -32,8 +32,7 @@ export const ResultsModal: FC = (props) => {
         Showing {langFeatures.length} of {langFeatures.length} language
         communities.
       </Typography> */}
-      <DialogCloseBtn onClose={handleClose} tooltip="Exit to map" />
-      <ResultsTable />
+      <ResultsTable closeTable={closeTable} />
     </Dialog>
   )
 }

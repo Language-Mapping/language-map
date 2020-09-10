@@ -20,3 +20,7 @@ export type MuiTableWithDataMgr = MaterialTable<LangRecordSchema> & {
 export type CountryCodes = {
   [key: string]: string
 }
+
+export type CloseTableProps = {
+  closeTable: () => void
+}
