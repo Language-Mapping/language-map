@@ -8,6 +8,7 @@ import { TiThList } from 'react-icons/ti'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     tableTitleRoot: {
+      gridArea: 'title',
       display: 'flex',
       alignItems: 'center',
       [theme.breakpoints.down('sm')]: {

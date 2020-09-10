@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
-import { TiWarning } from 'react-icons/ti'
+import { GoInfo } from 'react-icons/go'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,7 +21,7 @@ export const FiltersWarning: FC = () => {
 
   return (
     <Typography className={classes.filtersWarning}>
-      <TiWarning />
+      <GoInfo />
       Any filters in the Data Table will be applied.
     </Typography>
   )

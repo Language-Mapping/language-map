@@ -12,6 +12,10 @@ const useStyles = makeStyles((theme: Theme) =>
       right: 4,
       top: 4,
       zIndex: 1,
+      [theme.breakpoints.up('sm')]: {
+        right: 8,
+        top: 8,
+      },
     },
   })
 )
