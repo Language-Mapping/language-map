@@ -80,6 +80,8 @@ export const AboutPageView: FC<AboutPageProps> = (props) => {
     )
   }
 
+  // TODO: use `keepMounted` for About for SEO purposes
+  // TODO: consider SimpleDialog for some or all of these
   return (
     <Dialog
       open
@@ -105,7 +107,7 @@ export const AboutPageView: FC<AboutPageProps> = (props) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="primary">
-          Back to map
+          Exit
         </Button>
       </DialogActions>
     </Dialog>

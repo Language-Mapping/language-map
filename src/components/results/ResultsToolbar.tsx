@@ -156,7 +156,7 @@ export const ResultsToolbar: FC<ResultsToolbarProps> = (props) => {
           size="small"
           startIcon={<RiFilterOffFill />}
         >
-          Clear all
+          Clear filters
         </Button>
       </div>
       <small className={`${classes.localIndicator} ${classes.localCommLegend}`}>
