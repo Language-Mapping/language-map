@@ -134,28 +134,23 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
     const self = tableRef.current
     const { dataManager } = self
     const { columns } = dataManager.getRenderState()
-    const numCols = columns.length
 
     // CRED: for TS: https://stackoverflow.com/a/46204035/1048518
     const shame: HTMLElement = document.querySelector(
       `#${TOOLBAR_ID} button[aria-label="Clear Search"]`
     ) as HTMLElement
 
-    if (shame) {
-      shame.click()
-    }
+    if (shame) shame.click()
     // else { // TODO: sentry: element not found... }
 
-    const cleared = columns.map((column: Types.ColumnWithTableData) => {
-      return {
-        ...column,
-        tableData: { ...column.tableData, filterValue: undefined },
-      }
-    })
+    const cleared = columns.map((column: Types.ColumnWithTableData) => ({
+      ...column,
+      tableData: { ...column.tableData, filterValue: undefined },
+    }))
 
-    for (let index = 0; index < numCols; index += 1) {
-      dataManager.changeFilterValue(index, undefined)
-    }
+    columns.forEach((col: Types.ColumnWithTableData, i: number) => {
+      dataManager.changeFilterValue(i, undefined)
+    })
 
     self.setState({
       ...dataManager.getRenderState(),

@@ -11,8 +11,10 @@ export type CountryCodes = { [key: string]: string }
 export type CloseTableProps = { closeTable: () => void }
 export type ColumnWithTableData = { tableData: TableData } & ColumnsConfig
 export type ResultsTableProps = CloseTableProps & { data: LangRecordSchema[] }
-export type TableData = { id: number | string; filterValue: boolean }
 export type TableOptions = Options<LangRecordSchema>
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type TableData = { id: number | string; filterValue: any }
 
 export type FilterComponentProps = {
   columnDef: {

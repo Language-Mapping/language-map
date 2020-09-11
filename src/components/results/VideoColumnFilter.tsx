@@ -1,8 +1,10 @@
-import React, { FC, useState } from 'react'
+import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { FormControlLabel, Checkbox } from '@material-ui/core'
 
 import * as Types from './types'
+
+const CHECK_STRING = 'http'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,11 +20,12 @@ const useStyles = makeStyles((theme: Theme) =>
 export const VideoColumnFilter: FC<Types.FilterComponentProps> = (props) => {
   const classes = useStyles()
   const { columnDef, onFilterChanged } = props
-  const [hasVideo, setHasVideo] = useState(false)
+  const { tableData } = columnDef
+  const { filterValue } = tableData
+  const checked = filterValue === CHECK_STRING
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setHasVideo(e.target.checked)
-    onFilterChanged(columnDef.tableData.id, e.target.checked ? 'http' : '')
+    onFilterChanged(tableData.id, e.target.checked ? CHECK_STRING : '')
   }
 
   return (
@@ -31,7 +34,7 @@ export const VideoColumnFilter: FC<Types.FilterComponentProps> = (props) => {
         classes={{ root: classes.switchFormCtrlRoot }}
         control={
           <Checkbox
-            checked={hasVideo}
+            checked={checked}
             onChange={handleChange}
             name="set-video-filter"
             size="small"
