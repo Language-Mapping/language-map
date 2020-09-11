@@ -164,6 +164,8 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
       <ResultsTitle />
       <div className={classes.searchAndActions} id={TOOLBAR_ID}>
         <MTableToolbar {...props} />
+        {/* TODO: restore */}
+        {/* Showing {langFeatures.length} of {langFeatures.length} communities. */}
         <DialogCloseBtn tooltip="Exit" onClose={closeTable} />
       </div>
       <div className={classes.toolbarBtns}>

@@ -2,6 +2,8 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
+import { createMarkup, isAlphaNumeric } from '../../utils'
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     recDescripRoot: {
@@ -29,18 +31,31 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+const FancyFirstLetter: FC<{ text: string }> = (props) => {
+  const classes = useStyles()
+  const { text } = props
+
+  if (isAlphaNumeric(text)) {
+    return <span className={classes.firstLetter}>{text}</span>
+  }
+
+  return <>{text}</>
+}
+
 export const RecordDescription: FC<{ text: string }> = (props) => {
   const classes = useStyles()
   const { text } = props
 
-  // TODO: regex to make sure first char is not spesh char, e.g. `"` like with
-  // the Pugliese description (sounds like a Tom Clancy novel)
   return (
     <Typography className={classes.recDescripRoot}>
       {text && (
         <>
-          <span className={classes.firstLetter}>{text[0]}</span>
-          <span className={classes.body}>{text.slice(1)}</span>
+          <FancyFirstLetter text={text[0]} />
+          <span
+            className={classes.body}
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={createMarkup(text.slice(1))}
+          />
         </>
       )}
       {!text && (

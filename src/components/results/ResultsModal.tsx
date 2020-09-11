@@ -36,11 +36,6 @@ export const ResultsModal: FC<ResultsModalProps> = (props) => {
         className: classes.resultsModalPaper,
       }}
     >
-      {/* TODO: restore? */}
-      {/* <Typography className={classes.featureCount}>
-        Showing {langFeatures.length} of {langFeatures.length} language
-        communities.
-      </Typography> */}
       <ResultsTable closeTable={closeTable} data={tableData} />
     </Dialog>
   )

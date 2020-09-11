@@ -7,7 +7,7 @@ import MaterialTable from 'material-table'
 import { GoFile } from 'react-icons/go'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
-import { SimpleDialog } from 'components'
+import { SimpleDialog, LangOrEndoIntro, LangOrEndoProps } from 'components'
 import { paths as routes } from 'components/config/routes'
 import { MuiTableWithLangs } from './types'
 import { ResultsToolbar } from './ResultsToolbar'
@@ -34,6 +34,9 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
   const tableRef = React.useRef<MuiTableWithLangs>(null)
   // const { height } = useWindowResize() // TODO: rm if not using
   const [descripModalText, setDescripModalText] = useState<string>('')
+  const [descripModalHeading, setDescripModalHeading] = useState<
+    LangOrEndoProps
+  >()
 
   // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
   // properly (blanks last, regardless of direction)
@@ -46,6 +49,11 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
           onClose={() => setDescripModalText('')}
           PaperProps={{ className: classes.descripDialogPaper }}
         >
+          {descripModalHeading && (
+            <div style={{ textAlign: 'center' }}>
+              <LangOrEndoIntro attribs={descripModalHeading.attribs} />
+            </div>
+          )}
           <RecordDescription text={descripModalText} />
         </SimpleDialog>
       )}
@@ -88,15 +96,16 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
               ? 'No description available'
               : 'View description',
             onClick: (event, clickedRowData) => {
-              let text = ''
+              let record
 
               if (Array.isArray(clickedRowData)) {
-                text = clickedRowData[0].Description
+                ;[record] = clickedRowData
               } else {
-                text = clickedRowData.Description
+                record = clickedRowData
               }
 
-              setDescripModalText(text)
+              setDescripModalText(record.Description)
+              setDescripModalHeading({ attribs: record })
             },
             iconProps: {
               color: data.Description === '' ? 'disabled' : 'primary',

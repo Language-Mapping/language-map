@@ -3,20 +3,14 @@ import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
-import { GlobalContext } from 'components'
+import { GlobalContext, LangOrEndoIntro } from 'components'
 import { LegendSwatch } from 'components/legend'
 import { RecordDescription } from 'components/results'
 import { paths as routes } from 'components/config/routes'
-import { correctDropboxURL } from '../../utils' // TODO: put back if needed
 import { Media } from './Media'
 
 // TODO: cell strength bars for Size
 // import { COMM_SIZE_COL_MAP } from 'components/results/config'
-
-type EndoImageComponent = {
-  url: string
-  alt: string
-}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,18 +19,6 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       borderBottom: `solid 1px ${theme.palette.divider}`,
       marginBottom: '1em',
-    },
-    // Gross but it makes `Anashinaabemowin` fit
-    detailsPanelHeading: {
-      // TODO: cool if you can make this work: position: 'sticky', top: '3rem',
-      fontSize: '2.4rem',
-      [theme.breakpoints.up('sm')]: {
-        fontSize: '3rem',
-      },
-    },
-    endoImage: {
-      height: 120,
-      maxWidth: '95%',
     },
     neighborhoods: {
       fontSize: '0.75em',
@@ -79,15 +61,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-// Mongolian, ASL, etc. have URLs to images
-const EndoImageWrap: FC<EndoImageComponent> = (props) => {
-  const classes = useStyles()
-  const { url: origUrl, alt } = props
-  const url = correctDropboxURL(origUrl)
-
-  return <img src={url} alt={alt} className={classes.endoImage} />
-}
-
+// TODO: separate files
 const RandomLink: FC = () => {
   const { state } = useContext(GlobalContext)
   const { langFeatIDs, langFeatures } = state
@@ -140,7 +114,6 @@ export const DetailsPanel: FC = () => {
   if (!selFeatAttribs) return <NoFeatSel />
 
   const {
-    Endonym,
     Language: language,
     Neighborhoods,
     Description: description,
@@ -149,10 +122,9 @@ export const DetailsPanel: FC = () => {
     Countries,
     Audio: audio,
     Video: video,
-    'Font Image Alt': altImage,
     'World Region': WorldRegion,
   } = selFeatAttribs
-  const { detailsPanelHeading, intro, descripSection, neighborhoods } = classes
+  const { intro, descripSection, neighborhoods } = classes
   const regionSwatchColor =
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -167,16 +139,7 @@ export const DetailsPanel: FC = () => {
   return (
     <>
       <div className={intro}>
-        {(altImage && <EndoImageWrap url={altImage} alt={language} />) || (
-          <Typography variant="h3" className={detailsPanelHeading}>
-            {Endonym}
-          </Typography>
-        )}
-        {Endonym !== language && (
-          <Typography variant="caption" component="p">
-            {language}
-          </Typography>
-        )}
+        <LangOrEndoIntro attribs={selFeatAttribs} />
         <Typography className={neighborhoods}>
           {Neighborhoods || Town}
         </Typography>

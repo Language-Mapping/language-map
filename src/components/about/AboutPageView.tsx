@@ -15,6 +15,7 @@ import {
 import { MdClose } from 'react-icons/md'
 
 import { WpApiPageResponse, WpQueryNames } from './types'
+import { createMarkup } from '../../utils'
 
 type AboutPageProps = {
   queryName: WpQueryNames
@@ -39,10 +40,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
-
-const createMarkup = (content: string): { __html: string } => ({
-  __html: content,
-})
 
 export const AboutPageView: FC<AboutPageProps> = (props) => {
   const { queryName } = props
