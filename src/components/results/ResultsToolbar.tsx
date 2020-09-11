@@ -105,10 +105,11 @@ export const useStyles = makeStyles((theme: Theme) =>
 
 type ResultsToolbarProps = MaterialTableProps<LangRecordSchema> & {
   tableRef: React.RefObject<MuiTableWithLangs>
+  clearFiltersBtnClick: () => void
 } & CloseTableProps
 
 export const ResultsToolbar: FC<ResultsToolbarProps> = (props) => {
-  const { tableRef, closeTable } = props
+  const { tableRef, closeTable, clearFiltersBtnClick } = props
   const { dispatch } = useContext(GlobalContext)
   const classes = useStyles()
   const history = useHistory()
@@ -152,9 +153,10 @@ export const ResultsToolbar: FC<ResultsToolbarProps> = (props) => {
           title="Clear table filters"
           color="secondary"
           variant="contained"
-          disabled // TODO: disable if no filters
+          // disabled // TODO: disable if no filters
           size="small"
           startIcon={<RiFilterOffFill />}
+          onClick={() => clearFiltersBtnClick()}
         >
           Clear filters
         </Button>

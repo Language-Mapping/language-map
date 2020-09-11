@@ -11,14 +11,11 @@ import { SimpleDialog } from 'components'
 import { paths as routes } from 'components/config/routes'
 import { MuiTableWithLangs } from './types'
 import { ResultsToolbar } from './ResultsToolbar'
-
-import * as Types from './types'
-import * as config from './config'
-
 import { RecordDescription } from './RecordDescription'
 // import { useWindowResize } from '../../utils' // TODO: rm if not using
 
-const { icons, options, columns, localization } = config
+import * as Types from './types'
+import * as config from './config'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,12 +31,42 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
   const classes = useStyles()
   const history = useHistory()
   const loc = useLocation()
-  // const { height } = useWindowResize() // TODO: rm if not using
   const [descripModalText, setDescripModalText] = useState<string>('')
   const tableRef = React.useRef<MuiTableWithLangs>(null)
+  // const { height } = useWindowResize() // TODO: rm if not using
 
   // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
   // properly (blanks last, regardless of direction)
+
+  // CRED: 🎉
+  // https://github.com/mbrn/material-table/issues/1132#issuecomment-549591832
+  function clearFiltersBtnClick(): void {
+    if (!tableRef || !tableRef.current) return
+
+    const self = tableRef.current
+    const { columns } = self.dataManager.getRenderState()
+    const numCols = columns.length
+
+    const cleared = columns.map((column) => {
+      return {
+        ...column,
+        tableData: {
+          ...column.tableData,
+          filterValue: undefined,
+        },
+      }
+    })
+
+    for (let index = 0; index < numCols; index += 1) {
+      self.dataManager.changeFilterValue(index, undefined)
+    }
+
+    self.setState({
+      ...self.dataManager.getRenderState(),
+      columns: cleared,
+      data: self.dataManager.data,
+    })
+  }
 
   return (
     <>
@@ -53,14 +80,14 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
         </SimpleDialog>
       )}
       <MaterialTable
-        icons={icons}
+        icons={config.icons}
         tableRef={tableRef}
         options={{
-          ...options,
+          ...config.options,
           // maxBodyHeight: height - 120, // TODO: something if still bad scroll
         }}
-        columns={columns}
-        localization={localization}
+        columns={config.columns}
+        localization={config.localization}
         data={tableData}
         onRowClick={(event, rowData) => {
           if (rowData) {
@@ -72,12 +99,13 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
           Toolbar: (toolbarProps) => (
             <ResultsToolbar
               {...toolbarProps}
+              clearFiltersBtnClick={clearFiltersBtnClick}
               closeTable={closeTable}
               tableRef={tableRef}
             />
           ),
         }}
-        // onFilterChange={() => setMapFiltersBtnDisbled(false)} // TODO: this
+        // onFilterChange={(filters) => setMapFiltersBtnDisbled(false)} // TODO
         // TODO: rm if not using (not even sure what triggers it)
         // onQueryChange={() => setMapFiltersBtnDisbled(false)}
         // TODO: all into config
