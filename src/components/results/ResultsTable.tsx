@@ -9,7 +9,7 @@ import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { SimpleDialog } from 'components'
 import { paths as routes } from 'components/config/routes'
-import { MuiTableWithDataMgr } from './types'
+import { MuiTableWithLangs } from './types'
 import { ResultsToolbar } from './ResultsToolbar'
 
 import * as Types from './types'
@@ -36,7 +36,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
   const loc = useLocation()
   // const { height } = useWindowResize() // TODO: rm if not using
   const [descripModalText, setDescripModalText] = useState<string>('')
-  const tableRef = React.useRef<MuiTableWithDataMgr>(null)
+  const tableRef = React.useRef<MuiTableWithLangs>(null)
 
   // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
   // properly (blanks last, regardless of direction)

@@ -10,7 +10,7 @@ import { RiFilterOffFill } from 'react-icons/ri'
 import { GlobalContext, DialogCloseBtn } from 'components'
 import { paths as routes } from 'components/config/routes'
 import { ResultsTitle } from './ResultsTitle'
-import { MuiTableWithDataMgr, CloseTableProps } from './types'
+import { MuiTableWithLangs, CloseTableProps } from './types'
 import { LangRecordSchema } from '../../context/types'
 
 // TODO: get this monster into styles file
@@ -104,7 +104,7 @@ export const useStyles = makeStyles((theme: Theme) =>
 )
 
 type ResultsToolbarProps = MaterialTableProps<LangRecordSchema> & {
-  tableRef: React.RefObject<MuiTableWithDataMgr>
+  tableRef: React.RefObject<MuiTableWithLangs>
 } & CloseTableProps
 
 export const ResultsToolbar: FC<ResultsToolbarProps> = (props) => {
@@ -116,16 +116,16 @@ export const ResultsToolbar: FC<ResultsToolbarProps> = (props) => {
   function mapFilterBtnClick(): void {
     if (!tableRef || !tableRef.current) return
 
-    // TODO: pick one or the other, not both
+    closeTable()
+
     dispatch({
       type: 'SET_LANG_FEAT_IDS',
-      payload: tableRef.current.dataManager.filteredData.map(
+      payload: tableRef.current.state.data.map(
         (data: LangRecordSchema) => data.ID
       ),
     })
 
     history.push(routes.home)
-    closeTable()
   }
 
   return (
