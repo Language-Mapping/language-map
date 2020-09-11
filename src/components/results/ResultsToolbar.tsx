@@ -7,7 +7,7 @@ import { BiMapPin } from 'react-icons/bi'
 import { FaMapMarkedAlt } from 'react-icons/fa'
 import { RiFilterOffFill } from 'react-icons/ri'
 
-import { GlobalContext, DialogCloseBtn } from 'components'
+import { GlobalContext } from 'components'
 import { paths as routes } from 'components/config/routes'
 import { ResultsTitle } from './ResultsTitle'
 import * as Types from './types'
@@ -37,37 +37,24 @@ export const useStyles = makeStyles((theme: Theme) =>
       gridTemplateRows: 'auto auto auto',
       justifyContent: 'center',
       '& .MuiIconButton-root': { padding: 4 }, // huuuge by default
-      [theme.breakpoints.up('sm')]: {
-        gridColumnGap: '1em',
-      },
+      [theme.breakpoints.up('sm')]: { gridColumnGap: '1em' },
       [theme.breakpoints.up('md')]: {
-        padding: '1em',
-        justifyContent: 'flex-start',
+        gridTemplateAreas: `"title buttons local searchAndActions"`,
         gridTemplateColumns: 'auto auto auto 1fr',
         gridTemplateRows: 'auto',
-        gridTemplateAreas: `"title buttons local searchAndActions"`,
+        justifyContent: 'flex-start',
+        padding: '1em',
       },
     },
     searchAndActions: {
       display: 'flex',
       gridArea: 'searchAndActions',
       '& [class^=MTableToolbar-actions]': { flexShrink: 0 },
-      '& .MuiToolbar-root': {
-        paddingLeft: 0,
-        [theme.breakpoints.up('sm')]: {
-          justifyContent: 'center',
-          marginRight: 16, // keeps it away from "X" close btn
-        },
-      },
+      '& .MuiToolbar-root': { paddingLeft: 0 },
       [theme.breakpoints.only('xs')]: {
-        '& .MuiFormControl-root': { flexBasis: 165 },
-        '& .MuiToolbar-root': {
-          paddingRight: 0,
-        },
+        '& .MuiToolbar-root': { paddingRight: 0 },
       },
-      [theme.breakpoints.up('md')]: {
-        justifyContent: 'flex-end',
-      },
+      [theme.breakpoints.up('md')]: { justifyContent: 'flex-end' },
       // outline: 'solid red 1px',
     },
     localIndicator: {
@@ -77,18 +64,15 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     localCommLegend: {
       color: theme.palette.text.secondary,
-      textAlign: 'center',
       display: 'flex',
-      marginTop: '0.4em',
       fontSize: '0.75em',
       gridArea: 'local',
       justifyContent: 'center',
+      marginTop: '0.4em',
+      textAlign: 'center',
       // outline: 'solid gold 1px',
       '& svg': { fontSize: '1.2em' },
-      [theme.breakpoints.up('md')]: {
-        marginTop: 0,
-        justifySelf: 'flex-end',
-      },
+      [theme.breakpoints.up('md')]: { marginTop: 0, justifySelf: 'flex-end' },
     },
     toolbarBtns: {
       alignItems: 'center',
@@ -166,7 +150,6 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
         <MTableToolbar {...props} />
         {/* TODO: restore */}
         {/* Showing {langFeatures.length} of {langFeatures.length} communities. */}
-        <DialogCloseBtn tooltip="Exit" onClose={closeTable} />
       </div>
       <div className={classes.toolbarBtns}>
         <Button

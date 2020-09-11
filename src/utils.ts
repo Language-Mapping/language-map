@@ -185,5 +185,4 @@ export const createMarkup = (content: string): { __html: string } => ({
 })
 
 // CRED: https://lowrey.me/test-if-a-string-is-alphanumeric-in-javascript/
-export const isAlphaNumeric = (ch: string): boolean =>
-  ch.match(/^[a-z0-9]+$/i) !== null
+export const isAlpha = (ch: string): boolean => ch.match(/^[a-z]+$/i) !== null
