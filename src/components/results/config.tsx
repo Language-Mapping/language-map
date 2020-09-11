@@ -17,6 +17,8 @@ import {
 import * as Types from './types'
 import * as utils from './utils'
 import { WorldRegion, Statuses } from '../../context/types'
+import { VideoColumnFilter } from './VideoColumnFilter'
+import { VideoColumnCell } from './VideoColumnCell'
 import { LocalColumnTitle } from './LocalColumnTitle'
 
 const COMM_STATUS_LOOKUP = {
@@ -88,7 +90,7 @@ export const options = {
   thirdSortClick: false,
   // TODO: rm unused, or keep for reference
   // actionsCellStyle: {}, // semi-useful but ended up with `!important` anyway
-  // doubleHorizontalScroll: true,
+  doubleHorizontalScroll: true,
   // headerStyle: { position: 'sticky', top: 0 },
   // filterCellStyle: { backgroundColor: 'yellow' }, // works
   // filterRowStyle: { backgroundColor: 'red' }, // works, but sticky 2 tricky!
@@ -228,13 +230,14 @@ export const columns = [
     lookup: COMM_STATUS_LOOKUP,
   },
   {
-    title: 'Has video',
+    title: 'Video',
     field: 'Video',
     editable: 'never',
     export: false,
-    searchable: false,
-    type: 'boolean',
+    filterComponent: VideoColumnFilter,
     headerStyle: { whiteSpace: 'nowrap' },
+    render: VideoColumnCell,
+    searchable: false,
   },
   // All hidden from here down
   {

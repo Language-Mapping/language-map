@@ -66,9 +66,6 @@ export const useStyles = makeStyles((theme: Theme) =>
         paddingLeft: 0,
       },
       // All icons in and out of table. Icons inherit color and size from it.
-      '& .MuiIconButton-root': {
-        // fontSize: '1.4rem', // TODO: rm if not using
-      },
       // ...otherwise it overrides the `disabled` Action buttons
       '& table .MuiIconButton-root:not([disabled]), .MuiToolbar-root .MuiIconButton-root:not([disabled])': {
         color: theme.palette.primary.main,

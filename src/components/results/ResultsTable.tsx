@@ -84,7 +84,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
         actions={[
           {
             icon: () => <AiOutlineQuestionCircle />,
-            tooltip: 'Help and glossary',
+            tooltip: 'Help',
             isFreeAction: true,
             onClick: () => history.push(`/glossary${loc.search}`),
           },
