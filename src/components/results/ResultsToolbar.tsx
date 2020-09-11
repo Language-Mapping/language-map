@@ -1,7 +1,7 @@
 import React, { FC, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { MTableToolbar, MaterialTableProps } from 'material-table'
+import { MTableToolbar } from 'material-table'
 import { Button } from '@material-ui/core'
 import { BiMapPin } from 'react-icons/bi'
 import { FaMapMarkedAlt } from 'react-icons/fa'
@@ -10,8 +10,10 @@ import { RiFilterOffFill } from 'react-icons/ri'
 import { GlobalContext, DialogCloseBtn } from 'components'
 import { paths as routes } from 'components/config/routes'
 import { ResultsTitle } from './ResultsTitle'
-import { MuiTableWithLangs, CloseTableProps } from './types'
+import * as Types from './types'
 import { LangRecordSchema } from '../../context/types'
+
+const TOOLBAR_ID = 'custom-toolbar'
 
 // TODO: get this monster into styles file
 export const useStyles = makeStyles((theme: Theme) =>
@@ -103,13 +105,8 @@ export const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-type ResultsToolbarProps = MaterialTableProps<LangRecordSchema> & {
-  tableRef: React.RefObject<MuiTableWithLangs>
-  clearFiltersBtnClick: () => void
-} & CloseTableProps
-
-export const ResultsToolbar: FC<ResultsToolbarProps> = (props) => {
-  const { tableRef, closeTable, clearFiltersBtnClick } = props
+export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
+  const { tableRef, closeTable } = props
   const { dispatch } = useContext(GlobalContext)
   const classes = useStyles()
   const history = useHistory()
@@ -129,10 +126,48 @@ export const ResultsToolbar: FC<ResultsToolbarProps> = (props) => {
     history.push(routes.home)
   }
 
+  // CRED: 🎉
+  // https://github.com/mbrn/material-table/issues/1132#issuecomment-549591832
+  function clearFiltersBtnClick(): void {
+    if (!tableRef || !tableRef.current) return
+
+    const self = tableRef.current
+    const { dataManager } = self
+    const { columns } = dataManager.getRenderState()
+    const numCols = columns.length
+
+    // CRED: for TS: https://stackoverflow.com/a/46204035/1048518
+    const shame: HTMLElement = document.querySelector(
+      `#${TOOLBAR_ID} button[aria-label="Clear Search"]`
+    ) as HTMLElement
+
+    if (shame) {
+      shame.click()
+    }
+    // else { // TODO: sentry: element not found... }
+
+    const cleared = columns.map((column: Types.ColumnWithTableData) => {
+      return {
+        ...column,
+        tableData: { ...column.tableData, filterValue: undefined },
+      }
+    })
+
+    for (let index = 0; index < numCols; index += 1) {
+      dataManager.changeFilterValue(index, undefined)
+    }
+
+    self.setState({
+      ...dataManager.getRenderState(),
+      columns: cleared,
+      data: dataManager.data,
+    })
+  }
+
   return (
     <div className={classes.resultsToolbarRoot}>
       <ResultsTitle />
-      <div className={classes.searchAndActions}>
+      <div className={classes.searchAndActions} id={TOOLBAR_ID}>
         <MTableToolbar {...props} />
         <DialogCloseBtn tooltip="Exit" onClose={closeTable} />
       </div>

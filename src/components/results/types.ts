@@ -6,7 +6,13 @@ import MaterialTable, {
 
 import { LangRecordSchema } from '../../context/types'
 
+// The JSON file with {"name":"code"} country key/val pairs
+export type CountryCodes = { [key: string]: string }
+export type CloseTableProps = { closeTable: () => void }
+export type ColumnWithTableData = { tableData: TableData } & ColumnsConfig
+export type ResultsTableProps = CloseTableProps & { data: LangRecordSchema[] }
 export type TableData = { id: number | string; filterValue: boolean }
+export type TableOptions = Options<LangRecordSchema>
 
 export type FilterComponentProps = {
   columnDef: {
@@ -20,34 +26,25 @@ export type ColumnsConfig = Column<LangRecordSchema> & {
   field: keyof LangRecordSchema
 }
 
-export type ColumnWithTableData = { tableData: TableData } & ColumnsConfig
-
-export type TableOptions = Options<LangRecordSchema>
-
 // `dataManager` prop definitely exists but is not evidently part of the TS
 export type MuiTableWithLangs = MaterialTable<LangRecordSchema> & {
   dataManager: {
     data: LangRecordSchema[]
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     changeFilterValue: (col: number, val: any) => void
+    changeSearchText: (text: string) => void
     getRenderState: () => Omit<
       MaterialTableProps<LangRecordSchema>,
       'columns'
     > & {
       columns: ColumnWithTableData[]
+      query: {
+        searchText: string
+      }
     }
   }
 }
 
-// The JSON file with {"name":"code"} country key/val pairs
-export type CountryCodes = {
-  [key: string]: string
-}
-
-export type CloseTableProps = {
-  closeTable: () => void
-}
-
-export type ResultsTableProps = CloseTableProps & {
-  data: LangRecordSchema[]
-}
+export type ResultsToolbarProps = MaterialTableProps<LangRecordSchema> & {
+  tableRef: React.RefObject<MuiTableWithLangs>
+} & CloseTableProps

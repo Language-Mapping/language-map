@@ -79,6 +79,7 @@ export const localization: Localization = {
 export const options = {
   actionsColumnIndex: 0,
   columnsButton: true,
+  doubleHorizontalScroll: true,
   draggable: true, // kinda clunky
   filtering: true,
   grouping: false, // kinda clunky
@@ -90,7 +91,6 @@ export const options = {
   thirdSortClick: false,
   // TODO: rm unused, or keep for reference
   // actionsCellStyle: {}, // semi-useful but ended up with `!important` anyway
-  doubleHorizontalScroll: true,
   // headerStyle: { position: 'sticky', top: 0 },
   // filterCellStyle: { backgroundColor: 'yellow' }, // works
   // filterRowStyle: { backgroundColor: 'red' }, // works, but sticky 2 tricky!
@@ -149,6 +149,8 @@ export const columns = [
     field: 'World Region',
     editable: 'never',
     export: false,
+    // TODO: this instead:
+    // https://material-ui.com/components/autocomplete/#checkboxes
     lookup: WORLD_REGION_LOOKUP,
     render: utils.renderWorldRegionColumn,
     searchable: true,
