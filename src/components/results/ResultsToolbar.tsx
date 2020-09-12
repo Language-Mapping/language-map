@@ -10,8 +10,8 @@ import { RiFilterOffFill } from 'react-icons/ri'
 import { GlobalContext } from 'components'
 import { paths as routes } from 'components/config/routes'
 import { ResultsTitle } from './ResultsTitle'
+
 import * as Types from './types'
-import { LangRecordSchema } from '../../context/types'
 
 const TOOLBAR_ID = 'custom-toolbar'
 
@@ -101,10 +101,8 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
     closeTable()
 
     dispatch({
-      type: 'SET_LANG_FEAT_IDS',
-      payload: tableRef.current.state.data.map(
-        (data: LangRecordSchema) => data.ID
-      ),
+      type: 'SET_LANG_LAYER_FEATURES',
+      payload: tableRef.current.state.data,
     })
 
     history.push(routes.home)
@@ -136,11 +134,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
       dataManager.changeFilterValue(i, undefined)
     })
 
-    self.setState({
-      ...dataManager.getRenderState(),
-      columns: cleared,
-      data: dataManager.data,
-    })
+    self.setState({ ...dataManager.getRenderState(), columns: cleared })
   }
 
   return (

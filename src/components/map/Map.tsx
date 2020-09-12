@@ -32,6 +32,7 @@ import {
   getIDfromURLparams,
   findFeatureByID,
   useWindowResize,
+  getAllLangFeatIDs,
 } from '../../utils'
 
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
@@ -102,8 +103,12 @@ export const Map: FC<Types.MapComponent> = (props) => {
     const map: MbMap = mapRef.current.getMap()
     const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
 
-    utils.filterLayersByFeatIDs(map, currentLayerNames, state.langFeatIDs)
-  }, [state.langFeatIDs])
+    utils.filterLayersByFeatIDs(
+      map,
+      currentLayerNames,
+      getAllLangFeatIDs(state.langFeatures)
+    )
+  }, [state.langFeatures])
 
   // TODO: put in... legend?
   useEffect(
@@ -210,7 +215,7 @@ export const Map: FC<Types.MapComponent> = (props) => {
     // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
 
     dispatch({ type: 'SET_MAP_LOADED', payload: true })
-    dispatch({ type: 'INIT_LANG_LAYER_FEATURES', payload: uniqueRecords })
+    dispatch({ type: 'SET_LANG_LAYER_FEATURES', payload: uniqueRecords })
 
     // Give MB some well-deserved cred
     map.addControl(new AttributionControl({ compact: false }), 'bottom-right')

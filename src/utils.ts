@@ -186,3 +186,6 @@ export const createMarkup = (content: string): { __html: string } => ({
 
 // CRED: https://lowrey.me/test-if-a-string-is-alphanumeric-in-javascript/
 export const isAlpha = (ch: string): boolean => ch.match(/^[a-z]+$/i) !== null
+
+export const getAllLangFeatIDs = (data: LangRecordSchema[]): number[] =>
+  data.map((record) => record.ID)

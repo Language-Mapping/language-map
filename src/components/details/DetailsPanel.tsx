@@ -64,22 +64,12 @@ const useStyles = makeStyles((theme: Theme) =>
 // TODO: separate files
 const RandomLink: FC = () => {
   const { state } = useContext(GlobalContext)
-  const { langFeatIDs, langFeatures } = state
+  const { langFeatures } = state
 
-  if (langFeatIDs && !langFeatIDs.length) {
-    return null
-  }
+  if (!langFeatures.length) return null
 
-  let randoIndex = 1
-  let id = 1
-
-  if (langFeatIDs === null) {
-    randoIndex = Math.floor(Math.random() * langFeatures?.length) + 1
-    id = langFeatures[randoIndex].ID
-  } else {
-    randoIndex = Math.floor(Math.random() * langFeatIDs?.length) + 1
-    id = langFeatIDs[randoIndex]
-  }
+  const randoIndex = Math.floor(Math.random() * langFeatures.length) + 1
+  const id = langFeatures[randoIndex].ID
 
   return (
     <>

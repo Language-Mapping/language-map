@@ -17,12 +17,11 @@ export type LegendSymbols = {
 }
 
 export type StoreAction =
-  | { type: 'INIT_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | { type: 'INIT_LANG_LAYER_LABEL_OPTIONS'; payload: string[] }
   | { type: 'INIT_LANG_LAYER_SYMB_OPTIONS'; payload: MetadataGroup }
   | { type: 'INIT_LEGEND_SYMBOLS'; payload: LegendSymbols }
   | { type: 'SET_BASELAYER'; payload: Baselayer }
-  | { type: 'SET_LANG_FEAT_IDS'; payload: number[] | null }
+  | { type: 'SET_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | { type: 'SET_LANG_LAYER_LABELS'; payload: string }
   | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatch[] }
   | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: string }
@@ -37,7 +36,6 @@ export type InitialState = {
   activeLangLabelId: string
   activeLangSymbGroupId: string
   baselayer: Baselayer
-  langFeatIDs: null | number[]
   langFeatures: LangRecordSchema[]
   langLabels: string[]
   langSymbGroups: MetadataGroup

@@ -16,8 +16,16 @@ export const ResultsModal: FC<ResultsModalProps> = (props) => {
   const classes = useStyles()
   const { state } = useContext(GlobalContext)
   const [tableData, setTableData] = useState<LangRecordSchema[]>([])
+  const [oneAndDone, setOneAndDone] = useState<boolean>(false)
 
-  useEffect((): void => setTableData(state.langFeatures), [state.langFeatures])
+  // useEffect((): void => setTableData(state.langFeatures), [state.langFeatures])
+  useEffect((): void => {
+    if (oneAndDone || !state.langFeatures.length) return
+    if (!oneAndDone) setOneAndDone(true)
+
+    setTableData([...state.langFeatures])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.langFeatures])
 
   const handleClose = (): void => closeTable()
 
