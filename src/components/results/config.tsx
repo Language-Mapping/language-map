@@ -1,18 +1,35 @@
+import React from 'react'
 import { Icons, Localization } from 'material-table'
 import { FaFilter } from 'react-icons/fa'
 import {
-  MdSearch,
-  MdClear,
+  MdArrowUpward,
+  MdCheck,
   MdChevronLeft,
   MdChevronRight,
-  MdLastPage,
+  MdClear,
   MdFirstPage,
-  MdArrowUpward,
+  MdLastPage,
+  MdSearch,
   MdViewColumn,
+  MdRemove,
 } from 'react-icons/md'
 
 import * as Types from './types'
 import * as utils from './utils'
+import { Statuses } from '../../context/types'
+import { VideoColumnFilter } from './VideoColumnFilter'
+import { VideoColumnCell } from './VideoColumnCell'
+import { LocalColumnTitle } from './LocalColumnTitle'
+
+const COMM_STATUS_LOOKUP = {
+  Community: 'Community',
+  Historical: 'Historical',
+  Liturgical: 'Liturgical',
+  Residential: 'Residential',
+  Reviving: 'Reviving',
+} as {
+  [key in Statuses]: Statuses
+}
 
 export const COMM_SIZE_COL_MAP = {
   1: 'Smallest',
@@ -27,7 +44,7 @@ export const localization: Localization = {
     actions: '',
   },
   toolbar: {
-    searchPlaceholder: 'Search data...',
+    searchPlaceholder: 'Search...',
   },
 }
 
@@ -43,8 +60,7 @@ export const options = {
   pageSize: 10,
   pageSizeOptions: [5, 10, 20, 50],
   searchFieldAlignment: 'left',
-  // searchFieldStyle: {}, // TODO: rm if not using
-  search: true,
+  showTitle: false,
   thirdSortClick: false,
   // TODO: rm unused, or keep for reference
   // actionsCellStyle: {}, // semi-useful but ended up with `!important` anyway
@@ -55,10 +71,12 @@ export const options = {
   // padding: 'dense', // dense leads to choppier inconsistent row height
   // rowStyle: { backgroundColor: 'turquoise' }, // works
   // searchFieldVariant: 'outlined', // meh, too big
+  // searchFieldStyle: {}, // the actual text inside search box
   // tableLayout: 'fixed', // can set widths, but `fixed` = for bad Actions col
 } as Types.TableOptions
 
 export const icons = {
+  Check: MdCheck,
   DetailPanel: MdChevronRight,
   Filter: FaFilter,
   FirstPage: MdFirstPage,
@@ -68,6 +86,7 @@ export const icons = {
   ResetSearch: MdClear,
   Search: MdSearch,
   SortArrow: MdArrowUpward,
+  ThirdStateCheck: MdRemove,
   ViewColumn: MdViewColumn,
 } as Icons
 
@@ -82,6 +101,8 @@ export const columns = [
     // Average: 9.3, Longest: 31
     title: 'Language',
     field: 'Language',
+    editable: 'never',
+    export: false,
     defaultSort: 'asc',
     searchable: true,
   },
@@ -89,6 +110,8 @@ export const columns = [
     // Average: 8.5, Longest: 26, Longest full: Anashinaabemowin
     title: 'Endonym',
     field: 'Endonym',
+    editable: 'never',
+    export: false,
     disableClick: true, // TODO: use this if we want row clicks again
     render: utils.renderEndoColumn,
     searchable: true,
@@ -97,11 +120,14 @@ export const columns = [
     // Average: 13, Longest: 25 (thanks AUS & NZ...)
     title: 'World Region',
     field: 'World Region',
+    editable: 'never',
+    export: false,
+    // TODO: this instead:
+    // https://material-ui.com/components/autocomplete/#checkboxes
+    // lookup: WORLD_REGION_LOOKUP,
     render: utils.renderWorldRegionColumn,
     searchable: true,
-    headerStyle: {
-      whiteSpace: 'nowrap',
-    },
+    headerStyle: { whiteSpace: 'nowrap' },
   },
   {
     // Average: 8.5, Longest: 35 (w/o big Congos: Average: 8, Longest: 24)
@@ -110,6 +136,8 @@ export const columns = [
     // https://material-ui.com/components/autocomplete/#country-select
     title: 'Countries',
     field: 'Countries',
+    editable: 'never',
+    export: false,
     render: utils.renderCountriesColumn,
     searchable: true,
     headerStyle: {
@@ -120,20 +148,27 @@ export const columns = [
     // Longest: 20
     title: 'Global Speakers', // the only abbrev so far
     field: 'Global Speaker Total',
+    editable: 'never',
+    export: false,
     // defaultSort: 'asc', // TODO: make this work
-    // customSort: utils.sortNeighbs, // TODO: this
+    // customSort: utils.sortNeighbs, // TODO: blanks last
     render: utils.renderGlobalSpeakColumn,
     searchable: false,
+    filtering: false,
     type: 'numeric',
+    // Right-aligned number w/left-aligned column heading was requested
     headerStyle: {
-      paddingLeft: 0,
       whiteSpace: 'nowrap',
+      paddingRight: 0,
+      flexDirection: 'row',
     },
   },
   {
     // Average: 10, Longest: 23 but preserve hyphenated Athabaskan-Eyak-Tlingit
     title: 'Language Family',
     field: 'Language Family',
+    editable: 'never',
+    export: false,
     searchable: true,
     headerStyle: {
       whiteSpace: 'nowrap',
@@ -141,16 +176,20 @@ export const columns = [
   },
   {
     // Average: 12, Longest: 26
-    title: '*Neighborhoods',
+    title: <LocalColumnTitle text="Neighborhoods" />,
     field: 'Neighborhoods',
+    editable: 'never',
+    export: false,
     searchable: true,
     render: utils.renderNeighbColumn,
     customSort: utils.sortNeighbs,
   },
   {
     // Longest: 14
-    title: '*Size',
+    title: <LocalColumnTitle text="Size" />,
     field: 'Size',
+    editable: 'never',
+    export: false,
     align: 'left',
     lookup: COMM_SIZE_COL_MAP,
     render: (data) => COMM_SIZE_COL_MAP[data.Size],
@@ -158,33 +197,45 @@ export const columns = [
   },
   {
     // Longest: 13
-    title: '*Status',
+    title: <LocalColumnTitle text="Status" />,
     field: 'Status',
+    editable: 'never',
+    export: false,
     searchable: false,
-    lookup: {
-      Community: 'Community',
-      Historical: 'Historical',
-      Liturgical: 'Liturgical',
-      Residential: 'Residential',
-      Reviving: 'Reviving',
-    },
+    lookup: COMM_STATUS_LOOKUP,
+  },
+  {
+    title: 'Video',
+    field: 'Video',
+    editable: 'never',
+    export: false,
+    filterComponent: VideoColumnFilter,
+    headerStyle: { whiteSpace: 'nowrap' },
+    render: VideoColumnCell,
+    searchable: false,
   },
   // All hidden from here down
   {
     title: 'Description',
     field: 'Description',
+    editable: 'never',
+    export: false,
     hidden: true,
     searchable: true,
   },
   {
     title: 'Glottocode',
     field: 'Glottocode',
+    editable: 'never',
+    export: false,
     hidden: true,
     searchable: true,
   },
   {
     title: 'ISO 639-3',
     field: 'ISO 639-3',
+    editable: 'never',
+    export: false,
     hidden: true,
     searchable: true,
   },

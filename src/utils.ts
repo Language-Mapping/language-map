@@ -179,3 +179,13 @@ export const smoothToggleTransition = (
 
   return transitions.create('all', { duration, easing })
 }
+
+export const createMarkup = (content: string): { __html: string } => ({
+  __html: content,
+})
+
+// CRED: https://lowrey.me/test-if-a-string-is-alphanumeric-in-javascript/
+export const isAlpha = (ch: string): boolean => ch.match(/^[a-z]+$/i) !== null
+
+export const getAllLangFeatIDs = (data: LangRecordSchema[]): number[] =>
+  data.map((record) => record.ID)

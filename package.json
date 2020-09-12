@@ -20,7 +20,7 @@
     "@types/webfontloader": "^1.6.32",
     "jest-canvas-mock": "^2.2.0",
     "match-sorter": "^4.2.0",
-    "material-table": "^1.66.0",
+    "material-table": "1.68.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-icons": "^3.10.0",

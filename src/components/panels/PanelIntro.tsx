@@ -8,6 +8,8 @@ import { AiOutlineQuestionCircle } from 'react-icons/ai'
 import { GlobalContext } from 'components'
 import { paths as routes } from 'components/config/routes'
 
+type PanelIntroProps = { openTable: () => void }
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelIntroRoot: {
@@ -46,10 +48,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const PanelIntro: FC = () => {
+export const PanelIntro: FC<PanelIntroProps> = (props) => {
+  const { openTable } = props
   const { state } = useContext(GlobalContext)
   const classes = useStyles()
   const loc = useLocation()
+
+  const handleTableBtnClick = (): void => openTable()
 
   return (
     <ul className={classes.panelIntroRoot}>
@@ -58,10 +63,9 @@ export const PanelIntro: FC = () => {
           title="Data table of language communities"
           className={classes.introBtn}
           color="primary"
-          component={RouterLink}
           size="small"
           startIcon={<TiDocumentText />}
-          to={routes.table + loc.search}
+          onClick={handleTableBtnClick}
         >
           Data Table & Filters
         </Button>

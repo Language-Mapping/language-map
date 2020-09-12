@@ -11,6 +11,7 @@ import {
 
 import { WpApiPageResponse, WpQueryNames } from './types'
 import { WelcomeFooter } from './WelcomeFooter'
+import { createMarkup } from '../../utils'
 
 type AboutPageProps = {
   queryName: WpQueryNames
@@ -56,9 +57,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const createMarkup = (content: string): { __html: string } => ({
-  __html: content,
-})
 export const WelcomeDialog: FC<AboutPageProps> = (props) => {
   const { queryName } = props
   const classes = useStyles()

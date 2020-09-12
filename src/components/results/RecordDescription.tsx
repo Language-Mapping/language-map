@@ -2,11 +2,14 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
+import { createMarkup, isAlpha } from '../../utils'
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     recDescripRoot: {
       fontFamily: theme.typography.h1.fontFamily,
       marginTop: theme.spacing(2),
+      whiteSpace: 'pre-line',
     },
     firstLetter: {
       display: 'inline-block',
@@ -29,20 +32,31 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const RecordDescription: FC<{ text: string }> = (props) => {
+const FancyFirstLetter: FC<{ text: string }> = (props) => {
   const classes = useStyles()
   const { text } = props
 
-  // TODO: regex to make sure first char is not spesh char, e.g. `"` like with
-  // the Pugliese description (sounds like a Tom Clancy novel)
+  if (isAlpha(text)) return <span className={classes.firstLetter}>{text}</span>
+
+  return <>{text}</>
+}
+
+export const RecordDescription: FC<{ text: string }> = (props) => {
+  const classes = useStyles()
+  const { text } = props
+  const firstChar = text[0]
+  const firstCharAlpha = isAlpha(firstChar)
+
   return (
     <Typography className={classes.recDescripRoot}>
-      {text && (
-        <>
-          <span className={classes.firstLetter}>{text[0]}</span>
-          <span className={classes.body}>{text.slice(1)}</span>
-        </>
-      )}
+      {firstCharAlpha && <FancyFirstLetter text={firstChar} />}
+      <span
+        className={classes.body}
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={createMarkup(
+          firstCharAlpha ? text.slice(1) : text
+        )}
+      />
       {!text && (
         <div style={{ textAlign: 'center' }}>No description available</div>
       )}

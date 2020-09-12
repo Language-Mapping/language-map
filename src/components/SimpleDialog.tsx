@@ -10,16 +10,6 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingTop: theme.spacing(4),
       paddingBottom: theme.spacing(4),
     },
-    closeBtn: {
-      position: 'absolute',
-      zIndex: 1,
-      top: 4,
-      right: 4,
-      [theme.breakpoints.up('sm')]: {
-        top: theme.spacing(1),
-        right: theme.spacing(1),
-      },
-    },
   })
 )
 

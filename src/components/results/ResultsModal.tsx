@@ -1,39 +1,54 @@
-import React, { FC } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import React, { FC, useContext, useEffect, useState } from 'react'
 import { Dialog } from '@material-ui/core'
 
 import { useStyles } from 'components/filters/config.styles'
-import { DialogCloseBtn } from 'components'
+import { GlobalContext } from 'components'
+import { CloseTableProps } from './types'
+import { ResultsTable } from './ResultsTable'
+import { LangRecordSchema } from '../../context/types'
 
-export const ResultsModal: FC = (props) => {
-  const { children } = props
+type ResultsModalProps = CloseTableProps & {
+  open: boolean
+}
+
+export const ResultsModal: FC<ResultsModalProps> = (props) => {
+  const { open, closeTable } = props
   const classes = useStyles()
-  const history = useHistory()
-  const loc = useLocation()
+  const { state } = useContext(GlobalContext)
+  const [tableData, setTableData] = useState<LangRecordSchema[]>([])
+  const [oneAndDone, setOneAndDone] = useState<boolean>(false)
 
-  const handleClose = () => {
-    history.push(`/${loc.search}`)
-  }
+  // useEffect((): void => setTableData(state.langFeatures), [state.langFeatures])
+  useEffect((): void => {
+    if (oneAndDone || !state.langFeatures.length) return
+    if (!oneAndDone) setOneAndDone(true)
+
+    setTableData([...state.langFeatures])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.langFeatures])
+
+  const handleClose = (): void => closeTable()
+
+  if (!tableData.length) return null
 
   return (
     <Dialog
-      open
+      open={open}
+      keepMounted
       className={`${classes.resultsModalRoot}`}
       onClose={handleClose}
       aria-labelledby="results-modal-dialog-title"
       aria-describedby="results-modal-dialog-description"
-      maxWidth="xl"
+      maxWidth="lg"
       PaperProps={{
         className: classes.resultsModalPaper,
       }}
     >
-      {/* TODO: restore? */}
-      {/* <Typography className={classes.featureCount}>
-        Showing {langFeatures.length} of {langFeaturesCached.length} language
-        communities.
-      </Typography> */}
-      <DialogCloseBtn onClose={handleClose} tooltip="Exit to map" />
-      {children}
+      <ResultsTable
+        closeTable={closeTable}
+        data={tableData}
+        gangsAllHere={state.langFeatures.length === state.langFeatsLenCache}
+      />
     </Dialog>
   )
 }

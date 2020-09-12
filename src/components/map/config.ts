@@ -1,4 +1,4 @@
-import * as MapTypes from './types'
+import * as Types from './types'
 
 // `Status` icons
 import iconTree from './icons/tree.svg'
@@ -38,7 +38,7 @@ export const initialMapState = {
   zoom: 5,
 }
 
-export const mapProps = {
+export const mapProps: Types.InitialMapProps = {
   attributionControl: false,
   className: 'mb-language-map',
   clickRadius: 4, // much comfier for small points on small screens
@@ -46,6 +46,7 @@ export const mapProps = {
   mapboxApiAccessToken: MAPBOX_TOKEN,
   mapOptions: { logoPosition: 'bottom-left' },
   mapStyle: mbStyleTileConfig.customStyles.light,
+  maxZoom: 18,
   width: '100%',
 }
 
@@ -54,7 +55,7 @@ export const mapProps = {
 export const initialBounds = [
   [-74.1, 40.58],
   [-73.767185, 40.89],
-] as MapTypes.BoundsArray
+] as Types.BoundsArray
 
 export const langTypeIconsConfig = [
   { icon: iconTree, id: '_tree' },
@@ -108,7 +109,7 @@ export const neighbConfig = {
       },
     },
   ],
-} as MapTypes.BoundaryConfig
+} as Types.BoundaryConfig
 
 const countiesSrcID = 'counties'
 const countiesLyrSrc = {
@@ -140,7 +141,7 @@ export const countiesConfig = {
       },
     },
   ],
-} as MapTypes.BoundaryConfig
+} as Types.BoundaryConfig
 
 export const boundariesLayerIDs = [
   neighbConfig.layers[0].id,

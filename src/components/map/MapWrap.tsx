@@ -1,7 +1,7 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
-import { MapPanel, FabPanelToggle } from 'components/panels'
+import { FabPanelToggle } from 'components/panels'
 import { Map } from 'components/map'
 import { GlobalContext, LoadingBackdrop } from 'components'
 import { LayerPropsNonBGlayer } from './types'
@@ -9,12 +9,13 @@ import { mbStyleTileConfig } from './config'
 import { useStyles } from './styles'
 import { getIDfromURLparams, getMbStyleDocument } from '../../utils'
 
-export const MapWrap: FC = () => {
+export const MapWrap: FC = (props) => {
+  const { children } = props
   const { state, dispatch } = useContext(GlobalContext)
   const loc = useLocation()
   const [symbLayers, setSymbLayers] = useState<LayerPropsNonBGlayer[]>()
   const [labelLayers, setLabelLayers] = useState<LayerPropsNonBGlayer[]>()
-  const { langFeaturesCached } = state
+  const { langFeatures } = state
 
   const classes = useStyles({
     panelOpen: state.panelState === 'default',
@@ -41,18 +42,16 @@ export const MapWrap: FC = () => {
   useEffect((): void => {
     const idFromUrl = getIDfromURLparams(loc.search)
 
-    if (!langFeaturesCached.length || !idFromUrl) {
+    if (!langFeatures.length || !idFromUrl) {
       dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
 
       return
     }
 
     // TODO: handle scenario where feature exists in cached but not filtered
-    // const matchedFeat = state.langFeaturesCached.find()
+    // const matchedFeat = state.langFeatures.find()
 
-    const matchingRecord = langFeaturesCached.find(
-      (row) => row.ID === idFromUrl
-    )
+    const matchingRecord = langFeatures.find((row) => row.ID === idFromUrl)
 
     if (matchingRecord) {
       document.title = `${matchingRecord.Language as string} - NYC Languages`
@@ -63,7 +62,7 @@ export const MapWrap: FC = () => {
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loc.search, state.langFeaturesCached.length])
+  }, [loc.search, state.langFeatures.length])
 
   // Open panel for relevant routes // TODO: something
   // useEffect((): void => {
@@ -78,7 +77,8 @@ export const MapWrap: FC = () => {
       {!state.mapLoaded && <LoadingBackdrop />}
       <FabPanelToggle />
       <main className={classes.appWrapRoot}>
-        <MapPanel />
+        {/* children should just be MapPanel */}
+        {children}
         {symbLayers && labelLayers && (
           <div className={classes.mapWrap}>
             <Map

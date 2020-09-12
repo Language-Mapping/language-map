@@ -2,7 +2,7 @@ import React from 'react'
 
 import { LangRecordSchema } from '../../context/types'
 import countryCodes from './config.emojis.json'
-import { CountryCodes } from './types'
+import * as Types from './types'
 import { CountryListItemWithFlag } from './CountryListItemWithFlag'
 import { EndoImageModal } from './EndoImageModal'
 
@@ -11,7 +11,8 @@ const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
 export function renderCountriesColumn(
   data: LangRecordSchema
 ): string | React.ReactNode {
-  const countryCodesTyped = countryCodes as CountryCodes // TODO: defeat this
+  // TODO: defeat this:
+  const countryCodesTyped = countryCodes as Types.CountryCodes
   const countries = data.Countries.split(DEFAULT_DELIM)
 
   const countriesWithFlags = countries.map((country) => {
@@ -53,8 +54,12 @@ export function renderGlobalSpeakColumn(
   data: LangRecordSchema
 ): string | React.ReactNode {
   return (
-    !data['Global Speaker Total'] ||
-    data['Global Speaker Total'].toLocaleString()
+    !data['Global Speaker Total'] || (
+      // Right-aligned number w/left-aligned column heading was requested
+      <div style={{ paddingRight: 16 }}>
+        {data['Global Speaker Total'].toLocaleString()}
+      </div>
+    )
   )
 }
 

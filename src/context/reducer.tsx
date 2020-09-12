@@ -5,12 +5,6 @@ export const reducer = (
   action: StoreAction
 ): InitialState => {
   switch (action.type) {
-    case 'INIT_LANG_LAYER_FEATURES':
-      return {
-        ...state,
-        langFeatures: action.payload,
-        langFeaturesCached: action.payload, // for easy resets later
-      }
     case 'INIT_LANG_LAYER_LABEL_OPTIONS':
       return {
         ...state,
@@ -31,10 +25,12 @@ export const reducer = (
         ...state,
         baselayer: action.payload,
       }
-    case 'SET_LANG_FEAT_IDS':
+    case 'SET_LANG_LAYER_FEATURES':
       return {
         ...state,
-        langFeatIDs: action.payload,
+        langFeatures: action.payload,
+        // Handy for future reference without caching all the features
+        langFeatsLenCache: state.langFeatsLenCache || action.payload.length,
       }
     case 'SET_LANG_LAYER_LABELS':
       return {

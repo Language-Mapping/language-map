@@ -13,3 +13,28 @@ a {
   font-family: 'NKo';
   src: url('/fonts/NotoSansNKo-Regular.ttf') format('truetype');
 }
+
+/* GROSS warning here down. Super fragile but menus not customizable? 🤷‍♂ */
+.MuiPopover-root[role='presentation']
+  .MuiListItemText-root
+  .MuiTypography-root {
+  font-size: 0.9em;
+}
+
+/* TODO: reduce redundancy from here down... */
+.MuiPopover-root[role='presentation'] .MuiListItem-root.MuiButtonBase-root {
+  padding: 0 0.5em;
+  font-size: 0.9em;
+}
+
+/* 'Add or remove columns' heading */
+.MuiPopover-root[role='presentation'] .MuiListItem-root.Mui-disabled {
+  font-size: 1.15em !important;
+  padding: 0 0.75em;
+  margin-bottom: -0.25em;
+}
+
+/* Checkboxes */
+.MuiPopover-root[role='presentation'] .MuiCheckbox-root {
+  padding: 0.25em 0.25em;
+}
