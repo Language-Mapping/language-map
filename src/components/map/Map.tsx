@@ -116,7 +116,11 @@ export const Map: FC<Types.MapComponent> = (props) => {
     )
 
     // TODO: figure out this logic. How to zoom to home extent when needed?
-    if (state.langFeatures.length === state.langFeatsLenCache) return
+    if (
+      !state.langFeatures.length ||
+      state.langFeatures.length === state.langFeatsLenCache
+    )
+      return
 
     const firstCoords: [number, number] = [
       langFeatures[0].Longitude,
