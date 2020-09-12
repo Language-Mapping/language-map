@@ -3,6 +3,8 @@ import {
   PointerEvent,
   InteractiveMap,
   LayerProps,
+  ViewportProps,
+  ViewState,
 } from 'react-map-gl'
 import {
   // LngLatLike, // TODO: use more often
@@ -34,6 +36,7 @@ export type MapViewportState = LongLatAndZoom
 export type PopupContent = { heading: string; subheading?: string }
 export type PopupSettings = PopupContent & LongLat
 export type GeocodeMarker = LongLat & { text: string }
+export type ViewportState = Partial<ViewportProps> & ViewState
 
 // MB Styles API individual group in the `metadata` of JSON response
 export type MetadataGroup = { [mbGroupIdHash: string]: { name: string } }

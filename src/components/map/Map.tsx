@@ -9,12 +9,7 @@ import {
   VectorSource,
   LngLatBoundsLike,
 } from 'mapbox-gl'
-import MapGL, {
-  InteractiveMap,
-  MapLoadEvent,
-  ViewportProps,
-  ViewState,
-} from 'react-map-gl'
+import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
@@ -27,7 +22,7 @@ import { MapCtrlBtns } from './MapCtrlBtns'
 import { BoundariesLayer } from './BoundariesLayer'
 import { GeocodeMarker } from './GeocodeMarker'
 
-import * as MapTypes from './types'
+import * as Types from './types'
 import * as utils from './utils'
 import * as config from './config'
 import * as events from './events'
@@ -55,7 +50,7 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
   )
 }
 
-export const Map: FC<MapTypes.MapComponent> = (props) => {
+export const Map: FC<Types.MapComponent> = (props) => {
   const { symbLayers, labelLayers, baselayer } = props
   const history = useHistory()
   const loc = useLocation()
@@ -73,24 +68,23 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
   const [
     geocodeMarker,
     setGeocodeMarker,
-  ] = useState<MapTypes.GeocodeMarker | null>()
-  const [viewport, setViewport] = useState<Partial<ViewportProps> & ViewState>(
+  ] = useState<Types.GeocodeMarker | null>()
+  const [viewport, setViewport] = useState<Types.ViewportState>(
     config.initialMapState
   )
   const [
     tooltipSettings,
     setTooltipSettings,
-  ] = useState<MapTypes.PopupSettings | null>(null)
+  ] = useState<Types.PopupSettings | null>(null)
   const [
     popupSettings,
     setPopupSettings,
-  ] = useState<MapTypes.PopupSettings | null>(null)
+  ] = useState<Types.PopupSettings | null>(null)
 
   // Lookup tables // TODO: into <Boundaries> somehow. Not needed on load!
   const lookups = {
-    counties: useQuery<MapTypes.BoundaryLookup[]>(countiesConfig.source.id)
-      .data,
-    neighborhoods: useQuery<MapTypes.BoundaryLookup[]>(neighbConfig.source.id)
+    counties: useQuery<Types.BoundaryLookup[]>(countiesConfig.source.id).data,
+    neighborhoods: useQuery<Types.BoundaryLookup[]>(neighbConfig.source.id)
       .data,
   }
 
@@ -165,7 +159,7 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
   }, [selFeatAttribs, mapLoaded])
   /* eslint-enable react-hooks/exhaustive-deps */
 
-  function onHover(event: MapTypes.MapEvent) {
+  function onHover(event: Types.MapEvent) {
     if (!mapRef.current || !mapLoaded) return
 
     events.onHover(event, setTooltipSettings, mapRef.current.getMap(), {
@@ -255,13 +249,13 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
 
       if (geocodeMarkerParams) setGeocodeMarker(geocodeMarkerParams)
 
-      if (popupParams as MapTypes.PopupSettings) {
+      if (popupParams as Types.PopupSettings) {
         setPopupSettings(popupParams)
       }
     })
   }
 
-  function onClick(event: MapTypes.MapEvent): void {
+  function onClick(event: Types.MapEvent): void {
     if (!mapRef.current || !mapLoaded) return
 
     const map: MbMap = mapRef.current.getMap()
@@ -276,7 +270,7 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
       history.push(loc.pathname)
       dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
     } else {
-      const langFeat = topLangFeat as MapTypes.LangFeature
+      const langFeat = topLangFeat as Types.LangFeature
 
       // TODO: use `initialEntries` in <MemoryRouter> to test routing
       history.push(`${routes.details}?id=${langFeat.properties.ID}`)
@@ -288,7 +282,7 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
 
     const boundariesClicked = map.queryRenderedFeatures(event.point, {
       layers: boundariesLayerIDs,
-    }) as MapTypes.BoundaryFeat[]
+    }) as Types.BoundaryFeat[]
 
     if (boundariesClicked.length) {
       const dimensions = {
@@ -322,7 +316,7 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
   }
 
   // TODO: into utils if it doesn't require passing 1000 args
-  function onMapCtrlClick(actionID: MapTypes.MapControlAction) {
+  function onMapCtrlClick(actionID: Types.MapControlAction) {
     if (!mapRef.current) return
 
     const map: MbMap = mapRef.current.getMap()
@@ -356,7 +350,7 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
           interactiveLayerIds || []
         )}
         onViewportChange={setViewport}
-        onClick={(event: MapTypes.MapEvent) => onClick(event)}
+        onClick={(event: Types.MapEvent) => onClick(event)}
         onHover={onHover}
         onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
       >
@@ -394,7 +388,7 @@ export const Map: FC<MapTypes.MapComponent> = (props) => {
       </MapGL>
       <MapCtrlBtns
         {...{ mapRef }}
-        onMapCtrlClick={(actionID: MapTypes.MapControlAction) => {
+        onMapCtrlClick={(actionID: Types.MapControlAction) => {
           onMapCtrlClick(actionID)
         }}
       />
