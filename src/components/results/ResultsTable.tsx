@@ -1,6 +1,6 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable react/display-name */
-import React, { FC, useState } from 'react'
+import React, { FC, useState, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import MaterialTable from 'material-table'
@@ -27,19 +27,25 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
-  const { closeTable, data: tableData } = props
+  const { closeTable, data: tableData, gangsAllHere } = props
   const classes = useStyles()
   const history = useHistory()
   const loc = useLocation()
   const tableRef = React.useRef<MuiTableWithLangs>(null)
   // const { height } = useWindowResize() // TODO: rm if not using
   const [descripModalText, setDescripModalText] = useState<string>('')
+  const [clearBtnEnabled, setClearBtnEnabled] = useState<boolean>(false)
   const [descripModalHeading, setDescripModalHeading] = useState<
     LangOrEndoProps
   >()
 
   // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
   // properly (blanks last, regardless of direction)
+
+  // TODO: rm all this if giving up
+  useEffect((): void => {
+    setClearBtnEnabled(gangsAllHere === false)
+  }, [gangsAllHere])
 
   return (
     <>
@@ -76,12 +82,16 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
             <ResultsToolbar
               {...toolbarProps}
               closeTable={closeTable}
+              setClearBtnEnabled={setClearBtnEnabled}
               tableRef={tableRef}
+              clearBtnEnabled={clearBtnEnabled}
             />
           ),
         }}
-        // onFilterChange={(filters) => setMapFiltersBtnDisbled(false)} // TODO
-        // onSearchChange={(search) => {}} // TODO: rm if not using
+        // Works but laggy:
+        // onFilterChange={(filters) => setClearBtnEnabled(true)}
+        // CANNOT get this to work without setting the focus to the clear btn
+        // onSearchChange={(search) => setClearBtnEnabled(true)}
         // TODO: all into config
         actions={[
           {

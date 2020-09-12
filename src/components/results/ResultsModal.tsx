@@ -44,7 +44,11 @@ export const ResultsModal: FC<ResultsModalProps> = (props) => {
         className: classes.resultsModalPaper,
       }}
     >
-      <ResultsTable closeTable={closeTable} data={tableData} />
+      <ResultsTable
+        closeTable={closeTable}
+        data={tableData}
+        gangsAllHere={state.langFeatures.length === state.langFeatsLenCache}
+      />
     </Dialog>
   )
 }

@@ -7,3 +7,9 @@ export type MapPanel = {
   component: React.ReactNode
   path: RouteLocation
 }
+
+export type MapPanelProps = {
+  active?: boolean
+  first?: boolean
+  panelOpen?: boolean
+}

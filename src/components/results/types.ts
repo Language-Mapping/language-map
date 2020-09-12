@@ -10,7 +10,10 @@ import { LangRecordSchema } from '../../context/types'
 export type CountryCodes = { [key: string]: string }
 export type CloseTableProps = { closeTable: () => void }
 export type ColumnWithTableData = { tableData: TableData } & ColumnsConfig
-export type ResultsTableProps = CloseTableProps & { data: LangRecordSchema[] }
+export type ResultsTableProps = CloseTableProps & {
+  data: LangRecordSchema[]
+  gangsAllHere: boolean
+}
 export type TableOptions = Options<LangRecordSchema>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,4 +52,6 @@ export type MuiTableWithLangs = MaterialTable<LangRecordSchema> & {
 
 export type ResultsToolbarProps = MaterialTableProps<LangRecordSchema> & {
   tableRef: React.RefObject<MuiTableWithLangs>
+  clearBtnEnabled?: boolean // TODO: rm if giving up
+  setClearBtnEnabled?: React.Dispatch<boolean> // TODO: rm if giving up
 } & CloseTableProps

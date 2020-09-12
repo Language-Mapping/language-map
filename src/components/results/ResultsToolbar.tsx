@@ -135,6 +135,8 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
     })
 
     self.setState({ ...dataManager.getRenderState(), columns: cleared })
+
+    // setClearBtnEnabled(false) // so close // TODO: rm if giving up
   }
 
   return (
@@ -162,7 +164,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
           title="Clear table filters"
           color="secondary"
           variant="contained"
-          // disabled // TODO: disable if no filters
+          // disabled={!clearBtnEnabled} // so close
           size="small"
           startIcon={<RiFilterOffFill />}
           onClick={() => clearFiltersBtnClick()}

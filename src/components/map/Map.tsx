@@ -8,6 +8,7 @@ import {
   setRTLTextPlugin,
   VectorSource,
   LngLatBoundsLike,
+  LngLatBounds,
 } from 'mapbox-gl'
 import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
 
@@ -63,7 +64,12 @@ export const Map: FC<Types.MapComponent> = (props) => {
     width >= theme.breakpoints.values.md
   )
 
-  const { selFeatAttribs, mapLoaded, activeLangSymbGroupId } = state
+  const {
+    selFeatAttribs,
+    mapLoaded,
+    activeLangSymbGroupId,
+    langFeatures,
+  } = state
 
   // Local states
   const [
@@ -106,7 +112,30 @@ export const Map: FC<Types.MapComponent> = (props) => {
     utils.filterLayersByFeatIDs(
       map,
       currentLayerNames,
-      getAllLangFeatIDs(state.langFeatures)
+      getAllLangFeatIDs(langFeatures)
+    )
+
+    // TODO: figure out this logic. How to zoom to home extent when needed?
+    if (state.langFeatures.length === state.langFeatsLenCache) return
+
+    const firstCoords: [number, number] = [
+      langFeatures[0].Longitude,
+      langFeatures[0].Latitude,
+    ]
+
+    const bounds = state.langFeatures.reduce(
+      (all, thisOne) => all.extend([thisOne.Longitude, thisOne.Latitude]),
+      new LngLatBounds(firstCoords, firstCoords)
+    )
+
+    utils.flyToBounds(
+      map,
+      {
+        height: viewport.height as number,
+        width: viewport.width as number,
+        bounds: bounds.toArray() as Types.BoundsArray,
+      },
+      null
     )
   }, [state.langFeatures])
 

@@ -29,6 +29,8 @@ export const reducer = (
       return {
         ...state,
         langFeatures: action.payload,
+        // Handy for future reference without caching all the features
+        langFeatsLenCache: state.langFeatsLenCache || action.payload.length,
       }
     case 'SET_LANG_LAYER_LABELS':
       return {

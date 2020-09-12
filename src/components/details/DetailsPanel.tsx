@@ -68,7 +68,7 @@ const RandomLink: FC = () => {
 
   if (!langFeatures.length) return null
 
-  const randoIndex = Math.floor(Math.random() * langFeatures.length) + 1
+  const randoIndex = Math.floor(Math.random() * (langFeatures.length - 1))
   const id = langFeatures[randoIndex].ID
 
   return (
