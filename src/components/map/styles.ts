@@ -27,6 +27,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       transition: (props: MapPanelProps) =>
         smoothToggleTransition(theme, props.panelOpen),
+      height: '50%',
       [theme.breakpoints.up('sm')]: {
         flexGrow: ({ panelOpen }: MapPanelProps) => (panelOpen ? 0 : 2),
         height: '100%',
