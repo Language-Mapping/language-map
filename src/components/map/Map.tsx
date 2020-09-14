@@ -142,7 +142,10 @@ export const Map: FC<Types.MapComponent> = (props) => {
     if (!mapRef.current || !mapLoaded) return
 
     const map: MbMap = mapRef.current.getMap()
-    const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
+    const currentLayerNames = [
+      ...state.legendItems.map((item) => item.legendLabel),
+      ...state.langLabels.map((item) => item),
+    ]
 
     utils.filterLayersByFeatIDs(
       map,

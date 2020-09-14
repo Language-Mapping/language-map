@@ -24,38 +24,37 @@ export const addLangTypeIconsToMap = (
   })
 }
 
+// Includes
 export const filterLayersByFeatIDs = (
   map: Map,
   layerNames: string[],
   langFeatIDs: number[]
 ): void => {
   layerNames.forEach((name) => {
+    // CRED: https://gis.stackexchange.com/a/287629/5824
+    const filterLangsByID = ['in', ['get', 'ID'], ['literal', langFeatIDs]]
     const currentFilters = map.getFilter(name)
 
-    // Clear it first // TODO: rm if not necessary
-    map.setFilter(name, null)
-
     let origFilter = []
+    let filterToUse = filterLangsByID
 
-    // TODO: consider usefulness, otherwise remove:
-    // const layer =  map.getLayer(name)
+    // TODO: consider usefulness, otherwise remove: `map.getLayer(name)`
+    map.setFilter(name, null) // clear it first // TODO: rm if not necessary
+
     // GROSS dude. Gotta be a better way to check?
-    if (currentFilters[0] === 'all') {
+    if (currentFilters && currentFilters[0] === 'all') {
       ;[, origFilter] = currentFilters
-    } else {
+    } else if (currentFilters) {
+      // Irrelevant for labels layers since no init filters at time of writing:
       origFilter = currentFilters
     }
 
-    if (!langFeatIDs.length) {
-      map.setFilter(name, origFilter)
-    } else {
-      map.setFilter(name, [
-        'all',
-        origFilter,
-        // CRED: https://gis.stackexchange.com/a/287629/5824
-        ['in', ['get', 'ID'], ['literal', langFeatIDs]],
-      ])
+    // TODO: tighten this up!
+    if (!['Language', 'Endonym'].includes(name)) {
+      filterToUse = ['all', origFilter, filterLangsByID]
     }
+
+    map.setFilter(name, filterToUse)
   })
 }
 
