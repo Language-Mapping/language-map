@@ -20,7 +20,7 @@ export const FiltersWarning: FC = () => {
   const classes = useStyles()
 
   return (
-    <Typography className={classes.filtersWarning}>
+    <Typography className={classes.filtersWarning} component="span">
       <GoInfo />
       Any filters in the Data Table will be applied.
     </Typography>
