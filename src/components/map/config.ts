@@ -10,6 +10,7 @@ import iconMuseum from './icons/museum.svg'
 // Unsure why it needs the type here but not for feature coords..
 const mapCenter = [-73.96, 40.7128] as [number, number]
 
+export const POINT_ZOOM_LEVEL = 14 // e.g. clicked point or single-result filter
 export const NYC_LAT_LONG = { latitude: 40.7128, longitude: -74.006 }
 export const MAPBOX_TOKEN = process.env.REACT_APP_MB_TOKEN
 export const mbStyleTileConfig = {
@@ -46,7 +47,7 @@ export const mapProps: Types.InitialMapProps = {
   mapboxApiAccessToken: MAPBOX_TOKEN,
   mapOptions: { logoPosition: 'bottom-left' },
   mapStyle: mbStyleTileConfig.customStyles.light,
-  maxZoom: 16,
+  maxZoom: 18, // 18 is kinda misleading w/the dispersed points, but looks good
   width: '100%',
 }
 

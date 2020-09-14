@@ -109,19 +109,38 @@ export const Map: FC<Types.MapComponent> = (props) => {
 
     const map: MbMap = mapRef.current.getMap()
 
-    // TODO: figure out this logic. How to zoom to home extent when needed?
-    if (
-      !state.langFeatures.length ||
-      state.langFeatures.length === state.langFeatsLenCache
-    )
+    // At time of writing, a "no features" scenario should only occur on load
+    // since the "View results..." btn in the table is disabled if there are no
+    // records.
+    if (!langFeatures.length) return
+
+    // TODO: better check/decouple the fly-home-on-filter-reset behavior so that
+    // there are no surprise fly-to-home scenarios.
+    if (langFeatures.length === state.langFeatsLenCache) {
+      flyHome(map)
+
       return
+    }
 
     const firstCoords: [number, number] = [
       langFeatures[0].Longitude,
       langFeatures[0].Latitude,
     ]
 
-    const bounds = state.langFeatures.reduce(
+    // Zooming to "bounds" gets crazy if there is only one feature
+    if (langFeatures.length === 1) {
+      const settings = {
+        latitude: firstCoords[1],
+        longitude: firstCoords[0],
+        zoom: config.POINT_ZOOM_LEVEL,
+      }
+
+      utils.flyToPoint(map, settings, null)
+
+      return
+    }
+
+    const bounds = langFeatures.reduce(
       (all, thisOne) => all.extend([thisOne.Longitude, thisOne.Latitude]),
       new LngLatBounds(firstCoords, firstCoords)
     )
@@ -135,7 +154,7 @@ export const Map: FC<Types.MapComponent> = (props) => {
       },
       null
     )
-  }, [state.langFeatures.length])
+  }, [langFeatures.length])
 
   // Filter lang feats in map on length change or symbology change
   useEffect((): void => {
@@ -152,7 +171,7 @@ export const Map: FC<Types.MapComponent> = (props) => {
       currentLayerNames,
       getAllLangFeatIDs(langFeatures)
     )
-  }, [state.langFeatures.length, state.legendItems])
+  }, [langFeatures.length, state.legendItems])
 
   // TODO: put in... legend?
   useEffect(
@@ -195,7 +214,12 @@ export const Map: FC<Types.MapComponent> = (props) => {
     // and order of the whole process prevent that.
 
     const { ID, Latitude: latitude, Longitude: longitude } = selFeatAttribs
-    const settings = { latitude, longitude, zoom: 14, disregardCurrZoom: true }
+    const settings = {
+      latitude,
+      longitude,
+      zoom: config.POINT_ZOOM_LEVEL,
+      disregardCurrZoom: true,
+    }
 
     // Make feature appear selected // TODO: higher zIndex on selected feature
     map.setFeatureState(
