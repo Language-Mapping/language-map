@@ -46,7 +46,7 @@ export const mapProps: Types.InitialMapProps = {
   mapboxApiAccessToken: MAPBOX_TOKEN,
   mapOptions: { logoPosition: 'bottom-left' },
   mapStyle: mbStyleTileConfig.customStyles.light,
-  maxZoom: 18,
+  maxZoom: 16,
   width: '100%',
 }
 
