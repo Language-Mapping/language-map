@@ -103,17 +103,11 @@ export const Map: FC<Types.MapComponent> = (props) => {
   /* eslint-disable react-hooks/exhaustive-deps */
   // ^^^^^ otherwise it wants things like mapRef and dispatch 24/7
 
+  // Fly to extent of lang features on length change
   useEffect((): void => {
-    if (!mapRef.current || !mapLoaded) return
+    if (!mapRef.current) return
 
     const map: MbMap = mapRef.current.getMap()
-    const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
-
-    utils.filterLayersByFeatIDs(
-      map,
-      currentLayerNames,
-      getAllLangFeatIDs(langFeatures)
-    )
 
     // TODO: figure out this logic. How to zoom to home extent when needed?
     if (
@@ -141,7 +135,21 @@ export const Map: FC<Types.MapComponent> = (props) => {
       },
       null
     )
-  }, [state.langFeatures])
+  }, [state.langFeatures.length])
+
+  // Filter lang feats in map on length change or symbology change
+  useEffect((): void => {
+    if (!mapRef.current || !mapLoaded) return
+
+    const map: MbMap = mapRef.current.getMap()
+    const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
+
+    utils.filterLayersByFeatIDs(
+      map,
+      currentLayerNames,
+      getAllLangFeatIDs(langFeatures)
+    )
+  }, [state.langFeatures.length, state.legendItems])
 
   // TODO: put in... legend?
   useEffect(

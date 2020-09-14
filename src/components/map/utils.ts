@@ -27,7 +27,7 @@ export const addLangTypeIconsToMap = (
 export const filterLayersByFeatIDs = (
   map: Map,
   layerNames: string[],
-  langFeatIDs: null | number[]
+  langFeatIDs: number[]
 ): void => {
   layerNames.forEach((name) => {
     const currentFilters = map.getFilter(name)
@@ -46,7 +46,7 @@ export const filterLayersByFeatIDs = (
       origFilter = currentFilters
     }
 
-    if (langFeatIDs === null) {
+    if (!langFeatIDs.length) {
       map.setFilter(name, origFilter)
     } else {
       map.setFilter(name, [
