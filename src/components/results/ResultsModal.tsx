@@ -35,6 +35,8 @@ export const ResultsModal: FC<ResultsModalProps> = (props) => {
     <Dialog
       open={open}
       keepMounted
+      disableBackdropClick
+      disableEscapeKeyDown
       className={`${classes.resultsModalRoot}`}
       onClose={handleClose}
       aria-labelledby="results-modal-dialog-title"
@@ -44,11 +46,7 @@ export const ResultsModal: FC<ResultsModalProps> = (props) => {
         className: classes.resultsModalPaper,
       }}
     >
-      <ResultsTable
-        closeTable={closeTable}
-        data={tableData}
-        gangsAllHere={state.langFeatures.length === state.langFeatsLenCache}
-      />
+      <ResultsTable closeTable={closeTable} data={tableData} />
     </Dialog>
   )
 }

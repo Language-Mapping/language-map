@@ -90,10 +90,11 @@ export const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
-  const { tableRef, closeTable } = props
+  const { tableRef, closeTable, clearBtnEnabled, setClearBtnEnabled } = props
   const { dispatch } = useContext(GlobalContext)
   const classes = useStyles()
   const history = useHistory()
+  const noResults = tableRef.current && !tableRef.current.state.data.length
 
   function mapFilterBtnClick(): void {
     if (!tableRef || !tableRef.current) return
@@ -136,7 +137,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
 
     self.setState({ ...dataManager.getRenderState(), columns: cleared })
 
-    // setClearBtnEnabled(false) // so close // TODO: rm if giving up
+    setClearBtnEnabled(false)
   }
 
   return (
@@ -156,6 +157,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
           size="small"
           startIcon={<FaMapMarkedAlt />}
           onClick={() => mapFilterBtnClick()}
+          disabled={noResults}
         >
           View results in map
         </Button>
@@ -164,7 +166,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
           title="Clear table filters"
           color="secondary"
           variant="contained"
-          // disabled={!clearBtnEnabled} // so close
+          disabled={!clearBtnEnabled}
           size="small"
           startIcon={<RiFilterOffFill />}
           onClick={() => clearFiltersBtnClick()}

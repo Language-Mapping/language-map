@@ -40,6 +40,10 @@ export const COMM_SIZE_COL_MAP = {
 }
 
 export const localization: Localization = {
+  body: {
+    emptyDataSourceMessage:
+      'No communities found. Try fewer criteria or click the "Clear filters" button to reset the table.',
+  },
   header: {
     actions: '',
   },
