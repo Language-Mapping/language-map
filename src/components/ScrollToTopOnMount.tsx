@@ -6,7 +6,8 @@ export const ScrollToTopOnMount: FC<{ elemID: string }> = (props) => {
   useEffect(() => {
     const elem = document.getElementById(elemID)
 
-    if (elem)
+    // Satisfy headless tests
+    if (elem && elem.scrollIntoView)
       elem.scrollIntoView({
         block: 'end',
         behavior: 'smooth',
