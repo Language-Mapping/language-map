@@ -125,7 +125,7 @@ export const DetailsPanel: FC = () => {
 
   return (
     <>
-      <ScrollToTopOnMount elemID={elemID} />
+      <ScrollToTopOnMount elemID={elemID} trigger={state.selFeatAttribs.ID} />
       <div className={intro} id={elemID}>
         <LangOrEndoIntro attribs={state.selFeatAttribs} />
         <Typography className={neighborhoods}>

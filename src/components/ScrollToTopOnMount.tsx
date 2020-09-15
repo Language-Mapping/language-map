@@ -3,19 +3,25 @@ import { FC, useEffect } from 'react'
 // TODO: possibly this for preserving panel scroll position:
 // https://codesandbox.io/s/m72wvynqr9?file=/src/useScroll.js
 
-export const ScrollToTopOnMount: FC<{ elemID: string }> = (props) => {
-  const { elemID } = props
+type ScrollToTopProps = { elemID: string; trigger?: any }
 
-  useEffect(() => {
-    const elem = document.getElementById(elemID)
+export const ScrollToTopOnMount: FC<ScrollToTopProps> = (props) => {
+  const { elemID, trigger } = props
 
-    // Satisfy headless tests
-    if (elem && elem.scrollIntoView)
-      elem.scrollIntoView({
-        block: 'end',
-        behavior: 'smooth',
-      })
-  }, [elemID])
+  useEffect(
+    () => {
+      const elem = document.getElementById(elemID)
+
+      // Satisfy headless tests
+      if (elem && elem.scrollIntoView)
+        elem.scrollIntoView({
+          block: 'end',
+          behavior: 'smooth',
+        })
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    trigger ? [elemID, trigger] : [elemID]
+  )
 
   return null
 }
