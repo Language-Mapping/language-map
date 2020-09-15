@@ -93,7 +93,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
             icon: () => <AiOutlineQuestionCircle />,
             tooltip: 'Help',
             isFreeAction: true,
-            onClick: () => history.push(`/glossary${loc.search}`),
+            onClick: () => history.push(`/help${loc.search}`),
           },
           (data) => ({
             icon: () => <GoFile />,

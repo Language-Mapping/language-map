@@ -5,7 +5,7 @@ import { wpConfigs, WP_API_PAGES_ENDPOINT } from './config'
 export const fetchAbout = async (): Promise<void> =>
   (await fetch(`${WP_API_PAGES_ENDPOINT}/${wpConfigs[0].pageID}`)).json()
 
-export const fetchGlossary = async (): Promise<void> =>
+export const fetchHelp = async (): Promise<void> =>
   (await fetch(`${WP_API_PAGES_ENDPOINT}/${wpConfigs[1].pageID}`)).json()
 
 export const fetchWelcome = async (): Promise<void> =>

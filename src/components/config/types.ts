@@ -1,1 +1,1 @@
-export type RouteLocation = '/' | '/details' | '/table' | '/about' | '/glossary'
+export type RouteLocation = '/' | '/details' | '/table' | '/about' | '/help'

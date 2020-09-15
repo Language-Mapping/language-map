@@ -86,13 +86,13 @@ export const PanelIntro: FC<PanelIntroProps> = (props) => {
       </li>
       <li>
         <Button
-          title="Glossary of common terms"
+          title="Help and glossary of common terms"
           className={classes.introBtn}
           color="primary"
           component={RouterLink}
           size="small"
           startIcon={<AiOutlineQuestionCircle />}
-          to={routes.glossary + loc.search}
+          to={routes.help + loc.search}
         >
           Help
         </Button>
