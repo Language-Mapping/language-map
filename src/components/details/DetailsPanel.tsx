@@ -3,7 +3,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
-import { GlobalContext, LangOrEndoIntro } from 'components'
+import { GlobalContext, LangOrEndoIntro, ScrollToTopOnMount } from 'components'
 import { LegendSwatch } from 'components/legend'
 import { RecordDescription } from 'components/results'
 import { paths as routes } from 'components/config/routes'
@@ -97,12 +97,9 @@ export const DetailsPanel: FC = () => {
   // Shaky check to see if features have loaded and are stored globally
   // TODO: use MB's loading events to set this instead
   if (!state.langFeatures.length) return null
+  if (!state.selFeatAttribs) return <NoFeatSel /> // no sel feat details
 
-  const { selFeatAttribs } = state
-
-  // No sel feat details
-  if (!selFeatAttribs) return <NoFeatSel />
-
+  const elemID = 'details'
   const {
     Language: language,
     Neighborhoods,
@@ -113,7 +110,7 @@ export const DetailsPanel: FC = () => {
     Audio: audio,
     Video: video,
     'World Region': WorldRegion,
-  } = selFeatAttribs
+  } = state.selFeatAttribs
   const { intro, descripSection, neighborhoods } = classes
   const regionSwatchColor =
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -128,8 +125,9 @@ export const DetailsPanel: FC = () => {
 
   return (
     <>
-      <div className={intro}>
-        <LangOrEndoIntro attribs={selFeatAttribs} />
+      <ScrollToTopOnMount elemID={elemID} />
+      <div className={intro} id={elemID}>
+        <LangOrEndoIntro attribs={state.selFeatAttribs} />
         <Typography className={neighborhoods}>
           {Neighborhoods || Town}
         </Typography>

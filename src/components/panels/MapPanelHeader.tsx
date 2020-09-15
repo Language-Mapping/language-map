@@ -33,14 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       color: theme.palette.common.white,
       display: 'flex',
-      flexShrink: 0,
       justifyContent: 'center',
-      position: 'sticky',
-      bottom: 0,
-      textAlign: 'center',
-      top: 0,
-      width: '100%',
-      zIndex: 1,
       '& a, a:visited': {
         color: `${theme.palette.common.white} !important`, // constant fight!
       },

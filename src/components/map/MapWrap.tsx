@@ -77,8 +77,6 @@ export const MapWrap: FC = (props) => {
       {!state.mapLoaded && <LoadingBackdrop />}
       <FabPanelToggle />
       <main className={classes.appWrapRoot}>
-        {/* children should just be MapPanel */}
-        {children}
         {symbLayers && labelLayers && (
           <div className={classes.mapWrap}>
             <Map
@@ -88,6 +86,8 @@ export const MapWrap: FC = (props) => {
             />
           </div>
         )}
+        {/* children should just be MapPanel */}
+        {children}
       </main>
     </>
   )

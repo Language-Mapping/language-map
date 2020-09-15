@@ -31,6 +31,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('sm')]: {
         flexGrow: ({ panelOpen }: MapPanelProps) => (panelOpen ? 0 : 2),
         height: '100%',
+        order: 2,
       },
       [theme.breakpoints.down('sm')]: {
         minHeight: ({ panelOpen }: MapPanelProps) =>
@@ -40,7 +41,6 @@ export const useStyles = makeStyles((theme: Theme) =>
           panelOpen ? '50%' : `calc(100% - ${MOBILE_PANEL_HEADER_HEIGHT})`,
         maxHeight: ({ panelOpen }: MapPanelProps) =>
           panelOpen ? '50%' : `calc(100% - ${MOBILE_PANEL_HEADER_HEIGHT})`,
-        order: 1,
       },
     },
   })
