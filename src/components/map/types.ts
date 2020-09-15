@@ -38,6 +38,7 @@ export type PopupSettings = PopupContent & LongLat
 export type GeocodeMarker = LongLat & { text: string }
 export type ViewportState = Partial<ViewportProps> & ViewState
 export type InitialMapProps = InteractiveMapProps
+export type SheetsValues = [string, string]
 
 // MB Styles API individual group in the `metadata` of JSON response
 export type MetadataGroup = { [mbGroupIdHash: string]: { name: string } }

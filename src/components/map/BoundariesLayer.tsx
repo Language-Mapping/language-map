@@ -17,9 +17,7 @@ export const BoundariesLayer: FC<BoundariesLayerProps> = (props) => {
   const [recordIDs, setRecordIDs] = useState<number[]>()
 
   useEffect(() => {
-    queryCache.prefetchQuery(source.id, () =>
-      utils.fetchBoundariesLookup(lookupPath)
-    )
+    queryCache.prefetchQuery(source.id, () => utils.asyncAwaitFetch(lookupPath))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

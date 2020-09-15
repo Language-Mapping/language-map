@@ -67,7 +67,7 @@ export const getWebMercViewport: MapTypes.GetWebMercViewport = (params) => {
   }).fitBounds(bounds, padding ? { padding } : {})
 }
 
-export const fetchBoundariesLookup = async (path: string): Promise<void> =>
+export const asyncAwaitFetch = async (path: string): Promise<void> =>
   (await fetch(path)).json()
 
 export const prepPopupContent: MapTypes.PrepPopupContent = (
@@ -167,4 +167,19 @@ export const clearBoundaries: MapTypes.ClearStuff = (map) => {
     source: config.countiesSrcId,
     sourceLayer: config.countiesPolyID,
   })
+}
+
+// Convert a Google Sheets API response into Mapbox font filters. For it to have
+// any impact, the fonts must be uploaded to the Mapbox account and their names
+// must be identical to those in the sheet.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const prepEndoFilters = (data: MapTypes.SheetsValues[]): any[] => {
+  // Skip the first row, which contains only column headings
+  return data.slice(1).reduce((all, row) => {
+    const lang = ['==', ['var', 'lang'], row[0]]
+    const font = ['literal', [row[1]]]
+
+    return [...all, lang, font]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }, [] as any[])
 }
