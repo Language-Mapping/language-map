@@ -52,21 +52,19 @@ export const FabPanelToggle: FC = () => {
   const classes = useStyles({ panelOpen })
 
   return (
-    <div className={`${classes.fabPanelToggleRoot} ${classes.smoothTrans}`}>
-      <Fab
-        color="primary"
-        size="small"
-        aria-label="toggle panel"
-        className={classes.smoothTrans}
-        onClick={() =>
-          dispatch({
-            type: 'SET_PANEL_STATE',
-            payload: panelOpen ? 'minimized' : 'default',
-          })
-        }
-      >
-        <FiChevronRight className={classes.smoothTrans} />
-      </Fab>
-    </div>
+    <Fab
+      color="primary"
+      size="small"
+      aria-label="toggle panel"
+      className={`${classes.fabPanelToggleRoot} ${classes.smoothTrans}`}
+      onClick={() =>
+        dispatch({
+          type: 'SET_PANEL_STATE',
+          payload: panelOpen ? 'minimized' : 'default',
+        })
+      }
+    >
+      <FiChevronRight className={classes.smoothTrans} />
+    </Fab>
   )
 }

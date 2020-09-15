@@ -24,22 +24,22 @@ export const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.down('sm')]: { flexDirection: 'column' },
     },
     mapWrap: {
+      height: '50%',
       width: '100%',
       transition: (props: MapPanelProps) =>
         smoothToggleTransition(theme, props.panelOpen),
-      height: '50%',
       [theme.breakpoints.up('sm')]: {
-        flexGrow: ({ panelOpen }: MapPanelProps) => (panelOpen ? 0 : 2),
         height: '100%',
-        order: 2,
+        flexGrow: ({ panelOpen }: MapPanelProps) => (panelOpen ? 0 : 2),
       },
+      [theme.breakpoints.up('md')]: { order: 2 },
       [theme.breakpoints.down('sm')]: {
-        minHeight: ({ panelOpen }: MapPanelProps) =>
-          panelOpen ? '50%' : `calc(100% - ${MOBILE_PANEL_HEADER_HEIGHT})`,
         flexGrow: ({ panelOpen }: MapPanelProps) => (panelOpen ? 1 : 100),
         flexBasis: ({ panelOpen }: MapPanelProps) =>
           panelOpen ? '50%' : `calc(100% - ${MOBILE_PANEL_HEADER_HEIGHT})`,
         maxHeight: ({ panelOpen }: MapPanelProps) =>
+          panelOpen ? '50%' : `calc(100% - ${MOBILE_PANEL_HEADER_HEIGHT})`,
+        minHeight: ({ panelOpen }: MapPanelProps) =>
           panelOpen ? '50%' : `calc(100% - ${MOBILE_PANEL_HEADER_HEIGHT})`,
       },
     },
