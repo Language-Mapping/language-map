@@ -4,7 +4,7 @@ import { CirclePaint, AnyLayout } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
 import { LayerPropsNonBGlayer, SheetsValues } from './types'
-import { mbStyleTileConfig } from './config'
+import { mbStyleTileConfig, langLabelsStyle } from './config'
 import { asyncAwaitFetch, prepEndoFilters } from './utils'
 
 // Ongoing fonts to check
@@ -49,9 +49,10 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
 }) => {
   const { data, isFetching, error } = useQuery(QUERY_ID)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [fonts, setFonts] = useState<any[]>()
+  const [endoFonts, setEndoFonts] = useState<any[]>()
 
   useEffect(() => {
+    // TODO: maybe not prefetch?
     queryCache.prefetchQuery(QUERY_ID, () => asyncAwaitFetch(MB_FONTS_URL))
   }, [])
 
@@ -62,7 +63,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
 
     if (!sheetsResponse) return
 
-    setFonts(prepEndoFilters(sheetsResponse))
+    setEndoFonts(prepEndoFilters(sheetsResponse))
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetching])
@@ -98,13 +99,29 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
           // TODO: change symbol size (???) for selected feat. Evidently cannot
           // set layout properties base on feature-state though, so maybe this:
           // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setlayoutproperty
-          // 0.5 good with 24x24 SVG if there is a background circle. Otherwise
-          // a little smaller is better.
-          layout = { ...layout, 'icon-size': 0.4 }
+
+          if (activeLangLabelId && activeLangLabelId !== 'None') {
+            paint = { ...paint, ...langLabelsStyle.paint }
+            layout = { ...layout, ...langLabelsStyle.layout }
+
+            if (endoFonts && activeLangLabelId === 'Endonym') {
+              layout = {
+                ...layout,
+                'text-font': endoFonts,
+                'text-field': [
+                  'case',
+                  ['==', ['slice', ['get', 'Endonym'], 0, 4], 'http'],
+                  ['get', 'Language'],
+                  ['get', 'Endonym'],
+                ],
+              }
+            }
+          } else {
+            layout = { ...layout, 'text-field': '' }
+          }
         }
 
         return (
-          // TODO: some kind of transition/animation on switch
           <Layer
             key={layer.id}
             {...layer}
@@ -116,30 +133,19 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
         )
       })}
       {/* TODO: set "text-size" value based on zoom level */}
-      {/* TODO: make expressions less redundant, AND make it config-driven so
-      that the font stuff is not so tangled up in the MB config (totally
-      separate file may be best) */}
+      {/* TODO: make expressions less redundant */}
       {labelLayers.map((layer: LayerPropsNonBGlayer) => {
         const isActiveLabel = layer.id === activeLangLabelId
-        const isEndonym = layer.id === 'Endonym'
+        const isStatusSymbol = activeLangSymbGroupId === 'Status' // FRAGILE
 
-        const layout: AnyLayout = {
+        let layout: AnyLayout = {
           ...layer.layout,
-          visibility: isActiveLabel ? 'visible' : 'none',
+          visibility: isActiveLabel && !isStatusSymbol ? 'visible' : 'none',
         }
 
-        /* eslint-disable @typescript-eslint/ban-ts-comment */
-        if (isEndonym && fonts) {
-          // @ts-ignore
-          layout['text-font'] = [
-            'let',
-            'lang',
-            ['get', 'Language'],
-            // @ts-ignore
-            ['case', ...fonts],
-          ]
+        if (layer.id === 'Endonym' && endoFonts) {
+          layout = { ...layout, 'text-font': endoFonts }
         }
-        /* eslint-enable @typescript-eslint/ban-ts-comment */
 
         return (
           <Layer
@@ -148,6 +154,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
             // YO: careful here, it's overriding what's in the MB style JSON...
             source-layer={mbStyleTileConfig.layerId}
             layout={layout}
+            paint={{ ...layer.paint, ...langLabelsStyle.paint }}
           />
         )
       })}

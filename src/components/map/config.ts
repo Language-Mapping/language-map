@@ -154,6 +154,22 @@ export const neighSrcId = neighbConfig.source.id
 export const countiesPolyID = countiesConfig.layers[0]['source-layer']
 export const neighPolyID = neighbConfig.layers[0]['source-layer']
 
+// TODO: bunch more config
+export const langLabelsStyle = {
+  layout: {
+    'text-variable-anchor': ['bottom-left', 'top-left'],
+    'text-radial-offset': 0,
+    'text-field': ['to-string', ['get', 'Language']],
+    'text-font': ['Noto Sans Regular', 'Arial Unicode MS Regular'],
+    'text-size': 10,
+  },
+  paint: {
+    'text-color': 'hsl(0, 0%, 5%)',
+    'text-halo-width': 1,
+    'text-halo-color': 'hsla(0, 0%, 95%, 0.95)',
+  },
+}
+
 // If using Boundaries... WE NEED TWO POLYGON LAYERS:
 // boundaries_locality_2 and boundaries_locality_4:
 // loc2: cities/CDPs with parent_1 = USLOC17W but NOT an ID of USLOC23651000

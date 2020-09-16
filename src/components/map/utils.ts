@@ -172,14 +172,25 @@ export const clearBoundaries: MapTypes.ClearStuff = (map) => {
 // Convert a Google Sheets API response into Mapbox font filters. For it to have
 // any impact, the fonts must be uploaded to the Mapbox account and their names
 // must be identical to those in the sheet.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const prepEndoFilters = (data: MapTypes.SheetsValues[]): any[] => {
   // Skip the first row, which contains only column headings
-  return data.slice(1).reduce((all, row) => {
+  const filters = data.slice(1).reduce((all, row) => {
     const lang = ['==', ['var', 'lang'], row[0]]
     const font = ['literal', [row[1]]]
 
     return [...all, lang, font]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }, [] as any[])
+
+  return [
+    'let',
+    'lang',
+    ['get', 'Language'],
+    [
+      'case',
+      ...filters,
+      ['literal', ['Noto Sans Regular', 'Arial Unicode MS Regular']],
+    ],
+  ]
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */

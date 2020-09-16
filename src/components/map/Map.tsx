@@ -68,6 +68,7 @@ export const Map: FC<Types.MapComponent> = (props) => {
     selFeatAttribs,
     mapLoaded,
     activeLangSymbGroupId,
+    activeLangLabelId,
     langFeatures,
   } = state
 
@@ -442,7 +443,7 @@ export const Map: FC<Types.MapComponent> = (props) => {
           <LangMbSrcAndLayer
             {...{ symbLayers, labelLayers }}
             activeLangSymbGroupId={activeLangSymbGroupId}
-            activeLangLabelId={state.activeLangLabelId}
+            activeLangLabelId={activeLangLabelId}
           />
         )}
         {popupSettings && (
