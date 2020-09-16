@@ -1,40 +1,21 @@
-import React, { FC, useState, useContext, useEffect } from 'react'
+import React, { FC, useContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
 import { FabPanelToggle } from 'components/panels'
 import { Map } from 'components/map'
 import { GlobalContext, LoadingBackdrop } from 'components'
-import { LayerPropsNonBGlayer } from './types'
-import { mbStyleTileConfig } from './config'
 import { useStyles } from './styles'
-import { getIDfromURLparams, getMbStyleDocument } from '../../utils'
+import { getIDfromURLparams } from '../../utils'
 
 export const MapWrap: FC = (props) => {
   const { children } = props
   const { state, dispatch } = useContext(GlobalContext)
   const loc = useLocation()
-  const [symbLayers, setSymbLayers] = useState<LayerPropsNonBGlayer[]>()
   const { langFeatures } = state
 
   const classes = useStyles({
     panelOpen: state.panelState === 'default',
   })
-
-  // Fetch MB Style doc
-  useEffect(() => {
-    getMbStyleDocument(
-      mbStyleTileConfig.symbStyleUrl,
-      dispatch,
-      setSymbLayers
-    ).catch((errMsg) => {
-      // eslint-disable-next-line no-console
-      console.error(
-        // TODO: wire up sentry
-        `Something went wrong trying to fetch MB style JSON: ${errMsg}`
-      )
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   // Do selected feature stuff on location change
   useEffect((): void => {
@@ -53,11 +34,7 @@ export const MapWrap: FC = (props) => {
 
     if (matchingRecord) {
       document.title = `${matchingRecord.Language as string} - NYC Languages`
-
-      dispatch({
-        type: 'SET_SEL_FEAT_ATTRIBS',
-        payload: matchingRecord,
-      })
+      dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: matchingRecord })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc.search, state.langFeatures.length])
@@ -75,11 +52,9 @@ export const MapWrap: FC = (props) => {
       {!state.mapLoaded && <LoadingBackdrop />}
       <main className={classes.appWrapRoot}>
         <FabPanelToggle />
-        {symbLayers && (
-          <div className={classes.mapWrap}>
-            <Map symbLayers={symbLayers} baselayer={state.baselayer} />
-          </div>
-        )}
+        <div className={classes.mapWrap}>
+          <Map baselayer={state.baselayer} />
+        </div>
         {/* children should just be MapPanel */}
         {children}
       </main>

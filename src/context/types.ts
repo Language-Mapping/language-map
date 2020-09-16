@@ -15,7 +15,6 @@ export type LegendSymbols = {
 export type LangSchemaCol = keyof LangRecordSchema
 
 export type StoreAction =
-  | { type: 'INIT_LEGEND_SYMBOLS'; payload: LegendSymbols }
   | { type: 'SET_BASELAYER'; payload: Baselayer }
   | { type: 'SET_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | { type: 'SET_LANG_LAYER_LABELS'; payload: LangSchemaCol | '' }

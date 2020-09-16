@@ -1,42 +1,10 @@
-import { useState, useEffect, Dispatch } from 'react'
+import { useState, useEffect } from 'react'
 import { Theme } from '@material-ui/core/styles'
 
-import {
-  MetadataGroup,
-  MbResponse,
-  LayerPropsNonBGlayer,
-} from 'components/map/types'
-import { StoreAction, LangRecordSchema } from './context/types'
+import { LangRecordSchema } from './context/types'
 
 // TODO: into config since it's used in multiple places...
 const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
-
-export const getGroupNames = (groupObject: MetadataGroup): string[] =>
-  Object.keys(groupObject).map((groupId: string) => groupObject[groupId].name)
-
-export const getMbStyleDocument = async (
-  symbStyleUrl: string,
-  dispatch: Dispatch<StoreAction>,
-  setSymbLayers: Dispatch<LayerPropsNonBGlayer[]>
-): Promise<void> => {
-  const response = await fetch(symbStyleUrl)
-  const { layers }: MbResponse = await response.json()
-
-  setSymbLayers(layers as LayerPropsNonBGlayer[])
-
-  const legend = layers.reduce((all, thisOne) => {
-    return {
-      ...all,
-      [thisOne.id as string]: {
-        paint: thisOne.paint,
-        type: thisOne.type,
-        layout: thisOne.layout,
-      },
-    }
-  }, {})
-
-  dispatch({ type: 'INIT_LEGEND_SYMBOLS', payload: legend })
-}
 
 export const findFeatureByID = (
   langLayerRecords: LangRecordSchema[],
@@ -56,6 +24,7 @@ export const isURL = (text: string): boolean => text.slice(0, 4) === 'http'
 
 // CRED:
 // https://github.com/mbrn/material-table/issues/709#issuecomment-566097441
+// TODO: put into hooks file and/or folder along with any others
 export function useWindowResize(): { width: number; height: number } {
   const [width, setWidth] = useState(window.innerWidth)
   const [height, setHeight] = useState(window.innerHeight)

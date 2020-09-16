@@ -28,17 +28,19 @@ const useStyles = makeStyles((theme: Theme) =>
 
 // TODO: break this out into LegendItem separately since swatch could be handy
 // on its own, e.g. in Details or Popup
-export const LegendSwatch: FC<LegendSwatchComponent> = ({
-  backgroundColor,
-  icon,
-  type,
-  legendLabel,
-  size = 7,
-  component = 'li',
-}) => {
+export const LegendSwatch: FC<LegendSwatchComponent> = (props) => {
+  const {
+    backgroundColor,
+    icon,
+    type,
+    legendLabel,
+    size = 7,
+    component = 'li',
+  } = props
   const classes = useStyles({ type })
   const adjustedSize = size * 1.5
 
+  // TODO: make it work
   return (
     <Box className={classes.legendSwatchRoot} component={component}>
       {type === 'circle' && (
@@ -51,9 +53,7 @@ export const LegendSwatch: FC<LegendSwatchComponent> = ({
           }}
         />
       )}
-      {type === 'symbol' && (
-        <img src={icon} alt={legendLabel} className={classes.imgSwatch} />
-      )}
+      <img src={icon} alt={legendLabel} className={classes.imgSwatch} />
       <Typography variant="caption" className={classes.legendLabel}>
         {legendLabel}
       </Typography>

@@ -5,11 +5,6 @@ export const reducer = (
   action: StoreAction
 ): InitialState => {
   switch (action.type) {
-    case 'INIT_LEGEND_SYMBOLS':
-      return {
-        ...state,
-        legendSymbols: action.payload,
-      }
     case 'SET_BASELAYER':
       return {
         ...state,

@@ -24,13 +24,10 @@ export const FiltersPanel: FC = () => {
       <Typography variant="h5" component="h3">
         Legend
       </Typography>
-      {state.mapLoaded && (
-        // TODO: react-query for mb-styles json, then use query in legend panel
-        <LegendPanel
-          legendItems={state.legendItems}
-          groupName={state.activeLangSymbGroupId}
-        />
-      )}
+      <LegendPanel
+        legendItems={state.legendItems}
+        groupName={state.activeLangSymbGroupId}
+      />
     </>
   )
 }

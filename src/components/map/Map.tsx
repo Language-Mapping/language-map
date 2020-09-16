@@ -27,6 +27,7 @@ import * as Types from './types'
 import * as utils from './utils'
 import * as config from './config'
 import * as events from './events'
+import symbLayers from './config.lang-style'
 
 import { LangRecordSchema } from '../../context/types'
 import {
@@ -38,6 +39,7 @@ import {
 
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
 const { neighbConfig, countiesConfig, boundariesLayerIDs } = config
+const interactiveLayerIds = symbLayers.map((symbLayer) => symbLayer.id)
 
 // Jest or whatever CANNOT find this plugin. And importing it from
 // `react-map-gl` is useless as well.
@@ -53,7 +55,7 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
 }
 
 export const Map: FC<Types.MapComponent> = (props) => {
-  const { symbLayers, baselayer } = props
+  const { baselayer } = props
   const history = useHistory()
   const loc = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
@@ -95,11 +97,6 @@ export const Map: FC<Types.MapComponent> = (props) => {
     neighborhoods: useQuery<Types.BoundaryLookup[]>(neighbConfig.source.id)
       .data,
   }
-
-  const interactiveLayerIds = React.useMemo(
-    () => symbLayers.map((symbLayer) => symbLayer.id),
-    [symbLayers]
-  )
 
   /* eslint-disable react-hooks/exhaustive-deps */
   // ^^^^^ otherwise it wants things like mapRef and dispatch 24/7

@@ -28,19 +28,19 @@ type Padding =
 
 export type Baselayer = 'dark' | 'light' // assumes using Mapbox style
 export type BoundsArray = [[number, number], [number, number]]
+export type GeocodeMarker = LongLat & { text: string }
+export type InitialMapProps = InteractiveMapProps
 export type LangIconConfig = { icon: string; id: string }
 export type Layer = LayerProps & { 'source-layer': string; id: string }
 export type LongLat = { longitude: number; latitude: number }
 export type LongLatAndZoom = LongLat & { zoom: number }
+export type MapComponent = { baselayer: Baselayer }
 export type MapControlAction = 'home' | 'in' | 'out' | 'info' | 'loc-search'
 export type PopupContent = { heading: string; subheading?: string }
 export type PopupSettings = PopupContent & LongLat
-export type GeocodeMarker = LongLat & { text: string }
-export type ViewportState = Partial<ViewportProps> & ViewState
-export type InitialMapProps = InteractiveMapProps
 export type SheetsValues = [string, string]
-
-export type MetadataGroup = { [mbGroupIdHash: string]: { name: string } }
+export type UseStyleProps = { panelOpen: boolean }
+export type ViewportState = Partial<ViewportProps> & ViewState
 
 export type LayerPropsPlusMeta = Omit<
   LayerProps,
@@ -62,12 +62,6 @@ export type BoundaryConfig = {
 // Same but only circle or symbol types
 export type LayerPropsNonBGlayer = Omit<LayerPropsPlusMeta, 'type'> & {
   type: 'circle' | 'symbol'
-}
-
-// API response from Styles API. Not the same as what comes back in map.target
-export type MbResponse = {
-  groups: [keyof LangRecordSchema]
-  layers: LayerPropsPlusMeta[]
 }
 
 export type LangFeature = {
@@ -94,11 +88,6 @@ export type MapEvent = Omit<PointerEvent, 'features'> & {
   features: LangFeature[] | BoundaryFeat[]
 }
 
-export type MapComponent = {
-  baselayer: Baselayer
-  symbLayers: LayerPropsNonBGlayer[]
-}
-
 export type GetWebMercViewport = (
   settings: Omit<BoundsConfig, 'bounds'> & {
     bounds: BoundsArray
@@ -114,8 +103,6 @@ export type GetWebMercCenter = (params: {
   zoom: number
   padding?: Padding
 }) => [number, number]
-
-export type UseStyleProps = { panelOpen: boolean }
 
 export type GeocodeResult = {
   result: {

@@ -1,4 +1,17 @@
 import { InitialState } from 'context/types'
+import fullLangStyle from '../components/map/config.lang-style'
+
+// TODO: consider separate file
+const legendSymbols = fullLangStyle.reduce((all, thisOne) => {
+  return {
+    ...all,
+    [thisOne.id as string]: {
+      paint: thisOne.paint,
+      type: thisOne.type,
+      layout: thisOne.layout,
+    },
+  }
+}, {})
 
 export const initialState = {
   activeLangLabelId: '',
@@ -8,7 +21,7 @@ export const initialState = {
   langFeatsLenCache: 0,
   langFeatures: [],
   legendItems: [],
-  legendSymbols: {},
+  legendSymbols,
   mapLoaded: false,
   offCanvasNavOpen: false,
   panelState: 'default',
