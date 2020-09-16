@@ -18,8 +18,7 @@ export const getGroupNames = (groupObject: MetadataGroup): string[] =>
 export const getMbStyleDocument = async (
   symbStyleUrl: string,
   dispatch: Dispatch<StoreAction>,
-  setSymbLayers: Dispatch<LayerPropsNonBGlayer[]>,
-  setLabelLayers: Dispatch<LayerPropsNonBGlayer[]>
+  setSymbLayers: Dispatch<LayerPropsNonBGlayer[]>
 ): Promise<void> => {
   const response = await fetch(symbStyleUrl) // TODO: handle errors
   const { metadata, layers: allLayers }: MbResponse = await response.json()
@@ -70,7 +69,6 @@ export const getMbStyleDocument = async (
     payload: labelFields,
   })
 
-  setLabelLayers(labelsLayers)
   setSymbLayers(notTheBgLayerOrLabels)
 
   const legend = notTheBgLayerOrLabels.reduce((all, thisOne) => {

@@ -19,7 +19,10 @@ export const addLangTypeIconsToMap = (
     // CRED:
     // https://github.com/mapbox/mapbox-gl-js/issues/5529#issuecomment-340011876
     const img = new Image(48, 48) // src files are 24x24 viewbox
-    img.onload = () => map.addImage(id, img)
+
+    // Enabling the `sdf` property allows icons to be colored on the fly:
+    // https://docs.mapbox.com/help/troubleshooting/using-recolorable-images-in-mapbox-maps/#mapbox-gl-js
+    img.onload = () => map.addImage(id, img, { sdf: true })
     img.src = icon
   })
 }

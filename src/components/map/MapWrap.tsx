@@ -14,7 +14,6 @@ export const MapWrap: FC = (props) => {
   const { state, dispatch } = useContext(GlobalContext)
   const loc = useLocation()
   const [symbLayers, setSymbLayers] = useState<LayerPropsNonBGlayer[]>()
-  const [labelLayers, setLabelLayers] = useState<LayerPropsNonBGlayer[]>()
   const { langFeatures } = state
 
   const classes = useStyles({
@@ -26,8 +25,7 @@ export const MapWrap: FC = (props) => {
     getMbStyleDocument(
       mbStyleTileConfig.symbStyleUrl,
       dispatch,
-      setSymbLayers,
-      setLabelLayers
+      setSymbLayers
     ).catch((errMsg) => {
       // eslint-disable-next-line no-console
       console.error(
@@ -77,13 +75,9 @@ export const MapWrap: FC = (props) => {
       {!state.mapLoaded && <LoadingBackdrop />}
       <main className={classes.appWrapRoot}>
         <FabPanelToggle />
-        {symbLayers && labelLayers && (
+        {symbLayers && (
           <div className={classes.mapWrap}>
-            <Map
-              symbLayers={symbLayers}
-              labelLayers={labelLayers}
-              baselayer={state.baselayer}
-            />
+            <Map symbLayers={symbLayers} baselayer={state.baselayer} />
           </div>
         )}
         {/* children should just be MapPanel */}

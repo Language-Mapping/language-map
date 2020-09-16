@@ -99,7 +99,6 @@ export type MapEvent = Omit<PointerEvent, 'features'> & {
 
 export type MapComponent = {
   baselayer: Baselayer
-  labelLayers: LayerPropsNonBGlayer[]
   symbLayers: LayerPropsNonBGlayer[]
 }
 

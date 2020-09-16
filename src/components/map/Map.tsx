@@ -53,7 +53,7 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
 }
 
 export const Map: FC<Types.MapComponent> = (props) => {
-  const { symbLayers, labelLayers, baselayer } = props
+  const { symbLayers, baselayer } = props
   const history = useHistory()
   const loc = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
@@ -162,10 +162,7 @@ export const Map: FC<Types.MapComponent> = (props) => {
     if (!mapRef.current || !mapLoaded) return
 
     const map: MbMap = mapRef.current.getMap()
-    const currentLayerNames = [
-      ...state.legendItems.map((item) => item.legendLabel),
-      ...state.langLabels.map((item) => item),
-    ]
+    const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
 
     utils.filterLayersByFeatIDs(
       map,
@@ -439,9 +436,9 @@ export const Map: FC<Types.MapComponent> = (props) => {
             }
           />
         ))}
-        {symbLayers && labelLayers && (
+        {symbLayers && (
           <LangMbSrcAndLayer
-            {...{ symbLayers, labelLayers }}
+            symbLayers={symbLayers}
             activeLangSymbGroupId={activeLangSymbGroupId}
             activeLangLabelId={activeLangLabelId}
           />
