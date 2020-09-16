@@ -19,11 +19,11 @@ type SourceAndLayerComponent = {
   activeLangLabelId: string
 }
 
-// const ROSS_SHEET_ID =
-//   '2PACX-1vTZB96D_w7Y4LsCBTb4zAa_25Nl44--Vb1dKA4AzstOwOZ7bsFQ5SvbjCHxzyqAbZf1hNCEiDgLwaS9'
+// TODO: rm when ready
+// const SHEET_ID = '1r94KUrO5Mq9BhFy3uMlgysK_at16L4Vb5hU0-4EX-TA' // mine
 const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY
 const QUERY_ID = 'sheets-mb-fonts' // unique react-query ID
-const SHEET_ID = '1r94KUrO5Mq9BhFy3uMlgysK_at16L4Vb5hU0-4EX-TA'
+const SHEET_ID = '1QfySFNpD2VnLand3-lTNAPAlrm0Cmv9As01LAXgXC0E'
 const SHEET_NAME = 'Mapbox_Fonts'
 const SHEETS_API_ROOT = 'https://sheets.googleapis.com/v4/spreadsheets'
 
