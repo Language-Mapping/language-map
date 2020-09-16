@@ -41,7 +41,7 @@ export const initLegend = (
   symbLayers: LayerPropsNonBGlayer[]
 ): void => {
   const layersInActiveGroup = symbLayers.filter(
-    (layer) => layer.metadata['mapbox:group'] === activeLangSymbGroupId
+    ({ group }) => group === activeLangSymbGroupId
   )
 
   const legend = createMapLegend(layersInActiveGroup)

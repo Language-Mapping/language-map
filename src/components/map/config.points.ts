@@ -16,6 +16,8 @@ const SHEETS_API_ROOT = 'https://sheets.googleapis.com/v4/spreadsheets'
 export const QUERY_ID = 'sheets-mb-fonts' // unique react-query ID
 export const MB_FONTS_URL = `${SHEETS_API_ROOT}/${SHEET_ID}/values/${SHEET_NAME}?key=${GOOGLE_API_KEY}`
 
+// TODO: consider orig. Region colors for `Status`: https://bit.ly/34szqZe
+
 export const langTypeIconsConfig = [
   { icon: iconTree, id: '_tree' },
   { icon: iconBook, id: '_book' },
@@ -38,11 +40,13 @@ export const commonCirclePaint = {
 
 export const langLabelsStyle = {
   layout: {
-    'text-variable-anchor': ['bottom-left', 'top-left'],
-    'text-radial-offset': 0,
+    'icon-image': '_circle',
+    'icon-size': 0.25,
     'text-field': ['to-string', ['get', 'Language']],
     'text-font': ['Noto Sans Regular', 'Arial Unicode MS Regular'],
+    'text-radial-offset': 0,
     'text-size': 10,
+    'text-variable-anchor': ['bottom-left', 'top-left'],
   },
   paint: {
     'text-color': 'hsl(0, 0%, 5%)',

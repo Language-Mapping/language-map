@@ -8,13 +8,7 @@ import { LangRecordSchema } from '../../context/types'
 
 export const FiltersPanel: FC = () => {
   const { state } = useContext(GlobalContext)
-  const { langSymbGroups, activeLangSymbGroupId } = state
   const elemID = 'filters-panel'
-  /* eslint-disable operator-linebreak */
-  const groupName = langSymbGroups[activeLangSymbGroupId]
-    ? langSymbGroups[activeLangSymbGroupId].name
-    : ''
-  /* eslint-enable operator-linebreak */
   const [data, setData] = useState<LangRecordSchema[]>([])
 
   useEffect((): void => setData(state.langFeatures), [state.langFeatures])
@@ -32,7 +26,10 @@ export const FiltersPanel: FC = () => {
       </Typography>
       {state.mapLoaded && (
         // TODO: react-query for mb-styles json, then use query in legend panel
-        <LegendPanel legendItems={state.legendItems} groupName={groupName} />
+        <LegendPanel
+          legendItems={state.legendItems}
+          groupName={state.activeLangSymbGroupId}
+        />
       )}
     </>
   )

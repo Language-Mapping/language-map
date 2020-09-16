@@ -1,16 +1,9 @@
 {
-  "metadata": {
-    "mapbox:groups": {
-      "World Region": { "name": "World Region" },
-      "Size": { "name": "Size" },
-      "Status": { "name": "Status" },
-      "Labels": { "name": "Labels" }
-    }
-  },
+  "groups": ["World Region", "Size", "Status"],
   "layers": [
     {
       "id": "Smallest",
-      "metadata": { "mapbox:group": "Size" },
+      "group": "Size",
       "filter": ["match", ["get", "Size"], [1], true, false],
       "layout": {
         "icon-image": "_circle",
@@ -22,7 +15,7 @@
     },
     {
       "id": "Small",
-      "metadata": { "mapbox:group": "Size" },
+      "group": "Size",
       "filter": ["match", ["get", "Size"], [2], true, false],
       "layout": {
         "icon-image": "_circle",
@@ -34,7 +27,7 @@
     },
     {
       "id": "Medium",
-      "metadata": { "mapbox:group": "Size" },
+      "group": "Size",
       "filter": ["match", ["get", "Size"], [3], true, false],
       "layout": {
         "icon-image": "_circle",
@@ -46,7 +39,7 @@
     },
     {
       "id": "Large",
-      "metadata": { "mapbox:group": "Size" },
+      "group": "Size",
       "filter": ["match", ["get", "Size"], [4], true, false],
       "layout": {
         "icon-image": "_circle",
@@ -58,7 +51,7 @@
     },
     {
       "id": "Largest",
-      "metadata": { "mapbox:group": "Size" },
+      "group": "Size",
       "filter": ["match", ["get", "Size"], [5], true, false],
       "layout": {
         "icon-image": "_circle",
@@ -70,7 +63,7 @@
     },
     {
       "id": "Historical",
-      "metadata": { "mapbox:group": "Status" },
+      "group": "Status",
       "filter": ["match", ["get", "Status"], ["Historical"], true, false],
       "layout": {
         "icon-image": "_museum"
@@ -79,7 +72,7 @@
     },
     {
       "id": "Community",
-      "metadata": { "mapbox:group": "Status" },
+      "group": "Status",
       "filter": ["match", ["get", "Status"], ["Community"], true, false],
       "layout": {
         "icon-image": "_users"
@@ -88,7 +81,7 @@
     },
     {
       "id": "Liturgical",
-      "metadata": { "mapbox:group": "Status" },
+      "group": "Status",
       "filter": ["match", ["get", "Status"], ["Liturgical"], true, false],
       "layout": {
         "icon-image": "_book"
@@ -97,7 +90,7 @@
     },
     {
       "id": "Residential",
-      "metadata": { "mapbox:group": "Status" },
+      "group": "Status",
       "filter": ["match", ["get", "Status"], ["Residential"], true, false],
       "layout": {
         "icon-image": "_home"
@@ -106,7 +99,7 @@
     },
     {
       "id": "Reviving",
-      "metadata": { "mapbox:group": "Status" },
+      "group": "Status",
       "filter": ["match", ["get", "Status"], ["Reviving"], true, false],
       "layout": {
         "icon-image": "_tree"
@@ -114,48 +107,15 @@
       "paint": { "icon-color": "hsl(133, 33%, 50%)" }
     },
     {
-      "id": "Language",
-      "metadata": { "mapbox:group": "Labels" },
-      "layout": {
-        "text-variable-anchor": ["bottom-left", "top-left"],
-        "text-radial-offset": 0,
-        "text-field": ["to-string", ["get", "Language"]],
-        "text-font": ["Noto Sans Regular", "Arial Unicode MS Regular"],
-        "text-size": 10,
-        "visibility": "none"
-      },
-      "paint": {}
-    },
-    {
-      "id": "Endonym",
-      "metadata": { "mapbox:group": "Labels" },
-      "layout": {
-        "text-variable-anchor": ["bottom-left", "top-left"],
-        "text-radial-offset": 0,
-        "text-field": [
-          "case",
-          ["==", ["slice", ["get", "Endonym"], 0, 4], "http"],
-          ["get", "Language"],
-          ["get", "Endonym"]
-        ],
-        "text-size": 10,
-        "visibility": "none"
-      },
-      "paint": {}
-    },
-    {
       "id": "Polynesia",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": ["match", ["get", "World Region"], ["Polynesia"], true, false],
       "paint": { "icon-color": "#c49a8d" }
     },
     {
       "id": "Northern Europe",
-      "metadata": { "mapbox:group": "World Region" },
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -163,19 +123,13 @@
         true,
         false
       ],
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
+      "layout": {},
       "paint": { "icon-color": "#295e5b", "icon-halo-color": "red" }
     },
     {
       "id": "Australia and New Zealand",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -187,31 +141,22 @@
     },
     {
       "id": "Micronesia",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": ["match", ["get", "World Region"], ["Micronesia"], true, false],
       "paint": { "icon-color": "#72493b" }
     },
     {
       "id": "Melanesia",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": ["match", ["get", "World Region"], ["Melanesia"], true, false],
       "paint": { "icon-color": "#b68372" }
     },
     {
       "id": "Southern Africa",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -223,11 +168,8 @@
     },
     {
       "id": "Middle Africa",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -239,11 +181,8 @@
     },
     {
       "id": "Northern Africa",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -255,11 +194,8 @@
     },
     {
       "id": "Eastern Africa",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -271,11 +207,8 @@
     },
     {
       "id": "Southern Asia",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -287,11 +220,8 @@
     },
     {
       "id": "Eastern Asia",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -303,11 +233,8 @@
     },
     {
       "id": "Central Asia",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -319,11 +246,8 @@
     },
     {
       "id": "Southern Europe",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -335,11 +259,8 @@
     },
     {
       "id": "Western Africa",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -351,11 +272,8 @@
     },
     {
       "id": "Western Europe",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -367,11 +285,8 @@
     },
     {
       "id": "Western Asia",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -383,11 +298,8 @@
     },
     {
       "id": "Southeastern Asia",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -399,11 +311,8 @@
     },
     {
       "id": "Eastern Europe",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -415,11 +324,8 @@
     },
     {
       "id": "South America",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -431,11 +337,8 @@
     },
     {
       "id": "Northern America",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -447,11 +350,8 @@
     },
     {
       "id": "Central America",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": [
         "match",
         ["get", "World Region"],
@@ -463,19 +363,10 @@
     },
     {
       "id": "Caribbean",
-      "layout": {
-        "icon-image": "_circle",
-        "icon-size": 0.25
-      },
-      "metadata": { "mapbox:group": "World Region" },
+      "layout": {},
+      "group": "World Region",
       "filter": ["match", ["get", "World Region"], ["Caribbean"], true, false],
       "paint": { "icon-color": "hsl(169, 39%, 52%)" }
     }
-  ],
-  "created": "2020-07-14T22:43:54.288Z",
-  "id": "ckcmivm0r1o491iomlji26c48",
-  "modified": "2020-08-06T22:14:08.828Z",
-  "owner": "elalliance",
-  "visibility": "public",
-  "draft": false
+  ]
 }

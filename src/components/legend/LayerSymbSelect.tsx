@@ -3,16 +3,17 @@ import { TextField } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
 import { commonSelectProps } from './config'
+import { LangRecordSchema } from '../../context/types'
 
 // TODO: consider passing down some of the global stuff as props
 export const LayerSymbSelect: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
-  const groupIDs = Object.keys(state.langSymbGroups)
+  const groupIDs = ['World Region', 'Size', 'Status'] // TODO: config file?
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     dispatch({
       type: 'SET_LANG_LAYER_SYMBOLOGY',
-      payload: event.target.value as string,
+      payload: event.target.value as keyof LangRecordSchema,
     })
   }
 
@@ -28,7 +29,7 @@ export const LayerSymbSelect: FC = () => {
       <option value="None">None (hide layer)</option>
       {groupIDs.map((id: string) => (
         <option key={id} value={id}>
-          {state.langSymbGroups[id].name}
+          {id}
         </option>
       ))}
     </TextField>

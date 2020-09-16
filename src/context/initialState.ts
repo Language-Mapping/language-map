@@ -1,28 +1,17 @@
 import { InitialState } from 'context/types'
 
-// Somewhat project-specific, consider putting in separate file
-const initialMapStates = {
+export const initialState = {
   activeLangLabelId: '',
-  activeLangSymbGroupId: '',
+  activeLangSymbGroupId: 'World Region',
   baselayer: 'light',
-  langFeatures: [],
+  boundariesLayersVisible: false,
   langFeatsLenCache: 0,
-  langLabels: [],
-  langSymbGroups: {},
+  langFeatures: [],
   legendItems: [],
   legendSymbols: {},
-  boundariesLayersVisible: false,
-  panelState: 'default',
-}
-
-export const initialState = {
   mapLoaded: false,
   offCanvasNavOpen: false,
+  panelState: 'default',
   selFeatAttribs: null,
-  uiAlert: {
-    open: false,
-    message: '',
-    severity: 'success',
-  },
-  ...initialMapStates,
+  uiAlert: { message: '', open: false, severity: 'success' },
 } as InitialState

@@ -40,17 +40,14 @@ export type ViewportState = Partial<ViewportProps> & ViewState
 export type InitialMapProps = InteractiveMapProps
 export type SheetsValues = [string, string]
 
-// MB Styles API individual group in the `metadata` of JSON response
 export type MetadataGroup = { [mbGroupIdHash: string]: { name: string } }
 
-// `metadata` prop has MB Studio group ID and appears to only be part of the
-// Style API, not the Style Spec.
 export type LayerPropsPlusMeta = Omit<
   LayerProps,
   'type' | 'paint' | 'layout' | 'id'
 > & {
   id: string
-  metadata: { 'mapbox:group': keyof MetadataGroup }
+  group: keyof LangRecordSchema
   type: 'circle' | 'symbol' | 'background'
   layout: CircleLayout | SymbolLayout
   paint: CirclePaint | SymbolPaint
@@ -69,7 +66,7 @@ export type LayerPropsNonBGlayer = Omit<LayerPropsPlusMeta, 'type'> & {
 
 // API response from Styles API. Not the same as what comes back in map.target
 export type MbResponse = {
-  metadata: { 'mapbox:groups': MetadataGroup }
+  groups: [keyof LangRecordSchema]
   layers: LayerPropsPlusMeta[]
 }
 

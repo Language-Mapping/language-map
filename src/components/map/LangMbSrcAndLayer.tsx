@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react'
 import { queryCache, useQuery } from 'react-query'
-import { AnyLayout } from 'mapbox-gl'
+import { AnyLayout, Expression } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
 import * as config from './config'
@@ -33,27 +33,35 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
     layout: AnyLayout,
     isInActiveGroup: boolean
   ): AnyLayout => {
+    const bareMinimum: AnyLayout = {
+      ...config.langLabelsStyle.layout,
+      ...layout,
+      visibility: isInActiveGroup ? 'visible' : 'none', // hide if inactive
+    }
+
     if (!activeLangLabelId || activeLangLabelId === 'None' || !endoFonts) {
-      return { ...layout, 'text-field': '' }
+      return { ...bareMinimum, 'text-field': '' }
     }
 
     const isEndo = activeLangLabelId === 'Endonym'
+    const defaultFont = ['Noto Sans Regular', 'Arial Unicode MS Regular']
+    const defaultTextField: Expression = [
+      'to-string',
+      ['get', activeLangLabelId],
+    ]
+    // TODO: check if 'Font Image Alt' is popuplated instead of using http
+    const imgCheck: Expression = [
+      'case',
+      ['==', ['slice', ['get', 'Endonym'], 0, 4], 'http'],
+      ['get', 'Language'],
+      ['get', 'Endonym'],
+    ]
 
     /* eslint-disable operator-linebreak */
     return {
-      ...layout,
-      visibility: isInActiveGroup ? 'visible' : 'none', // hide if inactive
-      'text-font': isEndo
-        ? endoFonts
-        : ['Noto Sans Regular', 'Arial Unicode MS Regular'],
-      'text-field': isEndo
-        ? [
-            'case',
-            ['==', ['slice', ['get', 'Endonym'], 0, 4], 'http'],
-            ['get', 'Language'],
-            ['get', 'Endonym'],
-          ]
-        : ['to-string', ['get', activeLangLabelId]],
+      ...bareMinimum,
+      'text-font': isEndo ? endoFonts : defaultFont,
+      'text-field': isEndo ? imgCheck : defaultTextField,
     }
     /* eslint-enable operator-linebreak */
   }
@@ -89,8 +97,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
     >
       {symbLayers.map((layer: LayerPropsNonBGlayer) => {
         let { paint, layout } = layer
-        const isInActiveGroup =
-          layer.metadata['mapbox:group'] === activeLangSymbGroupId
+        const isInActiveGroup = layer.group === activeLangSymbGroupId
 
         layout = getLayout(layout, isInActiveGroup)
 
