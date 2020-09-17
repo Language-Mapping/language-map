@@ -12,7 +12,7 @@ export const addLangTypeIconsToMap = (
   iconsConfig.forEach((iconConfig) => {
     const { id, icon } = iconConfig
 
-    if (map.hasImage(id)) {
+    if (map && map.hasImage(id)) {
       map.removeImage(id)
     }
 
