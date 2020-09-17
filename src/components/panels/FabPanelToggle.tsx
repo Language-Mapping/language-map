@@ -6,7 +6,6 @@ import { FiChevronRight } from 'react-icons/fi'
 
 import { GlobalContext } from 'components'
 import { panelWidths } from 'components/panels/config'
-import { smoothToggleTransition } from '../../utils'
 
 type FabStyle = { panelOpen: boolean }
 
@@ -14,34 +13,25 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     fabPanelToggleRoot: {
       position: 'absolute',
-      top: theme.spacing(2),
-      left: theme.spacing(2),
       zIndex: 1,
+      top: (props: FabStyle) => (props.panelOpen ? 6 : 16),
+      transition: '300ms ease all',
       '& svg': {
         height: '1.5em',
         width: '1.5em',
+        transition: '300ms ease transform',
         transform: (props: FabStyle) =>
           props.panelOpen ? 'rotateY(180deg)' : 'rotateY(0)',
       },
       [theme.breakpoints.up('md')]: {
-        transform: (props: FabStyle) =>
-          props.panelOpen
-            ? `translateX(${panelWidths.mid}px)`
-            : 'translateX(0)',
+        left: (props: FabStyle) =>
+          props.panelOpen ? `${panelWidths.mid - 20}px` : 16,
       },
       [theme.breakpoints.up('xl')]: {
-        transform: (props: FabStyle) =>
-          props.panelOpen
-            ? `translateX(${panelWidths.midLarge}px)`
-            : 'translateX(0)',
+        left: (props: FabStyle) =>
+          props.panelOpen ? `${panelWidths.midLarge - 20}px` : 16,
       },
-      [theme.breakpoints.down('sm')]: {
-        display: 'none',
-      },
-    },
-    smoothTrans: {
-      transition: (props: { panelOpen: boolean }) =>
-        smoothToggleTransition(theme, props.panelOpen),
+      [theme.breakpoints.down('sm')]: { display: 'none' },
     },
   })
 )
@@ -56,7 +46,7 @@ export const FabPanelToggle: FC = () => {
       color="primary"
       size="small"
       aria-label="toggle panel"
-      className={`${classes.fabPanelToggleRoot} ${classes.smoothTrans}`}
+      className={classes.fabPanelToggleRoot}
       onClick={() =>
         dispatch({
           type: 'SET_PANEL_STATE',
@@ -64,7 +54,7 @@ export const FabPanelToggle: FC = () => {
         })
       }
     >
-      <FiChevronRight className={classes.smoothTrans} />
+      <FiChevronRight />
     </Fab>
   )
 }

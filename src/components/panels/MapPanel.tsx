@@ -9,10 +9,6 @@ import { useStyles } from './styles'
 
 import * as Types from './types'
 
-type PanelContentComponent = Partial<Types.MapPanelProps> & {
-  heading: string
-}
-
 export const MapPanel: FC<Types.MapPanelProps> = (props) => {
   const { children } = props
   const { state } = useContext(GlobalContext)
@@ -21,30 +17,32 @@ export const MapPanel: FC<Types.MapPanelProps> = (props) => {
 
   // Need the `id` in order to find unique element for `map.setPadding`
   return (
-    <Box id="map-panels-wrap" className={classes.panelsRoot}>
-      <div>
-        <MapPanelHeader>
-          {[...panelsConfig].map((config) => (
-            <MapPanelHeaderChild
-              key={config.heading}
-              {...config}
-              active={loc.pathname === config.path}
-            >
-              {config.component}
-            </MapPanelHeaderChild>
-          ))}
-        </MapPanelHeader>
-        {children}
-      </div>
-      <div className={classes.contentWrap}>
-        <Switch>
-          {panelsConfig.map((config) => (
-            <Route exact path={config.path} key={config.heading}>
-              {config.component}
-            </Route>
-          ))}
-        </Switch>
-      </div>
-    </Box>
+    <>
+      <Box id="map-panels-wrap" className={classes.panelsRoot}>
+        <div>
+          <MapPanelHeader>
+            {[...panelsConfig].map((config) => (
+              <MapPanelHeaderChild
+                key={config.heading}
+                {...config}
+                active={loc.pathname === config.path}
+              >
+                {config.component}
+              </MapPanelHeaderChild>
+            ))}
+          </MapPanelHeader>
+          {children}
+        </div>
+        <div className={classes.contentWrap}>
+          <Switch>
+            {panelsConfig.map((config) => (
+              <Route exact path={config.path} key={config.heading}>
+                {config.component}
+              </Route>
+            ))}
+          </Switch>
+        </div>
+      </Box>
+    </>
   )
 }

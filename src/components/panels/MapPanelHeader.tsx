@@ -13,20 +13,6 @@ type PanelHeaderComponent = Omit<MapPanel, 'component'> & {
   active: boolean
 }
 
-const useCloseBtnStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    panelCloseBtn: {
-      position: 'absolute',
-      right: '0.5em',
-      transition: '300ms transform',
-      transformOrigin: 'center center',
-      transform: (props: { panelOpen: boolean }) =>
-        props.panelOpen ? 'rotate(0deg)' : 'rotate(180deg)',
-      [theme.breakpoints.up('md')]: { display: 'none' },
-    },
-  })
-)
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelHeaderRoot: {
@@ -61,6 +47,20 @@ const useStyles = makeStyles((theme: Theme) =>
           return props.active ? dark : main
         },
       },
+    },
+  })
+)
+
+const useCloseBtnStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    panelCloseBtn: {
+      position: 'absolute',
+      right: '0.5em',
+      transition: '300ms transform',
+      transformOrigin: 'center center',
+      transform: (props: { panelOpen: boolean }) =>
+        props.panelOpen ? 'rotate(0deg)' : 'rotate(180deg)',
+      [theme.breakpoints.up('md')]: { display: 'none' },
     },
   })
 )

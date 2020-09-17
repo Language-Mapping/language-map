@@ -1,5 +1,5 @@
 import React, { FC, useContext } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
@@ -93,6 +93,7 @@ const NoFeatSel: FC = () => {
 export const DetailsPanel: FC = () => {
   const { state } = useContext(GlobalContext)
   const classes = useStyles()
+  const loc = useLocation()
 
   // Shaky check to see if features have loaded and are stored globally
   // TODO: use MB's loading events to set this instead
@@ -125,7 +126,7 @@ export const DetailsPanel: FC = () => {
 
   return (
     <>
-      <ScrollToTopOnMount elemID={elemID} trigger={state.selFeatAttribs.ID} />
+      <ScrollToTopOnMount elemID={elemID} trigger={loc.pathname} />
       <div className={intro} id={elemID}>
         <LangOrEndoIntro attribs={state.selFeatAttribs} />
         <Typography className={neighborhoods}>

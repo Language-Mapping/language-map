@@ -18,7 +18,7 @@ import { GeocoderPopout } from './GeocoderPopout'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mapCtrlsRoot: {
-      position: 'absolute',
+      position: 'fixed',
       top: theme.spacing(1),
       right: 4, // same as left-side page title
       zIndex: 1100, // above app bar

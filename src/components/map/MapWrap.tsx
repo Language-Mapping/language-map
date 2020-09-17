@@ -1,11 +1,58 @@
 import React, { FC, useContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import { FabPanelToggle } from 'components/panels'
 import { Map } from 'components/map'
 import { GlobalContext, LoadingBackdrop } from 'components'
-import { useStyles } from './styles'
+import { FabPanelToggle } from 'components/panels/FabPanelToggle'
+import {
+  MOBILE_PANEL_HEADER_HEIGHT,
+  panelWidths,
+} from 'components/panels/config'
 import { getIDfromURLparams } from '../../utils'
+
+type MapPanelProps = { panelOpen?: boolean }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    appWrapRoot: {
+      bottom: 0,
+      display: 'flex',
+      left: 0,
+      overflow: 'hidden',
+      position: 'absolute',
+      right: 0,
+      top: 0,
+      [theme.breakpoints.down('sm')]: { flexDirection: 'column' },
+      '& .mapboxgl-popup-tip': {
+        borderTopColor: theme.palette.background.paper,
+      },
+      '& .mapboxgl-popup-content': {
+        backgroundColor: theme.palette.background.paper,
+      },
+    },
+    mapWrap: {
+      flex: 1,
+      position: 'absolute',
+      right: 0,
+      top: 0,
+      transition: '300ms ease all',
+      [theme.breakpoints.down('sm')]: {
+        left: 0,
+        bottom: (props: MapPanelProps) =>
+          props.panelOpen ? '50%' : MOBILE_PANEL_HEADER_HEIGHT,
+      },
+      [theme.breakpoints.up('md')]: {
+        bottom: 0,
+        left: (props: MapPanelProps) => (props.panelOpen ? panelWidths.mid : 0),
+      },
+      [theme.breakpoints.up('xl')]: {
+        left: (props: MapPanelProps) =>
+          props.panelOpen ? panelWidths.midLarge : 0,
+      },
+    },
+  })
+)
 
 export const MapWrap: FC = (props) => {
   const { children } = props
@@ -51,12 +98,12 @@ export const MapWrap: FC = (props) => {
     <>
       {!state.mapLoaded && <LoadingBackdrop />}
       <main className={classes.appWrapRoot}>
-        <FabPanelToggle />
         <div className={classes.mapWrap}>
           <Map baselayer={state.baselayer} />
         </div>
         {/* children should just be MapPanel */}
         {children}
+        <FabPanelToggle />
       </main>
     </>
   )

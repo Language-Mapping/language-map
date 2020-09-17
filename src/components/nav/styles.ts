@@ -1,7 +1,6 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { panelWidths } from 'components/panels/config'
-import { smoothToggleTransition } from '../../utils'
 
 type NavStyleProps = { panelOpen: boolean }
 
@@ -25,8 +24,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     spacerDesktop: {
       flex: 1,
       visibility: 'hidden',
-      transition: (props: NavStyleProps) =>
-        smoothToggleTransition(theme, props.panelOpen),
+      transition: '300ms ease all',
       [theme.breakpoints.down('sm')]: { display: 'none' },
     },
     spacerLeft: {

@@ -1,8 +1,10 @@
 /* eslint-disable operator-linebreak */
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import { panelWidths } from 'components/panels/config'
-import { smoothToggleTransition } from '../../utils'
+import {
+  panelWidths,
+  MOBILE_PANEL_HEADER_HEIGHT,
+} from 'components/panels/config'
 import { MapPanelProps } from './types'
 
 export const useStyles = makeStyles((theme: Theme) =>
@@ -13,23 +15,24 @@ export const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       overflowY: 'auto',
-      height: '100%',
-      transition: (props: MapPanelProps) =>
-        smoothToggleTransition(theme, props.panelOpen),
-      [theme.breakpoints.up('sm')]: {
-        order: 1,
+      width: '100%',
+      transition: '300ms ease all',
+      [theme.breakpoints.down('sm')]: {
+        height: '50%',
+        top: (props: MapPanelProps) =>
+          props.panelOpen
+            ? '50%'
+            : `calc(100% - ${MOBILE_PANEL_HEADER_HEIGHT})`,
+        position: 'absolute',
       },
       [theme.breakpoints.up('md')]: {
-        maxWidth: ({ panelOpen }: MapPanelProps) =>
-          panelOpen ? panelWidths.mid : 0,
-        flex: ({ panelOpen }: MapPanelProps) =>
-          panelOpen ? `1 0 ${panelWidths.mid}px` : 0,
+        order: 1,
+        transform: (props: MapPanelProps) =>
+          `translateX(${props.panelOpen ? 0 : '-100%'})`,
+        width: panelWidths.mid,
       },
       [theme.breakpoints.up('xl')]: {
-        maxWidth: ({ panelOpen }: MapPanelProps) =>
-          panelOpen ? panelWidths.midLarge : 0,
-        flex: ({ panelOpen }: MapPanelProps) =>
-          panelOpen ? `1 0 ${panelWidths.midLarge}px` : 0,
+        width: panelWidths.midLarge,
       },
       '& .MuiInputLabel-formControl': {
         color: theme.palette.primary.main,
