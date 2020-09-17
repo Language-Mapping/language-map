@@ -38,15 +38,49 @@ export const commonCirclePaint = {
   ],
 } as CirclePaint
 
+const iconDefaults = {
+  'icon-image': '_circle',
+  'icon-size': [
+    'step',
+    ['zoom'],
+    0.15,
+    10,
+    0.18,
+    11,
+    0.2,
+    12,
+    0.22,
+    14,
+    0.25,
+    17,
+    0.3,
+  ],
+  'icon-ignore-placement': true,
+}
+
+const textLayoutDefaults = {
+  'text-field': ['to-string', ['get', 'Language']],
+  'text-font': ['Noto Sans Regular', 'Arial Unicode MS Regular'],
+  'text-radial-offset': 0.25,
+  'text-justify': 'auto',
+  'text-size': ['step', ['zoom'], 8, 10, 9, 11, 10, 14, 11],
+  'text-variable-anchor': [
+    'bottom-left',
+    'top-left',
+    'bottom-right',
+    'top-right',
+    'bottom',
+    'top',
+    'left',
+    'right',
+    'center',
+  ],
+}
+
 export const langLabelsStyle = {
   layout: {
-    'icon-image': '_circle',
-    'icon-size': 0.25,
-    'text-field': ['to-string', ['get', 'Language']],
-    'text-font': ['Noto Sans Regular', 'Arial Unicode MS Regular'],
-    'text-radial-offset': 0,
-    'text-size': 10,
-    'text-variable-anchor': ['bottom-left', 'top-left'],
+    ...textLayoutDefaults,
+    ...iconDefaults,
   },
   paint: {
     'text-color': 'hsl(0, 0%, 5%)',

@@ -105,7 +105,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
         // set layout properties base on feature-state though, so maybe this:
         // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setlayoutproperty
         if (activeLangLabelId && activeLangLabelId !== 'None') {
-          paint = { ...paint, ...langLabelsStyle.paint }
+          paint = { ...langLabelsStyle.paint, ...paint }
         }
 
         return (
