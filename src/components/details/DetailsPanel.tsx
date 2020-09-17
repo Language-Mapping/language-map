@@ -116,7 +116,7 @@ export const DetailsPanel: FC = () => {
   const regionSwatchColor =
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    state.legendSymbols[WorldRegion].paint['circle-color']
+    state.legendSymbols[WorldRegion].paint['icon-color'] as string
 
   // TODO: deal with `id` present in URL but no match found
   // const parsed = queryString.parse(window.location.search)
@@ -138,8 +138,8 @@ export const DetailsPanel: FC = () => {
           <LegendSwatch
             legendLabel={WorldRegion}
             component="div"
-            backgroundColor={regionSwatchColor}
-            type="circle"
+            iconID="_circle"
+            backgroundColor={regionSwatchColor || 'transparent'}
           />
           {/* TODO: cell strength bars for Size */}
         </div>

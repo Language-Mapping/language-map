@@ -11,8 +11,6 @@ import {
   // LngLatLike, // TODO: use more often
   MapboxGeoJSONFeature,
   MapEventType,
-  CircleLayout,
-  CirclePaint,
   Map,
   SymbolLayout,
   SymbolPaint,
@@ -42,26 +40,17 @@ export type SheetsValues = [string, string]
 export type UseStyleProps = { panelOpen: boolean }
 export type ViewportState = Partial<ViewportProps> & ViewState
 
-export type LayerPropsPlusMeta = Omit<
-  LayerProps,
-  'type' | 'paint' | 'layout' | 'id'
-> & {
+export type LayerPropsPlusMeta = Omit<LayerProps, 'paint' | 'layout' | 'id'> & {
   id: string
   group: keyof LangRecordSchema
-  type: 'circle' | 'symbol' | 'background'
-  layout: CircleLayout | SymbolLayout
-  paint: CirclePaint | SymbolPaint
+  layout: SymbolLayout
+  paint: SymbolPaint
 }
 
 export type BoundaryConfig = {
   source: SourceWithPromoteID
   layers: Layer[]
   lookupPath: string
-}
-
-// Same but only circle or symbol types
-export type LayerPropsNonBGlayer = Omit<LayerPropsPlusMeta, 'type'> & {
-  type: 'circle' | 'symbol'
 }
 
 export type LangFeature = {

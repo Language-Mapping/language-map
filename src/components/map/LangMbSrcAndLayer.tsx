@@ -5,7 +5,7 @@ import { Source, Layer } from 'react-map-gl'
 
 import * as config from './config'
 
-import { LayerPropsNonBGlayer, SheetsValues } from './types'
+import { LayerPropsPlusMeta, SheetsValues } from './types'
 import { asyncAwaitFetch, prepEndoFilters } from './utils'
 
 const { mbStyleTileConfig, langLabelsStyle, QUERY_ID, MB_FONTS_URL } = config
@@ -13,7 +13,7 @@ const { mbStyleTileConfig, langLabelsStyle, QUERY_ID, MB_FONTS_URL } = config
 type SheetsResponse = { values: SheetsValues[] }
 
 type SourceAndLayerComponent = {
-  symbLayers: LayerPropsNonBGlayer[]
+  symbLayers: LayerPropsPlusMeta[]
   activeLangSymbGroupId: string
   activeLangLabelId: string
 }
@@ -95,7 +95,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
       url={`mapbox://${mbStyleTileConfig.tilesetId}`}
       id={mbStyleTileConfig.langSrcID}
     >
-      {symbLayers.map((layer: LayerPropsNonBGlayer) => {
+      {symbLayers.map((layer: LayerPropsPlusMeta) => {
         let { paint, layout } = layer
         const isInActiveGroup = layer.group === activeLangSymbGroupId
 

@@ -3,12 +3,14 @@ import fullLangStyle from '../components/map/config.lang-style'
 
 // TODO: consider separate file
 const legendSymbols = fullLangStyle.reduce((all, thisOne) => {
+  const { paint, type, layout } = thisOne
+
   return {
     ...all,
     [thisOne.id as string]: {
-      paint: thisOne.paint,
-      type: thisOne.type,
-      layout: thisOne.layout,
+      paint,
+      type,
+      layout,
     },
   }
 }, {})

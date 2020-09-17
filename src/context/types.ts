@@ -3,13 +3,13 @@
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
 import { Color } from '@material-ui/lab/Alert'
 
-import { Baselayer, LayerPropsNonBGlayer } from 'components/map/types'
+import { Baselayer, LayerPropsPlusMeta } from 'components/map/types'
 import { LegendSwatch } from 'components/legend/types'
 
 export type PanelState = 'default' | 'maximized' | 'minimized'
 
 export type LegendSymbols = {
-  [key: string]: Partial<LayerPropsNonBGlayer>
+  [key: string]: Partial<LayerPropsPlusMeta>
 }
 
 export type LangSchemaCol = keyof LangRecordSchema

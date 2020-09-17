@@ -59,8 +59,14 @@ export const GroupedLegend: FC<GroupedLegendProps> = (props) => {
             ({ legendLabel }) => legendLabel === item
           )
 
-          if (!corresponding) {
-            return <li key={item}>Not found: {item}</li>
+          if (!corresponding) return <li key={item}>Not found: {item}</li>
+
+          let matchingConfig
+
+          if (corresponding.iconID) {
+            matchingConfig = langTypeIconsConfig.find(
+              (icon) => icon.id === corresponding.iconID
+            )
           }
 
           return (
@@ -68,7 +74,7 @@ export const GroupedLegend: FC<GroupedLegendProps> = (props) => {
               key={corresponding.legendLabel}
               {...corresponding}
               legendLabel={corresponding.legendLabel}
-              icon={corresponding && corresponding.icon}
+              icon={matchingConfig && matchingConfig.icon}
             />
           )
         })}

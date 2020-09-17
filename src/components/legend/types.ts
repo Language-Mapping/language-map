@@ -1,7 +1,6 @@
 import { WorldRegion } from '../../context/types'
 
 export type LegendSwatch = {
-  type: 'circle' | 'symbol'
   legendLabel: string
   backgroundColor?: string
   iconID?: string

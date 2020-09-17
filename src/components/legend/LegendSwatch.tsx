@@ -12,8 +12,8 @@ const useStyles = makeStyles((theme: Theme) =>
       gridTemplateColumns: 'minmax(1em, auto) 1fr',
       gridColumnGap: '0.24em',
       justifyItems: 'center',
-      marginBottom: (props: { type: 'symbol' | string }) =>
-        props.type === 'symbol' ? theme.spacing(1) : 0,
+      marginBottom: (props: { isCircle: boolean }) =>
+        props.isCircle ? 0 : theme.spacing(1),
     },
     legendLabel: {
       justifySelf: 'flex-start',
@@ -26,24 +26,30 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-// TODO: break this out into LegendItem separately since swatch could be handy
-// on its own, e.g. in Details or Popup
 export const LegendSwatch: FC<LegendSwatchComponent> = (props) => {
   const {
     backgroundColor,
     icon,
-    type,
+    iconID,
     legendLabel,
     size = 7,
     component = 'li',
   } = props
-  const classes = useStyles({ type })
+  const isCircle = iconID === '_circle'
+  const classes = useStyles({ isCircle })
   const adjustedSize = size * 1.5
 
-  // TODO: make it work
+  // NOTE: the styling is pretty fragile in that the non-circle icons must have
+  // their colors defined as `fill` within the SVG files themselves. This is
+  // fine as long as there are only a handful and the colors are not needed
+  // elsewhere. The circles are not using the SVG here but rather (via a weak
+  // check for `iconiD_circle`) a simple <span> with a border radius. To be
+  // truly portable and consistent, the SVG would need to be brought in as an
+  // inline icon so that the fill could be applied via `paint['icon-color']`.
+
   return (
     <Box className={classes.legendSwatchRoot} component={component}>
-      {type === 'circle' && (
+      {isCircle && (
         <span
           style={{
             backgroundColor,
@@ -53,7 +59,9 @@ export const LegendSwatch: FC<LegendSwatchComponent> = (props) => {
           }}
         />
       )}
-      <img src={icon} alt={legendLabel} className={classes.imgSwatch} />
+      {!isCircle && (
+        <img src={icon} alt={legendLabel} className={classes.imgSwatch} />
+      )}
       <Typography variant="caption" className={classes.legendLabel}>
         {legendLabel}
       </Typography>

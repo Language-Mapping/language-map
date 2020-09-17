@@ -1,17 +1,22 @@
-import { LayerPropsNonBGlayer } from 'components/map/types'
+import { LayerPropsPlusMeta } from 'components/map/types'
 import { LegendSwatch } from './types'
 import { StoreAction } from '../../context/types'
+import { langLabelsStyle } from '../map/config.points' // just need defaults
 
-const createMapLegend = (layers: LayerPropsNonBGlayer[]): LegendSwatch[] => {
+const createMapLegend = (layers: LayerPropsPlusMeta[]): LegendSwatch[] => {
   return layers.map((layer) => {
-    const { type, id, layout } = layer
-    const settings = { legendLabel: id, type } as LegendSwatch
+    const { id, layout, paint } = layer
+    const settings = { legendLabel: id } as LegendSwatch
+    const size = layout['icon-size'] ? (layout['icon-size'] as number) * 20 : 5
+    const backgroundColor = (paint['icon-color'] as string) || 'transparent'
+    const iconID =
+      (layout['icon-image'] as string) || langLabelsStyle.layout['icon-image']
 
     return {
       ...settings,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      iconID: layout['icon-image'],
+      size,
+      backgroundColor,
+      iconID,
     }
   })
 }
@@ -19,7 +24,7 @@ const createMapLegend = (layers: LayerPropsNonBGlayer[]): LegendSwatch[] => {
 export const initLegend = (
   dispatch: React.Dispatch<StoreAction>,
   activeLangSymbGroupId: string,
-  symbLayers: LayerPropsNonBGlayer[]
+  symbLayers: LayerPropsPlusMeta[]
 ): void => {
   const layersInActiveGroup = symbLayers.filter(
     ({ group }) => group === activeLangSymbGroupId

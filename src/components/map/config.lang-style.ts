@@ -1,4 +1,4 @@
-import { LayerPropsNonBGlayer } from './types'
+import { LayerPropsPlusMeta } from './types'
 
 // TODO: don't have a million filters and a million layers if you only need one
 // per symbolizeable column:
@@ -329,4 +329,4 @@ export default [
       'text-halo-color': 'hsla(169, 39%, 90%, 0.95)',
     },
   },
-] as LayerPropsNonBGlayer[]
+] as LayerPropsPlusMeta[]
