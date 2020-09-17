@@ -126,7 +126,9 @@ export const DetailsPanel: FC = () => {
 
   return (
     <>
-      <ScrollToTopOnMount elemID={elemID} trigger={loc.pathname} />
+      {state.panelState === 'default' && (
+        <ScrollToTopOnMount elemID={elemID} trigger={loc.pathname} />
+      )}
       <div className={intro} id={elemID}>
         <LangOrEndoIntro attribs={state.selFeatAttribs} />
         <Typography className={neighborhoods}>

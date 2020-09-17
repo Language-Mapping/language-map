@@ -16,7 +16,7 @@ export const FiltersPanel: FC = () => {
   // TODO: something respectable for styles, aka MUI-something
   return (
     <>
-      <ScrollToTopOnMount elemID={elemID} />
+      {state.panelState === 'default' && <ScrollToTopOnMount elemID={elemID} />}
       <Typography variant="h5" component="h3" id={elemID}>
         Search language communities
       </Typography>
