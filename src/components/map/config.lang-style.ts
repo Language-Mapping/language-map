@@ -59,56 +59,61 @@ const bySize = [
   },
 ]
 
+// Just a bit bigger than the circle icons
+const statusIconSize = {
+  'icon-size': [
+    'step',
+    ['zoom'],
+    0.25,
+    10,
+    0.28,
+    11,
+    0.3,
+    12,
+    0.32,
+    14,
+    0.35,
+    17,
+    0.4,
+  ],
+  'icon-ignore-placement': false,
+}
+
 const byStatus = [
   {
     id: 'Historical',
     group: 'Status',
     filter: ['match', ['get', 'Status'], ['Historical'], true, false],
-    layout: { 'icon-image': '_museum' },
-    paint: {
-      'icon-color': 'hsl(217, 40%, 50%)',
-      'text-color': 'hsl(217, 40%, 40%)',
-    },
+    layout: { ...statusIconSize, 'icon-image': '_museum' },
+    paint: { 'icon-color': 'hsl(217, 40%, 50%)' },
   },
   {
     id: 'Community',
     group: 'Status',
     filter: ['match', ['get', 'Status'], ['Community'], true, false],
-    layout: { 'icon-image': '_users' },
-    paint: {
-      'icon-color': 'hsl(22, 68%, 59%)',
-      'text-color': 'hsl(22, 68%, 49%)',
-    },
+    layout: { ...statusIconSize, 'icon-image': '_users' },
+    paint: { 'icon-color': 'hsl(22, 68%, 59%)' },
   },
   {
     id: 'Liturgical',
     group: 'Status',
     filter: ['match', ['get', 'Status'], ['Liturgical'], true, false],
-    layout: { 'icon-image': '_book' },
-    paint: {
-      'icon-color': 'hsl(358, 50%, 54%)',
-      'text-color': 'hsl(358, 50%, 44%)',
-    },
+    layout: { ...statusIconSize, 'icon-image': '_book' },
+    paint: { 'icon-color': 'hsl(358, 50%, 54%)' },
   },
   {
     id: 'Residential',
     group: 'Status',
     filter: ['match', ['get', 'Status'], ['Residential'], true, false],
-    layout: { 'icon-image': '_home' },
-    paint: {
-      'icon-color': 'hsl(254, 31%, 57%)',
-      'text-color': 'hsl(254, 31%, 47%)',
-    },
+    layout: { ...statusIconSize, 'icon-image': '_home' },
+    paint: { 'icon-color': 'hsl(254, 31%, 57%)' },
   },
   {
     id: 'Reviving',
     group: 'Status',
     filter: ['match', ['get', 'Status'], ['Reviving'], true, false],
-    layout: { 'icon-image': '_tree' },
-    paint: {
-      'icon-color': 'hsl(133, 33%, 50%)',
-      'text-color': 'hsl(133, 33%, 40%)',
-    },
+    layout: { ...statusIconSize, 'icon-image': '_tree' },
+    paint: { 'icon-color': 'hsl(133, 33%, 50%)' },
   },
 ]
 

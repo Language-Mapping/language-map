@@ -44,22 +44,23 @@ const iconDefaults = {
   'icon-size': [
     'step',
     ['zoom'],
-    0.15,
+    0.14,
     10,
-    0.18,
+    0.17,
     11,
-    0.2,
-    12,
-    0.22,
-    14,
-    0.25,
+    0.19,
+    13,
+    0.21,
+    15,
+    0.23,
     17,
-    0.3,
+    0.26,
   ],
   'icon-ignore-placement': true,
 }
 
 const textLayoutDefaults = {
+  // TODO: look into text max width, or whatever the one is that's in `em`s
   'text-field': ['to-string', ['get', 'Language']],
   'text-font': ['Noto Sans Regular', 'Arial Unicode MS Regular'],
   'text-radial-offset': 0.25,
