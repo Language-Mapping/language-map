@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       borderBottomColor: theme.palette.divider,
       borderBottomStyle: 'solid',
-      borderBottomWidth: 2,
+      borderBottomWidth: 1,
       display: 'grid',
       gridTemplateColumns: 'auto auto',
       justifyContent: 'space-around',
@@ -42,10 +42,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     helpBtn: {
       position: 'absolute',
-      top: '130%',
-      right: '0.4em',
+      top: '125%',
+      right: 8,
       [theme.breakpoints.between('md', 'lg')]: {
-        right: '1em',
+        right: 12,
       },
       [theme.breakpoints.up('xl')]: {
         right: '0.8em', // unlikely to have scrollbar on huge screen

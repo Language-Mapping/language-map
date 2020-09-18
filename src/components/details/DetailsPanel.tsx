@@ -1,7 +1,8 @@
 import React, { FC, useContext } from 'react'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography, Divider } from '@material-ui/core'
+import { Typography, Divider, Button } from '@material-ui/core'
+import { FaRandom } from 'react-icons/fa'
 
 import { GlobalContext, LangOrEndoIntro, ScrollToTopOnMount } from 'components'
 import { LegendSwatch } from 'components/legend'
@@ -25,6 +26,10 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: theme.typography.caption.fontSize,
       padding: '0 0.25rem',
     },
+    noFeatSel: {
+      marginBottom: '1em',
+      fontSize: theme.typography.caption.fontSize,
+    }, // push past the Help btn
     region: {
       display: 'inline-flex',
       justifyContent: 'center',
@@ -57,7 +62,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 // TODO: separate files
-const RandomLink: FC = () => {
+const RandomLinkBtn: FC = () => {
   const { state } = useContext(GlobalContext)
   const { langFeatures } = state
 
@@ -67,21 +72,30 @@ const RandomLink: FC = () => {
   const id = langFeatures[randoIndex].ID
 
   return (
-    <>
-      , or{' '}
-      <RouterLink to={`${routes.details}?id=${id}`}>
-        try one at random
-      </RouterLink>
-    </>
+    <Button
+      variant="contained"
+      color="primary"
+      component={RouterLink}
+      size="small"
+      startIcon={<FaRandom />}
+      to={`${routes.details}?id=${id}`}
+    >
+      Try one at random
+    </Button>
   )
 }
 
 const NoFeatSel: FC = () => {
+  const classes = useStyles()
+
   return (
-    <small>
-      No community selected. Click a community in the map, in the data table
-      <RandomLink />.
-    </small>
+    <div style={{ textAlign: 'center', maxWidth: '85%', margin: '16px auto' }}>
+      <Typography className={classes.noFeatSel}>
+        No community selected. Click a community in the map or in the data
+        table.
+      </Typography>
+      <RandomLinkBtn />
+    </div>
   )
 }
 
