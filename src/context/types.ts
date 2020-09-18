@@ -29,7 +29,7 @@ export type StoreAction =
 
 export type InitialState = {
   activeLangLabelId: LangSchemaCol | ''
-  activeLangSymbGroupId: LangSchemaCol | ''
+  activeLangSymbGroupId: LangSchemaCol | '' | 'None'
   baselayer: Baselayer
   langFeatures: LangRecordSchema[]
   langFeatsLenCache: number

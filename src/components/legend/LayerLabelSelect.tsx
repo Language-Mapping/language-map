@@ -21,6 +21,7 @@ export const LayerLabelSelect: FC = () => {
       {...commonSelectProps}
       label="Label by:"
       value={state.activeLangLabelId}
+      disabled={state.activeLangSymbGroupId === 'None'}
       onChange={handleChange}
       inputProps={{ name: 'label', id: 'lang-label-TextField' }}
     >
