@@ -1,6 +1,8 @@
 import React, { FC, useEffect, useState } from 'react'
 import { Route } from 'react-router-dom'
 import { queryCache } from 'react-query'
+import { GoInfo } from 'react-icons/go'
+import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { TopBar, OffCanvasNav } from 'components/nav'
 import { MapWrap } from 'components/map'
@@ -31,11 +33,19 @@ export const App: FC = () => {
         <WelcomeDialog queryName={WELCOME_QUERY} />
       )}
       <Route path={routes.about}>
-        <AboutPageView queryName={ABOUT_QUERY} />
+        <AboutPageView
+          title="About"
+          icon={<GoInfo />}
+          queryName={ABOUT_QUERY}
+        />
       </Route>
       <ResultsModal open={tableOpen} closeTable={closeTable} />
       <Route path={routes.help}>
-        <AboutPageView queryName={HELP_QUERY} />
+        <AboutPageView
+          title="Help"
+          icon={<AiOutlineQuestionCircle />}
+          queryName={HELP_QUERY}
+        />
       </Route>
       <MapWrap>
         <MapPanel>

@@ -1,6 +1,12 @@
 import React, { FC, useState } from 'react'
 import { useQuery } from 'react-query'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  useTheme,
+} from '@material-ui/core/styles'
+
 import {
   Backdrop,
   Dialog,
@@ -12,6 +18,7 @@ import {
 import { WpApiPageResponse, WpQueryNames } from './types'
 import { WelcomeFooter } from './WelcomeFooter'
 import { createMarkup } from '../../utils'
+import { useStyles as useTopBarStyles } from '../nav/styles'
 
 type AboutPageProps = {
   queryName: WpQueryNames
@@ -23,16 +30,26 @@ const useStyles = makeStyles((theme: Theme) =>
       color: '#fff',
       zIndex: theme.zIndex.drawer + 1,
     },
-    dialogTitle: {
-      backgroundColor: theme.palette.primary.main,
-      boxShadow: theme.shadows[8],
-      color: theme.palette.common.white,
-      fontSize: '1.8rem',
+    logo: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
+    logoInner: {
+      display: 'inline-flex',
+      flexDirection: 'column',
       textAlign: 'center',
-      textShadow: `1px 1px 3px ${theme.palette.primary.dark}`,
       [theme.breakpoints.down('sm')]: {
-        padding: theme.spacing(2),
+        fontSize: '3rem',
       },
+    },
+    subtitle: {
+      fontSize: '0.32em',
+      marginTop: '-0.4em',
+    },
+    subSubTitle: {
+      color: theme.palette.text.secondary,
+      fontStyle: 'italic',
+      fontSize: '0.75rem',
     },
     dialogContent: {
       [theme.breakpoints.down('sm')]: {
@@ -57,10 +74,40 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+// TODO: separate file. You know the drill.
+export const Logo: FC = (props) => {
+  const theme = useTheme()
+  const classes = {
+    ...useTopBarStyles({
+      logoLineColor: theme.palette.primary.light,
+      logoHorizPadding: '0.45em',
+    }),
+    ...useStyles(),
+  }
+  const { logo, logoInner, titleMain, subtitle, subSubTitle } = classes
+
+  return (
+    <Typography variant="h2" className={logo}>
+      <div className={logoInner}>
+        <span
+          style={{ textShadow: 'hsl(0deg 0% 25% / 80%) 1px 1px 5px' }}
+          className={titleMain}
+        >
+          Languages
+        </span>
+        <span className={subtitle}>of New York City</span>
+        <Typography variant="caption" className={subSubTitle}>
+          An urban language map
+        </Typography>
+      </div>
+    </Typography>
+  )
+}
+
 export const WelcomeDialog: FC<AboutPageProps> = (props) => {
   const { queryName } = props
   const classes = useStyles()
-  const { backdrop, dialogTitle, dialogContent, welcomePaper } = classes
+  const { backdrop, dialogContent, welcomePaper } = classes
   const { data, isFetching, error } = useQuery(queryName)
   const wpData = data as WpApiPageResponse
   const [open, setOpen] = useState<boolean>(true)
@@ -74,8 +121,7 @@ export const WelcomeDialog: FC<AboutPageProps> = (props) => {
     setOpen(false)
   }
 
-  // TODO: wire up Sentry
-  // TODO: aria
+  // TODO: wire up Sentry // TODO: aria
   // TODO: TS for error (`error.message` is a string)
   if (error) {
     return (
@@ -99,14 +145,8 @@ export const WelcomeDialog: FC<AboutPageProps> = (props) => {
       maxWidth="md"
       PaperProps={{ className: welcomePaper }}
     >
-      <DialogTitle
-        id={`${queryName}-dialog-title`}
-        disableTypography
-        className={dialogTitle}
-      >
-        <Typography variant="h3" component="h2">
-          {wpData && wpData.title.rendered}
-        </Typography>
+      <DialogTitle disableTypography>
+        <Logo />
       </DialogTitle>
       <DialogContent dividers className={dialogContent}>
         <div

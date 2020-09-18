@@ -106,3 +106,10 @@ export const isAlpha = (ch: string): boolean => ch.match(/^[a-z]+$/i) !== null
 
 export const getAllLangFeatIDs = (data: LangRecordSchema[]): number[] =>
   data.map((record) => record.ID)
+
+// CRED:
+// www.geeksforgeeks.org/how-to-detect-touch-screen-device-using-javascript/
+export const isTouchEnabled = (): boolean =>
+  (window && 'ontouchstart' in window) ||
+  navigator.maxTouchPoints > 0 ||
+  navigator.msMaxTouchPoints > 0

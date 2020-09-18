@@ -25,6 +25,10 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       marginBottom: '1em',
     },
+    paper: {
+      // Stands out against panels behind it
+      backgroundColor: theme.palette.background.default,
+    },
     listbox: {
       '& ul': {
         margin: 0,
@@ -37,6 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
         fontFamily: theme.typography.h1.fontFamily,
         fontSize: '1.1rem',
         paddingLeft: 12,
+        fontWeight: theme.typography.h1.fontWeight,
       },
     },
     // The <li> items. Not sure why it works via classes and `groupUl` doesn't.
@@ -64,8 +69,11 @@ export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
       id="virtualize-demo"
       classes={classes}
       closeIcon={<MdClose />}
-      blurOnSelect="touch" // helps to resolve iOS zoom issue. Don't... touch!
+      // Thought this helped to resolve iOS zoom issue but the cause seems to be
+      // when <input> font size is smaller than the page default.
+      // blurOnSelect="touch"
       // open // much more effective than `debug`
+      // openOnFocus // TODO: rm if not using. Seems fine without it?
       getOptionLabel={(option) => option.Language}
       groupBy={(option) => option.Language}
       options={data}

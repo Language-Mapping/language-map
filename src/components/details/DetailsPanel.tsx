@@ -3,6 +3,7 @@ import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Divider, Button } from '@material-ui/core'
 import { FaRandom } from 'react-icons/fa'
+import { BiMapPin } from 'react-icons/bi'
 
 import { GlobalContext, LangOrEndoIntro, ScrollToTopOnMount } from 'components'
 import { LegendSwatch } from 'components/legend'
@@ -18,9 +19,15 @@ const useStyles = makeStyles((theme: Theme) =>
     intro: { padding: '0.65em 0 0.3em', textAlign: 'center' },
     divider: { marginBottom: '1.5em' },
     neighborhoods: {
-      fontSize: '0.75em',
+      alignItems: 'center',
       color: theme.palette.text.secondary,
+      display: 'flex',
+      fontSize: '0.75em',
       fontStyle: 'italic',
+      justifyContent: 'center',
+      '& svg': {
+        marginRight: '0.15em',
+      },
     },
     descripSection: {
       fontSize: theme.typography.caption.fontSize,
@@ -141,6 +148,7 @@ export const DetailsPanel: FC = () => {
       <div className={intro} id={elemID}>
         <LangOrEndoIntro attribs={state.selFeatAttribs} />
         <Typography className={neighborhoods}>
+          <BiMapPin />
           {Neighborhoods || Town}
         </Typography>
         <div className={classes.region}>
