@@ -1,9 +1,10 @@
 import React, { FC, useContext } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
+import { Typography, Divider, Button } from '@material-ui/core'
+import { FaRandom } from 'react-icons/fa'
 
-import { GlobalContext, LangOrEndoIntro } from 'components'
+import { GlobalContext, LangOrEndoIntro, ScrollToTopOnMount } from 'components'
 import { LegendSwatch } from 'components/legend'
 import { RecordDescription } from 'components/results'
 import { paths as routes } from 'components/config/routes'
@@ -14,12 +15,8 @@ import { Media } from './Media'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    intro: {
-      padding: '0.65em 0 0.3em',
-      textAlign: 'center',
-      borderBottom: `solid 1px ${theme.palette.divider}`,
-      marginBottom: '1em',
-    },
+    intro: { padding: '0.65em 0 0.3em', textAlign: 'center' },
+    divider: { marginBottom: '1.5em' },
     neighborhoods: {
       fontSize: '0.75em',
       color: theme.palette.text.secondary,
@@ -28,8 +25,11 @@ const useStyles = makeStyles((theme: Theme) =>
     descripSection: {
       fontSize: theme.typography.caption.fontSize,
       padding: '0 0.25rem',
-      // marginBottom: '2.4rem', // bad for Explore on mobile!
     },
+    noFeatSel: {
+      marginBottom: '1em',
+      fontSize: theme.typography.caption.fontSize,
+    }, // push past the Help btn
     region: {
       display: 'inline-flex',
       justifyContent: 'center',
@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 // TODO: separate files
-const RandomLink: FC = () => {
+const RandomLinkBtn: FC = () => {
   const { state } = useContext(GlobalContext)
   const { langFeatures } = state
 
@@ -72,37 +72,44 @@ const RandomLink: FC = () => {
   const id = langFeatures[randoIndex].ID
 
   return (
-    <>
-      , or{' '}
-      <RouterLink to={`${routes.details}?id=${id}`}>
-        try one at random
-      </RouterLink>
-    </>
+    <Button
+      variant="contained"
+      color="primary"
+      component={RouterLink}
+      size="small"
+      startIcon={<FaRandom />}
+      to={`${routes.details}?id=${id}`}
+    >
+      Try one at random
+    </Button>
   )
 }
 
 const NoFeatSel: FC = () => {
+  const classes = useStyles()
+
   return (
-    <small>
-      No community selected. Click a community in the map, in the data table
-      <RandomLink />.
-    </small>
+    <div style={{ textAlign: 'center', maxWidth: '85%', margin: '16px auto' }}>
+      <Typography className={classes.noFeatSel}>
+        No community selected. Click a community in the map or in the data
+        table.
+      </Typography>
+      <RandomLinkBtn />
+    </div>
   )
 }
 
 export const DetailsPanel: FC = () => {
   const { state } = useContext(GlobalContext)
   const classes = useStyles()
+  const loc = useLocation()
 
   // Shaky check to see if features have loaded and are stored globally
   // TODO: use MB's loading events to set this instead
   if (!state.langFeatures.length) return null
+  if (!state.selFeatAttribs) return <NoFeatSel /> // no sel feat details
 
-  const { selFeatAttribs } = state
-
-  // No sel feat details
-  if (!selFeatAttribs) return <NoFeatSel />
-
+  const elemID = 'details'
   const {
     Language: language,
     Neighborhoods,
@@ -113,12 +120,12 @@ export const DetailsPanel: FC = () => {
     Audio: audio,
     Video: video,
     'World Region': WorldRegion,
-  } = selFeatAttribs
-  const { intro, descripSection, neighborhoods } = classes
+  } = state.selFeatAttribs
+  const { intro, descripSection, neighborhoods, divider } = classes
   const regionSwatchColor =
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    state.legendSymbols[WorldRegion].paint['circle-color']
+    state.legendSymbols[WorldRegion].paint['icon-color'] as string
 
   // TODO: deal with `id` present in URL but no match found
   // const parsed = queryString.parse(window.location.search)
@@ -128,8 +135,11 @@ export const DetailsPanel: FC = () => {
 
   return (
     <>
-      <div className={intro}>
-        <LangOrEndoIntro attribs={selFeatAttribs} />
+      {state.panelState === 'default' && (
+        <ScrollToTopOnMount elemID={elemID} trigger={loc.pathname} />
+      )}
+      <div className={intro} id={elemID}>
+        <LangOrEndoIntro attribs={state.selFeatAttribs} />
         <Typography className={neighborhoods}>
           {Neighborhoods || Town}
         </Typography>
@@ -137,8 +147,8 @@ export const DetailsPanel: FC = () => {
           <LegendSwatch
             legendLabel={WorldRegion}
             component="div"
-            backgroundColor={regionSwatchColor}
-            type="circle"
+            iconID="_circle"
+            backgroundColor={regionSwatchColor || 'transparent'}
           />
           {/* TODO: cell strength bars for Size */}
         </div>
@@ -152,6 +162,7 @@ export const DetailsPanel: FC = () => {
           }}
         />
       </div>
+      <Divider variant="middle" className={divider} />
       <Typography variant="body2" className={descripSection} component="div">
         <RecordDescription text={description} />
       </Typography>

@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+// Misleading since it's now "Help" but it used to be just a glossary.
 export const GlossaryTrigger: FC = () => {
   const classes = useStyles()
   const loc = useLocation()
@@ -27,7 +28,7 @@ export const GlossaryTrigger: FC = () => {
   return (
     <Link
       component={RouterLink}
-      to={`${routes.glossary}${loc.search}`}
+      to={`${routes.help}${loc.search}`}
       className={classes.glossaryTriggerRoot}
     >
       <FaQuestionCircle />

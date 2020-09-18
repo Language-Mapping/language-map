@@ -18,9 +18,9 @@ import { GeocoderPopout } from './GeocoderPopout'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mapCtrlsRoot: {
-      position: 'absolute',
+      position: 'fixed',
       top: theme.spacing(1),
-      right: 4, // same as left-side page title
+      right: 8, // same as left-side page title?
       zIndex: 1100, // above app bar
       [theme.breakpoints.up('sm')]: {
         top: theme.spacing(2),
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     speedDialAction: {
-      margin: 4,
+      margin: '0.2em',
       '&:hover': {
         [theme.breakpoints.down('sm')]: {
           backgroundColor: theme.palette.background.default,

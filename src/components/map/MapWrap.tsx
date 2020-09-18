@@ -1,42 +1,68 @@
-import React, { FC, useState, useContext, useEffect } from 'react'
+import React, { FC, useContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import { FabPanelToggle } from 'components/panels'
 import { Map } from 'components/map'
 import { GlobalContext, LoadingBackdrop } from 'components'
-import { LayerPropsNonBGlayer } from './types'
-import { mbStyleTileConfig } from './config'
-import { useStyles } from './styles'
-import { getIDfromURLparams, getMbStyleDocument } from '../../utils'
+import { FabPanelToggle } from 'components/panels/FabPanelToggle'
+import {
+  MOBILE_PANEL_HEADER_HEIGHT,
+  panelWidths,
+} from 'components/panels/config'
+import { getIDfromURLparams } from '../../utils'
+
+type MapPanelProps = { panelOpen?: boolean }
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    appWrapRoot: {
+      bottom: 0,
+      display: 'flex',
+      left: 0,
+      overflow: 'hidden',
+      position: 'absolute',
+      right: 0,
+      top: 0,
+      [theme.breakpoints.down('sm')]: { flexDirection: 'column' },
+      '& .mapboxgl-popup-tip': {
+        borderTopColor: theme.palette.background.paper,
+      },
+      '& .mapboxgl-popup-content': {
+        backgroundColor: theme.palette.background.paper,
+      },
+    },
+    mapWrap: {
+      flex: 1,
+      position: 'absolute',
+      right: 0,
+      top: 0,
+      transition: '300ms ease all',
+      [theme.breakpoints.down('sm')]: {
+        left: 0,
+        bottom: (props: MapPanelProps) =>
+          props.panelOpen ? '50%' : MOBILE_PANEL_HEADER_HEIGHT,
+      },
+      [theme.breakpoints.up('md')]: {
+        bottom: 0,
+        left: (props: MapPanelProps) => (props.panelOpen ? panelWidths.mid : 0),
+      },
+      [theme.breakpoints.up('xl')]: {
+        left: (props: MapPanelProps) =>
+          props.panelOpen ? panelWidths.midLarge : 0,
+      },
+    },
+  })
+)
 
 export const MapWrap: FC = (props) => {
   const { children } = props
   const { state, dispatch } = useContext(GlobalContext)
   const loc = useLocation()
-  const [symbLayers, setSymbLayers] = useState<LayerPropsNonBGlayer[]>()
-  const [labelLayers, setLabelLayers] = useState<LayerPropsNonBGlayer[]>()
   const { langFeatures } = state
 
   const classes = useStyles({
     panelOpen: state.panelState === 'default',
   })
-
-  // Fetch MB Style doc
-  useEffect(() => {
-    getMbStyleDocument(
-      mbStyleTileConfig.symbStyleUrl,
-      dispatch,
-      setSymbLayers,
-      setLabelLayers
-    ).catch((errMsg) => {
-      // eslint-disable-next-line no-console
-      console.error(
-        // TODO: wire up sentry
-        `Something went wrong trying to fetch MB style JSON: ${errMsg}`
-      )
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   // Do selected feature stuff on location change
   useEffect((): void => {
@@ -55,11 +81,7 @@ export const MapWrap: FC = (props) => {
 
     if (matchingRecord) {
       document.title = `${matchingRecord.Language as string} - NYC Languages`
-
-      dispatch({
-        type: 'SET_SEL_FEAT_ATTRIBS',
-        payload: matchingRecord,
-      })
+      dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: matchingRecord })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc.search, state.langFeatures.length])
@@ -75,19 +97,13 @@ export const MapWrap: FC = (props) => {
   return (
     <>
       {!state.mapLoaded && <LoadingBackdrop />}
-      <FabPanelToggle />
       <main className={classes.appWrapRoot}>
+        <div className={classes.mapWrap}>
+          <Map baselayer={state.baselayer} />
+        </div>
         {/* children should just be MapPanel */}
         {children}
-        {symbLayers && labelLayers && (
-          <div className={classes.mapWrap}>
-            <Map
-              symbLayers={symbLayers}
-              labelLayers={labelLayers}
-              baselayer={state.baselayer}
-            />
-          </div>
-        )}
+        <FabPanelToggle />
       </main>
     </>
   )

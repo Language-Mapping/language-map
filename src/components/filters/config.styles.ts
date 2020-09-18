@@ -7,16 +7,11 @@ export const useStyles = makeStyles((theme: Theme) =>
         '& .MuiTableFooter-root .MuiIconButton-root': {
           padding: 4, // waaaaayy too much default padding, can't see on mobile
         },
-        // '& .MuiToolbar-root .MuiIconButton-root': { padding: 2, },
-      },
-      '& [class^=MTableToolbar-spacer]': {
-        display: 'none',
       },
       // Gross way to get the table footer, which has no unique classes
       '& .MuiPaper-root > .MuiTable-root': {
         bottom: 0,
         position: 'sticky',
-        backgroundColor: theme.palette.background.paper,
         [theme.breakpoints.up('sm')]: {
           borderBottomRightRadius: 4,
           borderBottomLeftRadius: 4,
@@ -24,13 +19,16 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       '& .MuiTableBody-root': {
         fontSize: '0.8rem',
+        backgroundColor: theme.palette.background.paper,
+      },
+      '& .MuiTableHead-root': {
+        backgroundColor: theme.palette.background.paper,
       },
       // e.g. the Filter icon at beginning of column filters
-      '& .MuiInputAdornment-root': {
-        color: theme.palette.text.hint,
-      },
+      '& .MuiInputAdornment-root': { color: theme.palette.text.hint },
       // All column headings
       '& .MuiTableCell-head': {
+        backgroundColor: 'inherit',
         color: theme.palette.primary.main,
         fontWeight: 'bold',
         lineHeight: 1.2,
@@ -50,21 +48,20 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& .MuiTableCell-root': { padding: '0.5rem' },
       // Pagination
       '& .MuiTableCell-footer': {
+        borderBottom: 'none',
         padding: 0, // may have no impact when height is set
         // height: 50, // but height is needed in order to establish a minHeight
         // CRED: https://stackoverflow.com/a/25329017/1048518
       },
       // The table footer
       '& .MuiTableFooter-root': {
+        borderTop: `solid ${theme.palette.text.secondary} 1px`,
         boxShadow: theme.shadows[14],
+        backgroundColor: theme.palette.background.paper,
         justifyContent: 'center',
       },
-      '& .MuiTablePagination-spacer': {
-        display: 'none',
-      },
-      '& .MuiTablePagination-select': {
-        paddingLeft: 0,
-      },
+      '& .MuiTablePagination-spacer': { display: 'none' },
+      '& .MuiTablePagination-select': { paddingLeft: 0 },
       // All icons in and out of table. Icons inherit color and size from it.
       // ...otherwise it overrides the `disabled` Action buttons
       '& table .MuiIconButton-root:not([disabled]), .MuiToolbar-root .MuiIconButton-root:not([disabled])': {

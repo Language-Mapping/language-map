@@ -2,7 +2,7 @@ import React, { FC, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { MTableToolbar } from 'material-table'
-import { Button } from '@material-ui/core'
+import { Button, Divider } from '@material-ui/core'
 import { BiMapPin } from 'react-icons/bi'
 import { FaMapMarkedAlt } from 'react-icons/fa'
 import { RiFilterOffFill } from 'react-icons/ri'
@@ -19,7 +19,7 @@ const TOOLBAR_ID = 'custom-toolbar'
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     resultsToolbarRoot: {
-      padding: '0.5em 0.75em',
+      padding: '0.5em 0.75em 0.75em',
       // outline: 'solid blue 5px',
       position: 'sticky',
       top: 0,
@@ -29,7 +29,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       gridColumnGap: '0.75em',
       gridRowGap: '0.15em',
-      marginBottom: '0.25em',
       gridTemplateAreas: `"title searchAndActions"
         "buttons buttons"
         "local local"`,
@@ -49,8 +48,12 @@ export const useStyles = makeStyles((theme: Theme) =>
     searchAndActions: {
       display: 'flex',
       gridArea: 'searchAndActions',
-      '& [class^=MTableToolbar-actions]': { flexShrink: 0 },
       '& .MuiToolbar-root': { paddingLeft: 0 },
+      // Can't seem to access these any other way except maybe overriding the
+      // entire component, and definitely not via `MTable` classes since they
+      // are mutated in the build.
+      '& .MuiToolbar-root > :nth-child(2)': { display: 'none' }, // spacer
+      '& .MuiToolbar-root > :last-child': { flexShrink: 0 }, // actions wrap
       [theme.breakpoints.only('xs')]: {
         '& .MuiToolbar-root': { paddingRight: 0 },
       },
@@ -90,10 +93,11 @@ export const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
-  const { tableRef, closeTable } = props
+  const { tableRef, closeTable, clearBtnEnabled, setClearBtnEnabled } = props
   const { dispatch } = useContext(GlobalContext)
   const classes = useStyles()
   const history = useHistory()
+  const noResults = tableRef.current && !tableRef.current.state.data.length
 
   function mapFilterBtnClick(): void {
     if (!tableRef || !tableRef.current) return
@@ -136,45 +140,51 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
 
     self.setState({ ...dataManager.getRenderState(), columns: cleared })
 
-    // setClearBtnEnabled(false) // so close // TODO: rm if giving up
+    setClearBtnEnabled(false)
   }
 
   return (
-    <div className={classes.resultsToolbarRoot}>
-      <ResultsTitle />
-      <div className={classes.searchAndActions} id={TOOLBAR_ID}>
-        <MTableToolbar {...props} />
-        {/* TODO: restore */}
-        {/* Showing {langFeatures.length} of {langFeatures.length} communities. */}
-      </div>
-      <div className={classes.toolbarBtns}>
-        <Button
-          className={classes.toolbarBtn}
-          title="Set table filters and return to map"
-          color="secondary"
-          variant="contained"
-          size="small"
-          startIcon={<FaMapMarkedAlt />}
-          onClick={() => mapFilterBtnClick()}
+    <>
+      <div className={classes.resultsToolbarRoot}>
+        <ResultsTitle />
+        <div className={classes.searchAndActions} id={TOOLBAR_ID}>
+          <MTableToolbar {...props} />
+          {/* TODO: restore */}
+          {/* Showing {langFeatures.length} of {langFeatures.length} communities. */}
+        </div>
+        <div className={classes.toolbarBtns}>
+          <Button
+            className={classes.toolbarBtn}
+            title="Set table filters and return to map"
+            color="primary"
+            variant="contained"
+            size="small"
+            startIcon={<FaMapMarkedAlt />}
+            onClick={() => mapFilterBtnClick()}
+            disabled={noResults}
+          >
+            View results in map
+          </Button>
+          <Button
+            className={classes.toolbarBtn}
+            title="Clear table filters"
+            color="primary"
+            variant="contained"
+            disabled={!clearBtnEnabled}
+            size="small"
+            startIcon={<RiFilterOffFill />}
+            onClick={() => clearFiltersBtnClick()}
+          >
+            Clear filters
+          </Button>
+        </div>
+        <small
+          className={`${classes.localIndicator} ${classes.localCommLegend}`}
         >
-          View results in map
-        </Button>
-        <Button
-          className={classes.toolbarBtn}
-          title="Clear table filters"
-          color="secondary"
-          variant="contained"
-          // disabled={!clearBtnEnabled} // so close
-          size="small"
-          startIcon={<RiFilterOffFill />}
-          onClick={() => clearFiltersBtnClick()}
-        >
-          Clear filters
-        </Button>
+          <BiMapPin /> Local community data
+        </small>
       </div>
-      <small className={`${classes.localIndicator} ${classes.localCommLegend}`}>
-        <BiMapPin /> Local community data
-      </small>
-    </div>
+      <Divider variant="middle" />
+    </>
   )
 }

@@ -11,8 +11,6 @@ import {
   // LngLatLike, // TODO: use more often
   MapboxGeoJSONFeature,
   MapEventType,
-  CircleLayout,
-  CirclePaint,
   Map,
   SymbolLayout,
   SymbolPaint,
@@ -28,48 +26,31 @@ type Padding =
 
 export type Baselayer = 'dark' | 'light' // assumes using Mapbox style
 export type BoundsArray = [[number, number], [number, number]]
+export type GeocodeMarker = LongLat & { text: string }
+export type InitialMapProps = InteractiveMapProps
 export type LangIconConfig = { icon: string; id: string }
 export type Layer = LayerProps & { 'source-layer': string; id: string }
 export type LongLat = { longitude: number; latitude: number }
 export type LongLatAndZoom = LongLat & { zoom: number }
+export type MapComponent = { baselayer: Baselayer }
 export type MapControlAction = 'home' | 'in' | 'out' | 'info' | 'loc-search'
 export type PopupContent = { heading: string; subheading?: string }
 export type PopupSettings = PopupContent & LongLat
-export type GeocodeMarker = LongLat & { text: string }
+export type SheetsValues = [string, string]
+export type UseStyleProps = { panelOpen: boolean }
 export type ViewportState = Partial<ViewportProps> & ViewState
-export type InitialMapProps = InteractiveMapProps
 
-// MB Styles API individual group in the `metadata` of JSON response
-export type MetadataGroup = { [mbGroupIdHash: string]: { name: string } }
-
-// `metadata` prop has MB Studio group ID and appears to only be part of the
-// Style API, not the Style Spec.
-export type LayerPropsPlusMeta = Omit<
-  LayerProps,
-  'type' | 'paint' | 'layout' | 'id'
-> & {
+export type LayerPropsPlusMeta = Omit<LayerProps, 'paint' | 'layout' | 'id'> & {
   id: string
-  metadata: { 'mapbox:group': keyof MetadataGroup }
-  type: 'circle' | 'symbol' | 'background'
-  layout: CircleLayout | SymbolLayout
-  paint: CirclePaint | SymbolPaint
+  group: keyof LangRecordSchema
+  layout: SymbolLayout
+  paint: SymbolPaint
 }
 
 export type BoundaryConfig = {
   source: SourceWithPromoteID
   layers: Layer[]
   lookupPath: string
-}
-
-// Same but only circle or symbol types
-export type LayerPropsNonBGlayer = Omit<LayerPropsPlusMeta, 'type'> & {
-  type: 'circle' | 'symbol'
-}
-
-// API response from Styles API. Not the same as what comes back in map.target
-export type MbResponse = {
-  metadata: { 'mapbox:groups': MetadataGroup }
-  layers: LayerPropsPlusMeta[]
 }
 
 export type LangFeature = {
@@ -96,12 +77,6 @@ export type MapEvent = Omit<PointerEvent, 'features'> & {
   features: LangFeature[] | BoundaryFeat[]
 }
 
-export type MapComponent = {
-  baselayer: Baselayer
-  labelLayers: LayerPropsNonBGlayer[]
-  symbLayers: LayerPropsNonBGlayer[]
-}
-
 export type GetWebMercViewport = (
   settings: Omit<BoundsConfig, 'bounds'> & {
     bounds: BoundsArray
@@ -117,8 +92,6 @@ export type GetWebMercCenter = (params: {
   zoom: number
   padding?: Padding
 }) => [number, number]
-
-export type UseStyleProps = { panelOpen: boolean }
 
 export type GeocodeResult = {
   result: {

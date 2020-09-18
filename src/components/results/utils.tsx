@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useContext, FC } from 'react'
 
+import { LegendSwatch } from 'components/legend'
+import { GlobalContext } from 'components'
 import { LangRecordSchema } from '../../context/types'
 import countryCodes from './config.emojis.json'
 import * as Types from './types'
@@ -85,18 +87,54 @@ export function renderNeighbColumn(
   )
 }
 
-// TODO: restore when ready for swatch, otherwise remove
-// export function renderCommSizeColumn(
-//   data: LangRecordSchema
-// ): string | React.ReactNode {
-//   // TODO: icon swatch
-//   return COMM_SIZE_COL_MAP[data['Size']]
-// }
-
-export function renderWorldRegionColumn(
+export const RenderCommSizeColumn: FC<{
   data: LangRecordSchema
-): string | React.ReactNode {
-  return data['World Region'] // TODO: icon swatch
+  lookup: { [key: number]: string }
+}> = (props) => {
+  // TODO: if there's a way to pass down legend symbols without going allll the
+  // way to global state, hook it up.
+  const { state } = useContext(GlobalContext)
+  const { data, lookup } = props
+  const valAsPrettyStr = lookup[data.Size]
+  const swatchColor =
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    state.legendSymbols[valAsPrettyStr].paint['icon-color'] as string
+
+  return (
+    <LegendSwatch
+      legendLabel={valAsPrettyStr}
+      component="div"
+      iconID="_circle"
+      backgroundColor={swatchColor || 'transparent'}
+      labelStyleOverride={{ lineHeight: 'inherit', marginLeft: 2 }}
+    />
+  )
+}
+
+export const RenderWorldRegionColumn: FC<{ data: LangRecordSchema }> = (
+  props
+) => {
+  // TODO: if there's a way to pass down legend symbols without going allll the
+  // way to global state, hook it up.
+  const { state } = useContext(GlobalContext)
+  const { data } = props
+  const { 'World Region': WorldRegion } = data
+
+  const regionSwatchColor =
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    state.legendSymbols[WorldRegion].paint['icon-color'] as string
+
+  return (
+    <LegendSwatch
+      legendLabel={data['World Region']}
+      component="div"
+      iconID="_circle"
+      backgroundColor={regionSwatchColor || 'transparent'}
+      labelStyleOverride={{ lineHeight: 'inherit', marginLeft: 2 }}
+    />
+  )
 }
 
 // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
@@ -106,18 +144,9 @@ export function sortNeighbs(
   a: LangRecordSchema,
   b: LangRecordSchema
 ): 0 | 1 | -1 {
-  if (a.Neighborhoods === b.Neighborhoods) {
-    return 0
-  }
-
-  // nulls sort after anything else
-  if (a.Neighborhoods === '') {
-    return 1
-  }
-
-  if (b.Neighborhoods === '') {
-    return -1
-  }
+  if (a.Neighborhoods === b.Neighborhoods) return 0
+  if (a.Neighborhoods === '') return 1 // nulls sort after anything else
+  if (b.Neighborhoods === '') return -1
 
   return a.Neighborhoods < b.Neighborhoods ? -1 : 1
 

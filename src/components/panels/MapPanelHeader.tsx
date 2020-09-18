@@ -13,34 +13,13 @@ type PanelHeaderComponent = Omit<MapPanel, 'component'> & {
   active: boolean
 }
 
-const useCloseBtnStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    panelCloseBtn: {
-      position: 'absolute',
-      right: '0.5em',
-      transition: '300ms transform',
-      transformOrigin: 'center center',
-      transform: (props: { panelOpen: boolean }) =>
-        props.panelOpen ? 'rotate(0deg)' : 'rotate(180deg)',
-      [theme.breakpoints.up('md')]: { display: 'none' },
-    },
-  })
-)
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelHeaderRoot: {
       alignItems: 'center',
       color: theme.palette.common.white,
       display: 'flex',
-      flexShrink: 0,
       justifyContent: 'center',
-      position: 'sticky',
-      bottom: 0,
-      textAlign: 'center',
-      top: 0,
-      width: '100%',
-      zIndex: 1,
       '& a, a:visited': {
         color: `${theme.palette.common.white} !important`, // constant fight!
       },
@@ -68,6 +47,20 @@ const useStyles = makeStyles((theme: Theme) =>
           return props.active ? dark : main
         },
       },
+    },
+  })
+)
+
+const useCloseBtnStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    panelCloseBtn: {
+      position: 'absolute',
+      right: '0.5em',
+      transition: '300ms transform',
+      transformOrigin: 'center center',
+      transform: (props: { panelOpen: boolean }) =>
+        props.panelOpen ? 'rotate(0deg)' : 'rotate(180deg)',
+      [theme.breakpoints.up('md')]: { display: 'none' },
     },
   })
 )

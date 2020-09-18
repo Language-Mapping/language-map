@@ -29,19 +29,17 @@ export const VideoColumnFilter: FC<Types.FilterComponentProps> = (props) => {
   }
 
   return (
-    <th>
-      <FormControlLabel
-        classes={{ root: classes.switchFormCtrlRoot }}
-        control={
-          <Checkbox
-            checked={checked}
-            onChange={handleChange}
-            name="set-video-filter"
-            size="small"
-          />
-        }
-        label=""
-      />
-    </th>
+    <FormControlLabel
+      classes={{ root: classes.switchFormCtrlRoot }}
+      control={
+        <Checkbox
+          checked={checked}
+          onChange={handleChange}
+          name="set-video-filter"
+          size="small"
+        />
+      }
+      label=""
+    />
   )
 }

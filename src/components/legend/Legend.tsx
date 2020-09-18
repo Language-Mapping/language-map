@@ -17,7 +17,13 @@ const useStyles = makeStyles((theme: Theme) =>
       listStyleType: 'none',
       marginBottom: theme.spacing(1),
       marginTop: 0,
-      paddingLeft: 4,
+      paddingLeft: 0,
+      gridGap: 6,
+      display: (props: { gridCutoff?: number }) =>
+        props.gridCutoff ? 'grid' : 'block',
+      gridTemplateColumns: (props: { gridCutoff?: number }) =>
+        // CRED: https://stackoverflow.com/a/43129507
+        `repeat(auto-fill, minmax(${props.gridCutoff}px, auto))`,
     },
     // Looks PERFECT on all breakpoints
     groupedLegend: {
@@ -45,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const GroupedLegend: FC<GroupedLegendProps> = (props) => {
   const { groupName, legendItems, groupConfig } = props
-  const classes = useStyles()
+  const classes = useStyles({})
 
   return (
     <div>
@@ -59,8 +65,14 @@ export const GroupedLegend: FC<GroupedLegendProps> = (props) => {
             ({ legendLabel }) => legendLabel === item
           )
 
-          if (!corresponding) {
-            return <li key={item}>Not found: {item}</li>
+          if (!corresponding) return <li key={item}>Not found: {item}</li>
+
+          let matchingConfig
+
+          if (corresponding.iconID) {
+            matchingConfig = langTypeIconsConfig.find(
+              (icon) => icon.id === corresponding.iconID
+            )
           }
 
           return (
@@ -68,7 +80,7 @@ export const GroupedLegend: FC<GroupedLegendProps> = (props) => {
               key={corresponding.legendLabel}
               {...corresponding}
               legendLabel={corresponding.legendLabel}
-              icon={corresponding && corresponding.icon}
+              icon={matchingConfig && matchingConfig.icon}
             />
           )
         })}
@@ -79,7 +91,8 @@ export const GroupedLegend: FC<GroupedLegendProps> = (props) => {
 
 export const Legend: FC<LegendComponent> = (props) => {
   const { legendItems, groupName } = props
-  const classes = useStyles()
+  // GROSS: put this into config or something when it's not 12:41am
+  const classes = useStyles({ gridCutoff: groupName === 'Status' ? 110 : 60 })
   const groupConfig = groupedLegendConfigs[groupName as string]
 
   if (groupConfig) {

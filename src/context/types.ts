@@ -3,28 +3,23 @@
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
 import { Color } from '@material-ui/lab/Alert'
 
-import {
-  MetadataGroup,
-  Baselayer,
-  LayerPropsNonBGlayer,
-} from 'components/map/types'
+import { Baselayer, LayerPropsPlusMeta } from 'components/map/types'
 import { LegendSwatch } from 'components/legend/types'
 
 export type PanelState = 'default' | 'maximized' | 'minimized'
 
 export type LegendSymbols = {
-  [key: string]: Partial<LayerPropsNonBGlayer>
+  [key: string]: Partial<LayerPropsPlusMeta>
 }
 
+export type LangSchemaCol = keyof LangRecordSchema
+
 export type StoreAction =
-  | { type: 'INIT_LANG_LAYER_LABEL_OPTIONS'; payload: string[] }
-  | { type: 'INIT_LANG_LAYER_SYMB_OPTIONS'; payload: MetadataGroup }
-  | { type: 'INIT_LEGEND_SYMBOLS'; payload: LegendSymbols }
   | { type: 'SET_BASELAYER'; payload: Baselayer }
   | { type: 'SET_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
-  | { type: 'SET_LANG_LAYER_LABELS'; payload: string }
+  | { type: 'SET_LANG_LAYER_LABELS'; payload: LangSchemaCol | '' }
   | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatch[] }
-  | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: string }
+  | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: LangSchemaCol }
   | { type: 'SET_MAP_LOADED'; payload: boolean }
   | { type: 'SET_PANEL_STATE'; payload: PanelState }
   | { type: 'SET_SEL_FEAT_ATTRIBS'; payload: null | LangRecordSchema }
@@ -33,13 +28,11 @@ export type StoreAction =
   | { type: 'TOGGLE_OFF_CANVAS_NAV' }
 
 export type InitialState = {
-  activeLangLabelId: string
-  activeLangSymbGroupId: string
+  activeLangLabelId: LangSchemaCol | ''
+  activeLangSymbGroupId: LangSchemaCol | '' | 'None'
   baselayer: Baselayer
   langFeatures: LangRecordSchema[]
   langFeatsLenCache: number
-  langLabels: string[]
-  langSymbGroups: MetadataGroup
   legendItems: LegendSwatch[]
   legendSymbols: LegendSymbols
   boundariesLayersVisible: boolean

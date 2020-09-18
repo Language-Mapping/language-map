@@ -27,6 +27,7 @@ import * as Types from './types'
 import * as utils from './utils'
 import * as config from './config'
 import * as events from './events'
+import symbLayers from './config.lang-style'
 
 import { LangRecordSchema } from '../../context/types'
 import {
@@ -38,6 +39,7 @@ import {
 
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
 const { neighbConfig, countiesConfig, boundariesLayerIDs } = config
+const interactiveLayerIds = symbLayers.map((symbLayer) => symbLayer.id)
 
 // Jest or whatever CANNOT find this plugin. And importing it from
 // `react-map-gl` is useless as well.
@@ -53,7 +55,7 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
 }
 
 export const Map: FC<Types.MapComponent> = (props) => {
-  const { symbLayers, labelLayers, baselayer } = props
+  const { baselayer } = props
   const history = useHistory()
   const loc = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
@@ -68,6 +70,7 @@ export const Map: FC<Types.MapComponent> = (props) => {
     selFeatAttribs,
     mapLoaded,
     activeLangSymbGroupId,
+    activeLangLabelId,
     langFeatures,
   } = state
 
@@ -95,39 +98,47 @@ export const Map: FC<Types.MapComponent> = (props) => {
       .data,
   }
 
-  const interactiveLayerIds = React.useMemo(
-    () => symbLayers.map((symbLayer) => symbLayer.id),
-    [symbLayers]
-  )
-
   /* eslint-disable react-hooks/exhaustive-deps */
   // ^^^^^ otherwise it wants things like mapRef and dispatch 24/7
 
+  // Fly to extent of lang features on length change
   useEffect((): void => {
-    if (!mapRef.current || !mapLoaded) return
+    if (!mapRef.current) return
 
     const map: MbMap = mapRef.current.getMap()
-    const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
 
-    utils.filterLayersByFeatIDs(
-      map,
-      currentLayerNames,
-      getAllLangFeatIDs(langFeatures)
-    )
+    // At time of writing, a "no features" scenario should only occur on load
+    // since the "View results..." btn in the table is disabled if there are no
+    // records.
+    if (!langFeatures.length) return
 
-    // TODO: figure out this logic. How to zoom to home extent when needed?
-    if (
-      !state.langFeatures.length ||
-      state.langFeatures.length === state.langFeatsLenCache
-    )
+    // TODO: better check/decouple the fly-home-on-filter-reset behavior so that
+    // there are no surprise fly-to-home scenarios.
+    if (langFeatures.length === state.langFeatsLenCache) {
+      flyHome(map)
+
       return
+    }
 
     const firstCoords: [number, number] = [
       langFeatures[0].Longitude,
       langFeatures[0].Latitude,
     ]
 
-    const bounds = state.langFeatures.reduce(
+    // Zooming to "bounds" gets crazy if there is only one feature
+    if (langFeatures.length === 1) {
+      const settings = {
+        latitude: firstCoords[1],
+        longitude: firstCoords[0],
+        zoom: config.POINT_ZOOM_LEVEL,
+      }
+
+      utils.flyToPoint(map, settings, null)
+
+      return
+    }
+
+    const bounds = langFeatures.reduce(
       (all, thisOne) => all.extend([thisOne.Longitude, thisOne.Latitude]),
       new LngLatBounds(firstCoords, firstCoords)
     )
@@ -141,7 +152,21 @@ export const Map: FC<Types.MapComponent> = (props) => {
       },
       null
     )
-  }, [state.langFeatures])
+  }, [langFeatures.length])
+
+  // Filter lang feats in map on length change or symbology change
+  useEffect((): void => {
+    if (!mapRef.current || !mapLoaded) return
+
+    const map: MbMap = mapRef.current.getMap()
+    const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
+
+    utils.filterLayersByFeatIDs(
+      map,
+      currentLayerNames,
+      getAllLangFeatIDs(langFeatures)
+    )
+  }, [langFeatures.length, state.legendItems])
 
   // TODO: put in... legend?
   useEffect(
@@ -184,7 +209,12 @@ export const Map: FC<Types.MapComponent> = (props) => {
     // and order of the whole process prevent that.
 
     const { ID, Latitude: latitude, Longitude: longitude } = selFeatAttribs
-    const settings = { latitude, longitude, zoom: 14, disregardCurrZoom: true }
+    const settings = {
+      latitude,
+      longitude,
+      zoom: config.POINT_ZOOM_LEVEL,
+      disregardCurrZoom: true,
+    }
 
     // Make feature appear selected // TODO: higher zIndex on selected feature
     map.setFeatureState(
@@ -403,11 +433,11 @@ export const Map: FC<Types.MapComponent> = (props) => {
             }
           />
         ))}
-        {symbLayers && labelLayers && (
+        {symbLayers && (
           <LangMbSrcAndLayer
-            {...{ symbLayers, labelLayers }}
+            symbLayers={symbLayers}
             activeLangSymbGroupId={activeLangSymbGroupId}
-            activeLangLabelId={state.activeLangLabelId}
+            activeLangLabelId={activeLangLabelId}
           />
         )}
         {popupSettings && (

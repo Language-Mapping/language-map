@@ -15,6 +15,7 @@ import { renderGroup } from './utils'
 
 type SearchByOmniProps = {
   data: LangRecordSchema[]
+  filtersApplied: boolean
 }
 
 // TODO: maybe this: https://github.com/mui-org/material-ui/issues/4393
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
 // CRED: https://material-ui.com/components/autocomplete/#virtualization
 // ^^^ definitely wouldn't have gotten the `react-window` virtualization w/o it!
 export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
-  const { data } = props
+  const { data, filtersApplied } = props
   const classes = useStyles()
   const history = useHistory()
 
@@ -91,7 +92,7 @@ export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
         <TextField
           {...params}
           placeholder="Language, endonym, Glottocode, or ISO 639-3"
-          helperText={<FiltersWarning />}
+          helperText={filtersApplied && <FiltersWarning />}
           InputLabelProps={{ disableAnimation: true, shrink: true }}
         />
       )}

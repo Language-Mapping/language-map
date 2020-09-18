@@ -1,94 +1,10 @@
-import { useState, useEffect, Dispatch } from 'react'
+import { useState, useEffect } from 'react'
 import { Theme } from '@material-ui/core/styles'
 
-import {
-  MetadataGroup,
-  MbResponse,
-  LayerPropsNonBGlayer,
-} from 'components/map/types'
-import { StoreAction, LangRecordSchema } from './context/types'
+import { LangRecordSchema } from './context/types'
 
 // TODO: into config since it's used in multiple places...
 const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
-
-export const getGroupNames = (groupObject: MetadataGroup): string[] =>
-  Object.keys(groupObject).map((groupId: string) => groupObject[groupId].name)
-
-// TODO: react-query
-export const getMbStyleDocument = async (
-  symbStyleUrl: string,
-  dispatch: Dispatch<StoreAction>,
-  setSymbLayers: Dispatch<LayerPropsNonBGlayer[]>,
-  setLabelLayers: Dispatch<LayerPropsNonBGlayer[]>
-): Promise<void> => {
-  const response = await fetch(symbStyleUrl) // TODO: handle errors
-  const { metadata, layers: allLayers }: MbResponse = await response.json()
-  const allLayerGroups = metadata['mapbox:groups']
-  const nonLabelsGroups: MetadataGroup = {}
-  let labelsGroupId = ''
-
-  for (const key in allLayerGroups) {
-    if (allLayerGroups[key].name === 'Labels') {
-      labelsGroupId = key
-    } else {
-      nonLabelsGroups[key] = allLayerGroups[key]
-    }
-  }
-
-  // Default symbology to show first
-  const firstGroupId = Object.keys(nonLabelsGroups)[0]
-
-  const nonBgLayersWithMeta = allLayers.filter(
-    (layer) => layer.metadata && layer.type !== 'background'
-  )
-  const notTheBgLayerOrLabels = nonBgLayersWithMeta.filter(
-    (layer) => layer.metadata['mapbox:group'] !== labelsGroupId
-  ) as LayerPropsNonBGlayer[]
-  const labelsLayers = nonBgLayersWithMeta.filter(
-    (layer) => layer.metadata['mapbox:group'] === labelsGroupId
-  ) as LayerPropsNonBGlayer[]
-
-  // The field names that will populate the "Label by" dropdown
-  const labelFields = labelsLayers.map((layer) => layer.id as string)
-
-  // Populate symb dropdown
-  dispatch({
-    type: 'INIT_LANG_LAYER_SYMB_OPTIONS',
-    payload: nonLabelsGroups,
-  })
-
-  // TODO: consider orig. Region colors for `Status`: https://bit.ly/34szqZe
-  // Set group ID of initial active MB Styles group
-  dispatch({
-    type: 'SET_LANG_LAYER_SYMBOLOGY',
-    payload: firstGroupId,
-  })
-
-  // Populate labels dropdown
-  dispatch({
-    type: 'INIT_LANG_LAYER_LABEL_OPTIONS',
-    payload: labelFields,
-  })
-
-  setLabelLayers(labelsLayers)
-  setSymbLayers(notTheBgLayerOrLabels)
-
-  const legend = notTheBgLayerOrLabels.reduce((all, thisOne) => {
-    return {
-      ...all,
-      [thisOne.id as string]: {
-        paint: thisOne.paint,
-        type: thisOne.type,
-        layout: thisOne.layout,
-      },
-    }
-  }, {})
-
-  dispatch({
-    type: 'INIT_LEGEND_SYMBOLS',
-    payload: legend,
-  })
-}
 
 export const findFeatureByID = (
   langLayerRecords: LangRecordSchema[],
@@ -108,6 +24,7 @@ export const isURL = (text: string): boolean => text.slice(0, 4) === 'http'
 
 // CRED:
 // https://github.com/mbrn/material-table/issues/709#issuecomment-566097441
+// TODO: put into hooks file and/or folder along with any others
 export function useWindowResize(): { width: number; height: number } {
   const [width, setWidth] = useState(window.innerWidth)
   const [height, setHeight] = useState(window.innerHeight)

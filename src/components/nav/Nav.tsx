@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core'
 import { GoInfo } from 'react-icons/go'
 import { MdChat } from 'react-icons/md'
+import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { paths as routes } from 'components/config/routes'
 import { Settings } from './Settings'
@@ -79,6 +80,23 @@ export const Nav: FC = () => {
                 classes={{ secondary: smallerText }}
                 primary="Contact & Feedback"
                 secondary="Suggest corrections, report bugs, request new features, and more"
+              />
+            </Link>
+          </ListItem>
+          <ListItem button>
+            <Link
+              underline="none"
+              component={RouterLink}
+              to={routes.help}
+              className={listLink}
+            >
+              <ListItemIcon className={listItemIcon}>
+                <AiOutlineQuestionCircle />
+              </ListItemIcon>
+              <ListItemText
+                classes={{ secondary: smallerText }}
+                primary="Help"
+                secondary="Usage instructions and a glossary of terms used in this application"
               />
             </Link>
           </ListItem>

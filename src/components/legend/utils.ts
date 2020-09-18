@@ -1,53 +1,35 @@
-import { LayerPropsNonBGlayer } from 'components/map/types'
-import { LegendSwatch } from './types'
+import { LayerPropsPlusMeta } from 'components/map/types'
+import { LegendSwatch, IconID } from './types'
 import { StoreAction } from '../../context/types'
+import { langLabelsStyle } from '../map/config.points' // just need defaults
 
-const createMapLegend = (layers: LayerPropsNonBGlayer[]): LegendSwatch[] => {
+const createMapLegend = (layers: LayerPropsPlusMeta[]): LegendSwatch[] => {
   return layers.map((layer) => {
-    const { type, id, paint, layout } = layer
-    const settings = { legendLabel: id, type } as LegendSwatch
+    const { id, layout, paint } = layer
+    const settings = { legendLabel: id } as LegendSwatch
+    const size = layout['icon-size'] ? (layout['icon-size'] as number) * 20 : 5
+    const backgroundColor = (paint['icon-color'] as string) || 'transparent'
+    const iconID =
+      (layout['icon-image'] as IconID) || langLabelsStyle.layout['icon-image']
 
-    // Quite a fight against the MB types here...
-    /* eslint-disable @typescript-eslint/ban-ts-comment */
-    if (type === 'circle') {
-      // @ts-ignore
-      const backgroundColor = paint['circle-color']
-      // @ts-ignore
-      const size = paint['circle-radius'] || 5
-
-      return {
-        ...settings,
-        size,
-        backgroundColor,
-      }
+    return {
+      ...settings,
+      size,
+      backgroundColor,
+      iconID,
     }
-
-    if (type === 'symbol') {
-      return {
-        ...settings,
-        // @ts-ignore
-        iconID: layout['icon-image'],
-      }
-    }
-    /* eslint-enable @typescript-eslint/ban-ts-comment */
-
-    return settings
   })
 }
 
 export const initLegend = (
   dispatch: React.Dispatch<StoreAction>,
   activeLangSymbGroupId: string,
-  symbLayers: LayerPropsNonBGlayer[]
+  symbLayers: LayerPropsPlusMeta[]
 ): void => {
   const layersInActiveGroup = symbLayers.filter(
-    (layer) => layer.metadata['mapbox:group'] === activeLangSymbGroupId
+    ({ group }) => group === activeLangSymbGroupId
   )
-
   const legend = createMapLegend(layersInActiveGroup)
 
-  dispatch({
-    type: 'SET_LANG_LAYER_LEGEND',
-    payload: legend,
-  })
+  dispatch({ type: 'SET_LANG_LAYER_LEGEND', payload: legend })
 }

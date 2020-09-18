@@ -1,3 +1,9 @@
+body {
+  /* Not changing theme just for this, but matching to MB monochrome light
+  "gray" (e.g. water) makes panel transition's impact "behind" map less jank. */
+  background-color: hsl(180deg 3% 83%) !important;
+}
+
 a {
   /* Same as theme.palette.info.main but this avoids need for `withStyles` */
   color: hsl(207deg 90% 54%);

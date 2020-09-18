@@ -4,7 +4,7 @@ export const paths = {
   home: '/',
   details: '/details',
   about: '/about',
-  glossary: '/glossary',
+  help: '/help',
 } as {
   [key: string]: RouteLocation
 }

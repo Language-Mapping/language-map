@@ -1,77 +1,118 @@
-import React, { FC } from 'react'
-import { CirclePaint, AnyLayout } from 'mapbox-gl'
+import React, { FC, useEffect, useState } from 'react'
+import { queryCache, useQuery } from 'react-query'
+import { AnyLayout, Expression } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
-import { LayerPropsNonBGlayer } from './types'
-import { mbStyleTileConfig } from './config'
+import * as config from './config'
 
-// Ongoing fonts to check
-// Tokpe Gola
+import { LayerPropsPlusMeta, SheetsValues } from './types'
+import { asyncAwaitFetch, prepEndoFilters } from './utils'
+
+const { mbStyleTileConfig, langLabelsStyle, QUERY_ID, MB_FONTS_URL } = config
+
+type SheetsResponse = { values: SheetsValues[] }
 
 type SourceAndLayerComponent = {
-  symbLayers: LayerPropsNonBGlayer[]
-  labelLayers: LayerPropsNonBGlayer[]
+  symbLayers: LayerPropsPlusMeta[]
   activeLangSymbGroupId: string
   activeLangLabelId: string
 }
-
-const commonCirclePaint = {
-  'circle-stroke-color': 'cyan',
-  'circle-stroke-width': [
-    'case',
-    ['boolean', ['feature-state', 'selected'], false],
-    3,
-    0,
-  ],
-} as CirclePaint
 
 // NOTE: it did not seem to work when using two different Styles with the same
 // dataset unless waiting until there is something to put into <Source>.
 export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
   symbLayers,
-  labelLayers,
   activeLangSymbGroupId,
   activeLangLabelId,
 }) => {
+  const { data, isFetching, error } = useQuery(QUERY_ID)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [endoFonts, setEndoFonts] = useState<any[]>()
+
+  const getLayout = (
+    layout: AnyLayout,
+    isInActiveGroup: boolean
+  ): AnyLayout => {
+    const bareMinimum: AnyLayout = {
+      ...config.langLabelsStyle.layout,
+      ...layout,
+      visibility: isInActiveGroup ? 'visible' : 'none', // hide if inactive
+    }
+
+    if (!activeLangLabelId || activeLangLabelId === 'None' || !endoFonts) {
+      return { ...bareMinimum, 'text-field': '' }
+    }
+
+    const isEndo = activeLangLabelId === 'Endonym'
+    const defaultFont = ['Noto Sans Regular', 'Arial Unicode MS Regular']
+    const defaultTextField: Expression = [
+      'to-string',
+      ['get', activeLangLabelId],
+    ]
+    // TODO: check if 'Font Image Alt' is popuplated instead of using http
+    const imgCheck: Expression = [
+      'case',
+      ['==', ['slice', ['get', 'Endonym'], 0, 4], 'http'],
+      ['get', 'Language'],
+      ['get', 'Endonym'],
+    ]
+
+    /* eslint-disable operator-linebreak */
+    return {
+      ...bareMinimum,
+      'text-font': isEndo ? endoFonts : defaultFont,
+      'text-field': isEndo ? imgCheck : defaultTextField,
+    }
+    /* eslint-enable operator-linebreak */
+  }
+
+  useEffect(() => {
+    // TODO: maybe not prefetch?
+    queryCache.prefetchQuery(QUERY_ID, () => asyncAwaitFetch(MB_FONTS_URL))
+  }, [])
+
+  useEffect(() => {
+    if (isFetching) return
+
+    const { values: sheetsResponse } = data as SheetsResponse
+
+    if (!sheetsResponse) return
+
+    setEndoFonts(prepEndoFilters(sheetsResponse))
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFetching])
+
+  // TODO: Sentry
+  if (error) throw new Error('Something went wrong fetching Le Sheetz')
+
   return (
     <Source
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore // promoteId is just not anywhere in the source...
       promoteId="ID"
       type="vector"
-      // YO: careful here, it's overriding what's in the MB style JSON...
       url={`mapbox://${mbStyleTileConfig.tilesetId}`}
       id={mbStyleTileConfig.langSrcID}
     >
-      {symbLayers.map((layer: LayerPropsNonBGlayer) => {
+      {symbLayers.map((layer: LayerPropsPlusMeta) => {
         let { paint, layout } = layer
-        const isInActiveGroup =
-          layer.metadata['mapbox:group'] === activeLangSymbGroupId
+        const isInActiveGroup = layer.group === activeLangSymbGroupId
 
-        // Hide if not in active symbology group
-        layout = {
-          ...layout,
-          visibility: isInActiveGroup ? 'visible' : 'none',
-        }
+        layout = getLayout(layout, isInActiveGroup)
 
-        // Set selected feature stroke for all layers of `circle` type
-        if (layer.type === 'circle') {
-          paint = { ...paint, ...commonCirclePaint }
-        } else if (layer.type === 'symbol') {
-          // TODO: change symbol size (???) for selected feat. Evidently cannot
-          // set layout properties base on feature-state though, so maybe this:
-          // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setlayoutproperty
-          // 0.5 good with 24x24 SVG if there is a background circle. Otherwise
-          // a little smaller is better.
-          layout = { ...layout, 'icon-size': 0.4 }
+        // TODO: change symbol size (???) for selected feat. Evidently cannot
+        // set layout properties base on feature-state though, so maybe this:
+        // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setlayoutproperty
+        if (activeLangLabelId && activeLangLabelId !== 'None') {
+          paint = { ...langLabelsStyle.paint, ...paint }
         }
 
         return (
-          // TODO: some kind of transition/animation on switch
           <Layer
             key={layer.id}
             {...layer}
-            // YO: careful here, it's overriding what's in the MB style JSON...
+            type="symbol" // R.I.P. circles
             source-layer={mbStyleTileConfig.layerId}
             layout={layout}
             paint={paint}
@@ -79,27 +120,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
         )
       })}
       {/* TODO: set "text-size" value based on zoom level */}
-      {/* TODO: make expressions less redundant, AND make it config-driven so
-      that the font stuff is not so tangled up in the MB config (totally
-      separate file may be best) */}
-      {labelLayers.map((layer: LayerPropsNonBGlayer) => {
-        const isActiveLabel = layer.id === activeLangLabelId
-
-        const layout: AnyLayout = {
-          ...layer.layout,
-          visibility: isActiveLabel ? 'visible' : 'none',
-        }
-
-        return (
-          <Layer
-            key={layer.id}
-            {...layer}
-            // YO: careful here, it's overriding what's in the MB style JSON...
-            source-layer={mbStyleTileConfig.layerId}
-            layout={layout}
-          />
-        )
-      })}
+      {/* TODO: make expressions less redundant */}
     </Source>
   )
 }

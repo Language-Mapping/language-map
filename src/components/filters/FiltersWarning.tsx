@@ -1,16 +1,14 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
-import { GoInfo } from 'react-icons/go'
+import { Typography, Badge } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     filtersWarning: {
-      display: 'flex', // TODO: probably not flex, only need for icon vert align
-      alignItems: 'center',
       fontSize: '0.8em',
+      marginLeft: 6,
+      lineHeight: 0.8,
       color: theme.palette.text.secondary,
-      '& > svg': { marginRight: '0.4em' },
     },
   })
 )
@@ -20,9 +18,15 @@ export const FiltersWarning: FC = () => {
   const classes = useStyles()
 
   return (
-    <Typography className={classes.filtersWarning}>
-      <GoInfo />
-      Any filters in the Data Table will be applied.
-    </Typography>
+    <Badge
+      variant="dot"
+      color="error"
+      style={{ marginLeft: 8 }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+    >
+      <Typography className={classes.filtersWarning} component="span">
+        Filters in the Data Table will affect results.
+      </Typography>
+    </Badge>
   )
 }
