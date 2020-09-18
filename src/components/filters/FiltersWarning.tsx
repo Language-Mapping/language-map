@@ -20,7 +20,7 @@ export const FiltersWarning: FC = () => {
   return (
     <Badge
       variant="dot"
-      color="error"
+      color="secondary"
       style={{ marginLeft: 8 }}
       anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
     >

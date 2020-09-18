@@ -69,7 +69,7 @@ export const PanelIntro: FC<PanelIntroProps> = (props) => {
             <Badge
               variant="dot"
               badgeContent=" "
-              color="error"
+              color="secondary"
               overlap="circle"
               anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
               invisible={state.langFeatsLenCache === state.langFeatures.length}

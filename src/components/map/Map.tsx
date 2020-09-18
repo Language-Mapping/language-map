@@ -394,6 +394,8 @@ export const Map: FC<Types.MapComponent> = (props) => {
     } else if (actionID === 'home') {
       flyHome(map)
     } else {
+      // TODO: consider a simple zoom in/out if it's easier:
+      // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#zoomin
       // Assumes `in` or `out` from here down...
       const { zoom } = viewport
 
