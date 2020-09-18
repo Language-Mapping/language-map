@@ -1,7 +1,7 @@
 import React, { FC, useContext } from 'react'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
+import { Typography, Divider } from '@material-ui/core'
 
 import { GlobalContext, LangOrEndoIntro, ScrollToTopOnMount } from 'components'
 import { LegendSwatch } from 'components/legend'
@@ -14,12 +14,8 @@ import { Media } from './Media'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    intro: {
-      padding: '0.65em 0 0.3em',
-      textAlign: 'center',
-      borderBottom: `solid 1px ${theme.palette.divider}`,
-      marginBottom: '1em',
-    },
+    intro: { padding: '0.65em 0 0.3em', textAlign: 'center' },
+    divider: { marginBottom: '1.5em' },
     neighborhoods: {
       fontSize: '0.75em',
       color: theme.palette.text.secondary,
@@ -28,7 +24,6 @@ const useStyles = makeStyles((theme: Theme) =>
     descripSection: {
       fontSize: theme.typography.caption.fontSize,
       padding: '0 0.25rem',
-      // marginBottom: '2.4rem', // bad for Explore on mobile!
     },
     region: {
       display: 'inline-flex',
@@ -112,7 +107,7 @@ export const DetailsPanel: FC = () => {
     Video: video,
     'World Region': WorldRegion,
   } = state.selFeatAttribs
-  const { intro, descripSection, neighborhoods } = classes
+  const { intro, descripSection, neighborhoods, divider } = classes
   const regionSwatchColor =
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -153,6 +148,7 @@ export const DetailsPanel: FC = () => {
           }}
         />
       </div>
+      <Divider variant="middle" className={divider} />
       <Typography variant="body2" className={descripSection} component="div">
         <RecordDescription text={description} />
       </Typography>

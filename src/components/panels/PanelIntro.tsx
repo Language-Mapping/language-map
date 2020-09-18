@@ -1,7 +1,7 @@
 import React, { FC, useContext } from 'react'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Button } from '@material-ui/core'
+import { Button, IconButton } from '@material-ui/core'
 import { TiDocumentText, TiDocumentDelete } from 'react-icons/ti'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
@@ -14,13 +14,12 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelIntroRoot: {
       alignItems: 'center',
-      backgroundColor: theme.palette.background.paper,
       borderBottomColor: theme.palette.divider,
       borderBottomStyle: 'solid',
-      borderBottomWidth: 1,
+      borderBottomWidth: 2,
       display: 'grid',
-      gridTemplateColumns: 'auto auto 1fr',
-      justifyItems: 'flex-end',
+      gridTemplateColumns: 'auto auto',
+      justifyContent: 'space-around',
       listStyle: 'none',
       margin: 0,
       marginBottom: '0.25rem',
@@ -30,20 +29,27 @@ const useStyles = makeStyles((theme: Theme) =>
       top: 0,
       zIndex: 1,
       [theme.breakpoints.up('sm')]: {
-        gridColumnGap: 8,
         paddingBottom: '0.25rem',
         paddingTop: '0.25rem',
-        paddingLeft: 16,
-        paddingRight: 16,
-      },
-      [theme.breakpoints.only('sm')]: {
-        gridColumnGap: 12,
+        paddingLeft: 12,
+        paddingRight: 12,
       },
       '& .MuiButton-startIcon': { marginRight: 4 },
     },
     introBtn: {
       textTransform: 'none',
       [theme.breakpoints.down('xs')]: { fontSize: '0.85em' },
+    },
+    helpBtn: {
+      position: 'absolute',
+      top: '130%',
+      right: '0.4em',
+      [theme.breakpoints.between('md', 'lg')]: {
+        right: '1em',
+      },
+      [theme.breakpoints.up('xl')]: {
+        right: '0.8em', // unlikely to have scrollbar on huge screen
+      },
     },
   })
 )
@@ -85,17 +91,16 @@ export const PanelIntro: FC<PanelIntroProps> = (props) => {
         </Button>
       </li>
       <li>
-        <Button
+        <IconButton
           title="Help and glossary of common terms"
-          className={classes.introBtn}
+          className={classes.helpBtn}
           color="primary"
           component={RouterLink}
           size="small"
-          startIcon={<AiOutlineQuestionCircle />}
           to={routes.help + loc.search}
         >
-          Help
-        </Button>
+          <AiOutlineQuestionCircle />
+        </IconButton>
       </li>
     </ul>
   )

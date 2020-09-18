@@ -7,9 +7,7 @@ import { CloseTableProps } from './types'
 import { ResultsTable } from './ResultsTable'
 import { LangRecordSchema } from '../../context/types'
 
-type ResultsModalProps = CloseTableProps & {
-  open: boolean
-}
+type ResultsModalProps = CloseTableProps & { open: boolean }
 
 export const ResultsModal: FC<ResultsModalProps> = (props) => {
   const { open, closeTable } = props
@@ -18,7 +16,6 @@ export const ResultsModal: FC<ResultsModalProps> = (props) => {
   const [tableData, setTableData] = useState<LangRecordSchema[]>([])
   const [oneAndDone, setOneAndDone] = useState<boolean>(false)
 
-  // useEffect((): void => setTableData(state.langFeatures), [state.langFeatures])
   useEffect((): void => {
     if (oneAndDone || !state.langFeatures.length) return
     if (!oneAndDone) setOneAndDone(true)
