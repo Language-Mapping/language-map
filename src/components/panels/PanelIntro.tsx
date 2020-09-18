@@ -44,12 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       top: '125%',
       right: 8,
-      [theme.breakpoints.between('md', 'lg')]: {
-        right: 12,
-      },
-      [theme.breakpoints.up('xl')]: {
-        right: '0.8em', // unlikely to have scrollbar on huge screen
-      },
+      [theme.breakpoints.between('md', 'lg')]: { right: 14 },
     },
   })
 )
