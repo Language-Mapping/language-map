@@ -2,7 +2,11 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { panelWidths } from 'components/panels/config'
 
-type NavStyleProps = { panelOpen: boolean }
+type NavStyleProps = {
+  panelOpen?: boolean
+  logoLineColor?: string
+  logoHorizPadding?: string
+}
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,16 +46,16 @@ export const useStyles = makeStyles((theme: Theme) =>
     titleMain: {
       // lineHeight: 1, // single-line anyway, and allows for reliance on gutter
       // Horizontal padding allows the background image to extend past text
-      paddingLeft: '0.15em',
-      paddingRight: '0.15em',
+      padding: (props: NavStyleProps) =>
+        `0 ${props.logoHorizPadding || '0.15em'}`,
       // CRED: css-tricks.com/snippets/css/css-linear-gradient/#hard-color-stops
-      backgroundImage: `
+      backgroundImage: (props: NavStyleProps) => `
       linear-gradient(
         to top, 
         transparent,
         transparent 0.165em,
-        gold 0.165em,
-        gold 0.24em,
+        ${props.logoLineColor || 'gold'} 0.165em,
+        ${props.logoLineColor || 'gold'} 0.24em,
         transparent 0.24em,
         transparent 100%
       )`,
