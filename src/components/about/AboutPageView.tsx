@@ -4,9 +4,7 @@ import { useQuery } from 'react-query'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
   Backdrop,
-  Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
@@ -19,6 +17,8 @@ import { createMarkup } from '../../utils'
 
 type AboutPageProps = {
   queryName: WpQueryNames
+  icon?: React.ReactNode
+  title?: string
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -32,17 +32,31 @@ const useStyles = makeStyles((theme: Theme) =>
       zIndex: theme.zIndex.drawer + 1,
       color: '#fff',
     },
+    dialogTitle: {
+      display: 'flex',
+      alignItems: 'center',
+      '& svg': {
+        fontSize: '0.7em',
+        marginRight: '0.15em',
+      },
+    },
     dialogContent: {
+      // Prevent screenshots from getting lost in Paper bg if same color
+      outline: 'solid 1px hsl(0deg 0% 40%)',
       '& img': {
         height: 'auto',
         maxWidth: '100%',
+        margin: '1em auto',
+      },
+      '& figure': {
+        margin: '1em 0', // horiz. margin defaults to huge 40px in Chrome
       },
     },
   })
 )
 
 export const AboutPageView: FC<AboutPageProps> = (props) => {
-  const { queryName } = props
+  const { queryName, icon, title } = props
   const classes = useStyles()
   const history = useHistory()
   const { data, isFetching, error } = useQuery(queryName)
@@ -88,7 +102,10 @@ export const AboutPageView: FC<AboutPageProps> = (props) => {
       maxWidth="md"
     >
       <DialogTitle id={`${queryName}-dialog-title`} disableTypography>
-        <Typography variant="h2">{wpData && wpData.title.rendered}</Typography>
+        <Typography variant="h3" component="h2" className={classes.dialogTitle}>
+          {icon}
+          {title}
+        </Typography>
       </DialogTitle>
       <IconButton onClick={handleClose} className={classes.closeBtn}>
         <MdClose />
@@ -102,11 +119,6 @@ export const AboutPageView: FC<AboutPageProps> = (props) => {
           id={`${queryName}-dialog-description`}
         />
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Exit
-        </Button>
-      </DialogActions>
     </Dialog>
   )
 }
