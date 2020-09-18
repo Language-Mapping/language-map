@@ -17,6 +17,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     legendLabel: {
       justifySelf: 'flex-start',
+      fontSize: theme.typography.caption.fontSize,
+      lineHeight: theme.typography.caption.lineHeight,
     },
     imgSwatch: {
       height: 20,
@@ -34,6 +36,7 @@ export const LegendSwatch: FC<LegendSwatchComponent> = (props) => {
     legendLabel,
     size = 7,
     component = 'li',
+    labelStyleOverride,
   } = props
   const isCircle = iconID === '_circle'
   const classes = useStyles({ isCircle })
@@ -62,7 +65,10 @@ export const LegendSwatch: FC<LegendSwatchComponent> = (props) => {
       {!isCircle && (
         <img src={icon} alt={legendLabel} className={classes.imgSwatch} />
       )}
-      <Typography variant="caption" className={classes.legendLabel}>
+      <Typography
+        className={classes.legendLabel}
+        style={labelStyleOverride || {}}
+      >
         {legendLabel}
       </Typography>
     </Box>

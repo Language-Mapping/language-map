@@ -1,5 +1,5 @@
 import { LayerPropsPlusMeta } from 'components/map/types'
-import { LegendSwatch } from './types'
+import { LegendSwatch, IconID } from './types'
 import { StoreAction } from '../../context/types'
 import { langLabelsStyle } from '../map/config.points' // just need defaults
 
@@ -10,7 +10,7 @@ const createMapLegend = (layers: LayerPropsPlusMeta[]): LegendSwatch[] => {
     const size = layout['icon-size'] ? (layout['icon-size'] as number) * 20 : 5
     const backgroundColor = (paint['icon-color'] as string) || 'transparent'
     const iconID =
-      (layout['icon-image'] as string) || langLabelsStyle.layout['icon-image']
+      (layout['icon-image'] as IconID) || langLabelsStyle.layout['icon-image']
 
     return {
       ...settings,

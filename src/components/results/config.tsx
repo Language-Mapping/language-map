@@ -16,6 +16,7 @@ import {
 
 import * as Types from './types'
 import * as utils from './utils'
+import { RenderWorldRegionColumn } from './utils'
 import { Statuses } from '../../context/types'
 import { VideoColumnFilter } from './VideoColumnFilter'
 import { VideoColumnCell } from './VideoColumnCell'
@@ -126,12 +127,15 @@ export const columns = [
     field: 'World Region',
     editable: 'never',
     export: false,
-    // TODO: this instead:
+    // TODO: instead of open-search filters, custom `filterComponent` with this:
     // https://material-ui.com/components/autocomplete/#checkboxes
-    // lookup: WORLD_REGION_LOOKUP,
-    render: utils.renderWorldRegionColumn,
+    // eslint-disable-next-line react/display-name
+    render: (data) => <RenderWorldRegionColumn data={data} />,
     searchable: true,
-    headerStyle: { whiteSpace: 'nowrap' },
+    headerStyle: {
+      paddingRight: 25, // enough for `Southeastern Asia` cells to not wrap
+      whiteSpace: 'nowrap',
+    },
   },
   {
     // Average: 8.5, Longest: 35 (w/o big Congos: Average: 8, Longest: 24)

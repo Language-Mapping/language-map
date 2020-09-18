@@ -1,9 +1,17 @@
 import { WorldRegion } from '../../context/types'
 
+export type IconID =
+  | '_tree'
+  | '_book'
+  | '_users'
+  | '_home'
+  | '_museum'
+  | '_circle'
+
 export type LegendSwatch = {
   legendLabel: string
   backgroundColor?: string
-  iconID?: string
+  iconID?: IconID
   size?: number
 }
 
@@ -11,6 +19,7 @@ export type LegendSwatch = {
 export type LegendSwatchComponent = LegendSwatch & {
   icon?: string
   component?: React.ElementType
+  labelStyleOverride?: React.CSSProperties
 }
 
 export type LegendGroupConfig = {

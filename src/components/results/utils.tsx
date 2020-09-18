@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useContext, FC } from 'react'
 
+import { LegendSwatch } from 'components/legend'
+import { GlobalContext } from 'components'
 import { LangRecordSchema } from '../../context/types'
 import countryCodes from './config.emojis.json'
 import * as Types from './types'
@@ -93,10 +95,29 @@ export function renderNeighbColumn(
 //   return COMM_SIZE_COL_MAP[data['Size']]
 // }
 
-export function renderWorldRegionColumn(
-  data: LangRecordSchema
-): string | React.ReactNode {
-  return data['World Region'] // TODO: icon swatch
+type Gah = { data: LangRecordSchema }
+
+export const RenderWorldRegionColumn: FC<Gah> = (props) => {
+  // TODO: if there's a way to pass down legend symbols without going allll the
+  // way to global state, hook it up.
+  const { state } = useContext(GlobalContext)
+  const { data } = props
+  const { 'World Region': WorldRegion } = data
+
+  const regionSwatchColor =
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    state.legendSymbols[WorldRegion].paint['icon-color'] as string
+
+  return (
+    <LegendSwatch
+      legendLabel={data['World Region']}
+      component="div"
+      iconID="_circle"
+      backgroundColor={regionSwatchColor || 'transparent'}
+      labelStyleOverride={{ lineHeight: 'inherit', marginLeft: 2 }}
+    />
+  )
 }
 
 // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods

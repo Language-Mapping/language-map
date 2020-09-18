@@ -1,4 +1,5 @@
 import { CirclePaint } from 'mapbox-gl'
+import { IconID } from '../legend/types'
 
 // `Status` icons
 import iconBook from './icons/book.svg'
@@ -25,7 +26,7 @@ export const langTypeIconsConfig = [
   { icon: iconHome, id: '_home' },
   { icon: iconMuseum, id: '_museum' },
   { icon: iconCircle, id: '_circle' },
-]
+] as { icon: string; id: IconID }[]
 
 // TODO: rm once soln is found for indicating selected feature if type = symbol
 export const commonCirclePaint = {
