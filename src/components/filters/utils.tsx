@@ -33,15 +33,27 @@ export const renderGroup = (params: AutocompleteRenderGroupParams) => {
     ]
   }
 
+  // This whole thing is super dicey. Not much advice/encouragement for messing
+  // with React children as a consistent sorting source, but it seems to work.
   const sorted = asArray.sort((a, b) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const kidsA = a.props.children.props.children
+    const aData = a.props.children.props.data
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const kidsB = b.props.children.props.children
+    const bData = b.props.children.props.data
 
-    return kidsA < kidsB ? -1 : 1
+    return aData.Neighborhoods < bData.Neighborhoods ? -1 : 1
+
+    // NOTE: when there is no Neighborhood for one instance of a Language (e.g. in New Jersey) but there is for another, the former will show up first. Would need to address this separately
+    // TODO: rm all this if giving up on sorting by Town AND Neighborhood
+    // // A hoods exist, but not B
+    // if (aData.Neighborhoods && aData.Neighborhoods < bData.Town) return -1
+    // // B hoods exist, but not A
+    // if (bData.Neighborhoods && aData.Town < bData.Neighborhoods) return -1
+    // // No hoods, just towns
+    // if (aData.Town < bData.Town) return -1
+    // return 1
   })
 
   return [
