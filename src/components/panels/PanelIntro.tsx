@@ -1,7 +1,7 @@
 import React, { FC, useContext } from 'react'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Button, IconButton } from '@material-ui/core'
+import { Button, Badge, IconButton } from '@material-ui/core'
 import { TiDocumentText, TiDocumentDelete } from 'react-icons/ti'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
@@ -70,7 +70,18 @@ export const PanelIntro: FC<PanelIntroProps> = (props) => {
           className={classes.introBtn}
           color="primary"
           size="small"
-          startIcon={<TiDocumentText />}
+          startIcon={
+            <Badge
+              variant="dot"
+              badgeContent=" "
+              color="error"
+              overlap="circle"
+              anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+              invisible={state.langFeatsLenCache === state.langFeatures.length}
+            >
+              <TiDocumentText />
+            </Badge>
+          }
           onClick={handleTableBtnClick}
         >
           Data Table & Filters

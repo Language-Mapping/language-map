@@ -20,7 +20,10 @@ export const FiltersPanel: FC = () => {
       <Typography variant="h5" component="h3" id={elemID}>
         Search language communities
       </Typography>
-      <SearchByOmnibox data={data} />
+      <SearchByOmnibox
+        data={data}
+        filtersApplied={state.langFeatsLenCache !== state.langFeatures.length}
+      />
       <Typography variant="h5" component="h3">
         Legend
       </Typography>
