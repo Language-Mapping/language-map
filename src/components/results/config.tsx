@@ -16,7 +16,8 @@ import {
 
 import * as Types from './types'
 import * as utils from './utils'
-import { RenderWorldRegionColumn } from './utils'
+
+import { RenderWorldRegionColumn, RenderCommSizeColumn } from './utils'
 import { Statuses } from '../../context/types'
 import { VideoColumnFilter } from './VideoColumnFilter'
 import { VideoColumnCell } from './VideoColumnCell'
@@ -200,7 +201,16 @@ export const columns = [
     export: false,
     align: 'left',
     lookup: COMM_SIZE_COL_MAP,
-    render: (data) => COMM_SIZE_COL_MAP[data.Size],
+    customSort: (a, b) => {
+      if (a.Size === b.Size) return 0
+      if (a.Size > b.Size) return 1
+
+      return -1
+    },
+    // eslint-disable-next-line react/display-name
+    render: (data) => (
+      <RenderCommSizeColumn data={data} lookup={COMM_SIZE_COL_MAP} />
+    ),
     searchable: false,
   },
   {
