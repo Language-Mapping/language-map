@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       top: '125%',
       right: 8,
-      [theme.breakpoints.between('md', 'lg')]: { right: 14 },
+      [theme.breakpoints.between('md', 'lg')]: { right: 16 },
     },
   })
 )

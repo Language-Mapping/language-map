@@ -1,4 +1,7 @@
 import React, { useContext, FC } from 'react'
+import { IconButton } from '@material-ui/core'
+import { GoFile } from 'react-icons/go'
+import { FaMapMarkedAlt } from 'react-icons/fa'
 
 import { LegendSwatch } from 'components/legend'
 import { GlobalContext } from 'components'
@@ -38,8 +41,6 @@ export function renderCountriesColumn(
   )
 }
 
-// TODO: instead of downloading, open image in modal or a Popover
-// Show a link to the download file if endo starts with `http`
 export function renderEndoColumn(
   data: LangRecordSchema
 ): string | React.ReactNode {
@@ -49,6 +50,26 @@ export function renderEndoColumn(
 
   return (
     <EndoImageModal url={data['Font Image Alt']} language={data.Language} />
+  )
+}
+
+export function renderDescripCol(
+  data: LangRecordSchema
+): string | React.ReactNode {
+  return (
+    <IconButton title="View description" size="small" color="primary">
+      <GoFile />
+    </IconButton>
+  )
+}
+
+export function renderIDcolumn(
+  data: LangRecordSchema
+): string | React.ReactNode {
+  return (
+    <IconButton title="Show in map" size="small" color="primary">
+      <FaMapMarkedAlt />
+    </IconButton>
   )
 }
 

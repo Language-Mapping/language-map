@@ -4,11 +4,10 @@ import React, { FC, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import MaterialTable from 'material-table'
-import { GoFile } from 'react-icons/go'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { SimpleDialog, LangOrEndoIntro, LangOrEndoProps } from 'components'
-// import { paths as routes } from 'components/config/routes' // TODO: restore
+import { paths as routes } from 'components/config/routes'
 import { MuiTableWithLangs } from './types'
 import { ResultsToolbar } from './ResultsToolbar'
 import { RecordDescription } from './RecordDescription'
@@ -67,22 +66,37 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
         localization={config.localization}
         data={tableData}
         onRowClick={(event, rowData) => {
-          if (!tableRef || !tableRef.current) return
+          if (!tableRef || !tableRef.current || !event || !rowData) return
 
-          // TODO: restore or put in fixed-column
-          // if (rowData) {
-          //   history.push(`${routes.details}?id=${rowData.ID}`)
-          //   closeTable()
-          // }
           const self = tableRef.current
           const { dataManager } = self
           const { columns } = dataManager.getRenderState()
-          /* eslint-disable @typescript-eslint/ban-ts-comment */
-          // @ts-ignore
-          const colIndex = event.nativeEvent.path[0].cellIndex - 1
-          // @ts-ignore
-          const newFilterVal = rowData[columns[colIndex].field]
-          /* eslint-disable @typescript-eslint/ban-ts-comment */
+          const path = event.nativeEvent.composedPath() // cross-platform
+
+          const tdElem = path.find((elem) => {
+            const asElement = elem as HTMLTableCellElement
+
+            return asElement.nodeName === 'TD'
+          }) as HTMLTableCellElement
+
+          const colIndex = tdElem ? tdElem.cellIndex : 0
+          const newFilterVal = rowData ? rowData[columns[colIndex].field] : ''
+
+          // Show feature in map
+          if (columns[colIndex].field === 'ID') {
+            history.push(`${routes.details}?id=${rowData.ID}`)
+            closeTable()
+
+            return
+          }
+
+          // Open description modal
+          if (columns[colIndex].field === 'Description') {
+            setDescripModalText(rowData.Description)
+            setDescripModalHeading({ attribs: rowData })
+
+            return
+          }
 
           const newlyFiltered = columns.map(
             (column: Types.ColumnWithTableData, i) => ({
@@ -106,6 +120,8 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
             ...dataManager.getRenderState(),
             columns: newlyFiltered,
           })
+
+          setClearBtnEnabled(true)
         }}
         components={{
           Toolbar: (toolbarProps) => (
@@ -130,28 +146,6 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
             isFreeAction: true,
             onClick: () => history.push(`/help${loc.search}`),
           },
-          (data) => ({
-            icon: () => <GoFile />,
-            tooltip: !data.Description
-              ? 'No description available'
-              : 'View description',
-            onClick: (event, clickedRowData) => {
-              let record
-
-              if (Array.isArray(clickedRowData)) {
-                ;[record] = clickedRowData
-              } else {
-                record = clickedRowData
-              }
-
-              setDescripModalText(record.Description)
-              setDescripModalHeading({ attribs: record })
-            },
-            iconProps: {
-              color: data.Description === '' ? 'disabled' : 'primary',
-            },
-            disabled: data.Description === '',
-          }),
         ]}
       />
     </>

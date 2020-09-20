@@ -4,7 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { MTableToolbar } from 'material-table'
 import { Button, Divider } from '@material-ui/core'
 import { BiMapPin } from 'react-icons/bi'
-import { FaMapMarkedAlt } from 'react-icons/fa'
+import { FaMap } from 'react-icons/fa'
 import { RiFilterOffFill } from 'react-icons/ri'
 
 import { GlobalContext } from 'components'
@@ -159,7 +159,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
             color="primary"
             variant="contained"
             size="small"
-            startIcon={<FaMapMarkedAlt />}
+            startIcon={<FaMap />}
             onClick={() => mapFilterBtnClick()}
             disabled={noResults}
           >

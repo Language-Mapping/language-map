@@ -33,6 +33,7 @@ const COMM_STATUS_LOOKUP = {
   [key in Statuses]: Statuses
 }
 
+// TODO: TS it up
 export const COMM_SIZE_COL_MAP = {
   1: 'Smallest',
   2: 'Small',
@@ -56,7 +57,6 @@ export const localization: Localization = {
 
 // Table options for the <MaterialTable> component
 export const options = {
-  actionsColumnIndex: 0,
   columnsButton: true,
   doubleHorizontalScroll: true,
   draggable: true, // kinda clunky
@@ -70,10 +70,11 @@ export const options = {
   thirdSortClick: false,
   // TODO: rm unused, or keep for reference
   // actionsCellStyle: {}, // semi-useful but ended up with `!important` anyway
+  // actionsColumnIndex: 0,
+  // fixedColumns: { left: 2, right: 0 }, // awful in so many ways
   // headerStyle: { position: 'sticky', top: 0 },
   // filterCellStyle: { backgroundColor: 'yellow' }, // works
   // filterRowStyle: { backgroundColor: 'red' }, // works, but sticky 2 tricky!
-  // fixedColumns: { left: 1 }, // useless if using Actions
   // padding: 'dense', // dense leads to choppier inconsistent row height
   // rowStyle: { backgroundColor: 'turquoise' }, // works
   // searchFieldVariant: 'outlined', // meh, too big
@@ -96,43 +97,64 @@ export const icons = {
   ViewColumn: MdViewColumn,
 } as Icons
 
-// TODO: "IMLocation looks good if you need something to replace the asterisk
-// next to local items in the table. For Data Table & Filter, I’d probably use
-// that same three-bullet list you have next to Data. And for turning off the
-// filter, how about RIFilterOffFill?"
+const commonColProps = { editable: 'never', export: false, searchable: true }
+
+const hiddenCols = [
+  {
+    title: 'Glottocode',
+    field: 'Glottocode',
+    ...commonColProps,
+    hidden: true,
+  },
+  {
+    title: 'ISO 639-3',
+    field: 'ISO 639-3',
+    ...commonColProps,
+    hidden: true,
+  },
+]
 
 // 25px : 200char = decent ratio
 export const columns = [
   {
+    title: '',
+    field: 'ID',
+    ...commonColProps,
+    filtering: false,
+    render: utils.renderIDcolumn,
+  },
+  {
+    title: '',
+    field: 'Description',
+    ...commonColProps,
+    sorting: false,
+    filtering: false,
+    render: utils.renderDescripCol,
+  },
+  {
     // Average: 9.3, Longest: 31
     title: 'Language',
     field: 'Language',
-    editable: 'never',
-    export: false,
+    ...commonColProps,
     defaultSort: 'asc',
-    searchable: true,
   },
   {
     // Average: 8.5, Longest: 26, Longest full: Anashinaabemowin
     title: 'Endonym',
     field: 'Endonym',
-    editable: 'never',
-    export: false,
+    ...commonColProps,
     disableClick: true, // TODO: use this if we want row clicks again
     render: utils.renderEndoColumn,
-    searchable: true,
   },
   {
     // Average: 13, Longest: 25 (thanks AUS & NZ...)
     title: 'World Region',
     field: 'World Region',
-    editable: 'never',
-    export: false,
+    ...commonColProps,
     // TODO: instead of open-search filters, custom `filterComponent` with this:
     // https://material-ui.com/components/autocomplete/#checkboxes
     // eslint-disable-next-line react/display-name
     render: (data) => <RenderWorldRegionColumn data={data} />,
-    searchable: true,
     headerStyle: {
       paddingRight: 25, // enough for `Southeastern Asia` cells to not wrap
       whiteSpace: 'nowrap',
@@ -145,10 +167,9 @@ export const columns = [
     // https://material-ui.com/components/autocomplete/#country-select
     title: 'Countries',
     field: 'Countries',
-    editable: 'never',
-    export: false,
+    ...commonColProps,
+    disableClick: true,
     render: utils.renderCountriesColumn,
-    searchable: true,
     headerStyle: {
       paddingRight: 25, // enough for `United States` cells to not wrap
     },
@@ -157,13 +178,12 @@ export const columns = [
     // Longest: 20
     title: 'Global Speakers', // the only abbrev so far
     field: 'Global Speaker Total',
-    editable: 'never',
-    export: false,
-    // defaultSort: 'asc', // TODO: make this work
+    ...commonColProps,
     // customSort: utils.sortNeighbs, // TODO: blanks last
     render: utils.renderGlobalSpeakColumn,
     searchable: false,
     filtering: false,
+    disableClick: true,
     type: 'numeric',
     // Right-aligned number w/left-aligned column heading was requested
     headerStyle: {
@@ -176,20 +196,14 @@ export const columns = [
     // Average: 10, Longest: 23 but preserve hyphenated Athabaskan-Eyak-Tlingit
     title: 'Language Family',
     field: 'Language Family',
-    editable: 'never',
-    export: false,
-    searchable: true,
-    headerStyle: {
-      whiteSpace: 'nowrap',
-    },
+    ...commonColProps,
+    headerStyle: { whiteSpace: 'nowrap' },
   },
   {
     // Average: 12, Longest: 26
     title: <LocalColumnTitle text="Neighborhoods" />,
     field: 'Neighborhoods',
-    editable: 'never',
-    export: false,
-    searchable: true,
+    ...commonColProps,
     render: utils.renderNeighbColumn,
     customSort: utils.sortNeighbs,
   },
@@ -197,10 +211,10 @@ export const columns = [
     // Longest: 14
     title: <LocalColumnTitle text="Size" />,
     field: 'Size',
-    editable: 'never',
-    export: false,
+    ...commonColProps,
     align: 'left',
     lookup: COMM_SIZE_COL_MAP,
+    disableClick: true,
     customSort: (a, b) => {
       if (a.Size === b.Size) return 0
       if (a.Size > b.Size) return 1
@@ -217,44 +231,18 @@ export const columns = [
     // Longest: 13
     title: <LocalColumnTitle text="Status" />,
     field: 'Status',
-    editable: 'never',
-    export: false,
+    ...commonColProps,
     searchable: false,
     lookup: COMM_STATUS_LOOKUP,
   },
   {
     title: 'Video',
     field: 'Video',
-    editable: 'never',
-    export: false,
+    ...commonColProps,
     filterComponent: VideoColumnFilter,
     headerStyle: { whiteSpace: 'nowrap' },
     render: VideoColumnCell,
     searchable: false,
   },
-  // All hidden from here down
-  {
-    title: 'Description',
-    field: 'Description',
-    editable: 'never',
-    export: false,
-    hidden: true,
-    searchable: true,
-  },
-  {
-    title: 'Glottocode',
-    field: 'Glottocode',
-    editable: 'never',
-    export: false,
-    hidden: true,
-    searchable: true,
-  },
-  {
-    title: 'ISO 639-3',
-    field: 'ISO 639-3',
-    editable: 'never',
-    export: false,
-    hidden: true,
-    searchable: true,
-  },
+  ...hiddenCols,
 ] as Types.ColumnsConfig[]
