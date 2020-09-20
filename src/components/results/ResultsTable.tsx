@@ -8,7 +8,7 @@ import { GoFile } from 'react-icons/go'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { SimpleDialog, LangOrEndoIntro, LangOrEndoProps } from 'components'
-import { paths as routes } from 'components/config/routes'
+// import { paths as routes } from 'components/config/routes' // TODO: restore
 import { MuiTableWithLangs } from './types'
 import { ResultsToolbar } from './ResultsToolbar'
 import { RecordDescription } from './RecordDescription'
@@ -67,10 +67,45 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
         localization={config.localization}
         data={tableData}
         onRowClick={(event, rowData) => {
-          if (rowData) {
-            history.push(`${routes.details}?id=${rowData.ID}`)
-            closeTable()
-          }
+          if (!tableRef || !tableRef.current) return
+
+          // TODO: restore or put in fixed-column
+          // if (rowData) {
+          //   history.push(`${routes.details}?id=${rowData.ID}`)
+          //   closeTable()
+          // }
+          const self = tableRef.current
+          const { dataManager } = self
+          const { columns } = dataManager.getRenderState()
+          /* eslint-disable @typescript-eslint/ban-ts-comment */
+          // @ts-ignore
+          const colIndex = event.nativeEvent.path[0].cellIndex - 1
+          // @ts-ignore
+          const newFilterVal = rowData[columns[colIndex].field]
+          /* eslint-disable @typescript-eslint/ban-ts-comment */
+
+          const newlyFiltered = columns.map(
+            (column: Types.ColumnWithTableData, i) => ({
+              ...column,
+              tableData: {
+                ...column.tableData,
+                filterValue:
+                  colIndex === i ? newFilterVal : column.tableData.filterValue,
+              },
+            })
+          )
+
+          columns.forEach((col: Types.ColumnWithTableData, i: number) => {
+            dataManager.changeFilterValue(
+              i,
+              newlyFiltered[i].tableData.filterValue
+            )
+          })
+
+          self.setState({
+            ...dataManager.getRenderState(),
+            columns: newlyFiltered,
+          })
         }}
         components={{
           Toolbar: (toolbarProps) => (
