@@ -8,7 +8,8 @@ import {
 } from '@material-ui/lab'
 import { MdMoreVert, MdClose } from 'react-icons/md'
 import { BiMapPin } from 'react-icons/bi'
-import { FiHome, FiZoomIn, FiZoomOut, FiInfo } from 'react-icons/fi'
+import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai'
+import { FiHome, FiInfo } from 'react-icons/fi'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
@@ -43,8 +44,8 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const ctrlBtnsConfig = [
-  { id: 'in', icon: <FiZoomIn />, name: 'Zoom in' },
-  { id: 'out', icon: <FiZoomOut />, name: 'Zoom out' },
+  { id: 'in', icon: <AiOutlinePlus />, name: 'Zoom in' },
+  { id: 'out', icon: <AiOutlineMinus />, name: 'Zoom out' },
   { id: 'home', icon: <FiHome />, name: 'Zoom home' },
   {
     id: 'loc-search',
@@ -102,7 +103,7 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
             key={action.name}
             icon={action.icon}
             tooltipTitle={action.name}
-            FabProps={{ size: 'small' }} // TODO: uhhhh breakpoints? Why is this needed?
+            FabProps={{ size: 'small' }}
             onClick={(e) => {
               e.stopPropagation() // prevent closing the menu
 
