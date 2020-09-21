@@ -11,6 +11,7 @@ import { paths as routes } from 'components/config/routes'
 import { MuiTableWithLangs } from './types'
 import { ResultsToolbar } from './ResultsToolbar'
 import { RecordDescription } from './RecordDescription'
+import { LangRecordSchema } from '../../context/types'
 // import { useWindowResize } from '../../utils' // TODO: rm if not using
 
 import * as Types from './types'
@@ -41,6 +42,73 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
   // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
   // properly (blanks last, regardless of direction)
 
+  const onRowClick = (
+    event: React.MouseEvent,
+    rowData: LangRecordSchema
+  ): void => {
+    if (!tableRef || !tableRef.current || !event || !rowData) return
+
+    const self = tableRef.current
+    const { dataManager } = self
+    const { columns } = dataManager.getRenderState()
+    const path = event.nativeEvent.composedPath() // cross-platform
+
+    const tdElem = path.find((elem) => {
+      const asElement = elem as HTMLTableCellElement
+
+      return asElement.nodeName === 'TD'
+    }) as HTMLTableCellElement
+
+    // Events like closing the Endo img dialog will trigger the click but
+    // lack a TD element
+    if (!tdElem) return
+
+    const colIndex = tdElem.cellIndex
+    const { field } = columns[colIndex]
+    const newFilterVal = rowData ? rowData[field] : ''
+
+    // Show feature in map
+    if (field === 'ID') {
+      history.push(`${routes.details}?id=${rowData.ID}`)
+      closeTable()
+
+      return
+    }
+
+    // Don't set filter for image-only Endonyms
+    if (field === 'Endonym' && rowData['Font Image Alt']) return
+
+    // Open description modal
+    if (field === 'Description') {
+      setDescripModalText(rowData.Description)
+      setDescripModalHeading({ attribs: rowData })
+
+      return
+    }
+
+    const newlyFiltered = columns.map(
+      (column: Types.ColumnWithTableData, i) => ({
+        ...column,
+        tableData: {
+          ...column.tableData,
+          filterValue:
+            colIndex === i ? newFilterVal : column.tableData.filterValue,
+        },
+      })
+    )
+
+    columns.forEach((col: Types.ColumnWithTableData, i: number) => {
+      dataManager.changeFilterValue(i, newlyFiltered[i].tableData.filterValue)
+    })
+
+    self.setState({
+      ...dataManager.getRenderState(),
+      columns: newlyFiltered,
+    })
+
+    setClearBtnEnabled(true)
+  }
+
   return (
     <>
       {descripModalText && (
@@ -65,71 +133,10 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
         columns={config.columns}
         localization={config.localization}
         data={tableData}
-        onRowClick={(event, rowData) => {
+        onRowClick={(event, rowData): void => {
           if (!tableRef || !tableRef.current || !event || !rowData) return
 
-          const self = tableRef.current
-          const { dataManager } = self
-          const { columns } = dataManager.getRenderState()
-          const path = event.nativeEvent.composedPath() // cross-platform
-
-          const tdElem = path.find((elem) => {
-            const asElement = elem as HTMLTableCellElement
-
-            return asElement.nodeName === 'TD'
-          }) as HTMLTableCellElement
-
-          // Events like closing the Endo img dialog will trigger the click but
-          // lack a TD element
-          if (!tdElem) return
-
-          const colIndex = tdElem.cellIndex
-          const { field } = columns[colIndex]
-          const newFilterVal = rowData ? rowData[field] : ''
-
-          // Show feature in map
-          if (field === 'ID') {
-            history.push(`${routes.details}?id=${rowData.ID}`)
-            closeTable()
-
-            return
-          }
-
-          // Don't set filter for image-only Endonyms
-          if (field === 'Endonym' && rowData['Font Image Alt']) return
-
-          // Open description modal
-          if (field === 'Description') {
-            setDescripModalText(rowData.Description)
-            setDescripModalHeading({ attribs: rowData })
-
-            return
-          }
-
-          const newlyFiltered = columns.map(
-            (column: Types.ColumnWithTableData, i) => ({
-              ...column,
-              tableData: {
-                ...column.tableData,
-                filterValue:
-                  colIndex === i ? newFilterVal : column.tableData.filterValue,
-              },
-            })
-          )
-
-          columns.forEach((col: Types.ColumnWithTableData, i: number) => {
-            dataManager.changeFilterValue(
-              i,
-              newlyFiltered[i].tableData.filterValue
-            )
-          })
-
-          self.setState({
-            ...dataManager.getRenderState(),
-            columns: newlyFiltered,
-          })
-
-          setClearBtnEnabled(true)
+          onRowClick(event, rowData)
         }}
         components={{
           Toolbar: (toolbarProps) => (
