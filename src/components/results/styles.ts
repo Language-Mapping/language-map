@@ -1,4 +1,3 @@
-// TODO: mv this file to results dir
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 const bodyRow = '.MuiTableRow-root:not(:first-of-type)'

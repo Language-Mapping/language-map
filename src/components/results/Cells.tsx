@@ -1,5 +1,10 @@
 import React, { useContext, FC } from 'react'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
+import {
+  makeStyles,
+  createStyles,
+  useTheme,
+  Theme,
+} from '@material-ui/core/styles'
 import { MdCheck } from 'react-icons/md'
 import { GoCircleSlash } from 'react-icons/go'
 
@@ -43,6 +48,13 @@ export const GlobalSpeakers: FC<CellProps> = (props) => {
   )
 }
 
+export const CommStatus: FC<CellProps> = (props) => {
+  const classes = useStyles()
+  const { data } = props
+
+  return <div className={classes.disabled}>{data.Status}</div>
+}
+
 export const CommSize: FC<{
   data: LangRecordSchema
   lookup: { [key: number]: string }
@@ -50,6 +62,7 @@ export const CommSize: FC<{
   // TODO: if there's a way to pass down legend symbols without going allll the
   // way to global state, hook it up.
   const { state } = useContext(GlobalContext)
+  const theme = useTheme()
   const { data, lookup } = props
   const valAsPrettyStr = lookup[data.Size]
   const swatchColor =
@@ -63,7 +76,12 @@ export const CommSize: FC<{
       component="div"
       iconID="_circle"
       backgroundColor={swatchColor || 'transparent'}
-      labelStyleOverride={{ lineHeight: 'inherit', marginLeft: 2 }}
+      labelStyleOverride={{
+        lineHeight: 'inherit',
+        marginLeft: 2,
+        color: theme.palette.text.secondary,
+        fontSize: 'inherit',
+      }}
     />
   )
 }
@@ -86,7 +104,11 @@ export const WorldRegion: FC<CellProps> = (props) => {
       component="div"
       iconID="_circle"
       backgroundColor={regionSwatchColor || 'transparent'}
-      labelStyleOverride={{ lineHeight: 'inherit', marginLeft: 2 }}
+      labelStyleOverride={{
+        lineHeight: 'inherit',
+        marginLeft: 2,
+        fontSize: 'inherit',
+      }}
     />
   )
 }

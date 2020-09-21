@@ -65,7 +65,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
 
     const colIndex = tdElem.cellIndex
     const { field } = columns[colIndex]
-    const newFilterVal = rowData ? rowData[field] : ''
+    const newFilterVal = rowData[field]
 
     // Show feature in map
     if (field === 'ID') {

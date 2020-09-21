@@ -119,6 +119,10 @@ const hiddenCols = [
   },
 ]
 
+// NOTE: did not want to attempt to deal with any of the multi-option cols like
+// Size or Status in terms of filter-col-via-cell-click behavior, or the
+// boolean-ish Video column. Wishlist...
+
 // 25px : 200char = decent ratio
 export const columns = [
   {
@@ -234,7 +238,9 @@ export const columns = [
     title: <LocalColumnTitle text="Status" />,
     field: 'Status',
     ...commonColProps,
+    disableClick: true,
     searchable: false,
+    render: (data) => <Cells.CommStatus data={data} />,
     lookup: COMM_STATUS_LOOKUP,
   },
   {
