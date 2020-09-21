@@ -63,8 +63,10 @@ export const options = {
   filtering: true,
   grouping: false, // kinda clunky
   isLoading: true,
-  pageSize: 10,
-  pageSizeOptions: [5, 10, 20, 50],
+  maxBodyHeight: '100%',
+  minBodyHeight: '100%',
+  pageSize: 20,
+  pageSizeOptions: [10, 20, 50],
   searchFieldAlignment: 'left',
   showTitle: false,
   thirdSortClick: false,

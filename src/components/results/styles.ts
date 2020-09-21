@@ -27,6 +27,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         bottom: 0,
         position: 'sticky',
         [theme.breakpoints.up('sm')]: {
+          height: 60, // uggghhhhh
           borderBottomRightRadius: 4,
           borderBottomLeftRadius: 4,
         },
@@ -59,7 +60,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         position: 'sticky !important',
         backgroundColor: theme.palette.background.paper,
         paddingLeft: 0,
-        left: '43px !important', // FRAGILE
+        left: '42px !important', // FRAGILE, needs smaller than width on mobile
       },
       // Pagination
       [`& ${footerCell}`]: {
@@ -70,7 +71,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       // The table footer
       '& .MuiTableFooter-root': {
-        borderTop: `solid ${theme.palette.text.secondary} 1px`,
+        borderTop: `solid ${theme.palette.divider} 2px`,
         boxShadow: theme.shadows[14],
         backgroundColor: theme.palette.background.paper,
         justifyContent: 'center',
@@ -94,10 +95,20 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     // Squeeze a bit more room out of the dialog
     resultsModalPaper: {
-      maxHeight: `calc(100% - ${theme.spacing(2)}px)`,
-      [theme.breakpoints.only('xs')]: {
-        maxHeight: '100%',
+      height: `calc(100% - ${theme.spacing(2)}px)`,
+      maxHeight: '100%',
+      [theme.breakpoints.down('sm')]: {
+        height: '100%',
         margin: 0,
+      },
+      // The wrapper around the wrapper around the wrapper around the table
+      '& > .MuiPaper-root > :nth-child(2)': {
+        overflow: 'auto',
+      },
+      '& .MuiPaper-root': {
+        display: 'flex',
+        height: '100%',
+        flexDirection: 'column',
       },
     },
   })

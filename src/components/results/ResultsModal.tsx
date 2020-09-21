@@ -39,9 +39,7 @@ export const ResultsModal: FC<ResultsModalProps> = (props) => {
       aria-labelledby="results-modal-dialog-title"
       aria-describedby="results-modal-dialog-description"
       maxWidth="lg"
-      PaperProps={{
-        className: classes.resultsModalPaper,
-      }}
+      PaperProps={{ className: classes.resultsModalPaper }}
     >
       <ResultsTable closeTable={closeTable} data={tableData} />
     </Dialog>

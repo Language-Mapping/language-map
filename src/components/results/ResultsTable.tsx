@@ -107,6 +107,19 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
     })
 
     setClearBtnEnabled(true)
+    scrollToTop()
+  }
+
+  // Filter changes, etc. keep the table at its current vertical scroll, often
+  // at the bottom, which is super annoying.
+  function scrollToTop() {
+    if (!tableRef || !tableRef.current) return
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore // nooooooo thanks
+    const divRef = tableRef.current.tableContainerDiv
+
+    if (divRef && divRef.current) divRef.current.scrollIntoView(true)
   }
 
   return (
@@ -128,7 +141,6 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
       <MaterialTable
         icons={config.icons}
         tableRef={tableRef}
-        // maxBodyHeight: height - 120, // TODO: something
         options={{ ...config.options }}
         columns={config.columns}
         localization={config.localization}
@@ -150,7 +162,10 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
           ),
         }}
         // Works but laggy:
-        onFilterChange={(filters) => setClearBtnEnabled(true)}
+        onFilterChange={(filters) => {
+          setClearBtnEnabled(true)
+          scrollToTop()
+        }}
         // CANNOT get this to work without setting the focus to the clear btn
         // onSearchChange={(search) => setClearBtnEnabled(true)}
         // TODO: all into config
