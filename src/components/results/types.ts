@@ -48,6 +48,7 @@ export type MuiTableWithLangs = MaterialTable<LangRecordSchema> & {
 }
 
 export type ResultsToolbarProps = MaterialTableProps<LangRecordSchema> & {
+  scrollToTop: () => void
   tableRef: React.RefObject<MuiTableWithLangs>
   clearBtnEnabled: boolean
   setClearBtnEnabled: React.Dispatch<boolean>

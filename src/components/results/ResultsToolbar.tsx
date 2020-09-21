@@ -96,7 +96,13 @@ export const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
-  const { tableRef, closeTable, clearBtnEnabled, setClearBtnEnabled } = props
+  const {
+    tableRef,
+    closeTable,
+    clearBtnEnabled,
+    setClearBtnEnabled,
+    scrollToTop,
+  } = props
   const { dispatch } = useContext(GlobalContext)
   const classes = useStyles()
   const history = useHistory()
@@ -144,6 +150,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
     self.setState({ ...dataManager.getRenderState(), columns: cleared })
 
     setClearBtnEnabled(false)
+    scrollToTop()
   }
 
   return (

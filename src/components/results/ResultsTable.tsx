@@ -145,6 +145,9 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
         columns={config.columns}
         localization={config.localization}
         data={tableData}
+        onChangeRowsPerPage={() => scrollToTop()}
+        onChangePage={() => scrollToTop()}
+        onSearchChange={() => scrollToTop()}
         onRowClick={(event, rowData): void => {
           if (!tableRef || !tableRef.current || !event || !rowData) return
 
@@ -154,10 +157,13 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
           Toolbar: (toolbarProps) => (
             <ResultsToolbar
               {...toolbarProps}
-              closeTable={closeTable}
-              setClearBtnEnabled={setClearBtnEnabled}
-              tableRef={tableRef}
-              clearBtnEnabled={clearBtnEnabled}
+              {...{
+                closeTable,
+                setClearBtnEnabled,
+                tableRef,
+                clearBtnEnabled,
+                scrollToTop,
+              }}
             />
           ),
         }}
