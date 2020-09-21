@@ -31,9 +31,6 @@ const useStyles = makeStyles((theme: Theme) =>
     endoModalPaper: {
       margin: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
     },
-    viewImgLink: {
-      cursor: 'pointer',
-    },
     image: {
       height: 'auto',
       marginTop: '1rem',
@@ -50,9 +47,7 @@ export const EndoImageModal: FC<EndoImageComponent> = (props) => {
 
   return (
     <>
-      <Link className={classes.viewImgLink} onClick={() => setOpen(true)}>
-        View image
-      </Link>
+      <Link onClick={() => setOpen(true)}>View image</Link>
       <SimpleDialog
         open={open}
         className={classes.endoModalRoot}

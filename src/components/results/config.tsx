@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React from 'react'
 import { Icons, Localization } from 'material-table'
 import { FaFilter } from 'react-icons/fa'
@@ -16,11 +17,10 @@ import {
 
 import * as Types from './types'
 import * as utils from './utils'
+import * as Cells from './Cells'
 
-import { RenderWorldRegionColumn, RenderCommSizeColumn } from './utils'
 import { Statuses } from '../../context/types'
 import { VideoColumnFilter } from './VideoColumnFilter'
-import { VideoColumnCell } from './VideoColumnCell'
 import { LocalColumnTitle } from './LocalColumnTitle'
 
 const COMM_STATUS_LOOKUP = {
@@ -97,7 +97,12 @@ export const icons = {
   ViewColumn: MdViewColumn,
 } as Icons
 
-const commonColProps = { editable: 'never', export: false, searchable: true }
+const commonColProps = {
+  editable: 'never',
+  export: false,
+  searchable: true,
+  // cellStyle: {},
+}
 
 const hiddenCols = [
   {
@@ -143,7 +148,6 @@ export const columns = [
     title: 'Endonym',
     field: 'Endonym',
     ...commonColProps,
-    disableClick: true, // TODO: use this if we want row clicks again
     render: utils.renderEndoColumn,
   },
   {
@@ -153,8 +157,7 @@ export const columns = [
     ...commonColProps,
     // TODO: instead of open-search filters, custom `filterComponent` with this:
     // https://material-ui.com/components/autocomplete/#checkboxes
-    // eslint-disable-next-line react/display-name
-    render: (data) => <RenderWorldRegionColumn data={data} />,
+    render: (data) => <Cells.WorldRegion data={data} />,
     headerStyle: {
       paddingRight: 25, // enough for `Southeastern Asia` cells to not wrap
       whiteSpace: 'nowrap',
@@ -168,7 +171,6 @@ export const columns = [
     title: 'Countries',
     field: 'Countries',
     ...commonColProps,
-    disableClick: true,
     render: utils.renderCountriesColumn,
     headerStyle: {
       paddingRight: 25, // enough for `United States` cells to not wrap
@@ -180,7 +182,7 @@ export const columns = [
     field: 'Global Speaker Total',
     ...commonColProps,
     // customSort: utils.sortNeighbs, // TODO: blanks last
-    render: utils.renderGlobalSpeakColumn,
+    render: (data) => <Cells.GlobalSpeakers data={data} />,
     searchable: false,
     filtering: false,
     disableClick: true,
@@ -221,11 +223,11 @@ export const columns = [
 
       return -1
     },
-    // eslint-disable-next-line react/display-name
-    render: (data) => (
-      <RenderCommSizeColumn data={data} lookup={COMM_SIZE_COL_MAP} />
-    ),
+    render: (data) => <Cells.CommSize data={data} lookup={COMM_SIZE_COL_MAP} />,
     searchable: false,
+    headerStyle: {
+      paddingRight: 25, // "Smallest" is ironically the longest
+    },
   },
   {
     // Longest: 13
@@ -241,8 +243,9 @@ export const columns = [
     ...commonColProps,
     filterComponent: VideoColumnFilter,
     headerStyle: { whiteSpace: 'nowrap' },
-    render: VideoColumnCell,
+    render: (data) => <Cells.VideoColumnCell data={data} />,
     searchable: false,
+    disableClick: true,
   },
   ...hiddenCols,
 ] as Types.ColumnsConfig[]

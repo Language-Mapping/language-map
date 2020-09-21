@@ -79,19 +79,27 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
             return asElement.nodeName === 'TD'
           }) as HTMLTableCellElement
 
-          const colIndex = tdElem ? tdElem.cellIndex : 0
-          const newFilterVal = rowData ? rowData[columns[colIndex].field] : ''
+          // Events like closing the Endo img dialog will trigger the click but
+          // lack a TD element
+          if (!tdElem) return
+
+          const colIndex = tdElem.cellIndex
+          const { field } = columns[colIndex]
+          const newFilterVal = rowData ? rowData[field] : ''
 
           // Show feature in map
-          if (columns[colIndex].field === 'ID') {
+          if (field === 'ID') {
             history.push(`${routes.details}?id=${rowData.ID}`)
             closeTable()
 
             return
           }
 
+          // Don't set filter for image-only Endonyms
+          if (field === 'Endonym' && rowData['Font Image Alt']) return
+
           // Open description modal
-          if (columns[colIndex].field === 'Description') {
+          if (field === 'Description') {
             setDescripModalText(rowData.Description)
             setDescripModalHeading({ attribs: rowData })
 
