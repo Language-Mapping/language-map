@@ -2,9 +2,9 @@ import React, { FC, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { MTableToolbar } from 'material-table'
-import { Button, Divider } from '@material-ui/core'
+import { Button } from '@material-ui/core'
 import { BiMapPin } from 'react-icons/bi'
-import { FaMapMarkedAlt } from 'react-icons/fa'
+import { FaMap } from 'react-icons/fa'
 import { RiFilterOffFill } from 'react-icons/ri'
 
 import { GlobalContext } from 'components'
@@ -19,8 +19,9 @@ const TOOLBAR_ID = 'custom-toolbar'
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     resultsToolbarRoot: {
-      padding: '0.5em 0.75em 0.75em',
+      padding: '0.5em 0.75em',
       // outline: 'solid blue 5px',
+      borderBottom: `solid ${theme.palette.divider} 2px`,
       position: 'sticky',
       top: 0,
       backgroundColor: theme.palette.background.paper,
@@ -35,6 +36,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       gridTemplateColumns: 'auto auto',
       gridTemplateRows: 'auto auto auto',
       justifyContent: 'center',
+      // marginBottom: '0.25em', // STUPID SPACER SO RIDICULOUS
       '& .MuiIconButton-root': { padding: 4 }, // huuuge by default
       [theme.breakpoints.up('sm')]: { gridColumnGap: '1em' },
       [theme.breakpoints.up('md')]: {
@@ -42,7 +44,8 @@ export const useStyles = makeStyles((theme: Theme) =>
         gridTemplateColumns: 'auto auto auto 1fr',
         gridTemplateRows: 'auto',
         justifyContent: 'flex-start',
-        padding: '1em',
+        padding: '1em 1em 0',
+        height: 100, // ugghhhhh
       },
     },
     searchAndActions: {
@@ -93,7 +96,13 @@ export const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
-  const { tableRef, closeTable, clearBtnEnabled, setClearBtnEnabled } = props
+  const {
+    tableRef,
+    closeTable,
+    clearBtnEnabled,
+    setClearBtnEnabled,
+    scrollToTop,
+  } = props
   const { dispatch } = useContext(GlobalContext)
   const classes = useStyles()
   const history = useHistory()
@@ -141,6 +150,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
     self.setState({ ...dataManager.getRenderState(), columns: cleared })
 
     setClearBtnEnabled(false)
+    scrollToTop()
   }
 
   return (
@@ -159,7 +169,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
             color="primary"
             variant="contained"
             size="small"
-            startIcon={<FaMapMarkedAlt />}
+            startIcon={<FaMap />}
             onClick={() => mapFilterBtnClick()}
             disabled={noResults}
           >
@@ -184,7 +194,6 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
           <BiMapPin /> Local community data
         </small>
       </div>
-      <Divider variant="middle" />
     </>
   )
 }

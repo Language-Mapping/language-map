@@ -1,7 +1,8 @@
-import React, { useContext, FC } from 'react'
+import React from 'react'
+import { IconButton } from '@material-ui/core'
+import { GoFile } from 'react-icons/go'
+import { FaMapMarkedAlt } from 'react-icons/fa'
 
-import { LegendSwatch } from 'components/legend'
-import { GlobalContext } from 'components'
 import { LangRecordSchema } from '../../context/types'
 import countryCodes from './config.emojis.json'
 import * as Types from './types'
@@ -38,8 +39,6 @@ export function renderCountriesColumn(
   )
 }
 
-// TODO: instead of downloading, open image in modal or a Popover
-// Show a link to the download file if endo starts with `http`
 export function renderEndoColumn(
   data: LangRecordSchema
 ): string | React.ReactNode {
@@ -52,16 +51,19 @@ export function renderEndoColumn(
   )
 }
 
-export function renderGlobalSpeakColumn(
-  data: LangRecordSchema
-): string | React.ReactNode {
+export function renderDescripCol(): string | React.ReactNode {
   return (
-    !data['Global Speaker Total'] || (
-      // Right-aligned number w/left-aligned column heading was requested
-      <div style={{ paddingRight: 16 }}>
-        {data['Global Speaker Total'].toLocaleString()}
-      </div>
-    )
+    <IconButton title="View description" size="small" color="primary">
+      <GoFile />
+    </IconButton>
+  )
+}
+
+export function renderIDcolumn(): string | React.ReactNode {
+  return (
+    <IconButton title="Show in map" size="small" color="primary">
+      <FaMapMarkedAlt />
+    </IconButton>
   )
 }
 
@@ -84,56 +86,6 @@ export function renderNeighbColumn(
           </li>
         ))}
     </ul>
-  )
-}
-
-export const RenderCommSizeColumn: FC<{
-  data: LangRecordSchema
-  lookup: { [key: number]: string }
-}> = (props) => {
-  // TODO: if there's a way to pass down legend symbols without going allll the
-  // way to global state, hook it up.
-  const { state } = useContext(GlobalContext)
-  const { data, lookup } = props
-  const valAsPrettyStr = lookup[data.Size]
-  const swatchColor =
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    state.legendSymbols[valAsPrettyStr].paint['icon-color'] as string
-
-  return (
-    <LegendSwatch
-      legendLabel={valAsPrettyStr}
-      component="div"
-      iconID="_circle"
-      backgroundColor={swatchColor || 'transparent'}
-      labelStyleOverride={{ lineHeight: 'inherit', marginLeft: 2 }}
-    />
-  )
-}
-
-export const RenderWorldRegionColumn: FC<{ data: LangRecordSchema }> = (
-  props
-) => {
-  // TODO: if there's a way to pass down legend symbols without going allll the
-  // way to global state, hook it up.
-  const { state } = useContext(GlobalContext)
-  const { data } = props
-  const { 'World Region': WorldRegion } = data
-
-  const regionSwatchColor =
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    state.legendSymbols[WorldRegion].paint['icon-color'] as string
-
-  return (
-    <LegendSwatch
-      legendLabel={data['World Region']}
-      component="div"
-      iconID="_circle"
-      backgroundColor={regionSwatchColor || 'transparent'}
-      labelStyleOverride={{ lineHeight: 'inherit', marginLeft: 2 }}
-    />
   )
 }
 

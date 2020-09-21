@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import React from 'react'
 import { Icons, Localization } from 'material-table'
 import { FaFilter } from 'react-icons/fa'
@@ -16,11 +17,10 @@ import {
 
 import * as Types from './types'
 import * as utils from './utils'
+import * as Cells from './Cells'
 
-import { RenderWorldRegionColumn, RenderCommSizeColumn } from './utils'
 import { Statuses } from '../../context/types'
 import { VideoColumnFilter } from './VideoColumnFilter'
-import { VideoColumnCell } from './VideoColumnCell'
 import { LocalColumnTitle } from './LocalColumnTitle'
 
 const COMM_STATUS_LOOKUP = {
@@ -33,6 +33,7 @@ const COMM_STATUS_LOOKUP = {
   [key in Statuses]: Statuses
 }
 
+// TODO: TS it up
 export const COMM_SIZE_COL_MAP = {
   1: 'Smallest',
   2: 'Small',
@@ -56,24 +57,26 @@ export const localization: Localization = {
 
 // Table options for the <MaterialTable> component
 export const options = {
-  actionsColumnIndex: 0,
   columnsButton: true,
   doubleHorizontalScroll: true,
   draggable: true, // kinda clunky
   filtering: true,
   grouping: false, // kinda clunky
   isLoading: true,
-  pageSize: 10,
-  pageSizeOptions: [5, 10, 20, 50],
+  maxBodyHeight: '100%',
+  minBodyHeight: '100%',
+  pageSize: 20,
+  pageSizeOptions: [10, 20, 50],
   searchFieldAlignment: 'left',
   showTitle: false,
   thirdSortClick: false,
   // TODO: rm unused, or keep for reference
   // actionsCellStyle: {}, // semi-useful but ended up with `!important` anyway
+  // actionsColumnIndex: 0,
+  // fixedColumns: { left: 2, right: 0 }, // awful in so many ways
   // headerStyle: { position: 'sticky', top: 0 },
   // filterCellStyle: { backgroundColor: 'yellow' }, // works
   // filterRowStyle: { backgroundColor: 'red' }, // works, but sticky 2 tricky!
-  // fixedColumns: { left: 1 }, // useless if using Actions
   // padding: 'dense', // dense leads to choppier inconsistent row height
   // rowStyle: { backgroundColor: 'turquoise' }, // works
   // searchFieldVariant: 'outlined', // meh, too big
@@ -96,43 +99,71 @@ export const icons = {
   ViewColumn: MdViewColumn,
 } as Icons
 
-// TODO: "IMLocation looks good if you need something to replace the asterisk
-// next to local items in the table. For Data Table & Filter, I’d probably use
-// that same three-bullet list you have next to Data. And for turning off the
-// filter, how about RIFilterOffFill?"
+const commonColProps = {
+  editable: 'never',
+  export: false,
+  searchable: true,
+  // cellStyle: {},
+}
+
+const hiddenCols = [
+  {
+    title: 'Glottocode',
+    field: 'Glottocode',
+    ...commonColProps,
+    hidden: true,
+  },
+  {
+    title: 'ISO 639-3',
+    field: 'ISO 639-3',
+    ...commonColProps,
+    hidden: true,
+  },
+]
+
+// NOTE: did not want to attempt to deal with any of the multi-option cols like
+// Size or Status in terms of filter-col-via-cell-click behavior, or the
+// boolean-ish Video column. Wishlist...
 
 // 25px : 200char = decent ratio
 export const columns = [
   {
+    title: '',
+    field: 'ID',
+    ...commonColProps,
+    filtering: false,
+    render: utils.renderIDcolumn,
+  },
+  {
+    title: '',
+    field: 'Description',
+    ...commonColProps,
+    sorting: false,
+    filtering: false,
+    render: utils.renderDescripCol,
+  },
+  {
     // Average: 9.3, Longest: 31
     title: 'Language',
     field: 'Language',
-    editable: 'never',
-    export: false,
+    ...commonColProps,
     defaultSort: 'asc',
-    searchable: true,
   },
   {
     // Average: 8.5, Longest: 26, Longest full: Anashinaabemowin
     title: 'Endonym',
     field: 'Endonym',
-    editable: 'never',
-    export: false,
-    disableClick: true, // TODO: use this if we want row clicks again
+    ...commonColProps,
     render: utils.renderEndoColumn,
-    searchable: true,
   },
   {
     // Average: 13, Longest: 25 (thanks AUS & NZ...)
     title: 'World Region',
     field: 'World Region',
-    editable: 'never',
-    export: false,
+    ...commonColProps,
     // TODO: instead of open-search filters, custom `filterComponent` with this:
     // https://material-ui.com/components/autocomplete/#checkboxes
-    // eslint-disable-next-line react/display-name
-    render: (data) => <RenderWorldRegionColumn data={data} />,
-    searchable: true,
+    render: (data) => <Cells.WorldRegion data={data} />,
     headerStyle: {
       paddingRight: 25, // enough for `Southeastern Asia` cells to not wrap
       whiteSpace: 'nowrap',
@@ -145,10 +176,8 @@ export const columns = [
     // https://material-ui.com/components/autocomplete/#country-select
     title: 'Countries',
     field: 'Countries',
-    editable: 'never',
-    export: false,
+    ...commonColProps,
     render: utils.renderCountriesColumn,
-    searchable: true,
     headerStyle: {
       paddingRight: 25, // enough for `United States` cells to not wrap
     },
@@ -157,13 +186,12 @@ export const columns = [
     // Longest: 20
     title: 'Global Speakers', // the only abbrev so far
     field: 'Global Speaker Total',
-    editable: 'never',
-    export: false,
-    // defaultSort: 'asc', // TODO: make this work
+    ...commonColProps,
     // customSort: utils.sortNeighbs, // TODO: blanks last
-    render: utils.renderGlobalSpeakColumn,
+    render: (data) => <Cells.GlobalSpeakers data={data} />,
     searchable: false,
     filtering: false,
+    disableClick: true,
     type: 'numeric',
     // Right-aligned number w/left-aligned column heading was requested
     headerStyle: {
@@ -176,20 +204,14 @@ export const columns = [
     // Average: 10, Longest: 23 but preserve hyphenated Athabaskan-Eyak-Tlingit
     title: 'Language Family',
     field: 'Language Family',
-    editable: 'never',
-    export: false,
-    searchable: true,
-    headerStyle: {
-      whiteSpace: 'nowrap',
-    },
+    ...commonColProps,
+    headerStyle: { whiteSpace: 'nowrap' },
   },
   {
     // Average: 12, Longest: 26
     title: <LocalColumnTitle text="Neighborhoods" />,
     field: 'Neighborhoods',
-    editable: 'never',
-    export: false,
-    searchable: true,
+    ...commonColProps,
     render: utils.renderNeighbColumn,
     customSort: utils.sortNeighbs,
   },
@@ -197,64 +219,41 @@ export const columns = [
     // Longest: 14
     title: <LocalColumnTitle text="Size" />,
     field: 'Size',
-    editable: 'never',
-    export: false,
+    ...commonColProps,
     align: 'left',
     lookup: COMM_SIZE_COL_MAP,
+    disableClick: true,
     customSort: (a, b) => {
       if (a.Size === b.Size) return 0
       if (a.Size > b.Size) return 1
 
       return -1
     },
-    // eslint-disable-next-line react/display-name
-    render: (data) => (
-      <RenderCommSizeColumn data={data} lookup={COMM_SIZE_COL_MAP} />
-    ),
+    render: (data) => <Cells.CommSize data={data} lookup={COMM_SIZE_COL_MAP} />,
     searchable: false,
+    headerStyle: {
+      paddingRight: 25, // "Smallest" is ironically the longest
+    },
   },
   {
     // Longest: 13
     title: <LocalColumnTitle text="Status" />,
     field: 'Status',
-    editable: 'never',
-    export: false,
+    ...commonColProps,
+    disableClick: true,
     searchable: false,
+    render: (data) => <Cells.CommStatus data={data} />,
     lookup: COMM_STATUS_LOOKUP,
   },
   {
     title: 'Video',
     field: 'Video',
-    editable: 'never',
-    export: false,
+    ...commonColProps,
     filterComponent: VideoColumnFilter,
     headerStyle: { whiteSpace: 'nowrap' },
-    render: VideoColumnCell,
+    render: (data) => <Cells.VideoColumnCell data={data} />,
     searchable: false,
+    disableClick: true,
   },
-  // All hidden from here down
-  {
-    title: 'Description',
-    field: 'Description',
-    editable: 'never',
-    export: false,
-    hidden: true,
-    searchable: true,
-  },
-  {
-    title: 'Glottocode',
-    field: 'Glottocode',
-    editable: 'never',
-    export: false,
-    hidden: true,
-    searchable: true,
-  },
-  {
-    title: 'ISO 639-3',
-    field: 'ISO 639-3',
-    editable: 'never',
-    export: false,
-    hidden: true,
-    searchable: true,
-  },
+  ...hiddenCols,
 ] as Types.ColumnsConfig[]

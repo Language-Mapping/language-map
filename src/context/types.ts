@@ -97,6 +97,7 @@ type InternalUse = {
   Longitude: number // nice convenience over geometry.coordinates
 }
 
+// TODO: TS it up
 type CommunitySize = 1 | 2 | 3 | 4 | 5
 
 // TODO: consider separate file
@@ -104,7 +105,7 @@ type CommunitySize = 1 | 2 | 3 | 4 | 5
 export type LangRecordSchema = InternalUse & {
   Language: string
   Endonym: string // often same as English name, may be an http link to image
-  Neighborhoods: string | '' // NYC 'hoods only
+  Neighborhoods: string | '' // NYC-metro only // TODO: make optional
   Size: CommunitySize
   Status: Statuses
   'World Region': WorldRegion
@@ -112,7 +113,7 @@ export type LangRecordSchema = InternalUse & {
   'Global Speaker Total'?: number // string in MB tileset b/c some blanks
   'Font Image Alt'?: string // for images to use instead of fonts, e.g. ASL
   'Language Family': string
-  Description: string // not all will be populated until end August
+  Description: string
   Video?: string // TODO: TS for URL?
   Audio?: string // TODO: TS for URL?
   Town: string

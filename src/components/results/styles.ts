@@ -1,5 +1,19 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
+const bodyRow = '.MuiTableRow-root:not(:first-of-type)'
+const bodyCell = '.MuiTableCell-body'
+const footerCell = '.MuiTableCell-footer'
+const footerWrap = '.MuiPaper-root > .MuiTable-root'
+const headCell = '.MuiTableCell-head'
+const first = ':first-of-type'
+const second = ':nth-of-type(2)'
+
+// Handy. Rm if not using.
+// const filterRow = '.MuiTableRow-root:first-of-type'
+// const headRow = '.MuiTableRow-head'
+// const filterCell = `${filterRow} ${bodyCell}`
+// const third = ':nth-of-type(3)'
+
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     resultsModalRoot: {
@@ -9,10 +23,11 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
       },
       // Gross way to get the table footer, which has no unique classes
-      '& .MuiPaper-root > .MuiTable-root': {
+      [`& ${footerWrap}`]: {
         bottom: 0,
         position: 'sticky',
         [theme.breakpoints.up('sm')]: {
+          height: 60, // uggghhhhh
           borderBottomRightRadius: 4,
           borderBottomLeftRadius: 4,
         },
@@ -26,28 +41,29 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       // e.g. the Filter icon at beginning of column filters
       '& .MuiInputAdornment-root': { color: theme.palette.text.hint },
-      // All column headings
-      '& .MuiTableCell-head': {
+      [`& ${headCell}`]: {
         backgroundColor: 'inherit',
         color: theme.palette.primary.main,
         fontWeight: 'bold',
         lineHeight: 1.2,
       },
-      // Actions heading
-      '& .MuiTableCell-head:first-of-type': {
-        textAlign: 'left !important', // sick of trying to fight the plugin
-        // TODO: restore width to 75ish if reinstating "View in map" btn
-        width: '10px !important', // sick of trying to fight the plugin
-        padding: 0,
-      },
-      '& .MuiTableBody-root .MuiTableRow-root .MuiTableCell-root:first-of-type': {
-        padding: '0 !important',
-        width: '10px !important',
-      },
       // Default cushion of non-dense table cell is 16px
       '& .MuiTableCell-root': { padding: '0.5rem' },
+      // First column's values are just a button
+      [`& ${bodyRow} ${bodyCell}${first}`]: {
+        position: 'sticky !important',
+        backgroundColor: theme.palette.background.paper,
+        left: '0 !important',
+      },
+      // Second column's values are just a button
+      [`& ${bodyRow} ${bodyCell}${second}`]: {
+        position: 'sticky !important',
+        backgroundColor: theme.palette.background.paper,
+        paddingLeft: 0,
+        left: '42px !important', // FRAGILE, needs smaller than width on mobile
+      },
       // Pagination
-      '& .MuiTableCell-footer': {
+      [`& ${footerCell}`]: {
         borderBottom: 'none',
         padding: 0, // may have no impact when height is set
         // height: 50, // but height is needed in order to establish a minHeight
@@ -55,7 +71,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       // The table footer
       '& .MuiTableFooter-root': {
-        borderTop: `solid ${theme.palette.text.secondary} 1px`,
+        borderTop: `solid ${theme.palette.divider} 2px`,
         boxShadow: theme.shadows[14],
         backgroundColor: theme.palette.background.paper,
         justifyContent: 'center',
@@ -70,17 +86,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& .MuiTableSortLabel-icon': {
         flexShrink: 0, // prevents tiny arrows on columns w/wrapped headings
       },
-      // Top bar title, free actions; footer pag.
-      // '& .MuiToolbar-root > :last-child': {
-      // marginRight: theme.spacing(4),
-      // },
-      // Handy reference for potentially useful selectors
-      // '& table .MuiIconButton-root, .MuiToolbar-root .MuiIconButton-root':{},
-      // '& .MuiTableCell-head:not(:first-of-type)': {}, // non-actions headings
-      // '& .MuiToolbar-root > :first-child': {}, // top bar title?
-      // '& .MuiTableCell-root:first-child': {}, // actions column cells
-      // '& .MuiTableCell-root:nth-child(2)': {}, // first non-actions column
-      // '& .MuiToolbar-root': {}, // top bar title, free actions; footer pag.
     },
     closeBtn: {
       position: 'absolute',
@@ -90,10 +95,20 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     // Squeeze a bit more room out of the dialog
     resultsModalPaper: {
-      maxHeight: `calc(100% - ${theme.spacing(2)}px)`,
-      [theme.breakpoints.only('xs')]: {
-        maxHeight: '100%',
+      height: `calc(100% - ${theme.spacing(2)}px)`,
+      maxHeight: '100%',
+      [theme.breakpoints.down('sm')]: {
+        height: '100%',
         margin: 0,
+      },
+      // The wrapper around the wrapper around the wrapper around the table
+      '& > .MuiPaper-root > :nth-child(2)': {
+        overflow: 'auto',
+      },
+      '& .MuiPaper-root': {
+        display: 'flex',
+        height: '100%',
+        flexDirection: 'column',
       },
     },
   })

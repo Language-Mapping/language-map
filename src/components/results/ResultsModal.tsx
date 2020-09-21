@@ -1,8 +1,8 @@
 import React, { FC, useContext, useEffect, useState } from 'react'
 import { Dialog } from '@material-ui/core'
 
-import { useStyles } from 'components/filters/config.styles'
 import { GlobalContext } from 'components'
+import { useStyles } from './styles'
 import { CloseTableProps } from './types'
 import { ResultsTable } from './ResultsTable'
 import { LangRecordSchema } from '../../context/types'
@@ -39,9 +39,7 @@ export const ResultsModal: FC<ResultsModalProps> = (props) => {
       aria-labelledby="results-modal-dialog-title"
       aria-describedby="results-modal-dialog-description"
       maxWidth="lg"
-      PaperProps={{
-        className: classes.resultsModalPaper,
-      }}
+      PaperProps={{ className: classes.resultsModalPaper }}
     >
       <ResultsTable closeTable={closeTable} data={tableData} />
     </Dialog>
