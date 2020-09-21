@@ -44,7 +44,10 @@ export const useStyles = makeStyles((theme: Theme) =>
       overflowY: 'auto',
       padding: '0.25rem 0.75em 1em',
       position: 'relative',
-      [theme.breakpoints.up('xl')]: { padding: '1.25em' }, // tons of room
+      [theme.breakpoints.up('md')]: {
+        paddingLeft: '1em',
+        paddingRight: '1em',
+      },
     },
   })
 )
