@@ -7,7 +7,11 @@ import { LangRecordSchema, LangSchemaCol } from '../../context/types'
 
 export const LayerLabelSelect: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
-  const labelFields: LangSchemaCol[] = ['Language', 'Endonym']
+  const labelFields: LangSchemaCol[] = [
+    'Language',
+    'Endonym',
+    'Language Family',
+  ]
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     dispatch({
