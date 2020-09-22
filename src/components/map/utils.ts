@@ -111,7 +111,14 @@ export const flyToBounds: MapTypes.FlyToBounds = (
 
 export const flyToPoint: MapTypes.FlyToPoint = (
   map,
-  { latitude, longitude, zoom: targetZoom, disregardCurrZoom },
+  {
+    latitude,
+    longitude,
+    zoom: targetZoom,
+    disregardCurrZoom,
+    bearing = 0,
+    pitch = 0,
+  },
   popupContent,
   geocodeMarkerText
 ) => {
@@ -138,7 +145,7 @@ export const flyToPoint: MapTypes.FlyToPoint = (
   }
 
   map.flyTo(
-    { essential: true, zoom, center: [longitude, latitude] },
+    { essential: true, zoom, center: [longitude, latitude], bearing, pitch },
     customEventData
   )
 }

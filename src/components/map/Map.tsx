@@ -131,6 +131,8 @@ export const Map: FC<Types.MapComponent> = (props) => {
         latitude: firstCoords[1],
         longitude: firstCoords[0],
         zoom: config.POINT_ZOOM_LEVEL,
+        bearing: 70,
+        pitch: 70,
       }
 
       utils.flyToPoint(map, settings, null)
@@ -214,6 +216,8 @@ export const Map: FC<Types.MapComponent> = (props) => {
       longitude,
       zoom: config.POINT_ZOOM_LEVEL,
       disregardCurrZoom: true,
+      bearing: 70,
+      pitch: 70,
     }
 
     // Make feature appear selected // TODO: higher zIndex on selected feature
@@ -295,6 +299,8 @@ export const Map: FC<Types.MapComponent> = (props) => {
           ...viewport, // spreading just in case bearing or pitch are added
           latitude: map.getCenter().lat,
           longitude: map.getCenter().lng,
+          bearing: map.getBearing(),
+          pitch: map.getPitch(),
           zoom: map.getZoom(),
         })
       }

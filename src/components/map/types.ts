@@ -161,7 +161,11 @@ export type FlyToBounds = (
 
 export type FlyToPoint = (
   map: Map,
-  settings: LongLatAndZoom & { disregardCurrZoom?: boolean },
+  settings: LongLatAndZoom & {
+    disregardCurrZoom?: boolean
+    bearing?: number
+    pitch?: number
+  },
   popupContent: PopupContent | null,
   geocodeMarkerText?: string
 ) => void
