@@ -56,7 +56,7 @@ const LocationSearchContent: FC = (props) => {
   )
 }
 
-type GeocoderProps = Omit<MapCtrlBtnsProps, 'onMapCtrlClick' | 'isDesktop'> & {
+type GeocoderProps = Pick<MapCtrlBtnsProps, 'mapRef'> & {
   anchorEl: null | HTMLElement
   setAnchorEl: React.Dispatch<null | HTMLElement>
 }

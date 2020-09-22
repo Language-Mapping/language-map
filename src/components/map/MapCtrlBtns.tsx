@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
+import { Fab, Slide } from '@material-ui/core'
 import {
   SpeedDial,
   SpeedDialIcon,
@@ -7,6 +8,7 @@ import {
   CloseReason,
 } from '@material-ui/lab'
 import { MdMoreVert, MdClose } from 'react-icons/md'
+import { TiCompass } from 'react-icons/ti'
 import { BiMapPin } from 'react-icons/bi'
 import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai'
 import { FiHome, FiInfo } from 'react-icons/fi'
@@ -40,6 +42,17 @@ const useStyles = makeStyles((theme: Theme) =>
         },
       },
     },
+    resetPitchBtn: {
+      position: 'absolute',
+      bottom: 32,
+      left: 6,
+      fontSize: '0.85em',
+      '& svg': {
+        marginRight: '0.2em',
+        height: '1.5em',
+        width: '1.5em',
+      },
+    },
   })
 )
 
@@ -57,7 +70,7 @@ const ctrlBtnsConfig = [
 ] as CtrlBtnConfig[]
 
 export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
-  const { onMapCtrlClick, mapRef } = props
+  const { onMapCtrlClick, mapRef, viewport, setViewport } = props
   const classes = useStyles()
   const [speedDialOpen, setSpeedDialOpen] = React.useState(true)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -117,6 +130,17 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
           />
         ))}
       </SpeedDial>
+      <Slide in={viewport.pitch !== 0} direction="right">
+        <Fab
+          className={classes.resetPitchBtn}
+          variant="extended"
+          size="small"
+          onClick={() => setViewport({ ...viewport, pitch: 0 })}
+        >
+          <TiCompass />
+          Reset
+        </Fab>
+      </Slide>
     </>
   )
 }

@@ -104,6 +104,8 @@ export type GeocodeResult = {
 export type MapCtrlBtnsProps = {
   mapRef: React.RefObject<InteractiveMap>
   onMapCtrlClick: (actionID: MapControlAction) => void
+  viewport: ViewState
+  setViewport: React.Dispatch<ViewState>
 }
 
 export type CtrlBtnConfig = {
