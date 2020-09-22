@@ -12,7 +12,6 @@ import { MuiTableWithLangs } from './types'
 import { ResultsToolbar } from './ResultsToolbar'
 import { RecordDescription } from './RecordDescription'
 import { LangRecordSchema } from '../../context/types'
-// import { useWindowResize } from '../../utils' // TODO: rm if not using
 
 import * as Types from './types'
 import * as config from './config'
@@ -32,7 +31,6 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
   const history = useHistory()
   const loc = useLocation()
   const tableRef = React.useRef<MuiTableWithLangs>(null)
-  // const { height } = useWindowResize() // TODO: rm if not using
   const [descripModalText, setDescripModalText] = useState<string>('')
   const [clearBtnEnabled, setClearBtnEnabled] = useState<boolean>(false)
   const [descripModalHeading, setDescripModalHeading] = useState<
@@ -174,7 +172,6 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
         }}
         // CANNOT get this to work without setting the focus to the clear btn
         // onSearchChange={(search) => setClearBtnEnabled(true)}
-        // TODO: all into config
         actions={[
           {
             icon: () => <AiOutlineQuestionCircle />,

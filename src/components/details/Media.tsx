@@ -47,7 +47,6 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       display: 'flex',
       fontSize: '0.8em',
-      textTransform: 'none',
       '& svg': {
         marginRight: '0.5em',
       },

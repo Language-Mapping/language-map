@@ -36,8 +36,6 @@ export const ResultsModal: FC<ResultsModalProps> = (props) => {
 
   const handleClose = (): void => closeTable()
 
-  if (!tableData.length) return null
-
   return (
     <Dialog
       open={open}

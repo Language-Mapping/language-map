@@ -5,6 +5,11 @@ export const reducer = (
   action: StoreAction
 ): InitialState => {
   switch (action.type) {
+    case 'CLEAR_FILTERS':
+      return {
+        ...state,
+        clearFilters: action.payload,
+      }
     case 'SET_BASELAYER':
       return {
         ...state,

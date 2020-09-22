@@ -53,7 +53,7 @@ export function renderEndoColumn(
 
 export function renderDescripCol(): string | React.ReactNode {
   return (
-    <IconButton title="View description" size="small" color="primary">
+    <IconButton title="View description" size="small" color="secondary">
       <GoFile />
     </IconButton>
   )
@@ -61,7 +61,7 @@ export function renderDescripCol(): string | React.ReactNode {
 
 export function renderIDcolumn(): string | React.ReactNode {
   return (
-    <IconButton title="Show in map" size="small" color="primary">
+    <IconButton title="Show in map" size="small" color="secondary">
       <FaMapMarkedAlt />
     </IconButton>
   )

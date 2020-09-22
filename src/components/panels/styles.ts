@@ -35,7 +35,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         width: panelWidths.midLarge,
       },
       '& .MuiInputLabel-formControl': {
-        color: theme.palette.primary.main,
+        color: theme.palette.text.secondary,
         fontSize: '1rem',
       },
     },

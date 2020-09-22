@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react'
+import React, { FC, useContext, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { MTableToolbar } from 'material-table'
@@ -89,9 +89,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       // outline: 'solid green 1px',
     },
-    toolbarBtn: {
-      textTransform: 'none',
-    },
   })
 )
 
@@ -103,19 +100,36 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
     setClearBtnEnabled,
     scrollToTop,
   } = props
-  const { dispatch } = useContext(GlobalContext)
+  const { state, dispatch } = useContext(GlobalContext)
   const classes = useStyles()
   const history = useHistory()
   const noResults = tableRef.current && !tableRef.current.state.data.length
+
+  useEffect((): void => {
+    // TODO: fix, obviously:
+    if (state.clearFilters === 555) {
+      clearFiltersBtnClick()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.clearFilters])
 
   function mapFilterBtnClick(): void {
     if (!tableRef || !tableRef.current) return
 
     closeTable()
 
+    const currentData = tableRef.current.state.data
+
     dispatch({
       type: 'SET_LANG_LAYER_FEATURES',
-      payload: tableRef.current.state.data,
+      payload: currentData,
+    })
+
+    const gangsAllHere = state.langFeatsLenCache === currentData.length
+
+    dispatch({
+      type: 'CLEAR_FILTERS',
+      payload: gangsAllHere ? 0 : 1,
     })
 
     history.push(routes.home)
@@ -123,7 +137,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
 
   // CRED: 🎉
   // https://github.com/mbrn/material-table/issues/1132#issuecomment-549591832
-  function clearFiltersBtnClick(): void {
+  function clearFiltersBtnClick(physicalClick?: boolean): void {
     if (!tableRef || !tableRef.current) return
 
     const self = tableRef.current
@@ -151,49 +165,55 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
 
     setClearBtnEnabled(false)
     scrollToTop()
+
+    if (!physicalClick) {
+      dispatch({
+        type: 'CLEAR_FILTERS',
+        payload: 0,
+      })
+
+      dispatch({
+        type: 'SET_LANG_LAYER_FEATURES',
+        payload: dataManager.data,
+      })
+    }
   }
 
   return (
-    <>
-      <div className={classes.resultsToolbarRoot}>
-        <ResultsTitle />
-        <div className={classes.searchAndActions} id={TOOLBAR_ID}>
-          <MTableToolbar {...props} />
-          {/* TODO: restore */}
-          {/* Showing {langFeatures.length} of {langFeatures.length} communities. */}
-        </div>
-        <div className={classes.toolbarBtns}>
-          <Button
-            className={classes.toolbarBtn}
-            title="Set table filters and return to map"
-            color="primary"
-            variant="contained"
-            size="small"
-            startIcon={<FaMap />}
-            onClick={() => mapFilterBtnClick()}
-            disabled={noResults}
-          >
-            View results in map
-          </Button>
-          <Button
-            className={classes.toolbarBtn}
-            title="Clear table filters"
-            color="primary"
-            variant="contained"
-            disabled={!clearBtnEnabled}
-            size="small"
-            startIcon={<RiFilterOffFill />}
-            onClick={() => clearFiltersBtnClick()}
-          >
-            Clear filters
-          </Button>
-        </div>
-        <small
-          className={`${classes.localIndicator} ${classes.localCommLegend}`}
-        >
-          <BiMapPin /> Local community data
-        </small>
+    <div className={classes.resultsToolbarRoot}>
+      <ResultsTitle />
+      <div className={classes.searchAndActions} id={TOOLBAR_ID}>
+        <MTableToolbar {...props} />
+        {/* TODO: restore */}
+        {/* Showing {langFeatures.length} of {langFeatures.length} communities. */}
       </div>
-    </>
+      <div className={classes.toolbarBtns}>
+        <Button
+          title="Set table filters and return to map"
+          color="secondary"
+          variant="contained"
+          size="small"
+          startIcon={<FaMap />}
+          onClick={() => mapFilterBtnClick()}
+          disabled={noResults}
+        >
+          View results in map
+        </Button>
+        <Button
+          title="Clear table filters"
+          color="secondary"
+          variant="contained"
+          disabled={!clearBtnEnabled}
+          size="small"
+          startIcon={<RiFilterOffFill />}
+          onClick={() => clearFiltersBtnClick(true)}
+        >
+          Clear filters
+        </Button>
+      </div>
+      <small className={`${classes.localIndicator} ${classes.localCommLegend}`}>
+        <BiMapPin /> Local community data
+      </small>
+    </div>
   )
 }
