@@ -19,7 +19,7 @@ export const LayerLabelSelect: FC = () => {
   return (
     <TextField
       {...commonSelectProps}
-      label="Label by:"
+      label="Label communities by"
       value={state.activeLangLabelId}
       disabled={state.activeLangSymbGroupId === 'None'}
       onChange={handleChange}

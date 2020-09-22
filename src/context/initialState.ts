@@ -20,6 +20,7 @@ export const initialState = {
   activeLangSymbGroupId: 'World Region',
   baselayer: 'light',
   boundariesLayersVisible: false,
+  clearFilters: 0,
   langFeatsLenCache: 0,
   langFeatures: [],
   legendItems: [],

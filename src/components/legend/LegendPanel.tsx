@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     legendCtrls: {
-      marginBottom: 4,
+      marginBottom: '0.25em',
     },
   })
 )

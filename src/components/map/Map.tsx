@@ -131,6 +131,7 @@ export const Map: FC<Types.MapComponent> = (props) => {
         latitude: firstCoords[1],
         longitude: firstCoords[0],
         zoom: config.POINT_ZOOM_LEVEL,
+        pitch: 80,
       }
 
       utils.flyToPoint(map, settings, null)
@@ -214,6 +215,8 @@ export const Map: FC<Types.MapComponent> = (props) => {
       longitude,
       zoom: config.POINT_ZOOM_LEVEL,
       disregardCurrZoom: true,
+      // bearing: 80, // TODO: consider it as it does add a new element of fancy
+      pitch: 80,
     }
 
     // Make feature appear selected // TODO: higher zIndex on selected feature
@@ -295,7 +298,9 @@ export const Map: FC<Types.MapComponent> = (props) => {
           ...viewport, // spreading just in case bearing or pitch are added
           latitude: map.getCenter().lat,
           longitude: map.getCenter().lng,
+          pitch: map.getPitch(),
           zoom: map.getZoom(),
+          // bearing: map.getBearing(), // TODO: consider, looks cool
         })
       }
     })
@@ -457,7 +462,7 @@ export const Map: FC<Types.MapComponent> = (props) => {
         )}
       </MapGL>
       <MapCtrlBtns
-        {...{ mapRef }}
+        {...{ mapRef, viewport, setViewport }}
         onMapCtrlClick={(actionID: Types.MapControlAction) => {
           onMapCtrlClick(actionID)
         }}

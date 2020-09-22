@@ -21,7 +21,7 @@ export const LayerSymbSelect: FC = () => {
   return (
     <TextField
       {...commonSelectProps}
-      label="Show by:"
+      label="Show communities by"
       value={state.activeLangSymbGroupId}
       onChange={handleChange}
       inputProps={{ name: 'symbology', id: 'lang-symb-select' }}

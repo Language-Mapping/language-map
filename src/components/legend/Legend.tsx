@@ -18,12 +18,6 @@ const useStyles = makeStyles((theme: Theme) =>
       marginBottom: theme.spacing(1),
       marginTop: 0,
       paddingLeft: 0,
-      gridGap: 6,
-      display: (props: { gridCutoff?: number }) =>
-        props.gridCutoff ? 'grid' : 'block',
-      gridTemplateColumns: (props: { gridCutoff?: number }) =>
-        // CRED: https://stackoverflow.com/a/43129507
-        `repeat(auto-fill, minmax(${props.gridCutoff}px, auto))`,
     },
     // Looks PERFECT on all breakpoints
     groupedLegend: {
@@ -91,8 +85,7 @@ export const GroupedLegend: FC<GroupedLegendProps> = (props) => {
 
 export const Legend: FC<LegendComponent> = (props) => {
   const { legendItems, groupName } = props
-  // GROSS: put this into config or something when it's not 12:41am
-  const classes = useStyles({ gridCutoff: groupName === 'Status' ? 110 : 60 })
+  const classes = useStyles()
   const groupConfig = groupedLegendConfigs[groupName as string]
 
   if (groupConfig) {
@@ -115,7 +108,10 @@ export const Legend: FC<LegendComponent> = (props) => {
   }
 
   return (
-    <ul className={classes.legendRoot}>
+    <ul
+      className={classes.legendRoot}
+      style={{ paddingLeft: groupName === 'Status' ? '0.25em' : 0 }}
+    >
       {legendItems.map((item) => {
         let matchingConfig
 

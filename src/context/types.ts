@@ -15,6 +15,7 @@ export type LegendSymbols = {
 export type LangSchemaCol = keyof LangRecordSchema
 
 export type StoreAction =
+  | { type: 'CLEAR_FILTERS'; payload: number }
   | { type: 'SET_BASELAYER'; payload: Baselayer }
   | { type: 'SET_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | { type: 'SET_LANG_LAYER_LABELS'; payload: LangSchemaCol | '' }
@@ -31,6 +32,7 @@ export type InitialState = {
   activeLangLabelId: LangSchemaCol | ''
   activeLangSymbGroupId: LangSchemaCol | '' | 'None'
   baselayer: Baselayer
+  clearFilters: number
   langFeatures: LangRecordSchema[]
   langFeatsLenCache: number
   legendItems: LegendSwatch[]

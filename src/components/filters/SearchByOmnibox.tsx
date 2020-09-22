@@ -9,22 +9,17 @@ import { MdClose } from 'react-icons/md'
 import { paths as routes } from 'components/config/routes'
 import { LangRecordSchema } from '../../context/types'
 import { OmniboxResult } from './OmniboxResult'
-import { FiltersWarning } from './FiltersWarning'
 import { ListboxComponent } from './ListboxComponent'
 import { renderGroup } from './utils'
 
 type SearchByOmniProps = {
   data: LangRecordSchema[]
-  filtersApplied: boolean
 }
 
 // TODO: maybe this: https://github.com/mui-org/material-ui/issues/4393
 // ...to make sure it fits on iPhone?
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      marginBottom: '1em',
-    },
     paper: {
       // Stands out against panels behind it
       backgroundColor: theme.palette.background.default,
@@ -60,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
 // CRED: https://material-ui.com/components/autocomplete/#virtualization
 // ^^^ definitely wouldn't have gotten the `react-window` virtualization w/o it!
 export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
-  const { data, filtersApplied } = props
+  const { data } = props
   const classes = useStyles()
   const history = useHistory()
 
@@ -100,7 +95,6 @@ export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
         <TextField
           {...params}
           placeholder="Language, endonym, Glottocode, or ISO 639-3"
-          helperText={filtersApplied && <FiltersWarning />}
           InputLabelProps={{ disableAnimation: true, shrink: true }}
         />
       )}

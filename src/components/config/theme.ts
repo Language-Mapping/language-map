@@ -81,6 +81,11 @@ customTheme.overrides = {
       margin: 12,
     },
   },
+  MuiButton: {
+    root: {
+      textTransform: 'none',
+    },
+  },
 }
 
 export const theme = responsiveFontSizes(customTheme)

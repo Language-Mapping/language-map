@@ -5,7 +5,7 @@ import { Typography, Badge } from '@material-ui/core'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     filtersWarning: {
-      fontSize: '0.8em',
+      fontSize: '0.7em',
       marginLeft: 6,
       lineHeight: 0.8,
       color: theme.palette.text.secondary,

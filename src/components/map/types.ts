@@ -104,6 +104,8 @@ export type GeocodeResult = {
 export type MapCtrlBtnsProps = {
   mapRef: React.RefObject<InteractiveMap>
   onMapCtrlClick: (actionID: MapControlAction) => void
+  viewport: ViewState
+  setViewport: React.Dispatch<ViewState>
 }
 
 export type CtrlBtnConfig = {
@@ -161,7 +163,11 @@ export type FlyToBounds = (
 
 export type FlyToPoint = (
   map: Map,
-  settings: LongLatAndZoom & { disregardCurrZoom?: boolean },
+  settings: LongLatAndZoom & {
+    disregardCurrZoom?: boolean
+    bearing?: number
+    pitch?: number
+  },
   popupContent: PopupContent | null,
   geocodeMarkerText?: string
 ) => void
