@@ -1,12 +1,7 @@
 import React, { FC } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useQuery } from 'react-query'
-import {
-  createStyles,
-  makeStyles,
-  useTheme,
-  Theme,
-} from '@material-ui/core/styles'
+import { useTheme } from '@material-ui/core/styles'
 import {
   useMediaQuery,
   Backdrop,
@@ -14,13 +9,13 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  Slide,
   Typography,
 } from '@material-ui/core'
-import { TransitionProps } from '@material-ui/core/transitions'
 import { MdClose } from 'react-icons/md'
 
+import { SlideUp } from 'components'
 import { WpApiPageResponse, WpQueryNames } from './types'
+import { useStyles } from './styles'
 import { createMarkup } from '../../utils'
 
 type AboutPageProps = {
@@ -28,57 +23,6 @@ type AboutPageProps = {
   icon?: React.ReactNode
   title?: string
 }
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    closeBtn: {
-      position: 'absolute',
-      top: theme.spacing(1),
-      right: theme.spacing(1),
-    },
-    backdrop: {
-      zIndex: theme.zIndex.drawer + 1,
-      color: '#fff',
-    },
-    dialogTitle: {
-      display: 'flex',
-      alignItems: 'center',
-      '& svg': {
-        fontSize: '0.7em',
-        marginRight: '0.15em',
-      },
-    },
-    dialogContent: {
-      '& img': {
-        height: 'auto',
-        margin: '1em auto',
-        maxWidth: '90%',
-        // Prevent screenshots from getting lost in Paper bg if same color:
-        outline: 'solid 1px hsl(0deg 0% 40%)',
-        [theme.breakpoints.only('xs')]: {
-          margin: '0.5em 0',
-          maxWidth: '100%',
-        },
-      },
-      '& figure': {
-        margin: '1em', // horiz. margin defaults to huge 40px in Chrome
-        textAlign: 'center',
-        [theme.breakpoints.only('xs')]: {
-          margin: 0,
-        },
-      },
-    },
-  })
-)
-
-const Transition = React.forwardRef(function Transition(
-  // Don't care, came straight from the MUI example
-  // eslint-disable-next-line react/require-default-props, @typescript-eslint/no-explicit-any
-  props: TransitionProps & { children?: React.ReactElement<any, any> },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />
-})
 
 export const AboutPageView: FC<AboutPageProps> = (props) => {
   const { queryName, icon, title } = props
@@ -127,7 +71,7 @@ export const AboutPageView: FC<AboutPageProps> = (props) => {
       onClose={handleClose}
       aria-labelledby={`${queryName}-dialog-title`}
       aria-describedby={`${queryName}-dialog-description`}
-      TransitionComponent={Transition}
+      TransitionComponent={SlideUp}
       maxWidth="md"
     >
       <DialogTitle id={`${queryName}-dialog-title`} disableTypography>
