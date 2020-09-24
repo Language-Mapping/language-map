@@ -2,7 +2,7 @@ import React, { FC, useContext, useEffect, useState } from 'react'
 import { Dialog, Slide } from '@material-ui/core'
 import { TransitionProps } from '@material-ui/core/transitions'
 
-import { GlobalContext } from 'components'
+import { GlobalContext, DialogCloseBtn } from 'components'
 import { useStyles } from './styles'
 import { CloseTableProps } from './types'
 import { ResultsTable } from './ResultsTable'
@@ -33,7 +33,6 @@ export const ResultsModal: FC<ResultsModalProps> = (props) => {
     setTableData([...state.langFeatures])
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.langFeatures])
-
   const handleClose = (): void => closeTable()
 
   return (
@@ -41,8 +40,6 @@ export const ResultsModal: FC<ResultsModalProps> = (props) => {
       open={open}
       keepMounted
       TransitionComponent={Transition}
-      disableBackdropClick
-      disableEscapeKeyDown
       className={`${classes.resultsModalRoot}`}
       onClose={handleClose}
       aria-labelledby="results-modal-dialog-title"
@@ -50,6 +47,7 @@ export const ResultsModal: FC<ResultsModalProps> = (props) => {
       maxWidth="lg"
       PaperProps={{ className: classes.resultsModalPaper }}
     >
+      <DialogCloseBtn onClose={closeTable} tooltip="Exit to map" />
       <ResultsTable closeTable={closeTable} data={tableData} />
     </Dialog>
   )
