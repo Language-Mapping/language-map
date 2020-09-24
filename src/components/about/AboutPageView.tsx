@@ -1,8 +1,14 @@
 import React, { FC } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useQuery } from 'react-query'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
+  createStyles,
+  makeStyles,
+  useTheme,
+  Theme,
+} from '@material-ui/core/styles'
+import {
+  useMediaQuery,
   Backdrop,
   Dialog,
   DialogContent,
@@ -41,15 +47,23 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     dialogContent: {
-      // Prevent screenshots from getting lost in Paper bg if same color
-      outline: 'solid 1px hsl(0deg 0% 40%)',
       '& img': {
         height: 'auto',
-        maxWidth: '100%',
         margin: '1em auto',
+        maxWidth: '90%',
+        // Prevent screenshots from getting lost in Paper bg if same color:
+        outline: 'solid 1px hsl(0deg 0% 40%)',
+        [theme.breakpoints.only('xs')]: {
+          margin: '0.5em 0',
+          maxWidth: '100%',
+        },
       },
       '& figure': {
-        margin: '1em 0', // horiz. margin defaults to huge 40px in Chrome
+        margin: '1em', // horiz. margin defaults to huge 40px in Chrome
+        textAlign: 'center',
+        [theme.breakpoints.only('xs')]: {
+          margin: 0,
+        },
       },
     },
   })
@@ -59,6 +73,8 @@ export const AboutPageView: FC<AboutPageProps> = (props) => {
   const { queryName, icon, title } = props
   const classes = useStyles()
   const history = useHistory()
+  const theme = useTheme()
+  const lilGuy = useMediaQuery(theme.breakpoints.only('xs'))
   const { data, isFetching, error } = useQuery(queryName)
   const wpData = data as WpApiPageResponse
 
@@ -96,6 +112,7 @@ export const AboutPageView: FC<AboutPageProps> = (props) => {
   return (
     <Dialog
       open
+      fullScreen={lilGuy}
       onClose={handleClose}
       aria-labelledby={`${queryName}-dialog-title`}
       aria-describedby={`${queryName}-dialog-description`}
