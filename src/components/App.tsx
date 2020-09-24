@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from 'react'
+import * as Sentry from '@sentry/react'
 import { Route } from 'react-router-dom'
 import { queryCache } from 'react-query'
 import { GoInfo } from 'react-icons/go'
@@ -26,7 +27,23 @@ export const App: FC = () => {
   }, [])
 
   return (
-    <>
+    <Sentry.ErrorBoundary
+      fallback={({ error, componentStack, resetError }) => (
+        <>
+          <div>You have encountered an error</div>
+          <div>{error.toString()}</div>
+          <div>{componentStack}</div>
+          <button
+            type="button"
+            onClick={() => {
+              resetError()
+            }}
+          >
+            Click here to reset
+          </button>
+        </>
+      )}
+    >
       <OffCanvasNav />
       <TopBar />
       {!window.localStorage.hideWelcome && (
@@ -52,6 +69,6 @@ export const App: FC = () => {
           <PanelIntro openTable={openTable} />
         </MapPanel>
       </MapWrap>
-    </>
+    </Sentry.ErrorBoundary>
   )
 }
