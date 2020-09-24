@@ -1,5 +1,3 @@
-/* eslint-disable operator-linebreak */
-/* eslint-disable react/display-name */
 import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Link, Typography } from '@material-ui/core'
@@ -10,10 +8,6 @@ import { correctDropboxURL } from '../../utils'
 type EndoImageComponent = {
   url: string
   language: string
-}
-
-type StyleProps = {
-  isSvg: boolean
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -38,10 +32,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
+
 export const EndoImageModal: FC<EndoImageComponent> = (props) => {
   const { url: origUrl, language } = props
-  const isSvg = origUrl.includes('.svg')
-  const classes = useStyles({ isSvg })
+  const classes = useStyles()
   const [open, setOpen] = useState<boolean>(false)
   const url = correctDropboxURL(origUrl)
 
@@ -52,6 +46,7 @@ export const EndoImageModal: FC<EndoImageComponent> = (props) => {
         open={open}
         className={classes.endoModalRoot}
         onClose={() => setOpen(false)}
+        fullScreen={false}
         PaperProps={{
           className: classes.endoModalPaper,
         }}

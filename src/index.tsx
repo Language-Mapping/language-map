@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import ReactDOM from 'react-dom'
+import * as Sentry from '@sentry/react'
 import { BrowserRouter as Router } from 'react-router-dom'
 import WebFont from 'webfontloader'
 
@@ -10,6 +11,16 @@ import {
 } from 'components/config/fonts'
 import * as serviceWorker from './serviceWorker'
 
+const SENTRY_DSN =
+  'https://fff4ab9699284c8489f9890aa8aa4609@o416804.ingest.sentry.io/5313356'
+// const history = createBrowserHistory() // TODO: export and use for `Back`?
+
+// Init error tracking
+Sentry.init({ dsn: SENTRY_DSN })
+
+// TODO: should this get broken out so that the main 2 are loaded here and the
+// custom ones go go into a lower component instead? They're not really needed
+// on load for the most part...
 WebFont.load({
   google: {
     families: [

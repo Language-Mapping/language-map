@@ -7,14 +7,13 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     closeBtnRoot: {
       color: theme.palette.text.primary,
-      padding: 4, // theme.spacing(1),
+      padding: 4,
       position: 'absolute',
       right: 4,
-      top: 4,
-      zIndex: 1,
+      top: 8,
+      zIndex: 12, // magic Z
       [theme.breakpoints.up('sm')]: {
         right: 8,
-        top: 8,
       },
     },
   })

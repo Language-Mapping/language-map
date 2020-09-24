@@ -144,6 +144,7 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
           placeholder="Enter a location"
           proximity={NYC_LAT_LONG}
           types="address,poi,postcode,locality,place,neighborhood"
+          bbox={[-77.5, 38.4, -70.7, 42.89]}
         />
       </LocationSearchContent>
     </Popover>

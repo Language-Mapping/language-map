@@ -1,7 +1,7 @@
 /* eslint-disable operator-linebreak */
 import React, { FC, useContext } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import Fab from '@material-ui/core/Fab'
+import { Fab, Badge } from '@material-ui/core'
 import { FiChevronRight } from 'react-icons/fi'
 
 import { GlobalContext } from 'components'
@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       [theme.breakpoints.down('sm')]: { display: 'none' },
     },
+    fabBadge: {
+      backgroundColor: theme.palette.warning.light,
+    },
   })
 )
 
@@ -40,6 +43,7 @@ export const FabPanelToggle: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
   const panelOpen = state.panelState === 'default'
   const classes = useStyles({ panelOpen })
+  const showBadge = !panelOpen && state.selFeatAttribs !== null
 
   return (
     <Fab
@@ -54,7 +58,14 @@ export const FabPanelToggle: FC = () => {
         })
       }
     >
-      <FiChevronRight />
+      <Badge
+        variant="dot"
+        classes={{ dot: classes.fabBadge }}
+        overlap="circle"
+        invisible={!showBadge}
+      >
+        <FiChevronRight />
+      </Badge>
     </Fab>
   )
 }

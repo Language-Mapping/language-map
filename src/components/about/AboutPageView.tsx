@@ -1,8 +1,9 @@
 import React, { FC } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useQuery } from 'react-query'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { useTheme } from '@material-ui/core/styles'
 import {
+  useMediaQuery,
   Backdrop,
   Dialog,
   DialogContent,
@@ -12,7 +13,9 @@ import {
 } from '@material-ui/core'
 import { MdClose } from 'react-icons/md'
 
+import { SlideUp } from 'components'
 import { WpApiPageResponse, WpQueryNames } from './types'
+import { useStyles } from './styles'
 import { createMarkup } from '../../utils'
 
 type AboutPageProps = {
@@ -21,44 +24,12 @@ type AboutPageProps = {
   title?: string
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    closeBtn: {
-      position: 'absolute',
-      top: theme.spacing(1),
-      right: theme.spacing(1),
-    },
-    backdrop: {
-      zIndex: theme.zIndex.drawer + 1,
-      color: '#fff',
-    },
-    dialogTitle: {
-      display: 'flex',
-      alignItems: 'center',
-      '& svg': {
-        fontSize: '0.7em',
-        marginRight: '0.15em',
-      },
-    },
-    dialogContent: {
-      // Prevent screenshots from getting lost in Paper bg if same color
-      outline: 'solid 1px hsl(0deg 0% 40%)',
-      '& img': {
-        height: 'auto',
-        maxWidth: '100%',
-        margin: '1em auto',
-      },
-      '& figure': {
-        margin: '1em 0', // horiz. margin defaults to huge 40px in Chrome
-      },
-    },
-  })
-)
-
 export const AboutPageView: FC<AboutPageProps> = (props) => {
   const { queryName, icon, title } = props
   const classes = useStyles()
   const history = useHistory()
+  const theme = useTheme()
+  const lilGuy = useMediaQuery(theme.breakpoints.only('xs'))
   const { data, isFetching, error } = useQuery(queryName)
   const wpData = data as WpApiPageResponse
 
@@ -91,14 +62,16 @@ export const AboutPageView: FC<AboutPageProps> = (props) => {
     )
   }
 
-  // TODO: use `keepMounted` for About for SEO purposes
+  // TODO: use `keepMounted` for About for SEO purposes?
   // TODO: consider SimpleDialog for some or all of these
   return (
     <Dialog
       open
+      fullScreen={lilGuy}
       onClose={handleClose}
       aria-labelledby={`${queryName}-dialog-title`}
       aria-describedby={`${queryName}-dialog-description`}
+      TransitionComponent={SlideUp}
       maxWidth="md"
     >
       <DialogTitle id={`${queryName}-dialog-title`} disableTypography>

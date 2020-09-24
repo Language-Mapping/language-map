@@ -33,12 +33,15 @@ export const useStyles = makeStyles((theme: Theme) =>
       gridTemplateAreas: `"title searchAndActions"
         "buttons buttons"
         "local local"`,
-      gridTemplateColumns: 'auto auto',
+      gridTemplateColumns: 'auto 1fr',
       gridTemplateRows: 'auto auto auto',
-      justifyContent: 'center',
       // marginBottom: '0.25em', // STUPID SPACER SO RIDICULOUS
       '& .MuiIconButton-root': { padding: 4 }, // huuuge by default
-      [theme.breakpoints.up('sm')]: { gridColumnGap: '1em' },
+      [theme.breakpoints.up('sm')]: {
+        gridTemplateColumns: 'auto auto',
+        justifyContent: 'center',
+        gridColumnGap: '1em',
+      },
       [theme.breakpoints.up('md')]: {
         gridTemplateAreas: `"title buttons local searchAndActions"`,
         gridTemplateColumns: 'auto auto auto 1fr',
@@ -59,8 +62,12 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& .MuiToolbar-root > :last-child': { flexShrink: 0 }, // actions wrap
       [theme.breakpoints.only('xs')]: {
         '& .MuiToolbar-root': { paddingRight: 0 },
+        '& .MuiInputBase-root.MuiInput-root': { maxWidth: 165 },
       },
-      [theme.breakpoints.up('md')]: { justifyContent: 'flex-end' },
+      [theme.breakpoints.up('md')]: {
+        justifyContent: 'flex-end',
+        marginRight: 8,
+      },
       // outline: 'solid red 1px',
     },
     localIndicator: {

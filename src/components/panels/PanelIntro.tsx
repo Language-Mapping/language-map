@@ -40,6 +40,10 @@ const useStyles = makeStyles((theme: Theme) =>
     introBtn: {
       [theme.breakpoints.down('xs')]: { fontSize: '0.85em' },
     },
+    fabBadge: {
+      backgroundColor: theme.palette.warning.light,
+      marginLeft: -4,
+    },
     helpBtn: {
       position: 'absolute',
       top: 'calc(100% + 0.5em)',
@@ -70,6 +74,7 @@ export const PanelIntro: FC<PanelIntroProps> = (props) => {
           startIcon={
             <Badge
               variant="dot"
+              classes={{ dot: classes.fabBadge }}
               badgeContent=""
               color="secondary"
               overlap="circle"

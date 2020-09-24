@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.10.2",
     "@material-ui/lab": "^4.0.0-alpha.56",
+    "@sentry/react": "^5.24.2",
     "@testing-library/jest-dom": "^5.11.0",
     "@testing-library/react": "^10.4.5",
     "@testing-library/user-event": "^7.1.2",
@@ -82,6 +83,7 @@
   "peerDependencies": {
     "@material-ui/styles": "^4.10.0",
     "clsx": "^1.1.1",
+    "history": "^5.0.0",
     "mapbox-gl": "^1.11.1"
   },
   "husky": {
