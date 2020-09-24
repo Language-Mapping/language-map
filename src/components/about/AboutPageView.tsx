@@ -14,8 +14,10 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Slide,
   Typography,
 } from '@material-ui/core'
+import { TransitionProps } from '@material-ui/core/transitions'
 import { MdClose } from 'react-icons/md'
 
 import { WpApiPageResponse, WpQueryNames } from './types'
@@ -69,6 +71,15 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+const Transition = React.forwardRef(function Transition(
+  // Don't care, came straight from the MUI example
+  // eslint-disable-next-line react/require-default-props, @typescript-eslint/no-explicit-any
+  props: TransitionProps & { children?: React.ReactElement<any, any> },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />
+})
+
 export const AboutPageView: FC<AboutPageProps> = (props) => {
   const { queryName, icon, title } = props
   const classes = useStyles()
@@ -107,7 +118,7 @@ export const AboutPageView: FC<AboutPageProps> = (props) => {
     )
   }
 
-  // TODO: use `keepMounted` for About for SEO purposes
+  // TODO: use `keepMounted` for About for SEO purposes?
   // TODO: consider SimpleDialog for some or all of these
   return (
     <Dialog
@@ -116,6 +127,7 @@ export const AboutPageView: FC<AboutPageProps> = (props) => {
       onClose={handleClose}
       aria-labelledby={`${queryName}-dialog-title`}
       aria-describedby={`${queryName}-dialog-description`}
+      TransitionComponent={Transition}
       maxWidth="md"
     >
       <DialogTitle id={`${queryName}-dialog-title`} disableTypography>
