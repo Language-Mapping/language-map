@@ -52,6 +52,7 @@ export const EndoImageModal: FC<EndoImageComponent> = (props) => {
         open={open}
         className={classes.endoModalRoot}
         onClose={() => setOpen(false)}
+        fullScreen={false}
         PaperProps={{
           className: classes.endoModalPaper,
         }}

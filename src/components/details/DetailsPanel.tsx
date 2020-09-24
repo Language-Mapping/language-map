@@ -10,6 +10,12 @@ import { RecordDescription } from 'components/results'
 import { paths as routes } from 'components/config/routes'
 import { Media } from './Media'
 import { useStyles } from './styles'
+import { LangRecordSchema } from '../../context/types'
+
+type DetailsPanelProps = {
+  attribsDirect?: LangRecordSchema
+  skipSelFeatCheck?: boolean
+}
 
 // TODO: separate files
 const RandomLinkBtn: FC = () => {
@@ -49,15 +55,18 @@ const NoFeatSel: FC = () => {
   )
 }
 
-export const DetailsPanel: FC = () => {
+export const DetailsPanel: FC<DetailsPanelProps> = (props) => {
+  const { attribsDirect, skipSelFeatCheck } = props
   const { state } = useContext(GlobalContext)
   const classes = useStyles()
   const loc = useLocation()
+  const attribsToUse = attribsDirect || state.selFeatAttribs
 
   // Shaky check to see if features have loaded and are stored globally
   // TODO: use MB's loading events to set this instead
   if (!state.langFeatures.length) return null
-  if (!state.selFeatAttribs) return <NoFeatSel /> // no sel feat details
+  if (!state.selFeatAttribs && !skipSelFeatCheck) return <NoFeatSel />
+  if (!attribsToUse) return null
 
   const elemID = 'details'
   const {
@@ -70,7 +79,7 @@ export const DetailsPanel: FC = () => {
     Audio: audio,
     Video: video,
     'World Region': WorldRegion,
-  } = state.selFeatAttribs
+  } = attribsToUse
   const { intro, descripSection, neighborhoods, divider } = classes
   const regionSwatchColor =
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -89,7 +98,7 @@ export const DetailsPanel: FC = () => {
         <ScrollToTopOnMount elemID={elemID} trigger={loc.pathname} />
       )}
       <div className={intro} id={elemID}>
-        <LangOrEndoIntro attribs={state.selFeatAttribs} />
+        <LangOrEndoIntro attribs={attribsToUse} />
         <Typography className={neighborhoods}>
           <BiMapPin />
           {Neighborhoods || Town}

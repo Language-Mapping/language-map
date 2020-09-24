@@ -1,7 +1,16 @@
 import React, { FC } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-
-import { Dialog, DialogContent, DialogProps } from '@material-ui/core'
+import {
+  createStyles,
+  makeStyles,
+  useTheme,
+  Theme,
+} from '@material-ui/core/styles'
+import {
+  Dialog,
+  DialogContent,
+  DialogProps,
+  useMediaQuery,
+} from '@material-ui/core'
 import { DialogCloseBtn } from 'components'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -18,12 +27,15 @@ const useStyles = makeStyles((theme: Theme) =>
 export const SimpleDialog: FC<DialogProps> = (props) => {
   const classes = useStyles()
   const { onClose, children } = props
+  const theme = useTheme()
+  const lilGuy = useMediaQuery(theme.breakpoints.only('xs'))
 
   return (
     <Dialog
       aria-labelledby="simple-modal-dialog-title"
       aria-describedby="simple-modal-dialog-description"
       maxWidth="md"
+      fullScreen={lilGuy}
       {...props}
     >
       <DialogCloseBtn onClose={onClose} />

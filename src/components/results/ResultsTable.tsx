@@ -2,40 +2,28 @@
 /* eslint-disable react/display-name */
 import React, { FC, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import MaterialTable from 'material-table'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
-import { SimpleDialog, LangOrEndoIntro, LangOrEndoProps } from 'components'
+import { SimpleDialog } from 'components'
 import { paths as routes } from 'components/config/routes'
+import { DetailsPanel } from 'components/details'
 import { MuiTableWithLangs } from './types'
 import { ResultsToolbar } from './ResultsToolbar'
-import { RecordDescription } from './RecordDescription'
 import { LangRecordSchema } from '../../context/types'
 
 import * as Types from './types'
 import * as config from './config'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    // Smaller than the default so that it is not as large as table modal
-    descripDialogPaper: {
-      margin: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
-    },
-  })
-)
-
 export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
   const { closeTable, data: tableData } = props
-  const classes = useStyles()
   const history = useHistory()
   const loc = useLocation()
   const tableRef = React.useRef<MuiTableWithLangs>(null)
-  const [descripModalText, setDescripModalText] = useState<string>('')
-  const [clearBtnEnabled, setClearBtnEnabled] = useState<boolean>(false)
-  const [descripModalHeading, setDescripModalHeading] = useState<
-    LangOrEndoProps
+  const [detailsModalContent, setDetailsModalContent] = useState<
+    LangRecordSchema | undefined
   >()
+  const [clearBtnEnabled, setClearBtnEnabled] = useState<boolean>(false)
 
   // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
   // properly (blanks last, regardless of direction)
@@ -76,10 +64,9 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
     // Don't set filter for image-only Endonyms
     if (field === 'Endonym' && rowData['Font Image Alt']) return
 
-    // Open description modal
+    // Open Details modal
     if (field === 'Description') {
-      setDescripModalText(rowData.Description)
-      setDescripModalHeading({ attribs: rowData })
+      setDetailsModalContent(rowData)
 
       return
     }
@@ -122,20 +109,12 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
 
   return (
     <>
-      {descripModalText && (
-        <SimpleDialog
-          open={descripModalText !== ''}
-          onClose={() => setDescripModalText('')}
-          PaperProps={{ className: classes.descripDialogPaper }}
-        >
-          {descripModalHeading && (
-            <div style={{ textAlign: 'center' }}>
-              <LangOrEndoIntro attribs={descripModalHeading.attribs} />
-            </div>
-          )}
-          <RecordDescription text={descripModalText} />
-        </SimpleDialog>
-      )}
+      <SimpleDialog
+        open={detailsModalContent !== undefined}
+        onClose={() => setDetailsModalContent(undefined)}
+      >
+        <DetailsPanel skipSelFeatCheck attribsDirect={detailsModalContent} />
+      </SimpleDialog>
       <MaterialTable
         icons={config.icons}
         tableRef={tableRef}
@@ -166,7 +145,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
           ),
         }}
         // Works but laggy:
-        onFilterChange={(filters) => {
+        onFilterChange={() => {
           setClearBtnEnabled(true)
           scrollToTop()
         }}
