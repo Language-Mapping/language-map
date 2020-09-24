@@ -1,17 +1,21 @@
 import React, { FC } from 'react'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { Fab, Slide } from '@material-ui/core'
+import {
+  makeStyles,
+  createStyles,
+  useTheme,
+  Theme,
+} from '@material-ui/core/styles'
+import { Fab, Slide, useMediaQuery } from '@material-ui/core'
 import {
   SpeedDial,
   SpeedDialIcon,
   SpeedDialAction,
   CloseReason,
 } from '@material-ui/lab'
-import { MdMoreVert, MdClose } from 'react-icons/md'
+import { MdMoreVert, MdClose, MdYoutubeSearchedFor } from 'react-icons/md'
 import { TiCompass } from 'react-icons/ti'
-import { BiMapPin } from 'react-icons/bi'
-import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai'
-import { FiHome, FiInfo } from 'react-icons/fi'
+import { GoInfo } from 'react-icons/go'
+import { FaSearchPlus, FaSearchMinus, FaSearchLocation } from 'react-icons/fa'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
@@ -30,8 +34,10 @@ const useStyles = makeStyles((theme: Theme) =>
         right: theme.spacing(2),
       },
       '& svg': {
-        height: '1.5em',
-        width: '1.5em',
+        fontSize: '1.4em',
+      },
+      [theme.breakpoints.up('md')]: {
+        fontSize: '1.35em',
       },
     },
     speedDialAction: {
@@ -44,29 +50,50 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     resetPitchBtn: {
       position: 'absolute',
-      bottom: 32,
-      left: 6,
+      bottom: 24,
+      left: -4,
       fontSize: '0.85em',
+      textTransform: 'none',
+      [theme.breakpoints.up('sm')]: {
+        right: 0,
+        bottom: 16,
+        left: 'auto',
+      },
       '& svg': {
-        marginRight: '0.2em',
-        height: '1.5em',
-        width: '1.5em',
+        fontSize: '1.5em',
+        marginRight: '0.1em',
       },
     },
   })
 )
 
 const ctrlBtnsConfig = [
-  { id: 'in', icon: <AiOutlinePlus />, name: 'Zoom in' },
-  { id: 'out', icon: <AiOutlineMinus />, name: 'Zoom out' },
-  { id: 'home', icon: <FiHome />, name: 'Zoom home' },
+  {
+    id: 'in',
+    icon: <FaSearchPlus />,
+    name: 'Zoom in',
+  },
+  {
+    id: 'out',
+    icon: <FaSearchMinus />,
+    name: 'Zoom out',
+  },
+  {
+    id: 'home',
+    icon: <MdYoutubeSearchedFor style={{ fontSize: '1.75em' }} />,
+    name: 'Reset zoom',
+  },
   {
     id: 'loc-search',
-    icon: <BiMapPin />,
+    icon: <FaSearchLocation />,
     name: 'Search by location',
     customFn: true,
   },
-  { id: 'info', icon: <FiInfo />, name: 'About & Info' },
+  {
+    id: 'info',
+    icon: <GoInfo style={{ fontSize: '1.55em' }} />,
+    name: 'About & Info',
+  },
 ] as CtrlBtnConfig[]
 
 export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
@@ -74,6 +101,8 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
   const classes = useStyles()
   const [speedDialOpen, setSpeedDialOpen] = React.useState(true)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const theme = useTheme()
+  const lilGuy = useMediaQuery(theme.breakpoints.only('xs'))
 
   const handleSpeedDialRootClick = () => setSpeedDialOpen(!speedDialOpen)
 
@@ -130,9 +159,9 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
           />
         ))}
       </SpeedDial>
-      <Slide in={viewport.pitch !== 0} direction="right">
+      <Slide in={viewport.pitch !== 0} direction={lilGuy ? 'right' : 'left'}>
         <Fab
-          className={classes.resetPitchBtn}
+          className={`${classes.resetPitchBtn} MuiSpeedDialAction-fab`}
           variant="extended"
           size="small"
           onClick={() => setViewport({ ...viewport, pitch: 0 })}
