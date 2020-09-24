@@ -33,6 +33,11 @@ type StyleProps = {
   showShareBtns?: boolean
 }
 
+type MediaModalProps = MediaProps & {
+  mediaType: MediaKey
+  closeModal: () => void
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mediaRoot: {
@@ -67,6 +72,7 @@ const useStyles = makeStyles((theme: Theme) =>
     dialogContent: {
       marginTop: '1em',
       marginBottom: '1em',
+      maxHeight: '60vh',
     },
     // CRED: this is almost a standard based on search results
     videoContainer: {
@@ -166,50 +172,63 @@ const config = [
   { label: 'Audio', icon: <AiOutlineSound />, type: 'audio' },
 ] as Omit<MediaListItemProps, 'setDialogContent'>[]
 
+const MediaModal: FC<MediaModalProps> = (props) => {
+  const { audio, video, language, mediaType, closeModal } = props
+  const classes = useStyles({})
+
+  return (
+    <SimpleDialog
+      fullScreen={mediaType !== 'audio'}
+      maxWidth={mediaType === 'audio' ? 'md' : 'xl'}
+      open
+      className={classes.modalRoot}
+      onClose={() => closeModal()}
+    >
+      <Typography variant="h3">{language}</Typography>
+      <Container maxWidth="lg" disableGutters className={classes.dialogContent}>
+        {mediaType === 'video' && video && (
+          <YouTubeVideo title={language} url={video} />
+        )}
+        {mediaType === 'audio' && audio && <Audio url={audio} />}
+      </Container>
+      <div>
+        <Button variant="outlined" color="primary" onClick={() => closeModal()}>
+          Back to map
+        </Button>
+      </div>
+    </SimpleDialog>
+  )
+}
+
 export const Media: FC<MediaProps> = (props) => {
-  const { audio, video, language, description } = props
-  const [dialogContent, setDialogContent] = useState<MediaKey | null>(null)
+  const { language, description, audio, video } = props
+  const [mediaType, setMediaType] = useState<MediaKey | ''>()
   const [showShareBtns, setShowShareBtns] = useState<boolean>(false)
   const classes = useStyles({ showShareBtns })
   const shareSrcAndTitle = `${language} - Languages of New York City Map`
 
   return (
     <>
-      <SimpleDialog
-        fullScreen={dialogContent !== 'audio'}
-        maxWidth={dialogContent === 'audio' ? 'md' : 'xl'}
-        open={dialogContent !== null}
-        className={classes.modalRoot}
-        onClose={() => setDialogContent(null)}
-      >
-        <Typography variant="h3">{language}</Typography>
-        <Container
-          maxWidth="lg"
-          disableGutters
-          className={classes.dialogContent}
-        >
-          {dialogContent === 'video' && video && (
-            <YouTubeVideo title={language} url={video} />
-          )}
-          {dialogContent === 'audio' && audio && <Audio url={audio} />}
-        </Container>
-        <div>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => setDialogContent(null)}
-          >
-            Back to map
-          </Button>
-        </div>
-      </SimpleDialog>
+      {mediaType && (
+        <MediaModal
+          audio={audio}
+          video={video}
+          language={language}
+          mediaType={mediaType}
+          closeModal={() => {
+            setMediaType('')
+          }}
+        />
+      )}
       <ul className={classes.mediaRoot}>
         {config.map((item) => (
           <MediaListItem
             key={item.label}
             disabled={props[item.type] === ''}
             {...item}
-            handleClick={() => setDialogContent(item.type)}
+            handleClick={() => {
+              setMediaType(item.type)
+            }}
           />
         ))}
         <MediaListItem
