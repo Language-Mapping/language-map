@@ -31,6 +31,7 @@ type MediaListItemProps = {
 
 type StyleProps = {
   showShareBtns?: boolean
+  audio?: string
 }
 
 type MediaModalProps = MediaProps & {
@@ -72,7 +73,9 @@ const useStyles = makeStyles((theme: Theme) =>
     dialogContent: {
       marginTop: '1em',
       marginBottom: '1em',
-      maxHeight: '60vh',
+      [theme.breakpoints.down('sm')]: {
+        padding: (props: StyleProps) => (props.audio ? '1em' : 0),
+      },
     },
     // CRED: this is almost a standard based on search results
     videoContainer: {
@@ -174,7 +177,7 @@ const config = [
 
 const MediaModal: FC<MediaModalProps> = (props) => {
   const { audio, video, language, mediaType, closeModal } = props
-  const classes = useStyles({})
+  const classes = useStyles({ audio })
 
   return (
     <SimpleDialog
@@ -185,14 +188,19 @@ const MediaModal: FC<MediaModalProps> = (props) => {
       onClose={() => closeModal()}
     >
       <Typography variant="h3">{language}</Typography>
-      <Container maxWidth="lg" disableGutters className={classes.dialogContent}>
+      <Container maxWidth="md" className={classes.dialogContent}>
         {mediaType === 'video' && video && (
           <YouTubeVideo title={language} url={video} />
         )}
         {mediaType === 'audio' && audio && <Audio url={audio} />}
       </Container>
       <div>
-        <Button variant="outlined" color="primary" onClick={() => closeModal()}>
+        <Button
+          variant="contained"
+          onClick={() => {
+            closeModal()
+          }}
+        >
           Back to map
         </Button>
       </div>
