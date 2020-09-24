@@ -10,6 +10,9 @@ const useStyles = makeStyles((theme: Theme) =>
       lineHeight: 0.8,
       color: theme.palette.text.secondary,
     },
+    fabBadge: {
+      backgroundColor: theme.palette.warning.light,
+    },
   })
 )
 
@@ -21,6 +24,7 @@ export const FiltersWarning: FC = () => {
     <Badge
       variant="dot"
       color="secondary"
+      classes={{ dot: classes.fabBadge }}
       style={{ marginLeft: 8 }}
       anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
     >
