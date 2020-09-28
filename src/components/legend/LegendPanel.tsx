@@ -54,7 +54,7 @@ export const LegendPanel: FC<LegendPanelComponent> = (props) => {
         }}
       >
         <FaGlobeAmericas />
-        Show world map
+        {showWorldMap ? 'Hide' : 'Show'} world map
       </Link>
       <ToggleableSection show={showWorldMap}>
         <WorldRegionMap />
