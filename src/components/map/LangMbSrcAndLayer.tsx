@@ -14,16 +14,16 @@ type SheetsResponse = { values: SheetsValues[] }
 
 type SourceAndLayerComponent = {
   symbLayers: LayerPropsPlusMeta[]
-  activeLangSymbGroupId: string
-  activeLangLabelId: string
+  activeSymbGroupID: string
+  activeLabelID: string
 }
 
 // NOTE: it did not seem to work when using two different Styles with the same
 // dataset unless waiting until there is something to put into <Source>.
 export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
   symbLayers,
-  activeLangSymbGroupId,
-  activeLangLabelId,
+  activeSymbGroupID,
+  activeLabelID,
 }) => {
   const { data, isFetching, error } = useQuery(QUERY_ID)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,16 +39,13 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
       visibility: isInActiveGroup ? 'visible' : 'none', // hide if inactive
     }
 
-    if (!activeLangLabelId || activeLangLabelId === 'None' || !endoFonts) {
+    if (!activeLabelID || activeLabelID === 'None' || !endoFonts) {
       return { ...bareMinimum, 'text-field': '' }
     }
 
-    const isEndo = activeLangLabelId === 'Endonym'
+    const isEndo = activeLabelID === 'Endonym'
     const defaultFont = ['Noto Sans Regular', 'Arial Unicode MS Regular']
-    const defaultTextField: Expression = [
-      'to-string',
-      ['get', activeLangLabelId],
-    ]
+    const defaultTextField: Expression = ['to-string', ['get', activeLabelID]]
     // TODO: check if 'Font Image Alt' is popuplated instead of using http
     const imgCheck: Expression = [
       'case',
@@ -97,14 +94,14 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
     >
       {symbLayers.map((layer: LayerPropsPlusMeta) => {
         let { paint, layout } = layer
-        const isInActiveGroup = layer.group === activeLangSymbGroupId
+        const isInActiveGroup = layer.group === activeSymbGroupID
 
         layout = getLayout(layout, isInActiveGroup)
 
         // TODO: change symbol size (???) for selected feat. Evidently cannot
         // set layout properties base on feature-state though, so maybe this:
         // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setlayoutproperty
-        if (activeLangLabelId && activeLangLabelId !== 'None') {
+        if (activeLabelID && activeLabelID !== 'None') {
           paint = { ...langLabelsStyle.paint, ...paint }
         }
 

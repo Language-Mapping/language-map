@@ -128,7 +128,7 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
           control={
             <Switch
               checked={state.boundariesLayersVisible}
-              onChange={() => dispatch({ type: 'TOGGLE_NEIGHB_LAYER' })}
+              onChange={() => dispatch({ type: 'TOGGLE_BOUNDARIES_LAYER' })}
               name="show-welcome-switch"
               size="small"
             />

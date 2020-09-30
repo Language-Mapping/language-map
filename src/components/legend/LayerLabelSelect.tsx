@@ -20,8 +20,8 @@ export const LayerLabelSelect: FC = () => {
     <TextField
       {...commonSelectProps}
       label="Label communities by"
-      value={state.activeLangLabelId}
-      disabled={state.activeLangSymbGroupId === 'None'}
+      value={state.activeLabelID}
+      disabled={state.activeSymbGroupID === 'None'}
       onChange={handleChange}
       inputProps={{ name: 'label', id: 'lang-label-TextField' }}
     >

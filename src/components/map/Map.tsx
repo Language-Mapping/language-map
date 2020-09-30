@@ -54,8 +54,7 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
   )
 }
 
-export const Map: FC<Types.MapComponent> = (props) => {
-  const { baselayer } = props
+export const Map: FC = (props) => {
   const history = useHistory()
   const loc = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
@@ -69,8 +68,8 @@ export const Map: FC<Types.MapComponent> = (props) => {
   const {
     selFeatAttribs,
     mapLoaded,
-    activeLangSymbGroupId,
-    activeLangLabelId,
+    activeSymbGroupID,
+    activeLabelID,
     langFeatures,
   } = state
 
@@ -170,26 +169,23 @@ export const Map: FC<Types.MapComponent> = (props) => {
   }, [langFeatures.length, state.legendItems])
 
   // TODO: put in... legend?
-  useEffect(
-    (): void => initLegend(dispatch, activeLangSymbGroupId, symbLayers),
-    [activeLangSymbGroupId]
-  )
+  useEffect((): void => {
+    initLegend(dispatch, activeSymbGroupID, symbLayers)
+  }, [activeSymbGroupID])
 
   // On width change, determine whether or not the view is desktop
   useEffect((): void => {
     setIsDesktop(width >= theme.breakpoints.values.md)
   }, [width])
 
-  // (Re)load symbol icons. Must be done whenever `baselayer` is changed,
-  // otherwise the images no longer exist.
-  // TODO: rm if no longer using. Currently experiencing tons of issues with
-  // custom styles vs. default MB in terms of fonts/glyps and icons/images
+  // (Re)load symbol icons. Must be done on load and whenever `baselayer` is
+  // changed, otherwise the images no longer exist.
   useEffect((): void => {
     if (mapRef.current) {
       const map: MbMap = mapRef.current.getMap()
       utils.addLangTypeIconsToMap(map, config.langTypeIconsConfig)
     }
-  }, [baselayer]) // baselayer may be irrelevant if only using Light BG
+  }, []) // add `baselayer` as dep if using more than just light BG
 
   // Do selected feature stuff on sel feat change or map load
   useEffect((): void => {
@@ -443,8 +439,8 @@ export const Map: FC<Types.MapComponent> = (props) => {
         {symbLayers && (
           <LangMbSrcAndLayer
             symbLayers={symbLayers}
-            activeLangSymbGroupId={activeLangSymbGroupId}
-            activeLangLabelId={activeLangLabelId}
+            activeSymbGroupID={activeSymbGroupID}
+            activeLabelID={activeLabelID}
           />
         )}
         {popupSettings && (

@@ -99,7 +99,7 @@ export const MapWrap: FC = (props) => {
       {!state.mapLoaded && <LoadingBackdrop />}
       <main className={classes.appWrapRoot}>
         <div className={classes.mapWrap}>
-          <Map baselayer={state.baselayer} />
+          <Map />
         </div>
         {/* children should just be MapPanel */}
         {children}

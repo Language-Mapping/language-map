@@ -45,7 +45,7 @@ export const FiltersPanel: FC = () => {
       </Typography>
       <LegendPanel
         legendItems={state.legendItems}
-        groupName={state.activeLangSymbGroupId}
+        groupName={state.activeSymbGroupID}
       />
     </>
   )

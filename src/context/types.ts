@@ -1,9 +1,8 @@
 // NOTE: parts of this file were adapted from an existing GitHub project with an
 // MIT License, available here:
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
-import { Color } from '@material-ui/lab/Alert'
 
-import { Baselayer, LayerPropsPlusMeta } from 'components/map/types'
+import { LayerPropsPlusMeta } from 'components/map/types'
 import { LegendSwatch } from 'components/legend/types'
 
 export type PanelState = 'default' | 'maximized' | 'minimized'
@@ -16,7 +15,6 @@ export type LangSchemaCol = keyof LangRecordSchema
 
 export type StoreAction =
   | { type: 'CLEAR_FILTERS'; payload: number }
-  | { type: 'SET_BASELAYER'; payload: Baselayer }
   | { type: 'SET_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
   | { type: 'SET_LANG_LAYER_LABELS'; payload: LangSchemaCol | '' }
   | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatch[] }
@@ -24,14 +22,12 @@ export type StoreAction =
   | { type: 'SET_MAP_LOADED'; payload: boolean }
   | { type: 'SET_PANEL_STATE'; payload: PanelState }
   | { type: 'SET_SEL_FEAT_ATTRIBS'; payload: null | LangRecordSchema }
-  | { type: 'TOGGLE_NEIGHB_LAYER' }
-  | { type: 'TOGGLE_UI_ALERT'; payload: AlertPayload }
+  | { type: 'TOGGLE_BOUNDARIES_LAYER' }
   | { type: 'TOGGLE_OFF_CANVAS_NAV' }
 
 export type InitialState = {
-  activeLangLabelId: LangSchemaCol | ''
-  activeLangSymbGroupId: LangSchemaCol | '' | 'None'
-  baselayer: Baselayer
+  activeLabelID: LangSchemaCol | ''
+  activeSymbGroupID: LangSchemaCol | '' | 'None'
   clearFilters: number
   langFeatures: LangRecordSchema[]
   langFeatsLenCache: number
@@ -42,14 +38,6 @@ export type InitialState = {
   offCanvasNavOpen: boolean
   panelState: PanelState
   selFeatAttribs: null | LangRecordSchema
-  uiAlert: AlertPayload
-}
-
-export type AlertPayload = {
-  open: boolean
-  message?: string
-  severity?: Color
-  duration?: number | null // null means the error doesn't auto hide
 }
 
 // ========================================================================== //

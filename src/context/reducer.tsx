@@ -10,11 +10,6 @@ export const reducer = (
         ...state,
         clearFilters: action.payload,
       }
-    case 'SET_BASELAYER':
-      return {
-        ...state,
-        baselayer: action.payload,
-      }
     case 'SET_LANG_LAYER_FEATURES':
       return {
         ...state,
@@ -25,7 +20,7 @@ export const reducer = (
     case 'SET_LANG_LAYER_LABELS':
       return {
         ...state,
-        activeLangLabelId: action.payload,
+        activeLabelID: action.payload,
       }
     case 'SET_LANG_LAYER_LEGEND':
       return {
@@ -35,7 +30,7 @@ export const reducer = (
     case 'SET_LANG_LAYER_SYMBOLOGY':
       return {
         ...state,
-        activeLangSymbGroupId: action.payload,
+        activeSymbGroupID: action.payload,
       }
     case 'SET_SEL_FEAT_ATTRIBS':
       return {
@@ -52,19 +47,10 @@ export const reducer = (
         ...state,
         panelState: action.payload,
       }
-    case 'TOGGLE_NEIGHB_LAYER':
+    case 'TOGGLE_BOUNDARIES_LAYER':
       return {
         ...state,
         boundariesLayersVisible: !state.boundariesLayersVisible,
-      }
-    // TODO: wire up
-    case 'TOGGLE_UI_ALERT':
-      return {
-        ...state,
-        uiAlert: {
-          ...state.uiAlert,
-          ...action.payload,
-        },
       }
     case 'TOGGLE_OFF_CANVAS_NAV':
       return {

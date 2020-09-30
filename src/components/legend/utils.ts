@@ -23,11 +23,11 @@ const createMapLegend = (layers: LayerPropsPlusMeta[]): LegendSwatch[] => {
 
 export const initLegend = (
   dispatch: React.Dispatch<StoreAction>,
-  activeLangSymbGroupId: string,
+  activeSymbGroupID: string,
   symbLayers: LayerPropsPlusMeta[]
 ): void => {
   const layersInActiveGroup = symbLayers.filter(
-    ({ group }) => group === activeLangSymbGroupId
+    ({ group }) => group === activeSymbGroupID
   )
   const legend = createMapLegend(layersInActiveGroup)
 

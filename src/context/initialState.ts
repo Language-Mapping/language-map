@@ -16,9 +16,8 @@ const legendSymbols = fullLangStyle.reduce((all, thisOne) => {
 }, {})
 
 export const initialState = {
-  activeLangLabelId: '',
-  activeLangSymbGroupId: 'World Region',
-  baselayer: 'light',
+  activeLabelID: '',
+  activeSymbGroupID: 'World Region',
   boundariesLayersVisible: false,
   clearFilters: 0,
   langFeatsLenCache: 0,
@@ -29,5 +28,4 @@ export const initialState = {
   offCanvasNavOpen: false,
   panelState: 'default',
   selFeatAttribs: null,
-  uiAlert: { message: '', open: false, severity: 'success' },
 } as InitialState
