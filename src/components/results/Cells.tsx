@@ -1,4 +1,4 @@
-import React, { useContext, FC } from 'react'
+import React, { FC } from 'react'
 import {
   makeStyles,
   createStyles,
@@ -9,7 +9,7 @@ import { MdCheck } from 'react-icons/md'
 import { GoCircleSlash } from 'react-icons/go'
 
 import { LegendSwatch } from 'components/legend'
-import { GlobalContext } from 'components'
+import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
 import { LangRecordSchema } from '../../context/types'
 
 type CellProps = { data: LangRecordSchema }
@@ -59,16 +59,14 @@ export const CommSize: FC<{
   data: LangRecordSchema
   lookup: { [key: number]: string }
 }> = (props) => {
-  // TODO: if there's a way to pass down legend symbols without going allll the
-  // way to global state, hook it up.
-  const { state } = useContext(GlobalContext)
+  const symbLabelState = useSymbAndLabelState()
   const theme = useTheme()
   const { data, lookup } = props
   const valAsPrettyStr = lookup[data.Size]
   const swatchColor =
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    state.legendSymbols[valAsPrettyStr].paint['icon-color'] as string
+    symbLabelState.legendSymbols[valAsPrettyStr].paint['icon-color'] as string
 
   return (
     <LegendSwatch
@@ -87,16 +85,14 @@ export const CommSize: FC<{
 }
 
 export const WorldRegion: FC<CellProps> = (props) => {
-  // TODO: if there's a way to pass down legend symbols without going allll the
-  // way to global state, hook it up.
-  const { state } = useContext(GlobalContext)
   const { data } = props
   const { 'World Region': WorldReej } = data
+  const symbLabelState = useSymbAndLabelState()
 
   const regionSwatchColor =
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    state.legendSymbols[WorldReej].paint['icon-color'] as string
+    symbLabelState.legendSymbols[WorldReej].paint['icon-color'] as string
 
   return (
     <LegendSwatch

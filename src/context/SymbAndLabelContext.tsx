@@ -21,14 +21,7 @@ type State = InitialState
 const legendSymbols = fullLangStyle.reduce((all, thisOne) => {
   const { paint, type, layout } = thisOne
 
-  return {
-    ...all,
-    [thisOne.id as string]: {
-      paint,
-      type,
-      layout,
-    },
-  }
+  return { ...all, [thisOne.id as string]: { paint, type, layout } }
 }, {})
 
 export const initialState = {

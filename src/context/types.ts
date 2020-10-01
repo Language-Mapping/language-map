@@ -25,7 +25,6 @@ export type InitialState = {
   langFeatures: LangRecordSchema[]
   langFeatsLenCache: number
   legendItems: LegendSwatch[]
-  legendSymbols: LegendSymbols
   panelState: PanelState
   selFeatAttribs: null | LangRecordSchema
 }
