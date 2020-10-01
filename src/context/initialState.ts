@@ -18,7 +18,6 @@ const legendSymbols = fullLangStyle.reduce((all, thisOne) => {
 export const initialState = {
   activeLabelID: '',
   activeSymbGroupID: 'World Region',
-  boundariesLayersVisible: false,
   clearFilters: 0,
   langFeatsLenCache: 0,
   langFeatures: [],

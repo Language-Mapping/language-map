@@ -21,7 +21,6 @@ export type StoreAction =
   | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: LangSchemaCol }
   | { type: 'SET_PANEL_STATE'; payload: PanelState }
   | { type: 'SET_SEL_FEAT_ATTRIBS'; payload: null | LangRecordSchema }
-  | { type: 'TOGGLE_BOUNDARIES_LAYER' }
 
 export type InitialState = {
   activeLabelID: LangSchemaCol | ''
@@ -31,7 +30,6 @@ export type InitialState = {
   langFeatsLenCache: number
   legendItems: LegendSwatch[]
   legendSymbols: LegendSymbols
-  boundariesLayersVisible: boolean
   panelState: PanelState
   selFeatAttribs: null | LangRecordSchema
 }

@@ -71,6 +71,9 @@ export const Map: FC<MapProps> = (props) => {
   const [isDesktop, setIsDesktop] = useState<boolean>(
     width >= theme.breakpoints.values.md
   )
+  const [boundariesLayersVisible, setBoundariesLayersVisible] = useState<
+    boolean
+  >(false)
 
   const {
     selFeatAttribs,
@@ -241,7 +244,7 @@ export const Map: FC<MapProps> = (props) => {
     })
   }
 
-  // Runs only once and kicks off the whole thinig
+  // Runs only once and kicks off the whole thing
   function onLoad(mapLoadEvent: MapLoadEvent) {
     const { target: map } = mapLoadEvent
 
@@ -353,7 +356,7 @@ export const Map: FC<MapProps> = (props) => {
       return // prevent boundary click underneath
     }
 
-    if (!state.boundariesLayersVisible) return
+    if (!boundariesLayersVisible) return
 
     const boundariesClicked = map.queryRenderedFeatures(event.point, {
       layers: boundariesLayerIDs,
@@ -436,7 +439,7 @@ export const Map: FC<MapProps> = (props) => {
           <BoundariesLayer
             key={boundaryConfig.source.id}
             {...boundaryConfig}
-            visible={state.boundariesLayersVisible}
+            visible={boundariesLayersVisible}
             beforeId={
               state.legendItems.length ? state.legendItems[0].legendLabel : ''
             }
@@ -464,7 +467,13 @@ export const Map: FC<MapProps> = (props) => {
         )}
       </MapGL>
       <MapCtrlBtns
-        {...{ mapRef, viewport, setViewport }}
+        {...{
+          mapRef,
+          viewport,
+          setViewport,
+          boundariesLayersVisible,
+          setBoundariesLayersVisible,
+        }}
         onMapCtrlClick={(actionID: Types.MapControlAction) => {
           onMapCtrlClick(actionID)
         }}

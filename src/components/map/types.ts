@@ -104,6 +104,8 @@ export type MapCtrlBtnsProps = {
   onMapCtrlClick: (actionID: MapControlAction) => void
   viewport: ViewState
   setViewport: React.Dispatch<ViewState>
+  boundariesLayersVisible: boolean
+  setBoundariesLayersVisible: React.Dispatch<boolean>
 }
 
 export type CtrlBtnConfig = {

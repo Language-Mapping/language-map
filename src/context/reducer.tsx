@@ -42,11 +42,6 @@ export const reducer = (
         ...state,
         panelState: action.payload,
       }
-    case 'TOGGLE_BOUNDARIES_LAYER':
-      return {
-        ...state,
-        boundariesLayersVisible: !state.boundariesLayersVisible,
-      }
     default:
       return state
   }

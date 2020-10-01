@@ -97,7 +97,7 @@ const ctrlBtnsConfig = [
 ] as CtrlBtnConfig[]
 
 export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
-  const { onMapCtrlClick, mapRef, viewport, setViewport } = props
+  const { onMapCtrlClick, viewport, setViewport } = props
   const classes = useStyles()
   const [speedDialOpen, setSpeedDialOpen] = React.useState(true)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
@@ -122,13 +122,7 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
 
   return (
     <>
-      <GeocoderPopout
-        {...{
-          anchorEl,
-          setAnchorEl,
-          mapRef,
-        }}
-      />
+      <GeocoderPopout {...{ ...props, anchorEl, setAnchorEl }} />
       <SpeedDial
         ariaLabel="Map control buttons"
         className={classes.mapCtrlsRoot}
