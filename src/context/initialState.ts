@@ -24,8 +24,6 @@ export const initialState = {
   langFeatures: [],
   legendItems: [],
   legendSymbols,
-  mapLoaded: false,
-  offCanvasNavOpen: false,
   panelState: 'default',
   selFeatAttribs: null,
 } as InitialState

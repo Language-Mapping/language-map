@@ -9,7 +9,7 @@ import { useStyles } from './styles'
 
 import * as Types from './types'
 
-export const MapPanel: FC<Types.MapPanelProps> = (props) => {
+export const Panel: FC<Types.MapPanelProps> = (props) => {
   const { children } = props
   const { state } = useContext(GlobalContext)
   const loc = useLocation()

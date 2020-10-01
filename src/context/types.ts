@@ -19,11 +19,9 @@ export type StoreAction =
   | { type: 'SET_LANG_LAYER_LABELS'; payload: LangSchemaCol | '' }
   | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatch[] }
   | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: LangSchemaCol }
-  | { type: 'SET_MAP_LOADED'; payload: boolean }
   | { type: 'SET_PANEL_STATE'; payload: PanelState }
   | { type: 'SET_SEL_FEAT_ATTRIBS'; payload: null | LangRecordSchema }
   | { type: 'TOGGLE_BOUNDARIES_LAYER' }
-  | { type: 'TOGGLE_OFF_CANVAS_NAV' }
 
 export type InitialState = {
   activeLabelID: LangSchemaCol | ''
@@ -34,8 +32,6 @@ export type InitialState = {
   legendItems: LegendSwatch[]
   legendSymbols: LegendSymbols
   boundariesLayersVisible: boolean
-  mapLoaded: boolean
-  offCanvasNavOpen: boolean
   panelState: PanelState
   selFeatAttribs: null | LangRecordSchema
 }

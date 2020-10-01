@@ -37,6 +37,12 @@ import {
   getAllLangFeatIDs,
 } from '../../utils'
 
+type MapProps = {
+  mapLoaded: boolean
+  setMapLoaded: React.Dispatch<boolean>
+  openOffCanvasNav: () => void
+}
+
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
 const { neighbConfig, countiesConfig, boundariesLayerIDs } = config
 const interactiveLayerIds = symbLayers.map((symbLayer) => symbLayer.id)
@@ -54,7 +60,8 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
   )
 }
 
-export const Map: FC = (props) => {
+export const Map: FC<MapProps> = (props) => {
+  const { mapLoaded, setMapLoaded, openOffCanvasNav } = props
   const history = useHistory()
   const loc = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
@@ -67,7 +74,6 @@ export const Map: FC = (props) => {
 
   const {
     selFeatAttribs,
-    mapLoaded,
     activeSymbGroupID,
     activeLabelID,
     langFeatures,
@@ -276,7 +282,7 @@ export const Map: FC = (props) => {
     // TODO: set paint property
     // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
 
-    dispatch({ type: 'SET_MAP_LOADED', payload: true })
+    setMapLoaded(true)
     dispatch({ type: 'SET_LANG_LAYER_FEATURES', payload: uniqueRecords })
 
     // Give MB some well-deserved cred
@@ -391,7 +397,7 @@ export const Map: FC = (props) => {
     const map: MbMap = mapRef.current.getMap()
 
     if (actionID === 'info') {
-      dispatch({ type: 'TOGGLE_OFF_CANVAS_NAV' })
+      openOffCanvasNav()
     } else if (actionID === 'home') {
       flyHome(map)
     } else {

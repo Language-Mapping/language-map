@@ -37,11 +37,6 @@ export const reducer = (
         ...state,
         selFeatAttribs: action.payload,
       }
-    case 'SET_MAP_LOADED':
-      return {
-        ...state,
-        mapLoaded: action.payload,
-      }
     case 'SET_PANEL_STATE':
       return {
         ...state,
@@ -51,11 +46,6 @@ export const reducer = (
       return {
         ...state,
         boundariesLayersVisible: !state.boundariesLayersVisible,
-      }
-    case 'TOGGLE_OFF_CANVAS_NAV':
-      return {
-        ...state,
-        offCanvasNavOpen: !state.offCanvasNavOpen,
       }
     default:
       return state

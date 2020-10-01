@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect } from 'react'
+import React, { FC, useContext, useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
@@ -12,6 +12,7 @@ import {
 import { getIDfromURLparams } from '../../utils'
 
 type MapPanelProps = { panelOpen?: boolean }
+type MapWrapProps = { setOffCanvasNavOpen: React.Dispatch<boolean> }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,15 +55,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const MapWrap: FC = (props) => {
-  const { children } = props
+export const MapWrap: FC<MapWrapProps> = (props) => {
+  const { children, setOffCanvasNavOpen } = props
   const { state, dispatch } = useContext(GlobalContext)
   const loc = useLocation()
   const { langFeatures } = state
-
-  const classes = useStyles({
-    panelOpen: state.panelState === 'default',
-  })
+  const [mapLoaded, setMapLoaded] = useState<boolean>(false)
+  const classes = useStyles({ panelOpen: state.panelState === 'default' })
 
   // Do selected feature stuff on location change
   useEffect((): void => {
@@ -86,22 +85,17 @@ export const MapWrap: FC = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc.search, state.langFeatures.length])
 
-  // Open panel for relevant routes // TODO: something
-  // useEffect((): void => {
-  //   if (loc.pathname === routes.details) {
-  //     dispatch({ type: 'SET_PANEL_STATE', payload: 'default' })
-  //   }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [loc.search])
-
   return (
     <>
-      {!state.mapLoaded && <LoadingBackdrop />}
+      {!mapLoaded && <LoadingBackdrop />}
       <main className={classes.appWrapRoot}>
         <div className={classes.mapWrap}>
-          <Map />
+          <Map
+            mapLoaded={mapLoaded}
+            setMapLoaded={setMapLoaded}
+            openOffCanvasNav={() => setOffCanvasNavOpen(true)}
+          />
         </div>
-        {/* children should just be MapPanel */}
         {children}
         <FabPanelToggle />
       </main>

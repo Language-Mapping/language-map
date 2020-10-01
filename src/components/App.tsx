@@ -7,7 +7,7 @@ import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { TopBar, OffCanvasNav } from 'components/nav'
 import { MapWrap } from 'components/map'
-import { MapPanel, PanelIntro } from 'components/panels'
+import { Panel, PanelIntro } from 'components/panels'
 import { AboutPageView, WelcomeDialog } from 'components/about'
 import { ResultsModal } from 'components/results'
 import { fetchAbout, fetchHelp, fetchWelcome } from 'components/about/utils'
@@ -16,6 +16,7 @@ import { ABOUT_QUERY, HELP_QUERY, WELCOME_QUERY } from 'components/about/config'
 
 export const App: FC = () => {
   const [tableOpen, setTableOpen] = useState<boolean>(false)
+  const [offCanvasNavOpen, setOffCanvasNavOpen] = useState<boolean>(false)
 
   const openTable = (): void => setTableOpen(true)
   const closeTable = (): void => setTableOpen(false)
@@ -44,7 +45,7 @@ export const App: FC = () => {
         </>
       )}
     >
-      <OffCanvasNav />
+      <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />
       <TopBar />
       {!window.localStorage.hideWelcome && (
         <WelcomeDialog queryName={WELCOME_QUERY} />
@@ -64,10 +65,10 @@ export const App: FC = () => {
           queryName={HELP_QUERY}
         />
       </Route>
-      <MapWrap>
-        <MapPanel>
+      <MapWrap setOffCanvasNavOpen={setOffCanvasNavOpen}>
+        <Panel>
           <PanelIntro openTable={openTable} />
-        </MapPanel>
+        </Panel>
       </MapWrap>
     </Sentry.ErrorBoundary>
   )
