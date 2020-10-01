@@ -4,6 +4,7 @@ import { Typography } from '@material-ui/core'
 
 import { GlobalContext, ScrollToTopOnMount } from 'components'
 import { LegendPanel } from 'components/legend'
+import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
 import { SearchByOmnibox } from './SearchByOmnibox'
 import { LangRecordSchema } from '../../context/types'
 import { FiltersWarning } from './FiltersWarning'
@@ -19,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const FiltersPanel: FC = () => {
   const { state } = useContext(GlobalContext)
+  const symbLabelState = useSymbAndLabelState()
   const classes = useStyles()
   const [data, setData] = useState<LangRecordSchema[]>([])
   const elemID = 'filters-panel'
@@ -45,7 +47,7 @@ export const FiltersPanel: FC = () => {
       </Typography>
       <LegendPanel
         legendItems={state.legendItems}
-        groupName={state.activeSymbGroupID}
+        groupName={symbLabelState.activeSymbGroupID}
       />
     </>
   )

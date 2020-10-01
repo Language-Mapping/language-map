@@ -7,6 +7,7 @@ import * as config from './config'
 
 import { LayerPropsPlusMeta, SheetsValues } from './types'
 import { asyncAwaitFetch, prepEndoFilters } from './utils'
+import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
 
 const { mbStyleTileConfig, langLabelsStyle, QUERY_ID, MB_FONTS_URL } = config
 
@@ -14,17 +15,15 @@ type SheetsResponse = { values: SheetsValues[] }
 
 type SourceAndLayerComponent = {
   symbLayers: LayerPropsPlusMeta[]
-  activeSymbGroupID: string
-  activeLabelID: string
 }
 
 // NOTE: it did not seem to work when using two different Styles with the same
 // dataset unless waiting until there is something to put into <Source>.
 export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
   symbLayers,
-  activeSymbGroupID,
-  activeLabelID,
 }) => {
+  const symbLabelState = useSymbAndLabelState()
+  const { activeLabelID, activeSymbGroupID } = symbLabelState
   const { data, isFetching, error } = useQuery(QUERY_ID)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [endoFonts, setEndoFonts] = useState<any[]>()

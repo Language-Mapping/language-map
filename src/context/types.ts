@@ -16,15 +16,11 @@ export type LangSchemaCol = keyof LangRecordSchema
 export type StoreAction =
   | { type: 'CLEAR_FILTERS'; payload: number }
   | { type: 'SET_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
-  | { type: 'SET_LANG_LAYER_LABELS'; payload: LangSchemaCol | '' }
   | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatch[] }
-  | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: LangSchemaCol }
   | { type: 'SET_PANEL_STATE'; payload: PanelState }
   | { type: 'SET_SEL_FEAT_ATTRIBS'; payload: null | LangRecordSchema }
 
 export type InitialState = {
-  activeLabelID: LangSchemaCol | ''
-  activeSymbGroupID: LangSchemaCol | '' | 'None'
   clearFilters: number
   langFeatures: LangRecordSchema[]
   langFeatsLenCache: number

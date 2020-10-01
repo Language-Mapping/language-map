@@ -17,6 +17,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import { GlobalContext } from 'components'
 import { initLegend } from 'components/legend/utils'
 import { paths as routes } from 'components/config/routes'
+import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { MapPopup } from './MapPopup'
 import { MapCtrlBtns } from './MapCtrlBtns'
@@ -65,6 +66,7 @@ export const Map: FC<MapProps> = (props) => {
   const history = useHistory()
   const loc = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
+  const symbLabelState = useSymbAndLabelState()
   const theme = useTheme()
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
   const { width } = useWindowResize() // TODO: use viewport?
@@ -75,12 +77,8 @@ export const Map: FC<MapProps> = (props) => {
     boolean
   >(false)
 
-  const {
-    selFeatAttribs,
-    activeSymbGroupID,
-    activeLabelID,
-    langFeatures,
-  } = state
+  const { selFeatAttribs, langFeatures } = state
+  const { activeSymbGroupID } = symbLabelState
 
   // Local states
   const [
@@ -445,13 +443,7 @@ export const Map: FC<MapProps> = (props) => {
             }
           />
         ))}
-        {symbLayers && (
-          <LangMbSrcAndLayer
-            symbLayers={symbLayers}
-            activeSymbGroupID={activeSymbGroupID}
-            activeLabelID={activeLabelID}
-          />
-        )}
+        {symbLayers && <LangMbSrcAndLayer symbLayers={symbLayers} />}
         {popupSettings && (
           <MapPopup
             {...popupSettings}

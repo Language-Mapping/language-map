@@ -1,17 +1,21 @@
-import React, { FC, useContext } from 'react'
+import React, { FC } from 'react'
 import { TextField } from '@material-ui/core'
 
-import { GlobalContext } from 'components'
+import {
+  useSymbAndLabelState,
+  useLabelAndSymbDispatch,
+} from '../../context/SymbAndLabelContext'
 import { commonSelectProps } from './config'
 import { LangRecordSchema } from '../../context/types'
 
 // TODO: consider passing down some of the global stuff as props
 export const LayerSymbSelect: FC = () => {
-  const { state, dispatch } = useContext(GlobalContext)
-  const groupIDs = ['World Region', 'Size', 'Status'] // TODO: config file?
+  const symbLabelState = useSymbAndLabelState()
+  const symbLabelDispatch = useLabelAndSymbDispatch()
+  const groupIDs = ['World Region', 'Size', 'Status'] // TODO: config file
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    dispatch({
+    symbLabelDispatch({
       type: 'SET_LANG_LAYER_SYMBOLOGY',
       payload: event.target.value as keyof LangRecordSchema,
     })
@@ -22,7 +26,7 @@ export const LayerSymbSelect: FC = () => {
     <TextField
       {...commonSelectProps}
       label="Show communities by"
-      value={state.activeSymbGroupID}
+      value={symbLabelState.activeSymbGroupID}
       onChange={handleChange}
       inputProps={{ name: 'symbology', id: 'lang-symb-select' }}
     >

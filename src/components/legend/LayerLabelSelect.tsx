@@ -1,16 +1,20 @@
-import React, { FC, useContext } from 'react'
+import React, { FC } from 'react'
 import { TextField } from '@material-ui/core'
 
-import { GlobalContext } from 'components'
+import {
+  useSymbAndLabelState,
+  useLabelAndSymbDispatch,
+} from '../../context/SymbAndLabelContext'
 import { commonSelectProps } from './config'
 import { LangRecordSchema, LangSchemaCol } from '../../context/types'
 
 export const LayerLabelSelect: FC = () => {
-  const { state, dispatch } = useContext(GlobalContext)
   const labelFields: LangSchemaCol[] = ['Language', 'Endonym']
+  const symbLabelState = useSymbAndLabelState()
+  const symbLabelDispatch = useLabelAndSymbDispatch()
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    dispatch({
+    symbLabelDispatch({
       type: 'SET_LANG_LAYER_LABELS',
       payload: event.target.value as keyof LangRecordSchema,
     })
@@ -20,8 +24,8 @@ export const LayerLabelSelect: FC = () => {
     <TextField
       {...commonSelectProps}
       label="Label communities by"
-      value={state.activeLabelID}
-      disabled={state.activeSymbGroupID === 'None'}
+      value={symbLabelState.activeLabelID}
+      disabled={symbLabelState.activeSymbGroupID === 'None'}
       onChange={handleChange}
       inputProps={{ name: 'label', id: 'lang-label-TextField' }}
     >

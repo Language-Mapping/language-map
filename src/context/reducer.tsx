@@ -17,20 +17,10 @@ export const reducer = (
         // Handy for future reference without caching all the features
         langFeatsLenCache: state.langFeatsLenCache || action.payload.length,
       }
-    case 'SET_LANG_LAYER_LABELS':
-      return {
-        ...state,
-        activeLabelID: action.payload,
-      }
     case 'SET_LANG_LAYER_LEGEND':
       return {
         ...state,
         legendItems: action.payload,
-      }
-    case 'SET_LANG_LAYER_SYMBOLOGY':
-      return {
-        ...state,
-        activeSymbGroupID: action.payload,
       }
     case 'SET_SEL_FEAT_ATTRIBS':
       return {
