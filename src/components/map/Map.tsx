@@ -15,7 +15,6 @@ import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext } from 'components'
-import { initLegend } from 'components/legend/utils'
 import { paths as routes } from 'components/config/routes'
 import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
@@ -78,7 +77,7 @@ export const Map: FC<MapProps> = (props) => {
   >(false)
 
   const { selFeatAttribs, langFeatures } = state
-  const { activeSymbGroupID } = symbLabelState
+  const { legendItems } = symbLabelState
 
   // Local states
   const [
@@ -166,19 +165,14 @@ export const Map: FC<MapProps> = (props) => {
     if (!mapRef.current || !mapLoaded) return
 
     const map: MbMap = mapRef.current.getMap()
-    const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
+    const currentLayerNames = legendItems.map((item) => item.legendLabel)
 
     utils.filterLayersByFeatIDs(
       map,
       currentLayerNames,
       getAllLangFeatIDs(langFeatures)
     )
-  }, [langFeatures.length, state.legendItems])
-
-  // TODO: put in... legend?
-  useEffect((): void => {
-    initLegend(dispatch, activeSymbGroupID, symbLayers)
-  }, [activeSymbGroupID])
+  }, [langFeatures.length, legendItems])
 
   // On width change, determine whether or not the view is desktop
   useEffect((): void => {
@@ -438,9 +432,7 @@ export const Map: FC<MapProps> = (props) => {
             key={boundaryConfig.source.id}
             {...boundaryConfig}
             visible={boundariesLayersVisible}
-            beforeId={
-              state.legendItems.length ? state.legendItems[0].legendLabel : ''
-            }
+            beforeId={legendItems.length ? legendItems[0].legendLabel : ''}
           />
         ))}
         {symbLayers && <LangMbSrcAndLayer symbLayers={symbLayers} />}

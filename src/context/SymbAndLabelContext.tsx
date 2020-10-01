@@ -1,10 +1,12 @@
 import React, { FC } from 'react'
 
 import { LegendSwatch } from 'components/legend/types'
-import { LegendSymbols, LangSchemaCol } from './types'
+import { LayerPropsPlusMeta } from 'components/map/types'
+import { LangSchemaCol } from './types'
 import fullLangStyle from '../components/map/config.lang-style'
 
-type Action =
+type LegendSymbols = { [key: string]: Partial<LayerPropsPlusMeta> }
+export type Action =
   | { type: 'SET_LANG_LAYER_LABELS'; payload: LangSchemaCol | '' }
   | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatch[] }
   | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: LangSchemaCol }

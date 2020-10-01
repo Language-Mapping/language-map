@@ -15,7 +15,6 @@ const initialState = {
   clearFilters: 0,
   langFeatsLenCache: 0,
   langFeatures: [],
-  legendItems: [],
   panelState: 'default',
   selFeatAttribs: null,
 } as InitialState

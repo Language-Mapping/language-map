@@ -2,21 +2,12 @@
 // MIT License, available here:
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
 
-import { LayerPropsPlusMeta } from 'components/map/types'
-import { LegendSwatch } from 'components/legend/types'
-
 export type PanelState = 'default' | 'maximized' | 'minimized'
-
-export type LegendSymbols = {
-  [key: string]: Partial<LayerPropsPlusMeta>
-}
-
 export type LangSchemaCol = keyof LangRecordSchema
 
 export type StoreAction =
   | { type: 'CLEAR_FILTERS'; payload: number }
   | { type: 'SET_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
-  | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatch[] }
   | { type: 'SET_PANEL_STATE'; payload: PanelState }
   | { type: 'SET_SEL_FEAT_ATTRIBS'; payload: null | LangRecordSchema }
 
@@ -24,7 +15,6 @@ export type InitialState = {
   clearFilters: number
   langFeatures: LangRecordSchema[]
   langFeatsLenCache: number
-  legendItems: LegendSwatch[]
   panelState: PanelState
   selFeatAttribs: null | LangRecordSchema
 }

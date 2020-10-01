@@ -1,7 +1,7 @@
 import { LayerPropsPlusMeta } from 'components/map/types'
 import { LegendSwatch, IconID } from './types'
-import { StoreAction } from '../../context/types'
 import { langLabelsStyle } from '../map/config.points' // just need defaults
+import { Action as SymbLabelAction } from '../../context/SymbAndLabelContext'
 
 const createMapLegend = (layers: LayerPropsPlusMeta[]): LegendSwatch[] => {
   return layers.map((layer) => {
@@ -22,7 +22,7 @@ const createMapLegend = (layers: LayerPropsPlusMeta[]): LegendSwatch[] => {
 }
 
 export const initLegend = (
-  dispatch: React.Dispatch<StoreAction>,
+  dispatch: React.Dispatch<SymbLabelAction>,
   activeSymbGroupID: string,
   symbLayers: LayerPropsPlusMeta[]
 ): void => {
