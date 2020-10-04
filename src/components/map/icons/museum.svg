@@ -3,6 +3,8 @@
   fill-rule="evenodd"
   clip-rule="evenodd"
   viewBox="0 0 24 24"
+  width="24"
+  height="24"
 >
   <path
     fill="hsl(217deg 40% 50%)"

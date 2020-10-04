@@ -4,7 +4,10 @@ import { WebMercatorViewport } from 'react-map-gl'
 import * as MapTypes from './types'
 import * as config from './config'
 
-// TODO: recycle the icons if it makes sense
+// NOTE: Firefox needs SVG width/height to be explicitly set on the SVG in order
+// for this to work.
+// CRED:
+// https://github.com/mapbox/mapbox-gl-js/issues/5529#issuecomment-465403194
 export const addLangTypeIconsToMap = (
   map: Map,
   iconsConfig: MapTypes.LangIconConfig[]
