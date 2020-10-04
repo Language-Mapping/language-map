@@ -6,8 +6,6 @@ import {
   AttributionControl,
   Map as MbMap,
   setRTLTextPlugin,
-  VectorSource,
-  LngLatBoundsLike,
   LngLatBounds,
 } from 'mapbox-gl'
 import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
@@ -239,16 +237,14 @@ export const Map: FC<MapProps> = (props) => {
   // Runs only once and kicks off the whole thing
   function onLoad(mapLoadEvent: MapLoadEvent) {
     const { target: map } = mapLoadEvent
-
-    const langSrc = map.getSource('languages-src') as VectorSource
-    const langSrcBounds = langSrc.bounds as LngLatBoundsLike
     const idFromUrl = getIDfromURLparams(window.location.search)
     const cacheOfIDs: number[] = []
     const uniqueRecords: LangRecordSchema[] = []
-    const rawLangFeats = map.querySourceFeatures(langSrcID, { sourceLayer })
 
-    // TODO: start from actual layer bounds somehow, then zoom is not needed.
-    map.fitBounds(langSrcBounds) // ensure all feats are visible.
+    // NOTE: this only works because a very low zoom of 4 is set. Otherwise not
+    // all of the features are included. Even changing it to 5 in Firefox only
+    // makes ~70% of them appear.
+    const rawLangFeats = map.querySourceFeatures(langSrcID, { sourceLayer })
 
     // Just the properties for table/results, don't need GeoJSON cruft. Also
     // need to make sure each ID is unique as there have been initial data
@@ -277,8 +273,8 @@ export const Map: FC<MapProps> = (props) => {
     // TODO: set paint property
     // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
 
-    setMapLoaded(true)
     dispatch({ type: 'SET_LANG_LAYER_FEATURES', payload: uniqueRecords })
+    setMapLoaded(true)
 
     // Give MB some well-deserved cred
     map.addControl(new AttributionControl({ compact: false }), 'bottom-right')
