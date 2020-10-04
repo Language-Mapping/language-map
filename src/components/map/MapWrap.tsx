@@ -1,8 +1,7 @@
-import React, { FC, useContext, useEffect, useState } from 'react'
+import React, { FC, useContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import { Map } from 'components/map'
 import { GlobalContext, LoadingBackdrop } from 'components'
 import { FabPanelToggle } from 'components/panels/FabPanelToggle'
 import {
@@ -12,7 +11,7 @@ import {
 import { getIDfromURLparams } from '../../utils'
 
 type MapPanelProps = { panelOpen?: boolean }
-type MapWrapProps = { setOffCanvasNavOpen: React.Dispatch<boolean> }
+type MapWrapProps = { map: React.ReactNode; mapLoaded: boolean }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,11 +55,10 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const MapWrap: FC<MapWrapProps> = (props) => {
-  const { children, setOffCanvasNavOpen } = props
+  const { children, mapLoaded, map: Map } = props
   const { state, dispatch } = useContext(GlobalContext)
   const loc = useLocation()
   const { langFeatures } = state
-  const [mapLoaded, setMapLoaded] = useState<boolean>(false)
   const classes = useStyles({ panelOpen: state.panelState === 'default' })
 
   // Do selected feature stuff on location change
@@ -89,13 +87,7 @@ export const MapWrap: FC<MapWrapProps> = (props) => {
     <>
       {!mapLoaded && <LoadingBackdrop />}
       <main className={classes.appWrapRoot}>
-        <div className={classes.mapWrap}>
-          <Map
-            mapLoaded={mapLoaded}
-            setMapLoaded={setMapLoaded}
-            openOffCanvasNav={() => setOffCanvasNavOpen(true)}
-          />
-        </div>
+        <div className={classes.mapWrap}>{Map}</div>
         {children}
         <FabPanelToggle />
       </main>
