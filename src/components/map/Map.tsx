@@ -6,8 +6,6 @@ import {
   AttributionControl,
   Map as MbMap,
   setRTLTextPlugin,
-  VectorSource,
-  LngLatBoundsLike,
   LngLatBounds,
 } from 'mapbox-gl'
 import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
@@ -15,8 +13,8 @@ import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext } from 'components'
-import { initLegend } from 'components/legend/utils'
 import { paths as routes } from 'components/config/routes'
+import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { MapPopup } from './MapPopup'
 import { MapCtrlBtns } from './MapCtrlBtns'
@@ -37,6 +35,12 @@ import {
   getAllLangFeatIDs,
 } from '../../utils'
 
+type MapProps = {
+  mapLoaded: boolean
+  setMapLoaded: React.Dispatch<boolean>
+  openOffCanvasNav: () => void
+}
+
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
 const { neighbConfig, countiesConfig, boundariesLayerIDs } = config
 const interactiveLayerIds = symbLayers.map((symbLayer) => symbLayer.id)
@@ -54,25 +58,24 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
   )
 }
 
-export const Map: FC<Types.MapComponent> = (props) => {
-  const { baselayer } = props
+export const Map: FC<MapProps> = (props) => {
+  const { mapLoaded, setMapLoaded, openOffCanvasNav } = props
   const history = useHistory()
   const loc = useLocation()
   const { state, dispatch } = useContext(GlobalContext)
+  const symbLabelState = useSymbAndLabelState()
   const theme = useTheme()
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
   const { width } = useWindowResize() // TODO: use viewport?
   const [isDesktop, setIsDesktop] = useState<boolean>(
     width >= theme.breakpoints.values.md
   )
+  const [boundariesLayersVisible, setBoundariesLayersVisible] = useState<
+    boolean
+  >(false)
 
-  const {
-    selFeatAttribs,
-    mapLoaded,
-    activeLangSymbGroupId,
-    activeLangLabelId,
-    langFeatures,
-  } = state
+  const { selFeatAttribs, langFeatures } = state
+  const { legendItems } = symbLabelState
 
   // Local states
   const [
@@ -160,36 +163,28 @@ export const Map: FC<Types.MapComponent> = (props) => {
     if (!mapRef.current || !mapLoaded) return
 
     const map: MbMap = mapRef.current.getMap()
-    const currentLayerNames = state.legendItems.map((item) => item.legendLabel)
+    const currentLayerNames = legendItems.map((item) => item.legendLabel)
 
     utils.filterLayersByFeatIDs(
       map,
       currentLayerNames,
       getAllLangFeatIDs(langFeatures)
     )
-  }, [langFeatures.length, state.legendItems])
-
-  // TODO: put in... legend?
-  useEffect(
-    (): void => initLegend(dispatch, activeLangSymbGroupId, symbLayers),
-    [activeLangSymbGroupId]
-  )
+  }, [langFeatures.length, legendItems])
 
   // On width change, determine whether or not the view is desktop
   useEffect((): void => {
     setIsDesktop(width >= theme.breakpoints.values.md)
   }, [width])
 
-  // (Re)load symbol icons. Must be done whenever `baselayer` is changed,
-  // otherwise the images no longer exist.
-  // TODO: rm if no longer using. Currently experiencing tons of issues with
-  // custom styles vs. default MB in terms of fonts/glyps and icons/images
+  // (Re)load symbol icons. Must be done on load and whenever `baselayer` is
+  // changed, otherwise the images no longer exist.
   useEffect((): void => {
     if (mapRef.current) {
       const map: MbMap = mapRef.current.getMap()
       utils.addLangTypeIconsToMap(map, config.langTypeIconsConfig)
     }
-  }, [baselayer]) // baselayer may be irrelevant if only using Light BG
+  }, []) // add `baselayer` as dep if using more than just light BG
 
   // Do selected feature stuff on sel feat change or map load
   useEffect((): void => {
@@ -239,19 +234,17 @@ export const Map: FC<Types.MapComponent> = (props) => {
     })
   }
 
-  // Runs only once and kicks off the whole thinig
+  // Runs only once and kicks off the whole thing
   function onLoad(mapLoadEvent: MapLoadEvent) {
     const { target: map } = mapLoadEvent
-
-    const langSrc = map.getSource('languages-src') as VectorSource
-    const langSrcBounds = langSrc.bounds as LngLatBoundsLike
     const idFromUrl = getIDfromURLparams(window.location.search)
     const cacheOfIDs: number[] = []
     const uniqueRecords: LangRecordSchema[] = []
-    const rawLangFeats = map.querySourceFeatures(langSrcID, { sourceLayer })
 
-    // TODO: start from actual layer bounds somehow, then zoom is not needed.
-    map.fitBounds(langSrcBounds) // ensure all feats are visible.
+    // NOTE: this only works because a very low zoom of 4 is set. Otherwise not
+    // all of the features are included. Even changing it to 5 in Firefox only
+    // makes ~70% of them appear.
+    const rawLangFeats = map.querySourceFeatures(langSrcID, { sourceLayer })
 
     // Just the properties for table/results, don't need GeoJSON cruft. Also
     // need to make sure each ID is unique as there have been initial data
@@ -280,8 +273,8 @@ export const Map: FC<Types.MapComponent> = (props) => {
     // TODO: set paint property
     // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
 
-    dispatch({ type: 'SET_MAP_LOADED', payload: true })
     dispatch({ type: 'SET_LANG_LAYER_FEATURES', payload: uniqueRecords })
+    setMapLoaded(true)
 
     // Give MB some well-deserved cred
     map.addControl(new AttributionControl({ compact: false }), 'bottom-right')
@@ -351,7 +344,7 @@ export const Map: FC<Types.MapComponent> = (props) => {
       return // prevent boundary click underneath
     }
 
-    if (!state.boundariesLayersVisible) return
+    if (!boundariesLayersVisible) return
 
     const boundariesClicked = map.queryRenderedFeatures(event.point, {
       layers: boundariesLayerIDs,
@@ -395,7 +388,7 @@ export const Map: FC<Types.MapComponent> = (props) => {
     const map: MbMap = mapRef.current.getMap()
 
     if (actionID === 'info') {
-      dispatch({ type: 'TOGGLE_OFF_CANVAS_NAV' })
+      openOffCanvasNav()
     } else if (actionID === 'home') {
       flyHome(map)
     } else {
@@ -434,19 +427,11 @@ export const Map: FC<Types.MapComponent> = (props) => {
           <BoundariesLayer
             key={boundaryConfig.source.id}
             {...boundaryConfig}
-            visible={state.boundariesLayersVisible}
-            beforeId={
-              state.legendItems.length ? state.legendItems[0].legendLabel : ''
-            }
+            visible={boundariesLayersVisible}
+            beforeId={legendItems.length ? legendItems[0].legendLabel : ''}
           />
         ))}
-        {symbLayers && (
-          <LangMbSrcAndLayer
-            symbLayers={symbLayers}
-            activeLangSymbGroupId={activeLangSymbGroupId}
-            activeLangLabelId={activeLangLabelId}
-          />
-        )}
+        {symbLayers && <LangMbSrcAndLayer symbLayers={symbLayers} />}
         {popupSettings && (
           <MapPopup
             {...popupSettings}
@@ -462,7 +447,11 @@ export const Map: FC<Types.MapComponent> = (props) => {
         )}
       </MapGL>
       <MapCtrlBtns
-        {...{ mapRef, viewport, setViewport }}
+        mapRef={mapRef}
+        boundariesLayersVisible={boundariesLayersVisible}
+        setBoundariesLayersVisible={setBoundariesLayersVisible}
+        handlePitchReset={() => setViewport({ ...viewport, pitch: 0 })}
+        isPitchZero={viewport.pitch === 0}
         onMapCtrlClick={(actionID: Types.MapControlAction) => {
           onMapCtrlClick(actionID)
         }}

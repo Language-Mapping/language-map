@@ -1,10 +1,14 @@
-import React, { FC, useContext } from 'react'
+import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Drawer } from '@material-ui/core'
 
-import { GlobalContext } from 'components'
 import { Nav } from 'components/nav'
 import { ToggleOffCanvasNav } from './types'
+
+type OffCanvasNavProps = {
+  isOpen: boolean
+  setIsOpen: React.Dispatch<boolean>
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,12 +21,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const OffCanvasNav: FC = () => {
-  const { state, dispatch } = useContext(GlobalContext)
-  const offCanvasOpen = state.offCanvasNavOpen
+export const OffCanvasNav: FC<OffCanvasNavProps> = (props) => {
+  const { isOpen, setIsOpen } = props
   const classes = useStyles()
 
-  const closeIt = () => dispatch({ type: 'TOGGLE_OFF_CANVAS_NAV' })
+  const closeIt = () => setIsOpen(!isOpen)
 
   const toggleDrawer: ToggleOffCanvasNav = (open) => (event) => {
     if (
@@ -33,9 +36,7 @@ export const OffCanvasNav: FC = () => {
       return null
     }
 
-    dispatch({
-      type: 'TOGGLE_OFF_CANVAS_NAV',
-    })
+    setIsOpen(!isOpen)
 
     return null
   }
@@ -44,7 +45,7 @@ export const OffCanvasNav: FC = () => {
   // until the off-canvas is opened...
   return (
     <Drawer
-      open={offCanvasOpen}
+      open={isOpen}
       onClose={toggleDrawer(false)}
       className={classes.offCanvasNavRoot}
     >

@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react'
+import React, { FC } from 'react'
 import { Map } from 'mapbox-gl'
 // TODO: use the web merc center method so that popups are not offset on mobile
 // import { WebMercatorViewport } from 'react-map-gl'
@@ -14,7 +14,6 @@ import {
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
-import { GlobalContext } from 'components'
 import { MapCtrlBtnsProps, GeocodeResult } from './types'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
@@ -58,12 +57,19 @@ const LocationSearchContent: FC = (props) => {
 
 type GeocoderProps = Pick<MapCtrlBtnsProps, 'mapRef'> & {
   anchorEl: null | HTMLElement
+  boundariesLayersVisible: boolean
   setAnchorEl: React.Dispatch<null | HTMLElement>
+  setBoundariesLayersVisible: React.Dispatch<boolean>
 }
 
 export const GeocoderPopout: FC<GeocoderProps> = (props) => {
-  const { state, dispatch } = useContext(GlobalContext)
-  const { anchorEl, setAnchorEl, mapRef } = props
+  const {
+    anchorEl,
+    setAnchorEl,
+    mapRef,
+    boundariesLayersVisible,
+    setBoundariesLayersVisible,
+  } = props
   const classes = useStyles()
   const { smallerText, switchFormCtrlRoot } = classes
   const layersMenuOpen = Boolean(anchorEl)
@@ -127,8 +133,10 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
           onClick={(event) => event.stopPropagation()}
           control={
             <Switch
-              checked={state.boundariesLayersVisible}
-              onChange={() => dispatch({ type: 'TOGGLE_NEIGHB_LAYER' })}
+              checked={boundariesLayersVisible}
+              onChange={() =>
+                setBoundariesLayersVisible(!boundariesLayersVisible)
+              }
               name="show-welcome-switch"
               size="small"
             />

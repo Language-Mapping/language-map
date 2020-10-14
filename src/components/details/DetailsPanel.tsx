@@ -8,6 +8,7 @@ import { GlobalContext, LangOrEndoIntro, ScrollToTopOnMount } from 'components'
 import { LegendSwatch } from 'components/legend'
 import { RecordDescription } from 'components/results'
 import { paths as routes } from 'components/config/routes'
+import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
 import { Media } from './Media'
 import { useStyles } from './styles'
 import { LangRecordSchema } from '../../context/types'
@@ -58,6 +59,7 @@ const NoFeatSel: FC = () => {
 export const DetailsPanel: FC<DetailsPanelProps> = (props) => {
   const { attribsDirect, skipSelFeatCheck } = props
   const { state } = useContext(GlobalContext)
+  const symbLabelState = useSymbAndLabelState()
   const classes = useStyles()
   const loc = useLocation()
   const attribsToUse = attribsDirect || state.selFeatAttribs
@@ -84,7 +86,7 @@ export const DetailsPanel: FC<DetailsPanelProps> = (props) => {
   const regionSwatchColor =
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    state.legendSymbols[WorldRegion].paint['icon-color'] as string
+    symbLabelState.legendSymbols[WorldRegion].paint['icon-color'] as string
 
   // TODO: deal with `id` present in URL but no match found
   // const parsed = queryString.parse(window.location.search)

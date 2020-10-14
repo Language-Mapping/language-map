@@ -100,6 +100,23 @@ See the section about
 [deployment](https://facebook.github.io/create-react-app/docs/deployment) for
 more information.
 
+#### To build with Profiling enabled
+
+...in case you want to profile your production build (dev builds will be misleadingly large).
+
+CRED: [Kent's article](https://kentcdodds.com/blog/profile-a-react-app-for-performance#build-and-measure-the-production-app)
+
+```bash
+npx react-scripts build --profile
+```
+
+And then serve it from the _./build_ directory:
+
+```bash
+# The -l 3000 is optional to set port, which defaults to 5000
+npx serve -s build -l 3000
+```
+
 ### View Style Guide Demo
 
 To better visualize UI styles, theming, and layout, you can see examples of

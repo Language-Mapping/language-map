@@ -4,13 +4,20 @@
 import React, { useReducer, createContext, FC } from 'react'
 
 import { reducer } from './reducer'
-import { initialState } from './initialState'
 import { StoreAction, InitialState } from './types'
 
 type Context = {
   state: InitialState
   dispatch: React.Dispatch<StoreAction>
 }
+
+const initialState = {
+  clearFilters: 0,
+  langFeatsLenCache: 0,
+  langFeatures: [],
+  panelState: 'default',
+  selFeatAttribs: null,
+} as InitialState
 
 // Good article on setting all this up:
 // https://www.simplethread.com/cant-replace-redux-with-hooks/

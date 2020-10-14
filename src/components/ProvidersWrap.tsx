@@ -5,6 +5,7 @@ import { ThemeProvider } from '@material-ui/styles'
 import './style.css'
 import { theme } from './config/theme'
 import { GlobalProvider } from '../context'
+import { SymbAndLabelProvider } from '../context/SymbAndLabelContext'
 
 // Everything the app needs except Routes. This makes it testable and reusable
 // (e.g. <MemoryRouter>)
@@ -16,7 +17,7 @@ export const ProvidersWrap: FC = ({ children }) => {
     <GlobalProvider>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        {children}
+        <SymbAndLabelProvider>{children}</SymbAndLabelProvider>
       </ThemeProvider>
     </GlobalProvider>
   )

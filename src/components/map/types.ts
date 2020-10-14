@@ -24,7 +24,6 @@ type Padding =
   | number
   | { top: number; bottom: number; left: number; right: number }
 
-export type Baselayer = 'dark' | 'light' // assumes using Mapbox style
 export type BoundsArray = [[number, number], [number, number]]
 export type GeocodeMarker = LongLat & { text: string }
 export type InitialMapProps = InteractiveMapProps
@@ -32,7 +31,6 @@ export type LangIconConfig = { icon: string; id: string }
 export type Layer = LayerProps & { 'source-layer': string; id: string }
 export type LongLat = { longitude: number; latitude: number }
 export type LongLatAndZoom = LongLat & { zoom: number }
-export type MapComponent = { baselayer: Baselayer }
 export type MapControlAction = 'home' | 'in' | 'out' | 'info' | 'loc-search'
 export type PopupContent = { heading: string; subheading?: string }
 export type PopupSettings = PopupContent & LongLat
@@ -102,10 +100,12 @@ export type GeocodeResult = {
 }
 
 export type MapCtrlBtnsProps = {
+  boundariesLayersVisible: boolean
+  handlePitchReset: () => void
+  isPitchZero: boolean
   mapRef: React.RefObject<InteractiveMap>
   onMapCtrlClick: (actionID: MapControlAction) => void
-  viewport: ViewState
-  setViewport: React.Dispatch<ViewState>
+  setBoundariesLayersVisible: React.Dispatch<boolean>
 }
 
 export type CtrlBtnConfig = {

@@ -6,8 +6,8 @@ import { GoInfo } from 'react-icons/go'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { TopBar, OffCanvasNav } from 'components/nav'
-import { MapWrap } from 'components/map'
-import { MapPanel, PanelIntro } from 'components/panels'
+import { MapWrap, Map } from 'components/map'
+import { Panel, PanelIntro } from 'components/panels'
 import { AboutPageView, WelcomeDialog } from 'components/about'
 import { ResultsModal } from 'components/results'
 import { fetchAbout, fetchHelp, fetchWelcome } from 'components/about/utils'
@@ -16,6 +16,8 @@ import { ABOUT_QUERY, HELP_QUERY, WELCOME_QUERY } from 'components/about/config'
 
 export const App: FC = () => {
   const [tableOpen, setTableOpen] = useState<boolean>(false)
+  const [offCanvasNavOpen, setOffCanvasNavOpen] = useState<boolean>(false)
+  const [mapLoaded, setMapLoaded] = useState<boolean>(false)
 
   const openTable = (): void => setTableOpen(true)
   const closeTable = (): void => setTableOpen(false)
@@ -44,8 +46,10 @@ export const App: FC = () => {
         </>
       )}
     >
-      <OffCanvasNav />
+      <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />
       <TopBar />
+      {/* ERROR: null is not an object (evaluating 'window.localStorage.hideWelcome') */}
+      {/* FIXME: https://sentry.io/organizations/endangered-language-alliance/issues/1953110114/?project=5313356 */}
       {!window.localStorage.hideWelcome && (
         <WelcomeDialog queryName={WELCOME_QUERY} />
       )}
@@ -56,7 +60,11 @@ export const App: FC = () => {
           queryName={ABOUT_QUERY}
         />
       </Route>
-      <ResultsModal open={tableOpen} closeTable={closeTable} />
+      <ResultsModal
+        open={tableOpen}
+        closeTable={closeTable}
+        mapLoaded={mapLoaded}
+      />
       <Route path={routes.help}>
         <AboutPageView
           title="Help"
@@ -64,10 +72,19 @@ export const App: FC = () => {
           queryName={HELP_QUERY}
         />
       </Route>
-      <MapWrap>
-        <MapPanel>
+      <MapWrap
+        mapLoaded={mapLoaded}
+        map={
+          <Map
+            mapLoaded={mapLoaded}
+            setMapLoaded={setMapLoaded}
+            openOffCanvasNav={() => setOffCanvasNavOpen(true)}
+          />
+        }
+      >
+        <Panel>
           <PanelIntro openTable={openTable} />
-        </MapPanel>
+        </Panel>
       </MapWrap>
     </Sentry.ErrorBoundary>
   )

@@ -58,7 +58,7 @@ export const localization: Localization = {
 // Table options for the <MaterialTable> component
 export const options = {
   columnsButton: true,
-  doubleHorizontalScroll: true,
+  doubleHorizontalScroll: false,
   draggable: true, // kinda clunky
   filtering: true,
   grouping: false, // kinda clunky

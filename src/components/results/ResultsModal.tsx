@@ -7,10 +7,10 @@ import { CloseTableProps } from './types'
 import { ResultsTable } from './ResultsTable'
 import { LangRecordSchema } from '../../context/types'
 
-type ResultsModalProps = CloseTableProps & { open: boolean }
+type ResultsModalProps = CloseTableProps & { open: boolean; mapLoaded: boolean }
 
 export const ResultsModal: FC<ResultsModalProps> = (props) => {
-  const { open, closeTable } = props
+  const { open, closeTable, mapLoaded } = props
   const classes = useStyles()
   const { state } = useContext(GlobalContext)
   const [tableData, setTableData] = useState<LangRecordSchema[]>([])
@@ -28,7 +28,7 @@ export const ResultsModal: FC<ResultsModalProps> = (props) => {
   return (
     <Dialog
       open={open}
-      keepMounted
+      keepMounted={mapLoaded}
       TransitionComponent={SlideUp}
       className={`${classes.resultsModalRoot}`}
       onClose={handleClose}
