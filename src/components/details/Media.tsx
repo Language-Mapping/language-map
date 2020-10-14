@@ -31,13 +31,17 @@ type MediaListItemProps = {
 
 type StyleProps = {
   showShareBtns?: boolean
-  audio?: string
 }
 
-type MediaModalProps = MediaProps & {
-  mediaType: MediaKey
+type MediaModalProps = {
+  url: string
   closeModal: () => void
 }
+
+const config = [
+  { label: 'Video', icon: <FiVideo />, type: 'video' },
+  { label: 'Audio', icon: <AiOutlineSound />, type: 'audio' },
+] as Omit<MediaListItemProps, 'setDialogContent'>[]
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -74,7 +78,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: '1em',
       marginBottom: '1em',
       [theme.breakpoints.down('sm')]: {
-        padding: (props: StyleProps) => (props.audio ? '1em' : 0),
+        padding: 0,
       },
     },
     // CRED: this is almost a standard based on search results
@@ -105,7 +109,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const YouTubeVideo: FC<MediaChildProps> = (props) => {
+const IframeContainer: FC<MediaChildProps> = (props) => {
   const classes = useStyles({})
   const { url, title } = props
 
@@ -127,18 +131,6 @@ const YouTubeVideo: FC<MediaChildProps> = (props) => {
         allowFullScreen
       />
     </div>
-  )
-}
-
-// ID 646 has the only audio file to date
-const Audio: FC<MediaChildProps> = (props) => {
-  const { url } = props
-
-  return (
-    // eslint-disable-next-line jsx-a11y/media-has-caption
-    <audio controls src={url}>
-      Your browser does not support the audio element.
-    </audio>
   )
 }
 
@@ -170,37 +162,26 @@ const MediaListItem: FC<MediaListItemProps> = (props) => {
   )
 }
 
-const config = [
-  { label: 'Video', icon: <FiVideo />, type: 'video' },
-  { label: 'Audio', icon: <AiOutlineSound />, type: 'audio' },
-] as Omit<MediaListItemProps, 'setDialogContent'>[]
-
+// ID 646 has the only audio file to date
 const MediaModal: FC<MediaModalProps> = (props) => {
-  const { audio, video, language, mediaType, closeModal } = props
-  const classes = useStyles({ audio })
+  const { url, closeModal } = props
+  const classes = useStyles({})
+  const title = 'Media title goes here'
 
   return (
     <SimpleDialog
-      fullScreen={mediaType !== 'audio'}
-      maxWidth={mediaType === 'audio' ? 'md' : 'xl'}
+      fullScreen
+      maxWidth="xl"
       open
       className={classes.modalRoot}
       onClose={() => closeModal()}
     >
-      <Typography variant="h3">{language}</Typography>
+      <Typography variant="h3">{title}</Typography>
       <Container maxWidth="md" className={classes.dialogContent}>
-        {mediaType === 'video' && video && (
-          <YouTubeVideo title={language} url={video} />
-        )}
-        {mediaType === 'audio' && audio && <Audio url={audio} />}
+        <IframeContainer title={title} url={url} />
       </Container>
       <div>
-        <Button
-          variant="contained"
-          onClick={() => {
-            closeModal()
-          }}
-        >
+        <Button variant="contained" onClick={() => closeModal()}>
           Back to map
         </Button>
       </div>
@@ -210,23 +191,17 @@ const MediaModal: FC<MediaModalProps> = (props) => {
 
 export const Media: FC<MediaProps> = (props) => {
   const { language, description, audio, video } = props
-  const [mediaType, setMediaType] = useState<MediaKey | ''>()
+  const [mediaUrl, setMediaUrl] = useState<string>()
   const [showShareBtns, setShowShareBtns] = useState<boolean>(false)
   const classes = useStyles({ showShareBtns })
   const shareSrcAndTitle = `${language} - Languages of New York City Map`
+  // archive.org `embed` format:
+  // 'https://archive.org/embed/ela_kabardian_comparative?playlist=1'
 
   return (
     <>
-      {mediaType && (
-        <MediaModal
-          audio={audio}
-          video={video}
-          language={language}
-          mediaType={mediaType}
-          closeModal={() => {
-            setMediaType('')
-          }}
-        />
+      {mediaUrl && (
+        <MediaModal url={mediaUrl} closeModal={() => setMediaUrl('')} />
       )}
       <ul className={classes.mediaRoot}>
         {config.map((item) => (
@@ -235,7 +210,7 @@ export const Media: FC<MediaProps> = (props) => {
             disabled={props[item.type] === ''}
             {...item}
             handleClick={() => {
-              setMediaType(item.type)
+              setMediaUrl(item.type === 'audio' ? audio : video)
             }}
           />
         ))}
