@@ -48,6 +48,8 @@ export const App: FC = () => {
     >
       <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />
       <TopBar />
+      {/* ERROR: null is not an object (evaluating 'window.localStorage.hideWelcome') */}
+      {/* FIXME: https://sentry.io/organizations/endangered-language-alliance/issues/1953110114/?project=5313356 */}
       {!window.localStorage.hideWelcome && (
         <WelcomeDialog queryName={WELCOME_QUERY} />
       )}

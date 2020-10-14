@@ -9,6 +9,8 @@ import { useStyles } from './styles'
 
 import * as Types from './types'
 
+// TODO: consider swipeable views for moving between panels:
+// https://react-swipeable-views.com/demos/demos/
 export const Panel: FC<Types.MapPanelProps> = (props) => {
   const { children } = props
   const { state } = useContext(GlobalContext)

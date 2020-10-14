@@ -79,7 +79,6 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetching])
 
-  // TODO: Sentry
   if (error) throw new Error('Something went wrong fetching Le Sheetz')
 
   return (
