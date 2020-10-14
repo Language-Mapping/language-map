@@ -100,11 +100,11 @@ export type GeocodeResult = {
 }
 
 export type MapCtrlBtnsProps = {
+  boundariesLayersVisible: boolean
+  handlePitchReset: () => void
+  isPitchZero: boolean
   mapRef: React.RefObject<InteractiveMap>
   onMapCtrlClick: (actionID: MapControlAction) => void
-  viewport: ViewState
-  setViewport: React.Dispatch<ViewState>
-  boundariesLayersVisible: boolean
   setBoundariesLayersVisible: React.Dispatch<boolean>
 }
 

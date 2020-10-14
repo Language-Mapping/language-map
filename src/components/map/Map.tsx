@@ -447,13 +447,11 @@ export const Map: FC<MapProps> = (props) => {
         )}
       </MapGL>
       <MapCtrlBtns
-        {...{
-          mapRef,
-          viewport,
-          setViewport,
-          boundariesLayersVisible,
-          setBoundariesLayersVisible,
-        }}
+        mapRef={mapRef}
+        boundariesLayersVisible={boundariesLayersVisible}
+        setBoundariesLayersVisible={setBoundariesLayersVisible}
+        handlePitchReset={() => setViewport({ ...viewport, pitch: 0 })}
+        isPitchZero={viewport.pitch === 0}
         onMapCtrlClick={(actionID: Types.MapControlAction) => {
           onMapCtrlClick(actionID)
         }}

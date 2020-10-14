@@ -97,14 +97,16 @@ const ctrlBtnsConfig = [
 ] as CtrlBtnConfig[]
 
 export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
-  const { onMapCtrlClick, viewport, setViewport } = props
+  const { onMapCtrlClick, isPitchZero, handlePitchReset } = props
   const classes = useStyles()
   const [speedDialOpen, setSpeedDialOpen] = React.useState(true)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const theme = useTheme()
   const lilGuy = useMediaQuery(theme.breakpoints.only('xs'))
 
-  const handleSpeedDialRootClick = () => setSpeedDialOpen(!speedDialOpen)
+  function handleSpeedDialRootClick() {
+    setSpeedDialOpen(!speedDialOpen)
+  }
 
   const handleClose = (
     e: React.SyntheticEvent<Record<string, unknown>, Event>,
@@ -153,12 +155,12 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
           />
         ))}
       </SpeedDial>
-      <Slide in={viewport.pitch !== 0} direction={lilGuy ? 'right' : 'left'}>
+      <Slide in={!isPitchZero} direction={lilGuy ? 'right' : 'left'}>
         <Fab
           className={`${classes.resetPitchBtn} MuiSpeedDialAction-fab`}
           variant="extended"
           size="small"
-          onClick={() => setViewport({ ...viewport, pitch: 0 })}
+          onClick={() => handlePitchReset()}
         >
           <TiCompass />
           Reset
