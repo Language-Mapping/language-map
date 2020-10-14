@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
     mapPopupRoot: {
       textAlign: 'center',
       minWidth: 150,
-      maxWidth: 250,
+      maxWidth: 260, // shaky but makes long endos like Church Slavonic's fit
       wordWrap: 'break-word',
       '& .mapboxgl-popup-content': {
         // Leave room for "x" close button
