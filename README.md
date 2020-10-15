@@ -67,6 +67,17 @@ You should not need to publish the sheet nor set any permissions in order to use
 it since you should have full read access to it via the API. If you are getting
 any permissions errors though, that would be the first place to check.
 
+### YouTube API
+
+The project is set up to support YouTube embed URLs (for both playlists and
+individual videos) and Internet Archive embed URLs. If using YouTube, follow the
+same instructions as the Google Sheets API instructions above, but set the
+variable name as `REACT_APP_YOUTUBE_API_KEY`.
+
+The API is only used for metadata like title and descriptions. You can still
+embed videos without an API key, and Internet Archive's API does not require a
+key at all.
+
 ## Usage
 
 ### Install dependencies
