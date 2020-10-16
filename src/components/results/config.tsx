@@ -8,6 +8,7 @@ import {
   MdChevronLeft,
   MdChevronRight,
   MdClear,
+  MdFileDownload,
   MdFirstPage,
   MdLastPage,
   MdSearch,
@@ -51,6 +52,7 @@ export const localization: Localization = {
     actions: '',
   },
   toolbar: {
+    exportName: 'Export data',
     searchPlaceholder: 'Search...',
   },
 }
@@ -60,6 +62,8 @@ export const options = {
   columnsButton: true,
   doubleHorizontalScroll: false,
   draggable: true, // kinda clunky
+  exportButton: true, // enable it in the toolbar
+  exportAllData: true, // misleading, it actually exports all FILTERED data
   filtering: true,
   grouping: false, // kinda clunky
   isLoading: true,
@@ -87,6 +91,7 @@ export const options = {
 export const icons = {
   Check: MdCheck,
   DetailPanel: MdChevronRight,
+  Export: MdFileDownload,
   Filter: FaFilter,
   FirstPage: MdFirstPage,
   LastPage: MdLastPage,
@@ -101,7 +106,6 @@ export const icons = {
 
 const commonColProps = {
   editable: 'never',
-  export: false,
   searchable: true,
   // cellStyle: {},
 }
@@ -132,6 +136,7 @@ export const columns = [
     field: 'ID',
     ...commonColProps,
     filtering: false,
+    export: false,
     render: utils.renderIDcolumn,
   },
   {
@@ -140,6 +145,7 @@ export const columns = [
     ...commonColProps,
     sorting: false,
     filtering: false,
+    export: false,
     render: utils.renderDescripCol,
   },
   {
@@ -249,6 +255,7 @@ export const columns = [
     title: 'Video',
     field: 'Video',
     ...commonColProps,
+    export: false,
     filterComponent: VideoColumnFilter,
     headerStyle: { whiteSpace: 'nowrap' },
     render: (data) => <Cells.VideoColumnCell data={data} />,

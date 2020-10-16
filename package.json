@@ -83,7 +83,10 @@
   "peerDependencies": {
     "@material-ui/styles": "^4.10.0",
     "clsx": "^1.1.1",
+    "filefy": "^0.1.10",
     "history": "^5.0.0",
+    "jspdf": "^2.1.1",
+    "jspdf-autotable": "^3.5.13",
     "mapbox-gl": "^1.11.1"
   },
   "husky": {
