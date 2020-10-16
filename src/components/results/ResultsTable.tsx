@@ -116,6 +116,26 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
         tableRef={tableRef}
         options={{
           ...config.options,
+          exportCsv: (defs, data) => {
+            import('./exporting')
+              .then(({ exportCsv }) => exportCsv(defs, data))
+              .catch(() => {
+                throw new Error(
+                  '😱 Uh oh! Could not import the exporting utility'
+                )
+              })
+          },
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          exportPdf: (defs, data) => {
+            import('./exporting')
+              .then(({ exportPdf }) => exportPdf(defs, data))
+              .catch(() => {
+                throw new Error(
+                  '😱 Uh oh! Could not import the exporting utility'
+                )
+              })
+          },
         }}
         columns={config.columns}
         localization={config.localization}

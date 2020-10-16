@@ -1,19 +1,13 @@
 import { CsvBuilder } from 'filefy'
 import jsPDF from 'jspdf'
 import autoTable, { RowInput, UserOptions } from 'jspdf-autotable'
-import { Column } from 'material-table'
 
-import { LangRecordSchema } from 'context/types'
-
-type ColumnWithField = Column<LangRecordSchema> & {
-  field: keyof LangRecordSchema
-}
-type ColumnList = ColumnWithField[]
-type InitialData = LangRecordSchema[]
+import { ColumnList } from './types'
+import { LangRecordSchema } from '../../context/types'
 
 export const exportCsv = (
   columnList: ColumnList,
-  initialData: InitialData
+  initialData: LangRecordSchema[]
 ): void => {
   const columns = columnList.filter(
     (columnDef) => !columnDef.hidden && columnDef.export !== false
@@ -34,7 +28,7 @@ export const exportCsv = (
 
 export const exportPdf = (
   columnList: ColumnList,
-  initialData: InitialData
+  initialData: LangRecordSchema[]
 ): void => {
   const GENTIUM_PATH = '/fonts/GentiumPlus-R-normal.json'
 
