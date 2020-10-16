@@ -61,11 +61,10 @@ export const exportPdf = (
     // TODO: consider prefetch w/react-query in the component itself
     const response = await fetch(GENTIUM_PATH)
     const { font } = await response.json()
-    const doc = new jsPDF({ orientation, unit, format })
     const titleY = 50
-
-    doc.addFileToVFS('GentiumPlus-Regular.ttf', font)
-    doc.addFont('GentiumPlus-Regular.ttf', 'GentiumPlus-Regular', 'normal')
+    const totalPagesExp = '{total_pages_count_string}'
+    const doc = new jsPDF({ orientation, unit, format })
+    const pageWidth = doc.internal.pageSize.getWidth()
 
     const content: UserOptions = {
       body: data as RowInput[],
@@ -80,31 +79,45 @@ export const exportPdf = (
           return field
         }),
       ],
-      margin: { horizontal: 30 },
+      margin: { horizontal: 25 },
       rowPageBreak: 'avoid',
       startY: titleY + 15,
+      theme: 'striped',
       styles: {
         font: 'GentiumPlus-Regular',
       },
       headStyles: {
         fillColor: '#409685',
-        fontSize: 13,
+        fontSize: 12,
         valign: 'middle',
+      },
+      // Runs on each page, e.g. to show page numbers in footer
+      didDrawPage(currentPageData) {
+        const str = `Page ${currentPageData.pageNumber} of ${totalPagesExp}`
+        const { pageSize } = doc.internal
+        const pageHeight = pageSize.getHeight()
+
+        doc.setFontSize(10)
+        doc.text(str, pageWidth / 2, pageHeight - 25)
       },
     }
 
+    // Custom font/s
+    doc.addFileToVFS('GentiumPlus-Regular.ttf', font)
+    doc.addFont('GentiumPlus-Regular.ttf', 'GentiumPlus-Regular', 'normal')
     doc.setFont('GentiumPlus-Regular', 'normal')
-    doc.setFontSize(24)
 
-    const pageWidth =
-      doc.internal.pageSize.width || doc.internal.pageSize.getWidth()
-
+    // Page title
+    doc.setFontSize(24) // pretty much just for the heading at time of writing
     doc.text(config.tableExportMeta.pageTitle, pageWidth / 2, titleY, {
       align: 'center',
     })
 
-    // Create table layout and save to filesystem
-    autoTable(doc, content)
+    autoTable(doc, content) // create table layout and save to filesystem
+
+    // Replace the expression used in the per-page loop of jspdf-autotable
+    // NOTE: total page number plugin only available in jspdf v1.0+
+    doc.putTotalPages(totalPagesExp)
     doc.save(`${config.tableExportMeta.filename}.pdf`)
   }
 
