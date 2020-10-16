@@ -4,7 +4,6 @@ import autoTable, { RowInput, UserOptions } from 'jspdf-autotable'
 import { Column } from 'material-table'
 
 import { LangRecordSchema } from 'context/types'
-import { GentiumPlusRegular } from './GentiumPlus-R-normal'
 
 type ColumnWithField = Column<LangRecordSchema> & {
   field: keyof LangRecordSchema
@@ -37,6 +36,8 @@ export const exportPdf = (
   columnList: ColumnList,
   initialData: InitialData
 ): void => {
+  const GENTIUM_PATH = '/fonts/GentiumPlus-R-normal.json'
+
   const columns = columnList.filter((columnDef) => {
     return !columnDef.hidden && columnDef.field && columnDef.export !== false
   })
@@ -49,27 +50,34 @@ export const exportPdf = (
   const format = 'letter'
   const orientation = 'landscape'
 
-  // eslint-disable-next-line new-cap
-  const doc = new jsPDF({ orientation, unit, format })
+  async function showAvatar() {
+    const response = await fetch(GENTIUM_PATH)
+    const { font } = await response.json()
 
-  doc.addFileToVFS('GentiumPlus-Regular.ttf', GentiumPlusRegular)
-  doc.addFont('GentiumPlus-Regular.ttf', 'GentiumPlus-Regular', 'normal')
+    // eslint-disable-next-line new-cap
+    const doc = new jsPDF({ orientation, unit, format })
 
-  const content: UserOptions = {
-    startY: 50,
-    head: [columns.map((columnDef) => columnDef.field)],
-    body: data as RowInput[],
-    styles: {
-      font: 'GentiumPlus-Regular',
-    },
-    theme: 'striped',
+    doc.addFileToVFS('GentiumPlus-Regular.ttf', font)
+    doc.addFont('GentiumPlus-Regular.ttf', 'GentiumPlus-Regular', 'normal')
+
+    const content: UserOptions = {
+      startY: 50,
+      head: [columns.map((columnDef) => columnDef.field)],
+      body: data as RowInput[],
+      styles: {
+        font: 'GentiumPlus-Regular',
+      },
+      theme: 'striped',
+    }
+
+    doc.setFont('GentiumPlus-Regular', 'normal')
+    doc.setFontSize(15)
+    doc.text('Languages of New York City', 40, 40)
+
+    // Create table layout and save to filesystem
+    autoTable(doc, content)
+    doc.save('nyc-language-data.pdf')
   }
 
-  doc.setFont('GentiumPlus-Regular', 'normal')
-  doc.setFontSize(15)
-  doc.text('Languages of New York City', 40, 40)
-
-  // Create table layout and save to filesystem
-  autoTable(doc, content)
-  doc.save('nyc-language-data.pdf')
+  showAvatar()
 }

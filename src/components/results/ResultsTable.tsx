@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable operator-linebreak */
 /* eslint-disable react/display-name */
 import React, { FC, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
