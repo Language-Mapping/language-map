@@ -52,6 +52,7 @@
     "comma-spacing": "error",
     "comma-style": ["error", "last"],
     "dot-location": ["error", "property"],
+    "new-cap": ["error", { "newIsCapExceptions": ["jsPDF"] }],
     "no-multi-spaces": "error",
     "no-multiple-empty-lines": [
       "error",

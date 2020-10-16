@@ -34,6 +34,12 @@ const COMM_STATUS_LOOKUP = {
   [key in Statuses]: Statuses
 }
 
+// TODO: pass this as fn arg instead of importing in export util
+export const tableExportMeta = {
+  pageTitle: 'Languages of New York City',
+  filename: 'nyc-language-data',
+}
+
 // TODO: TS it up
 export const COMM_SIZE_COL_MAP = {
   1: 'Smallest',

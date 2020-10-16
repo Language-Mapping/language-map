@@ -8,6 +8,7 @@ import { LangRecordSchema } from '../../context/types'
 
 type ColumnWithField = Column<LangRecordSchema> & {
   field: keyof LangRecordSchema
+  title: string
 }
 
 export type ColumnList = ColumnWithField[]
