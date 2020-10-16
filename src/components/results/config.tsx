@@ -18,6 +18,7 @@ import {
 
 import * as Types from './types'
 import * as utils from './utils'
+import { exportPdf, exportCsv } from './exporting'
 import * as Cells from './Cells'
 
 import { Statuses } from '../../context/types'
@@ -62,8 +63,10 @@ export const options = {
   columnsButton: true,
   doubleHorizontalScroll: false,
   draggable: true, // kinda clunky
-  exportButton: true, // enable it in the toolbar
+  exportCsv,
+  exportPdf,
   exportAllData: true, // misleading, it actually exports all FILTERED data
+  exportButton: true, // enable it in the toolbar
   filtering: true,
   grouping: false, // kinda clunky
   isLoading: true,

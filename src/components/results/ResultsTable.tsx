@@ -4,15 +4,11 @@
 import React, { FC, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import MaterialTable from 'material-table'
-import { CsvBuilder } from 'filefy'
-import jsPDF from 'jspdf'
-import autoTable, { UserOptions } from 'jspdf-autotable'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { SimpleDialog } from 'components'
 import { paths as routes } from 'components/config/routes'
 import { DetailsPanel } from 'components/details'
-import { GentiumPlusRegular } from './GentiumPlus-R-normal'
 import { MuiTableWithLangs } from './types'
 import { ResultsToolbar } from './ResultsToolbar'
 import { LangRecordSchema } from '../../context/types'
@@ -91,10 +87,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
       dataManager.changeFilterValue(i, newlyFiltered[i].tableData.filterValue)
     })
 
-    self.setState({
-      ...dataManager.getRenderState(),
-      columns: newlyFiltered,
-    })
+    self.setState({ ...dataManager.getRenderState(), columns: newlyFiltered })
 
     setClearBtnEnabled(true)
     scrollToTop()
@@ -112,75 +105,6 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
     if (divRef && divRef.current) divRef.current.scrollIntoView(true)
   }
 
-  // https://www.one-tab.com/page/pPAhYfteTMehL7xrcNGIqw
-  // @ts-ignore
-  const exportCsv = (columnList, initialData) => {
-    // @ts-ignore
-    const columns = columnList.filter((columnDef) => {
-      return !columnDef.hidden && columnDef.field && columnDef.export !== false
-    })
-
-    // @ts-ignore
-    const data = initialData.map((rowData) =>
-      // @ts-ignore
-      columns.map((columnDef) =>
-        columnDef.render ? columnDef.render(rowData) : rowData[columnDef.field]
-      )
-    )
-
-    const builder = new CsvBuilder('nyc-language-data.csv')
-
-    builder
-      .setDelimeter(',')
-      // @ts-ignore
-      .setColumns(columns.map((columnDef) => columnDef.field))
-      .addRows(data)
-      .exportFile()
-  }
-
-  // @ts-ignore
-  function exportPdf(columnList, initialData) {
-    // @ts-ignore
-    const columns = columnList.filter((columnDef) => {
-      return !columnDef.hidden && columnDef.field && columnDef.export !== false
-    })
-
-    // @ts-ignore
-    const data = initialData.map((rowData) =>
-      // @ts-ignore
-      columns.map((columnDef) => rowData[columnDef.field])
-    )
-
-    const unit = 'pt'
-    const format = 'letter'
-    const orientation = 'landscape'
-
-    // eslint-disable-next-line new-cap
-    const doc = new jsPDF({ orientation, unit, format })
-
-    doc.addFileToVFS('GentiumPlus-Regular.ttf', GentiumPlusRegular)
-    doc.addFont('GentiumPlus-Regular.ttf', 'GentiumPlus-Regular', 'normal')
-
-    const content: UserOptions = {
-      startY: 50,
-      // @ts-ignore
-      head: [columns.map((columnDef) => columnDef.field)],
-      body: data,
-      styles: {
-        font: 'GentiumPlus-Regular',
-      },
-      theme: 'striped',
-    }
-
-    doc.setFont('GentiumPlus-Regular', 'normal')
-    doc.setFontSize(15)
-    doc.text('Languages of New York City', 40, 40)
-
-    // Create table layout and save to filesystem
-    autoTable(doc, content)
-    doc.save('nyc-language-data.pdf')
-  }
-
   return (
     <>
       <SimpleDialog
@@ -194,9 +118,6 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
         tableRef={tableRef}
         options={{
           ...config.options,
-          exportCsv,
-          // @ts-ignore
-          exportPdf,
         }}
         columns={config.columns}
         localization={config.localization}
