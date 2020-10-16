@@ -52,7 +52,8 @@ export const localization: Localization = {
     actions: '',
   },
   toolbar: {
-    exportName: 'Export data',
+    exportCSVName: 'Download as CSV',
+    exportPDFName: 'Download as PDF',
     searchPlaceholder: 'Search...',
   },
 }
