@@ -5,18 +5,22 @@ import autoTable, { RowInput, UserOptions } from 'jspdf-autotable'
 import { ColumnList } from './types'
 import { LangRecordSchema } from '../../context/types'
 
+const getColumns = (columnList: ColumnList) =>
+  columnList.filter(
+    (columnDef) => !columnDef.hidden && columnDef.export !== false
+  )
+
+const getData = (columns: ColumnList, initialData: LangRecordSchema[]) =>
+  initialData.map((rowData) =>
+    columns.map((columnDef) => rowData[columnDef.field])
+  )
+
 export const exportCsv = (
   columnList: ColumnList,
   initialData: LangRecordSchema[]
 ): void => {
-  const columns = columnList.filter(
-    (columnDef) => !columnDef.hidden && columnDef.export !== false
-  )
-
-  const data = initialData.map((rowData) =>
-    columns.map((columnDef) => rowData[columnDef.field])
-  )
-
+  const columns = getColumns(columnList)
+  const data = getData(columns, initialData)
   const builder = new CsvBuilder('nyc-language-data.csv')
 
   builder
@@ -30,21 +34,18 @@ export const exportPdf = (
   columnList: ColumnList,
   initialData: LangRecordSchema[]
 ): void => {
+  // TODO: consider prefetch w/react-query in the component itself
   const GENTIUM_PATH = '/fonts/GentiumPlus-R-normal.json'
 
-  const columns = columnList.filter((columnDef) => {
-    return !columnDef.hidden && columnDef.field && columnDef.export !== false
-  })
+  const columns = getColumns(columnList)
+  const data = getData(columns, initialData)
 
-  const data = initialData.map((rowData) =>
-    columns.map((columnDef) => rowData[columnDef.field])
-  )
-
+  // Page settings
   const unit = 'pt'
   const format = 'letter'
   const orientation = 'landscape'
 
-  async function showAvatar() {
+  async function createPDF() {
     const response = await fetch(GENTIUM_PATH)
     const { font } = await response.json()
 
@@ -73,5 +74,5 @@ export const exportPdf = (
     doc.save('nyc-language-data.pdf')
   }
 
-  showAvatar()
+  createPDF()
 }
