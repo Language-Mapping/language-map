@@ -8,6 +8,7 @@ import {
   MdChevronLeft,
   MdChevronRight,
   MdClear,
+  MdFileDownload,
   MdFirstPage,
   MdLastPage,
   MdSearch,
@@ -33,6 +34,14 @@ const COMM_STATUS_LOOKUP = {
   [key in Statuses]: Statuses
 }
 
+// TODO: pass this as fn arg instead of importing in export util
+export const tableExportMeta = {
+  pageTitle: 'Languages of New York City',
+  filename: 'nyc-language-data',
+  fullDatasetURL:
+    'https://docs.google.com/spreadsheets/d/1CZLDDyxNM3euikks8NJfKt3ajNXToVGbwEObSOJkbfA/edit',
+}
+
 // TODO: TS it up
 export const COMM_SIZE_COL_MAP = {
   1: 'Smallest',
@@ -51,6 +60,10 @@ export const localization: Localization = {
     actions: '',
   },
   toolbar: {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore // in newer version of material-table, which has laggy bug...
+    exportCSVName: 'Download as CSV',
+    exportPDFName: 'Download as PDF',
     searchPlaceholder: 'Search...',
   },
 }
@@ -60,6 +73,8 @@ export const options = {
   columnsButton: true,
   doubleHorizontalScroll: false,
   draggable: true, // kinda clunky
+  exportAllData: true, // misleading, it actually exports all FILTERED data
+  exportButton: true, // enable it in the toolbar
   filtering: true,
   grouping: false, // kinda clunky
   isLoading: true,
@@ -87,6 +102,7 @@ export const options = {
 export const icons = {
   Check: MdCheck,
   DetailPanel: MdChevronRight,
+  Export: MdFileDownload,
   Filter: FaFilter,
   FirstPage: MdFirstPage,
   LastPage: MdLastPage,
@@ -101,7 +117,6 @@ export const icons = {
 
 const commonColProps = {
   editable: 'never',
-  export: false,
   searchable: true,
   // cellStyle: {},
 }
@@ -132,6 +147,7 @@ export const columns = [
     field: 'ID',
     ...commonColProps,
     filtering: false,
+    export: false,
     render: utils.renderIDcolumn,
   },
   {
@@ -140,6 +156,7 @@ export const columns = [
     ...commonColProps,
     sorting: false,
     filtering: false,
+    export: false,
     render: utils.renderDescripCol,
   },
   {
@@ -249,6 +266,7 @@ export const columns = [
     title: 'Video',
     field: 'Video',
     ...commonColProps,
+    export: false,
     filterComponent: VideoColumnFilter,
     headerStyle: { whiteSpace: 'nowrap' },
     render: (data) => <Cells.VideoColumnCell data={data} />,

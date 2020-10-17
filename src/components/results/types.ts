@@ -6,6 +6,14 @@ import MaterialTable, {
 
 import { LangRecordSchema } from '../../context/types'
 
+type ColumnWithField = Column<LangRecordSchema> & {
+  field: keyof LangRecordSchema
+  title: string
+}
+
+export type ColumnList = ColumnWithField[]
+export type InitialData = LangRecordSchema[]
+
 // The JSON file with {"name":"code"} country key/val pairs
 export type CountryCodes = { [key: string]: string }
 export type CloseTableProps = { closeTable: () => void }

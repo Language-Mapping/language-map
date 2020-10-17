@@ -1,4 +1,3 @@
-/* eslint-disable operator-linebreak */
 /* eslint-disable react/display-name */
 import React, { FC, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
@@ -86,10 +85,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
       dataManager.changeFilterValue(i, newlyFiltered[i].tableData.filterValue)
     })
 
-    self.setState({
-      ...dataManager.getRenderState(),
-      columns: newlyFiltered,
-    })
+    self.setState({ ...dataManager.getRenderState(), columns: newlyFiltered })
 
     setClearBtnEnabled(true)
     scrollToTop()
@@ -118,7 +114,29 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
       <MaterialTable
         icons={config.icons}
         tableRef={tableRef}
-        options={{ ...config.options }}
+        options={{
+          ...config.options,
+          exportCsv: (defs, data) => {
+            import('./exporting' /* webpackChunkName: "exporting" */)
+              .then(({ exportCsv }) => exportCsv(defs, data))
+              .catch(() => {
+                throw new Error(
+                  '😱 Uh oh! Could not import the exporting utility'
+                )
+              })
+          },
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          exportPdf: (defs, data) => {
+            import('./exporting' /* webpackChunkName: "exporting" */)
+              .then(({ exportPdf }) => exportPdf(defs, data))
+              .catch(() => {
+                throw new Error(
+                  '😱 Uh oh! Could not import the exporting utility'
+                )
+              })
+          },
+        }}
         columns={config.columns}
         localization={config.localization}
         data={tableData}
