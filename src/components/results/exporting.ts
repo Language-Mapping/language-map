@@ -35,7 +35,15 @@ export const exportCsv = (
 
   builder
     .setDelimeter(',')
-    .setColumns(columns.map((columnDef) => columnDef.title))
+    .setColumns(
+      columns.map((columnDef) => {
+        const { title, field } = columnDef
+
+        // Columns with React components inside them (e.g. "Local" indicator)
+        // are objects, all others are strings.
+        return typeof title === 'string' ? title : field
+      })
+    )
     .addRows(data)
     .exportFile()
 }
@@ -79,6 +87,7 @@ export const exportPdf = (
           dataKey: field,
           // Columns with React components inside them (e.g. "Local" indicator)
           // are objects, all others are strings.
+          // TODO: ^^^ create method to reuse this same logic for CSV columns
           header: typeof title === 'string' ? title : field,
         }
       }),
