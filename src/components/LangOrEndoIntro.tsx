@@ -18,7 +18,8 @@ const useStyles = makeStyles((theme: Theme) =>
       // TODO: cool if you can make this work: position: 'sticky', top: '3rem',
       fontSize: (props: StyleProps) => (props.tooLong ? '2rem' : '2.4rem'),
       [theme.breakpoints.up('sm')]: {
-        fontSize: (props: StyleProps) => (props.tooLong ? '2.6rem' : '3rem'),
+        // Safari and/or Firefox seem to need smaller font than Chrome
+        fontSize: (props: StyleProps) => (props.tooLong ? '2.3rem' : '3rem'),
       },
     },
   })
