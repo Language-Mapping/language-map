@@ -51,6 +51,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         height: 100, // ugghhhhh
       },
     },
+    // TODO: move the stupid searchbar onto its own line
     searchAndActions: {
       display: 'flex',
       gridArea: 'searchAndActions',
@@ -62,7 +63,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& .MuiToolbar-root > :last-child': { flexShrink: 0 }, // actions wrap
       [theme.breakpoints.only('xs')]: {
         '& .MuiToolbar-root': { paddingRight: 0 },
-        '& .MuiInputBase-root.MuiInput-root': { maxWidth: 165 },
+        '& .MuiInputBase-root.MuiInput-root': { maxWidth: 135 }, // so FRAGILE
       },
       [theme.breakpoints.up('md')]: {
         justifyContent: 'flex-end',
