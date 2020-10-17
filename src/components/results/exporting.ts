@@ -68,27 +68,36 @@ export const exportPdf = (
 
     const content: UserOptions = {
       body: data as RowInput[],
-      head: [
-        columns.map((columnDef) => {
-          const { title, field } = columnDef
+      // Use `columns` instead of `head` to get more control over the columns,
+      // and more importantly to be able to define the keys used by
+      // `columnStyles` rather than relying on the default (index).
+      columns: columns.map((columnDef) => {
+        const { title, field } = columnDef
 
+        return {
+          dataKey: field,
           // Columns with React components inside them (e.g. "Local" indicator)
-          // are objects, all others are strings
-          if (typeof title === 'string') return title
-
-          return field
-        }),
-      ],
+          // are objects, all others are strings.
+          header: typeof title === 'string' ? title : field,
+        }
+      }),
       margin: { horizontal: 25 },
       rowPageBreak: 'avoid',
       startY: titleY + 15,
-      theme: 'striped',
+      theme: 'striped', // should be default already
+      // Document-wide styles
       styles: {
         font: 'GentiumPlus-Regular',
       },
+      columnStyles: {
+        'World Region': { cellWidth: 65 }, // "Southeastern" won't wrap
+        Neighborhoods: { cellWidth: 100 }, // fits column heading
+        Size: { cellWidth: 50 },
+        Status: { cellWidth: 75 }, // "Community" fits
+      },
       headStyles: {
         fillColor: '#409685',
-        fontSize: 12,
+        fontSize: 11,
         valign: 'middle',
       },
       // Runs on each page, e.g. to show page numbers in footer
@@ -113,12 +122,20 @@ export const exportPdf = (
       align: 'center',
     })
 
-    autoTable(doc, content) // create table layout and save to filesystem
+    // Create table layout automatically-ish via plugin
+    autoTable(doc, content)
 
     // Replace the expression used in the per-page loop of jspdf-autotable
     // NOTE: total page number plugin only available in jspdf v1.0+
     doc.putTotalPages(totalPagesExp)
-    doc.save(`${config.tableExportMeta.filename}.pdf`)
+
+    // Open PDF in new tab, albeit with random hash suffix and "blob" prefix,
+    // but this was better than opening in current tab.
+    const blob = doc.output('blob')
+    window.open(URL.createObjectURL(blob))
+
+    // Great thread on why it's not possible to have your 🍰 and eat it too:
+    // https://stackoverflow.com/questions/41947735/custom-name-for-blob-url
   }
 
   createPDF()
