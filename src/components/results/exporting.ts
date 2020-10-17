@@ -62,6 +62,7 @@ export const exportPdf = (
     const response = await fetch(GENTIUM_PATH)
     const { font } = await response.json()
     const titleY = 50
+    const titleFontSize = 24
     const totalPagesExp = '{total_pages_count_string}'
     const doc = new jsPDF({ orientation, unit, format })
     const pageWidth = doc.internal.pageSize.getWidth()
@@ -81,9 +82,9 @@ export const exportPdf = (
           header: typeof title === 'string' ? title : field,
         }
       }),
-      margin: { horizontal: 25 },
+      margin: { horizontal: titleFontSize },
       rowPageBreak: 'avoid',
-      startY: titleY + 15,
+      startY: titleY + titleFontSize,
       theme: 'striped', // should be default already
       // Document-wide styles
       styles: {
@@ -94,6 +95,7 @@ export const exportPdf = (
         Neighborhoods: { cellWidth: 100 }, // fits column heading
         Size: { cellWidth: 50 },
         Status: { cellWidth: 75 }, // "Community" fits
+        'Global Speaker Total': { halign: 'right' },
       },
       headStyles: {
         fillColor: '#409685',
@@ -107,7 +109,8 @@ export const exportPdf = (
         const pageHeight = pageSize.getHeight()
 
         doc.setFontSize(10)
-        doc.text(str, pageWidth / 2, pageHeight - 25)
+        doc.setTextColor('#333') // otherwise still link color
+        doc.text(str, pageWidth / 2 - 20, pageHeight - titleFontSize)
       },
     }
 
@@ -117,15 +120,27 @@ export const exportPdf = (
     doc.setFont('GentiumPlus-Regular', 'normal')
 
     // Page title
-    doc.setFontSize(24) // pretty much just for the heading at time of writing
+    doc.setFontSize(titleFontSize)
     doc.text(config.tableExportMeta.pageTitle, pageWidth / 2, titleY, {
       align: 'center',
     })
 
+    // Link to full dataset
+    doc.setFontSize(10)
+    doc.setTextColor('#2196f3')
+    doc.textWithLink(
+      'View full source dataset in spreadsheet format',
+      pageWidth / 2 - 95, // so fragile
+      titleY + 15,
+      {
+        url: config.tableExportMeta.fullDatasetURL,
+      }
+    )
+
     // Create table layout automatically-ish via plugin
     autoTable(doc, content)
 
-    // Replace the expression used in the per-page loop of jspdf-autotable
+    // Footer: replace the expression used the per-page loop of jspdf-autotable
     // NOTE: total page number plugin only available in jspdf v1.0+
     doc.putTotalPages(totalPagesExp)
 

@@ -38,6 +38,8 @@ const COMM_STATUS_LOOKUP = {
 export const tableExportMeta = {
   pageTitle: 'Languages of New York City',
   filename: 'nyc-language-data',
+  fullDatasetURL:
+    'https://docs.google.com/spreadsheets/d/1CZLDDyxNM3euikks8NJfKt3ajNXToVGbwEObSOJkbfA/edit',
 }
 
 // TODO: TS it up
@@ -58,6 +60,8 @@ export const localization: Localization = {
     actions: '',
   },
   toolbar: {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore // in newer version of material-table, which has laggy bug...
     exportCSVName: 'Download as CSV',
     exportPDFName: 'Download as PDF',
     searchPlaceholder: 'Search...',
