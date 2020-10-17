@@ -14,7 +14,9 @@ const useStyles = makeStyles((theme: Theme) =>
     mapPopupRoot: {
       textAlign: 'center',
       minWidth: 150,
-      maxWidth: 250,
+      // Shaky but makes long endos like Church Slavonic's fit. Safari and/or
+      // Firefox seem to need more room than Chrome.
+      maxWidth: 270,
       wordWrap: 'break-word',
       '& .mapboxgl-popup-content': {
         // Leave room for "x" close button

@@ -9,14 +9,17 @@ export type LangOrEndoProps = {
   attribs: Pick<LangRecordSchema, 'Language' | 'Endonym' | 'Font Image Alt'>
 }
 
+// Shaky but makes long endos like Church Slavonic's fit
+type StyleProps = { tooLong: boolean }
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    // 2.4rem makes `Anashinaabemowin` fit
     detailsPanelHeading: {
       // TODO: cool if you can make this work: position: 'sticky', top: '3rem',
-      fontSize: '2.4rem',
+      fontSize: (props: StyleProps) => (props.tooLong ? '2rem' : '2.4rem'),
       [theme.breakpoints.up('sm')]: {
-        fontSize: '3rem',
+        // Safari and/or Firefox seem to need smaller font than Chrome
+        fontSize: (props: StyleProps) => (props.tooLong ? '2.3rem' : '3rem'),
       },
     },
   })
@@ -24,13 +27,19 @@ const useStyles = makeStyles((theme: Theme) =>
 
 // Mongolian, ASL, etc. have URLs to images
 export const LangOrEndoIntro: FC<LangOrEndoProps> = (props) => {
-  const classes = useStyles()
+  const CHAR_CUTOFF = 17
   const { attribs: selFeatAttribs } = props
   const {
     Endonym,
     Language: language,
     'Font Image Alt': altImage,
   } = selFeatAttribs
+
+  const classes = useStyles({
+    // SEMI-GROSS: if there are no spaces in the Endonym and it's over the
+    // character cutoff defined above, reduce the font size
+    tooLong: !Endonym.trim().includes(' ') && Endonym.length >= CHAR_CUTOFF,
+  })
 
   return (
     <>
