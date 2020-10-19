@@ -7,7 +7,9 @@ import { useStyles } from './styles'
 import { createAPIurl } from './utils'
 
 type ModalContentProps = { url: string }
-type YouTubeAPIvideoResponse = {
+
+// Same for playlists and individual videos
+type YouTubeAPIresponse = {
   items: { snippet: { title: string; description: string } }[]
 }
 
@@ -17,12 +19,13 @@ const MediaModalContent: FC<ModalContentProps> = (props) => {
   const { url } = props
   const apiUrl = createAPIurl(url)
   const classes = useStyles({})
-  const { isLoading, error, data } = useQuery('repoData', () =>
+
+  const { isLoading, error, data } = useQuery(url, () =>
     fetch(apiUrl).then((res) => res.json())
   ) as {
     isLoading: boolean
     error: Error
-    data: YouTubeAPIvideoResponse
+    data: YouTubeAPIresponse
   }
 
   // TODO: spinner or something
