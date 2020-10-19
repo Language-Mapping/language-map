@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+import * as Sentry from '@sentry/react'
 import { useQuery, QueryCache, ReactQueryCacheProvider } from 'react-query'
 import { Container, Button, Typography } from '@material-ui/core'
 import { SimpleDialog } from 'components'
@@ -37,8 +38,14 @@ const MediaModalContent: FC<ModalContentProps> = (props) => {
     )
   }
 
-  // TODO: support HTML descriptions
-  const { title, description } = data.items[0].snippet
+  // TODO: support HTML descriptions from archive.org
+  const { title, description } = data.items[0]?.snippet || {}
+
+  if (!data.items.length) {
+    Sentry.captureException(
+      `The YouTube API did not return any itmes for the following URL: ${url}`
+    )
+  }
 
   return (
     <>
