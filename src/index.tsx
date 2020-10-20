@@ -16,7 +16,14 @@ const SENTRY_DSN =
 // const history = createBrowserHistory() // TODO: export and use for `Back`?
 
 // Init error tracking
-Sentry.init({ dsn: SENTRY_DSN })
+Sentry.init({
+  dsn: SENTRY_DSN,
+  // Netlify's contexts are `production` and `deploy-preview` but React needs
+  // the `REACT_APP_` prefix, so these are set in netlify.toml file.
+  // TODO: is it really needed or just better practice to use `process`? What if
+  // `window.location` was used instead?
+  environment: process.env.REACT_APP_SENTRY_ENVIRONMENT,
+})
 
 // TODO: should this get broken out so that the main 2 are loaded here and the
 // custom ones go go into a lower component instead? They're not really needed
