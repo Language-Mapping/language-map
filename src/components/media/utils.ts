@@ -39,7 +39,7 @@ export const createAPIurl = (url: string): string => {
     return `${internetArchiveEmbed.replace('embed', 'metadata')}/${url.replace(
       internetArchiveEmbed,
       ''
-    )}`
+    )}/metadata`
   }
 
   Sentry.withScope((scope) => {
