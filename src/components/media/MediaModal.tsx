@@ -5,7 +5,7 @@ import { Container, Button, Typography } from '@material-ui/core'
 import { SimpleDialog } from 'components'
 import { MediaModalProps } from './types'
 import { useStyles } from './styles'
-import { createAPIurl } from './utils'
+import { createAPIurl, getMediaTypeViaURL } from './utils'
 
 type ModalContentProps = { url: string }
 
@@ -16,35 +16,69 @@ type YouTubeAPIresponse = {
 
 const queryCache = new QueryCache()
 
+const MediaErrorMsg: FC<{ url: string }> = (props) => {
+  const { url } = props
+
+  return (
+    <>
+      <Typography style={{ marginBottom: 16 }}>
+        Something went wrong looking for this:
+      </Typography>
+      <Typography style={{ marginBottom: 16 }}>{url}</Typography>
+    </>
+  )
+}
+
 const MediaModalContent: FC<ModalContentProps> = (props) => {
   const { url } = props
-  const apiUrl = createAPIurl(url)
+  const apiURL = createAPIurl(url)
   const classes = useStyles({})
 
   const { isLoading, error, data } = useQuery(url, () =>
-    fetch(apiUrl).then((res) => res.json())
+    fetch(apiURL).then((res) => res.json())
   ) as {
     isLoading: boolean
     error: Error
     data: YouTubeAPIresponse
   }
 
+  if (!apiURL) return <MediaErrorMsg url={url} />
+
   // TODO: spinner or something
   if (isLoading) return <div>loading...</div>
 
   if (error) {
-    throw new Error(
-      `😱 Uh oh! Something went wrong fetching media with a URL of ${url} and an error message of: ${error.message}`
-    )
+    Sentry.withScope((scope) => {
+      const mediaType = getMediaTypeViaURL(url)
+
+      Sentry.captureException(new Error('No luck hitting media API'), {
+        tags: {
+          'media.type': mediaType,
+          'media.url': url,
+        },
+      })
+    })
+
+    return <MediaErrorMsg url={url} />
   }
 
   // TODO: support HTML descriptions from archive.org
+  // CRED: (for short circuit) https://stackoverflow.com/a/58866546/1048518
   const { title, description } = data.items[0]?.snippet || {}
 
   if (!data.items.length) {
-    Sentry.captureException(
-      `The YouTube API did not return any itmes for the following URL: ${url}`
-    )
+    Sentry.withScope((scope) => {
+      const mediaType = getMediaTypeViaURL(url)
+
+      scope.setLevel(Sentry.Severity.Warning) // or should be error maybe?
+
+      Sentry.captureException(new Error('No video/audio found via API'), {
+        tags: {
+          'media.type': mediaType,
+          'media.url': url,
+        },
+      })
+    })
   }
 
   return (

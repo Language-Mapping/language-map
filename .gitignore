@@ -31,3 +31,9 @@ yarn-error.log*
 
 # caches
 .eslintcache
+
+# Local Netlify folder
+.netlify
+
+# Notes and TODOs, etc.
+_NOTES.md

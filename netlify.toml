@@ -1,0 +1,9 @@
+# Define context-specific environment variables
+[context.production.environment]
+  REACT_APP_SENTRY_ENVIRONMENT = "production"
+
+[context.deploy-preview.environment]
+  REACT_APP_SENTRY_ENVIRONMENT = "deploy-preview"
+
+# TODO: if using route-based code splitting w/cache (???), look into Headers:
+# https://docs.netlify.com/configure-builds/file-based-configuration/#headers

@@ -1,5 +1,7 @@
 # Languages of New York City Map
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/1f8bbbc8-4747-415e-bc63-b392256cedd5/deploy-status)](https://app.netlify.com/sites/languagemapping/deploys)
+
 > This project will become an interactive map of New York City’s linguistic
 > diversity, using data collected by the Endangered Language Alliance (ELA).
 > Users will need to be able to query a rich dataset and interact with the data
@@ -77,6 +79,12 @@ variable name as `REACT_APP_YOUTUBE_API_KEY`.
 The API is only used for metadata like title and descriptions. You can still
 embed videos without an API key, and Internet Archive's API does not require a
 key at all.
+
+### Sentry
+
+TODO: decide how/whether to explain Netlify, Sentry situation. If including
+Sentry, need to follow the React steps from their docs. If following same setup
+as ours, set the Sentry environment via `REACT_APP_SENTRY_ENVIRONMENT` env var.
 
 ## Usage
 
