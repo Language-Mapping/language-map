@@ -1,11 +1,17 @@
 import React, { FC } from 'react'
 import * as Sentry from '@sentry/react'
 import { useQuery, QueryCache, ReactQueryCacheProvider } from 'react-query'
-import { Container, Button, Typography } from '@material-ui/core'
+import {
+  Container,
+  Button,
+  Typography,
+  CircularProgress,
+} from '@material-ui/core'
 import { SimpleDialog } from 'components'
 import { MediaModalProps } from './types'
 import { useStyles } from './styles'
 import { createAPIurl, getMediaTypeViaURL } from './utils'
+import { createMarkup } from '../../utils'
 
 type ModalContentProps = { url: string }
 
@@ -56,8 +62,17 @@ const MediaModalContent: FC<ModalContentProps> = (props) => {
 
   if (!apiURL) return <MediaErrorMsg url={url} />
 
-  // TODO: spinner or something
-  if (isLoading) return <div>loading...</div>
+  if (isLoading) {
+    return (
+      <Container maxWidth="md" className={classes.dialogContent}>
+        {/* TODO: convert text and circular progress into reusable component */}
+        <Typography variant="h4" component="h2" style={{ marginBottom: 16 }}>
+          Loading...
+        </Typography>
+        <CircularProgress color="inherit" size={38} />
+      </Container>
+    )
+  }
 
   if (error) {
     Sentry.withScope(() => {
@@ -102,8 +117,21 @@ const MediaModalContent: FC<ModalContentProps> = (props) => {
 
   return (
     <>
-      <Typography variant="h3">{title}</Typography>
-      <Typography variant="caption">{description}</Typography>
+      <Typography variant="h3">
+        {/* TODO: make this check not so insanely fragile */}
+        {/* eslint-disable operator-linebreak */}
+        {title}
+        {mediaType.startsWith('Internet Archive') ||
+        url.includes('videoseries?list')
+          ? ' (playlist)'
+          : ''}
+        {/* eslint-enable operator-linebreak */}
+      </Typography>
+      <Typography
+        variant="caption"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={createMarkup(description)}
+      />
       <Container maxWidth="md" className={classes.dialogContent}>
         <div className={classes.videoContainer}>
           <iframe
