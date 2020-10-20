@@ -10,8 +10,7 @@ import {
 import { SimpleDialog } from 'components'
 import { MediaModalProps } from './types'
 import { useStyles } from './styles'
-import { createAPIurl, getMediaTypeViaURL } from './utils'
-import { createMarkup } from '../../utils'
+import * as utils from './utils'
 
 type ModalContentProps = { url: string }
 
@@ -52,9 +51,9 @@ const MediaErrorMsg: FC<{ url: string }> = (props) => {
 
 const MediaModalContent: FC<ModalContentProps> = (props) => {
   const { url } = props
-  const apiURL = createAPIurl(url)
+  const apiURL = utils.createAPIurl(url)
   const classes = useStyles({})
-  const mediaType = getMediaTypeViaURL(url)
+  const mediaType = utils.getMediaTypeViaURL(url)
 
   const { isLoading, error, data } = useQuery(url, () =>
     fetch(apiURL).then((res) => res.json())
@@ -64,8 +63,8 @@ const MediaModalContent: FC<ModalContentProps> = (props) => {
 
   if (isLoading) {
     return (
+      // TODO: convert text and circular progress into reusable component
       <Container maxWidth="md" className={classes.dialogContent}>
-        {/* TODO: convert text and circular progress into reusable component */}
         <Typography variant="h4" component="h2" style={{ marginBottom: 16 }}>
           Loading...
         </Typography>
@@ -87,7 +86,6 @@ const MediaModalContent: FC<ModalContentProps> = (props) => {
     return <MediaErrorMsg url={url} />
   }
 
-  // TODO: support HTML descriptions from archive.org
   let goods: { title: string; description: string } | null = null
 
   // CRED: (my goodness):
@@ -113,34 +111,20 @@ const MediaModalContent: FC<ModalContentProps> = (props) => {
     return <MediaErrorMsg url={url} />
   }
 
+  // NOTE: HTML support for Archive instances was removed to preserve consistent
+  // style and layout.
   const { title, description } = goods
+  const src = utils.createIframeURL(url, mediaType)
 
   return (
     <>
-      <Typography variant="h3">
-        {/* TODO: make this check not so insanely fragile */}
-        {/* eslint-disable operator-linebreak */}
-        {title}
-        {mediaType.startsWith('Internet Archive') ||
-        url.includes('videoseries?list')
-          ? ' (playlist)'
-          : ''}
-        {/* eslint-enable operator-linebreak */}
-      </Typography>
-      <Typography
-        variant="caption"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={createMarkup(description)}
-      />
+      <Typography variant="h3">{title}</Typography>
+      <Typography variant="caption">{description}</Typography>
       <Container maxWidth="md" className={classes.dialogContent}>
         <div className={classes.videoContainer}>
           <iframe
+            src={src}
             title={title}
-            // `playlist` has no impact on YouTube, just Internet Archive, and
-            // vice versa for `cc_load_policy`, which forces closed captioning
-            // regardless of user default (unless generated captions are the
-            // only form available, in which case user must turn on manually).
-            src={`${url}&playlist=1&cc_load_policy=1`}
             frameBorder="0"
             allow="encrypted-media"
             allowFullScreen
