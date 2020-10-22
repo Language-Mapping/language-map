@@ -53,17 +53,19 @@ export const OffCanvasNav: FC<OffCanvasNavProps> = (props) => {
         open={feedbackModalOpen}
         onClose={() => setFeedbackModalOpen(false)}
       >
-        <iframe
-          src={iframeSrc}
-          width="640"
-          height="753"
-          frameBorder="0"
-          marginHeight={0}
-          marginWidth={0}
-          title="Feedback and questions"
-        >
-          Loading…
-        </iframe>
+        <div style={{ height: '75vh' }}>
+          <iframe
+            src={iframeSrc}
+            width={window && window.innerWidth <= 640 ? '100%' : 640}
+            height="100%"
+            frameBorder="0"
+            marginHeight={0}
+            marginWidth={0}
+            title="Feedback and questions"
+          >
+            Loading…
+          </iframe>
+        </div>
       </SimpleDialog>
       <Drawer
         open={isOpen}
