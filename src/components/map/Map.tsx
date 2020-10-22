@@ -8,7 +8,11 @@ import {
   setRTLTextPlugin,
   LngLatBounds,
 } from 'mapbox-gl'
-import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
+import MapGL, {
+  InteractiveMap,
+  MapLoadEvent,
+  GeolocateControl,
+} from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
@@ -422,6 +426,20 @@ export const Map: FC<MapProps> = (props) => {
         onHover={onHover}
         onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
       >
+        {/* TODO: into separate component */}
+        <GeolocateControl
+          positionOptions={{ enableHighAccuracy: true }}
+          trackUserLocation
+          // TODO: wire these up or remove
+          // auto
+          // className="MuiSpeedDialAction-fab"
+          style={{
+            display: 'inline-block',
+            position: 'absolute',
+            bottom: 36,
+            left: 8,
+          }}
+        />
         {geocodeMarker && <GeocodeMarker {...geocodeMarker} />}
         {[neighbConfig, countiesConfig].map((boundaryConfig) => (
           <BoundariesLayer
