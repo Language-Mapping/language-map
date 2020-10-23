@@ -11,14 +11,10 @@ export const Geolocation: FC<GeolocationProps> = (props) => {
   return (
     <GeolocateControl
       positionOptions={{ enableHighAccuracy: true }}
-      trackUserLocation
+      trackUserLocation={active}
+      showUserLocation={active}
       auto={active}
-      style={{
-        display: 'inline-block',
-        position: 'absolute',
-        bottom: 36,
-        left: 8,
-      }}
+      style={{ display: 'none' }}
     />
   )
 }

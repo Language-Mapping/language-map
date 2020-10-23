@@ -20,14 +20,28 @@ import { useWindowResize } from '../../utils'
 import * as utils from './utils'
 import * as MapTypes from './types'
 
+type PopoutContentProps = {
+  heading: string
+  explanation?: string
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    popoverContent: { padding: '1em', width: 310 },
-    popoverContentText: { marginBottom: '.75em', fontSize: '0.8em' },
-    layersMenuPaper: { overflow: 'visible' },
+    popoverContent: {
+      '&:not(:first-of-type)': { marginTop: '0.5rem' },
+      '& > *': {
+        marginBottom: '0.3rem',
+        marginTop: '0.3rem',
+      },
+    },
+    explanation: {
+      color: theme.palette.text.secondary,
+      fontSize: '0.7em',
+    },
+    layersMenuPaper: { overflow: 'visible', padding: '1em', width: 310 },
+    // Toggle switches
     switchFormCtrlRoot: {
       marginLeft: 0,
-      marginTop: '0.8em',
     },
     smallerText: {
       fontSize: '0.8rem',
@@ -35,21 +49,16 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const LocationSearchContent: FC = (props) => {
-  const { children } = props
+const LocationSearchContent: FC<PopoutContentProps> = (props) => {
+  const { children, explanation, heading } = props
   const classes = useStyles()
 
   return (
     <Box className={classes.popoverContent}>
       <Typography variant="h5" component="h3">
-        Search by location
+        {heading}
       </Typography>
-      <Typography className={classes.popoverContentText}>
-        <small>
-          Enter an address, municipality, neighborhood, postal code, landmark,
-          or other point of interest within the New York City metro area.
-        </small>
-      </Typography>
+      <Typography className={classes.explanation}>{explanation}</Typography>
       {children}
     </Box>
   )
@@ -58,10 +67,12 @@ const LocationSearchContent: FC = (props) => {
 export const GeocoderPopout: FC<GeocoderProps> = (props) => {
   const {
     anchorEl,
-    setAnchorEl,
-    mapRef,
     boundariesLayersVisible,
+    geolocActive,
+    mapRef,
+    setAnchorEl,
     setBoundariesLayersVisible,
+    setGeolocActive,
   } = props
   const classes = useStyles()
   const { smallerText, switchFormCtrlRoot } = classes
@@ -117,13 +128,17 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
       PaperProps={{ className: classes.layersMenuPaper }}
       transformOrigin={{ vertical: 'center', horizontal: 'right' }}
     >
-      <LocationSearchContent>
+      <LocationSearchContent
+        heading="Search by location"
+        explanation="Enter an address, municipality, neighborhood, postal code, landmark,
+          or other point of interest within the New York City metro area."
+      >
         <div ref={geocoderContainerRef} />
         <FormControlLabel
-          classes={{ label: smallerText, root: switchFormCtrlRoot }}
           // Prevent off-canvas from closing (but we want that to happen for all
           // the other elements in the off-canvas).
           onClick={(event) => event.stopPropagation()}
+          classes={{ label: smallerText, root: switchFormCtrlRoot }}
           control={
             <Switch
               checked={boundariesLayersVisible}
@@ -146,6 +161,26 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
           proximity={NYC_LAT_LONG}
           types="address,poi,postcode,locality,place,neighborhood"
           bbox={[-77.5, 38.4, -70.7, 42.89]}
+        />
+      </LocationSearchContent>
+      <LocationSearchContent
+        heading="Zoom to my location"
+        explanation="Your location is not sent, shared, stored, or used for anything except zooming to your current location."
+      >
+        <FormControlLabel
+          // Prevent off-canvas from closing (but we want that to happen for all
+          // the other elements in the off-canvas).
+          onClick={(event) => event.stopPropagation()}
+          classes={{ label: smallerText, root: switchFormCtrlRoot }}
+          control={
+            <Switch
+              checked={geolocActive}
+              onChange={() => setGeolocActive(!geolocActive)}
+              name="toggle-geolocation"
+              size="small"
+            />
+          }
+          label="Show and zoom to my location"
         />
       </LocationSearchContent>
     </Popover>
