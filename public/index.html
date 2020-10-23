@@ -52,4 +52,61 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
   </body>
+  <script>
+    const earlyAccessPath = 'https://fonts.googleapis.com/earlyaccess/'
+
+    // CAREFUL: the lists below are maintained in two files:
+    // 1) index.html
+    // 2) fonts.ts
+    // ...because we can't do an `import` in index.html.
+    WebFontConfig = {
+      // CRED: https://stackoverflow.com/a/50073148/1048518
+      custom: {
+        // NOTE: order is intentional! Top-to-bottom is most to least likely to
+        // be viewed. They will all load eventually but this just reduces the
+        // chance of FOUT in case the user starts from an individual Details
+        // route with one of the languages using these fonts.
+        families: [
+          'Noto Sans Myanmar',
+          'Noto Sans Sinhala',
+          'Noto Sans Sylhoti Nagri',
+          'Noto Sans Coptic',
+          'Noto Sans Tifinagh',
+          'Noto Sans Vai',
+          'Noto Sans Limbu',
+          'Noto Sans Syriac Estrangela',
+          'Noto Sans Meetei Mayek',
+          'Noto Sans Thaana',
+          'Noto Sans Buginese',
+          'Noto Sans Ol Chiki',
+        ],
+        urls: [
+          `${earlyAccessPath}notosansmyanmar.css`,
+          `${earlyAccessPath}notosanssinhala.css`,
+          `${earlyAccessPath}notosanssylotinagri.css`,
+          `${earlyAccessPath}notosanscoptic.css`,
+          `${earlyAccessPath}notosanstifinagh.css`,
+          `${earlyAccessPath}notosansvai.css`,
+          `${earlyAccessPath}notosanslimbu.css`,
+          `${earlyAccessPath}notosanssyriacestrangela.css`,
+          `${earlyAccessPath}notosansmeeteimayek.css`,
+          `${earlyAccessPath}notosansthaana.css`,
+          `${earlyAccessPath}notosansbuginese.css`,
+          `${earlyAccessPath}notosansolchiki.css`,
+        ],
+      },
+    }
+
+    // Load it async. Yes the webloader is redundant with the `webfontloader`
+    // module, but this is an async attempt to load these extra fonts after the
+    // two base ones (Noto Sans and Gentium have already loaded).
+    ;(function (d) {
+      const wf = d.createElement('script')
+      const $scriptElem = d.scripts[0]
+
+      wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js'
+      wf.async = true
+      $scriptElem.parentNode.insertBefore(wf, $scriptElem)
+    })(document)
+  </script>
 </html>

@@ -2,6 +2,11 @@
 // https://fonts.google.com/earlyaccess
 const earlyAccessPath = 'https://fonts.googleapis.com/earlyaccess/'
 
+// CAREFUL: the lists below are maintained in two files:
+// 1) index.html
+// 2) fonts.ts
+// ...because we can't do an `import` in index.html.
+
 export const fontFamilies = [
   'Noto Sans Myanmar',
   'Noto Sans Sinhala',
