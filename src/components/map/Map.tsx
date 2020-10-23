@@ -8,11 +8,7 @@ import {
   setRTLTextPlugin,
   LngLatBounds,
 } from 'mapbox-gl'
-import MapGL, {
-  InteractiveMap,
-  MapLoadEvent,
-  GeolocateControl,
-} from 'react-map-gl'
+import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
@@ -20,6 +16,7 @@ import { GlobalContext } from 'components'
 import { paths as routes } from 'components/config/routes'
 import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
+import { Geolocation } from './Geolocation'
 import { MapPopup } from './MapPopup'
 import { MapCtrlBtns } from './MapCtrlBtns'
 import { BoundariesLayer } from './BoundariesLayer'
@@ -77,6 +74,7 @@ export const Map: FC<MapProps> = (props) => {
   const [boundariesLayersVisible, setBoundariesLayersVisible] = useState<
     boolean
   >(false)
+  const [geolocActive, setGeolocActive] = useState<boolean>(false)
 
   const { selFeatAttribs, langFeatures } = state
   const { legendItems } = symbLabelState
@@ -426,20 +424,7 @@ export const Map: FC<MapProps> = (props) => {
         onHover={onHover}
         onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
       >
-        {/* TODO: into separate component */}
-        <GeolocateControl
-          positionOptions={{ enableHighAccuracy: true }}
-          trackUserLocation
-          // TODO: wire these up or remove
-          // auto
-          // className="MuiSpeedDialAction-fab"
-          style={{
-            display: 'inline-block',
-            position: 'absolute',
-            bottom: 36,
-            left: 8,
-          }}
-        />
+        <Geolocation active={geolocActive} />
         {geocodeMarker && <GeocodeMarker {...geocodeMarker} />}
         {[neighbConfig, countiesConfig].map((boundaryConfig) => (
           <BoundariesLayer
@@ -466,6 +451,8 @@ export const Map: FC<MapProps> = (props) => {
       </MapGL>
       <MapCtrlBtns
         mapRef={mapRef}
+        geolocActive={geolocActive}
+        setGeolocActive={setGeolocActive}
         boundariesLayersVisible={boundariesLayersVisible}
         setBoundariesLayersVisible={setBoundariesLayersVisible}
         handlePitchReset={() => setViewport({ ...viewport, pitch: 0 })}

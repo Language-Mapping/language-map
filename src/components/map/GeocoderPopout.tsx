@@ -14,7 +14,7 @@ import {
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
-import { MapCtrlBtnsProps, GeocodeResult } from './types'
+import { GeocoderProps, GeocodeResult } from './types'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
 import * as utils from './utils'
@@ -53,13 +53,6 @@ const LocationSearchContent: FC = (props) => {
       {children}
     </Box>
   )
-}
-
-type GeocoderProps = Pick<MapCtrlBtnsProps, 'mapRef'> & {
-  anchorEl: null | HTMLElement
-  boundariesLayersVisible: boolean
-  setAnchorEl: React.Dispatch<null | HTMLElement>
-  setBoundariesLayersVisible: React.Dispatch<boolean>
 }
 
 export const GeocoderPopout: FC<GeocoderProps> = (props) => {
