@@ -424,7 +424,17 @@ export const Map: FC<MapProps> = (props) => {
         onHover={onHover}
         onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
       >
-        <Geolocation active={geolocActive} />
+        <Geolocation
+          active={geolocActive}
+          onViewportChange={(mapViewport: Types.ViewportState) => {
+            // CRED:
+            // github.com/visgl/react-map-gl/issues/887#issuecomment-531580394
+            setViewport({
+              ...mapViewport,
+              zoom: config.POINT_ZOOM_LEVEL,
+            })
+          }}
+        />
         {geocodeMarker && <GeocodeMarker {...geocodeMarker} />}
         {[neighbConfig, countiesConfig].map((boundaryConfig) => (
           <BoundariesLayer
