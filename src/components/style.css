@@ -20,6 +20,12 @@ a {
   src: url('/fonts/NotoSansNKo-Regular.ttf') format('truetype');
 }
 
+@font-face {
+  font-display: swap;
+  font-family: 'Gentium';
+  src: url('/fonts/GentiumAlt.ttf') format('truetype');
+}
+
 /* GROSS warning here down. Super fragile but menus not customizable? 🤷‍♂ */
 .MuiPopover-root[role='presentation']
   .MuiListItemText-root
