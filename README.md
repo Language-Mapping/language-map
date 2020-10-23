@@ -101,6 +101,20 @@ visible at[http://localhost:3000](http://localhost:3000).
 The page will automatically reload if you make edits. You will also see any lint
 errors in the console.
 
+#### SSL (https)
+
+If you prefer `https`, sans scary red warning in the browser, use a tool like
+`mkcert` and add these to your _.env_ file using its output:
+
+```bash
+HTTPS=true
+SSL_CRT_FILE=/The/Path/To/Your/Certificates/cert.pem
+SSL_KEY_FILE=/The/Path/To/Your/Certificates/key.pem
+```
+
+Steps may vary by OS but there are a lot of tutorials online. Just do a search
+for "create-react-app ssl" or similar.
+
 ### Test
 
 `yarn test` launches the test runner in the interactive watch mode. See the
