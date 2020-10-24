@@ -9,8 +9,6 @@ import { AiOutlineQuestionCircle } from 'react-icons/ai'
 import { paths as routes } from 'components/config/routes'
 import { GlobalContext } from 'components'
 
-type PanelIntroProps = { openTable: () => void }
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelIntroRoot: {
@@ -55,13 +53,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const PanelIntro: FC<PanelIntroProps> = (props) => {
-  const { openTable } = props
+export const PanelIntro: FC = (props) => {
   const { state, dispatch } = useContext(GlobalContext)
   const classes = useStyles()
   const loc = useLocation()
-
-  const handleTableBtnClick = (): void => openTable()
 
   return (
     <ul className={classes.panelIntroRoot}>
@@ -71,6 +66,13 @@ export const PanelIntro: FC<PanelIntroProps> = (props) => {
           className={classes.introBtn}
           color="primary"
           size="small"
+          component={RouterLink}
+          to={{
+            pathname: `/table`,
+            state: {
+              pathname: loc.pathname, // easy way to avoid `history.goBack`
+            },
+          }}
           startIcon={
             <Badge
               variant="dot"
@@ -84,7 +86,6 @@ export const PanelIntro: FC<PanelIntroProps> = (props) => {
               <TiThList />
             </Badge>
           }
-          onClick={handleTableBtnClick}
         >
           Data & filters
         </Button>
@@ -112,7 +113,7 @@ export const PanelIntro: FC<PanelIntroProps> = (props) => {
           disabled={state.selFeatAttribs === null}
           size="small"
           startIcon={<TiDocumentDelete />}
-          to={loc.pathname}
+          to={`/${loc.pathname.split('/')[1]}`}
         >
           Clear selected
         </Button>

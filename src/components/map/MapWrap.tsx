@@ -8,6 +8,7 @@ import {
   MOBILE_PANEL_HEADER_HEIGHT,
   panelWidths,
 } from 'components/panels/config'
+import { Panel, PanelIntro } from 'components/panels'
 import { getIDfromURLparams } from '../../utils'
 
 type MapPanelProps = { panelOpen?: boolean }
@@ -55,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const MapWrap: FC<MapWrapProps> = (props) => {
-  const { children, mapLoaded, map: Map } = props
+  const { mapLoaded, map: Map } = props
   const { state, dispatch } = useContext(GlobalContext)
   const loc = useLocation()
   const { langFeatures } = state
@@ -88,7 +89,9 @@ export const MapWrap: FC<MapWrapProps> = (props) => {
       {!mapLoaded && <LoadingBackdrop />}
       <main className={classes.appWrapRoot}>
         <div className={classes.mapWrap}>{Map}</div>
-        {children}
+        <Panel>
+          <PanelIntro />
+        </Panel>
         <FabPanelToggle />
       </main>
     </>

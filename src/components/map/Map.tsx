@@ -1,7 +1,7 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useQuery } from 'react-query'
 import { useTheme } from '@material-ui/core/styles'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
   AttributionControl,
   Map as MbMap,
@@ -60,8 +60,13 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
 
 export const Map: FC<MapProps> = (props) => {
   const { mapLoaded, setMapLoaded, openOffCanvasNav } = props
+
+  // Router
   const history = useHistory()
   const loc = useLocation()
+  const match: { params: { id: string } } | null = useRouteMatch('/details/:id')
+  const matchedFeatID = match?.params?.id
+
   const { state, dispatch } = useContext(GlobalContext)
   const symbLabelState = useSymbAndLabelState()
   const theme = useTheme()
@@ -74,6 +79,9 @@ export const Map: FC<MapProps> = (props) => {
     boolean
   >(false)
 
+  // TODO: don't get `selFeatAttribs` from state, instead reuse a util or make a
+  // hook for setting this locally whenever `matchedFeatID` changes. Then we're
+  // down to just ONE state property- `langFeatures`, which may be here forever.
   const { selFeatAttribs, langFeatures } = state
   const { legendItems } = symbLabelState
 
@@ -199,12 +207,19 @@ export const Map: FC<MapProps> = (props) => {
 
     nuclearClear()
 
-    if (!selFeatAttribs) return
+    if (!matchedFeatID) return
+
+    const matchingRecord = findFeatureByID(
+      state.langFeatures,
+      parseInt(matchedFeatID, 10)
+    )
+
+    if (!matchingRecord) return
 
     // NOTE: won't get this far on load even if feature is selected. The timing
     // and order of the whole process prevent that.
 
-    const { ID, Latitude: latitude, Longitude: longitude } = selFeatAttribs
+    const { ID, Latitude: latitude, Longitude: longitude } = matchingRecord
     const settings = {
       latitude,
       longitude,
@@ -221,8 +236,8 @@ export const Map: FC<MapProps> = (props) => {
     )
 
     // TODO: make popups on mobile not off-center
-    utils.flyToPoint(map, settings, utils.prepPopupContent(selFeatAttribs))
-  }, [selFeatAttribs, mapLoaded])
+    utils.flyToPoint(map, settings, utils.prepPopupContent(matchingRecord))
+  }, [matchedFeatID, mapLoaded])
   /* eslint-enable react-hooks/exhaustive-deps */
 
   function onHover(event: Types.MapEvent) {
@@ -339,7 +354,7 @@ export const Map: FC<MapProps> = (props) => {
       const langFeat = topLangFeat as Types.LangFeature
 
       // TODO: use `initialEntries` in <MemoryRouter> to test routing
-      history.push(`${routes.details}?id=${langFeat.properties.ID}`)
+      history.push(`${routes.details}/${langFeat.properties.ID}`)
 
       return // prevent boundary click underneath
     }

@@ -54,7 +54,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
 
     // Show feature in map
     if (field === 'ID') {
-      history.push(`${routes.details}?id=${rowData.ID}`)
+      history.push(`${routes.details}/${rowData.ID}`)
       closeTable()
 
       return
@@ -105,11 +105,12 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
 
   return (
     <>
+      {/* TODO: <Route path="/table/:id" */}
       <SimpleDialog
         open={detailsModalContent !== undefined}
         onClose={() => setDetailsModalContent(undefined)}
       >
-        <DetailsPanel skipSelFeatCheck attribsDirect={detailsModalContent} />
+        <DetailsPanel />
       </SimpleDialog>
       <MaterialTable
         icons={config.icons}

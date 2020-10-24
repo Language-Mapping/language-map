@@ -7,7 +7,6 @@ import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { TopBar, OffCanvasNav } from 'components/nav'
 import { MapWrap, Map } from 'components/map'
-import { Panel, PanelIntro } from 'components/panels'
 import { AboutPageView, WelcomeDialog } from 'components/about'
 import { ResultsModal } from 'components/results'
 import { fetchAbout, fetchHelp, fetchWelcome } from 'components/about/utils'
@@ -15,12 +14,8 @@ import { paths as routes } from 'components/config/routes'
 import { ABOUT_QUERY, HELP_QUERY, WELCOME_QUERY } from 'components/about/config'
 
 export const App: FC = () => {
-  const [tableOpen, setTableOpen] = useState<boolean>(false)
   const [offCanvasNavOpen, setOffCanvasNavOpen] = useState<boolean>(false)
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
-
-  const openTable = (): void => setTableOpen(true)
-  const closeTable = (): void => setTableOpen(false)
 
   useEffect(() => {
     queryCache.prefetchQuery(WELCOME_QUERY, fetchWelcome)
@@ -60,11 +55,6 @@ export const App: FC = () => {
           queryName={ABOUT_QUERY}
         />
       </Route>
-      <ResultsModal
-        open={tableOpen}
-        closeTable={closeTable}
-        mapLoaded={mapLoaded}
-      />
       <Route path={routes.help}>
         <AboutPageView
           title="Help"
@@ -72,6 +62,7 @@ export const App: FC = () => {
           queryName={HELP_QUERY}
         />
       </Route>
+      <ResultsModal />
       <MapWrap
         mapLoaded={mapLoaded}
         map={
@@ -81,11 +72,7 @@ export const App: FC = () => {
             openOffCanvasNav={() => setOffCanvasNavOpen(true)}
           />
         }
-      >
-        <Panel>
-          <PanelIntro openTable={openTable} />
-        </Panel>
-      </MapWrap>
+      />
     </Sentry.ErrorBoundary>
   )
 }

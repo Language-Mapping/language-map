@@ -22,6 +22,6 @@ export const panelsConfig = [
     subheading: 'of selected community',
     icon: <TiDocumentText />,
     component: <DetailsPanel />,
-    path: '/details',
+    path: '/details/:id',
   },
 ] as MapPanel[]

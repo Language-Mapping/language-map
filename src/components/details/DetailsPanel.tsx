@@ -1,5 +1,5 @@
 import React, { FC, useContext } from 'react'
-import { Link as RouterLink, useLocation } from 'react-router-dom'
+import { Link as RouterLink, useLocation, useParams } from 'react-router-dom'
 import { Typography, Divider, Button } from '@material-ui/core'
 import { FaRandom } from 'react-icons/fa'
 import { BiMapPin } from 'react-icons/bi'
@@ -11,12 +11,7 @@ import { paths as routes } from 'components/config/routes'
 import { Media } from 'components/media'
 import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
 import { useStyles } from './styles'
-import { LangRecordSchema } from '../../context/types'
-
-type DetailsPanelProps = {
-  attribsDirect?: LangRecordSchema
-  skipSelFeatCheck?: boolean
-}
+import { findFeatureByID } from '../../utils'
 
 // TODO: separate files
 const RandomLinkBtn: FC = () => {
@@ -35,64 +30,61 @@ const RandomLinkBtn: FC = () => {
       component={RouterLink}
       size="small"
       startIcon={<FaRandom />}
-      to={`${routes.details}?id=${id}`}
+      to={`${routes.details}/${id}`}
     >
       Try one at random
     </Button>
   )
 }
 
-const NoFeatSel: FC = () => {
+const NoFeatSel: FC<{ reason?: string }> = (props) => {
+  const { reason = 'No community selected.' } = props
   const classes = useStyles()
 
   return (
     <div style={{ textAlign: 'center', maxWidth: '85%', margin: '16px auto' }}>
       <Typography className={classes.noFeatSel}>
-        No community selected. Click a community in the map or in the data
-        table.
+        {reason} Click a community in the map or in the data table.
       </Typography>
       <RandomLinkBtn />
     </div>
   )
 }
 
-export const DetailsPanel: FC<DetailsPanelProps> = (props) => {
-  const { attribsDirect, skipSelFeatCheck } = props
+export const DetailsPanel: FC = () => {
   const { state } = useContext(GlobalContext)
   const symbLabelState = useSymbAndLabelState()
   const classes = useStyles()
   const loc = useLocation()
-  const attribsToUse = attribsDirect || state.selFeatAttribs
+  const { id } = useParams<{ id: string }>()
 
-  // Shaky check to see if features have loaded and are stored globally
   // TODO: use MB's loading events to set this instead
-  if (!state.langFeatures.length) return null
-  if (!state.selFeatAttribs && !skipSelFeatCheck) return <NoFeatSel />
-  if (!attribsToUse) return null
+  if (!state.langFeatures.length) return <p>Communities are still loading...</p>
+  if (!id) return <NoFeatSel />
+
+  const matchingRecord = findFeatureByID(state.langFeatures, parseInt(id, 10))
+
+  // TODO: send stuff to Sentry
+  if (!matchingRecord)
+    return <NoFeatSel reason={`No community found with an ID of ${id}.`} />
 
   const elemID = 'details'
   const {
     Language: language,
     Neighborhoods,
     Description: description,
-    // Size, // TODO: cell strength bars for Size
     Town,
     Countries,
     Audio: audio,
     Video: video,
     'World Region': WorldRegion,
-  } = attribsToUse
+    // Size, // TODO: cell strength bars for Size
+  } = matchingRecord
   const { intro, descripSection, neighborhoods, divider } = classes
   const regionSwatchColor =
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     symbLabelState.legendSymbols[WorldRegion].paint['icon-color'] as string
-
-  // TODO: deal with `id` present in URL but no match found
-  // const parsed = queryString.parse(window.location.search)
-  // const matchingRecord = state.langFeatures.find(
-  //   (feature) => feature.ID === parsed.id
-  // )
 
   return (
     <>
@@ -100,7 +92,7 @@ export const DetailsPanel: FC<DetailsPanelProps> = (props) => {
         <ScrollToTopOnMount elemID={elemID} trigger={loc.pathname} />
       )}
       <div className={intro} id={elemID}>
-        <LangOrEndoIntro attribs={attribsToUse} />
+        <LangOrEndoIntro attribs={matchingRecord} />
         <Typography className={neighborhoods}>
           <BiMapPin />
           {Neighborhoods || Town}

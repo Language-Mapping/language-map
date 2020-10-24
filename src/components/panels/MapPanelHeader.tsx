@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: '1.85rem',
         padding: `${theme.spacing(1)}px 1rem`,
       },
+      // TODO: use <NavLink> instead: https://reactrouter.com/web/api/NavLink
       backgroundColor: (props: PanelHeaderProps) =>
         props.active ? theme.palette.primary.dark : theme.palette.primary.light,
       '& svg': { marginRight: 6, height: '0.8em', width: '0.8em' },
