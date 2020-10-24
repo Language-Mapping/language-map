@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://map.languagemapping.org/" target="_blank" title="Project website">
+    <img alt="logo" src="src/img/logo.svg" width="320" />
+  </a>
+</p>
+
 # Languages of New York City Map
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/1f8bbbc8-4747-415e-bc63-b392256cedd5/deploy-status)](https://app.netlify.com/sites/languagemapping/deploys)
