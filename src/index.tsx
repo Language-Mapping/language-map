@@ -5,10 +5,6 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import WebFont from 'webfontloader'
 
 import { App, ProvidersWrap } from 'components'
-import {
-  fontFamilies as families,
-  fontUrls as urls,
-} from 'components/config/fonts'
 import * as serviceWorker from './serviceWorker'
 
 const SENTRY_DSN =
@@ -25,20 +21,14 @@ Sentry.init({
   environment: process.env.REACT_APP_SENTRY_ENVIRONMENT,
 })
 
-// TODO: should this get broken out so that the main 2 are loaded here and the
-// custom ones go go into a lower component instead? They're not really needed
-// on load for the most part...
 WebFont.load({
   google: {
-    families: [
-      'Gentium Basic:400,700',
-      'Noto Sans:ital,wght@0,400;0,700;1,400',
-    ],
+    families: ['Noto Sans:ital,wght@0,400;0,700;1,400'],
   },
-  // CRED: https://stackoverflow.com/a/50073148/1048518
+  // Gentium is already loaded in the CSS but this seems to avoid FOUT
   custom: {
-    families,
-    urls,
+    families: ['Gentium'],
+    urls: ['/fonts/GentiumAlt.ttf'],
   },
 })
 

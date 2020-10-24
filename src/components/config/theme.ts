@@ -9,23 +9,39 @@ import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles'
 import { fontFamilies } from './fonts'
 
 const customEndoFonts = fontFamilies.join(',')
-const HEADING_FONT = `'Gentium Basic', ${customEndoFonts}, Times, serif`
-const bodyFonts = `
-  'Noto Sans',
-  ${customEndoFonts},
-  Roboto,
-  'Helvetica Neue',
+
+// This stack should handle the majority of missing glyphs, which are all
+// represented by these endonyms:
+// Cilendɑno, Bənəvientɑ̀nə, Gurenɛ, Èʋegbe, Mandɔyí, Tiếng Việt, Avañe'ẽ,
+// Asụsụ, Igbo
+const FALLBACK_FONTS = `
+  Calibri,
   Arial,
+  Tahoma,
   sans-serif
 `
 
+// Ideally would use a serif fallback, but sans-serif seemed more available:
+// https://www.fileformat.info/
+const HEADING_FONT = `
+  Gentium,
+  ${customEndoFonts},
+  ${FALLBACK_FONTS}
+`
+
+const BODY_FONTS = `
+  'Noto Sans',
+  ${customEndoFonts},
+  ${FALLBACK_FONTS}
+`
+
 const headings = {
-  h1: { fontFamily: HEADING_FONT, fontWeight: 700 },
-  h2: { fontFamily: HEADING_FONT, fontWeight: 700 },
-  h3: { fontFamily: HEADING_FONT, fontWeight: 700 },
-  h4: { fontFamily: HEADING_FONT, fontWeight: 700 },
-  h5: { fontFamily: HEADING_FONT, fontWeight: 700 },
-  h6: { fontFamily: HEADING_FONT, fontWeight: 700 },
+  h1: { fontFamily: HEADING_FONT },
+  h2: { fontFamily: HEADING_FONT },
+  h3: { fontFamily: HEADING_FONT },
+  h4: { fontFamily: HEADING_FONT },
+  h5: { fontFamily: HEADING_FONT },
+  h6: { fontFamily: HEADING_FONT },
 }
 
 // BREAKPOINTS: material-ui.com/customization/breakpoints/#default-breakpoints
@@ -58,7 +74,7 @@ const customTheme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: bodyFonts,
+    fontFamily: BODY_FONTS,
     fontSize: 16,
     ...headings,
   },

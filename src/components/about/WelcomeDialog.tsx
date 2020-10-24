@@ -1,11 +1,6 @@
 import React, { FC, useState } from 'react'
 import { useQuery } from 'react-query'
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  useTheme,
-} from '@material-ui/core/styles'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import {
   Backdrop,
@@ -18,7 +13,7 @@ import {
 import { WpApiPageResponse, WpQueryNames } from './types'
 import { WelcomeFooter } from './WelcomeFooter'
 import { createMarkup } from '../../utils'
-import { useStyles as useTopBarStyles } from '../nav/styles'
+import { ReactComponent as ProjectLogo } from '../../img/logo.svg'
 
 type AboutPageProps = {
   queryName: WpQueryNames
@@ -31,6 +26,14 @@ const useStyles = makeStyles((theme: Theme) =>
       zIndex: theme.zIndex.drawer + 1,
     },
     logo: {
+      height: '4.5rem',
+      color: theme.palette.text.primary,
+      '& #title': { fill: 'currentColor' },
+      '& #subtitle': { fill: 'currentColor' },
+      '& #accent': { stroke: theme.palette.primary.light },
+      [theme.breakpoints.up('sm')]: { height: '6rem' },
+    },
+    dialogTitle: {
       display: 'flex',
       justifyContent: 'center',
     },
@@ -41,10 +44,6 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.down('sm')]: {
         fontSize: '3rem',
       },
-    },
-    subtitle: {
-      fontSize: '0.32em',
-      marginTop: '-0.4em',
     },
     subSubTitle: {
       color: theme.palette.text.secondary,
@@ -76,26 +75,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 // TODO: separate file. You know the drill.
 export const Logo: FC = (props) => {
-  const theme = useTheme()
-  const classes = {
-    ...useTopBarStyles({
-      logoLineColor: theme.palette.primary.light,
-      logoHorizPadding: '0.45em',
-    }),
-    ...useStyles(),
-  }
-  const { logo, logoInner, titleMain, subtitle, subSubTitle } = classes
+  const classes = useStyles()
+  const { logo, logoInner, subSubTitle, dialogTitle } = classes
 
   return (
-    <Typography variant="h2" className={logo}>
+    <Typography variant="h2" className={dialogTitle}>
       <div className={logoInner}>
-        <span
-          style={{ textShadow: 'hsl(0deg 0% 25% / 80%) 1px 1px 5px' }}
-          className={titleMain}
-        >
-          Languages
-        </span>
-        <span className={subtitle}>of New York City</span>
+        <ProjectLogo className={logo} />
         <Typography variant="caption" className={subSubTitle}>
           An urban language map
         </Typography>

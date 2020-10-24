@@ -48,6 +48,7 @@ export const exportCsv = (
     .exportFile()
 }
 
+// TODO: if switching UI headings to Gentium Alt, use that instead of Plus here
 export const exportPdf = (
   columnList: ColumnList,
   initialData: LangRecordSchema[]

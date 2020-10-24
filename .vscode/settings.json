@@ -1,5 +1,12 @@
 {
   "files.associations": {
     "*.yaml": "home-assistant"
+  },
+  "workbench.editor.titleScrollbarSizing": "large",
+  "workbench.editor.untitled.labelFormat": "name",
+  "window.title": "${activeEditorShort}${separator}Languages of NYC",
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#409685",
+    "titleBar.activeForeground": "#ffffff"
   }
 }

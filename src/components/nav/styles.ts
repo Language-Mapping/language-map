@@ -14,6 +14,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       position: 'relative',
       display: 'flex',
       textAlign: 'center',
+      top: 4,
+      [theme.breakpoints.up('sm')]: { top: theme.spacing(1) },
+      [theme.breakpoints.only('sm')]: { left: theme.spacing(1), top: 12 },
       // Direct children relative position so `zIndex` can be used
       '& > *': { position: 'relative' },
       '& a, & a:visited': {
@@ -39,32 +42,14 @@ export const useStyles = makeStyles((theme: Theme) =>
           props.panelOpen ? panelWidths.midLarge : 0,
       },
     },
+    logo: {
+      height: '3.5rem',
+      [theme.breakpoints.up('sm')]: { height: '4.5rem' },
+      [theme.breakpoints.up('md')]: { height: '5rem' },
+      [theme.breakpoints.up('lg')]: { height: '6rem' },
+    },
     title: {
       zIndex: 1,
-      [theme.breakpoints.down('md')]: { marginLeft: theme.spacing(1) },
-    },
-    titleMain: {
-      // lineHeight: 1, // single-line anyway, and allows for reliance on gutter
-      // Horizontal padding allows the background image to extend past text
-      padding: (props: NavStyleProps) =>
-        `0 ${props.logoHorizPadding || '0.15em'}`,
-      // CRED: css-tricks.com/snippets/css/css-linear-gradient/#hard-color-stops
-      backgroundImage: (props: NavStyleProps) => `
-      linear-gradient(
-        to top, 
-        transparent,
-        transparent 0.165em,
-        ${props.logoLineColor || 'gold'} 0.165em,
-        ${props.logoLineColor || 'gold'} 0.24em,
-        transparent 0.24em,
-        transparent 100%
-      )`,
-    },
-    subtitle: {
-      // Steady regardless of light/dark theme BUT not MB background map:
-      color: theme.palette.grey[800],
-      fontSize: '0.32em',
-      marginTop: '-0.4em',
     },
   })
 )
