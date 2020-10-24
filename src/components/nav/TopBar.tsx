@@ -18,7 +18,7 @@ export const TopBar: FC = () => {
     <header className={topBarRoot} id={PAGE_HEADER_ID}>
       <div className={`${spacerDesktop} ${spacerLeft}`} />
       <Typography variant="h2" component="h1" className={title}>
-        <RouteLink to={routes.home}>
+        <RouteLink to={routes.home} data-testid={PAGE_HEADER_ID}>
           <Logo className={logo} />
         </RouteLink>
       </Typography>
