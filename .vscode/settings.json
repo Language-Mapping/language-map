@@ -8,5 +8,8 @@
   "workbench.colorCustomizations": {
     "titleBar.activeBackground": "#409685",
     "titleBar.activeForeground": "#ffffff"
+  },
+  "search.exclude": {
+    "public/img/country-flags": true
   }
 }
