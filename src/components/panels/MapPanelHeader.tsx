@@ -1,31 +1,64 @@
 import React, { FC, useContext } from 'react'
-import { useLocation, Link as RouterLink } from 'react-router-dom'
+import { useLocation, NavLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Box, Typography, IconButton } from '@material-ui/core'
-import { FiChevronDown } from 'react-icons/fi'
+import { Box, Typography } from '@material-ui/core'
 
-import { MOBILE_PANEL_HEADER_HEIGHT } from 'components/panels/config'
+import { MOBILE_PANEL_HEADER_HT } from 'components/panels/config'
 import { MapPanel } from 'components/panels/types'
 import { GlobalContext } from 'components'
+import { PanelCloseBtn } from './PanelCloseBtn'
 
-type PanelHeaderProps = { active?: boolean }
-type PanelHeaderComponent = Omit<MapPanel, 'component'> & {
-  active: boolean
-}
+type PanelHeaderComponent = Omit<MapPanel, 'component'>
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelHeaderRoot: {
       alignItems: 'center',
-      color: theme.palette.common.white,
+      color: theme.palette.text.secondary,
       display: 'flex',
-      justifyContent: 'center',
+      // justifyContent: 'center',
       '& a, a:visited': {
-        color: `${theme.palette.common.white} !important`, // constant fight!
+        color: 'inherit',
       },
-      [theme.breakpoints.down('sm')]: { height: MOBILE_PANEL_HEADER_HEIGHT },
+      /* left top */
+      /* right top */
+      /* right bottom */
+      /* left bottom */
+      // CRED: https://kilianvalkhof.com/2017/design/sloped-edges-with-consistent-angle-in-css/
+      '& > *': {
+        clipPath: `polygon(
+          0 0,
+          100% 0,
+          100% 90%,
+          0 100%
+        )`,
+      },
+      '& > :first-child': {
+        color: 'green',
+        clipPath: `polygon(
+          0 0,
+          100% 0,
+          100% 90%,
+          0 100%
+        )`,
+      },
+      '& > :last-child': {
+        clipPath: `polygon(
+          5% 0,
+          100% 0,
+          100% 100%,
+          0 100%
+        )`,
+      },
+      '& :hover': {
+        backgroundColor: theme.palette.primary.dark,
+      },
+      // '& a, a:visited': {
+      //   color: `${theme.palette.common.white} !important`, // constant fight!
+      // },
+      [theme.breakpoints.down('sm')]: { height: MOBILE_PANEL_HEADER_HT },
     },
-    mainHeading: {
+    panelNavItem: {
       alignItems: 'center',
       display: 'flex',
       flex: 1,
@@ -33,77 +66,49 @@ const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       padding: `${theme.spacing(1)}px 0.75rem`,
       transition: '300ms background-color',
+      outline: 'solid gold 1px',
+      color: theme.palette.text.secondary,
+      backgroundColor: 'black',
+      '& svg': { marginRight: 6, height: '0.8em', width: '0.8em' },
       [theme.breakpoints.up('lg')]: {
         fontSize: '1.85rem',
         padding: `${theme.spacing(1)}px 1rem`,
       },
-      // TODO: use <NavLink> instead: https://reactrouter.com/web/api/NavLink
-      backgroundColor: (props: PanelHeaderProps) =>
-        props.active ? theme.palette.primary.dark : theme.palette.primary.light,
-      '& svg': { marginRight: 6, height: '0.8em', width: '0.8em' },
-      '&:hover': {
-        backgroundColor: (props: PanelHeaderProps) => {
-          const { dark, main } = theme.palette.primary
-
-          return props.active ? dark : main
-        },
-      },
+    },
+    panelNavItemActive: {
+      // backgroundColor: 'teal',
+      // fontWeight: 'bold',
+      color: theme.palette.text.primary,
+      // '& a, a:visited': { },
+      // '&:hover': {
+      //   backgroundColor: 'tan',
+      // },
     },
   })
 )
-
-const useCloseBtnStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    panelCloseBtn: {
-      position: 'absolute',
-      right: '0.5em',
-      transition: '300ms transform',
-      transformOrigin: 'center center',
-      transform: (props: { panelOpen: boolean }) =>
-        props.panelOpen ? 'rotate(0deg)' : 'rotate(180deg)',
-      [theme.breakpoints.up('md')]: { display: 'none' },
-    },
-  })
-)
-
-const PanelCloseBtn: FC = () => {
-  const { state, dispatch } = useContext(GlobalContext)
-  const classes = useCloseBtnStyles({
-    panelOpen: state.panelState === 'default',
-  })
-
-  return (
-    <IconButton
-      edge="end"
-      color="inherit"
-      className={classes.panelCloseBtn}
-      onClick={() => {
-        const nextPanelState =
-          state.panelState === 'default' ? 'minimized' : 'default'
-
-        dispatch({ type: 'SET_PANEL_STATE', payload: nextPanelState })
-      }}
-    >
-      <FiChevronDown />
-    </IconButton>
-  )
-}
 
 export const MapPanelHeaderChild: FC<PanelHeaderComponent> = (props) => {
-  const { active, heading, icon, path, subheading } = props
+  const { heading, icon, rootPath, subheading } = props
   const { state, dispatch } = useContext(GlobalContext)
-  const classes = useStyles({ active })
+  const classes = useStyles()
+  const { panelNavItem, panelNavItemActive } = classes
   const loc = useLocation()
 
   return (
     <>
       <Typography
         variant="h4"
-        // component="h2" // TODO: make semantic if it makes sense
-        component={RouterLink}
-        className={classes.mainHeading}
+        component={NavLink}
+        className={panelNavItem}
+        activeClassName={panelNavItemActive}
         title={`${heading} ${subheading} (click to show/hide panel)`}
-        to={`${path}${loc.search}`}
+        // TODO: preserve states like selFeatID, etc. on route change (already
+        // have a Type def started)
+        to={{
+          // pathname: `${rootPath}${subPath}`,
+          pathname: rootPath,
+          state: loc.state,
+        }}
         onClick={() => {
           // Open the panel
           if (state.panelState === 'minimized') {

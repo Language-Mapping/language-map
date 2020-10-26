@@ -1,10 +1,7 @@
 /* eslint-disable operator-linebreak */
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import {
-  panelWidths,
-  MOBILE_PANEL_HEADER_HEIGHT,
-} from 'components/panels/config'
+import { panelWidths, MOBILE_PANEL_HEADER_HT } from 'components/panels/config'
 import { MapPanelProps } from './types'
 
 export const useStyles = makeStyles((theme: Theme) =>
@@ -20,9 +17,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.down('sm')]: {
         height: '50%',
         top: (props: MapPanelProps) =>
-          props.panelOpen
-            ? '50%'
-            : `calc(100% - ${MOBILE_PANEL_HEADER_HEIGHT})`,
+          props.panelOpen ? '50%' : `calc(100% - ${MOBILE_PANEL_HEADER_HT})`,
         position: 'absolute',
       },
       [theme.breakpoints.up('md')]: {

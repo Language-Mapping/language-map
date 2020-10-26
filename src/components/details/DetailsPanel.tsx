@@ -1,5 +1,9 @@
 import React, { FC, useContext } from 'react'
-import { Link as RouterLink, useLocation, useParams } from 'react-router-dom'
+import {
+  Link as RouterLink,
+  useLocation,
+  useRouteMatch,
+} from 'react-router-dom'
 import { Typography, Divider, Button } from '@material-ui/core'
 import { FaRandom } from 'react-icons/fa'
 import { BiMapPin } from 'react-icons/bi'
@@ -56,17 +60,25 @@ export const DetailsPanel: FC = () => {
   const symbLabelState = useSymbAndLabelState()
   const classes = useStyles()
   const loc = useLocation()
-  const { id } = useParams<{ id: string }>()
+  const match: { params: { id: string } } | null = useRouteMatch('/:any/:id')
+  const matchedFeatID = match?.params?.id
 
   // TODO: use MB's loading events to set this instead
-  if (!state.langFeatures.length) return <p>Communities are still loading...</p>
-  if (!id) return <NoFeatSel />
+  if (!state.langFeatures.length) return <p>Loading communities...</p>
+  if (!matchedFeatID) return <NoFeatSel />
 
-  const matchingRecord = findFeatureByID(state.langFeatures, parseInt(id, 10))
+  const matchingRecord = findFeatureByID(
+    state.langFeatures,
+    parseInt(matchedFeatID, 10)
+  )
 
   // TODO: send stuff to Sentry
   if (!matchingRecord)
-    return <NoFeatSel reason={`No community found with an ID of ${id}.`} />
+    return (
+      <NoFeatSel
+        reason={`No community found with an ID of ${matchedFeatID}.`}
+      />
+    )
 
   const elemID = 'details'
   const {

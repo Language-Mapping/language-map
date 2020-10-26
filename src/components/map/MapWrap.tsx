@@ -1,59 +1,13 @@
 import React, { FC, useContext, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { GlobalContext, LoadingBackdrop } from 'components'
 import { FabPanelToggle } from 'components/panels/FabPanelToggle'
-import {
-  MOBILE_PANEL_HEADER_HEIGHT,
-  panelWidths,
-} from 'components/panels/config'
-import { Panel, PanelIntro } from 'components/panels'
+import { Panel } from 'components/panels'
 import { getIDfromURLparams } from '../../utils'
+import { useStyles } from './styles'
 
-type MapPanelProps = { panelOpen?: boolean }
 type MapWrapProps = { map: React.ReactNode; mapLoaded: boolean }
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    appWrapRoot: {
-      bottom: 0,
-      display: 'flex',
-      left: 0,
-      overflow: 'hidden',
-      position: 'absolute',
-      right: 0,
-      top: 0,
-      [theme.breakpoints.down('sm')]: { flexDirection: 'column' },
-      '& .mapboxgl-popup-tip': {
-        borderTopColor: theme.palette.background.paper,
-      },
-      '& .mapboxgl-popup-content': {
-        backgroundColor: theme.palette.background.paper,
-      },
-    },
-    mapWrap: {
-      flex: 1,
-      position: 'absolute',
-      right: 0,
-      top: 0,
-      transition: '300ms ease all',
-      [theme.breakpoints.down('sm')]: {
-        left: 0,
-        bottom: (props: MapPanelProps) =>
-          props.panelOpen ? '50%' : MOBILE_PANEL_HEADER_HEIGHT,
-      },
-      [theme.breakpoints.up('md')]: {
-        bottom: 0,
-        left: (props: MapPanelProps) => (props.panelOpen ? panelWidths.mid : 0),
-      },
-      [theme.breakpoints.up('xl')]: {
-        left: (props: MapPanelProps) =>
-          props.panelOpen ? panelWidths.midLarge : 0,
-      },
-    },
-  })
-)
 
 export const MapWrap: FC<MapWrapProps> = (props) => {
   const { mapLoaded, map: Map } = props
@@ -62,6 +16,8 @@ export const MapWrap: FC<MapWrapProps> = (props) => {
   const { langFeatures } = state
   const classes = useStyles({ panelOpen: state.panelState === 'default' })
 
+  // TODO: rm all this from global state. Should only need router stuff and
+  // state.langFeatures in Details to get selFeatAttribs.
   // Do selected feature stuff on location change
   useEffect((): void => {
     const idFromUrl = getIDfromURLparams(loc.search)
@@ -89,9 +45,7 @@ export const MapWrap: FC<MapWrapProps> = (props) => {
       {!mapLoaded && <LoadingBackdrop />}
       <main className={classes.appWrapRoot}>
         <div className={classes.mapWrap}>{Map}</div>
-        <Panel>
-          <PanelIntro />
-        </Panel>
+        <Panel />
         <FabPanelToggle />
       </main>
     </>

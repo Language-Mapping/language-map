@@ -1,11 +1,12 @@
-import { RouteLocation } from 'components/config/types'
+import { RouteLocation, LocState } from 'components/config/types'
 
 export type MapPanel = {
   heading: string
   icon: React.ReactNode
   subheading: string
   component: React.ReactNode
-  path: RouteLocation
+  rootPath: RouteLocation
+  locStateKey: null | keyof LocState
 }
 
 export type MapPanelProps = {

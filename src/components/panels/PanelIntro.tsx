@@ -1,5 +1,9 @@
 import React, { FC, useContext } from 'react'
-import { Link as RouterLink, useLocation } from 'react-router-dom'
+import {
+  Link as RouterLink,
+  useLocation,
+  useRouteMatch,
+} from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Button, Badge, IconButton } from '@material-ui/core'
 import { RiFilterOffFill } from 'react-icons/ri'
@@ -57,6 +61,8 @@ export const PanelIntro: FC = (props) => {
   const { state, dispatch } = useContext(GlobalContext)
   const classes = useStyles()
   const loc = useLocation()
+  const match: { params: { id: string } } | null = useRouteMatch('/:any/:id')
+  const matchedFeatID = match?.params?.id
 
   return (
     <ul className={classes.panelIntroRoot}>
@@ -110,7 +116,7 @@ export const PanelIntro: FC = (props) => {
           className={classes.introBtn}
           color="primary"
           component={RouterLink}
-          disabled={state.selFeatAttribs === null}
+          disabled={!matchedFeatID}
           size="small"
           startIcon={<TiDocumentDelete />}
           to={`/${loc.pathname.split('/')[1]}`}
