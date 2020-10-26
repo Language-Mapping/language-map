@@ -2,9 +2,7 @@ import React, { FC } from 'react'
 import { Link } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
-import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 
 import * as Types from './types'
@@ -12,7 +10,7 @@ import * as Types from './types'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     categoryRoot: {
-      transition: 'all 350ms ease',
+      transition: 'all 300ms ease',
       transform: 'scale(1)',
       backgroundColor: theme.palette.background.default,
       '&:hover': {
@@ -27,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: 10,
     },
     summary: {
-      // marginBottom: 12,
+      marginBottom: '0.5em',
       fontSize: 12,
     },
   })
@@ -71,11 +69,6 @@ export const Category: FC<Types.CategoryProps> = (props) => {
           {uniqueInstances[3]}, {uniqueInstances[4]}...
         </Typography>
       </CardContent>
-      <CardActions>
-        <Button size="small" component={Link} to={`${url}/${name}`}>
-          Check it
-        </Button>
-      </CardActions>
     </Card>
   )
 }

@@ -1,30 +1,37 @@
 import React, { FC, useContext } from 'react'
 import { Route, Switch, useRouteMatch, useParams, Link } from 'react-router-dom'
+import { Typography } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
 import { Categories } from './Categories'
 import { LangRecordSchema } from '../../context/types'
+import * as utils from './utils'
 
 const Field: FC = () => {
   // The <Route> that rendered this component has a path of `/topics/:topicId`.
   // The `:topicId` portion of the URL indicates a placeholder that we can get
   // from `useParams()`.
-  const { field } = useParams()
+  const { field } = useParams() as { field: keyof LangRecordSchema }
   const { url } = useRouteMatch()
+  const { state } = useContext(GlobalContext)
+  const uniqueInstances = utils.getUniqueInstances(
+    field,
+    state.langFeatures, // but what if filtered? may need global cache again...
+    true // mmmmmmmmmm
+  )
 
   return (
     <div>
-      Showing all communities by <b>{field}</b>.
+      <Typography variant="h3">{field}</Typography>
       <ul>
-        <li>
-          <Link to={`${url}/1`}>Lil guys</Link>
-        </li>
-        <li>
-          <Link to={`${url}/2`}>Midsies</Link>
-        </li>
-        <li>
-          <Link to={`${url}/3`}>Big fellas</Link>
-        </li>
+        {uniqueInstances.map((instance) => (
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          <li key={instance}>
+            {/* @ts-ignore */}
+            <Link to={`${url}/${instance}`}>{instance}</Link>
+          </li>
+        ))}
       </ul>
     </div>
   )

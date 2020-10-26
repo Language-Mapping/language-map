@@ -9,7 +9,7 @@ import { MdViewList, MdViewModule } from 'react-icons/md'
 import { GlobalContext } from 'components'
 import { Category } from './Category'
 import * as Types from './types'
-import { LangRecordSchema } from '../../context/types'
+import * as utils from './utils'
 
 type ViewType = 'grid' | 'list'
 const categoriesConfig = [
@@ -44,24 +44,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-// TODO: into utils
-const getUniqueInstances = (
-  category: keyof LangRecordSchema,
-  features: LangRecordSchema[],
-  parse?: boolean
-): unknown[] => {
-  const uniqueInstances = features.reduce((all, thisOne) => {
-    const value = thisOne[category]
-
-    // Don't need `undefined` in our array
-    if (!value || all.includes(value)) return all
-
-    return [...all, value as string | number]
-  }, [] as unknown[])
-
-  return uniqueInstances
-}
-
 export const Categories: FC = () => {
   const { url } = useRouteMatch()
   const { state } = useContext(GlobalContext)
@@ -77,7 +59,7 @@ export const Categories: FC = () => {
 
     const preppedCats = categoriesConfig.map((category) => ({
       ...category,
-      uniqueInstances: getUniqueInstances(
+      uniqueInstances: utils.getUniqueInstances(
         category.name,
         langFeatures,
         category.parse
