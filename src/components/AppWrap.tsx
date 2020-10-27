@@ -4,6 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { MapPanel } from 'components/panels'
 import { TopBar, OffCanvasNav } from 'components/nav'
 import { Map } from 'components/map'
+import { LoadingBackdrop } from 'components'
 import { BottomNav } from './nav/BottomNav'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -11,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
     mainWrap: {
       top: 0,
       bottom: 0,
-      position: 'fixed',
+      position: 'absolute',
       height: '100%',
       width: '100%',
       '& .mapboxgl-popup-tip': {
@@ -28,6 +29,7 @@ export const AppWrap: FC = () => {
   const classes = useStyles()
   const [panelOpen, setPanelOpen] = useState(true)
   const [offCanvasNavOpen, setOffCanvasNavOpen] = useState<boolean>(false)
+  const [mapLoaded, setMapLoaded] = useState<boolean>(false)
 
   // TODO: restore then rm all this from global state. Should only need router
   // stuff and state.langFeatures in Details to get selFeatAttribs.
@@ -55,17 +57,22 @@ export const AppWrap: FC = () => {
 
   return (
     <>
+      {!mapLoaded && <LoadingBackdrop />}
       <TopBar />
       <main className={classes.mainWrap}>
         <div style={{ position: 'fixed', height: '100%', width: '100%' }}>
-          <Map openOffCanvasNav={() => setOffCanvasNavOpen(false)} />
+          <Map
+            openOffCanvasNav={() => setOffCanvasNavOpen(false)}
+            mapLoaded={mapLoaded}
+            setMapLoaded={setMapLoaded}
+          />
         </div>
+        <BottomNav setPanelOpen={setPanelOpen} panelOpen={panelOpen} />
         <MapPanel
           panelOpen={panelOpen}
           closePanel={() => setPanelOpen(false)}
         />
       </main>
-      <BottomNav setPanelOpen={setPanelOpen} panelOpen={panelOpen} />
       <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />
     </>
   )
