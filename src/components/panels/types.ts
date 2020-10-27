@@ -12,5 +12,5 @@ export type MapPanel = {
 
 export type MapPanelProps = {
   panelOpen: boolean
-  closePanel?: () => void
+  closePanel: () => void
 }
