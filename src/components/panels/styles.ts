@@ -24,7 +24,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('md')]: {
         top: 24,
         left: 24,
-        bottom: 100,
+        bottom: 92, // 36 + 56 (aka BottomNav `bottom` + `height`)
         width: panelWidths.mid,
       },
       [theme.breakpoints.up('xl')]: {

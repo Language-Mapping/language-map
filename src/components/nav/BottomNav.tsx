@@ -5,7 +5,6 @@ import {
   Paper,
   BottomNavigation,
   BottomNavigationAction,
-  Hidden,
 } from '@material-ui/core'
 
 import { panelsConfig, panelWidths } from '../panels/config'
@@ -36,9 +35,16 @@ const useStyles = makeStyles((theme: Theme) =>
         width: panelWidths.midLarge,
       },
     },
+    // TODO: clip-path notch instead of boring rounded corners
+    bottomNav: {
+      borderTopRightRadius: 0,
+      borderTopLeftRadius: 0,
+      [theme.breakpoints.down('sm')]: {
+        borderRadius: 0,
+      },
+    },
     bottomNavAction: {
       minWidth: 'auto', // 80 = too-large default,
-      // color: 'inherit',
     },
   })
 )
@@ -74,30 +80,17 @@ export const BottomNav: FC<MiniDrawerProps> = (props) => {
 
   return (
     <div className={classes.bottomNavRoot}>
-      <Hidden smUp>
-        {/* @ts-ignore */}
-        <BottomNavigation
-          value={loc.pathname}
-          onChange={handleChange}
-          showLabels
-          // TODO: elevation, rounded corners. Do we even need two components?
-        >
-          {navItems}
-        </BottomNavigation>
-      </Hidden>
-      <Hidden smDown>
-        {/* @ts-ignore */}
-        <BottomNavigation
-          component={Paper}
-          elevation={6}
-          value={loc.pathname}
-          onChange={handleChange}
-          square
-          showLabels
-        >
-          {navItems}
-        </BottomNavigation>
-      </Hidden>
+      {/* @ts-ignore not sure why needed, this is totally valid */}
+      <BottomNavigation
+        component={Paper}
+        elevation={8}
+        value={loc.pathname}
+        onChange={handleChange}
+        className={classes.bottomNav}
+        showLabels
+      >
+        {navItems}
+      </BottomNavigation>
     </div>
   )
 }
