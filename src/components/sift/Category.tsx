@@ -52,7 +52,7 @@ export const Category: FC<Types.CategoryProps> = (props) => {
           color="textSecondary"
           gutterBottom
         >
-          {uniqueInstances.length} unique values
+          {uniqueInstances.length} uniques
         </Typography>
         <Typography variant="h5" component="h4">
           {name}

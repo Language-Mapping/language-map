@@ -51,7 +51,7 @@ export const ResultsModal: FC = () => {
       onClose={handleClose}
       aria-labelledby="results-modal-dialog-title"
       aria-describedby="results-modal-dialog-description"
-      maxWidth="lg"
+      maxWidth="xl"
       PaperProps={{ className: classes.resultsModalPaper }}
     >
       <DialogCloseBtn onClose={handleClose} tooltip="Exit to map" />

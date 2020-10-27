@@ -7,10 +7,10 @@ export type MapPanel = {
   component: React.ReactNode
   rootPath: RouteLocation
   locStateKey: null | keyof LocState
+  exact?: boolean
 }
 
 export type MapPanelProps = {
-  active?: boolean
-  first?: boolean
-  panelOpen?: boolean
+  panelOpen: boolean
+  closePanel?: () => void
 }

@@ -1,6 +1,8 @@
-import React, { FC } from 'react'
+import React, { FC, useContext } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography, Badge } from '@material-ui/core'
+import { Typography, Link, Badge } from '@material-ui/core'
+
+import { GlobalContext } from 'components'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,6 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
 // Let user know that they are searching filtered data
 export const FiltersWarning: FC = () => {
   const classes = useStyles()
+  const { dispatch } = useContext(GlobalContext)
 
   return (
     <Badge
@@ -29,7 +32,20 @@ export const FiltersWarning: FC = () => {
       anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
     >
       <Typography className={classes.filtersWarning} component="span">
-        Filters in the Data Table will affect results.
+        Filters in the Data Table will affect results.{' '}
+        <Link
+          title="Clear table filters"
+          href="#"
+          color="primary"
+          onClick={(e: React.MouseEvent) => {
+            e.preventDefault()
+
+            // TODO: fix, obviously:
+            dispatch({ type: 'CLEAR_FILTERS', payload: 555 })
+          }}
+        >
+          Clear filters
+        </Link>
       </Typography>
     </Badge>
   )

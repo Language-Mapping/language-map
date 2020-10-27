@@ -42,34 +42,6 @@ export const useStyles = makeStyles((theme: Theme) =>
           props.panelOpen ? panelWidths.midLarge : 0,
       },
     },
-    panelsRoot: {
-      backgroundColor: theme.palette.background.paper,
-      position: 'relative',
-      display: 'flex',
-      flexDirection: 'column',
-      overflowY: 'auto',
-      width: '100%',
-      transition: '300ms ease all',
-      [theme.breakpoints.down('sm')]: {
-        height: '50%',
-        top: (props: StyleProps) =>
-          props.panelOpen ? '50%' : `calc(100% - ${MOBILE_PANEL_HEADER_HT})`,
-        position: 'absolute',
-      },
-      [theme.breakpoints.up('md')]: {
-        order: 1,
-        transform: (props: StyleProps) =>
-          `translateX(${props.panelOpen ? 0 : '-100%'})`,
-        width: panelWidths.mid,
-      },
-      [theme.breakpoints.up('xl')]: {
-        width: panelWidths.midLarge,
-      },
-      '& .MuiInputLabel-formControl': {
-        color: theme.palette.text.secondary,
-        fontSize: '1rem',
-      },
-    },
     contentWrap: {
       overflowX: 'hidden',
       overflowY: 'auto',

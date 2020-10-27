@@ -16,9 +16,8 @@ import symbLayers from '../map/config.lang-style'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    panelContentHeading: {
-      marginTop: '0.65em',
-      marginBottom: '0.25em',
+    panelMainHeading: {
+      fontSize: '1.5rem', // TODO: consistentize w/other panels
     },
   })
 )
@@ -38,24 +37,18 @@ export const FiltersPanel: FC = () => {
 
   useEffect((): void => setData(state.langFeatures), [state.langFeatures])
 
-  // TODO: something respectable for styles, aka MUI-something
   return (
     <>
+      {/* TODO: wire this back up here and anywhere else that needs it */}
+      {/* ...and rm all places that don't */}
       {state.panelState === 'default' && <ScrollToTopOnMount elemID={elemID} />}
-      <Typography variant="h5" component="h3" id={elemID}>
+      <Typography className={classes.panelMainHeading} variant="h3" id={elemID}>
         Search language communities
       </Typography>
       <SearchByOmnibox data={data} />
       {state.langFeatsLenCache !== state.langFeatures.length && (
         <FiltersWarning />
       )}
-      <Typography
-        className={classes.panelContentHeading}
-        variant="h5"
-        component="h3"
-      >
-        Legend
-      </Typography>
       <LegendPanel legendItems={legendItems} groupName={activeSymbGroupID} />
     </>
   )

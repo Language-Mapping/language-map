@@ -11,6 +11,8 @@ export const getUniqueInstances = (
     // Don't need `undefined` in our array
     if (!value || all.includes(value)) return all
 
+    // YO: need to acct for things like "Turkey, Russia", not just "Turkey"
+
     // Split out neighborhoods, countries, etc.
     // const DEFAULT_DELIM = ', ' // TODO: you know what
     if (parse && typeof value === 'string') {

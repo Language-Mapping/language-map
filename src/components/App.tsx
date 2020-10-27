@@ -1,22 +1,18 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect } from 'react'
 import * as Sentry from '@sentry/react'
 import { Route } from 'react-router-dom'
 import { queryCache } from 'react-query'
 import { GoInfo } from 'react-icons/go'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
-import { TopBar, OffCanvasNav } from 'components/nav'
-import { MapWrap, Map } from 'components/map'
 import { AboutPageView, WelcomeDialog } from 'components/about'
 import { ResultsModal } from 'components/results'
 import { fetchAbout, fetchHelp, fetchWelcome } from 'components/about/utils'
 import { paths as routes } from 'components/config/routes'
 import { ABOUT_QUERY, HELP_QUERY, WELCOME_QUERY } from 'components/about/config'
+import { AppWrap } from './AppWrap'
 
 export const App: FC = () => {
-  const [offCanvasNavOpen, setOffCanvasNavOpen] = useState<boolean>(false)
-  const [mapLoaded, setMapLoaded] = useState<boolean>(false)
-
   useEffect(() => {
     queryCache.prefetchQuery(WELCOME_QUERY, fetchWelcome)
     queryCache.prefetchQuery(ABOUT_QUERY, fetchAbout)
@@ -41,8 +37,7 @@ export const App: FC = () => {
         </>
       )}
     >
-      <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />
-      <TopBar />
+      <AppWrap />
       {/* ERROR: null is not an object (evaluating 'window.localStorage.hideWelcome') */}
       {/* FIXME: https://sentry.io/organizations/endangered-language-alliance/issues/1953110114/?project=5313356 */}
       {!window.localStorage.hideWelcome && (
@@ -63,16 +58,6 @@ export const App: FC = () => {
         />
       </Route>
       <ResultsModal />
-      <MapWrap
-        mapLoaded={mapLoaded}
-        map={
-          <Map
-            mapLoaded={mapLoaded}
-            setMapLoaded={setMapLoaded}
-            openOffCanvasNav={() => setOffCanvasNavOpen(true)}
-          />
-        }
-      />
     </Sentry.ErrorBoundary>
   )
 }

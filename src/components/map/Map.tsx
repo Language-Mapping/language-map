@@ -12,7 +12,7 @@ import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import { GlobalContext } from 'components'
+import { GlobalContext, LoadingBackdrop } from 'components'
 import { paths as routes } from 'components/config/routes'
 import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
@@ -35,12 +35,6 @@ import {
   getAllLangFeatIDs,
 } from '../../utils'
 
-type MapProps = {
-  mapLoaded: boolean
-  setMapLoaded: React.Dispatch<boolean>
-  openOffCanvasNav: () => void
-}
-
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
 const { neighbConfig, countiesConfig, boundariesLayerIDs } = config
 const interactiveLayerIds = symbLayers.map((symbLayer) => symbLayer.id)
@@ -58,9 +52,8 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
   )
 }
 
-export const Map: FC<MapProps> = (props) => {
-  const { mapLoaded, setMapLoaded, openOffCanvasNav } = props
-
+export const Map: FC<{ openOffCanvasNav: () => void }> = (props) => {
+  const { openOffCanvasNav } = props
   // Router
   const history = useHistory()
   const loc = useLocation()
@@ -78,6 +71,7 @@ export const Map: FC<MapProps> = (props) => {
   const [boundariesLayersVisible, setBoundariesLayersVisible] = useState<
     boolean
   >(false)
+  const [mapLoaded, setMapLoaded] = useState<boolean>(false)
 
   // TODO: don't get `selFeatAttribs` from state, instead reuse a util or make a
   // hook for setting this locally whenever `matchedFeatID` changes. Then we're
@@ -425,6 +419,8 @@ export const Map: FC<MapProps> = (props) => {
 
   return (
     <>
+      {/* TODO: gotta be up higher, either in hierarchy or CSS */}
+      {!mapLoaded && <LoadingBackdrop />}
       <MapGL
         {...viewport}
         {...config.mapProps}

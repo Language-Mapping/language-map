@@ -4,7 +4,7 @@ import {
   useLocation,
   useRouteMatch,
 } from 'react-router-dom'
-import { Typography, Divider, Button } from '@material-ui/core'
+import { Typography, Divider, Button, Link } from '@material-ui/core'
 import { FaRandom } from 'react-icons/fa'
 import { BiMapPin } from 'react-icons/bi'
 
@@ -127,6 +127,17 @@ export const DetailsPanel: FC = () => {
             description,
           }}
         />
+        {/*
+          TODO: make it look good, maybe restore old icon? Might could lump this
+          into a group with the "See related" dropdown or whatever we use.
+        */}
+        <Link
+          component={RouterLink}
+          title="Clear currently selected community"
+          to="/details"
+        >
+          Clear selection
+        </Link>
       </div>
       <Divider variant="middle" className={divider} />
       <Typography variant="body2" className={descripSection} component="div">

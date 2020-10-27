@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { Link, Grid } from '@material-ui/core'
+import { Typography, Link, Grid, Paper } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { FaGlobeAmericas } from 'react-icons/fa'
 
@@ -24,7 +24,10 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     legendCtrls: {
-      marginBottom: '0.25em',
+      margin: '0.5rem 0',
+    },
+    inner: {
+      padding: '1rem', // TODO: consistentize w/other panels, cards, etc.
     },
   })
 )
@@ -36,7 +39,8 @@ export const LegendPanel: FC<LegendPanelComponent> = (props) => {
 
   return (
     <>
-      <Grid container spacing={2} className={classes.legendCtrls}>
+      {/* TODO: wrap in Paper */}
+      <Grid container className={classes.legendCtrls}>
         <Grid item xs={6}>
           <LayerSymbSelect />
         </Grid>
@@ -44,21 +48,26 @@ export const LegendPanel: FC<LegendPanelComponent> = (props) => {
           <LayerLabelSelect />
         </Grid>
       </Grid>
-      <Legend legendItems={legendItems} groupName={groupName} />
-      <Link
-        href="#"
-        className={classes.changeLegendLink}
-        onClick={(e: React.MouseEvent) => {
-          e.preventDefault()
-          setShowWorldMap(!showWorldMap)
-        }}
-      >
-        <FaGlobeAmericas />
-        {showWorldMap ? 'Hide' : 'Show'} world map
-      </Link>
-      <ToggleableSection show={showWorldMap}>
-        <WorldRegionMap />
-      </ToggleableSection>
+      <Paper elevation={4} className={classes.inner}>
+        <Typography variant="h5" component="h3">
+          Legend
+        </Typography>
+        <Legend legendItems={legendItems} groupName={groupName} />
+        <Link
+          href="#"
+          className={classes.changeLegendLink}
+          onClick={(e: React.MouseEvent) => {
+            e.preventDefault()
+            setShowWorldMap(!showWorldMap)
+          }}
+        >
+          <FaGlobeAmericas />
+          {showWorldMap ? 'Hide' : 'Show'} world map
+        </Link>
+        <ToggleableSection show={showWorldMap}>
+          <WorldRegionMap />
+        </ToggleableSection>
+      </Paper>
     </>
   )
 }

@@ -1,29 +1,30 @@
 /* eslint-disable operator-linebreak */
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import { panelWidths, MOBILE_PANEL_HEADER_HT } from 'components/panels/config'
+import { panelWidths } from 'components/panels/config'
 import { MapPanelProps } from './types'
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelsRoot: {
-      backgroundColor: theme.palette.background.paper,
-      position: 'relative',
+      bottom: 56, // set directly in MUI to 56
       display: 'flex',
       flexDirection: 'column',
+      left: 4,
+      opacity: (props: MapPanelProps) => (props.panelOpen ? 1 : 0),
       overflowY: 'auto',
-      width: '100%',
+      position: 'fixed',
+      right: 4,
+      top: '45%',
       transition: '300ms ease all',
-      [theme.breakpoints.down('sm')]: {
-        height: '50%',
-        top: (props: MapPanelProps) =>
-          props.panelOpen ? '50%' : `calc(100% - ${MOBILE_PANEL_HEADER_HT})`,
-        position: 'absolute',
-      },
+      borderBottomRightRadius: 0,
+      borderBottomLeftRadius: 0,
+      transform: (props: MapPanelProps) =>
+        `translateY(${props.panelOpen ? 0 : '100%'})`,
       [theme.breakpoints.up('md')]: {
-        order: 1,
-        transform: (props: MapPanelProps) =>
-          `translateX(${props.panelOpen ? 0 : '-100%'})`,
+        top: 24,
+        left: 24,
+        bottom: 100,
         width: panelWidths.mid,
       },
       [theme.breakpoints.up('xl')]: {
@@ -37,12 +38,13 @@ export const useStyles = makeStyles((theme: Theme) =>
     contentWrap: {
       overflowX: 'hidden',
       overflowY: 'auto',
-      padding: '0.25rem 0.75em 1em',
+      padding: '1em',
       position: 'relative',
-      [theme.breakpoints.up('md')]: {
-        paddingLeft: '1em',
-        paddingRight: '1em',
-      },
+    },
+    closeBtn: {
+      position: 'absolute',
+      top: '0.5rem',
+      right: '0.5rem',
     },
   })
 )

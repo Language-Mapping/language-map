@@ -1,7 +1,4 @@
 {
-  "files.associations": {
-    "*.yaml": "home-assistant"
-  },
   "workbench.editor.titleScrollbarSizing": "large",
   "workbench.editor.untitled.labelFormat": "name",
   "window.title": "${activeEditorShort}${separator}Languages of NYC",
@@ -10,6 +7,7 @@
     "titleBar.activeForeground": "#ffffff"
   },
   "search.exclude": {
-    "public/img/country-flags": true
+    "public/img/country-flags": true,
+    "public/fonts": true
   }
 }

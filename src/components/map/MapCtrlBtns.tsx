@@ -6,13 +6,8 @@ import {
   Theme,
 } from '@material-ui/core/styles'
 import { Fab, Slide, useMediaQuery } from '@material-ui/core'
-import {
-  SpeedDial,
-  SpeedDialIcon,
-  SpeedDialAction,
-  CloseReason,
-} from '@material-ui/lab'
-import { MdMoreVert, MdClose, MdYoutubeSearchedFor } from 'react-icons/md'
+import { SpeedDial, SpeedDialAction, CloseReason } from '@material-ui/lab'
+import { MdYoutubeSearchedFor } from 'react-icons/md'
 import { TiCompass } from 'react-icons/ti'
 import { GoInfo } from 'react-icons/go'
 import { FaSearchPlus, FaSearchMinus, FaSearchLocation } from 'react-icons/fa'
@@ -26,12 +21,12 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mapCtrlsRoot: {
       position: 'fixed',
-      top: theme.spacing(1),
-      right: 8, // same as left-side page title?
+      top: -4,
+      right: 4, // same as left-side page title?
       zIndex: 1100, // above app bar
       [theme.breakpoints.up('sm')]: {
-        top: theme.spacing(2),
-        right: theme.spacing(2),
+        top: theme.spacing(1),
+        right: theme.spacing(1),
       },
       '& svg': {
         fontSize: '1.4em',
@@ -128,7 +123,7 @@ export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
       <SpeedDial
         ariaLabel="Map control buttons"
         className={classes.mapCtrlsRoot}
-        icon={<SpeedDialIcon openIcon={<MdClose />} icon={<MdMoreVert />} />}
+        hidden
         onClose={handleClose}
         open={speedDialOpen}
         direction="down"
