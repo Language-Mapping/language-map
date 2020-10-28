@@ -16,6 +16,7 @@ import { GlobalContext } from 'components'
 import { paths as routes } from 'components/config/routes'
 import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
+import { Geolocation } from './Geolocation'
 import { MapPopup } from './MapPopup'
 import { MapCtrlBtns } from './MapCtrlBtns'
 import { BoundariesLayer } from './BoundariesLayer'
@@ -77,6 +78,7 @@ export const Map: FC<MapProps> = (props) => {
   const [boundariesLayersVisible, setBoundariesLayersVisible] = useState<
     boolean
   >(false)
+  const [geolocActive, setGeolocActive] = useState<boolean>(false)
 
   // TODO: don't get `selFeatAttribs` from state, instead reuse a util or make a
   // hook for setting this locally whenever `matchedFeatID` changes. Then we're
@@ -436,6 +438,17 @@ export const Map: FC<MapProps> = (props) => {
         onHover={onHover}
         onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
       >
+        <Geolocation
+          active={geolocActive}
+          onViewportChange={(mapViewport: Types.ViewportState) => {
+            // CRED:
+            // github.com/visgl/react-map-gl/issues/887#issuecomment-531580394
+            setViewport({
+              ...mapViewport,
+              zoom: config.POINT_ZOOM_LEVEL,
+            })
+          }}
+        />
         {geocodeMarker && <GeocodeMarker {...geocodeMarker} />}
         {[neighbConfig, countiesConfig].map((boundaryConfig) => (
           <BoundariesLayer
@@ -462,6 +475,8 @@ export const Map: FC<MapProps> = (props) => {
       </MapGL>
       <MapCtrlBtns
         mapRef={mapRef}
+        geolocActive={geolocActive}
+        setGeolocActive={setGeolocActive}
         boundariesLayersVisible={boundariesLayersVisible}
         setBoundariesLayersVisible={setBoundariesLayersVisible}
         handlePitchReset={() => setViewport({ ...viewport, pitch: 0 })}

@@ -99,13 +99,23 @@ export type GeocodeResult = {
   }
 }
 
-export type MapCtrlBtnsProps = {
-  boundariesLayersVisible: boolean
+export type MapCtrlBtnsProps = Omit<
+  GeocoderProps,
+  'anchorEl' | 'setAnchorEl'
+> & {
   handlePitchReset: () => void
   isPitchZero: boolean
-  mapRef: React.RefObject<InteractiveMap>
   onMapCtrlClick: (actionID: MapControlAction) => void
+}
+
+export type GeocoderProps = {
+  anchorEl: null | HTMLElement
+  boundariesLayersVisible: boolean
+  geolocActive: boolean
+  mapRef: React.RefObject<InteractiveMap>
+  setAnchorEl: React.Dispatch<null | HTMLElement>
   setBoundariesLayersVisible: React.Dispatch<boolean>
+  setGeolocActive: React.Dispatch<boolean>
 }
 
 export type CtrlBtnConfig = {
