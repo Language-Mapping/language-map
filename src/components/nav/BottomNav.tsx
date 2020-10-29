@@ -9,9 +9,9 @@ import {
 
 import { panelsConfig, panelWidths } from '../panels/config'
 
-type MiniDrawerProps = {
-  panelOpen: boolean
-  setPanelOpen: React.Dispatch<boolean>
+type BottomNav = {
+  setPanelClosed: React.Dispatch<boolean>
+  panelClosed?: boolean
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -49,17 +49,17 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const BottomNav: FC<MiniDrawerProps> = (props) => {
-  const { panelOpen, setPanelOpen } = props
+export const BottomNav: FC<BottomNav> = (props) => {
+  const { panelClosed, setPanelClosed } = props
   const classes = useStyles()
   const loc = useLocation()
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
-    if (!panelOpen) {
-      setPanelOpen(true)
+    if (panelClosed === true) {
+      setPanelClosed(false)
     } else if (newValue === loc.pathname) {
-      setPanelOpen(false)
+      setPanelClosed(true)
     }
   }
 

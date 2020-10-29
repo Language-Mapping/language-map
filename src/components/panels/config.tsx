@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link as RouterLink } from 'react-router-dom'
 import { Fab } from '@material-ui/core'
 import { TiDocumentText, TiThList } from 'react-icons/ti'
 import { ImSearch } from 'react-icons/im'
@@ -44,8 +43,6 @@ export const panelsConfig = [
         color="secondary"
         aria-label="home"
         style={{ position: 'relative', top: -4 }}
-        component={RouterLink}
-        to="/"
       >
         <BiHomeAlt />
       </Fab>

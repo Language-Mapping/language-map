@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       height: '100%',
       width: '100%',
+      overflow: 'hidden',
       '& .mapboxgl-popup-tip': {
         borderTopColor: theme.palette.background.paper,
       },
@@ -22,12 +23,23 @@ const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: theme.palette.background.paper,
       },
     },
+    mapWrap: {
+      position: 'fixed',
+      bottom: 56,
+      left: 0,
+      right: 0,
+      top: 0,
+      width: '100%',
+      [theme.breakpoints.up('md')]: {
+        bottom: 0,
+      },
+    },
   })
 )
 
 export const AppWrap: FC = () => {
   const classes = useStyles()
-  const [panelOpen, setPanelOpen] = useState(true)
+  const [panelClosed, setPanelClosed] = useState<boolean>()
   const [offCanvasNavOpen, setOffCanvasNavOpen] = useState<boolean>(false)
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
 
@@ -42,16 +54,7 @@ export const AppWrap: FC = () => {
 
   //     return
   //   }
-
-  //   // TODO: handle scenario where feature exists in cached but not filtered
-  //   // const matchedFeat = state.langFeatures.find()
-
-  //   const matchingRecord = langFeatures.find((row) => row.ID === idFromUrl)
-
-  //   if (matchingRecord) {
-  //     document.title = `${matchingRecord.Language as string} - NYC Languages`
-  //     dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: matchingRecord })
-  //   }
+  // TODO: handle scenario where feature exists in cached but not filtered
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [loc.search, state.langFeatures.length])
 
@@ -60,18 +63,16 @@ export const AppWrap: FC = () => {
       {!mapLoaded && <LoadingBackdrop />}
       <TopBar />
       <main className={classes.mainWrap}>
-        <div style={{ position: 'fixed', height: '100%', width: '100%' }}>
+        <div className={classes.mapWrap}>
           <Map
             openOffCanvasNav={() => setOffCanvasNavOpen(false)}
             mapLoaded={mapLoaded}
             setMapLoaded={setMapLoaded}
+            panelClosed={panelClosed}
           />
         </div>
-        <BottomNav setPanelOpen={setPanelOpen} panelOpen={panelOpen} />
-        <MapPanel
-          panelOpen={panelOpen}
-          closePanel={() => setPanelOpen(false)}
-        />
+        <BottomNav setPanelClosed={setPanelClosed} panelClosed={panelClosed} />
+        <MapPanel panelClosed={panelClosed} setPanelClosed={setPanelClosed} />
       </main>
       <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />
     </>

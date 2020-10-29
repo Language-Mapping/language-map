@@ -1,6 +1,5 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useQuery } from 'react-query'
-import { useTheme } from '@material-ui/core/styles'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
   AttributionControl,
@@ -24,6 +23,7 @@ import { GeocodeMarker } from './GeocodeMarker'
 
 import * as Types from './types'
 import * as utils from './utils'
+import * as hooks from './hooks'
 import * as config from './config'
 import * as events from './events'
 import symbLayers from './config.lang-style'
@@ -32,14 +32,15 @@ import { LangRecordSchema } from '../../context/types'
 import {
   getIDfromURLparams,
   findFeatureByID,
-  useWindowResize,
   getAllLangFeatIDs,
+  isTouchEnabled,
 } from '../../utils'
 
 type MapProps = {
   openOffCanvasNav: () => void
   mapLoaded: boolean
   setMapLoaded: React.Dispatch<boolean>
+  panelClosed?: boolean
 }
 
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
@@ -60,25 +61,22 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
 }
 
 export const Map: FC<MapProps> = (props) => {
-  const { openOffCanvasNav, mapLoaded, setMapLoaded } = props
-  // Router
+  const { openOffCanvasNav, mapLoaded, setMapLoaded, panelClosed } = props
   const history = useHistory()
   const loc = useLocation()
   const match: { params: { id: string } } | null = useRouteMatch('/details/:id')
   const matchedFeatID = match?.params?.id
-
   const { state, dispatch } = useContext(GlobalContext)
   const symbLabelState = useSymbAndLabelState()
-  const theme = useTheme()
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
-  const { width } = useWindowResize() // TODO: use viewport?
-  const [isDesktop, setIsDesktop] = useState<boolean>(
-    width >= theme.breakpoints.values.md
-  )
-  const [boundariesLayersVisible, setBoundariesLayersVisible] = useState<
-    boolean
-  >(false)
+  const { left, top } = hooks.usePadding(panelClosed)
+  const [boundariesVisible, setBoundariesVisible] = useState<boolean>(false)
   const [geolocActive, setGeolocActive] = useState<boolean>(false)
+  const initialViewport = hooks.useInitialViewport({
+    ...config.initialMapState,
+    bounds: config.initialBounds,
+    padding: { left, top, right: 0, bottom: 0 },
+  })
 
   // TODO: don't get `selFeatAttribs` from state, instead reuse a util or make a
   // hook for setting this locally whenever `matchedFeatID` changes. Then we're
@@ -91,9 +89,7 @@ export const Map: FC<MapProps> = (props) => {
     geocodeMarker,
     setGeocodeMarker,
   ] = useState<Types.GeocodeMarker | null>()
-  const [viewport, setViewport] = useState<Types.ViewportState>(
-    config.initialMapState
-  )
+  const [viewport, setViewport] = useState<Types.ViewportState>(initialViewport)
   const [
     tooltipSettings,
     setTooltipSettings,
@@ -181,11 +177,6 @@ export const Map: FC<MapProps> = (props) => {
     )
   }, [langFeatures.length, legendItems])
 
-  // On width change, determine whether or not the view is desktop
-  useEffect((): void => {
-    setIsDesktop(width >= theme.breakpoints.values.md)
-  }, [width])
-
   // (Re)load symbol icons. Must be done on load and whenever `baselayer` is
   // changed, otherwise the images no longer exist.
   useEffect((): void => {
@@ -202,8 +193,7 @@ export const Map: FC<MapProps> = (props) => {
 
     const map: MbMap = mapRef.current.getMap()
 
-    // Deselect any language features
-    // TODO: add `selected` key?
+    // Deselect any language features // TODO: add `selected` key?
     map.removeFeatureState({ source: langSrcID, sourceLayer })
 
     nuclearClear()
@@ -239,6 +229,16 @@ export const Map: FC<MapProps> = (props) => {
     // TODO: make popups on mobile not off-center
     utils.flyToPoint(map, settings, utils.prepPopupContent(matchingRecord))
   }, [matchedFeatID, mapLoaded])
+
+  useEffect(() => {
+    // `undefined` initially, so shouldn't trigger anything
+    if (!mapRef?.current || !mapLoaded || panelClosed === undefined) return
+
+    mapRef.current.getMap().panBy([left, top], undefined, {
+      forceViewportUpdate: true,
+      popupSettings: { heading: 'sure', subheading: 'yeah' },
+    })
+  }, [panelClosed])
   /* eslint-enable react-hooks/exhaustive-deps */
 
   function onHover(event: Types.MapEvent) {
@@ -284,7 +284,7 @@ export const Map: FC<MapProps> = (props) => {
 
     // NOTE: could not get this into the same `useEffect` that handles when
     // selFeatAttribs or mapLoaded are changed with an MB error/crash.
-    if (!matchingRecord) flyHome(map)
+    if (!matchingRecord) flyHome(map, true) // TODO: rm if not using `true`, etc
 
     // TODO: set paint property
     // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
@@ -354,13 +354,12 @@ export const Map: FC<MapProps> = (props) => {
     } else {
       const langFeat = topLangFeat as Types.LangFeature
 
-      // TODO: use `initialEntries` in <MemoryRouter> to test routing
       history.push(`${routes.details}/${langFeat.properties.ID}`)
 
       return // prevent boundary click underneath
     }
 
-    if (!boundariesLayersVisible) return
+    if (!boundariesVisible) return
 
     const boundariesClicked = map.queryRenderedFeatures(event.point, {
       layers: boundariesLayerIDs,
@@ -384,7 +383,7 @@ export const Map: FC<MapProps> = (props) => {
     setTooltipSettings(null)
   }
 
-  const flyHome = (map: MbMap): void => {
+  const flyHome = (map: MbMap, initial?: boolean): void => {
     nuclearClear()
 
     const settings = {
@@ -393,6 +392,13 @@ export const Map: FC<MapProps> = (props) => {
       bounds: config.initialBounds,
       padding: 25,
     }
+
+    // if (initial) {
+    //   settings = {
+    //     ...settings,
+    //     ...initialViewport,
+    //   }
+    // }
 
     utils.flyToBounds(map, settings, null)
   }
@@ -454,7 +460,7 @@ export const Map: FC<MapProps> = (props) => {
           <BoundariesLayer
             key={boundaryConfig.source.id}
             {...boundaryConfig}
-            visible={boundariesLayersVisible}
+            visible={boundariesVisible}
             beforeId={legendItems.length ? legendItems[0].legendLabel : ''}
           />
         ))}
@@ -465,8 +471,8 @@ export const Map: FC<MapProps> = (props) => {
             setVisible={() => setPopupSettings(null)}
           />
         )}
-        {/* BAD CHECK, should be checking for touch capabilities */}
-        {isDesktop && tooltipSettings && (
+        {/* Popups are annoying on mobile */}
+        {!isTouchEnabled() && tooltipSettings && (
           <MapPopup
             {...tooltipSettings}
             setVisible={() => setTooltipSettings(null)}
@@ -477,8 +483,8 @@ export const Map: FC<MapProps> = (props) => {
         mapRef={mapRef}
         geolocActive={geolocActive}
         setGeolocActive={setGeolocActive}
-        boundariesLayersVisible={boundariesLayersVisible}
-        setBoundariesLayersVisible={setBoundariesLayersVisible}
+        boundariesVisible={boundariesVisible}
+        setBoundariesVisible={setBoundariesVisible}
         handlePitchReset={() => setViewport({ ...viewport, pitch: 0 })}
         isPitchZero={viewport.pitch === 0}
         onMapCtrlClick={(actionID: Types.MapControlAction) => {

@@ -11,6 +11,6 @@ export type MapPanel = {
 }
 
 export type MapPanelProps = {
-  panelOpen: boolean
-  closePanel: () => void
+  setPanelClosed: React.Dispatch<boolean>
+  panelClosed?: boolean
 }

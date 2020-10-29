@@ -98,6 +98,8 @@ export const DetailsPanel: FC = () => {
     // @ts-ignore
     symbLabelState.legendSymbols[WorldRegion].paint['icon-color'] as string
 
+  document.title = `${language} - NYC Languages`
+
   return (
     <>
       {state.panelState === 'default' && (

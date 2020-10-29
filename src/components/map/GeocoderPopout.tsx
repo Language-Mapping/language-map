@@ -67,11 +67,11 @@ const LocationSearchContent: FC<PopoutContentProps> = (props) => {
 export const GeocoderPopout: FC<GeocoderProps> = (props) => {
   const {
     anchorEl,
-    boundariesLayersVisible,
+    boundariesVisible,
     geolocActive,
     mapRef,
     setAnchorEl,
-    setBoundariesLayersVisible,
+    setBoundariesVisible,
     setGeolocActive,
   } = props
   const classes = useStyles()
@@ -141,10 +141,8 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
           classes={{ label: smallerText, root: switchFormCtrlRoot }}
           control={
             <Switch
-              checked={boundariesLayersVisible}
-              onChange={() =>
-                setBoundariesLayersVisible(!boundariesLayersVisible)
-              }
+              checked={boundariesVisible}
+              onChange={() => setBoundariesVisible(!boundariesVisible)}
               name="show-welcome-switch"
               size="small"
             />

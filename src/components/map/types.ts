@@ -76,9 +76,9 @@ export type MapEvent = Omit<PointerEvent, 'features'> & {
 }
 
 export type GetWebMercViewport = (
-  settings: Omit<BoundsConfig, 'bounds'> & {
+  settings: LongLatAndZoom & {
     bounds: BoundsArray
-    padding?: Padding
+    padding: Padding
   }
 ) => LongLatAndZoom
 
@@ -110,11 +110,11 @@ export type MapCtrlBtnsProps = Omit<
 
 export type GeocoderProps = {
   anchorEl: null | HTMLElement
-  boundariesLayersVisible: boolean
+  boundariesVisible: boolean
   geolocActive: boolean
   mapRef: React.RefObject<InteractiveMap>
   setAnchorEl: React.Dispatch<null | HTMLElement>
-  setBoundariesLayersVisible: React.Dispatch<boolean>
+  setBoundariesVisible: React.Dispatch<boolean>
   setGeolocActive: React.Dispatch<boolean>
 }
 

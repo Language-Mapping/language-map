@@ -2,7 +2,7 @@ import { Map } from 'mapbox-gl'
 import { WebMercatorViewport } from 'react-map-gl'
 
 import * as MapTypes from './types'
-import * as config from './config'
+import * as config from './config' // TODO: pass this as fn args, don't import
 
 // NOTE: Firefox needs SVG width/height to be explicitly set on the SVG in order
 // for this to work.
@@ -62,15 +62,6 @@ export const filterLayersByFeatIDs = (
 
     map.setFilter(name, filterToUse)
   })
-}
-
-export const getWebMercViewport: MapTypes.GetWebMercViewport = (params) => {
-  const { width, height, bounds, padding } = params
-
-  return new WebMercatorViewport({
-    width,
-    height,
-  }).fitBounds(bounds, padding ? { padding } : {})
 }
 
 export const asyncAwaitFetch = async (path: string): Promise<void> =>
