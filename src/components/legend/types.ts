@@ -20,6 +20,7 @@ export type LegendSwatchComponent = LegendSwatch & {
   icon?: string
   component?: React.ElementType
   labelStyleOverride?: React.CSSProperties
+  to?: string
 }
 
 export type LegendGroupConfig = {
@@ -38,5 +39,6 @@ export type WorldRegionLegend = {
 }
 
 export type GroupedLegendProps = LegendComponent & {
+  baseRoute: string
   groupConfig: LegendGroupConfig[]
 }

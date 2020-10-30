@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     inner: {
       padding: '1rem', // TODO: consistentize w/other panels, cards, etc.
+      marginTop: '1em',
     },
   })
 )
@@ -38,8 +39,18 @@ export const LegendPanel: FC<LegendPanelComponent> = (props) => {
   const [showWorldMap, setShowWorldMap] = useState<boolean>(false)
 
   return (
-    <>
-      {/* TODO: wrap in Paper */}
+    <Paper elevation={4} className={classes.inner}>
+      <Typography variant="h6" component="h3">
+        Legend
+      </Typography>
+      <small style={{ fontSize: 10, lineHeight: 1 }}>
+        <b>@Ross:</b> all the legend items are linked to their corresponding
+        routes, so I'm thinking a small blurb here indicating that since they
+        don't appear very link-y (and I'm reluctant to underline/bold/colorize
+        all of them). The "Size" categories aren't working though as the raw
+        values are numbers mapped to strings. So, before I take the time to fix
+        that, let's decide if you even want Size to be linked.
+      </small>
       <Grid container className={classes.legendCtrls}>
         <Grid item xs={6}>
           <LayerSymbSelect />
@@ -48,26 +59,21 @@ export const LegendPanel: FC<LegendPanelComponent> = (props) => {
           <LayerLabelSelect />
         </Grid>
       </Grid>
-      <Paper elevation={4} className={classes.inner}>
-        <Typography variant="h5" component="h3">
-          Legend
-        </Typography>
-        <Legend legendItems={legendItems} groupName={groupName} />
-        <Link
-          href="#"
-          className={classes.changeLegendLink}
-          onClick={(e: React.MouseEvent) => {
-            e.preventDefault()
-            setShowWorldMap(!showWorldMap)
-          }}
-        >
-          <FaGlobeAmericas />
-          {showWorldMap ? 'Hide' : 'Show'} world map
-        </Link>
-        <ToggleableSection show={showWorldMap}>
-          <WorldRegionMap />
-        </ToggleableSection>
-      </Paper>
-    </>
+      <Legend legendItems={legendItems} groupName={groupName} />
+      <Link
+        href="#"
+        className={classes.changeLegendLink}
+        onClick={(e: React.MouseEvent) => {
+          e.preventDefault()
+          setShowWorldMap(!showWorldMap)
+        }}
+      >
+        <FaGlobeAmericas />
+        {showWorldMap ? 'Hide' : 'Show'} world map
+      </Link>
+      <ToggleableSection show={showWorldMap}>
+        <WorldRegionMap />
+      </ToggleableSection>
+    </Paper>
   )
 }

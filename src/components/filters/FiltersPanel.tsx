@@ -17,7 +17,7 @@ import symbLayers from '../map/config.lang-style'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelMainHeading: {
-      fontSize: '1.5rem', // TODO: consistentize w/other panels
+      // fontSize: '1.5rem', // TODO: consistentize w/other panels
     },
   })
 )
@@ -42,7 +42,12 @@ export const FiltersPanel: FC = () => {
       {/* TODO: wire this back up here and anywhere else that needs it */}
       {/* ...and rm all places that don't */}
       {state.panelState === 'default' && <ScrollToTopOnMount elemID={elemID} />}
-      <Typography className={classes.panelMainHeading} variant="h3" id={elemID}>
+      <Typography
+        className={classes.panelMainHeading}
+        variant="h5"
+        component="h2"
+        id={elemID}
+      >
         Search language communities
       </Typography>
       <SearchByOmnibox data={data} />

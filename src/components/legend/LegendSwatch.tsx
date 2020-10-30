@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
       gridTemplateColumns: 'minmax(1em, auto) 1fr',
       gridColumnGap: '0.24em',
       justifyItems: 'center',
+      color: theme.palette.text.primary,
       marginBottom: (props: { isCircle: boolean }) =>
         props.isCircle ? 0 : theme.spacing(1),
     },
@@ -37,10 +38,13 @@ export const LegendSwatch: FC<LegendSwatchComponent> = (props) => {
     size = 7,
     component = 'li',
     labelStyleOverride,
+    to,
   } = props
   const isCircle = iconID === '_circle'
   const classes = useStyles({ isCircle })
   const adjustedSize = size * 1.5
+  // TS freaks out if `to` is a prop and `component` is dynamic
+  const muiFriendlyProps = to ? { to } : null
 
   // NOTE: the styling is pretty fragile in that the non-circle icons must have
   // their colors defined as `fill` within the SVG files themselves. This is
@@ -51,7 +55,11 @@ export const LegendSwatch: FC<LegendSwatchComponent> = (props) => {
   // inline icon so that the fill could be applied via `paint['icon-color']`.
 
   return (
-    <Box className={classes.legendSwatchRoot} component={component}>
+    <Box
+      className={classes.legendSwatchRoot}
+      component={component}
+      {...muiFriendlyProps}
+    >
       {isCircle && (
         <span
           style={{
