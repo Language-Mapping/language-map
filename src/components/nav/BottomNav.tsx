@@ -11,13 +11,12 @@ import { panelsConfig, panelWidths } from '../panels/config'
 
 type BottomNav = {
   setPanelOpen: React.Dispatch<boolean>
-  panelOpen: boolean
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     bottomNavRoot: {
-      position: 'fixed',
+      position: 'absolute',
       bottom: 0,
       left: 0,
       right: 0,
@@ -50,19 +49,10 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const BottomNav: FC<BottomNav> = (props) => {
-  const { panelOpen, setPanelOpen } = props
+  const { setPanelOpen } = props
   const classes = useStyles()
   const loc = useLocation()
-
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
-    if (panelOpen === true) {
-      setPanelOpen(false)
-    } else if (newValue === loc.pathname) {
-      // TODO: better route check ^^^
-      setPanelOpen(true)
-    }
-  }
+  const handleChange = () => setPanelOpen(true)
 
   const navItems = panelsConfig.map((config) => (
     <BottomNavigationAction

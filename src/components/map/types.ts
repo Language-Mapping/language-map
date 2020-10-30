@@ -104,6 +104,7 @@ export type MapCtrlBtnsProps = Omit<
   'anchorEl' | 'setAnchorEl'
 > & {
   handlePitchReset: () => void
+  panelOpen: boolean
   isPitchZero: boolean
   onMapCtrlClick: (actionID: MapControlAction) => void
 }

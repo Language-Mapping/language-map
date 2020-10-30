@@ -1,3 +1,12 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 body {
   /* Not changing theme just for this, but matching to MB monochrome light
   "gray" (e.g. water) makes panel transition's impact "behind" map less jank. */

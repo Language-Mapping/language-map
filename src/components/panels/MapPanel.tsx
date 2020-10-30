@@ -4,7 +4,7 @@ import { Paper, Hidden } from '@material-ui/core'
 
 import { panelsConfig } from './config'
 import { useStyles } from './styles'
-import { CloseBtnPill, CloseBtn } from './PanelCloseBtn'
+import { CloseBtnPill } from './PanelCloseBtn'
 import * as Types from './types'
 
 // TODO: consider swipeable views for moving between panels:
@@ -20,9 +20,6 @@ export const MapPanel: FC<Types.MapPanelProps> = (props) => {
       <div className={classes.contentWrap}>
         <Hidden smUp>
           <CloseBtnPill onClick={() => setPanelOpen(false)} />
-        </Hidden>
-        <Hidden smDown>
-          <CloseBtn onClick={() => setPanelOpen(false)} />
         </Hidden>
         <Switch>
           {panelsConfig.map((config) => (

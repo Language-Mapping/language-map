@@ -7,6 +7,10 @@ import { Map } from 'components/map'
 import { LoadingBackdrop } from 'components'
 import { BottomNav } from './nav/BottomNav'
 
+type StyleProps = {
+  panelOpen: boolean
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mainWrap: {
@@ -21,6 +25,18 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       '& .mapboxgl-popup-content': {
         backgroundColor: theme.palette.background.paper,
+      },
+      [theme.breakpoints.down('sm')]: {
+        '& .mapboxgl-ctrl-bottom-left > .mapboxgl-ctrl': {
+          marginBottom: '0.5rem', // MB logo has too much spacing
+        },
+        '& .mapboxgl-ctrl-bottom-right > .mapboxgl-ctrl': {
+          marginBottom: '0.25rem', // MB attribution needs a little spacing
+        },
+        '& .mapboxgl-ctrl-bottom-right, .mapboxgl-ctrl-bottom-left': {
+          transition: 'bottom 300ms ease',
+          bottom: (props: StyleProps) => (props.panelOpen ? '50%' : 0),
+        },
       },
     },
     mapWrap: {
@@ -38,8 +54,8 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const AppWrap: FC = () => {
-  const classes = useStyles()
   const [panelOpen, setPanelOpen] = useState<boolean>(true)
+  const classes = useStyles({ panelOpen })
   const [offCanvasNavOpen, setOffCanvasNavOpen] = useState<boolean>(false)
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
 
@@ -71,7 +87,7 @@ export const AppWrap: FC = () => {
             panelOpen={panelOpen}
           />
         </div>
-        <BottomNav setPanelOpen={setPanelOpen} panelOpen={panelOpen} />
+        <BottomNav setPanelOpen={setPanelOpen} />
         <MapPanel panelOpen={panelOpen} setPanelOpen={setPanelOpen} />
       </main>
       <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />

@@ -17,6 +17,10 @@ import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import { MapCtrlBtnsProps, CtrlBtnConfig } from './types'
 import { GeocoderPopout } from './GeocoderPopout'
 
+type StyleProps = {
+  panelOpen: boolean
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     mapCtrlsRoot: {
@@ -45,7 +49,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     resetPitchBtn: {
       position: 'absolute',
-      bottom: 24,
+      transition: '300ms bottom ease',
+      bottom: (props: StyleProps) =>
+        props.panelOpen ? 'calc(50% + 24px)' : 24,
       left: -4,
       fontSize: '0.85em',
       textTransform: 'none',
@@ -92,8 +98,8 @@ const ctrlBtnsConfig = [
 ] as CtrlBtnConfig[]
 
 export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
-  const { onMapCtrlClick, isPitchZero, handlePitchReset } = props
-  const classes = useStyles()
+  const { onMapCtrlClick, isPitchZero, handlePitchReset, panelOpen } = props
+  const classes = useStyles({ panelOpen })
   const [speedDialOpen, setSpeedDialOpen] = React.useState(true)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const theme = useTheme()

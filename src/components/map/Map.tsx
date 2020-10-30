@@ -73,10 +73,8 @@ export const Map: FC<MapProps> = (props) => {
   const [boundariesVisible, setBoundariesVisible] = useState<boolean>(false)
   const [geolocActive, setGeolocActive] = useState<boolean>(false)
 
-  // TODO: don't get `selFeatAttribs` from state- make a hook using
-  // GlobalContext and useLocation whenever `matchedFeatID` changes. Then we're
-  // down to just ONE state prop- `langFeatures`, which may be here forever.
-  const { selFeatAttribs, langFeatures } = state
+  // Down to ONE state prop- `langFeatures`. Hook w/GlobalContext, router?
+  const { langFeatures } = state
   const { legendItems } = symbLabelState
 
   // Local states
@@ -224,20 +222,9 @@ export const Map: FC<MapProps> = (props) => {
       { selected: true }
     )
 
-    // TODO: make popups on mobile not off-center
     utils.flyToPoint(map, settings, utils.prepPopupContent(matchingRecord))
   }, [matchedFeatID, mapLoaded])
 
-  // Panel opened or closed
-  useEffect(() => {
-    if (!mapRef?.current || !mapLoaded) return
-
-    utils.flyToPoint(
-      mapRef.current.getMap(),
-      { ...viewport, offset },
-      utils.prepPopupContent(selFeatAttribs)
-    )
-  }, [panelOpen])
   /* eslint-enable react-hooks/exhaustive-deps */
 
   function onHover(event: Types.MapEvent) {
@@ -444,6 +431,7 @@ export const Map: FC<MapProps> = (props) => {
       </MapGL>
       <MapCtrlBtns
         mapRef={mapRef}
+        panelOpen={panelOpen}
         geolocActive={geolocActive}
         setGeolocActive={setGeolocActive}
         boundariesVisible={boundariesVisible}
