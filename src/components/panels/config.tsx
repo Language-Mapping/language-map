@@ -32,7 +32,7 @@ export const panelsConfig = [
     subheading: 'and sift results',
     icon: <ImSearch />,
     component: <Sift />,
-    rootPath: '/grid',
+    rootPath: '/Categories',
     locStateKey: 'focusField',
   },
   {

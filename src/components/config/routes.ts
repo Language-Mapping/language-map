@@ -6,7 +6,7 @@ export const paths = {
   about: '/about',
   help: '/help',
   table: '/table',
-  grid: '/grid',
+  grid: '/Categories',
 } as {
   [key: string]: RouteLocation
 }

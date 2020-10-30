@@ -6,7 +6,7 @@ export type RouteLocation =
   | '/table'
   | '/about'
   | '/help'
-  | '/grid'
+  | '/Categories'
 
 // TODO: Careful! Consolidate w/HistoryState
 export type LocState = {

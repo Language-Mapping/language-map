@@ -4,6 +4,7 @@ import { Typography } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
 import { Categories } from './Categories'
+import Breadcrumbs from './Breadcrumbs'
 import { LangRecordSchema } from '../../context/types'
 import * as utils from './utils'
 
@@ -22,6 +23,7 @@ const Field: FC = () => {
 
   return (
     <div>
+      <Breadcrumbs />
       <Typography variant="h3">{field}</Typography>
       <ul>
         {uniqueInstances.map((instance) => (
@@ -47,7 +49,7 @@ const FieldValue: FC = () => {
   // from `useParams()`.
   const { field, value } = useParams() as {
     field: keyof LangRecordSchema
-    value: unknown
+    value: string | number | ''
   }
   const { state } = useContext(GlobalContext)
   const { langFeatures, langFeatsLenCache } = state
@@ -63,13 +65,23 @@ const FieldValue: FC = () => {
   if (!matchedComms.length) return <NoneFound />
 
   return (
-    <ul>
-      {matchedComms.map((comm) => (
-        <li key={comm.ID}>
-          <Link to={`/details/${comm.ID}`}>{comm.ID}</Link>
-        </li>
-      ))}
-    </ul>
+    <>
+      <Breadcrumbs />
+      <Typography variant="h3">{value}</Typography>
+      <p style={{ fontSize: 10, textAlign: 'left' }}>
+        <b>@Ross:</b> These lists will obviously be styled. I'd like to reuse
+        the "Card" theme like at the "Categories" level. We'd have to decide on
+        the content though. Probably any Category except Language would use
+        Language as the heading for each card?
+      </p>
+      <ul>
+        {matchedComms.map((comm) => (
+          <li key={comm.ID}>
+            <Link to={`/details/${comm.ID}`}>{comm.ID}</Link>
+          </li>
+        ))}
+      </ul>
+    </>
   )
 }
 
