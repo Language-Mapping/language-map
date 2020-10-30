@@ -6,14 +6,12 @@ import * as Types from './types'
 import { useWindowResize } from '../../utils'
 
 type Breakpoint = 'mobile' | 'desktop' | 'huge'
-type PaddingXY = { left: number; bottom: number; right: number; top: number }
+type Offset = [number, number] // [x, y]
 
-export function usePadding(panelOpen: boolean): PaddingXY {
+export function useOffset(panelOpen: boolean): Offset {
   const { width, height } = useWindowResize()
   const breakpoint = useBreakpoint()
 
-  const right = 0
-  const top = 0
   let left = 0
   let bottom = 0
 
@@ -33,8 +31,7 @@ export function usePadding(panelOpen: boolean): PaddingXY {
     left = width
   }
 
-  // TODO: rm top and right if not needed
-  return { left, bottom, top, right }
+  return [left, bottom]
 }
 
 export function useBreakpoint(): Breakpoint {

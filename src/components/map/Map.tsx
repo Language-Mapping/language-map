@@ -37,10 +37,10 @@ import {
 } from '../../utils'
 
 type MapProps = {
-  openOffCanvasNav: () => void
   mapLoaded: boolean
-  setMapLoaded: React.Dispatch<boolean>
+  openOffCanvasNav: () => void
   panelOpen: boolean
+  setMapLoaded: React.Dispatch<boolean>
 }
 
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
@@ -69,7 +69,7 @@ export const Map: FC<MapProps> = (props) => {
   const { state, dispatch } = useContext(GlobalContext)
   const symbLabelState = useSymbAndLabelState()
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
-  const padding = hooks.usePadding(panelOpen)
+  const offset = hooks.useOffset(panelOpen)
   const [boundariesVisible, setBoundariesVisible] = useState<boolean>(false)
   const [geolocActive, setGeolocActive] = useState<boolean>(false)
 
@@ -136,7 +136,7 @@ export const Map: FC<MapProps> = (props) => {
         longitude: firstCoords[0],
         zoom: config.POINT_ZOOM_LEVEL,
         pitch: 80,
-        offset: [padding.left, padding.bottom] as [number, number],
+        offset,
       }
 
       utils.flyToPoint(map, settings, null)
@@ -215,7 +215,7 @@ export const Map: FC<MapProps> = (props) => {
       disregardCurrZoom: true,
       // bearing: 80, // TODO: consider it as it does add a new element of fancy
       pitch: 80,
-      offset: [padding.left, padding.bottom] as [number, number],
+      offset,
     }
 
     // Make feature appear selected // TODO: higher zIndex on selected feature
@@ -234,10 +234,7 @@ export const Map: FC<MapProps> = (props) => {
 
     utils.flyToPoint(
       mapRef.current.getMap(),
-      {
-        ...viewport,
-        offset: [padding.left, padding.bottom] as [number, number],
-      },
+      { ...viewport, offset },
       utils.prepPopupContent(selFeatAttribs)
     )
   }, [panelOpen])
@@ -394,24 +391,10 @@ export const Map: FC<MapProps> = (props) => {
       openOffCanvasNav()
     } else if (actionID === 'home') {
       flyHome(map)
-    } else {
-      // TODO: consider a simple zoom in/out if it's easier:
-      // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#zoomin
-      // Assumes `in` or `out` from here down...
-      const { zoom } = viewport
-
-      utils.flyToPoint(
-        map,
-        {
-          ...viewport,
-          zoom: actionID === 'in' ? zoom + 1 : zoom - 1,
-          offset: [padding.left, padding.bottom],
-        },
-        utils.prepPopupContent(
-          selFeatAttribs,
-          popupSettings ? popupSettings.heading : null
-        )
-      )
+    } else if (actionID === 'in') {
+      map.zoomIn({ offset }, popupSettings || undefined)
+    } else if (actionID === 'out') {
+      map.zoomOut({ offset }, popupSettings || undefined)
     }
   }
 
@@ -421,9 +404,7 @@ export const Map: FC<MapProps> = (props) => {
         {...viewport}
         {...config.mapProps}
         ref={mapRef}
-        interactiveLayerIds={boundariesLayerIDs.concat(
-          interactiveLayerIds || []
-        )}
+        interactiveLayerIds={[...boundariesLayerIDs, ...interactiveLayerIds]}
         onViewportChange={setViewport}
         onClick={(event: Types.MapEvent) => onClick(event)}
         onHover={onHover}

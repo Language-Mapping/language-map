@@ -113,13 +113,13 @@ export const flyToPoint: MapTypes.FlyToPoint = (
   geocodeMarkerText
 ) => {
   const {
+    bearing = 0,
+    disregardCurrZoom,
     latitude,
     longitude,
-    offset = [0, 0],
-    zoom: targetZoom,
-    disregardCurrZoom,
-    bearing = 0,
+    offset,
     pitch = 0,
+    zoom: targetZoom,
   } = settings
   let zoom = targetZoom
   let popupSettings = null
