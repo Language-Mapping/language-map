@@ -3,14 +3,10 @@ import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { Dialog } from '@material-ui/core'
 
 import { GlobalContext, DialogCloseBtn, SlideUp } from 'components'
+import * as Types from './types'
 import { useStyles } from './styles'
 import { ResultsTable } from './ResultsTable'
 import { LangRecordSchema } from '../../context/types'
-
-type HistoryState = {
-  pathname: string
-  selFeatID?: number
-}
 
 export const ResultsModal: FC = () => {
   const classes = useStyles()
@@ -32,13 +28,16 @@ export const ResultsModal: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.langFeatures])
 
+  // Go back in history if there is one as long as last route wasn't table-based
   const handleClose = (): void => {
-    const historyState = loc.state as HistoryState
+    const historyState = loc.state as Types.HistoryState
 
-    if (historyState && historyState.pathname) {
-      history.push(historyState)
+    if (historyState.pathname?.includes('/table')) {
+      history.push('/')
     } else if (history.length) {
       history.goBack()
+    } else {
+      history.push('/')
     }
   }
 
@@ -55,7 +54,7 @@ export const ResultsModal: FC = () => {
       PaperProps={{ className: classes.resultsModalPaper }}
     >
       <DialogCloseBtn onClose={handleClose} tooltip="Exit to map" />
-      <ResultsTable closeTable={handleClose} data={tableData} />
+      <ResultsTable data={tableData} />
     </Dialog>
   )
 }

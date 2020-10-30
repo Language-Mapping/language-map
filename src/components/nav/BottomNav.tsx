@@ -57,7 +57,12 @@ export const BottomNav: FC<BottomNav> = (props) => {
   const navItems = panelsConfig.map((config) => (
     <BottomNavigationAction
       component={NavLink}
-      to={config.rootPath}
+      to={{
+        pathname: config.rootPath,
+        state: {
+          pathname: config.rootPath,
+        },
+      }}
       exact={config.exact}
       key={config.heading}
       label={config.heading}
