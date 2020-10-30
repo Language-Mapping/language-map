@@ -13,6 +13,7 @@ import { LegendSwatch } from 'components/legend'
 import { RecordDescription } from 'components/results'
 import { paths as routes } from 'components/config/routes'
 import { Media } from 'components/media'
+import { MoreLikeThis } from 'components/details'
 import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
 import { useStyles } from './styles'
 import { findFeatureByID } from '../../utils'
@@ -87,6 +88,7 @@ export const DetailsPanel: FC = () => {
     Description: description,
     Town,
     Countries,
+    Status,
     Audio: audio,
     Video: video,
     'World Region': WorldRegion,
@@ -140,6 +142,9 @@ export const DetailsPanel: FC = () => {
         >
           Clear selection
         </Link>
+        <MoreLikeThis
+          goodies={{ Language: language, 'World Region': WorldRegion, Status }}
+        />
       </div>
       <Divider variant="middle" className={divider} />
       <Typography variant="body2" className={descripSection} component="div">
