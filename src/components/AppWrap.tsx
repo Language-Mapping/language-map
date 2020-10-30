@@ -65,7 +65,7 @@ export const AppWrap: FC = () => {
       <main className={classes.mainWrap}>
         <div className={classes.mapWrap}>
           <Map
-            openOffCanvasNav={() => setOffCanvasNavOpen(false)}
+            openOffCanvasNav={() => setOffCanvasNavOpen(true)}
             mapLoaded={mapLoaded}
             setMapLoaded={setMapLoaded}
             panelOpen={panelOpen}
