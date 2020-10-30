@@ -18,7 +18,7 @@ export const MapPanel: FC<Types.MapPanelProps> = (props) => {
   return (
     <Paper id="map-panels-wrap" className={classes.panelsRoot} elevation={8}>
       <div className={classes.contentWrap}>
-        <Hidden smUp>
+        <Hidden mdUp>
           <CloseBtnPill onClick={() => setPanelOpen(false)} />
         </Hidden>
         <Switch>

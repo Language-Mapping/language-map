@@ -31,7 +31,13 @@ export type LangIconConfig = { icon: string; id: string }
 export type Layer = LayerProps & { 'source-layer': string; id: string }
 export type LongLat = { longitude: number; latitude: number }
 export type LongLatAndZoom = LongLat & { zoom: number }
-export type MapControlAction = 'home' | 'in' | 'out' | 'info' | 'loc-search'
+export type MapControlAction =
+  | 'home'
+  | 'in'
+  | 'out'
+  | 'info'
+  | 'loc-search'
+  | 'reset-pitch'
 export type PopupContent = { heading: string; subheading?: string }
 export type PopupSettings = PopupContent & LongLat
 export type SheetsValues = [string, string]
@@ -103,8 +109,6 @@ export type MapCtrlBtnsProps = Omit<
   GeocoderProps,
   'anchorEl' | 'setAnchorEl'
 > & {
-  handlePitchReset: () => void
-  panelOpen: boolean
   isPitchZero: boolean
   onMapCtrlClick: (actionID: MapControlAction) => void
 }
@@ -125,6 +129,7 @@ export type CtrlBtnConfig = {
   icon: React.ReactNode
   name: string
   customFn?: boolean
+  disabledOnProp?: keyof MapCtrlBtnsProps
 }
 
 export type SourceWithPromoteID = Omit<SourceProps, 'id'> & {

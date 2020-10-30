@@ -385,6 +385,9 @@ export const Map: FC<MapProps> = (props) => {
       openOffCanvasNav()
     } else if (actionID === 'home') {
       flyHome(map)
+    } else if (actionID === 'reset-pitch') {
+      if (offset[1] !== 0) setPopupSettings(null) // close on mobile (bad check)
+      setViewport({ ...viewport, pitch: 0 })
     } else if (actionID === 'in') {
       map.zoomIn({ offset }, popupSettings || undefined)
     } else if (actionID === 'out') {
@@ -443,7 +446,6 @@ export const Map: FC<MapProps> = (props) => {
         setGeolocActive={setGeolocActive}
         boundariesVisible={boundariesVisible}
         setBoundariesVisible={setBoundariesVisible}
-        handlePitchReset={() => setViewport({ ...viewport, pitch: 0 })}
         isPitchZero={viewport.pitch === 0}
         onMapCtrlClick={(actionID: Types.MapControlAction) => {
           onMapCtrlClick(actionID)
