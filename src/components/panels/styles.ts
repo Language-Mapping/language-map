@@ -2,9 +2,10 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { panelWidths } from 'components/panels/config'
-import type { MapPanelProps } from './types'
 
-type JustTheState = Pick<MapPanelProps, 'panelClosed'>
+type StylesProps = {
+  panelOpen: boolean
+}
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -13,7 +14,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       left: 4,
-      opacity: (props: JustTheState) => (props.panelClosed ? 0 : 1),
+      opacity: (props: StylesProps) => (props.panelOpen ? 1 : 0),
       overflowY: 'auto',
       position: 'fixed',
       right: 4,
@@ -21,8 +22,8 @@ export const useStyles = makeStyles((theme: Theme) =>
       transition: '300ms ease all',
       borderBottomRightRadius: 0,
       borderBottomLeftRadius: 0,
-      transform: (props: JustTheState) =>
-        `translateY(${props.panelClosed ? '100%' : 0})`,
+      transform: (props: StylesProps) =>
+        `translateY(${props.panelOpen ? 0 : '100%'})`,
       [theme.breakpoints.up('md')]: {
         top: 24,
         left: 24,

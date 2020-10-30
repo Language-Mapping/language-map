@@ -5,30 +5,36 @@ import { panelWidths } from 'components/panels/config'
 import * as Types from './types'
 import { useWindowResize } from '../../utils'
 
-export const useIt = false
-
 type Breakpoint = 'mobile' | 'desktop' | 'huge'
+type PaddingXY = { left: number; bottom: number; right: number; top: number }
 
-type PaddingXY = { left: number; top: number }
-
-export function usePadding(panelClosed?: boolean): PaddingXY {
-  const { height } = useWindowResize()
+export function usePadding(panelOpen: boolean): PaddingXY {
+  const { width, height } = useWindowResize()
   const breakpoint = useBreakpoint()
 
+  const right = 0
+  const top = 0
   let left = 0
-  let top = 0
+  let bottom = 0
 
   const bottomBarHeight = 56
 
-  if (breakpoint === 'mobile') top = (-1 * (height - bottomBarHeight)) / 2
-  else if (breakpoint === 'huge') left = panelWidths.midLarge
-  else left = panelWidths.mid
+  if (panelOpen) {
+    if (breakpoint === 'mobile') {
+      bottom = (-1 * height) / 4 + 50 // account for logo/title
+    } else if (breakpoint === 'huge') {
+      left = panelWidths.midLarge / 2 - 24
+    } else {
+      left = panelWidths.mid / 2 - 24
+    }
+  } else if (breakpoint === 'mobile') {
+    bottom = -1 * (height / 4 - bottomBarHeight)
+  } else {
+    left = width
+  }
 
-  if (panelClosed) return { left, top }
-
-  if (breakpoint === 'mobile') top *= -1
-
-  return { left, top }
+  // TODO: rm top and right if not needed
+  return { left, bottom, top, right }
 }
 
 export function useBreakpoint(): Breakpoint {

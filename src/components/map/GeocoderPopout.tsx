@@ -104,6 +104,7 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
           [bbox[2], bbox[3]],
         ] as MapTypes.BoundsArray,
         padding: 25,
+        // offset: // TODO: hooks and wire up
       }
 
       utils.flyToBounds(map, settings, null)
@@ -113,6 +114,7 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
         longitude: center[0],
         zoom: 15,
         disregardCurrZoom: true,
+        offset: [0, 0] as [number, number], // TODO: no!
       }
 
       utils.flyToPoint(map, settings, null, text)

@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const AppWrap: FC = () => {
   const classes = useStyles()
-  const [panelClosed, setPanelClosed] = useState<boolean>()
+  const [panelOpen, setPanelOpen] = useState<boolean>(true)
   const [offCanvasNavOpen, setOffCanvasNavOpen] = useState<boolean>(false)
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
 
@@ -68,11 +68,11 @@ export const AppWrap: FC = () => {
             openOffCanvasNav={() => setOffCanvasNavOpen(false)}
             mapLoaded={mapLoaded}
             setMapLoaded={setMapLoaded}
-            panelClosed={panelClosed}
+            panelOpen={panelOpen}
           />
         </div>
-        <BottomNav setPanelClosed={setPanelClosed} panelClosed={panelClosed} />
-        <MapPanel panelClosed={panelClosed} setPanelClosed={setPanelClosed} />
+        <BottomNav setPanelOpen={setPanelOpen} panelOpen={panelOpen} />
+        <MapPanel panelOpen={panelOpen} setPanelOpen={setPanelOpen} />
       </main>
       <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />
     </>

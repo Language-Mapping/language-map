@@ -11,18 +11,18 @@ import * as Types from './types'
 // https://react-swipeable-views.com/demos/demos/
 // TODO: git mv into Panels.tsx
 export const MapPanel: FC<Types.MapPanelProps> = (props) => {
-  const { setPanelClosed, panelClosed } = props
-  const classes = useStyles({ panelClosed })
+  const { setPanelOpen, panelOpen } = props
+  const classes = useStyles({ panelOpen })
 
   // Need the `id` in order to find unique element for `map.setPadding`
   return (
     <Paper id="map-panels-wrap" className={classes.panelsRoot} elevation={8}>
       <div className={classes.contentWrap}>
         <Hidden smUp>
-          <CloseBtnPill onClick={() => setPanelClosed(true)} />
+          <CloseBtnPill onClick={() => setPanelOpen(false)} />
         </Hidden>
         <Hidden smDown>
-          <CloseBtn onClick={() => setPanelClosed(true)} />
+          <CloseBtn onClick={() => setPanelOpen(false)} />
         </Hidden>
         <Switch>
           {panelsConfig.map((config) => (

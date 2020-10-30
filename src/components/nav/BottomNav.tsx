@@ -10,8 +10,8 @@ import {
 import { panelsConfig, panelWidths } from '../panels/config'
 
 type BottomNav = {
-  setPanelClosed: React.Dispatch<boolean>
-  panelClosed?: boolean
+  setPanelOpen: React.Dispatch<boolean>
+  panelOpen: boolean
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -50,16 +50,17 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const BottomNav: FC<BottomNav> = (props) => {
-  const { panelClosed, setPanelClosed } = props
+  const { panelOpen, setPanelOpen } = props
   const classes = useStyles()
   const loc = useLocation()
 
   // eslint-disable-next-line @typescript-eslint/ban-types
   const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
-    if (panelClosed === true) {
-      setPanelClosed(false)
+    if (panelOpen === true) {
+      setPanelOpen(false)
     } else if (newValue === loc.pathname) {
-      setPanelClosed(true)
+      // TODO: better route check ^^^
+      setPanelOpen(true)
     }
   }
 

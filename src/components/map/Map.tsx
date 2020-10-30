@@ -40,7 +40,7 @@ type MapProps = {
   openOffCanvasNav: () => void
   mapLoaded: boolean
   setMapLoaded: React.Dispatch<boolean>
-  panelClosed?: boolean
+  panelOpen: boolean
 }
 
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
@@ -61,7 +61,7 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
 }
 
 export const Map: FC<MapProps> = (props) => {
-  const { openOffCanvasNav, mapLoaded, setMapLoaded, panelClosed } = props
+  const { openOffCanvasNav, mapLoaded, setMapLoaded, panelOpen } = props
   const history = useHistory()
   const loc = useLocation()
   const match: { params: { id: string } } | null = useRouteMatch('/details/:id')
@@ -69,18 +69,13 @@ export const Map: FC<MapProps> = (props) => {
   const { state, dispatch } = useContext(GlobalContext)
   const symbLabelState = useSymbAndLabelState()
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
-  const { left, top } = hooks.usePadding(panelClosed)
+  const padding = hooks.usePadding(panelOpen)
   const [boundariesVisible, setBoundariesVisible] = useState<boolean>(false)
   const [geolocActive, setGeolocActive] = useState<boolean>(false)
-  const initialViewport = hooks.useInitialViewport({
-    ...config.initialMapState,
-    bounds: config.initialBounds,
-    padding: { left, top, right: 0, bottom: 0 },
-  })
 
-  // TODO: don't get `selFeatAttribs` from state, instead reuse a util or make a
-  // hook for setting this locally whenever `matchedFeatID` changes. Then we're
-  // down to just ONE state property- `langFeatures`, which may be here forever.
+  // TODO: don't get `selFeatAttribs` from state- make a hook using
+  // GlobalContext and useLocation whenever `matchedFeatID` changes. Then we're
+  // down to just ONE state prop- `langFeatures`, which may be here forever.
   const { selFeatAttribs, langFeatures } = state
   const { legendItems } = symbLabelState
 
@@ -89,7 +84,9 @@ export const Map: FC<MapProps> = (props) => {
     geocodeMarker,
     setGeocodeMarker,
   ] = useState<Types.GeocodeMarker | null>()
-  const [viewport, setViewport] = useState<Types.ViewportState>(initialViewport)
+  const [viewport, setViewport] = useState<Types.ViewportState>(
+    config.initialMapState
+  )
   const [
     tooltipSettings,
     setTooltipSettings,
@@ -116,8 +113,7 @@ export const Map: FC<MapProps> = (props) => {
     const map: MbMap = mapRef.current.getMap()
 
     // At time of writing, a "no features" scenario should only occur on load
-    // since the "View results..." btn in the table is disabled if there are no
-    // records.
+    // since "View results..." btn in table is disabled if no records.
     if (!langFeatures.length) return
 
     // TODO: better check/decouple the fly-home-on-filter-reset behavior so that
@@ -140,6 +136,7 @@ export const Map: FC<MapProps> = (props) => {
         longitude: firstCoords[0],
         zoom: config.POINT_ZOOM_LEVEL,
         pitch: 80,
+        offset: [padding.left, padding.bottom] as [number, number],
       }
 
       utils.flyToPoint(map, settings, null)
@@ -218,6 +215,7 @@ export const Map: FC<MapProps> = (props) => {
       disregardCurrZoom: true,
       // bearing: 80, // TODO: consider it as it does add a new element of fancy
       pitch: 80,
+      offset: [padding.left, padding.bottom] as [number, number],
     }
 
     // Make feature appear selected // TODO: higher zIndex on selected feature
@@ -230,15 +228,19 @@ export const Map: FC<MapProps> = (props) => {
     utils.flyToPoint(map, settings, utils.prepPopupContent(matchingRecord))
   }, [matchedFeatID, mapLoaded])
 
+  // Panel opened or closed
   useEffect(() => {
-    // `undefined` initially, so shouldn't trigger anything
-    if (!mapRef?.current || !mapLoaded || panelClosed === undefined) return
+    if (!mapRef?.current || !mapLoaded) return
 
-    mapRef.current.getMap().panBy([left, top], undefined, {
-      forceViewportUpdate: true,
-      popupSettings: { heading: 'sure', subheading: 'yeah' },
-    })
-  }, [panelClosed])
+    utils.flyToPoint(
+      mapRef.current.getMap(),
+      {
+        ...viewport,
+        offset: [padding.left, padding.bottom] as [number, number],
+      },
+      utils.prepPopupContent(selFeatAttribs)
+    )
+  }, [panelOpen])
   /* eslint-enable react-hooks/exhaustive-deps */
 
   function onHover(event: Types.MapEvent) {
@@ -257,15 +259,12 @@ export const Map: FC<MapProps> = (props) => {
     const cacheOfIDs: number[] = []
     const uniqueRecords: LangRecordSchema[] = []
 
-    // NOTE: this only works because a very low zoom of 4 is set. Otherwise not
-    // all of the features are included. Even changing it to 5 in Firefox only
-    // makes ~70% of them appear.
+    // This only works because of a very low zoom of 4. Otherwise not all of the
+    // features are included. Even 5 in Firefox only makes ~70% of them appear.
     const rawLangFeats = map.querySourceFeatures(langSrcID, { sourceLayer })
 
-    // Just the properties for table/results, don't need GeoJSON cruft. Also
-    // need to make sure each ID is unique as there have been initial data
-    // inconsistencies, and more importantly MB may have feature duplication if
-    // there is a tile overlap.
+    // Just the properties for the table/results, don't need GeoJSON cruft. Also
+    // making sure each ID is unique as there were initial data inconsistencies.
     rawLangFeats.forEach((thisFeat) => {
       if (
         !thisFeat.properties ||
@@ -284,10 +283,7 @@ export const Map: FC<MapProps> = (props) => {
 
     // NOTE: could not get this into the same `useEffect` that handles when
     // selFeatAttribs or mapLoaded are changed with an MB error/crash.
-    if (!matchingRecord) flyHome(map, true) // TODO: rm if not using `true`, etc
-
-    // TODO: set paint property
-    // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
+    if (!matchingRecord) flyHome(map)
 
     dispatch({ type: 'SET_LANG_LAYER_FEATURES', payload: uniqueRecords })
     setMapLoaded(true)
@@ -296,10 +292,8 @@ export const Map: FC<MapProps> = (props) => {
     map.addControl(new AttributionControl({ compact: false }), 'bottom-right')
 
     // TODO: put all these init events below into `utils.events.ts`
-
-    // Maintain viewport state sync if needed (e.g. after things like `flyTo`),
-    // otherwise the map shifts back to previous position after panning or
-    // zooming.
+    // Maintain viewport state sync if needed (e.g. after `flyTo`), otherwise
+    // the map shifts back to previous position after panning or zooming.
     map.on('moveend', function onMoveEnd(zoomEndEvent) {
       // No custom event data, regular move event
       if (zoomEndEvent.forceViewportUpdate) {
@@ -308,8 +302,7 @@ export const Map: FC<MapProps> = (props) => {
           latitude: map.getCenter().lat,
           longitude: map.getCenter().lng,
           pitch: map.getPitch(),
-          zoom: map.getZoom(),
-          // bearing: map.getBearing(), // TODO: consider, looks cool
+          zoom: map.getZoom(), // bearing: // TODO: consider, looks cool
         })
       }
     })
@@ -330,10 +323,7 @@ export const Map: FC<MapProps> = (props) => {
       setPopupSettings(null)
 
       if (geocodeMarkerParams) setGeocodeMarker(geocodeMarkerParams)
-
-      if (popupParams as Types.PopupSettings) {
-        setPopupSettings(popupParams)
-      }
+      if (popupParams as Types.PopupSettings) setPopupSettings(popupParams)
     })
   }
 
@@ -352,9 +342,7 @@ export const Map: FC<MapProps> = (props) => {
       history.push(loc.pathname)
       dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
     } else {
-      const langFeat = topLangFeat as Types.LangFeature
-
-      history.push(`${routes.details}/${langFeat.properties.ID}`)
+      history.push(`${routes.details}/${topLangFeat.properties?.ID}`)
 
       return // prevent boundary click underneath
     }
@@ -383,7 +371,7 @@ export const Map: FC<MapProps> = (props) => {
     setTooltipSettings(null)
   }
 
-  const flyHome = (map: MbMap, initial?: boolean): void => {
+  const flyHome = (map: MbMap): void => {
     nuclearClear()
 
     const settings = {
@@ -392,13 +380,6 @@ export const Map: FC<MapProps> = (props) => {
       bounds: config.initialBounds,
       padding: 25,
     }
-
-    // if (initial) {
-    //   settings = {
-    //     ...settings,
-    //     ...initialViewport,
-    //   }
-    // }
 
     utils.flyToBounds(map, settings, null)
   }
@@ -421,7 +402,11 @@ export const Map: FC<MapProps> = (props) => {
 
       utils.flyToPoint(
         map,
-        { ...viewport, zoom: actionID === 'in' ? zoom + 1 : zoom - 1 },
+        {
+          ...viewport,
+          zoom: actionID === 'in' ? zoom + 1 : zoom - 1,
+          offset: [padding.left, padding.bottom],
+        },
         utils.prepPopupContent(
           selFeatAttribs,
           popupSettings ? popupSettings.heading : null
@@ -449,10 +434,7 @@ export const Map: FC<MapProps> = (props) => {
           onViewportChange={(mapViewport: Types.ViewportState) => {
             // CRED:
             // github.com/visgl/react-map-gl/issues/887#issuecomment-531580394
-            setViewport({
-              ...mapViewport,
-              zoom: config.POINT_ZOOM_LEVEL,
-            })
+            setViewport({ ...mapViewport, zoom: config.POINT_ZOOM_LEVEL })
           }}
         />
         {geocodeMarker && <GeocodeMarker {...geocodeMarker} />}

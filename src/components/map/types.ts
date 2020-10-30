@@ -177,6 +177,7 @@ export type FlyToPoint = (
     disregardCurrZoom?: boolean
     bearing?: number
     pitch?: number
+    offset: [number, number]
   },
   popupContent: PopupContent | null,
   geocodeMarkerText?: string

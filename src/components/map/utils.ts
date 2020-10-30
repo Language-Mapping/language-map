@@ -97,25 +97,30 @@ export const flyToBounds: MapTypes.FlyToBounds = (
 
   if (popupContent) popupSettings = { latitude, longitude, ...popupContent }
 
-  map.flyTo({ essential: true, zoom, center: [longitude, latitude] }, {
-    forceViewportUpdate: true,
-    popupSettings,
-  } as MapTypes.CustomEventData)
+  map.flyTo(
+    { essential: true, zoom, center: [longitude, latitude], offset: [250, 0] },
+    {
+      forceViewportUpdate: true,
+      popupSettings,
+    } as MapTypes.CustomEventData
+  )
 }
 
 export const flyToPoint: MapTypes.FlyToPoint = (
   map,
-  {
+  settings,
+  popupContent,
+  geocodeMarkerText
+) => {
+  const {
     latitude,
     longitude,
+    offset = [0, 0],
     zoom: targetZoom,
     disregardCurrZoom,
     bearing = 0,
     pitch = 0,
-  },
-  popupContent,
-  geocodeMarkerText
-) => {
+  } = settings
   let zoom = targetZoom
   let popupSettings = null
 
@@ -139,7 +144,14 @@ export const flyToPoint: MapTypes.FlyToPoint = (
   }
 
   map.flyTo(
-    { essential: true, zoom, center: [longitude, latitude], bearing, pitch },
+    {
+      essential: true,
+      zoom,
+      center: [longitude, latitude],
+      bearing,
+      pitch,
+      offset,
+    },
     customEventData
   )
 }
