@@ -150,9 +150,10 @@ export const Map: FC<MapProps> = (props) => {
     utils.flyToBounds(
       map,
       {
-        height: viewport.height as number,
-        width: viewport.width as number,
+        height: window.innerHeight as number,
+        width: window.innerWidth as number,
         bounds: bounds.toArray() as Types.BoundsArray,
+        offset,
       },
       null
     )
@@ -345,7 +346,13 @@ export const Map: FC<MapProps> = (props) => {
       const lookup =
         lookups[boundariesClicked[0].source as 'neighborhoods' | 'counties']
 
-      events.handleBoundaryClick(map, boundariesClicked[0], dimensions, lookup)
+      events.handleBoundaryClick(
+        map,
+        boundariesClicked[0],
+        dimensions,
+        lookup,
+        offset
+      )
     }
   }
 
@@ -362,7 +369,7 @@ export const Map: FC<MapProps> = (props) => {
       height: map.getContainer().clientHeight,
       width: map.getContainer().clientWidth,
       bounds: config.initialBounds,
-      padding: 25,
+      offset,
     }
 
     utils.flyToBounds(map, settings, null)

@@ -84,7 +84,7 @@ export const prepPopupContent: MapTypes.PrepPopupContent = (
 
 export const flyToBounds: MapTypes.FlyToBounds = (
   map,
-  { height, width, bounds },
+  { height, width, bounds, offset },
   popupContent
 ) => {
   let popupSettings = null
@@ -92,18 +92,15 @@ export const flyToBounds: MapTypes.FlyToBounds = (
   const webMercViewport = new WebMercatorViewport({
     width,
     height,
-  }).fitBounds(bounds, { padding: 50 })
+  }).fitBounds(bounds, { offset, padding: 75 })
   const { latitude, longitude, zoom } = webMercViewport
 
   if (popupContent) popupSettings = { latitude, longitude, ...popupContent }
 
-  map.flyTo(
-    { essential: true, zoom, center: [longitude, latitude], offset: [250, 0] },
-    {
-      forceViewportUpdate: true,
-      popupSettings,
-    } as MapTypes.CustomEventData
-  )
+  map.flyTo({ essential: true, zoom, center: [longitude, latitude], offset }, {
+    forceViewportUpdate: true,
+    popupSettings,
+  } as MapTypes.CustomEventData)
 }
 
 export const flyToPoint: MapTypes.FlyToPoint = (

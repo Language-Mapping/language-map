@@ -114,6 +114,7 @@ export type GeocoderProps = {
   boundariesVisible: boolean
   geolocActive: boolean
   mapRef: React.RefObject<InteractiveMap>
+  panelOpen: boolean
   setAnchorEl: React.Dispatch<null | HTMLElement>
   setBoundariesVisible: React.Dispatch<boolean>
   setGeolocActive: React.Dispatch<boolean>
@@ -161,13 +162,15 @@ export type HandleBoundaryClick = (
   map: Map,
   topMostFeat: LangFeature | BoundaryFeat,
   boundsConfig: BoundsConfig,
-  lookup?: BoundaryLookup[]
+  lookup?: BoundaryLookup[],
+  offset?: [number, number]
 ) => void
 
 export type FlyToBounds = (
   map: Map,
   settings: BoundsConfig & {
     bounds: BoundsArray
+    offset: [number, number]
   },
   popupContent: PopupContent | null
 ) => void

@@ -17,6 +17,7 @@ import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import { GeocoderProps, GeocodeResult } from './types'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
+import * as hooks from './hooks'
 import * as utils from './utils'
 import * as MapTypes from './types'
 
@@ -70,6 +71,7 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
     boundariesVisible,
     geolocActive,
     mapRef,
+    panelOpen,
     setAnchorEl,
     setBoundariesVisible,
     setGeolocActive,
@@ -79,6 +81,7 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
   const layersMenuOpen = Boolean(anchorEl)
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
   const { width, height } = useWindowResize()
+  const offset = hooks.useOffset(panelOpen)
 
   const handleLayersMenuClose = () => setAnchorEl(null)
 
@@ -104,7 +107,7 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
           [bbox[2], bbox[3]],
         ] as MapTypes.BoundsArray,
         padding: 25,
-        // offset: // TODO: hooks and wire up
+        offset,
       }
 
       utils.flyToBounds(map, settings, null)
@@ -114,7 +117,7 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
         longitude: center[0],
         zoom: 15,
         disregardCurrZoom: true,
-        offset: [0, 0] as [number, number], // TODO: no!
+        offset,
       }
 
       utils.flyToPoint(map, settings, null, text)
