@@ -7,16 +7,7 @@ import { GlobalContext } from 'components'
 import { Category } from './Category'
 import * as Types from './types'
 import * as utils from './utils'
-
-const categoriesConfig = [
-  { name: 'Language', summary: 'The basis of all life' },
-  { name: 'Endonym', summary: 'Like Language but not' },
-  { name: 'World Region', summary: 'Colors! Colors.' },
-  { name: 'Countries', summary: 'Where it is spoken', parse: true },
-  { name: 'Language Family', summary: 'Not much variety' },
-  { name: 'Neighborhoods', summary: 'Only NYC', parse: true },
-  { name: 'Status', summary: 'Maybe this too' },
-] as Omit<Types.CategoryConfig, 'uniqueInstances'>[]
+import * as config from './config'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,7 +29,7 @@ export const Categories: FC = () => {
   const { url } = useRouteMatch()
   const { state } = useContext(GlobalContext)
   const { langFeatsLenCache, langFeatures } = state
-  const [categories, setCategories] = useState<Types.CategoryConfig[]>()
+  const [categories, setCategories] = useState<Types.CategoryProps[]>([])
   const classes = useStyles()
   const { categoriesList } = classes
 
@@ -46,14 +37,21 @@ export const Categories: FC = () => {
   useEffect((): void => {
     if (!langFeatsLenCache) return
 
-    const preppedCats = categoriesConfig.map((category) => ({
-      ...category,
-      uniqueInstances: utils.getUniqueInstances(
+    const preppedCats = config.categories.map((category) => {
+      const uniqueInstances = utils.getUniqueInstances(
         category.name,
         langFeatures,
         category.parse
-      ),
-    }))
+      )
+
+      return {
+        intro: `${uniqueInstances.length} instances (inc. filts)`,
+        title: category.name,
+        url: `${url}/${category.name}`,
+        subtitle: category.definition,
+        uniqueInstances,
+      }
+    })
 
     setCategories(preppedCats)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,11 +68,9 @@ export const Categories: FC = () => {
         let the user explore through a drill-down hierachy.
       </Typography>
       <div className={categoriesList}>
-        {categoriesConfig &&
-          categories &&
-          categories.map((category) => (
-            <Category key={category.name} url={url} {...category} />
-          ))}
+        {categories.map((category) => (
+          <Category key={category.title} {...category} />
+        ))}
       </div>
     </div>
   )

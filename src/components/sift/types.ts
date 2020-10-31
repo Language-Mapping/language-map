@@ -1,12 +1,16 @@
 import { LangRecordSchema } from '../../context/types'
 
 export type CategoryProps = {
-  name: keyof LangRecordSchema
+  intro: string
+  title: string
   url: string
-  summary: string
+  subtitle: string
   uniqueInstances: unknown[]
 }
 
-export type CategoryConfig = Omit<CategoryProps, 'url'> & {
+export type CategoryConfig = {
+  name: keyof LangRecordSchema
+  definition: string
+  icon?: React.ReactNode
   parse?: boolean
 }

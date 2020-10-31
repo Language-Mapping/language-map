@@ -6,6 +6,7 @@ import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 
 import * as Types from './types'
+import * as utils from './utils'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,12 +20,12 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     intro: {
-      // fontSize: 8,
+      fontSize: 10,
     },
     instances: {
       fontSize: 10,
     },
-    summary: {
+    subtitle: {
       marginBottom: '0.5em',
       fontSize: 12,
     },
@@ -32,9 +33,9 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const Category: FC<Types.CategoryProps> = (props) => {
-  const { name, url, summary, uniqueInstances } = props
+  const { title, url, subtitle, uniqueInstances, intro } = props
   const classes = useStyles()
-  // TODO: shuffle the order of uniques each time
+  // TODO: sort examples/uniques ascending
 
   return (
     <Card
@@ -42,7 +43,8 @@ export const Category: FC<Types.CategoryProps> = (props) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore // not sure what's up, this is valid
       component={Link}
-      to={`${url}/${name}`}
+      // to={`${url}/${name}`}
+      to={url}
       classes={{ root: classes.categoryRoot }}
     >
       <CardContent>
@@ -52,21 +54,20 @@ export const Category: FC<Types.CategoryProps> = (props) => {
           color="textSecondary"
           gutterBottom
         >
-          {uniqueInstances.length} uniques
+          {intro}
         </Typography>
         <Typography variant="h5" component="h4">
-          {name}
+          {title}
         </Typography>
-        <Typography className={classes.summary} color="textSecondary">
-          {summary}
+        <Typography className={classes.subtitle} color="textSecondary">
+          {subtitle}
         </Typography>
         <Typography
           component="p"
           variant="caption"
           className={classes.instances}
         >
-          {uniqueInstances[0]}, {uniqueInstances[1]}, {uniqueInstances[2]},{' '}
-          {uniqueInstances[3]}, {uniqueInstances[4]}...
+          {utils.prettyTruncate(uniqueInstances as string[])}
         </Typography>
       </CardContent>
     </Card>
