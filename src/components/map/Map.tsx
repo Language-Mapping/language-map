@@ -36,13 +36,6 @@ import {
   isTouchEnabled,
 } from '../../utils'
 
-type MapProps = {
-  mapLoaded: boolean
-  openOffCanvasNav: () => void
-  panelOpen: boolean
-  setMapLoaded: React.Dispatch<boolean>
-}
-
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
 const { neighbConfig, countiesConfig, boundariesLayerIDs } = config
 const interactiveLayerIds = symbLayers.map((symbLayer) => symbLayer.id)
@@ -60,7 +53,7 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
   )
 }
 
-export const Map: FC<MapProps> = (props) => {
+export const Map: FC<Types.MapProps> = (props) => {
   const { openOffCanvasNav, mapLoaded, setMapLoaded, panelOpen } = props
   const history = useHistory()
   const loc = useLocation()
@@ -386,8 +379,7 @@ export const Map: FC<MapProps> = (props) => {
     } else if (actionID === 'home') {
       flyHome(map)
     } else if (actionID === 'reset-pitch') {
-      if (offset[1] !== 0) setPopupSettings(null) // close on mobile (bad check)
-      setViewport({ ...viewport, pitch: 0 })
+      setViewport({ ...viewport, pitch: 0 }) // TODO: fix offset on mobile/iPad?
     } else if (actionID === 'in') {
       map.zoomIn({ offset }, popupSettings || undefined)
     } else if (actionID === 'out') {

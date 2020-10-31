@@ -79,8 +79,9 @@ export const Categories: FC = () => {
 
   return (
     <div className={classes.categoriesRoot}>
+      {/* TODO: reuse and make dynamic */}
       <Typography variant="h4" component="h3">
-        Available categories
+        Explore
       </Typography>
       <Typography variant="caption" component="p">
         This is a list of all the categories (aka columns, fields) we'd want to

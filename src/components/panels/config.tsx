@@ -1,5 +1,4 @@
 import React from 'react'
-import { Fab } from '@material-ui/core'
 import { TiDocumentText, TiThList } from 'react-icons/ti'
 import { ImSearch } from 'react-icons/im'
 import { BiHomeAlt } from 'react-icons/bi'
@@ -16,7 +15,24 @@ export const panelWidths = { mid: 450, midLarge: 600 }
 
 export const panelsConfig = [
   {
-    heading: 'Data', // TODO: show "& filters" on desk
+    heading: 'Home',
+    subheading: 'is where the legend is',
+    icon: <BiHomeAlt />,
+    component: <FiltersPanel />,
+    rootPath: '/',
+    locStateKey: null,
+    exact: true,
+  },
+  {
+    heading: 'Explore',
+    subheading: 'and sift results',
+    icon: <ImSearch />,
+    component: <Sift />,
+    rootPath: '/Explore',
+    locStateKey: 'focusField',
+  },
+  {
+    heading: 'Data',
     subheading: 'and data and and and filters',
     icon: (
       <NavItemWithBadge>
@@ -26,31 +42,6 @@ export const panelsConfig = [
     component: null,
     rootPath: '/table',
     locStateKey: 'tableStuff',
-  },
-  {
-    heading: 'Explore',
-    subheading: 'and sift results',
-    icon: <ImSearch />,
-    component: <Sift />,
-    rootPath: '/Categories',
-    locStateKey: 'focusField',
-  },
-  {
-    heading: '',
-    subheading: 'is where the legend is',
-    icon: (
-      <Fab
-        color="secondary"
-        aria-label="home"
-        style={{ position: 'relative', top: -4 }}
-      >
-        <BiHomeAlt />
-      </Fab>
-    ),
-    component: <FiltersPanel />,
-    rootPath: '/',
-    locStateKey: null,
-    exact: true,
   },
   {
     heading: 'Details',
