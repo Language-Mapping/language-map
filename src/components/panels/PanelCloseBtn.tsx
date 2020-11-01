@@ -15,17 +15,18 @@ const useStyles = makeStyles((theme: Theme) =>
       top: '0.5rem',
     },
     panelClosePill: {
-      position: 'absolute',
-      height: 16,
+      position: 'sticky',
+      height: 8,
+      zIndex: 100,
       top: 0,
-      display: 'block',
-      left: 'calc(50% - 18px)',
+      justifyContent: 'center',
+      display: 'inline-flex',
+      marginBottom: 8,
     },
     innerPill: {
       width: 36,
       backgroundColor: theme.palette.text.primary,
       height: 4,
-      marginTop: 8,
       borderRadius: 4,
     },
   })
@@ -43,7 +44,11 @@ export const CloseBtnPill: FC<CloseProps> = (props) => {
       className={classes.panelClosePill}
       role="button"
     >
-      <div className={classes.innerPill} />
+      <div
+        className={classes.innerPill}
+        onTouchMove={() => onClick()}
+        onTouchStart={() => onClick()}
+      />
     </Link>
   )
 }

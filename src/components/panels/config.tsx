@@ -5,7 +5,8 @@ import { BiHomeAlt } from 'react-icons/bi'
 
 import { FiltersPanel } from 'components/filters'
 import { DetailsPanel } from 'components/details'
-import { Sift } from 'components/sift'
+import { Field, Categories, FieldValue } from 'components/sift'
+
 import { MapPanel } from 'components/panels/types'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 import { NavItemWithBadge } from './NavItemWithBadge'
@@ -20,16 +21,30 @@ export const panelsConfig = [
     icon: <BiHomeAlt />,
     component: <FiltersPanel />,
     rootPath: '/',
-    locStateKey: null,
     exact: true,
+    omitDefaults: true,
+  },
+  {
+    heading: 'Level 2 cat',
+    subheading: 'and sift results',
+    icon: <ImSearch />,
+    component: <FieldValue />,
+    rootPath: '/Explore/:field/:value',
+  },
+  {
+    heading: 'Level 1 cat',
+    subheading: 'and sift results',
+    icon: <ImSearch />,
+    component: <Field />,
+    rootPath: '/Explore/:field',
   },
   {
     heading: 'Explore',
     subheading: 'and sift results',
+    intro: 'Intro/summary of Explore goes here',
     icon: <ImSearch />,
-    component: <Sift />,
+    component: <Categories />,
     rootPath: '/Explore',
-    locStateKey: 'focusField',
   },
   {
     heading: 'Data',
@@ -41,7 +56,6 @@ export const panelsConfig = [
     ),
     component: null,
     rootPath: '/table',
-    locStateKey: 'tableStuff',
   },
   {
     heading: 'Details',
@@ -49,7 +63,6 @@ export const panelsConfig = [
     icon: <TiDocumentText />,
     component: <DetailsPanel />,
     rootPath: '/details',
-    locStateKey: 'selFeatID',
   },
   {
     heading: 'Help',
@@ -57,6 +70,5 @@ export const panelsConfig = [
     icon: <AiOutlineQuestionCircle />,
     component: null, // TODO: consider into panel rather than modal
     rootPath: '/help',
-    locStateKey: null,
   },
 ] as MapPanel[]

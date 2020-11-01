@@ -1,18 +1,21 @@
 import React, { FC } from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
-import Breadcrumbs from '@material-ui/core/Breadcrumbs'
+import { Typography, Breadcrumbs, Link } from '@material-ui/core'
 import { useLocation, Link as RouterLink } from 'react-router-dom'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {},
-    lists: {
-      backgroundColor: theme.palette.background.paper,
-      marginTop: theme.spacing(1),
-    },
-    nested: {
-      paddingLeft: theme.spacing(4),
+    root: {
+      fontSize: '0.8rem',
+      position: 'sticky',
+      top: 0,
+      zIndex: 1,
+      '& a': {
+        color: theme.palette.primary.main,
+      },
+      '& *': {
+        fontSize: 'inherit',
+      },
     },
   })
 )
@@ -30,13 +33,13 @@ const RouterBreadcrumbs: FC = () => {
         const to = `/${pathnames.slice(0, index + 1).join('/')}`
 
         return last ? (
-          <Typography color="textPrimary" key={to}>
+          <Typography color="textSecondary" key={to}>
             {value}
           </Typography>
         ) : (
-          <RouterLink to={to} key={to}>
+          <Link to={to} key={to} component={RouterLink}>
             {value}
-          </RouterLink>
+          </Link>
         )
       })}
     </Breadcrumbs>

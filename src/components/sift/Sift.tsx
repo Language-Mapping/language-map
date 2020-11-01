@@ -1,14 +1,14 @@
 import React, { FC, useContext } from 'react'
-import { Route, Switch, useRouteMatch, useParams, Link } from 'react-router-dom'
-import { Typography } from '@material-ui/core'
+import { useRouteMatch, useParams } from 'react-router-dom'
 
 import { GlobalContext } from 'components'
-import { Categories } from './Categories'
-import Breadcrumbs from './Breadcrumbs'
+import { Category, CategoriesEasy } from 'components/sift'
+import { PanelContent } from '../panels/PanelContent'
 import { LangRecordSchema } from '../../context/types'
 import * as utils from './utils'
+import * as config from './config'
 
-const Field: FC = () => {
+export const Field: FC = () => {
   // The <Route> that rendered this component has a path of `/topics/:topicId`.
   // The `:topicId` portion of the URL indicates a placeholder that we can get
   // from `useParams()`.
@@ -20,22 +20,31 @@ const Field: FC = () => {
     state.langFeatures, // but what if filtered? may need global cache again...
     true // mmmmmmmmmm
   )
+  const icon = config.categories.find(({ name }) => name === field)?.icon
 
   return (
-    <div>
-      <Breadcrumbs />
-      <Typography variant="h3">{field}</Typography>
-      <ul>
-        {uniqueInstances.map((instance) => (
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          <li key={instance}>
-            {/* @ts-ignore */}
-            <Link to={`${url}/${instance}`}>{instance}</Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <PanelContent
+      title={field}
+      icon={icon}
+      intro={`will check to see if ${field.toUpperCase()} has a spesh intro`}
+    >
+      <CategoriesEasy>
+        {uniqueInstances.map((instance) => {
+          const asString = instance as string
+
+          return (
+            <Category
+              key={asString}
+              intro="Total w/filts"
+              title={asString}
+              url={`${url}/${asString}`}
+              subtitle={asString}
+              uniqueInstances={[]}
+            />
+          )
+        })}
+      </CategoriesEasy>
+    </PanelContent>
   )
 }
 
@@ -43,7 +52,7 @@ const NoneFound: FC = () => (
   <div>No communities available. Try clicking "Clear filters" above.</div>
 )
 
-const FieldValue: FC = () => {
+export const FieldValue: FC = () => {
   // The <Route> that rendered this component has a path of `/topics/:topicId`.
   // The `:topicId` portion of the URL indicates a placeholder that we can get
   // from `useParams()`.
@@ -65,44 +74,36 @@ const FieldValue: FC = () => {
   if (!matchedComms.length) return <NoneFound />
 
   return (
-    <>
-      <Breadcrumbs />
-      <Typography variant="h3">{value}</Typography>
-      <p style={{ fontSize: 10, textAlign: 'left' }}>
-        <b>@Ross:</b> These lists will obviously be styled. I'd like to reuse
-        the "Card" theme like at the "Categories" level. We'd have to decide on
-        the content though. Probably any Category except Language would use
-        Language as the heading for each card?
-      </p>
-      <ul>
-        {matchedComms.map((comm) => (
-          <li key={comm.ID}>
-            <Link to={`/details/${comm.ID}`}>{comm.ID}</Link>
-          </li>
-        ))}
-      </ul>
-    </>
-  )
-}
+    <PanelContent
+      title={value.toString()}
+      intro={`will check to see if ${value
+        .toString()
+        .toUpperCase()} has a spesh intro`}
+    >
+      <CategoriesEasy>
+        {matchedComms.map((comm) => {
+          let title = comm.Language
+          let intro = ''
 
-export const Sift: FC = () => {
-  // The `path` lets us build <Route> paths that are relative to the parent
-  // route, while the `url` lets us build relative links.
-  const { path } = useRouteMatch()
+          if (comm.Glottocode) intro = `Glotto: ${comm.Glottocode}`
+          if (comm['ISO 639-3']) intro += ` ISO: ${comm['ISO 639-3']}`
 
-  return (
-    <div>
-      <Switch>
-        <Route exact path={path}>
-          <Categories />
-        </Route>
-        <Route path={`${path}/:field/:value`}>
-          <FieldValue />
-        </Route>
-        <Route path={`${path}/:field`}>
-          <Field />
-        </Route>
-      </Switch>
-    </div>
+          if (field === 'Language') {
+            title = comm.Neighborhoods?.split(', ')[0] || comm.Town
+          }
+
+          return (
+            <Category
+              key={comm.ID}
+              intro={intro}
+              title={title}
+              url={`/details/${comm.ID}`}
+              subtitle={comm.Endonym}
+              uniqueInstances={[]}
+            />
+          )
+        })}
+      </CategoriesEasy>
+    </PanelContent>
   )
 }

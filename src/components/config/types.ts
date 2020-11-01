@@ -7,6 +7,9 @@ export type RouteLocation =
   | '/about'
   | '/help'
   | '/Explore'
+  | '/Explore/:field'
+  | '/Explore/:field/:value'
+// TODO: ^^^^ figure out why it's not actually checking
 
 // TODO: Careful! Consolidate w/HistoryState
 export type LocState = {

@@ -43,15 +43,12 @@ export const LegendPanel: FC<LegendPanelComponent> = (props) => {
       <Typography variant="h6" component="h3">
         Legend
       </Typography>
-      <small style={{ fontSize: 10, lineHeight: 1 }}>
-        <b>@Ross:</b> all the legend items are linked to their corresponding
-        routes, so I'm thinking a small blurb here indicating that since they
-        don't appear very link-y (and I'm reluctant to underline/bold/colorize
-        all of them). The "Size" categories aren't working though as the raw
-        values are numbers mapped to strings. So, before I take the time to fix
-        that, let's decide if you even want Size to be linked.
+      <small style={{ fontSize: 10, lineHeight: 0.85 }}>
+        Legend item link to their corresponding routes, so I'm thinking a small
+        blurb here indicating that since they don't appear very link-y. TODO:
+        "Size"
       </small>
-      <Grid container className={classes.legendCtrls}>
+      <Grid container className={classes.legendCtrls} spacing={2}>
         <Grid item xs={6}>
           <LayerSymbSelect />
         </Grid>

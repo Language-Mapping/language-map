@@ -1,3 +1,4 @@
+// TODO: rename file to Home or something
 import React, { FC, useContext, useEffect, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
@@ -44,7 +45,7 @@ export const FiltersPanel: FC = () => {
       {state.panelState === 'default' && <ScrollToTopOnMount elemID={elemID} />}
       <Typography
         className={classes.panelMainHeading}
-        variant="h5"
+        variant="h4"
         component="h2"
         id={elemID}
       >

@@ -6,6 +6,7 @@ export type CategoryProps = {
   url: string
   subtitle: string
   uniqueInstances: unknown[]
+  icon?: React.ReactNode
 }
 
 export type CategoryConfig = {

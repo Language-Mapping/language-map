@@ -54,25 +54,26 @@ export const BottomNav: FC<BottomNav> = (props) => {
   const loc = useLocation()
   const handleChange = () => setPanelOpen(true)
 
-  const navItems = panelsConfig.map((config) => (
-    <BottomNavigationAction
-      component={NavLink}
-      to={{
-        pathname: config.rootPath,
-        state: {
+  const navItems = panelsConfig
+    .filter(({ rootPath }) => !rootPath.includes('/:')) // omit sub-routes
+    .map((config) => (
+      <BottomNavigationAction
+        component={NavLink}
+        to={{
           pathname: config.rootPath,
-        },
-      }}
-      exact={config.exact}
-      key={config.heading}
-      label={config.heading}
-      value={config.rootPath}
-      icon={config.icon}
-      classes={{
-        root: classes.bottomNavAction,
-      }}
-    />
-  ))
+          state: {
+            pathname: config.rootPath,
+          },
+        }}
+        key={config.heading}
+        label={config.heading}
+        value={config.rootPath}
+        icon={config.icon}
+        classes={{
+          root: classes.bottomNavAction,
+        }}
+      />
+    ))
 
   return (
     <div className={classes.bottomNavRoot}>

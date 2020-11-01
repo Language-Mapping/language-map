@@ -1,4 +1,4 @@
-import { RouteLocation, LocState } from 'components/config/types'
+import { RouteLocation } from 'components/config/types'
 
 export type MapPanel = {
   heading: string
@@ -6,11 +6,18 @@ export type MapPanel = {
   subheading: string
   component: React.ReactNode
   rootPath: RouteLocation
-  locStateKey: null | keyof LocState
+  intro?: string
   exact?: boolean
+  omitDefaults?: boolean // title and breadcrumbs
 }
 
 export type MapPanelProps = {
   setPanelOpen: React.Dispatch<boolean>
   panelOpen: boolean
+}
+
+export type PanelContentProps = {
+  intro?: string
+  title?: string
+  icon?: React.ReactNode
 }

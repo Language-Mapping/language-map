@@ -10,18 +10,20 @@ type StylesProps = {
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelsRoot: {
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 0,
       bottom: 56, // set directly in MUI to 56
       display: 'flex',
       flexDirection: 'column',
       left: 4,
       opacity: (props: StylesProps) => (props.panelOpen ? 1 : 0),
+      overflowX: 'hidden',
       overflowY: 'auto',
-      position: 'fixed',
+      padding: '1rem',
+      position: 'absolute',
       right: 4,
       top: '45%',
       transition: '300ms ease all',
-      borderBottomRightRadius: 0,
-      borderBottomLeftRadius: 0,
       transform: (props: StylesProps) =>
         `translateY(${props.panelOpen ? 0 : '100%'})`,
       [theme.breakpoints.up('md')]: {
@@ -37,12 +39,6 @@ export const useStyles = makeStyles((theme: Theme) =>
         color: theme.palette.text.secondary,
         fontSize: '1rem',
       },
-    },
-    contentWrap: {
-      overflowX: 'hidden',
-      overflowY: 'auto',
-      padding: '1em',
-      position: 'relative',
     },
     closeBtn: {
       [theme.breakpoints.up('md')]: { display: 'none' },

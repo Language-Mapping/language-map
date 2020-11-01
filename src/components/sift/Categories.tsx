@@ -1,9 +1,9 @@
 import React, { FC, useContext, useState, useEffect } from 'react'
 import { useRouteMatch } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
+import { PanelContent } from 'components/panels'
 import { Category } from './Category'
 import * as Types from './types'
 import * as utils from './utils'
@@ -11,19 +11,21 @@ import * as config from './config'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    categoriesRoot: {
-      '& > *': {
-        marginBottom: '0.65rem',
-      },
-    },
-    categoriesList: {
+    root: {
       display: 'grid',
-      gridTemplateRows: '1fr',
       gridTemplateColumns: '1fr 1fr',
-      gridGap: '0.65em',
+      gridRowGap: '0.5em',
+      gridColumnGap: '0.5em',
     },
   })
 )
+
+export const CategoriesEasy: FC = (props) => {
+  const { children } = props
+  const classes = useStyles()
+
+  return <div className={classes.root}>{children}</div>
+}
 
 export const Categories: FC = () => {
   const { url } = useRouteMatch()
@@ -31,7 +33,6 @@ export const Categories: FC = () => {
   const { langFeatsLenCache, langFeatures } = state
   const [categories, setCategories] = useState<Types.CategoryProps[]>([])
   const classes = useStyles()
-  const { categoriesList } = classes
 
   // Prep categories
   useEffect((): void => {
@@ -49,6 +50,7 @@ export const Categories: FC = () => {
         title: category.name,
         url: `${url}/${category.name}`,
         subtitle: category.definition,
+        icon: category.icon,
         uniqueInstances,
       }
     })
@@ -58,20 +60,15 @@ export const Categories: FC = () => {
   }, [langFeatsLenCache])
 
   return (
-    <div className={classes.categoriesRoot}>
-      {/* TODO: reuse and make dynamic */}
-      <Typography variant="h4" component="h3">
-        Explore
-      </Typography>
-      <Typography variant="caption" component="p">
-        This is a list of all the categories (aka columns, fields) we'd want to
-        let the user explore through a drill-down hierachy.
-      </Typography>
-      <div className={categoriesList}>
+    <PanelContent
+      title="Explore"
+      intro="This is a list of all the categories (aka columns, fields) we'd want to let the user explore through a drill-down hierachy."
+    >
+      <div className={classes.root}>
         {categories.map((category) => (
           <Category key={category.title} {...category} />
         ))}
       </div>
-    </div>
+    </PanelContent>
   )
 }

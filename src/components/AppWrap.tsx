@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import { MapPanel } from 'components/panels'
+import { PanelWrap } from 'components/panels'
 import { TopBar, OffCanvasNav } from 'components/nav'
 import { Map } from 'components/map'
 import { LoadingBackdrop } from 'components'
@@ -88,7 +88,7 @@ export const AppWrap: FC = () => {
           />
         </div>
         <BottomNav setPanelOpen={setPanelOpen} />
-        <MapPanel panelOpen={panelOpen} setPanelOpen={setPanelOpen} />
+        <PanelWrap panelOpen={panelOpen} setPanelOpen={setPanelOpen} />
       </main>
       <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />
     </>
