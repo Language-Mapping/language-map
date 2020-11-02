@@ -11,6 +11,13 @@ import { EndoImageModal } from './EndoImageModal'
 
 const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
 
+export const getCodeByCountry = (countryName: string): string => {
+  // TODO: defeat this:
+  const countryCodesTyped = countryCodes as Types.CountryCodes
+
+  return countryCodesTyped[countryName] || ''
+}
+
 export function renderCountriesColumn(
   data: LangRecordSchema
 ): string | React.ReactNode {

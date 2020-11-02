@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom'
 import { Typography, Divider, Button, Link } from '@material-ui/core'
 import { FaRandom } from 'react-icons/fa'
-import { BiMapPin } from 'react-icons/bi'
+import { BiMapPin, BiUserVoice } from 'react-icons/bi'
 
 import { GlobalContext, LangOrEndoIntro, ScrollToTopOnMount } from 'components'
 import { LegendSwatch } from 'components/legend'
@@ -17,6 +17,7 @@ import { MoreLikeThis } from 'components/details'
 import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
 import { useStyles } from './styles'
 import { findFeatureByID } from '../../utils'
+import { getCodeByCountry } from '../results/utils'
 
 // TODO: separate files
 const RandomLinkBtn: FC = () => {
@@ -88,7 +89,6 @@ export const DetailsPanel: FC = () => {
     Description: description,
     Town,
     Countries,
-    Status,
     Audio: audio,
     Video: video,
     'World Region': WorldRegion,
@@ -99,6 +99,7 @@ export const DetailsPanel: FC = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     symbLabelState.legendSymbols[WorldRegion].paint['icon-color'] as string
+  const primaryCountry = Countries.split(', ')[0]
 
   document.title = `${language} - NYC Languages`
 
@@ -113,16 +114,46 @@ export const DetailsPanel: FC = () => {
           <BiMapPin />
           {Neighborhoods || Town}
         </Typography>
-        <div className={classes.region}>
-          <LegendSwatch
-            legendLabel={WorldRegion}
-            component="div"
-            iconID="_circle"
-            backgroundColor={regionSwatchColor || 'transparent'}
-          />
-          {/* TODO: cell strength bars for Size */}
-        </div>
-        <div className={classes.countriesList}>{Countries}</div>
+        {/* TODO: make the component do more of the work */}
+        <MoreLikeThis
+          goodies={{
+            Language: (
+              <>
+                <BiUserVoice /> {language}
+              </>
+            ),
+            'World Region': (
+              <LegendSwatch
+                legendLabel={WorldRegion}
+                labelStyleOverride={{ fontSize: 'inherit' }}
+                component="div"
+                iconID="_circle"
+                backgroundColor={regionSwatchColor || 'transparent'}
+              />
+            ),
+            Countries: (
+              <>
+                <img
+                  className="country-flag"
+                  alt={`${primaryCountry} flag`}
+                  src={`/img/country-flags/${getCodeByCountry(
+                    primaryCountry
+                  ).toLowerCase()}.svg`}
+                />{' '}
+                {primaryCountry}
+              </>
+            ),
+          }}
+          routeValues={{
+            Language: language,
+            'World Region': WorldRegion,
+            Countries: primaryCountry,
+          }}
+        />
+        {/* Don't be redundant with country (already in chip) if only one */}
+        {Countries.includes(', ') && (
+          <div className={classes.countriesList}>{Countries}</div>
+        )}
         <Media
           {...{
             audio,
@@ -142,9 +173,6 @@ export const DetailsPanel: FC = () => {
         >
           Clear selection
         </Link>
-        <MoreLikeThis
-          goodies={{ Language: language, 'World Region': WorldRegion, Status }}
-        />
       </div>
       <Divider variant="middle" className={divider} />
       <Typography variant="body2" className={descripSection} component="div">

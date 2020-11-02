@@ -48,11 +48,12 @@ export const LangOrEndoIntro: FC<LangOrEndoProps> = (props) => {
           {Endonym}
         </Typography>
       )}
-      {Endonym !== language && (
+      {/* TODO: rm if confirmed only using Endo */}
+      {/* {Endonym !== language && (
         <Typography variant="caption" component="p">
           {language}
         </Typography>
-      )}
+      )} */}
     </>
   )
 }
