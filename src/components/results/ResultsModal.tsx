@@ -29,6 +29,8 @@ export const ResultsModal: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.langFeatures])
 
+  // CRED:
+  // help.mouseflow.com/en/articles/4310818-tracking-url-changes-with-react
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore // TODO: take some time, fix it
