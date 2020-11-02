@@ -7,7 +7,6 @@ import {
   BottomNavigationAction,
 } from '@material-ui/core'
 
-import { MapPanel } from 'components/panels/types'
 import { RouteLocation } from 'components/config/types'
 import { panelsConfig, panelWidths } from '../panels/config'
 
@@ -50,67 +49,65 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-// Just a BottomNavigationAction component that needs its own state so that
-// routing changes update the "to" accordingly, allowing user to return to the
-// last view they were at for each panel.
-export const BottomNavItem: FC<MapPanel> = (props) => {
-  const { rootPath, heading, icon } = props
-  const classes = useStyles()
-  const loc = useLocation()
-  const currentPathname = loc.pathname
-  const [to, setTo] = useState(rootPath as string)
-
-  useEffect(() => {
-    // Home, table, help do not have sub-routes
-    const routesWithSubroutes: RouteLocation[] = ['/details', '/Explore']
-    if (!routesWithSubroutes.includes(rootPath)) return
-
-    const topLevelRoute = rootPath.split('/')[1]
-    const currPathSansSlash = currentPathname.split('/')[1]
-    const shouldAffectNewRoute = topLevelRoute === currPathSansSlash
-
-    // Route changes should only affect their corresponding item
-    if (!shouldAffectNewRoute) return
-
-    setTo(currentPathname)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPathname])
-
-  return (
-    <BottomNavigationAction
-      component={NavLink}
-      to={to}
-      label={heading} // uhhh, donde?
-      value={to}
-      icon={icon}
-      classes={{
-        root: classes.bottomNavAction,
-      }}
-    />
-  )
-}
+// Home, table, help do not have sub-routes
+const initialSubRoutes = {
+  details: '/details',
+  Explore: '/Explore',
+} as { [key: string]: RouteLocation }
 
 export const BottomNav: FC<BottomNav> = (props) => {
   const { setPanelOpen } = props
   const classes = useStyles()
   const loc = useLocation()
+  const currPathSansSlash = loc.pathname.split('/')[1]
   const handleChange = () => setPanelOpen(true)
+  const [subRoutePath, setSubRoutePath] = useState(
+    initialSubRoutes as { [key: string]: string }
+  )
+
+  useEffect(() => {
+    const correspRoute = subRoutePath[currPathSansSlash]
+
+    if (!correspRoute) return
+
+    // TODO: if no change and not top-level, go to top level
+    // TODO: if top level already, close panel
+    // Route changes should only affect their corresponding item
+    setSubRoutePath({
+      ...subRoutePath,
+      [currPathSansSlash]: loc.pathname,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loc.pathname])
 
   return (
     <div className={classes.bottomNavRoot}>
       <BottomNavigation
         component={Paper}
         elevation={8}
-        value={loc.pathname}
+        value={`${loc.pathname.split('/')[1]}` || '/'}
         onChange={handleChange}
         className={classes.bottomNav}
-        showLabels
       >
         {panelsConfig
           .filter(({ rootPath }) => !rootPath.includes('/:')) // omit sub-routes
-          .map((config) => (
-            <BottomNavItem key={config.heading} {...config} />
-          ))}
+          .map((config) => {
+            const subRouteStateKey = config.rootPath.split('/')[1] || '/'
+
+            return (
+              <BottomNavigationAction
+                key={config.heading}
+                component={NavLink}
+                label={config.heading}
+                icon={config.icon}
+                value={subRouteStateKey}
+                to={subRoutePath[subRouteStateKey] || config.rootPath}
+                classes={{
+                  root: classes.bottomNavAction,
+                }}
+              />
+            )
+          })}
       </BottomNavigation>
     </div>
   )
