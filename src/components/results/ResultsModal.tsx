@@ -3,10 +3,10 @@ import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { Dialog } from '@material-ui/core'
 
 import { GlobalContext, DialogCloseBtn, SlideUp } from 'components'
-import * as Types from './types'
 import { useStyles } from './styles'
 import { ResultsTable } from './ResultsTable'
 import { LangRecordSchema } from '../../context/types'
+import { paths as routes } from '../config/routes'
 
 export const ResultsModal: FC = () => {
   const classes = useStyles()
@@ -19,6 +19,7 @@ export const ResultsModal: FC = () => {
 
   const [tableData, setTableData] = useState<LangRecordSchema[]>([])
   const [oneAndDone, setOneAndDone] = useState<boolean>(false)
+  const [lastLoc, setLastLoc] = useState()
 
   useEffect((): void => {
     if (oneAndDone || !state.langFeatures.length) return
@@ -28,17 +29,15 @@ export const ResultsModal: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.langFeatures])
 
-  // Go back in history if there is one as long as last route wasn't table-based
-  const handleClose = (): void => {
-    const historyState = loc.state as Types.HistoryState
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore // TODO: take some time, fix it
+    if (!loc.pathname.includes(routes.table)) setLastLoc(loc)
+  }, [loc])
 
-    if (historyState.pathname?.includes('/table')) {
-      history.push('/')
-    } else if (history.length) {
-      history.goBack()
-    } else {
-      history.push('/')
-    }
+  // Go back in history if route wasn't table-based, otherwise go home
+  const handleClose = (): void => {
+    history.push(lastLoc || '/')
   }
 
   return (
