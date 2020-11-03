@@ -1,6 +1,7 @@
 import React, { FC, useContext, useState, useEffect } from 'react'
-import { useRouteMatch } from 'react-router-dom'
+import { useRouteMatch, Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Link } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
 import { PanelContent } from 'components/panels'
@@ -20,19 +21,19 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const CategoriesEasy: FC = (props) => {
+export const CategoriesWrap: FC = (props) => {
   const { children } = props
   const classes = useStyles()
 
   return <div className={classes.root}>{children}</div>
 }
 
-export const Categories: FC = () => {
+export const Explore: FC<{ icon: React.ReactNode }> = (props) => {
+  const { icon } = props
   const { url } = useRouteMatch()
   const { state } = useContext(GlobalContext)
   const { langFeatsLenCache, langFeatures } = state
   const [categories, setCategories] = useState<Types.CategoryProps[]>([])
-  const classes = useStyles()
 
   // Prep categories
   useEffect((): void => {
@@ -59,16 +60,23 @@ export const Categories: FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [langFeatsLenCache])
 
+  const intro = (
+    <>
+      For an explanation of the options below, visit{' '}
+      <Link component={RouterLink} to="/help">
+        Help
+      </Link>{' '}
+      for definitions and additional info.
+    </>
+  )
+
   return (
-    <PanelContent
-      title="Explore"
-      intro="This is a list of all the categories (aka columns, fields) we'd want to let the user explore through a drill-down hierachy."
-    >
-      <div className={classes.root}>
+    <PanelContent title="Explore" icon={icon} intro={intro}>
+      <CategoriesWrap>
         {categories.map((category) => (
           <Category key={category.title} {...category} />
         ))}
-      </div>
+      </CategoriesWrap>
     </PanelContent>
   )
 }

@@ -17,7 +17,7 @@ export type MapPanelProps = {
 }
 
 export type PanelContentProps = {
-  intro?: string
+  intro?: string | React.ReactNode
   title?: string
   icon?: React.ReactNode
 }

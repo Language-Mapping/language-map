@@ -2,7 +2,7 @@ import React, { FC, useContext } from 'react'
 import { useRouteMatch, useParams } from 'react-router-dom'
 
 import { GlobalContext, useSymbAndLabelState } from 'components'
-import { Category, CategoriesEasy } from 'components/sift'
+import { Category, CategoriesWrap } from 'components/sift'
 import { LegendSwatch } from 'components/legend'
 import { getCodeByCountry } from 'components/results'
 import { PanelContent } from '../panels/PanelContent'
@@ -57,7 +57,7 @@ export const Field: FC = () => {
       icon={icon}
       intro={`will check to see if ${field.toUpperCase()} has a spesh intro, or just show some totals and/or a blurb about filters and a link to clear them.`}
     >
-      <CategoriesEasy>
+      <CategoriesWrap>
         {uniqueInstances.map((instance) => {
           const asString = instance as string
 
@@ -72,7 +72,7 @@ export const Field: FC = () => {
             />
           )
         })}
-      </CategoriesEasy>
+      </CategoriesWrap>
     </PanelContent>
   )
 }
@@ -167,7 +167,7 @@ export const FieldValue: FC = () => {
         .toString()
         .toUpperCase()} has a spesh intro, or just show some totals and/or a blurb about filters and a link to clear them.`}
     >
-      <CategoriesEasy>
+      <CategoriesWrap>
         {matchedComms.map((comm) => {
           let title = comm.Endonym
           let intro = ''
@@ -190,7 +190,7 @@ export const FieldValue: FC = () => {
             />
           )
         })}
-      </CategoriesEasy>
+      </CategoriesWrap>
     </PanelContent>
   )
 }

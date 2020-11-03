@@ -15,9 +15,13 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       display: 'flex',
       alignItems: 'center',
+      fontSize: '2em',
+      [theme.breakpoints.up('sm')]: {
+        fontSize: '2.4em',
+      },
       '& > svg': {
-        marginRight: 4,
-        fontSize: '0.65em',
+        marginRight: '0.25em',
+        fontSize: '0.75em',
         fill: theme.palette.text.secondary,
       },
     },
@@ -40,7 +44,7 @@ export const PanelContent: FC<Types.PanelContentProps> = (props) => {
   const classes = useStyles()
 
   const Title = (
-    <Typography variant="h3" className={classes.title}>
+    <Typography component="h2" variant="h4" className={classes.title}>
       {icon}
       {title}
     </Typography>

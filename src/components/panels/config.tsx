@@ -1,11 +1,11 @@
 import React from 'react'
 import { TiDocumentText, TiThList } from 'react-icons/ti'
-import { ImSearch } from 'react-icons/im'
+import { FaBinoculars } from 'react-icons/fa'
 import { BiHomeAlt } from 'react-icons/bi'
 
 import { FiltersPanel } from 'components/filters'
 import { DetailsPanel } from 'components/details'
-import { Field, Categories, FieldValue } from 'components/sift'
+import { Field, Explore, FieldValue } from 'components/sift'
 
 import { MapPanel } from 'components/panels/types'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
@@ -27,14 +27,14 @@ export const panelsConfig = [
   {
     heading: 'Level 2 cat',
     subheading: 'and sift results',
-    icon: <ImSearch />,
+    icon: <FaBinoculars />,
     component: <FieldValue />,
     rootPath: '/Explore/:field/:value',
   },
   {
     heading: 'Level 1 cat',
     subheading: 'and sift results',
-    icon: <ImSearch />,
+    icon: <FaBinoculars />,
     component: <Field />,
     rootPath: '/Explore/:field',
   },
@@ -42,8 +42,8 @@ export const panelsConfig = [
     heading: 'Explore',
     subheading: 'and sift results',
     intro: 'Intro/summary of Explore goes here',
-    icon: <ImSearch />,
-    component: <Categories />,
+    icon: <FaBinoculars />,
+    component: <Explore icon={<FaBinoculars />} />,
     rootPath: '/Explore',
   },
   {
