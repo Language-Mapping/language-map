@@ -10,34 +10,35 @@ import * as Types from './types'
 export const categories = [
   {
     name: 'Language',
-    definition: 'The basis of all life',
+    definition: 'Common language name in English',
     icon: <BiUserVoice />,
   },
   {
     name: 'World Region',
-    definition: 'UN GeoScheme',
+    definition: 'As defined by the UN geoscheme',
     icon: <BiGlobe />,
   },
   {
     name: 'Countries',
-    definition: 'Parsed by commas',
+    definition: 'Estimated to have the largest concentration of speakers',
     icon: <GoGlobe />,
     parse: true,
   },
   {
     name: 'Language Family',
-    definition: 'Family reunion',
+    definition:
+      'Group of languages related through descent from a common ancestral language',
     icon: <GiFamilyTree />,
   },
   {
     name: 'Neighborhoods',
-    definition: 'Only NYC',
+    definition: 'Local name, for NYC locations only',
     icon: <BiMapPin />,
     parse: true,
   },
   {
     name: 'Status',
-    definition: 'See Help',
+    definition: 'How, when, where the language is or has been used locally',
     icon: <HiOutlineOfficeBuilding />,
   },
 ] as Types.CategoryConfig[]

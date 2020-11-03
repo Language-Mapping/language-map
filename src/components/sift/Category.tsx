@@ -1,11 +1,13 @@
 import React, { FC } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useRouteMatch } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import Typography from '@material-ui/core/Typography'
 
+import { LangRecordSchema } from 'context/types'
 import * as Types from './types'
 import * as utils from './utils'
+import { SimpleSwatch, FlagWithTitle } from './Sift'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,9 +18,13 @@ const useStyles = makeStyles((theme: Theme) =>
       borderStyle: 'solid',
       padding: '0.5em',
       '&:hover': {
-        borderColor: theme.palette.primary.light,
+        borderColor: theme.palette.primary.dark,
         background: `radial-gradient(ellipse at top, ${theme.palette.primary.light}, transparent),
         radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`,
+      },
+      '&:hover .accent-bar': {
+        backgroundColor: theme.palette.primary.light,
+        transform: 'scaleX(1), translateX(-100%)',
       },
     },
     intro: {
@@ -31,12 +37,24 @@ const useStyles = makeStyles((theme: Theme) =>
       '& > svg': {
         marginRight: 4,
       },
+      '& > .country-flag': {
+        height: '0.8em',
+        marginRight: '0.35em',
+      },
     },
     instances: {
       fontSize: 10,
     },
+    accentBar: {
+      height: 2,
+      borderRadius: 4,
+      backgroundColor: theme.palette.action.hover,
+      width: '60%',
+      margin: '0.5em 0',
+      transform: 'scaleX(0.5), translateX(100%)',
+      transition: '300ms all ease-out',
+    },
     subtitle: {
-      marginBottom: '0.5em',
       fontSize: 12,
     },
   })
@@ -45,6 +63,18 @@ const useStyles = makeStyles((theme: Theme) =>
 export const Category: FC<Types.CategoryProps> = (props) => {
   const { title, url, subtitle, uniqueInstances, intro, icon } = props
   const classes = useStyles()
+  const match = useRouteMatch()
+  const { field, value } = match.params as {
+    field: keyof LangRecordSchema
+    value: string
+  }
+  let preppedTitle
+
+  if (field === 'World Region' && !value) {
+    preppedTitle = <SimpleSwatch label={title} />
+  } else if (field === 'Countries' && !value) {
+    preppedTitle = <FlagWithTitle countryName={title} />
+  }
 
   return (
     <Card
@@ -65,9 +95,11 @@ export const Category: FC<Types.CategoryProps> = (props) => {
         {intro}
       </Typography>
       <Typography variant="h6" component="header" className={classes.header}>
-        {icon}
-        {title}
+        {!preppedTitle && icon}
+        {!preppedTitle && title}
+        {preppedTitle}
       </Typography>
+      <div className={`${'accent-bar '}${classes.accentBar}`} />
       <Typography className={classes.subtitle} color="textSecondary">
         {subtitle}
       </Typography>
