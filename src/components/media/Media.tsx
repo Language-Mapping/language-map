@@ -1,9 +1,11 @@
 import React, { FC, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import { Button, Typography } from '@material-ui/core'
-import { FiVideo, FiShare } from 'react-icons/fi'
+import { FiVideo, FiShare, FiMinusSquare } from 'react-icons/fi'
 import { AiOutlineSound } from 'react-icons/ai'
 
 import { ShareButtons } from 'components'
+import { RouteLocation } from 'components/config/types'
 import { MediaListItemProps, MediaProps } from './types'
 import { useStyles } from './styles'
 import { MediaModal } from './MediaModal'
@@ -43,6 +45,7 @@ const MediaListItem: FC<MediaListItemProps> = (props) => {
 
 export const Media: FC<MediaProps> = (props) => {
   const { language, description, audio, video } = props
+  const history = useHistory()
   const [mediaUrl, setMediaUrl] = useState<string>()
   const [showShareBtns, setShowShareBtns] = useState<boolean>(false)
   const classes = useStyles({ showShareBtns })
@@ -56,6 +59,12 @@ export const Media: FC<MediaProps> = (props) => {
         <MediaModal url={mediaUrl} closeModal={() => setMediaUrl('')} />
       )}
       <ul className={classes.mediaRoot}>
+        <MediaListItem
+          label="Clear selection"
+          icon={<FiMinusSquare />}
+          type="clear"
+          handleClick={() => history.push('/details' as RouteLocation)}
+        />
         {config.map((item) => (
           <MediaListItem
             key={item.label}

@@ -2,8 +2,12 @@ import React, { FC } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Paper } from '@material-ui/core'
+import { BiUserVoice } from 'react-icons/bi'
 
 import { paths as routes } from 'components/config/routes'
+import { useSymbAndLabelState } from 'components'
+import { getCodeByCountry } from 'components/results'
+import { LegendSwatch } from 'components/legend'
 import { LangRecordSchema } from '../../context/types'
 
 type ImportantCols = Pick<
@@ -14,12 +18,9 @@ type ColumnKeys = keyof ImportantCols
 
 // TODO: simplify all this to just need routeValues and a country flag
 type MoreLikeThis = {
-  goodies: {
-    [key in keyof ImportantCols]: React.ReactNode
-  }
-  routeValues: {
-    [key in keyof ImportantCols]: React.ReactNode
-  }
+  language: string
+  region: string
+  country: string
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -41,6 +42,10 @@ const useStyles = makeStyles((theme: Theme) =>
       backgroundColor: theme.palette.secondary.main,
       padding: '0.25em 0.5em',
       marginBottom: '0.25em', // otherwise crowded when wrapped
+      transition: '300ms backgroundColor ease',
+      '&:hover': {
+        backgroundColor: theme.palette.secondary.dark,
+      },
       '& > :first-child': {
         marginRight: '0.35em',
       },
@@ -53,9 +58,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const CustomChip: FC<{ to: string }> = (props) => {
+const CustomChip: FC<{ to: string; name: string }> = (props) => {
   const classes = useStyles()
-  const { children, to } = props
+  const { children, to, name } = props
 
   return (
     <Paper
@@ -63,6 +68,7 @@ const CustomChip: FC<{ to: string }> = (props) => {
       // @ts-ignore
       component={RouterLink}
       to={to}
+      title={`View more ${name} communities`}
       elevation={2}
       className={classes.chip}
     >
@@ -72,20 +78,39 @@ const CustomChip: FC<{ to: string }> = (props) => {
 }
 
 export const MoreLikeThis: FC<MoreLikeThis> = (props) => {
-  const { goodies, routeValues } = props
+  const { language, region, country } = props
+  const symbLabelState = useSymbAndLabelState()
   const classes = useStyles()
-  const items = ['Language', 'Countries', 'World Region'] as ColumnKeys[]
+  const regionSwatchColor =
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    symbLabelState.legendSymbols[region].paint['icon-color'] as string
 
+  // Careful, not using TS on the mid-route paths, e.g. "World Region"
   return (
     <div className={classes.root}>
-      {items.map((item) => (
-        <CustomChip
-          key={item}
-          to={`${routes.grid}/${item}/${routeValues[item]}`}
-        >
-          {goodies[item]}
-        </CustomChip>
-      ))}
+      <CustomChip name={language} to={`${routes.grid}/Language/${language}`}>
+        <BiUserVoice /> {language}
+      </CustomChip>
+      <CustomChip name={country} to={`${routes.grid}/Countries/${country}`}>
+        <img
+          className="country-flag"
+          alt={`${country} flag`}
+          src={`/img/country-flags/${getCodeByCountry(
+            country
+          ).toLowerCase()}.svg`}
+        />{' '}
+        {country}
+      </CustomChip>
+      <CustomChip name={region} to={`${routes.grid}/World Region/${region}`}>
+        <LegendSwatch
+          legendLabel={region}
+          labelStyleOverride={{ fontSize: 'inherit' }}
+          component="div"
+          iconID="_circle"
+          backgroundColor={regionSwatchColor || 'transparent'}
+        />
+      </CustomChip>
     </div>
   )
 }

@@ -4,20 +4,17 @@ import {
   useLocation,
   useRouteMatch,
 } from 'react-router-dom'
-import { Typography, Divider, Button, Link } from '@material-ui/core'
+import { Typography, Divider, Button } from '@material-ui/core'
 import { FaRandom } from 'react-icons/fa'
-import { BiMapPin, BiUserVoice } from 'react-icons/bi'
+import { BiMapPin } from 'react-icons/bi'
 
 import { GlobalContext, LangOrEndoIntro, ScrollToTopOnMount } from 'components'
-import { LegendSwatch } from 'components/legend'
 import { RecordDescription } from 'components/results'
 import { paths as routes } from 'components/config/routes'
 import { Media } from 'components/media'
 import { MoreLikeThis } from 'components/details'
-import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
 import { useStyles } from './styles'
 import { findFeatureByID } from '../../utils'
-import { getCodeByCountry } from '../results/utils'
 
 // TODO: separate files
 const RandomLinkBtn: FC = () => {
@@ -59,7 +56,6 @@ const NoFeatSel: FC<{ reason?: string }> = (props) => {
 
 export const DetailsPanel: FC = () => {
   const { state } = useContext(GlobalContext)
-  const symbLabelState = useSymbAndLabelState()
   const classes = useStyles()
   const loc = useLocation()
   const match: { params: { id: string } } | null = useRouteMatch('/:any/:id')
@@ -95,10 +91,6 @@ export const DetailsPanel: FC = () => {
     // Size, // TODO: cell strength bars for Size
   } = matchingRecord
   const { intro, descripSection, neighborhoods, divider } = classes
-  const regionSwatchColor =
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    symbLabelState.legendSymbols[WorldRegion].paint['icon-color'] as string
   const primaryCountry = Countries.split(', ')[0]
 
   document.title = `${language} - NYC Languages`
@@ -114,65 +106,16 @@ export const DetailsPanel: FC = () => {
           <BiMapPin />
           {Neighborhoods || Town}
         </Typography>
-        {/* TODO: make the component do more of the work */}
         <MoreLikeThis
-          goodies={{
-            Language: (
-              <>
-                <BiUserVoice /> {language}
-              </>
-            ),
-            'World Region': (
-              <LegendSwatch
-                legendLabel={WorldRegion}
-                labelStyleOverride={{ fontSize: 'inherit' }}
-                component="div"
-                iconID="_circle"
-                backgroundColor={regionSwatchColor || 'transparent'}
-              />
-            ),
-            Countries: (
-              <>
-                <img
-                  className="country-flag"
-                  alt={`${primaryCountry} flag`}
-                  src={`/img/country-flags/${getCodeByCountry(
-                    primaryCountry
-                  ).toLowerCase()}.svg`}
-                />{' '}
-                {primaryCountry}
-              </>
-            ),
-          }}
-          routeValues={{
-            Language: language,
-            'World Region': WorldRegion,
-            Countries: primaryCountry,
-          }}
+          language={language}
+          region={WorldRegion}
+          country={primaryCountry}
         />
         {/* Don't be redundant with country (already in chip) if only one */}
         {Countries.includes(', ') && (
           <div className={classes.countriesList}>{Countries}</div>
         )}
-        <Media
-          {...{
-            audio,
-            video,
-            language,
-            description,
-          }}
-        />
-        {/*
-          TODO: make it look good, maybe restore old icon? Might could lump this
-          into a group with the "See related" dropdown or whatever we use.
-        */}
-        <Link
-          component={RouterLink}
-          title="Clear currently selected community"
-          to="/details"
-        >
-          Clear selection
-        </Link>
+        <Media {...{ audio, video, language, description }} />
       </div>
       <Divider variant="middle" className={divider} />
       <Typography variant="body2" className={descripSection} component="div">
