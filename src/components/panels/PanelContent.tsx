@@ -2,6 +2,7 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
+import { FiltersWarning } from 'components/filters/FiltersWarning'
 import Breadcrumbs from '../sift/Breadcrumbs'
 import * as Types from './types'
 
@@ -38,17 +39,22 @@ export const PanelContent: FC<Types.PanelContentProps> = (props) => {
   const { children, title, intro, icon } = props
   const classes = useStyles()
 
+  const Title = (
+    <Typography variant="h3" className={classes.title}>
+      {icon}
+      {title}
+    </Typography>
+  )
+
   // Need the `id` in order to find unique element for `map.setPadding`
   return (
     <>
       <Breadcrumbs />
       <div className={classes.root}>
         <header className={classes.header}>
-          <Typography variant="h3" className={classes.title}>
-            {icon}
-            {title}
-          </Typography>
+          {Title}
           <Typography className={classes.intro}>{intro}</Typography>
+          <FiltersWarning />
         </header>
         <div className={classes.body}>{children}</div>
       </div>

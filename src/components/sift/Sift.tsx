@@ -77,10 +77,6 @@ export const Field: FC = () => {
   )
 }
 
-const NoneFound: FC = () => (
-  <div>No communities available. Try clicking "Clear filters" above.</div>
-)
-
 // TODO: duuuuude just make a route for this and FlagWithTitle
 export const SimpleSwatch: FC<{ label: string }> = (props) => {
   const { label } = props
@@ -146,8 +142,6 @@ export const FieldValue: FC = () => {
     feat[field]?.toString().includes(value as string)
   )
 
-  if (!matchedComms.length) return <NoneFound />
-
   let icon
 
   if (field === 'World Region' && value) {
@@ -157,6 +151,13 @@ export const FieldValue: FC = () => {
   } else {
     icon = config.categories.find(({ name }) => name === field)?.icon
   }
+
+  if (!matchedComms.length)
+    return (
+      <PanelContent title={!icon ? value.toString() : ''} icon={icon}>
+        No communities available.
+      </PanelContent>
+    )
 
   return (
     <PanelContent

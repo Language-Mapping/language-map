@@ -52,9 +52,7 @@ export const FiltersPanel: FC = () => {
         Search language communities
       </Typography>
       <SearchByOmnibox data={data} />
-      {state.langFeatsLenCache !== state.langFeatures.length && (
-        <FiltersWarning />
-      )}
+      <FiltersWarning />
       <LegendPanel legendItems={legendItems} groupName={activeSymbGroupID} />
     </>
   )
