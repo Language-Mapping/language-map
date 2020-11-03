@@ -50,7 +50,6 @@ export const Explore: FC<{ icon: React.ReactNode }> = (props) => {
         intro: `${uniqueInstances.length} instances (inc. filts)`,
         title: category.name,
         url: `${url}/${category.name}`,
-        subtitle: category.definition,
         icon: category.icon,
         uniqueInstances,
       }

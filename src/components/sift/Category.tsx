@@ -100,9 +100,11 @@ export const Category: FC<Types.CategoryProps> = (props) => {
         {preppedTitle}
       </Typography>
       <div className={`${'accent-bar '}${classes.accentBar}`} />
-      <Typography className={classes.subtitle} color="textSecondary">
-        {subtitle}
-      </Typography>
+      {subtitle && (
+        <Typography className={classes.subtitle} color="textSecondary">
+          {subtitle}
+        </Typography>
+      )}
       <Typography component="p" variant="caption" className={classes.instances}>
         {utils.prettyTruncate(uniqueInstances as string[])}
       </Typography>

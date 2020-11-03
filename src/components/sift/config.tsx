@@ -6,6 +6,8 @@ import { HiOutlineOfficeBuilding } from 'react-icons/hi'
 
 import * as Types from './types'
 
+// NOTE: the definitions were manually truncated/massaged
+// TODO: rm them if not using
 // Top-level column-based categories for Explore panel
 export const categories = [
   {
