@@ -9,10 +9,11 @@ export const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.secondary,
       display: 'flex',
       fontSize: '0.75em',
+      margin: '0.5em 0 0.75em',
       fontStyle: 'italic',
       justifyContent: 'center',
       '& svg': {
-        marginRight: '0.15em',
+        marginRight: '0.35em',
       },
     },
     descripSection: {

@@ -104,13 +104,14 @@ export const DetailsPanel: FC = () => {
         <LangOrEndoIntro attribs={matchingRecord} />
         <Typography className={neighborhoods}>
           <BiMapPin />
-          {Neighborhood || Town}
+          {Neighborhood.replaceAll(', ', ' | ') || Town}
         </Typography>
         <MoreLikeThis
           macro={macro}
           language={language}
           region={WorldRegion}
           country={Country}
+          neighborhood={Neighborhood}
         />
         <Media {...{ audio, video, language, description }} />
       </div>

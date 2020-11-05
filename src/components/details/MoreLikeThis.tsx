@@ -11,6 +11,7 @@ import { getCodeByCountry } from 'components/results'
 import { LegendSwatch } from 'components/legend'
 import { LangRecordSchema } from '../../context/types'
 
+// TODO: types into details/types
 type ImportantCols = Pick<
   LangRecordSchema,
   'Language' | 'Country' | 'World Region'
@@ -23,7 +24,10 @@ type MoreLikeThis = {
   region: string
   country: string
   macro?: string
+  neighborhood?: string
 }
+
+type CustomChip = { to: string; name: string; variant?: 'subtle' }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -41,13 +45,13 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'inline-flex',
       alignItems: 'center',
       borderRadius: 5,
-      backgroundColor: theme.palette.secondary.main,
+      backgroundColor: theme.palette.grey[700],
       padding: '0.15em 0.45em',
       lineHeight: 1.5,
       marginBottom: '0.25em', // otherwise crowded when wrapped
       transition: '300ms backgroundColor ease',
       '&:hover': {
-        backgroundColor: theme.palette.secondary.dark,
+        backgroundColor: theme.palette.grey[800],
       },
       '& > :first-child': {
         marginRight: '0.35em',
@@ -64,7 +68,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const CustomChip: FC<{ to: string; name: string }> = (props) => {
+const CustomChip: FC<CustomChip> = (props) => {
   const classes = useStyles()
   const { children, to, name } = props
 
