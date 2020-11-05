@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+// TODO: make RouterLinks work for `Size`
 export const GroupedLegend: FC<GroupedLegendProps> = (props) => {
   const { groupName, legendItems, groupConfig, baseRoute } = props
   const classes = useStyles()

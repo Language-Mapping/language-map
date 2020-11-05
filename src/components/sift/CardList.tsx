@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+// TODO: https://react-window.now.sh/#/examples/list/fixed-size
 // Simple grid wrapper designed for Card children
 export const CardList: FC = (props) => {
   const { children } = props

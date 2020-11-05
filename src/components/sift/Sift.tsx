@@ -13,6 +13,7 @@ import * as utils from './utils'
 import { getSwatchColorByConfig } from '../legend/utils'
 import { FlagWithTitle } from './FlagWithTitle'
 
+// TODO: forgot about `Status`. Include it.
 // TODO: rename components and this file. Mv components into new files..
 const SwatchOrFlagOrIcon: FC<Types.SwatchOrFlagOrIcon> = (props) => {
   const { field, value } = props

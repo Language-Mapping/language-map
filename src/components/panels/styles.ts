@@ -13,8 +13,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,
       bottom: 56, // set directly in MUI to 56
-      display: 'flex',
-      flexDirection: 'column',
       left: 2,
       opacity: (props: StylesProps) => (props.panelOpen ? 1 : 0),
       overflowX: 'hidden',

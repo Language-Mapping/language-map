@@ -49,6 +49,7 @@ export const FiltersPanel: FC = () => {
         component="h2"
         id={elemID}
       >
+        {/* TODO: add Search icon */}
         Search language communities
       </Typography>
       <SearchByOmnibox data={data} />

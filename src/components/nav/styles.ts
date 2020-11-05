@@ -20,10 +20,8 @@ export const useStyles = makeStyles((theme: Theme) =>
       // Direct children relative position so `zIndex` can be used
       '& > *': { position: 'relative' },
       '& a, & a:visited': {
-        color: `${theme.palette.common.black} !important`,
         display: 'inline-flex',
         flexDirection: 'column',
-        textDecoration: 'none',
       },
     },
     // These spacers allow the title to "center" between the side panel and map
