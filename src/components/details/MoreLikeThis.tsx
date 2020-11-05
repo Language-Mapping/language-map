@@ -3,6 +3,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Paper } from '@material-ui/core'
 import { BiUserVoice } from 'react-icons/bi'
+import { IoIosPeople } from 'react-icons/io'
 
 import { paths as routes } from 'components/config/routes'
 import { useSymbAndLabelState } from 'components'
@@ -21,6 +22,7 @@ type MoreLikeThis = {
   language: string
   region: string
   country: string
+  macro?: string
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -41,6 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
       borderRadius: 5,
       backgroundColor: theme.palette.secondary.main,
       padding: '0.25em 0.5em',
+      lineHeight: 1.5,
       marginBottom: '0.25em', // otherwise crowded when wrapped
       transition: '300ms backgroundColor ease',
       '&:hover': {
@@ -48,6 +51,9 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       '& > :first-child': {
         marginRight: '0.35em',
+      },
+      '& > svg': {
+        fontSize: '1.25em',
       },
       '& .country-flag': {
         // Ensure outer white shapes are seen
@@ -78,7 +84,7 @@ const CustomChip: FC<{ to: string; name: string }> = (props) => {
 }
 
 export const MoreLikeThis: FC<MoreLikeThis> = (props) => {
-  const { language, region, country } = props
+  const { language, region, country, macro } = props
   const symbLabelState = useSymbAndLabelState()
   const classes = useStyles()
   const regionSwatchColor =
@@ -111,6 +117,11 @@ export const MoreLikeThis: FC<MoreLikeThis> = (props) => {
           backgroundColor={regionSwatchColor || 'transparent'}
         />
       </CustomChip>
+      {macro && (
+        <CustomChip name={macro} to={`${routes.grid}/Macro-Community/${macro}`}>
+          <IoIosPeople /> {macro}
+        </CustomChip>
+      )}
     </div>
   )
 }

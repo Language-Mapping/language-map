@@ -82,6 +82,7 @@ export type LangRecordSchema = InternalUse & {
   'Global Speaker Total'?: number // string in MB tileset b/c some blanks
   'Font Image Alt'?: string // for images to use instead of fonts, e.g. ASL
   'Language Family': string
+  'Macro-Community'?: string
   Description: string
   Video?: string // TODO: TS for URL?
   Audio?: string // TODO: TS for URL?

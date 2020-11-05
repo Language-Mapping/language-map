@@ -87,6 +87,7 @@ export const DetailsPanel: FC = () => {
     Country,
     Audio: audio,
     Video: video,
+    'Macro-Community': macro,
     'World Region': WorldRegion,
     // Size, // TODO: cell strength bars for Size
   } = matchingRecord
@@ -107,6 +108,7 @@ export const DetailsPanel: FC = () => {
           {Neighborhood || Town}
         </Typography>
         <MoreLikeThis
+          macro={macro}
           language={language}
           region={WorldRegion}
           country={primaryCountry}
