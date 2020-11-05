@@ -16,6 +16,11 @@ import { MoreLikeThis } from 'components/details'
 import { useStyles } from './styles'
 import { findFeatureByID } from '../../utils'
 
+type NeighborhoodList = {
+  town: string
+  neighborhoods: string
+}
+
 // TODO: separate files
 const RandomLinkBtn: FC = () => {
   const { state } = useContext(GlobalContext)
@@ -51,6 +56,30 @@ const NoFeatSel: FC<{ reason?: string }> = (props) => {
       </Typography>
       <RandomLinkBtn />
     </div>
+  )
+}
+
+const NeighborhoodList: FC<NeighborhoodList> = (props) => {
+  const { town, neighborhoods } = props
+  const classes = useStyles()
+
+  return (
+    <Typography className={classes.neighborhoods}>
+      <BiMapPin />
+      {neighborhoods &&
+        neighborhoods.split(', ').map((place, i) => (
+          <>
+            {i !== 0 && <span className={classes.separator}>|</span>}
+            <RouterLink key={place} to={`/Explore/Neighborhood/${place}`}>
+              {place}
+            </RouterLink>
+          </>
+        ))}
+      {!neighborhoods && (
+        // TODO: fix if using, otherwise restyle
+        <RouterLink to={`/Explore/Town/${town}`}>{town}</RouterLink>
+      )}
+    </Typography>
   )
 }
 
@@ -91,7 +120,7 @@ export const DetailsPanel: FC = () => {
     'World Region': WorldRegion,
     // Size, // TODO: cell strength bars for Size
   } = matchingRecord
-  const { intro, descripSection, neighborhoods, divider } = classes
+  const { intro, descripSection, divider } = classes
 
   document.title = `${language} - NYC Languages`
 
@@ -102,16 +131,12 @@ export const DetailsPanel: FC = () => {
       )}
       <div className={intro} id={elemID}>
         <LangOrEndoIntro attribs={matchingRecord} />
-        <Typography className={neighborhoods}>
-          <BiMapPin />
-          {Neighborhood.replaceAll(', ', ' | ') || Town}
-        </Typography>
+        <NeighborhoodList neighborhoods={Neighborhood} town={Town} />
         <MoreLikeThis
           macro={macro}
           language={language}
           region={WorldRegion}
           country={Country}
-          neighborhood={Neighborhood}
         />
         <Media {...{ audio, video, language, description }} />
       </div>

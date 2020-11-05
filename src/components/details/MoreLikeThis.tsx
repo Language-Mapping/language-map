@@ -24,7 +24,6 @@ type MoreLikeThis = {
   region: string
   country: string
   macro?: string
-  neighborhood?: string
 }
 
 type CustomChip = { to: string; name: string; variant?: 'subtle' }

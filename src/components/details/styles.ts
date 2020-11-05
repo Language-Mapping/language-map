@@ -6,15 +6,26 @@ export const useStyles = makeStyles((theme: Theme) =>
     divider: { marginBottom: '1.5em' },
     neighborhoods: {
       alignItems: 'center',
-      color: theme.palette.text.secondary,
+      color: theme.palette.text.primary,
       display: 'flex',
       fontSize: '0.75em',
-      margin: '0.5em 0 0.75em',
-      fontStyle: 'italic',
+      margin: '0.5em 0 1em',
+      flexWrap: 'wrap',
       justifyContent: 'center',
       '& svg': {
         marginRight: '0.35em',
       },
+      '& a:first-of-type': {
+        fontWeight: 'bold',
+        color: theme.palette.text.primary,
+      },
+      '& a:not(:first-of-type)': {
+        color: theme.palette.text.secondary,
+      },
+    },
+    separator: {
+      color: theme.palette.text.secondary,
+      margin: '0 0.25em',
     },
     descripSection: {
       fontSize: theme.typography.caption.fontSize,
