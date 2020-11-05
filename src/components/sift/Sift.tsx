@@ -34,7 +34,6 @@ export const Field: FC<{ instancesCount: number }> = (props) => {
   const { field, value, language } = useParams() as Types.RouteMatch
   const { state } = useContext(GlobalContext)
 
-  // TODO: panel
   if (!state.langFeatsLenCache)
     return <PanelContent title="Loading communities..." />
 
@@ -49,6 +48,7 @@ export const Field: FC<{ instancesCount: number }> = (props) => {
       }
       intro={
         /* eslint-disable operator-linebreak */
+        // TODO: reusable util
         instancesCount
           ? `${instancesCount} item${instancesCount > 1 ? 's' : ''}`
           : ''
@@ -66,41 +66,52 @@ export const SomeMidLevel: FC = () => {
   const { state } = useContext(GlobalContext)
   const { langFeatures } = state
 
+  if (!langFeatures.length) return <Field instancesCount={0} />
+
+  let filtered
+  const fieldInQuestion = value ? 'Language' : field
+
+  // Filter out undefined values and those not matching `value` as needed
+  if (value) {
+    filtered = langFeatures.filter((feat) => {
+      const thisValue = feat[field]
+
+      if (!thisValue) return false
+      if (!thisValue.toString().split(', ').includes(value)) return false
+
+      return true
+    })
+  } else if (['Neighborhood', 'Macro-Community'].includes(field)) {
+    // Make sure no undefined
+    filtered = langFeatures.filter((feat) => feat[field] !== undefined)
+  } else {
+    filtered = langFeatures
+  }
+
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // not for lack of trying
-  const uniqueInstances = langFeatures.reduce((all, thisOne) => {
-    const thisRowThisField = thisOne[field]?.toString()
+  const uniqueInstances = filtered.reduce((all, thisOne) => {
+    const asArray = thisOne[fieldInQuestion]?.toString().split(', ')
+    const superFilt = asArray?.filter((mannn) => {
+      return !all.find((wow) => wow.title === mannn)
+    })
 
-    // Filter out non-matches
-    if (
-      value &&
-      thisRowThisField &&
-      !thisRowThisField.split(', ').includes(value)
-    )
-      return all
-
-    // HOW is value not truthy 24/7?? Makes no sense.
-    const thingToUse = value ? thisOne.Language : thisRowThisField
-
-    if (!thingToUse) return all
+    if (!superFilt) return all
 
     return [
       ...all,
-      ...thingToUse
-        .split(', ')
-        .filter((thing) => !all.find((item) => item.title === thing))
-        .map((thing) => ({
-          title: thing,
-          intro: value || field === 'Language' ? thisOne.Endonym : 'COUNT',
-          footer: value ? 'examples...' : 'show examples...',
-          to: value ? thisOne.Language : thing,
-          icon: (
-            <SwatchOrFlagOrIcon
-              field={value ? 'Language' : field}
-              value={thing}
-            />
-          ),
-        })),
+      ...superFilt.map((thing) => ({
+        title: value ? thisOne.Language : thing,
+        intro: value || field === 'Language' ? thisOne.Endonym : 'COUNT',
+        footer: 'examples...',
+        to: value ? thisOne.Language : thing,
+        icon: (
+          <SwatchOrFlagOrIcon
+            field={value ? 'Language' : field}
+            value={thing}
+          />
+        ),
+      })),
     ]
   }, [] as Types.CardConfig[]) as Types.CardConfig[]
 
