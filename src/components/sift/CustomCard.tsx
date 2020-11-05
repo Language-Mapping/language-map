@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     intro: {
-      fontSize: 10,
+      fontSize: '0.75em',
     },
     header: {
       display: 'flex',

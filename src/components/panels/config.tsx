@@ -24,24 +24,12 @@ export const panelsConfig = [
   },
   {
     heading: 'Language dead-end',
-    // TODO: wire up, adjust logic
-    component: (
-      <PreDeets>
-        This is Language pre-details landing. It should function same as
-        /Explore/Field/Value/LanguageName except with the extra "Field/Value"
-        taken into account.
-      </PreDeets>
-    ),
+    component: <PreDeets noNest />,
     rootPath: '/Explore/Language/:value',
   },
   {
-    heading: 'Pre-details',
-    component: (
-      <PreDeets>
-        This is also a Language pre-details landing. It should function same as
-        /Explore/Language/LanguageName
-      </PreDeets>
-    ),
+    heading: 'Pre-details, nested w/extra params',
+    component: <PreDeets />,
     rootPath: '/Explore/:field/:value/:language',
   },
   {

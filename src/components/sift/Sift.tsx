@@ -106,7 +106,8 @@ export const SomeMidLevel: FC = () => {
   )
 }
 
-export const PreDeets: FC = () => {
+export const PreDeets: FC<{ noNest?: boolean }> = (props) => {
+  const { noNest } = props
   const { field, value, language } = useParams() as Types.RouteMatch
   const { state } = useContext(GlobalContext)
   const { langFeatures } = state
@@ -115,25 +116,44 @@ export const PreDeets: FC = () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // not for lack of trying
   const uniqueInstances = langFeatures.reduce((all, thisOne) => {
-    const addlParam = thisOne[field]?.toString()
+    const currValue = thisOne[noNest ? 'Language' : field]?.toString()
 
-    // Filter out non-matches
-    if (addlParam && addlParam !== value) return all
-    if (language !== thisOne.Language) return all
+    if (!noNest && !currValue) return all
+    if (!noNest && currValue && currValue !== value) return all
+    if (noNest && currValue !== value) return all
+    const { Neighborhoods, Town, Language } = thisOne
 
-    const primaryHood = thisOne.Neighborhoods?.split(', ')[0] || thisOne.Town
+    if (language && language !== Language) return all
+    if (!Neighborhoods && all.find((item) => item.title === Town)) return all
 
-    if (all.find((item) => item.title === primaryHood)) return all
+    const footer = `${thisOne.Description.slice(0, 100).trimEnd()}...`
 
-    const cardConfig = {
-      title: primaryHood,
-      intro: 'ANYTHING HERE?',
-      footer: `${thisOne.Description.slice(0, 100).trimEnd()}...`,
-      to: thisOne.ID,
-      icon: <BiMapPin />,
+    if (!Neighborhoods) {
+      return [
+        ...all,
+        {
+          title: Town,
+          intro: 'ANYTHING HERE?',
+          footer,
+          to: thisOne.ID,
+          icon: <BiMapPin />,
+        },
+      ]
     }
 
-    return [...all, cardConfig]
+    const hoods = Neighborhoods.split(', ')
+      .filter((hood) => {
+        return !all.find((item) => item.title === hood)
+      })
+      .map((hood) => ({
+        title: hood,
+        intro: 'ANYTHING HERE?',
+        footer,
+        to: thisOne.ID,
+        icon: <BiMapPin />,
+      }))
+
+    return [...all, ...hoods]
   }, [] as Types.CardConfig[]) as Types.CardConfig[]
 
   return (
