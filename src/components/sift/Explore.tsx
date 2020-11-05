@@ -1,33 +1,16 @@
 import React, { FC, useContext, useState, useEffect } from 'react'
 import { useRouteMatch, Link as RouterLink } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Link } from '@material-ui/core'
 
 import { GlobalContext } from 'components'
 import { PanelContent } from 'components/panels'
-import { Category } from './Category'
+import { CustomCard } from './CustomCard'
+import { CardList } from './CardList'
 import * as Types from './types'
 import * as utils from './utils'
 import * as config from './config'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gridRowGap: '0.5em',
-      gridColumnGap: '0.5em',
-    },
-  })
-)
-
-export const CategoriesWrap: FC = (props) => {
-  const { children } = props
-  const classes = useStyles()
-
-  return <div className={classes.root}>{children}</div>
-}
-
+// The top-level "/Explore" route as a landing page index to explorable fields
 export const Explore: FC<{ icon: React.ReactNode }> = (props) => {
   const { icon } = props
   const { url } = useRouteMatch()
@@ -47,7 +30,7 @@ export const Explore: FC<{ icon: React.ReactNode }> = (props) => {
       )
 
       return {
-        intro: `${uniqueInstances.length} instances (inc. filts)`,
+        intro: `${uniqueInstances.length} items`,
         title: category.name,
         url: `${url}/${category.name}`,
         icon: category.icon,
@@ -71,11 +54,11 @@ export const Explore: FC<{ icon: React.ReactNode }> = (props) => {
 
   return (
     <PanelContent title="Explore" icon={icon} intro={intro}>
-      <CategoriesWrap>
+      <CardList>
         {categories.map((category) => (
-          <Category key={category.title} {...category} />
+          <CustomCard key={category.title} {...category} />
         ))}
-      </CategoriesWrap>
+      </CardList>
     </PanelContent>
   )
 }

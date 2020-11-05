@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Box } from '@material-ui/core'
 
-import { LegendSwatchComponent } from './types'
+import * as Types from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,7 +29,24 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const LegendSwatch: FC<LegendSwatchComponent> = (props) => {
+// No text, no frills. Just a circle with a color
+export const SwatchOnly: FC<Types.SwatchOnly> = (props) => {
+  const { backgroundColor, size = 7 } = props
+  const adjustedSize = size * 1.5
+
+  return (
+    <span
+      style={{
+        backgroundColor,
+        height: adjustedSize,
+        width: adjustedSize,
+        borderRadius: '100%',
+      }}
+    />
+  )
+}
+
+export const LegendSwatch: FC<Types.LegendSwatchComponent> = (props) => {
   const {
     backgroundColor,
     icon,
@@ -42,7 +59,6 @@ export const LegendSwatch: FC<LegendSwatchComponent> = (props) => {
   } = props
   const isCircle = iconID === '_circle'
   const classes = useStyles({ isCircle })
-  const adjustedSize = size * 1.5
   // TS freaks out if `to` is a prop and `component` is dynamic
   const muiFriendlyProps = to ? { to } : null
 
@@ -60,16 +76,7 @@ export const LegendSwatch: FC<LegendSwatchComponent> = (props) => {
       component={component}
       {...muiFriendlyProps}
     >
-      {isCircle && (
-        <span
-          style={{
-            backgroundColor,
-            height: adjustedSize,
-            width: adjustedSize,
-            borderRadius: '100%',
-          }}
-        />
-      )}
+      {isCircle && <SwatchOnly {...{ size, backgroundColor }} />}
       {!isCircle && (
         <img src={icon} alt={legendLabel} className={classes.imgSwatch} />
       )}

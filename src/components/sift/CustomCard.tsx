@@ -1,13 +1,11 @@
 import React, { FC } from 'react'
-import { Link, useRouteMatch } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import Typography from '@material-ui/core/Typography'
 
-import { LangRecordSchema } from 'context/types'
 import * as Types from './types'
 import * as utils from './utils'
-import { SimpleSwatch, FlagWithTitle } from './Sift'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,12 +32,13 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       alignItems: 'center',
       lineHeight: 1.25,
-      '& > svg': {
-        marginRight: 4,
+      // Icons, flags, swatches, etc.
+      '& > :first-child': {
+        flexShrink: 0,
+        marginRight: '0.35em',
       },
       '& > .country-flag': {
         height: '0.8em',
-        marginRight: '0.35em',
       },
     },
     instances: {
@@ -60,21 +59,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const Category: FC<Types.CategoryProps> = (props) => {
-  const { title, url, subtitle, uniqueInstances, intro, icon } = props
+export const CustomCard: FC<Types.CategoryProps> = (props) => {
+  const { title, url, uniqueInstances, intro, icon, footer } = props
   const classes = useStyles()
-  const match = useRouteMatch()
-  const { field, value } = match.params as {
-    field: keyof LangRecordSchema
-    value: string
-  }
-  let preppedTitle
-
-  if (field === 'World Region' && !value) {
-    preppedTitle = <SimpleSwatch label={title} />
-  } else if (field === 'Countries' && !value) {
-    preppedTitle = <FlagWithTitle countryName={title} />
-  }
 
   return (
     <Card
@@ -95,18 +82,13 @@ export const Category: FC<Types.CategoryProps> = (props) => {
         {intro}
       </Typography>
       <Typography variant="h6" component="header" className={classes.header}>
-        {!preppedTitle && icon}
-        {!preppedTitle && title}
-        {preppedTitle}
+        {icon}
+        {title}
       </Typography>
       <div className={`${'accent-bar '}${classes.accentBar}`} />
-      {subtitle && (
-        <Typography className={classes.subtitle} color="textSecondary">
-          {subtitle}
-        </Typography>
-      )}
       <Typography component="p" variant="caption" className={classes.instances}>
-        {utils.prettyTruncate(uniqueInstances as string[])}
+        {/* TODO: find the uniques here, not from a prop */}
+        {footer || utils.prettyTruncate(uniqueInstances as string[])}
       </Typography>
     </Card>
   )

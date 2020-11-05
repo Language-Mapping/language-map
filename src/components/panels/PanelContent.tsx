@@ -10,7 +10,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       overflowY: 'auto',
-      // outline: 'solid red 1px',
     },
     title: {
       display: 'flex',
@@ -19,14 +18,15 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('sm')]: {
         fontSize: '2.4em',
       },
-      '& > svg': {
+      '& > :first-child': {
         marginRight: '0.25em',
+      },
+      '& > svg': {
         fontSize: '0.75em',
         fill: theme.palette.text.secondary,
       },
     },
     header: {
-      // outline: 'solid green 1px',
       margin: '1em 0',
     },
     intro: { fontSize: '0.7em', color: theme.palette.text.secondary },

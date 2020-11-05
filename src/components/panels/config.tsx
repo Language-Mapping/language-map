@@ -5,7 +5,7 @@ import { BiHomeAlt } from 'react-icons/bi'
 
 import { FiltersPanel } from 'components/filters'
 import { DetailsPanel } from 'components/details'
-import { Field, Explore, FieldValue } from 'components/sift'
+import { Explore, PreDeets, SomeMidLevel } from 'components/sift'
 
 import { MapPanel } from 'components/panels/types'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
@@ -23,15 +23,35 @@ export const panelsConfig = [
     exact: true,
   },
   {
+    heading: 'Language dead-end',
+    // TODO: wire up, adjust logic
+    component: (
+      <PreDeets>
+        This is Language pre-details landing. It should function same as
+        /Explore/Field/Value/LanguageName except with the extra "Field/Value"
+        taken into account.
+      </PreDeets>
+    ),
+    rootPath: '/Explore/Language/:value',
+  },
+  {
+    heading: 'Pre-details',
+    component: (
+      <PreDeets>
+        This is also a Language pre-details landing. It should function same as
+        /Explore/Language/LanguageName
+      </PreDeets>
+    ),
+    rootPath: '/Explore/:field/:value/:language',
+  },
+  {
     heading: 'Level 2 cat',
-    icon: <FaBinoculars />,
-    component: <FieldValue />,
+    component: <SomeMidLevel />,
     rootPath: '/Explore/:field/:value',
   },
   {
     heading: 'Level 1 cat',
-    icon: <FaBinoculars />,
-    component: <Field />,
+    component: <SomeMidLevel />,
     rootPath: '/Explore/:field',
   },
   {

@@ -2,10 +2,10 @@ import { RouteLocation } from 'components/config/types'
 
 export type MapPanel = {
   heading: string
-  icon: React.ReactNode
   component: React.ReactNode
   rootPath: RouteLocation
   exact?: boolean
+  icon?: React.ReactNode
 }
 
 export type MapPanelProps = {

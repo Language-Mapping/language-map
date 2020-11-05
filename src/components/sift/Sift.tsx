@@ -1,196 +1,153 @@
 import React, { FC, useContext } from 'react'
 import { useRouteMatch, useParams } from 'react-router-dom'
 
-import { GlobalContext, useSymbAndLabelState } from 'components'
-import { Category, CategoriesWrap } from 'components/sift'
-import { LegendSwatch } from 'components/legend'
-import { getCodeByCountry } from 'components/results'
+import { GlobalContext } from 'components'
+import { SwatchOnly } from 'components/legend'
+import { BiMapPin } from 'react-icons/bi'
+import { CustomCard } from './CustomCard'
+import { CardList } from './CardList'
 import { PanelContent } from '../panels/PanelContent'
-import { LangRecordSchema } from '../../context/types'
-import * as utils from './utils'
+import * as Types from './types'
 import * as config from './config'
+import * as utils from './utils'
+import { getSwatchColorByConfig } from '../legend/utils'
+import { FlagWithTitle } from './FlagWithTitle'
 
-export const Field: FC = () => {
-  // The <Route> that rendered this component has a path of `/topics/:topicId`.
-  // The `:topicId` portion of the URL indicates a placeholder that we can get
-  // from `useParams()`.
-  const { field, value } = useParams() as {
-    field: keyof LangRecordSchema
-    value: string
+// TODO: rename components and this file. Mv components into new files..
+const SwatchOrFlagOrIcon: FC<Types.SwatchOrFlagOrIcon> = (props) => {
+  const { field, value } = props
+
+  if (field === 'World Region' && value) {
+    return <SwatchOnly backgroundColor={getSwatchColorByConfig(value)} />
   }
+
+  if (field === 'Countries' && value) {
+    return <FlagWithTitle omitText countryName={value as string} />
+  }
+
+  return <>{config.categories.find(({ name }) => name === field)?.icon}</>
+}
+
+export const Field: FC<{ instancesCount: number }> = (props) => {
+  const { children, instancesCount } = props
+  const { field, value, language } = useParams() as Types.RouteMatch
+  const { state } = useContext(GlobalContext)
+
+  // TODO: panel
+  if (!state.langFeatsLenCache) return <p>Loading communities...</p>
+
+  return (
+    <PanelContent
+      title={language || value || field}
+      icon={
+        <SwatchOrFlagOrIcon
+          field={language ? 'Language' : field}
+          value={value}
+        />
+      }
+      intro={instancesCount ? `${instancesCount} items` : ''}
+    >
+      {(instancesCount && children) || 'No communities available.'}
+    </PanelContent>
+  )
+}
+
+export const SomeMidLevel: FC = () => {
+  const { field, value } = useParams() as Types.RouteMatch
   const { url } = useRouteMatch()
   const { state } = useContext(GlobalContext)
-  const symbLabelState = useSymbAndLabelState()
-  const uniqueInstances = utils.getUniqueInstances(
-    field,
-    state.langFeatures, // but what if filtered? may need global cache again...
-    true // mmmmmmmmmm
-  )
-  let icon
+  const { langFeatures } = state
 
-  if (field === 'World Region' && value) {
-    const regionSwatchColor =
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      symbLabelState.legendSymbols[value].paint['icon-color'] as string
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore // not for lack of trying
+  const uniqueInstances = langFeatures.reduce((all, thisOne) => {
+    const currVal = thisOne[field]?.toString()
 
-    icon = (
-      <LegendSwatch
-        legendLabel="World Region"
-        labelStyleOverride={{
-          fontSize: 'inherit',
-          fontFamily: 'inherit',
-          lineHeight: 'inherit',
-        }}
-        component="div"
-        iconID="_circle"
-        backgroundColor={regionSwatchColor || 'transparent'}
-      />
-    )
-  } else {
-    icon = config.categories.find(({ name }) => name === field)?.icon
-  }
+    // Filter out non-matches
+    if (value && currVal && currVal !== value) return all
+
+    const thingToUse = value ? thisOne.Language : currVal // value: 24/7 truthy?
+    const shouldParse = thingToUse?.includes(', ')
+    const finalThing = shouldParse ? thingToUse?.split(', ')[0] : thingToUse
+
+    if (all.find((item) => item.title === finalThing)) return all
+
+    // TODO: make this work for Neighbs/Countries. Currently only the primary
+    // ends up in the list, so secondary-only countries will never show up.
+    const cardConfig = {
+      title: finalThing,
+      intro: value || field === 'Language' ? thisOne.Endonym : 'COUNT',
+      footer: value ? 'examples...' : 'show examples...',
+      to: finalThing,
+      icon: (
+        <SwatchOrFlagOrIcon
+          field={value ? 'Language' : field}
+          value={finalThing}
+        />
+      ),
+    }
+
+    return [...all, cardConfig]
+  }, [] as Types.CardConfig[]) as Types.CardConfig[]
 
   return (
-    <PanelContent
-      title={field}
-      icon={icon}
-      intro={`will check to see if ${field.toUpperCase()} has a spesh intro, or just show some totals and/or a blurb about filters and a link to clear them.`}
-    >
-      <CategoriesWrap>
-        {uniqueInstances.map((instance) => {
-          const asString = instance as string
-
-          return (
-            <Category
-              key={asString}
-              intro="Total w/filts"
-              title={asString}
-              url={`${url}/${asString}`}
-              subtitle={asString}
-              uniqueInstances={[]}
-            />
-          )
-        })}
-      </CategoriesWrap>
-    </PanelContent>
+    <Field instancesCount={uniqueInstances.length}>
+      <CardList>
+        {uniqueInstances.sort(utils.sortByTitle).map((instance) => (
+          <CustomCard
+            key={instance.title}
+            {...instance}
+            uniqueInstances={[]}
+            url={`${url}/${instance.to}`}
+          />
+        ))}
+      </CardList>
+    </Field>
   )
 }
 
-// TODO: duuuuude just make a route for this and FlagWithTitle
-export const SimpleSwatch: FC<{ label: string }> = (props) => {
-  const { label } = props
-  const symbLabelState = useSymbAndLabelState()
-
-  const regionSwatchColor =
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    symbLabelState.legendSymbols[label].paint['icon-color'] as string
-
-  return (
-    <LegendSwatch
-      legendLabel={label}
-      labelStyleOverride={{
-        fontSize: 'inherit',
-        fontFamily: 'inherit',
-        lineHeight: 'inherit',
-      }}
-      component="div"
-      iconID="_circle"
-      backgroundColor={regionSwatchColor || 'transparent'}
-    />
-  )
-}
-
-export const FlagWithTitle: FC<{ countryName: string }> = (props) => {
-  const { countryName } = props
-
-  return (
-    <>
-      <img
-        style={{
-          height: '0.8em',
-          marginRight: '0.25em',
-          // Ensure outer white shapes are seen
-          // outline: `solid 1px ${theme.palette.divider}`, // TODO
-        }}
-        className="country-flag"
-        alt={`${countryName} flag`}
-        src={`/img/country-flags/${getCodeByCountry(
-          countryName
-        ).toLowerCase()}.svg`}
-      />{' '}
-      {countryName}
-    </>
-  )
-}
-
-export const FieldValue: FC = () => {
-  // The <Route> that rendered this component has a path of `/topics/:topicId`.
-  // The `:topicId` portion of the URL indicates a placeholder that we can get
-  // from `useParams()`.
-  const { field, value } = useParams() as {
-    field: keyof LangRecordSchema
-    value: string
-  }
+export const PreDeets: FC = () => {
+  const { field, value, language } = useParams() as Types.RouteMatch
   const { state } = useContext(GlobalContext)
-  const { langFeatures, langFeatsLenCache } = state
+  const { langFeatures } = state
 
-  if (!langFeatsLenCache) return <p>Loading communities...</p>
+  // TODO: make work with /Explore/Language/Name
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore // not for lack of trying
+  const uniqueInstances = langFeatures.reduce((all, thisOne) => {
+    const addlParam = thisOne[field]?.toString()
 
-  const matchedComms = langFeatures.filter((feat) =>
-    feat[field]?.toString().includes(value as string)
-  )
+    // Filter out non-matches
+    if (addlParam && addlParam !== value) return all
+    if (language !== thisOne.Language) return all
 
-  let icon
+    const primaryHood = thisOne.Neighborhoods?.split(', ')[0] || thisOne.Town
 
-  if (field === 'World Region' && value) {
-    icon = <SimpleSwatch label={value as string} />
-  } else if (field === 'Countries') {
-    icon = <FlagWithTitle countryName={value} />
-  } else {
-    icon = config.categories.find(({ name }) => name === field)?.icon
-  }
+    if (all.find((item) => item.title === primaryHood)) return all
 
-  if (!matchedComms.length)
-    return (
-      <PanelContent title={!icon ? value.toString() : ''} icon={icon}>
-        No communities available.
-      </PanelContent>
-    )
+    const cardConfig = {
+      title: primaryHood,
+      intro: 'ANYTHING HERE?',
+      footer: `${thisOne.Description.slice(0, 100).trimEnd()}...`,
+      to: thisOne.ID,
+      icon: <BiMapPin />,
+    }
+
+    return [...all, cardConfig]
+  }, [] as Types.CardConfig[]) as Types.CardConfig[]
 
   return (
-    <PanelContent
-      title={!icon ? value.toString() : ''}
-      icon={icon}
-      intro={`will check to see if ${value
-        .toString()
-        .toUpperCase()} has a spesh intro, or just show some totals and/or a blurb about filters and a link to clear them.`}
-    >
-      <CategoriesWrap>
-        {matchedComms.map((comm) => {
-          let title = comm.Endonym
-          let intro = ''
-
-          if (comm.Glottocode) intro = `Glotto: ${comm.Glottocode}`
-          if (comm['ISO 639-3']) intro += ` ISO: ${comm['ISO 639-3']}`
-
-          if (field === 'Language') {
-            title = comm.Neighborhoods?.split(', ')[0] || comm.Town
-          }
-
-          return (
-            <Category
-              key={comm.ID}
-              intro={intro}
-              title={title}
-              url={`/details/${comm.ID}`}
-              subtitle={comm.Language}
-              uniqueInstances={[]}
-            />
-          )
-        })}
-      </CategoriesWrap>
-    </PanelContent>
+    <Field instancesCount={uniqueInstances.length}>
+      <CardList>
+        {uniqueInstances.sort(utils.sortByTitle).map((instance) => (
+          <CustomCard
+            key={instance.title}
+            {...instance}
+            uniqueInstances={[]}
+            url={`/details/${instance.to}`}
+          />
+        ))}
+      </CardList>
+    </Field>
   )
 }

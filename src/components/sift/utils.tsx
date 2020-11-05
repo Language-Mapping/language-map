@@ -1,15 +1,18 @@
 import { LangRecordSchema } from '../../context/types'
+import * as Types from './types'
 
 export const getUniqueInstances = (
-  category: keyof LangRecordSchema,
+  field: keyof LangRecordSchema,
   features: LangRecordSchema[],
-  parse?: boolean
-): unknown[] => {
-  const uniqueInstances = features.reduce((all, thisOne) => {
-    const value = thisOne[category]
+  parse?: boolean,
+  searchValue?: unknown
+): string[] =>
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  features.reduce((all: string[], thisOne) => {
+    const value = thisOne[field] as string
 
-    // Don't need `undefined` in our array
-    if (!value || all.includes(value)) return all
+    if (!value || all.includes(value)) return all // don't need `undefined`
 
     // YO: need to acct for things like "Turkey, Russia", not just "Turkey"
 
@@ -18,14 +21,15 @@ export const getUniqueInstances = (
     if (parse && typeof value === 'string') {
       const parsed = value.split(', ').filter((indiv) => !all.includes(indiv))
 
+      if (searchValue && !parsed.includes(searchValue as string)) return all
+
       return [...all, ...parsed]
     }
 
-    return [...all, value as string | number]
-  }, [] as unknown[])
+    if (searchValue && value !== (searchValue as string)) return all
 
-  return uniqueInstances
-}
+    return [...all, value as string | number]
+  }, [] as string[]) as string[]
 
 // Create nice listy thing w/truncation like
 // a, b, c, d, e...
@@ -43,3 +47,15 @@ export const prettyTruncate = (list: string[], limit = 5): string[] =>
 
       return `, ${instance}`
     })
+
+export const sortByTitle = (
+  a: Types.CardConfig,
+  b: Types.CardConfig
+): number => {
+  let comparison = 0
+
+  if (a.title > b.title) comparison = 1
+  else if (a.title < b.title) comparison = -1
+
+  return comparison
+}

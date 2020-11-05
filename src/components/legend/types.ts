@@ -15,6 +15,8 @@ export type LegendSwatch = {
   size?: number
 }
 
+export type SwatchOnly = Pick<LegendSwatch, 'backgroundColor' | 'size'>
+
 // Same as the regular swatch but will have SVG element if it is a symbol
 export type LegendSwatchComponent = LegendSwatch & {
   icon?: string
