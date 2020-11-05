@@ -35,7 +35,10 @@ const useStyles = makeStyles((theme: Theme) =>
       // Icons, flags, swatches, etc.
       '& > :first-child': {
         flexShrink: 0,
-        marginRight: '0.35em',
+        marginRight: '0.25em',
+      },
+      '& > svg': {
+        fill: theme.palette.text.secondary,
       },
       '& > .country-flag': {
         height: '0.8em',

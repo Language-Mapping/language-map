@@ -61,33 +61,39 @@ export const SomeMidLevel: FC = () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // not for lack of trying
   const uniqueInstances = langFeatures.reduce((all, thisOne) => {
-    const currVal = thisOne[field]?.toString()
+    const thisRowThisField = thisOne[field]?.toString()
 
     // Filter out non-matches
-    if (value && currVal && currVal !== value) return all
+    if (
+      value &&
+      thisRowThisField &&
+      !thisRowThisField.split(', ').includes(value)
+    )
+      return all
 
-    const thingToUse = value ? thisOne.Language : currVal // value: 24/7 truthy?
-    const shouldParse = thingToUse?.includes(', ')
-    const finalThing = shouldParse ? thingToUse?.split(', ')[0] : thingToUse
+    // HOW is value not truthy 24/7?? Makes no sense.
+    const thingToUse = value ? thisOne.Language : thisRowThisField
 
-    if (all.find((item) => item.title === finalThing)) return all
+    if (!thingToUse) return all
 
-    // TODO: make this work for Neighbs/Countries. Currently only the primary
-    // ends up in the list, so secondary-only countries will never show up.
-    const cardConfig = {
-      title: finalThing,
-      intro: value || field === 'Language' ? thisOne.Endonym : 'COUNT',
-      footer: value ? 'examples...' : 'show examples...',
-      to: finalThing,
-      icon: (
-        <SwatchOrFlagOrIcon
-          field={value ? 'Language' : field}
-          value={finalThing}
-        />
-      ),
-    }
-
-    return [...all, cardConfig]
+    return [
+      ...all,
+      ...thingToUse
+        .split(', ')
+        .filter((thing) => !all.find((item) => item.title === thing))
+        .map((thing) => ({
+          title: thing,
+          intro: value || field === 'Language' ? thisOne.Endonym : 'COUNT',
+          footer: value ? 'examples...' : 'show examples...',
+          to: value ? thisOne.Language : thing,
+          icon: (
+            <SwatchOrFlagOrIcon
+              field={value ? 'Language' : field}
+              value={thing}
+            />
+          ),
+        })),
+    ]
   }, [] as Types.CardConfig[]) as Types.CardConfig[]
 
   return (
@@ -106,54 +112,39 @@ export const SomeMidLevel: FC = () => {
   )
 }
 
-export const PreDeets: FC<{ noNest?: boolean }> = (props) => {
-  const { noNest } = props
-  const { field, value, language } = useParams() as Types.RouteMatch
+export const PreDeets: FC = () => {
+  const { value, language } = useParams() as Types.RouteMatch
   const { state } = useContext(GlobalContext)
   const { langFeatures } = state
+  const icon = <BiMapPin />
 
-  // TODO: make work with /Explore/Language/Name
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // not for lack of trying
   const uniqueInstances = langFeatures.reduce((all, thisOne) => {
-    const currValue = thisOne[noNest ? 'Language' : field]?.toString()
+    const { Neighborhoods, Town, Language, Description } = thisOne
 
-    if (!noNest && !currValue) return all
-    if (!noNest && currValue && currValue !== value) return all
-    if (noNest && currValue !== value) return all
-    const { Neighborhoods, Town, Language } = thisOne
+    // Deep depth
+    if (language) {
+      if (Language !== language) return all
+    } else if (Language !== value) return all
 
-    if (language && language !== Language) return all
     if (!Neighborhoods && all.find((item) => item.title === Town)) return all
 
-    const footer = `${thisOne.Description.slice(0, 100).trimEnd()}...`
-
-    if (!Neighborhoods) {
-      return [
-        ...all,
-        {
-          title: Town,
-          intro: 'ANYTHING HERE?',
-          footer,
-          to: thisOne.ID,
-          icon: <BiMapPin />,
-        },
-      ]
+    const common = {
+      footer: `${Description.slice(0, 100).trimEnd()}...`,
+      intro: 'PUT SOMETHING HERE?',
+      to: thisOne.ID,
+      icon,
     }
 
-    const hoods = Neighborhoods.split(', ')
-      .filter((hood) => {
-        return !all.find((item) => item.title === hood)
-      })
-      .map((hood) => ({
-        title: hood,
-        intro: 'ANYTHING HERE?',
-        footer,
-        to: thisOne.ID,
-        icon: <BiMapPin />,
-      }))
+    if (!Neighborhoods) return [...all, { title: Town, ...common }]
 
-    return [...all, ...hoods]
+    return [
+      ...all,
+      ...Neighborhoods.split(', ')
+        .filter((hood) => !all.find((item) => item.title === hood))
+        .map((hood) => ({ title: hood, ...common })),
+    ]
   }, [] as Types.CardConfig[]) as Types.CardConfig[]
 
   return (

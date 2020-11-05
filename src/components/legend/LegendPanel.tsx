@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { Typography, Link, Grid, Paper } from '@material-ui/core'
+import { Typography, Link, Grid } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { FaGlobeAmericas } from 'react-icons/fa'
 
@@ -27,8 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: '0.5rem 0',
     },
     inner: {
-      padding: '1rem', // TODO: consistentize w/other panels, cards, etc.
-      marginTop: '1em',
+      marginTop: '1.25em',
     },
   })
 )
@@ -39,7 +38,7 @@ export const LegendPanel: FC<LegendPanelComponent> = (props) => {
   const [showWorldMap, setShowWorldMap] = useState<boolean>(false)
 
   return (
-    <Paper elevation={4} className={classes.inner}>
+    <div className={classes.inner}>
       <Typography variant="h6" component="h3">
         Legend
       </Typography>
@@ -71,6 +70,6 @@ export const LegendPanel: FC<LegendPanelComponent> = (props) => {
       <ToggleableSection show={showWorldMap}>
         <WorldRegionMap />
       </ToggleableSection>
-    </Paper>
+    </div>
   )
 }

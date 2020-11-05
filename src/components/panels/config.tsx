@@ -24,7 +24,7 @@ export const panelsConfig = [
   },
   {
     heading: 'Language dead-end',
-    component: <PreDeets noNest />,
+    component: <PreDeets />,
     rootPath: '/Explore/Language/:value',
   },
   {
