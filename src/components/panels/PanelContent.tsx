@@ -27,7 +27,9 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     header: {
-      margin: '1em 0',
+      padding: '1em 0 0.5em',
+      marginBottom: '0.75em',
+      borderBottom: `solid 1px ${theme.palette.divider}`,
     },
     intro: { fontSize: '0.7em', color: theme.palette.text.secondary },
     body: {

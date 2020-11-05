@@ -17,6 +17,10 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: 'inherit',
       },
     },
+    separator: {
+      marginLeft: '0.45em',
+      marginRight: '0.45em',
+    },
   })
 )
 
@@ -26,7 +30,11 @@ const RouterBreadcrumbs: FC = () => {
   const pathnames = loc.pathname.split('/').filter((x) => x)
 
   return (
-    <Breadcrumbs aria-label="breadcrumb" className={classes.root}>
+    <Breadcrumbs
+      aria-label="breadcrumb"
+      className={classes.root}
+      classes={{ separator: classes.separator }}
+    >
       <RouterLink to="/">Home</RouterLink>
       {pathnames.map((value, index) => {
         const last = index === pathnames.length - 1

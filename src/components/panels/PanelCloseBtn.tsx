@@ -11,8 +11,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelCloseBtn: {
       position: 'absolute',
-      right: '0.5em',
-      top: '0.5rem',
+      right: '0.25em',
+      top: 0,
     },
     panelClosePill: {
       position: 'sticky',

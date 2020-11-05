@@ -15,13 +15,13 @@ export const useStyles = makeStyles((theme: Theme) =>
       bottom: 56, // set directly in MUI to 56
       display: 'flex',
       flexDirection: 'column',
-      left: 4,
+      left: 2,
       opacity: (props: StylesProps) => (props.panelOpen ? 1 : 0),
       overflowX: 'hidden',
       overflowY: 'auto',
       padding: '1rem',
       position: 'absolute',
-      right: 4,
+      right: 2,
       top: '45%',
       transition: '300ms ease all',
       transform: (props: StylesProps) =>

@@ -34,7 +34,8 @@ export const Field: FC<{ instancesCount: number }> = (props) => {
   const { state } = useContext(GlobalContext)
 
   // TODO: panel
-  if (!state.langFeatsLenCache) return <p>Loading communities...</p>
+  if (!state.langFeatsLenCache)
+    return <PanelContent title="Loading communities..." />
 
   return (
     <PanelContent
@@ -45,7 +46,13 @@ export const Field: FC<{ instancesCount: number }> = (props) => {
           value={value}
         />
       }
-      intro={instancesCount ? `${instancesCount} items` : ''}
+      intro={
+        /* eslint-disable operator-linebreak */
+        instancesCount
+          ? `${instancesCount} item${instancesCount > 1 ? 's' : ''}`
+          : ''
+        /* eslint-enable operator-linebreak */
+      }
     >
       {(instancesCount && children) || 'No communities available.'}
     </PanelContent>
@@ -132,7 +139,7 @@ export const PreDeets: FC = () => {
 
     const common = {
       footer: `${Description.slice(0, 100).trimEnd()}...`,
-      intro: 'PUT SOMETHING HERE?',
+      intro: '', // TODO: rm if not using
       to: thisOne.ID,
       icon,
     }

@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'grid',
       gridTemplateColumns: '1fr 1fr',
-      gridRowGap: '0.5em',
+      gridRowGap: '0.65em',
       gridColumnGap: '0.5em',
     },
   })

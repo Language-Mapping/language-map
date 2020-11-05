@@ -18,7 +18,7 @@ import symbLayers from '../map/config.lang-style'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelMainHeading: {
-      // fontSize: '1.5rem', // TODO: consistentize w/other panels
+      fontSize: '1.8rem', // TODO: consistentize w/other panels?
     },
   })
 )

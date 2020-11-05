@@ -42,11 +42,6 @@ export const LegendPanel: FC<LegendPanelComponent> = (props) => {
       <Typography variant="h6" component="h3">
         Legend
       </Typography>
-      <small style={{ fontSize: 10, lineHeight: 0.85 }}>
-        Legend item link to their corresponding routes, so I'm thinking a small
-        blurb here indicating that since they don't appear very link-y. TODO:
-        "Size"
-      </small>
       <Grid container className={classes.legendCtrls} spacing={2}>
         <Grid item xs={6}>
           <LayerSymbSelect />
@@ -55,6 +50,11 @@ export const LegendPanel: FC<LegendPanelComponent> = (props) => {
           <LayerLabelSelect />
         </Grid>
       </Grid>
+      {/* TODO: fix */}
+      {/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
+      <small style={{ fontSize: 10, lineHeight: 0.85 }}>
+        👇 Super-secret: you can click legend items. Future Jason TODO: "Size"
+      </small>
       <Legend legendItems={legendItems} groupName={groupName} />
       <Link
         href="#"
