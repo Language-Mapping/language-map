@@ -92,7 +92,6 @@ export const DetailsPanel: FC = () => {
     // Size, // TODO: cell strength bars for Size
   } = matchingRecord
   const { intro, descripSection, neighborhoods, divider } = classes
-  const primaryCountry = Country.split(', ')[0]
 
   document.title = `${language} - NYC Languages`
 
@@ -111,12 +110,8 @@ export const DetailsPanel: FC = () => {
           macro={macro}
           language={language}
           region={WorldRegion}
-          country={primaryCountry}
+          country={Country}
         />
-        {/* Don't be redundant with country (already in chip) if only one */}
-        {Country.includes(', ') && (
-          <div className={classes.countriesList}>{Country}</div>
-        )}
         <Media {...{ audio, video, language, description }} />
       </div>
       <Divider variant="middle" className={divider} />

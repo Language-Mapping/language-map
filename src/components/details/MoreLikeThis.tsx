@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       borderRadius: 5,
       backgroundColor: theme.palette.secondary.main,
-      padding: '0.25em 0.5em',
+      padding: '0.15em 0.45em',
       lineHeight: 1.5,
       marginBottom: '0.25em', // otherwise crowded when wrapped
       transition: '300ms backgroundColor ease',
@@ -98,16 +98,22 @@ export const MoreLikeThis: FC<MoreLikeThis> = (props) => {
       <CustomChip name={language} to={`${routes.grid}/Language/${language}`}>
         <BiUserVoice /> {language}
       </CustomChip>
-      <CustomChip name={country} to={`${routes.grid}/Country/${country}`}>
-        <img
-          className="country-flag"
-          alt={`${country} flag`}
-          src={`/img/country-flags/${getCodeByCountry(
-            country
-          ).toLowerCase()}.svg`}
-        />{' '}
-        {country}
-      </CustomChip>
+      {country.split(', ').map((countryName) => (
+        <CustomChip
+          key={countryName}
+          name={countryName}
+          to={`${routes.grid}/Country/${countryName}`}
+        >
+          <img
+            className="country-flag"
+            alt={`${countryName} flag`}
+            src={`/img/country-flags/${getCodeByCountry(
+              countryName
+            ).toLowerCase()}.svg`}
+          />{' '}
+          {countryName}
+        </CustomChip>
+      ))}
       <CustomChip name={region} to={`${routes.grid}/World Region/${region}`}>
         <LegendSwatch
           legendLabel={region}
