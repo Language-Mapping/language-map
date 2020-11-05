@@ -21,7 +21,7 @@ const SwatchOrFlagOrIcon: FC<Types.SwatchOrFlagOrIcon> = (props) => {
     return <SwatchOnly backgroundColor={getSwatchColorByConfig(value)} />
   }
 
-  if (field === 'Countries' && value) {
+  if (field === 'Country' && value) {
     return <FlagWithTitle omitText countryName={value as string} />
   }
 
@@ -121,14 +121,14 @@ export const PreDeets: FC = () => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // not for lack of trying
   const uniqueInstances = langFeatures.reduce((all, thisOne) => {
-    const { Neighborhoods, Town, Language, Description } = thisOne
+    const { Neighborhood, Town, Language, Description } = thisOne
 
     // Deep depth
     if (language) {
       if (Language !== language) return all
     } else if (Language !== value) return all
 
-    if (!Neighborhoods && all.find((item) => item.title === Town)) return all
+    if (!Neighborhood && all.find((item) => item.title === Town)) return all
 
     const common = {
       footer: `${Description.slice(0, 100).trimEnd()}...`,
@@ -137,11 +137,11 @@ export const PreDeets: FC = () => {
       icon,
     }
 
-    if (!Neighborhoods) return [...all, { title: Town, ...common }]
+    if (!Neighborhood) return [...all, { title: Town, ...common }]
 
     return [
       ...all,
-      ...Neighborhoods.split(', ')
+      ...Neighborhood.split(', ')
         .filter((hood) => !all.find((item) => item.title === hood))
         .map((hood) => ({ title: hood, ...common })),
     ]

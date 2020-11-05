@@ -12,7 +12,7 @@ import { LangRecordSchema } from '../../context/types'
 
 type ImportantCols = Pick<
   LangRecordSchema,
-  'Language' | 'Countries' | 'World Region'
+  'Language' | 'Country' | 'World Region'
 >
 type ColumnKeys = keyof ImportantCols
 
@@ -92,7 +92,7 @@ export const MoreLikeThis: FC<MoreLikeThis> = (props) => {
       <CustomChip name={language} to={`${routes.grid}/Language/${language}`}>
         <BiUserVoice /> {language}
       </CustomChip>
-      <CustomChip name={country} to={`${routes.grid}/Countries/${country}`}>
+      <CustomChip name={country} to={`${routes.grid}/Country/${country}`}>
         <img
           className="country-flag"
           alt={`${country} flag`}

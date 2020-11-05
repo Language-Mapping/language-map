@@ -102,7 +102,7 @@ export const exportPdf = (
       },
       columnStyles: {
         'World Region': { cellWidth: 65 }, // "Southeastern" won't wrap
-        Neighborhoods: { cellWidth: 100 }, // fits column heading
+        Neighborhood: { cellWidth: 100 }, // fits column heading
         Size: { cellWidth: 50 },
         Status: { cellWidth: 75 }, // "Community" fits
         'Global Speaker Total': { halign: 'right' },

@@ -81,17 +81,17 @@ export const DetailsPanel: FC = () => {
   const elemID = 'details'
   const {
     Language: language,
-    Neighborhoods,
+    Neighborhood,
     Description: description,
     Town,
-    Countries,
+    Country,
     Audio: audio,
     Video: video,
     'World Region': WorldRegion,
     // Size, // TODO: cell strength bars for Size
   } = matchingRecord
   const { intro, descripSection, neighborhoods, divider } = classes
-  const primaryCountry = Countries.split(', ')[0]
+  const primaryCountry = Country.split(', ')[0]
 
   document.title = `${language} - NYC Languages`
 
@@ -104,7 +104,7 @@ export const DetailsPanel: FC = () => {
         <LangOrEndoIntro attribs={matchingRecord} />
         <Typography className={neighborhoods}>
           <BiMapPin />
-          {Neighborhoods || Town}
+          {Neighborhood || Town}
         </Typography>
         <MoreLikeThis
           language={language}
@@ -112,8 +112,8 @@ export const DetailsPanel: FC = () => {
           country={primaryCountry}
         />
         {/* Don't be redundant with country (already in chip) if only one */}
-        {Countries.includes(', ') && (
-          <div className={classes.countriesList}>{Countries}</div>
+        {Country.includes(', ') && (
+          <div className={classes.countriesList}>{Country}</div>
         )}
         <Media {...{ audio, video, language, description }} />
       </div>

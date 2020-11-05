@@ -21,7 +21,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
   const tableRef = React.useRef<MuiTableWithLangs>(null)
   const [clearBtnEnabled, setClearBtnEnabled] = useState<boolean>(false)
 
-  // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
+  // TODO: some kind of `useState` to set asc/desc and sort Neighborhood
   // properly (blanks last, regardless of direction)
 
   const onRowClick = (

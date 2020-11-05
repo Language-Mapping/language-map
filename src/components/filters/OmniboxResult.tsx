@@ -65,13 +65,13 @@ export const OmniboxResult: FC<{ data: LangRecordSchema }> = (props) => {
   const { data } = props
   const classes = useStyles()
   const { resultRoot, resultHeading, details } = classes
-  const { Neighborhoods, Town, Glottocode, 'ISO 639-3': iso } = data
+  const { Neighborhood, Town, Glottocode, 'ISO 639-3': iso } = data
 
   return (
     <Box className={resultRoot}>
       <Typography component="h4" className={resultHeading}>
         <FaStreetView />
-        {Neighborhoods || Town}
+        {Neighborhood || Town}
       </Typography>
       <Box component="footer" className={details}>
         {Glottocode ? (

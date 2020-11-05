@@ -43,14 +43,14 @@ export const renderGroup = (params: AutocompleteRenderGroupParams) => {
     // @ts-ignore
     const bData = b.props.children.props.data
 
-    return aData.Neighborhoods < bData.Neighborhoods ? -1 : 1
+    return aData.Neighborhood < bData.Neighborhood ? -1 : 1
 
     // NOTE: when there is no Neighborhood for one instance of a Language (e.g. in New Jersey) but there is for another, the former will show up first. Would need to address this separately
     // TODO: rm all this if giving up on sorting by Town AND Neighborhood
     // // A hoods exist, but not B
-    // if (aData.Neighborhoods && aData.Neighborhoods < bData.Town) return -1
+    // if (aData.Neighborhood && aData.Neighborhood < bData.Town) return -1
     // // B hoods exist, but not A
-    // if (bData.Neighborhoods && aData.Town < bData.Neighborhoods) return -1
+    // if (bData.Neighborhood && aData.Town < bData.Neighborhood) return -1
     // // No hoods, just towns
     // if (aData.Town < bData.Town) return -1
     // return 1

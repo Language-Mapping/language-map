@@ -21,7 +21,7 @@ export const categories = [
     icon: <BiGlobe />,
   },
   {
-    name: 'Countries',
+    name: 'Country',
     definition: 'Estimated to have the largest concentration of speakers',
     icon: <GoGlobe />,
     parse: true,
@@ -33,7 +33,7 @@ export const categories = [
     icon: <GiFamilyTree />,
   },
   {
-    name: 'Neighborhoods',
+    name: 'Neighborhood',
     definition: 'Local name, for NYC locations only',
     icon: <BiMapPin />,
     parse: true,

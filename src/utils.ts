@@ -4,7 +4,7 @@ import { Theme } from '@material-ui/core/styles'
 import { LangRecordSchema } from './context/types'
 
 // TODO: into config since it's used in multiple places...
-const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
+const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhood and Country
 
 export const findFeatureByID = (
   langLayerRecords: LangRecordSchema[],
