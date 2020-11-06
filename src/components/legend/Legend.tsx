@@ -24,9 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     // Looks PERFECT on all breakpoints
     groupedLegend: {
       display: 'grid',
-      marginTop: theme.spacing(1),
       gridTemplateColumns: '1fr 1fr',
-      gridTemplateRow: 'auto auto 1fr',
       gridColumnGap: 4,
       gridTemplateAreas: `
       "reg reg"
