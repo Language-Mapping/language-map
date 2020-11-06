@@ -85,7 +85,7 @@ export const SomeMidLevel: FC = () => {
     })
   } else if (['Neighborhood', 'Macrocommunity'].includes(field)) {
     // Make sure no undefined
-    filtered = langFeatures.filter((feat) => feat[field] !== undefined)
+    filtered = langFeatures.filter((feat) => feat[field] !== '')
   } else {
     filtered = langFeatures
   }
