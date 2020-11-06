@@ -5,7 +5,7 @@ export type CategoryProps = {
   title: string
   url: string
   footer?: string
-  uniqueInstances: unknown[]
+  uniqueInstances?: unknown[]
   icon?: React.ReactNode
 }
 
