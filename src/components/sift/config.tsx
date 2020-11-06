@@ -45,7 +45,7 @@ export const categories = [
     icon: <HiOutlineOfficeBuilding />,
   },
   {
-    name: 'Macro-Community',
+    name: 'Macrocommunity',
     definition: 'Will need a definition here...',
     icon: <IoIosPeople />,
   },

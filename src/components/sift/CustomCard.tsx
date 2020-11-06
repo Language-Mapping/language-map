@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
       // Icons, flags, swatches, etc.
       '& > :first-child': {
         flexShrink: 0,
-        marginRight: '0.25em',
+        marginRight: '0.15em',
       },
       '& > svg': {
         fill: theme.palette.text.secondary,
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       fontSize: 10,
       '& svg': {
-        marginRight: '0.25em',
+        marginRight: '0.15em',
       },
     },
     accentBar: {

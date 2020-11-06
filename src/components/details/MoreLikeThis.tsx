@@ -127,7 +127,7 @@ export const MoreLikeThis: FC<MoreLikeThis> = (props) => {
         />
       </CustomChip>
       {macro && (
-        <CustomChip name={macro} to={`${routes.grid}/Macro-Community/${macro}`}>
+        <CustomChip name={macro} to={`${routes.grid}/Macrocommunity/${macro}`}>
           <IoIosPeople /> {macro}
         </CustomChip>
       )}
