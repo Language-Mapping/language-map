@@ -15,7 +15,6 @@ type StyleProps = { tooLong: boolean }
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     detailsPanelHeading: {
-      margin: '0.25em 0 0',
       // TODO: cool if you can make this work: position: 'sticky', top: '3rem',
       fontSize: (props: StyleProps) => (props.tooLong ? '2rem' : '2.4rem'),
       [theme.breakpoints.up('sm')]: {

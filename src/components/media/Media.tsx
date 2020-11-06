@@ -58,7 +58,7 @@ export const Media: FC<MediaProps> = (props) => {
       {mediaUrl && (
         <MediaModal url={mediaUrl} closeModal={() => setMediaUrl('')} />
       )}
-      <ul className={classes.mediaRoot}>
+      <ul className={classes.root}>
         <MediaListItem
           label="Clear selection"
           icon={<FiMinusSquare />}

@@ -118,7 +118,7 @@ export const DetailsPanel: FC = () => {
     'World Region': WorldRegion,
     // Size, // TODO: cell strength bars for Size
   } = matchingRecord
-  const { intro, descripSection, divider } = classes
+  const { root, divider } = classes
 
   document.title = `${language} - NYC Languages`
 
@@ -127,7 +127,7 @@ export const DetailsPanel: FC = () => {
       {state.panelState === 'default' && (
         <ScrollToTopOnMount elemID={elemID} trigger={loc.pathname} />
       )}
-      <div className={intro} id={elemID}>
+      <div className={root} id={elemID}>
         <LangOrEndoIntro attribs={matchingRecord} />
         <NeighborhoodList neighborhoods={Neighborhood} town={Town} />
         <MoreLikeThis
@@ -139,7 +139,7 @@ export const DetailsPanel: FC = () => {
         <Media {...{ audio, video, language, description }} />
       </div>
       <Divider variant="middle" className={divider} />
-      <Typography variant="body2" className={descripSection} component="div">
+      <Typography variant="body2" component="div">
         <RecordDescription text={description} />
       </Typography>
     </>
