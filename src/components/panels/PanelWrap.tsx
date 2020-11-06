@@ -17,7 +17,7 @@ export const PanelWrap: FC<Types.MapPanelProps> = (props) => {
 
   // Need the `id` in order to find unique element for `map.setPadding`
   return (
-    <Paper id="map-panels-wrap" className={classes.panelsRoot} elevation={8}>
+    <Paper id="map-panels-wrap" className={classes.root} elevation={8}>
       {/* TODO: own component, own file */}
       <div
         className={classes.crumbsNcloseWrap}

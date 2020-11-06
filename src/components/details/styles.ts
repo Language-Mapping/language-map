@@ -4,6 +4,7 @@ export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       textAlign: 'center',
+      padding: '1.25rem',
     },
     divider: { marginBottom: '1.5em' },
     neighborhoods: {

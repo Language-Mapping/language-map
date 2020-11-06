@@ -3,11 +3,13 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    // TODO: masonry someday:
+    // www.smashingmagazine.com/2017/09/css-grid-gotchas-stumbling-blocks/
     root: {
       display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gridRowGap: '0.65em',
+      gridRowGap: '0.75em',
       gridColumnGap: '0.5em',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
     },
   })
 )

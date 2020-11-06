@@ -9,6 +9,10 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       overflowY: 'auto',
+      padding: '1rem',
+      [theme.breakpoints.up('sm')]: {
+        padding: '1.25rem',
+      },
     },
     title: {
       fontSize: '2em',

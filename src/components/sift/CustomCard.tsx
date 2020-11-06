@@ -15,6 +15,10 @@ const useStyles = makeStyles((theme: Theme) =>
       borderWidth: 1,
       padding: '0.5em',
       transition: 'all 300ms ease',
+      '& > *': {
+        lineHeight: 1.25,
+        marginBottom: '0.25em',
+      },
       '&:hover': {
         borderColor: theme.palette.primary.dark,
         background: `radial-gradient(ellipse at top, ${theme.palette.primary.light}, transparent),
@@ -27,15 +31,16 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     intro: {
       fontSize: '0.75em',
+      marginBottom: '0.5em',
     },
     header: {
       display: 'flex',
       alignItems: 'center',
-      lineHeight: 1.25,
+      fontSize: '1.1em',
       // Icons, flags, swatches, etc.
       '& > :first-child': {
         flexShrink: 0,
-        marginRight: '0.15em',
+        marginRight: '0.25em',
       },
       '& > svg': {
         fill: theme.palette.text.secondary,
@@ -48,17 +53,18 @@ const useStyles = makeStyles((theme: Theme) =>
     footer: {
       alignItems: 'center',
       color: theme.palette.text.secondary,
-      display: 'flex',
+      display: 'inline-flex',
       fontSize: 10,
       '& svg': {
-        marginRight: '0.15em',
+        marginRight: '0.25em',
       },
     },
     accentBar: {
       backgroundColor: theme.palette.action.hover,
       borderRadius: 4,
       height: 2,
-      margin: '0.5em auto',
+      marginLeft: 'auto',
+      marginRight: 'auto',
       transform: 'scaleX(0.5), translateX(100%)',
       transition: '300ms all ease-out',
       width: '80%',

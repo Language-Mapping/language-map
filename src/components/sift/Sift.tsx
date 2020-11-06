@@ -123,7 +123,7 @@ export const SomeMidLevel: FC = () => {
       footerText = (
         <>
           <BiUserVoice />
-          Example: {thisOne.Language}
+          {thisOne.Language}...
         </>
       )
     }

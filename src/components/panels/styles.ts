@@ -9,7 +9,7 @@ type StylesProps = {
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    panelsRoot: {
+    root: {
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,
       bottom: 56, // set directly in MUI to 56
@@ -18,8 +18,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       left: 2,
       opacity: (props: StylesProps) => (props.panelOpen ? 1 : 0),
       overflowX: 'hidden',
-      overflowY: 'auto',
-      padding: '0 1rem 1rem',
       position: 'absolute',
       right: 2,
       top: '45%',
@@ -48,7 +46,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       flexBasis: 32,
       flexShrink: 0,
       justifyContent: 'space-between',
-      margin: '0 -1rem',
       padding: '0.15em 0.2em',
       position: 'sticky',
       top: 0,
