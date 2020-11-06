@@ -13,8 +13,11 @@ export type MapPanelProps = {
   panelOpen: boolean
 }
 
+// TODO: detangle this mess like a professional web developer
 export type PanelContentProps = {
-  intro?: string | React.ReactNode
-  title?: string
   icon?: React.ReactNode
+  intro?: string | React.ReactNode
+  subSubtitle?: string | React.ReactNode
+  subtitle?: string | React.ReactNode
+  title?: string
 }

@@ -59,3 +59,10 @@ export const sortByTitle = (
 
   return comparison
 }
+
+export const pluralTextIfNeeded = (length: number, text = 'item'): string => {
+  if (!length) return ''
+  if (length === 1) return `${length} ${text}`
+
+  return `${length} ${text}s`
+}

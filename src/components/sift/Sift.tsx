@@ -29,10 +29,11 @@ const SwatchOrFlagOrIcon: FC<Types.SwatchOrFlagOrIcon> = (props) => {
   return <>{config.categories.find(({ name }) => name === field)?.icon}</>
 }
 
-export const Field: FC<{ instancesCount: number }> = (props) => {
-  const { children, instancesCount } = props
+export const Field: FC<Types.Field> = (props) => {
+  const { children, instancesCount, subtitle, subSubtitle } = props
   const { field, value, language } = useParams() as Types.RouteMatch
   const { state } = useContext(GlobalContext)
+  const isLanguageField = useRouteMatch('/Explore/Language')
 
   if (!state.langFeatsLenCache)
     return <PanelContent title="Loading communities..." />
@@ -40,20 +41,21 @@ export const Field: FC<{ instancesCount: number }> = (props) => {
   return (
     <PanelContent
       title={language || value || field}
+      intro={utils.pluralTextIfNeeded(instancesCount)}
       icon={
         <SwatchOrFlagOrIcon
-          field={language ? 'Language' : field}
+          field={
+            /* eslint-disable operator-linebreak */
+            language || field === 'Language' || isLanguageField
+              ? 'Language'
+              : field
+            /* eslint-enable operator-linebreak */
+          }
           value={value}
         />
       }
-      intro={
-        /* eslint-disable operator-linebreak */
-        // TODO: reusable util
-        instancesCount
-          ? `${instancesCount} item${instancesCount > 1 ? 's' : ''}`
-          : ''
-        /* eslint-enable operator-linebreak */
-      }
+      subtitle={subtitle}
+      subSubtitle={subSubtitle}
     >
       {(instancesCount && children) || 'No communities available.'}
     </PanelContent>
@@ -113,28 +115,14 @@ export const SomeMidLevel: FC = () => {
     } else if (field === 'Language') {
       footerText = (
         <>
-          <BiMapPin
-            style={{
-              marginRight: 4,
-              fontSize: '1.2em',
-              position: 'relative',
-              top: 2,
-            }}
-          />
+          <BiMapPin />
           Example/s: {thisOne.Neighborhood || thisOne.Town}
         </>
       )
     } else {
       footerText = (
         <>
-          <BiUserVoice
-            style={{
-              marginRight: 4,
-              fontSize: '1.2em',
-              position: 'relative',
-              top: 2,
-            }}
-          />
+          <BiUserVoice />
           Example: {thisOne.Language}
         </>
       )
@@ -208,14 +196,29 @@ export const PreDeets: FC = () => {
     ]
   }, [] as Types.CardConfig[]) as Types.CardConfig[]
 
+  // TODO: find more efficient way of getting this
+  const sampleRecord = langFeatures.find(
+    ({ Language }) => Language === (language || value)
+  )
+
+  const { 'ISO 639-3': iso, Glottocode, Endonym } = sampleRecord || {}
+
   return (
-    <Field instancesCount={uniqueInstances.length}>
+    <Field
+      instancesCount={uniqueInstances.length}
+      subtitle={Endonym}
+      subSubtitle={
+        <>
+          {Glottocode && `GLOTTOCODE: ${Glottocode}`}
+          {iso && `${Glottocode && ' | '}ISO 639-3: ${iso}`}
+        </>
+      }
+    >
       <CardList>
         {uniqueInstances.sort(utils.sortByTitle).map((instance) => (
           <CustomCard
             key={instance.title}
             {...instance}
-            uniqueInstances={[]}
             url={`/details/${instance.to}`}
           />
         ))}

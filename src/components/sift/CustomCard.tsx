@@ -10,11 +10,11 @@ import * as utils from './utils'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      transition: 'all 300ms ease',
       borderColor: theme.palette.action.hover,
-      borderWidth: 1,
       borderStyle: 'solid',
+      borderWidth: 1,
       padding: '0.5em',
+      transition: 'all 300ms ease',
       '&:hover': {
         borderColor: theme.palette.primary.dark,
         background: `radial-gradient(ellipse at top, ${theme.palette.primary.light}, transparent),
@@ -44,17 +44,24 @@ const useStyles = makeStyles((theme: Theme) =>
         height: '0.8em',
       },
     },
-    instances: {
+    // Might be a list of examples or just a regular footer
+    footer: {
+      alignItems: 'center',
+      color: theme.palette.text.secondary,
+      display: 'flex',
       fontSize: 10,
+      '& svg': {
+        marginRight: '0.25em',
+      },
     },
     accentBar: {
-      height: 2,
-      borderRadius: 4,
       backgroundColor: theme.palette.action.hover,
-      width: '80%',
+      borderRadius: 4,
+      height: 2,
       margin: '0.5em auto',
       transform: 'scaleX(0.5), translateX(100%)',
       transition: '300ms all ease-out',
+      width: '80%',
     },
     subtitle: {
       fontSize: 12,
@@ -89,7 +96,11 @@ export const CustomCard: FC<Types.CategoryProps> = (props) => {
         {title}
       </Typography>
       <div className={`${'accent-bar '}${classes.accentBar}`} />
-      <Typography component="p" variant="caption" className={classes.instances}>
+      <Typography
+        component="footer"
+        variant="caption"
+        className={classes.footer}
+      >
         {/* TODO: find the uniques here, not from a prop */}
         {footer || utils.prettyTruncate(uniqueInstances as string[])}
       </Typography>

@@ -30,9 +30,7 @@ export const Explore: FC<{ icon: React.ReactNode }> = (props) => {
       )
 
       return {
-        intro: `${uniqueInstances.length} item${
-          uniqueInstances.length > 1 ? 's' : ''
-        }`,
+        intro: utils.pluralTextIfNeeded(uniqueInstances.length),
         title: category.name,
         url: `${url}/${category.name}`,
         icon: category.icon,

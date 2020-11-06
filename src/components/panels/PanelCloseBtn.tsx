@@ -10,9 +10,9 @@ type CloseProps = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     panelCloseBtn: {
-      position: 'absolute',
-      right: '0.25em',
-      top: 0,
+      marginLeft: 'auto',
+      marginRight: '0.15em',
+      [theme.breakpoints.up('md')]: { display: 'none' },
     },
     panelClosePill: {
       position: 'sticky',
@@ -59,8 +59,8 @@ export const CloseBtn: FC<CloseProps> = (props) => {
 
   return (
     <IconButton
-      edge="end"
       color="inherit"
+      size="small"
       className={classes.panelCloseBtn}
       onClick={(e: React.MouseEvent) => {
         e.preventDefault()

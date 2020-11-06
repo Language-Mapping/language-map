@@ -1,12 +1,13 @@
 import { LangRecordSchema } from '../../context/types'
 
+// TODO: try to reuse some of these, they're pretty common in sev. components
 export type CategoryProps = {
   intro: string
   title: string
   url: string
   footer?: string
-  uniqueInstances?: unknown[]
   icon?: React.ReactNode
+  uniqueInstances?: unknown[]
 }
 
 export type CategoryConfig = {
@@ -24,9 +25,9 @@ export type RouteMatch = {
 }
 
 export type CardConfig = {
-  title: string
-  intro: string
   footer: string
+  intro: string
+  title: string
   to: string
   icon?: React.ReactNode
 }
@@ -34,4 +35,10 @@ export type CardConfig = {
 export type SwatchOrFlagOrIcon = {
   field: keyof LangRecordSchema
   value?: string
+}
+
+export type Field = {
+  instancesCount: number
+  subtitle?: string
+  subSubtitle?: string | React.ReactNode
 }

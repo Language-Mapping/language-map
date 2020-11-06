@@ -13,11 +13,13 @@ export const useStyles = makeStyles((theme: Theme) =>
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,
       bottom: 56, // set directly in MUI to 56
+      display: 'flex',
+      flexDirection: 'column',
       left: 2,
       opacity: (props: StylesProps) => (props.panelOpen ? 1 : 0),
       overflowX: 'hidden',
       overflowY: 'auto',
-      padding: '1rem',
+      padding: '0 1rem 1rem',
       position: 'absolute',
       right: 2,
       top: '45%',
@@ -38,8 +40,20 @@ export const useStyles = makeStyles((theme: Theme) =>
         fontSize: '1rem',
       },
     },
-    closeBtn: {
-      [theme.breakpoints.up('md')]: { display: 'none' },
+    crumbsNcloseWrap: {
+      alignItems: 'center',
+      backgroundColor: theme.palette.primary.dark,
+      boxShadow: '0 2px 7px hsla(0, 0%, 0%, 0.25)',
+      display: 'flex',
+      flexBasis: 32,
+      flexShrink: 0,
+      justifyContent: 'space-between',
+      margin: '0 -1rem',
+      padding: '0.15em 0.2em',
+      position: 'sticky',
+      top: 0,
+      zIndex: 1,
+      [theme.breakpoints.up('sm')]: { padding: '0.15em 0.5em' },
     },
   })
 )

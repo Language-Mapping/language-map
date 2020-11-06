@@ -68,12 +68,12 @@ const NeighborhoodList: FC<NeighborhoodList> = (props) => {
       <BiMapPin />
       {neighborhoods &&
         neighborhoods.split(', ').map((place, i) => (
-          <>
+          <React.Fragment key={place}>
             {i !== 0 && <span className={classes.separator}>|</span>}
             <RouterLink key={place} to={`/Explore/Neighborhood/${place}`}>
               {place}
             </RouterLink>
-          </>
+          </React.Fragment>
         ))}
       {!neighborhoods && (
         // TODO: fix if using, otherwise restyle
