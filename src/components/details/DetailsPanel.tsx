@@ -75,10 +75,8 @@ const NeighborhoodList: FC<NeighborhoodList> = (props) => {
             </RouterLink>
           </React.Fragment>
         ))}
-      {!neighborhoods && (
-        // TODO: fix if using, otherwise restyle
-        <RouterLink to={`/Explore/Town/${town}`}>{town}</RouterLink>
-      )}
+      {/* At least for now, not linking to Towns */}
+      {!neighborhoods && town}
     </Typography>
   )
 }

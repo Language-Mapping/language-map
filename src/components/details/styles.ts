@@ -15,6 +15,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& svg': {
         marginRight: '0.35em',
       },
+      // This won't affect Town, which is currently not a link
       '& a:first-of-type': {
         fontWeight: 'bold',
         color: theme.palette.text.primary,
