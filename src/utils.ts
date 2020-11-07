@@ -4,7 +4,7 @@ import { Theme } from '@material-ui/core/styles'
 import { LangRecordSchema } from './context/types'
 
 // TODO: into config since it's used in multiple places...
-const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhoods and Countries
+const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhood and Country
 
 export const findFeatureByID = (
   langLayerRecords: LangRecordSchema[],
@@ -22,8 +22,7 @@ export const getIDfromURLparams = (url: string): number => {
 
 export const isURL = (text: string): boolean => text.slice(0, 4) === 'http'
 
-// CRED:
-// https://github.com/mbrn/material-table/issues/709#issuecomment-566097441
+// CRED: github.com/mbrn/material-table/issues/709#issuecomment-566097441
 // TODO: put into hooks file and/or folder along with any others
 export function useWindowResize(): { width: number; height: number } {
   const [width, setWidth] = useState(window.innerWidth)

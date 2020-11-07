@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Box } from '@material-ui/core'
 
-import { LegendSwatchComponent } from './types'
+import * as Types from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
       gridTemplateColumns: 'minmax(1em, auto) 1fr',
       gridColumnGap: '0.24em',
       justifyItems: 'center',
+      color: theme.palette.text.primary,
       marginBottom: (props: { isCircle: boolean }) =>
         props.isCircle ? 0 : theme.spacing(1),
     },
@@ -28,7 +29,24 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const LegendSwatch: FC<LegendSwatchComponent> = (props) => {
+// No text, no frills. Just a circle with a color
+export const SwatchOnly: FC<Types.SwatchOnly> = (props) => {
+  const { backgroundColor, size = 7 } = props
+  const adjustedSize = size * 1.5
+
+  return (
+    <span
+      style={{
+        backgroundColor,
+        height: adjustedSize,
+        width: adjustedSize,
+        borderRadius: '100%',
+      }}
+    />
+  )
+}
+
+export const LegendSwatch: FC<Types.LegendSwatchComponent> = (props) => {
   const {
     backgroundColor,
     icon,
@@ -37,10 +55,12 @@ export const LegendSwatch: FC<LegendSwatchComponent> = (props) => {
     size = 7,
     component = 'li',
     labelStyleOverride,
+    to,
   } = props
   const isCircle = iconID === '_circle'
   const classes = useStyles({ isCircle })
-  const adjustedSize = size * 1.5
+  // TS freaks out if `to` is a prop and `component` is dynamic
+  const muiFriendlyProps = to ? { to } : null
 
   // NOTE: the styling is pretty fragile in that the non-circle icons must have
   // their colors defined as `fill` within the SVG files themselves. This is
@@ -51,17 +71,12 @@ export const LegendSwatch: FC<LegendSwatchComponent> = (props) => {
   // inline icon so that the fill could be applied via `paint['icon-color']`.
 
   return (
-    <Box className={classes.legendSwatchRoot} component={component}>
-      {isCircle && (
-        <span
-          style={{
-            backgroundColor,
-            height: adjustedSize,
-            width: adjustedSize,
-            borderRadius: '100%',
-          }}
-        />
-      )}
+    <Box
+      className={classes.legendSwatchRoot}
+      component={component}
+      {...muiFriendlyProps}
+    >
+      {isCircle && <SwatchOnly {...{ size, backgroundColor }} />}
       {!isCircle && (
         <img src={icon} alt={legendLabel} className={classes.imgSwatch} />
       )}

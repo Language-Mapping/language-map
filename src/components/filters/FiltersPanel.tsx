@@ -1,3 +1,4 @@
+// TODO: rename file to Home or something
 import React, { FC, useContext, useEffect, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
@@ -16,9 +17,11 @@ import symbLayers from '../map/config.lang-style'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    panelContentHeading: {
-      marginTop: '0.65em',
-      marginBottom: '0.25em',
+    root: {
+      padding: '0 1.25rem 1.25rem',
+    },
+    panelMainHeading: {
+      fontSize: '1.8rem', // TODO: consistentize w/other panels?
     },
   })
 )
@@ -38,25 +41,26 @@ export const FiltersPanel: FC = () => {
 
   useEffect((): void => setData(state.langFeatures), [state.langFeatures])
 
-  // TODO: something respectable for styles, aka MUI-something
   return (
     <>
+      {/* TODO: confirm this is actually working. Seemed to break Details. */}
+      {/* TODO: wire this back up here and anywhere else that needs it */}
+      {/* ...and rm all places that don't */}
       {state.panelState === 'default' && <ScrollToTopOnMount elemID={elemID} />}
-      <Typography variant="h5" component="h3" id={elemID}>
-        Search language communities
-      </Typography>
-      <SearchByOmnibox data={data} />
-      {state.langFeatsLenCache !== state.langFeatures.length && (
+      <div className={classes.root}>
+        <Typography
+          className={classes.panelMainHeading}
+          variant="h4"
+          component="h2"
+          id={elemID}
+        >
+          {/* TODO: add Search icon */}
+          Search language communities
+        </Typography>
+        <SearchByOmnibox data={data} />
         <FiltersWarning />
-      )}
-      <Typography
-        className={classes.panelContentHeading}
-        variant="h5"
-        component="h3"
-      >
-        Legend
-      </Typography>
-      <LegendPanel legendItems={legendItems} groupName={activeSymbGroupID} />
+        <LegendPanel legendItems={legendItems} groupName={activeSymbGroupID} />
+      </div>
     </>
   )
 }

@@ -15,6 +15,7 @@ type StyleProps = { tooLong: boolean }
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     detailsPanelHeading: {
+      textShadow: '1px 1px 3px hsla(0, 0%, 0%, 0.45)',
       // TODO: cool if you can make this work: position: 'sticky', top: '3rem',
       fontSize: (props: StyleProps) => (props.tooLong ? '2rem' : '2.4rem'),
       [theme.breakpoints.up('sm')]: {
@@ -46,11 +47,6 @@ export const LangOrEndoIntro: FC<LangOrEndoProps> = (props) => {
       {(altImage && <EndoImageWrap url={altImage} alt={language} />) || (
         <Typography variant="h3" className={classes.detailsPanelHeading}>
           {Endonym}
-        </Typography>
-      )}
-      {Endonym !== language && (
-        <Typography variant="caption" component="p">
-          {language}
         </Typography>
       )}
     </>

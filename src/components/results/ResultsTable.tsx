@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { FC, useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { Route, useHistory, useLocation } from 'react-router-dom'
 import MaterialTable from 'material-table'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
@@ -15,16 +15,13 @@ import * as Types from './types'
 import * as config from './config'
 
 export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
-  const { closeTable, data: tableData } = props
+  const { data: tableData } = props
   const history = useHistory()
   const loc = useLocation()
   const tableRef = React.useRef<MuiTableWithLangs>(null)
-  const [detailsModalContent, setDetailsModalContent] = useState<
-    LangRecordSchema | undefined
-  >()
   const [clearBtnEnabled, setClearBtnEnabled] = useState<boolean>(false)
 
-  // TODO: some kind of `useState` to set asc/desc and sort Neighborhoods
+  // TODO: some kind of `useState` to set asc/desc and sort Neighborhood
   // properly (blanks last, regardless of direction)
 
   const onRowClick = (
@@ -54,8 +51,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
 
     // Show feature in map
     if (field === 'ID') {
-      history.push(`${routes.details}?id=${rowData.ID}`)
-      closeTable()
+      history.push(`${routes.details}/${rowData.ID}`)
 
       return
     }
@@ -65,7 +61,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
 
     // Open Details modal
     if (field === 'Description') {
-      setDetailsModalContent(rowData)
+      history.push(`${routes.table}/${rowData.ID}`)
 
       return
     }
@@ -105,12 +101,22 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
 
   return (
     <>
-      <SimpleDialog
-        open={detailsModalContent !== undefined}
-        onClose={() => setDetailsModalContent(undefined)}
-      >
-        <DetailsPanel skipSelFeatCheck attribsDirect={detailsModalContent} />
-      </SimpleDialog>
+      <Route path="/table/:id">
+        <SimpleDialog
+          open
+          onClose={() =>
+            history.push({
+              pathname: routes.table,
+              state: {
+                ...(loc.state as Types.HistoryState),
+                pathname: loc.pathname,
+              },
+            })
+          }
+        >
+          <DetailsPanel />
+        </SimpleDialog>
+      </Route>
       <MaterialTable
         icons={config.icons}
         tableRef={tableRef}
@@ -153,7 +159,6 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
             <ResultsToolbar
               {...toolbarProps}
               {...{
-                closeTable,
                 setClearBtnEnabled,
                 tableRef,
                 clearBtnEnabled,

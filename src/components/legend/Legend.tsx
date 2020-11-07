@@ -1,9 +1,11 @@
 import React, { FC } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
 import { LegendSwatch } from 'components/legend'
 import { langTypeIconsConfig } from 'components/map/config'
+import { paths as routes } from 'components/config/routes'
 import { LegendComponent, WorldRegionLegend, GroupedLegendProps } from './types'
 import { worldRegionLegend } from './config'
 
@@ -22,9 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     // Looks PERFECT on all breakpoints
     groupedLegend: {
       display: 'grid',
-      marginTop: theme.spacing(1),
       gridTemplateColumns: '1fr 1fr',
-      gridTemplateRow: 'auto auto 1fr',
       gridColumnGap: 4,
       gridTemplateAreas: `
       "reg reg"
@@ -43,13 +43,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+// TODO: make RouterLinks work for `Size`
 export const GroupedLegend: FC<GroupedLegendProps> = (props) => {
-  const { groupName, legendItems, groupConfig } = props
-  const classes = useStyles({})
+  const { groupName, legendItems, groupConfig, baseRoute } = props
+  const classes = useStyles()
 
   return (
     <div>
-      <Typography component="h4" variant="h6">
+      <Typography component="h4" variant="overline">
         {groupName}
       </Typography>
       <ul className={classes.legendRoot}>
@@ -75,6 +76,8 @@ export const GroupedLegend: FC<GroupedLegendProps> = (props) => {
               {...corresponding}
               legendLabel={corresponding.legendLabel}
               icon={matchingConfig && matchingConfig.icon}
+              to={`${baseRoute}/${corresponding.legendLabel}`}
+              component={RouterLink}
             />
           )
         })}
@@ -96,6 +99,7 @@ export const Legend: FC<LegendComponent> = (props) => {
             <GroupedLegend
               key={groupHeading}
               groupName={groupHeading}
+              baseRoute={`${routes.grid}/${groupName}`}
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               groupConfig={groupConfig}
@@ -126,6 +130,8 @@ export const Legend: FC<LegendComponent> = (props) => {
             key={item.legendLabel}
             {...item}
             icon={matchingConfig && matchingConfig.icon}
+            component={RouterLink}
+            to={`${routes.grid}/${groupName}/${item.legendLabel}`}
           />
         )
       })}

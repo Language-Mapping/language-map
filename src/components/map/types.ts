@@ -31,7 +31,13 @@ export type LangIconConfig = { icon: string; id: string }
 export type Layer = LayerProps & { 'source-layer': string; id: string }
 export type LongLat = { longitude: number; latitude: number }
 export type LongLatAndZoom = LongLat & { zoom: number }
-export type MapControlAction = 'home' | 'in' | 'out' | 'info' | 'loc-search'
+export type MapControlAction =
+  | 'home'
+  | 'in'
+  | 'out'
+  | 'info'
+  | 'loc-search'
+  | 'reset-pitch'
 export type PopupContent = { heading: string; subheading?: string }
 export type PopupSettings = PopupContent & LongLat
 export type SheetsValues = [string, string]
@@ -76,9 +82,9 @@ export type MapEvent = Omit<PointerEvent, 'features'> & {
 }
 
 export type GetWebMercViewport = (
-  settings: Omit<BoundsConfig, 'bounds'> & {
+  settings: LongLatAndZoom & {
     bounds: BoundsArray
-    padding?: Padding
+    padding: Padding
   }
 ) => LongLatAndZoom
 
@@ -99,22 +105,29 @@ export type GeocodeResult = {
   }
 }
 
+export type MapProps = {
+  mapLoaded: boolean
+  openOffCanvasNav: () => void
+  panelOpen: boolean
+  setMapLoaded: React.Dispatch<boolean>
+}
+
 export type MapCtrlBtnsProps = Omit<
   GeocoderProps,
   'anchorEl' | 'setAnchorEl'
 > & {
-  handlePitchReset: () => void
   isPitchZero: boolean
   onMapCtrlClick: (actionID: MapControlAction) => void
 }
 
 export type GeocoderProps = {
   anchorEl: null | HTMLElement
-  boundariesLayersVisible: boolean
+  boundariesVisible: boolean
   geolocActive: boolean
   mapRef: React.RefObject<InteractiveMap>
+  panelOpen: boolean
   setAnchorEl: React.Dispatch<null | HTMLElement>
-  setBoundariesLayersVisible: React.Dispatch<boolean>
+  setBoundariesVisible: React.Dispatch<boolean>
   setGeolocActive: React.Dispatch<boolean>
 }
 
@@ -123,6 +136,7 @@ export type CtrlBtnConfig = {
   icon: React.ReactNode
   name: string
   customFn?: boolean
+  disabledOnProp?: keyof MapCtrlBtnsProps
 }
 
 export type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
@@ -160,13 +174,15 @@ export type HandleBoundaryClick = (
   map: Map,
   topMostFeat: LangFeature | BoundaryFeat,
   boundsConfig: BoundsConfig,
-  lookup?: BoundaryLookup[]
+  lookup?: BoundaryLookup[],
+  offset?: [number, number]
 ) => void
 
 export type FlyToBounds = (
   map: Map,
   settings: BoundsConfig & {
     bounds: BoundsArray
+    offset: [number, number]
   },
   popupContent: PopupContent | null
 ) => void
@@ -177,6 +193,7 @@ export type FlyToPoint = (
     disregardCurrZoom?: boolean
     bearing?: number
     pitch?: number
+    offset: [number, number]
   },
   popupContent: PopupContent | null,
   geocodeMarkerText?: string

@@ -1,7 +1,6 @@
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useQuery } from 'react-query'
-import { useTheme } from '@material-ui/core/styles'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
   AttributionControl,
   Map as MbMap,
@@ -24,6 +23,7 @@ import { GeocodeMarker } from './GeocodeMarker'
 
 import * as Types from './types'
 import * as utils from './utils'
+import * as hooks from './hooks'
 import * as config from './config'
 import * as events from './events'
 import symbLayers from './config.lang-style'
@@ -32,15 +32,9 @@ import { LangRecordSchema } from '../../context/types'
 import {
   getIDfromURLparams,
   findFeatureByID,
-  useWindowResize,
   getAllLangFeatIDs,
+  isTouchEnabled,
 } from '../../utils'
-
-type MapProps = {
-  mapLoaded: boolean
-  setMapLoaded: React.Dispatch<boolean>
-  openOffCanvasNav: () => void
-}
 
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
 const { neighbConfig, countiesConfig, boundariesLayerIDs } = config
@@ -59,24 +53,21 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
   )
 }
 
-export const Map: FC<MapProps> = (props) => {
-  const { mapLoaded, setMapLoaded, openOffCanvasNav } = props
+export const Map: FC<Types.MapProps> = (props) => {
+  const { openOffCanvasNav, mapLoaded, setMapLoaded, panelOpen } = props
   const history = useHistory()
   const loc = useLocation()
+  const match: { params: { id: string } } | null = useRouteMatch('/details/:id')
+  const matchedFeatID = match?.params?.id
   const { state, dispatch } = useContext(GlobalContext)
   const symbLabelState = useSymbAndLabelState()
-  const theme = useTheme()
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
-  const { width } = useWindowResize() // TODO: use viewport?
-  const [isDesktop, setIsDesktop] = useState<boolean>(
-    width >= theme.breakpoints.values.md
-  )
-  const [boundariesLayersVisible, setBoundariesLayersVisible] = useState<
-    boolean
-  >(false)
+  const offset = hooks.useOffset(panelOpen)
+  const [boundariesVisible, setBoundariesVisible] = useState<boolean>(false)
   const [geolocActive, setGeolocActive] = useState<boolean>(false)
 
-  const { selFeatAttribs, langFeatures } = state
+  // Down to ONE state prop- `langFeatures`. Hook w/GlobalContext, router?
+  const { langFeatures } = state
   const { legendItems } = symbLabelState
 
   // Local states
@@ -113,8 +104,7 @@ export const Map: FC<MapProps> = (props) => {
     const map: MbMap = mapRef.current.getMap()
 
     // At time of writing, a "no features" scenario should only occur on load
-    // since the "View results..." btn in the table is disabled if there are no
-    // records.
+    // since "View results..." btn in table is disabled if no records.
     if (!langFeatures.length) return
 
     // TODO: better check/decouple the fly-home-on-filter-reset behavior so that
@@ -137,6 +127,7 @@ export const Map: FC<MapProps> = (props) => {
         longitude: firstCoords[0],
         zoom: config.POINT_ZOOM_LEVEL,
         pitch: 80,
+        offset,
       }
 
       utils.flyToPoint(map, settings, null)
@@ -152,9 +143,10 @@ export const Map: FC<MapProps> = (props) => {
     utils.flyToBounds(
       map,
       {
-        height: viewport.height as number,
-        width: viewport.width as number,
+        height: window.innerHeight as number,
+        width: window.innerWidth as number,
         bounds: bounds.toArray() as Types.BoundsArray,
+        offset,
       },
       null
     )
@@ -174,11 +166,6 @@ export const Map: FC<MapProps> = (props) => {
     )
   }, [langFeatures.length, legendItems])
 
-  // On width change, determine whether or not the view is desktop
-  useEffect((): void => {
-    setIsDesktop(width >= theme.breakpoints.values.md)
-  }, [width])
-
   // (Re)load symbol icons. Must be done on load and whenever `baselayer` is
   // changed, otherwise the images no longer exist.
   useEffect((): void => {
@@ -195,18 +182,24 @@ export const Map: FC<MapProps> = (props) => {
 
     const map: MbMap = mapRef.current.getMap()
 
-    // Deselect any language features
-    // TODO: add `selected` key?
+    // Deselect any language features // TODO: add `selected` key?
     map.removeFeatureState({ source: langSrcID, sourceLayer })
 
     nuclearClear()
 
-    if (!selFeatAttribs) return
+    if (!matchedFeatID) return
+
+    const matchingRecord = findFeatureByID(
+      state.langFeatures,
+      parseInt(matchedFeatID, 10)
+    )
+
+    if (!matchingRecord) return
 
     // NOTE: won't get this far on load even if feature is selected. The timing
     // and order of the whole process prevent that.
 
-    const { ID, Latitude: latitude, Longitude: longitude } = selFeatAttribs
+    const { ID, Latitude: latitude, Longitude: longitude } = matchingRecord
     const settings = {
       latitude,
       longitude,
@@ -214,6 +207,7 @@ export const Map: FC<MapProps> = (props) => {
       disregardCurrZoom: true,
       // bearing: 80, // TODO: consider it as it does add a new element of fancy
       pitch: 80,
+      offset,
     }
 
     // Make feature appear selected // TODO: higher zIndex on selected feature
@@ -222,9 +216,9 @@ export const Map: FC<MapProps> = (props) => {
       { selected: true }
     )
 
-    // TODO: make popups on mobile not off-center
-    utils.flyToPoint(map, settings, utils.prepPopupContent(selFeatAttribs))
-  }, [selFeatAttribs, mapLoaded])
+    utils.flyToPoint(map, settings, utils.prepPopupContent(matchingRecord))
+  }, [matchedFeatID, mapLoaded])
+
   /* eslint-enable react-hooks/exhaustive-deps */
 
   function onHover(event: Types.MapEvent) {
@@ -243,15 +237,12 @@ export const Map: FC<MapProps> = (props) => {
     const cacheOfIDs: number[] = []
     const uniqueRecords: LangRecordSchema[] = []
 
-    // NOTE: this only works because a very low zoom of 4 is set. Otherwise not
-    // all of the features are included. Even changing it to 5 in Firefox only
-    // makes ~70% of them appear.
+    // This only works because of a very low zoom of 4. Otherwise not all of the
+    // features are included. Even 5 in Firefox only makes ~70% of them appear.
     const rawLangFeats = map.querySourceFeatures(langSrcID, { sourceLayer })
 
-    // Just the properties for table/results, don't need GeoJSON cruft. Also
-    // need to make sure each ID is unique as there have been initial data
-    // inconsistencies, and more importantly MB may have feature duplication if
-    // there is a tile overlap.
+    // Just the properties for the table/results, don't need GeoJSON cruft. Also
+    // making sure each ID is unique as there were initial data inconsistencies.
     rawLangFeats.forEach((thisFeat) => {
       if (
         !thisFeat.properties ||
@@ -272,9 +263,6 @@ export const Map: FC<MapProps> = (props) => {
     // selFeatAttribs or mapLoaded are changed with an MB error/crash.
     if (!matchingRecord) flyHome(map)
 
-    // TODO: set paint property
-    // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
-
     dispatch({ type: 'SET_LANG_LAYER_FEATURES', payload: uniqueRecords })
     setMapLoaded(true)
 
@@ -282,10 +270,8 @@ export const Map: FC<MapProps> = (props) => {
     map.addControl(new AttributionControl({ compact: false }), 'bottom-right')
 
     // TODO: put all these init events below into `utils.events.ts`
-
-    // Maintain viewport state sync if needed (e.g. after things like `flyTo`),
-    // otherwise the map shifts back to previous position after panning or
-    // zooming.
+    // Maintain viewport state sync if needed (e.g. after `flyTo`), otherwise
+    // the map shifts back to previous position after panning or zooming.
     map.on('moveend', function onMoveEnd(zoomEndEvent) {
       // No custom event data, regular move event
       if (zoomEndEvent.forceViewportUpdate) {
@@ -294,8 +280,7 @@ export const Map: FC<MapProps> = (props) => {
           latitude: map.getCenter().lat,
           longitude: map.getCenter().lng,
           pitch: map.getPitch(),
-          zoom: map.getZoom(),
-          // bearing: map.getBearing(), // TODO: consider, looks cool
+          zoom: map.getZoom(), // bearing: // TODO: consider, looks cool
         })
       }
     })
@@ -316,10 +301,7 @@ export const Map: FC<MapProps> = (props) => {
       setPopupSettings(null)
 
       if (geocodeMarkerParams) setGeocodeMarker(geocodeMarkerParams)
-
-      if (popupParams as Types.PopupSettings) {
-        setPopupSettings(popupParams)
-      }
+      if (popupParams as Types.PopupSettings) setPopupSettings(popupParams)
     })
   }
 
@@ -338,15 +320,12 @@ export const Map: FC<MapProps> = (props) => {
       history.push(loc.pathname)
       dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
     } else {
-      const langFeat = topLangFeat as Types.LangFeature
-
-      // TODO: use `initialEntries` in <MemoryRouter> to test routing
-      history.push(`${routes.details}?id=${langFeat.properties.ID}`)
+      history.push(`${routes.details}/${topLangFeat.properties?.ID}`)
 
       return // prevent boundary click underneath
     }
 
-    if (!boundariesLayersVisible) return
+    if (!boundariesVisible) return
 
     const boundariesClicked = map.queryRenderedFeatures(event.point, {
       layers: boundariesLayerIDs,
@@ -360,7 +339,13 @@ export const Map: FC<MapProps> = (props) => {
       const lookup =
         lookups[boundariesClicked[0].source as 'neighborhoods' | 'counties']
 
-      events.handleBoundaryClick(map, boundariesClicked[0], dimensions, lookup)
+      events.handleBoundaryClick(
+        map,
+        boundariesClicked[0],
+        dimensions,
+        lookup,
+        offset
+      )
     }
   }
 
@@ -377,7 +362,7 @@ export const Map: FC<MapProps> = (props) => {
       height: map.getContainer().clientHeight,
       width: map.getContainer().clientWidth,
       bounds: config.initialBounds,
-      padding: 25,
+      offset,
     }
 
     utils.flyToBounds(map, settings, null)
@@ -393,20 +378,12 @@ export const Map: FC<MapProps> = (props) => {
       openOffCanvasNav()
     } else if (actionID === 'home') {
       flyHome(map)
-    } else {
-      // TODO: consider a simple zoom in/out if it's easier:
-      // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#zoomin
-      // Assumes `in` or `out` from here down...
-      const { zoom } = viewport
-
-      utils.flyToPoint(
-        map,
-        { ...viewport, zoom: actionID === 'in' ? zoom + 1 : zoom - 1 },
-        utils.prepPopupContent(
-          selFeatAttribs,
-          popupSettings ? popupSettings.heading : null
-        )
-      )
+    } else if (actionID === 'reset-pitch') {
+      setViewport({ ...viewport, pitch: 0 }) // TODO: fix offset on mobile/iPad?
+    } else if (actionID === 'in') {
+      map.zoomIn({ offset }, popupSettings || undefined)
+    } else if (actionID === 'out') {
+      map.zoomOut({ offset }, popupSettings || undefined)
     }
   }
 
@@ -416,9 +393,7 @@ export const Map: FC<MapProps> = (props) => {
         {...viewport}
         {...config.mapProps}
         ref={mapRef}
-        interactiveLayerIds={boundariesLayerIDs.concat(
-          interactiveLayerIds || []
-        )}
+        interactiveLayerIds={[...boundariesLayerIDs, ...interactiveLayerIds]}
         onViewportChange={setViewport}
         onClick={(event: Types.MapEvent) => onClick(event)}
         onHover={onHover}
@@ -429,10 +404,7 @@ export const Map: FC<MapProps> = (props) => {
           onViewportChange={(mapViewport: Types.ViewportState) => {
             // CRED:
             // github.com/visgl/react-map-gl/issues/887#issuecomment-531580394
-            setViewport({
-              ...mapViewport,
-              zoom: config.POINT_ZOOM_LEVEL,
-            })
+            setViewport({ ...mapViewport, zoom: config.POINT_ZOOM_LEVEL })
           }}
         />
         {geocodeMarker && <GeocodeMarker {...geocodeMarker} />}
@@ -440,7 +412,7 @@ export const Map: FC<MapProps> = (props) => {
           <BoundariesLayer
             key={boundaryConfig.source.id}
             {...boundaryConfig}
-            visible={boundariesLayersVisible}
+            visible={boundariesVisible}
             beforeId={legendItems.length ? legendItems[0].legendLabel : ''}
           />
         ))}
@@ -451,8 +423,8 @@ export const Map: FC<MapProps> = (props) => {
             setVisible={() => setPopupSettings(null)}
           />
         )}
-        {/* BAD CHECK, should be checking for touch capabilities */}
-        {isDesktop && tooltipSettings && (
+        {/* Popups are annoying on mobile */}
+        {!isTouchEnabled() && tooltipSettings && (
           <MapPopup
             {...tooltipSettings}
             setVisible={() => setTooltipSettings(null)}
@@ -461,11 +433,11 @@ export const Map: FC<MapProps> = (props) => {
       </MapGL>
       <MapCtrlBtns
         mapRef={mapRef}
+        panelOpen={panelOpen}
         geolocActive={geolocActive}
         setGeolocActive={setGeolocActive}
-        boundariesLayersVisible={boundariesLayersVisible}
-        setBoundariesLayersVisible={setBoundariesLayersVisible}
-        handlePitchReset={() => setViewport({ ...viewport, pitch: 0 })}
+        boundariesVisible={boundariesVisible}
+        setBoundariesVisible={setBoundariesVisible}
         isPitchZero={viewport.pitch === 0}
         onMapCtrlClick={(actionID: Types.MapControlAction) => {
           onMapCtrlClick(actionID)

@@ -2,7 +2,7 @@ import { Map } from 'mapbox-gl'
 import { WebMercatorViewport } from 'react-map-gl'
 
 import * as MapTypes from './types'
-import * as config from './config'
+import * as config from './config' // TODO: pass this as fn args, don't import
 
 // NOTE: Firefox needs SVG width/height to be explicitly set on the SVG in order
 // for this to work.
@@ -64,15 +64,6 @@ export const filterLayersByFeatIDs = (
   })
 }
 
-export const getWebMercViewport: MapTypes.GetWebMercViewport = (params) => {
-  const { width, height, bounds, padding } = params
-
-  return new WebMercatorViewport({
-    width,
-    height,
-  }).fitBounds(bounds, padding ? { padding } : {})
-}
-
 export const asyncAwaitFetch = async (path: string): Promise<void> =>
   (await fetch(path)).json()
 
@@ -93,7 +84,7 @@ export const prepPopupContent: MapTypes.PrepPopupContent = (
 
 export const flyToBounds: MapTypes.FlyToBounds = (
   map,
-  { height, width, bounds },
+  { height, width, bounds, offset },
   popupContent
 ) => {
   let popupSettings = null
@@ -101,12 +92,12 @@ export const flyToBounds: MapTypes.FlyToBounds = (
   const webMercViewport = new WebMercatorViewport({
     width,
     height,
-  }).fitBounds(bounds, { padding: 50 })
+  }).fitBounds(bounds, { offset, padding: 75 })
   const { latitude, longitude, zoom } = webMercViewport
 
   if (popupContent) popupSettings = { latitude, longitude, ...popupContent }
 
-  map.flyTo({ essential: true, zoom, center: [longitude, latitude] }, {
+  map.flyTo({ essential: true, zoom, center: [longitude, latitude], offset }, {
     forceViewportUpdate: true,
     popupSettings,
   } as MapTypes.CustomEventData)
@@ -114,17 +105,19 @@ export const flyToBounds: MapTypes.FlyToBounds = (
 
 export const flyToPoint: MapTypes.FlyToPoint = (
   map,
-  {
-    latitude,
-    longitude,
-    zoom: targetZoom,
-    disregardCurrZoom,
-    bearing = 0,
-    pitch = 0,
-  },
+  settings,
   popupContent,
   geocodeMarkerText
 ) => {
+  const {
+    bearing = 0,
+    disregardCurrZoom,
+    latitude,
+    longitude,
+    offset,
+    pitch = 0,
+    zoom: targetZoom,
+  } = settings
   let zoom = targetZoom
   let popupSettings = null
 
@@ -146,11 +139,20 @@ export const flyToPoint: MapTypes.FlyToPoint = (
       text: geocodeMarkerText,
     }
   }
+  const params = {
+    essential: true,
+    zoom,
+    center: [longitude, latitude] as [number, number],
+    bearing,
+    pitch,
+    offset,
+  }
 
-  map.flyTo(
-    { essential: true, zoom, center: [longitude, latitude], bearing, pitch },
-    customEventData
-  )
+  if (disregardCurrZoom) {
+    map.flyTo(params, customEventData)
+  } else {
+    map.easeTo(params, customEventData)
+  }
 }
 
 export const langFeatsUnderClick: MapTypes.LangFeatsUnderClick = (

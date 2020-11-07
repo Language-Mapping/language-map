@@ -1,21 +1,20 @@
 import React, { FC, useContext } from 'react'
-import { Link as RouterLink, useLocation } from 'react-router-dom'
+import { Link as RouterLink, useRouteMatch } from 'react-router-dom'
 import { Typography, Divider, Button } from '@material-ui/core'
 import { FaRandom } from 'react-icons/fa'
 import { BiMapPin } from 'react-icons/bi'
 
-import { GlobalContext, LangOrEndoIntro, ScrollToTopOnMount } from 'components'
-import { LegendSwatch } from 'components/legend'
+import { GlobalContext, LangOrEndoIntro } from 'components'
 import { RecordDescription } from 'components/results'
 import { paths as routes } from 'components/config/routes'
 import { Media } from 'components/media'
-import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
+import { MoreLikeThis } from 'components/details'
 import { useStyles } from './styles'
-import { LangRecordSchema } from '../../context/types'
+import { findFeatureByID } from '../../utils'
 
-type DetailsPanelProps = {
-  attribsDirect?: LangRecordSchema
-  skipSelFeatCheck?: boolean
+type NeighborhoodList = {
+  town: string
+  neighborhoods: string
 }
 
 // TODO: separate files
@@ -35,99 +34,115 @@ const RandomLinkBtn: FC = () => {
       component={RouterLink}
       size="small"
       startIcon={<FaRandom />}
-      to={`${routes.details}?id=${id}`}
+      to={`${routes.details}/${id}`}
     >
       Try one at random
     </Button>
   )
 }
 
-const NoFeatSel: FC = () => {
+const NoFeatSel: FC<{ reason?: string }> = (props) => {
+  const { reason = 'No community selected.' } = props
   const classes = useStyles()
 
   return (
     <div style={{ textAlign: 'center', maxWidth: '85%', margin: '16px auto' }}>
       <Typography className={classes.noFeatSel}>
-        No community selected. Click a community in the map or in the data
-        table.
+        {reason} Click a community in the map or in the data table.
       </Typography>
       <RandomLinkBtn />
     </div>
   )
 }
 
-export const DetailsPanel: FC<DetailsPanelProps> = (props) => {
-  const { attribsDirect, skipSelFeatCheck } = props
-  const { state } = useContext(GlobalContext)
-  const symbLabelState = useSymbAndLabelState()
+const NeighborhoodList: FC<NeighborhoodList> = (props) => {
+  const { town, neighborhoods } = props
   const classes = useStyles()
-  const loc = useLocation()
-  const attribsToUse = attribsDirect || state.selFeatAttribs
 
-  // Shaky check to see if features have loaded and are stored globally
+  return (
+    <Typography className={classes.neighborhoods}>
+      <BiMapPin />
+      {neighborhoods &&
+        neighborhoods.split(', ').map((place, i) => (
+          <React.Fragment key={place}>
+            {i !== 0 && <span className={classes.separator}>|</span>}
+            <RouterLink key={place} to={`/Explore/Neighborhood/${place}`}>
+              {place}
+            </RouterLink>
+          </React.Fragment>
+        ))}
+      {/* At least for now, not linking to Towns */}
+      {!neighborhoods && town}
+    </Typography>
+  )
+}
+
+export const DetailsPanel: FC = () => {
+  const { state } = useContext(GlobalContext)
+  const classes = useStyles()
+  const match: { params: { id: string } } | null = useRouteMatch('/:any/:id')
+  const matchedFeatID = match?.params?.id
+
+  if (!matchedFeatID) return <NoFeatSel />
+
   // TODO: use MB's loading events to set this instead
-  if (!state.langFeatures.length) return null
-  if (!state.selFeatAttribs && !skipSelFeatCheck) return <NoFeatSel />
-  if (!attribsToUse) return null
+  if (!state.langFeatures.length)
+    return (
+      <div className={classes.root}>
+        <p>Loading communities...</p>
+      </div>
+    )
+
+  const matchingRecord = findFeatureByID(
+    state.langFeatures,
+    parseInt(matchedFeatID, 10)
+  )
+
+  // TODO: send stuff to Sentry
+  if (!matchingRecord)
+    return (
+      <div className={classes.root}>
+        <NoFeatSel
+          reason={`No community found with an ID of ${matchedFeatID}.`}
+        />
+      </div>
+    )
 
   const elemID = 'details'
   const {
     Language: language,
-    Neighborhoods,
+    Neighborhood,
     Description: description,
-    // Size, // TODO: cell strength bars for Size
     Town,
-    Countries,
+    Country,
     Audio: audio,
     Video: video,
+    Macrocommunity: macro,
     'World Region': WorldRegion,
-  } = attribsToUse
-  const { intro, descripSection, neighborhoods, divider } = classes
-  const regionSwatchColor =
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    symbLabelState.legendSymbols[WorldRegion].paint['icon-color'] as string
+    // Size, // TODO: cell strength bars for Size
+  } = matchingRecord
 
-  // TODO: deal with `id` present in URL but no match found
-  // const parsed = queryString.parse(window.location.search)
-  // const matchingRecord = state.langFeatures.find(
-  //   (feature) => feature.ID === parsed.id
-  // )
+  document.title = `${language} - NYC Languages`
 
   return (
     <>
-      {state.panelState === 'default' && (
-        <ScrollToTopOnMount elemID={elemID} trigger={loc.pathname} />
-      )}
-      <div className={intro} id={elemID}>
-        <LangOrEndoIntro attribs={attribsToUse} />
-        <Typography className={neighborhoods}>
-          <BiMapPin />
-          {Neighborhoods || Town}
-        </Typography>
-        <div className={classes.region}>
-          <LegendSwatch
-            legendLabel={WorldRegion}
-            component="div"
-            iconID="_circle"
-            backgroundColor={regionSwatchColor || 'transparent'}
-          />
-          {/* TODO: cell strength bars for Size */}
-        </div>
-        <div className={classes.countriesList}>{Countries}</div>
-        <Media
-          {...{
-            audio,
-            video,
-            language,
-            description,
-          }}
+      {/* TODO: something that works */}
+      {/* {state.panelState === 'default' && ( <ScrollToTopOnMount elemID={elemID} trigger={loc.pathname} /> )} */}
+      <div className={classes.root} id={elemID}>
+        <LangOrEndoIntro attribs={matchingRecord} />
+        <NeighborhoodList neighborhoods={Neighborhood} town={Town} />
+        <MoreLikeThis
+          macro={macro}
+          language={language}
+          region={WorldRegion}
+          country={Country}
         />
+        <Media {...{ audio, video, language, description }} />
+        <Divider variant="middle" className={classes.divider} />
+        <Typography variant="body2" component="div" align="left">
+          <RecordDescription text={description} />
+        </Typography>
       </div>
-      <Divider variant="middle" className={divider} />
-      <Typography variant="body2" className={descripSection} component="div">
-        <RecordDescription text={description} />
-      </Typography>
     </>
   )
 }

@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import ReactDOM from 'react-dom'
 import * as Sentry from '@sentry/react'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import WebFont from 'webfontloader'
 
 import { App, ProvidersWrap } from 'components'
@@ -9,7 +9,6 @@ import * as serviceWorker from './serviceWorker'
 
 const SENTRY_DSN =
   'https://fff4ab9699284c8489f9890aa8aa4609@o416804.ingest.sentry.io/5313356'
-// const history = createBrowserHistory() // TODO: export and use for `Back`?
 
 // Init error tracking
 Sentry.init({
@@ -35,9 +34,9 @@ WebFont.load({
 const AppWrap: FC = () => (
   <React.StrictMode>
     <ProvidersWrap>
-      <Router>
+      <BrowserRouter>
         <App />
-      </Router>
+      </BrowserRouter>
     </ProvidersWrap>
   </React.StrictMode>
 )

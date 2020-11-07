@@ -17,6 +17,7 @@ import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import { GeocoderProps, GeocodeResult } from './types'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
+import * as hooks from './hooks'
 import * as utils from './utils'
 import * as MapTypes from './types'
 
@@ -67,11 +68,12 @@ const LocationSearchContent: FC<PopoutContentProps> = (props) => {
 export const GeocoderPopout: FC<GeocoderProps> = (props) => {
   const {
     anchorEl,
-    boundariesLayersVisible,
+    boundariesVisible,
     geolocActive,
     mapRef,
+    panelOpen,
     setAnchorEl,
-    setBoundariesLayersVisible,
+    setBoundariesVisible,
     setGeolocActive,
   } = props
   const classes = useStyles()
@@ -79,6 +81,7 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
   const layersMenuOpen = Boolean(anchorEl)
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
   const { width, height } = useWindowResize()
+  const offset = hooks.useOffset(panelOpen)
 
   const handleLayersMenuClose = () => setAnchorEl(null)
 
@@ -104,6 +107,7 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
           [bbox[2], bbox[3]],
         ] as MapTypes.BoundsArray,
         padding: 25,
+        offset,
       }
 
       utils.flyToBounds(map, settings, null)
@@ -113,6 +117,7 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
         longitude: center[0],
         zoom: 15,
         disregardCurrZoom: true,
+        offset,
       }
 
       utils.flyToPoint(map, settings, null, text)
@@ -141,10 +146,8 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
           classes={{ label: smallerText, root: switchFormCtrlRoot }}
           control={
             <Switch
-              checked={boundariesLayersVisible}
-              onChange={() =>
-                setBoundariesLayersVisible(!boundariesLayersVisible)
-              }
+              checked={boundariesVisible}
+              onChange={() => setBoundariesVisible(!boundariesVisible)}
               name="show-welcome-switch"
               size="small"
             />

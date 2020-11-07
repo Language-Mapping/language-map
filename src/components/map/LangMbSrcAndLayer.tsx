@@ -17,6 +17,9 @@ type SourceAndLayerComponent = {
   symbLayers: LayerPropsPlusMeta[]
 }
 
+// TODO: set paint property (???)
+// https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
+
 // NOTE: it did not seem to work when using two different Styles with the same
 // dataset unless waiting until there is something to put into <Source>.
 export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({

@@ -82,6 +82,7 @@ function useSymbAndLabelState(): InitialState {
     throw new Error('useCountState must be used within a CountProvider')
   }
 
+  // TODO: destructure the return
   return context
 }
 

@@ -74,14 +74,15 @@ type CommunitySize = 1 | 2 | 3 | 4 | 5
 export type LangRecordSchema = InternalUse & {
   Language: string
   Endonym: string // often same as English name, may be an http link to image
-  Neighborhoods: string | '' // NYC-metro only // TODO: make optional
+  Neighborhood: string | '' // NYC-metro only // TODO: make optional
   Size: CommunitySize
   Status: Statuses
   'World Region': WorldRegion
-  Countries: string
+  Country: string
   'Global Speaker Total'?: number // string in MB tileset b/c some blanks
   'Font Image Alt'?: string // for images to use instead of fonts, e.g. ASL
   'Language Family': string
+  Macrocommunity?: string
   Description: string
   Video?: string // TODO: TS for URL?
   Audio?: string // TODO: TS for URL?

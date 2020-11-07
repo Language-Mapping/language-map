@@ -1,34 +1,33 @@
 /* eslint-disable operator-linebreak */
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import {
-  panelWidths,
-  MOBILE_PANEL_HEADER_HEIGHT,
-} from 'components/panels/config'
-import { MapPanelProps } from './types'
+import { panelWidths } from 'components/panels/config'
+
+type StylesProps = {
+  panelOpen: boolean
+}
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    panelsRoot: {
-      backgroundColor: theme.palette.background.paper,
-      position: 'relative',
+    root: {
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 0,
+      bottom: 56, // set directly in MUI to 56
       display: 'flex',
       flexDirection: 'column',
-      overflowY: 'auto',
-      width: '100%',
+      left: 2,
+      opacity: (props: StylesProps) => (props.panelOpen ? 1 : 0),
+      overflowX: 'hidden',
+      position: 'absolute',
+      right: 2,
+      top: '45%',
       transition: '300ms ease all',
-      [theme.breakpoints.down('sm')]: {
-        height: '50%',
-        top: (props: MapPanelProps) =>
-          props.panelOpen
-            ? '50%'
-            : `calc(100% - ${MOBILE_PANEL_HEADER_HEIGHT})`,
-        position: 'absolute',
-      },
+      transform: (props: StylesProps) =>
+        `translateY(${props.panelOpen ? 0 : '100%'})`,
       [theme.breakpoints.up('md')]: {
-        order: 1,
-        transform: (props: MapPanelProps) =>
-          `translateX(${props.panelOpen ? 0 : '-100%'})`,
+        top: 24,
+        left: 24,
+        bottom: 92, // 36 + 56 (aka BottomNav `bottom` + `height`)
         width: panelWidths.mid,
       },
       [theme.breakpoints.up('xl')]: {
@@ -39,15 +38,19 @@ export const useStyles = makeStyles((theme: Theme) =>
         fontSize: '1rem',
       },
     },
-    contentWrap: {
-      overflowX: 'hidden',
-      overflowY: 'auto',
-      padding: '0.25rem 0.75em 1em',
-      position: 'relative',
-      [theme.breakpoints.up('md')]: {
-        paddingLeft: '1em',
-        paddingRight: '1em',
-      },
+    crumbsNcloseWrap: {
+      alignItems: 'center',
+      backgroundColor: theme.palette.primary.dark,
+      boxShadow: '0 2px 7px hsla(0, 0%, 0%, 0.25)',
+      display: 'flex',
+      flexBasis: 32,
+      flexShrink: 0,
+      justifyContent: 'space-between',
+      padding: '0.15em 0.2em',
+      position: 'sticky',
+      top: 0,
+      zIndex: 1,
+      [theme.breakpoints.up('sm')]: { padding: '0.15em 0.5em' },
     },
   })
 )

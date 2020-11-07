@@ -1,4 +1,5 @@
 export * from './AboutLinkAsIcon'
+export * from './BottomNav'
 export * from './Nav'
 export * from './OffCanvasNav'
 export * from './TopBar'

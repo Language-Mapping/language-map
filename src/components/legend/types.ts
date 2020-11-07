@@ -15,11 +15,14 @@ export type LegendSwatch = {
   size?: number
 }
 
+export type SwatchOnly = Pick<LegendSwatch, 'backgroundColor' | 'size'>
+
 // Same as the regular swatch but will have SVG element if it is a symbol
 export type LegendSwatchComponent = LegendSwatch & {
   icon?: string
   component?: React.ElementType
   labelStyleOverride?: React.CSSProperties
+  to?: string
 }
 
 export type LegendGroupConfig = {
@@ -38,5 +41,6 @@ export type WorldRegionLegend = {
 }
 
 export type GroupedLegendProps = LegendComponent & {
+  baseRoute: string
   groupConfig: LegendGroupConfig[]
 }

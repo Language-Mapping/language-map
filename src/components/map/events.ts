@@ -77,7 +77,8 @@ export const handleBoundaryClick: MapTypes.HandleBoundaryClick = (
   map,
   topMostFeat,
   boundsConfig,
-  lookup
+  lookup,
+  offset
 ) => {
   const boundaryFeat = topMostFeat
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -115,6 +116,7 @@ export const handleBoundaryClick: MapTypes.HandleBoundaryClick = (
       [bounds[2], bounds[3]],
     ] as MapTypes.BoundsArray,
     padding: 50,
+    offset: offset || [0, 0],
   }
 
   utils.flyToBounds(map, settings, { heading: text })

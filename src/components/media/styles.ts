@@ -3,8 +3,7 @@ import { StyleProps } from './types'
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    mediaRoot: {
-      columnGap: '1rem',
+    root: {
       display: 'flex',
       justifyContent: 'center',
       listStyle: 'none',

@@ -101,13 +101,7 @@ export const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
-  const {
-    tableRef,
-    closeTable,
-    clearBtnEnabled,
-    setClearBtnEnabled,
-    scrollToTop,
-  } = props
+  const { tableRef, clearBtnEnabled, setClearBtnEnabled, scrollToTop } = props
   const { state, dispatch } = useContext(GlobalContext)
   const classes = useStyles()
   const history = useHistory()
@@ -122,9 +116,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
   }, [state.clearFilters])
 
   function mapFilterBtnClick(): void {
-    if (!tableRef || !tableRef.current) return
-
-    closeTable()
+    if (!tableRef?.current) return
 
     const currentData = tableRef.current.state.data
 

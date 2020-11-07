@@ -1,17 +1,29 @@
-import React, { FC } from 'react'
+import React, { FC, useContext } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography, Badge } from '@material-ui/core'
+import { Typography, Link } from '@material-ui/core'
+
+import { GlobalContext } from 'components'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    filtersWarning: {
-      fontSize: '0.7em',
-      marginLeft: 6,
-      lineHeight: 0.8,
+    root: {
+      fontSize: '0.65em',
+      margin: '1.25em 0 0.5em',
+      lineHeight: 1.2,
+      fontStyle: 'italic',
       color: theme.palette.text.secondary,
+      display: 'flex',
+      alignItems: 'center',
     },
     fabBadge: {
       backgroundColor: theme.palette.warning.light,
+      height: '0.5em',
+      width: '0.5em',
+      flexGrow: 1,
+      flexShrink: 0,
+      marginRight: '0.4em',
+      borderRadius: '100%',
     },
   })
 )
@@ -19,18 +31,40 @@ const useStyles = makeStyles((theme: Theme) =>
 // Let user know that they are searching filtered data
 export const FiltersWarning: FC = () => {
   const classes = useStyles()
+  const { state, dispatch } = useContext(GlobalContext)
+
+  if (state.langFeatsLenCache === state.langFeatures.length) return null
+
+  const BadgeDot = <span className={classes.fabBadge} />
+
+  const ClearFilters = (
+    <Link
+      title="Clear table filters"
+      href="#"
+      color="primary"
+      onClick={(e: React.MouseEvent) => {
+        e.preventDefault()
+
+        dispatch({ type: 'CLEAR_FILTERS', payload: 555 }) // TODO: fix, obvi
+      }}
+    >
+      clear
+    </Link>
+  )
+
+  const TableLink = (
+    <Link to="/table" component={RouterLink}>
+      view
+    </Link>
+  )
 
   return (
-    <Badge
-      variant="dot"
-      color="secondary"
-      classes={{ dot: classes.fabBadge }}
-      style={{ marginLeft: 8 }}
-      anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-    >
-      <Typography className={classes.filtersWarning} component="span">
-        Filters in the Data Table will affect results.
-      </Typography>
-    </Badge>
+    <Typography className={classes.root}>
+      {BadgeDot}
+      <div>
+        Current filters have been applied and may affect results. You can{' '}
+        {ClearFilters} or {TableLink} them if needed.
+      </div>
+    </Typography>
   )
 }

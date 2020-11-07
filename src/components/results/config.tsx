@@ -189,12 +189,12 @@ export const columns = [
   {
     // Average: 8.5, Longest: 35 (w/o big Congos: Average: 8, Longest: 24)
     // ...plus emoji flag and margin
-    // TODO: for Countries selection:
+    // TODO: for Country selection:
     // https://material-ui.com/components/autocomplete/#country-select
-    title: 'Countries',
-    field: 'Countries',
+    title: 'Country',
+    field: 'Country',
     ...commonColProps,
-    render: utils.renderCountriesColumn,
+    render: utils.renderCountryColumn,
     headerStyle: {
       paddingRight: 25, // enough for `United States` cells to not wrap
     },
@@ -226,8 +226,8 @@ export const columns = [
   },
   {
     // Average: 12, Longest: 26
-    title: <LocalColumnTitle text="Neighborhoods" />,
-    field: 'Neighborhoods',
+    title: <LocalColumnTitle text="Neighborhood" />,
+    field: 'Neighborhood',
     ...commonColProps,
     render: utils.renderNeighbColumn,
     customSort: utils.sortNeighbs,

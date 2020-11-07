@@ -2,14 +2,22 @@ import { RouteLocation } from 'components/config/types'
 
 export type MapPanel = {
   heading: string
-  icon: React.ReactNode
-  subheading: string
   component: React.ReactNode
-  path: RouteLocation
+  rootPath: RouteLocation
+  exact?: boolean
+  icon?: React.ReactNode
 }
 
 export type MapPanelProps = {
-  active?: boolean
-  first?: boolean
-  panelOpen?: boolean
+  setPanelOpen: React.Dispatch<boolean>
+  panelOpen: boolean
+}
+
+// TODO: detangle this mess like a professional web developer
+export type PanelContentProps = {
+  icon?: React.ReactNode
+  intro?: string | React.ReactNode
+  subSubtitle?: string | React.ReactNode
+  subtitle?: string | React.ReactNode
+  title?: string
 }
