@@ -9,17 +9,19 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       overflowY: 'auto',
-      padding: '1rem',
+      padding: '1.25rem 1rem',
       [theme.breakpoints.up('sm')]: {
         padding: '1.25rem',
       },
     },
     title: {
       fontSize: '2em',
-      paddingBottom: '0.25em',
       textAlign: 'center',
       [theme.breakpoints.up('sm')]: {
         fontSize: '2.4em',
+      },
+      '& > :not(:first-child)': {
+        marginTop: '0.25em',
       },
       '& svg': {
         fontSize: '0.75em',
@@ -28,14 +30,16 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     titleAndIcon: {
       display: 'flex',
+      lineHeight: 1.25,
       alignItems: 'center',
       justifyContent: 'center',
       '& > :first-child': {
         marginRight: '0.25em',
       },
     },
+    // e.g. Endonym
     subtitle: {
-      fontSize: '0.65em',
+      fontSize: '0.5em',
       color: theme.palette.text.secondary,
     },
     subSubtitle: {
@@ -44,14 +48,17 @@ const useStyles = makeStyles((theme: Theme) =>
       fontFamily: theme.typography.body1.fontFamily,
     },
     header: {
-      padding: '1em 0 0.5em',
       marginBottom: '0.75em',
-      borderBottom: `solid 1px ${theme.palette.divider}`,
     },
-    // TODO: rm if not using
-    intro: { fontSize: '0.35em', color: theme.palette.text.secondary },
-    body: {
-      padding: '0.25em 0',
+    intro: {
+      borderBottom: `solid 1px ${theme.palette.divider}`,
+      color: theme.palette.text.secondary,
+      fontSize: '0.65rem',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      marginTop: '0.25em',
+      maxWidth: '85%',
+      paddingBottom: '0.75em',
     },
   })
 )
@@ -71,25 +78,25 @@ export const PanelContent: FC<Types.PanelContentProps> = (props) => {
     ) : null
 
   const Title = (
-    <Typography component="h2" variant="h4" className={classes.title}>
-      <div className={classes.titleAndIcon}>
+    <Typography className={classes.title}>
+      <Typography component="h2" variant="h4" className={classes.titleAndIcon}>
         {icon}
         {title}
-      </div>
+      </Typography>
       {Subtitle}
       <div className={classes.subSubtitle}>{subSubtitle}</div>
       <Typography className={classes.intro}>{intro}</Typography>
     </Typography>
   )
 
-  // Need the `id` in order to find unique element for `map.setPadding`
+  // TODO: ??? `id` in order to find unique element for `map.setPadding` ???
   return (
     <div className={classes.root}>
       <header className={classes.header}>
         {Title}
         <FiltersWarning />
       </header>
-      <div className={classes.body}>{children}</div>
+      <div>{children}</div>
     </div>
   )
 }

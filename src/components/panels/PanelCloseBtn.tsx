@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
     panelCloseBtn: {
       marginLeft: 'auto',
       marginRight: '0.15em',
-      [theme.breakpoints.up('md')]: { display: 'none' },
+      [theme.breakpoints.up('md')]: { visibility: 'hidden' },
     },
     panelClosePill: {
       position: 'sticky',
