@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       lineHeight: 1.25,
       alignItems: 'center',
+      textShadow: '1px 1px 3px hsla(0, 0%, 0%, 0.45)',
       justifyContent: 'center',
       '& > :first-child': {
         marginRight: '0.25em',
