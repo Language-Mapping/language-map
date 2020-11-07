@@ -139,18 +139,20 @@ export const flyToPoint: MapTypes.FlyToPoint = (
       text: geocodeMarkerText,
     }
   }
+  const params = {
+    essential: true,
+    zoom,
+    center: [longitude, latitude] as [number, number],
+    bearing,
+    pitch,
+    offset,
+  }
 
-  map.flyTo(
-    {
-      essential: true,
-      zoom,
-      center: [longitude, latitude],
-      bearing,
-      pitch,
-      offset,
-    },
-    customEventData
-  )
+  if (disregardCurrZoom) {
+    map.flyTo(params, customEventData)
+  } else {
+    map.easeTo(params, customEventData)
+  }
 }
 
 export const langFeatsUnderClick: MapTypes.LangFeatsUnderClick = (
