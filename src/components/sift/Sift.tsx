@@ -116,7 +116,7 @@ export const SomeMidLevel: FC = () => {
       footerText = (
         <>
           <BiMapPin />
-          Example/s: {thisOne.Neighborhood || thisOne.Town}
+          {thisOne.Neighborhood || thisOne.Town}...
         </>
       )
     } else {
@@ -135,7 +135,7 @@ export const SomeMidLevel: FC = () => {
         intro: value || field === 'Language' ? thisOne.Endonym : '',
         footer: footerText,
         to: value ? thisOne.Language : thing,
-        icon: (
+        icon: utils.deservesCardIcon(field, value) && (
           <SwatchOrFlagOrIcon
             field={value ? 'Language' : field}
             value={thing}
