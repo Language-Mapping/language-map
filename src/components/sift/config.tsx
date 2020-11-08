@@ -2,7 +2,6 @@ import React from 'react'
 import { BiUserVoice, BiGlobe, BiMapPin } from 'react-icons/bi'
 import { GoGlobe } from 'react-icons/go'
 import { GiFamilyTree } from 'react-icons/gi'
-import { HiOutlineOfficeBuilding } from 'react-icons/hi'
 import { IoIosPeople } from 'react-icons/io'
 
 import * as Types from './types'
@@ -38,11 +37,6 @@ export const categories = [
     definition: 'Local name, for NYC locations only',
     icon: <BiMapPin />,
     parse: true,
-  },
-  {
-    name: 'Status',
-    definition: 'How, when, where the language is or has been used locally',
-    icon: <HiOutlineOfficeBuilding />,
   },
   {
     name: 'Macrocommunity',
