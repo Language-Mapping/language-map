@@ -81,13 +81,19 @@ export const AppWrap: FC = () => {
       <main className={classes.mainWrap}>
         <div className={classes.mapWrap}>
           <Map
-            openOffCanvasNav={() => setOffCanvasNavOpen(true)}
             mapLoaded={mapLoaded}
             setMapLoaded={setMapLoaded}
             panelOpen={panelOpen}
           />
         </div>
-        <PanelWrap panelOpen={panelOpen} setPanelOpen={setPanelOpen} />
+        <PanelWrap
+          panelOpen={panelOpen}
+          setPanelOpen={setPanelOpen}
+          openOffCanvasNav={(e: React.MouseEvent) => {
+            e.preventDefault()
+            setOffCanvasNavOpen(true)
+          }}
+        />
         <BottomNav setPanelOpen={setPanelOpen} />
       </main>
       <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />

@@ -12,7 +12,7 @@ import { toProperCase } from '../../utils'
 // TODO: consider swipeable views for moving between panels:
 // https://react-swipeable-views.com/demos/demos/
 export const PanelWrap: FC<Types.MapPanelProps> = (props) => {
-  const { setPanelOpen, panelOpen } = props
+  const { setPanelOpen, panelOpen, openOffCanvasNav } = props
   const classes = useStyles({ panelOpen })
   const { pathname } = useLocation()
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -31,9 +31,9 @@ export const PanelWrap: FC<Types.MapPanelProps> = (props) => {
   // Need the `id` in order to find unique element for `map.setPadding`
   return (
     <Paper id="map-panels-wrap" className={classes.root} elevation={8}>
-      <PanelTitleBar
-        renderCloseBtn={() => <CloseBtn onClick={() => setPanelOpen(false)} />}
-      />
+      <PanelTitleBar openOffCanvasNav={openOffCanvasNav}>
+        <CloseBtn onClick={() => setPanelOpen(false)} />
+      </PanelTitleBar>
       <Switch>
         {panelsConfig.map((config) => (
           <Route

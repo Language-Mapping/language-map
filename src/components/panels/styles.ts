@@ -15,15 +15,19 @@ export const useStyles = makeStyles((theme: Theme) =>
       bottom: 56, // set directly in MUI to 56
       display: 'flex',
       flexDirection: 'column',
-      left: 2,
+      left: 0,
       opacity: (props: StylesProps) => (props.panelOpen ? 1 : 0),
       overflowX: 'hidden',
       position: 'absolute',
-      right: 2,
+      right: 0,
       top: '45%',
       transition: '300ms ease all',
       transform: (props: StylesProps) =>
         `translateY(${props.panelOpen ? 0 : '100%'})`,
+      [theme.breakpoints.up('sm')]: {
+        left: 8,
+        right: 8,
+      },
       [theme.breakpoints.up('md')]: {
         top: 24,
         left: 24,

@@ -107,7 +107,6 @@ export type GeocodeResult = {
 
 export type MapProps = {
   mapLoaded: boolean
-  openOffCanvasNav: () => void
   panelOpen: boolean
   setMapLoaded: React.Dispatch<boolean>
 }

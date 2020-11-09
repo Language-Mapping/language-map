@@ -54,7 +54,7 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
 }
 
 export const Map: FC<Types.MapProps> = (props) => {
-  const { openOffCanvasNav, mapLoaded, setMapLoaded, panelOpen } = props
+  const { mapLoaded, setMapLoaded, panelOpen } = props
   const history = useHistory()
   const loc = useLocation()
   const match: { params: { id: string } } | null = useRouteMatch('/details/:id')
@@ -374,9 +374,7 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     const map: MbMap = mapRef.current.getMap()
 
-    if (actionID === 'info') {
-      openOffCanvasNav()
-    } else if (actionID === 'home') {
+    if (actionID === 'home') {
       flyHome(map)
     } else if (actionID === 'reset-pitch') {
       setViewport({ ...viewport, pitch: 0 }) // TODO: fix offset on mobile/iPad?

@@ -10,21 +10,13 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       alignItems: 'center',
-      color: theme.palette.text.secondary,
       display: 'flex',
-      fontSize: '0.8em',
-      marginLeft: '0.4em',
-      // SHAKY calc with that close btn, but couldn't make ellipsis otherwise
-      width: 'calc(100% - 32px)',
-      '& a': {
-        color: theme.palette.text.primary,
-      },
-      '& > *': {
-        alignItems: 'center',
-        display: 'inline-flex',
-        fontSize: 'inherit',
+      overflowX: 'hidden',
+      [theme.breakpoints.down('sm')]: {
+        overflowX: 'auto',
       },
       '& > :last-child': {
+        color: theme.palette.text.secondary,
         flex: 1,
         minWidth: 0,
       },
@@ -34,14 +26,10 @@ const useStyles = makeStyles((theme: Theme) =>
         whiteSpace: 'nowrap',
       },
     },
-    homeLink: {
-      '& svg': {
-        fontSize: '1.2em',
-      },
-    },
     separator: {
-      marginLeft: '0.25em',
-      marginRight: '0.25em',
+      color: theme.palette.text.secondary,
+      marginLeft: '0.2em',
+      marginRight: '0.2em',
     },
   })
 )
@@ -55,7 +43,7 @@ export const Breadcrumbs: FC = () => {
 
   return (
     <div aria-label="breadcrumb" className={classes.root}>
-      <RouterLink to="/" title="Home" className={classes.homeLink}>
+      <RouterLink to="/" title="Home" style={{ display: 'flex' }}>
         <BiHomeAlt />
       </RouterLink>
       {pathnames.map((value, index) => {
@@ -68,7 +56,9 @@ export const Breadcrumbs: FC = () => {
         return last ? (
           <React.Fragment key={value}>
             {includeSeparator && Separator}
-            <span>{toProperCase(value)}</span>
+            <span>
+              <span>{toProperCase(value)}</span>
+            </span>
           </React.Fragment>
         ) : (
           <React.Fragment key={value}>

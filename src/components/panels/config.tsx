@@ -8,7 +8,6 @@ import { DetailsPanel } from 'components/details'
 import { Explore, PreDeets, SomeMidLevel } from 'components/sift'
 
 import { MapPanel } from 'components/panels/types'
-import { AiOutlineQuestionCircle } from 'react-icons/ai'
 import { NavItemWithBadge } from './NavItemWithBadge'
 
 export const MOBILE_PANEL_HEADER_HT = '3rem'
@@ -63,11 +62,5 @@ export const panelsConfig = [
     icon: <TiDocumentText />,
     component: <DetailsPanel />,
     rootPath: '/details',
-  },
-  {
-    heading: 'Help',
-    icon: <AiOutlineQuestionCircle />,
-    component: null, // TODO: consider into panel rather than modal
-    rootPath: '/help',
   },
 ] as MapPanel[]

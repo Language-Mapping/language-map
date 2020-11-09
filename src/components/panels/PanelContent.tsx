@@ -11,7 +11,7 @@ export const usePanelRootStyles = makeStyles((theme: Theme) =>
       overflowY: 'auto',
       padding: '1.25em 1em',
       [theme.breakpoints.up('sm')]: {
-        padding: '1.25em',
+        padding: '1.5em 1.25em',
       },
     },
   })

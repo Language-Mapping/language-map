@@ -9,8 +9,9 @@ export type MapPanel = {
 }
 
 export type MapPanelProps = {
-  setPanelOpen: React.Dispatch<boolean>
+  openOffCanvasNav: (e: React.MouseEvent) => void
   panelOpen: boolean
+  setPanelOpen: React.Dispatch<boolean>
 }
 
 // TODO: detangle this mess like a professional web developer
@@ -22,6 +23,4 @@ export type PanelContentProps = {
   title?: string
 }
 
-export type PanelTitleBarProps = {
-  renderCloseBtn: () => React.ReactNode
-}
+export type PanelTitleBarProps = Pick<MapPanelProps, 'openOffCanvasNav'>
