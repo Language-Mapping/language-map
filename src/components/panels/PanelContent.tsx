@@ -79,7 +79,7 @@ export const PanelContent: FC<Types.PanelContentProps> = (props) => {
     ) : null
 
   const Title = (
-    <Typography className={classes.title}>
+    <Typography className={classes.title} component="header">
       <Typography component="h2" variant="h4" className={classes.titleAndIcon}>
         {icon}
         {title}

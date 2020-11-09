@@ -70,6 +70,8 @@ export const Breadcrumbs: FC = (props) => {
             <span>{value}</span>
           </span>
         ) : (
+          // TODO: deal w/unique key prop warning in dev tools. Only happens at
+          // /Thing/Stuff level
           <>
             <Link to={to} key={value} component={RouterLink}>
               {value}

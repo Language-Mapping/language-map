@@ -112,3 +112,10 @@ export const isTouchEnabled = (): boolean =>
   (window && 'ontouchstart' in window) ||
   navigator.maxTouchPoints > 0 ||
   navigator.msMaxTouchPoints > 0
+
+// CRED: https://stackoverflow.com/a/5574446/1048518
+export const toProperCase = (srcText: string): string =>
+  srcText.replace(
+    /\w\S*/g,
+    (txt: string) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  )
