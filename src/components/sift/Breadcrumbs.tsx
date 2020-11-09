@@ -4,6 +4,8 @@ import { Link } from '@material-ui/core'
 import { useLocation, Link as RouterLink } from 'react-router-dom'
 import { BiHomeAlt } from 'react-icons/bi'
 
+import { toProperCase } from '../../utils'
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -12,7 +14,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       fontSize: '0.8em',
       marginLeft: '0.4em',
-      padding: '0.15em 0',
       // SHAKY calc with that close btn, but couldn't make ellipsis otherwise
       width: 'calc(100% - 32px)',
       '& a': {
@@ -45,19 +46,18 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const Breadcrumbs: FC = (props) => {
+export const Breadcrumbs: FC = () => {
   const classes = useStyles()
   const loc = useLocation()
   const pathnames = loc.pathname.split('/').filter((x) => x)
-
-  if (pathnames[0] !== 'Explore') return null // less useful on non-Explore's
+  const includeSeparator = pathnames.length !== 0
+  const Separator = <span className={classes.separator}>/</span>
 
   return (
     <div aria-label="breadcrumb" className={classes.root}>
       <RouterLink to="/" title="Home" className={classes.homeLink}>
         <BiHomeAlt />
       </RouterLink>
-      <span className={classes.separator}>/</span>
       {pathnames.map((value, index) => {
         const last = index === pathnames.length - 1
         const to = `/${pathnames.slice(0, index + 1).join('/')}`
@@ -66,18 +66,17 @@ export const Breadcrumbs: FC = (props) => {
         // Need the second child to make ellipsis work.
         // CRED: Chris to the rescue: css-tricks.com/flexbox-truncated-text/
         return last ? (
-          <span key={value}>
-            <span>{value}</span>
-          </span>
+          <React.Fragment key={value}>
+            {includeSeparator && Separator}
+            <span>{toProperCase(value)}</span>
+          </React.Fragment>
         ) : (
-          // TODO: deal w/unique key prop warning in dev tools. Only happens at
-          // /Thing/Stuff level
-          <>
-            <Link to={to} key={value} component={RouterLink}>
-              {value}
+          <React.Fragment key={value}>
+            {includeSeparator && Separator}
+            <Link to={to} component={RouterLink}>
+              {toProperCase(value)}
             </Link>
-            <span className={classes.separator}>/</span>
-          </>
+          </React.Fragment>
         )
       })}
     </div>

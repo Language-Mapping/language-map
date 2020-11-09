@@ -6,7 +6,7 @@ import { panelsConfig } from './config'
 import { useStyles } from './styles'
 import { CloseBtn } from './PanelCloseBtn'
 import * as Types from './types'
-import { Breadcrumbs } from '../sift/Breadcrumbs'
+import { PanelTitleBar } from './PanelTitleBar'
 import { toProperCase } from '../../utils'
 
 // TODO: consider swipeable views for moving between panels:
@@ -31,14 +31,9 @@ export const PanelWrap: FC<Types.MapPanelProps> = (props) => {
   // Need the `id` in order to find unique element for `map.setPadding`
   return (
     <Paper id="map-panels-wrap" className={classes.root} elevation={8}>
-      {/* TODO: own component, own file */}
-      <div className={classes.crumbsNcloseWrap}>
-        <Route path="/Explore">
-          <Breadcrumbs />
-        </Route>
-        {/* TODO: add maximize btn on mobile */}
-        <CloseBtn onClick={() => setPanelOpen(false)} />
-      </div>
+      <PanelTitleBar
+        renderCloseBtn={() => <CloseBtn onClick={() => setPanelOpen(false)} />}
+      />
       <Switch>
         {panelsConfig.map((config) => (
           <Route

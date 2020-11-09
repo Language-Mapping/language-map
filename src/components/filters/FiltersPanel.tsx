@@ -2,10 +2,12 @@
 import React, { FC, useContext, useEffect, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
+import { GoSearch } from 'react-icons/go'
 
 import { GlobalContext, ScrollToTopOnMount } from 'components'
 import { LegendPanel } from 'components/legend'
 import { initLegend } from 'components/legend/utils'
+import { usePanelRootStyles } from 'components/panels'
 import {
   useSymbAndLabelState,
   useLabelAndSymbDispatch,
@@ -17,11 +19,15 @@ import symbLayers from '../map/config.lang-style'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      padding: '0 1.25rem 1.25rem',
-    },
     panelMainHeading: {
-      fontSize: '1.8rem', // TODO: consistentize w/other panels?
+      alignItems: 'center',
+      display: 'flex',
+      fontSize: '1.5em',
+      '& > svg': {
+        fill: theme.palette.text.secondary,
+        fontSize: '0.75em',
+        marginRight: '0.25em',
+      },
     },
   })
 )
@@ -31,6 +37,7 @@ export const FiltersPanel: FC = () => {
   const symbLabelState = useSymbAndLabelState()
   const symbLabelDispatch = useLabelAndSymbDispatch()
   const classes = useStyles()
+  const panelRootClasses = usePanelRootStyles()
   const [data, setData] = useState<LangRecordSchema[]>([])
   const elemID = 'filters-panel'
   const { activeSymbGroupID, legendItems } = symbLabelState
@@ -47,14 +54,14 @@ export const FiltersPanel: FC = () => {
       {/* TODO: wire this back up here and anywhere else that needs it */}
       {/* ...and rm all places that don't */}
       {state.panelState === 'default' && <ScrollToTopOnMount elemID={elemID} />}
-      <div className={classes.root}>
+      <div className={panelRootClasses.root}>
         <Typography
           className={classes.panelMainHeading}
           variant="h4"
           component="h2"
           id={elemID}
         >
-          {/* TODO: add Search icon */}
+          <GoSearch />
           Search language communities
         </Typography>
         <SearchByOmnibox data={data} />

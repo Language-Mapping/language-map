@@ -87,8 +87,8 @@ export const AppWrap: FC = () => {
             panelOpen={panelOpen}
           />
         </div>
-        <BottomNav setPanelOpen={setPanelOpen} />
         <PanelWrap panelOpen={panelOpen} setPanelOpen={setPanelOpen} />
+        <BottomNav setPanelOpen={setPanelOpen} />
       </main>
       <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />
     </>

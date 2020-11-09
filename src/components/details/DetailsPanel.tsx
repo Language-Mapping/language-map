@@ -9,6 +9,7 @@ import { RecordDescription } from 'components/results'
 import { paths as routes } from 'components/config/routes'
 import { Media } from 'components/media'
 import { MoreLikeThis } from 'components/details'
+import { usePanelRootStyles } from 'components/panels/PanelContent'
 import { useStyles } from './styles'
 import { findFeatureByID } from '../../utils'
 
@@ -66,7 +67,7 @@ const NeighborhoodList: FC<NeighborhoodList> = (props) => {
         neighborhoods.split(', ').map((place, i) => (
           <React.Fragment key={place}>
             {i !== 0 && <span className={classes.separator}>|</span>}
-            <RouterLink key={place} to={`/Explore/Neighborhood/${place}`}>
+            <RouterLink to={`/Explore/Neighborhood/${place}`}>
               {place}
             </RouterLink>
           </React.Fragment>
@@ -80,6 +81,7 @@ const NeighborhoodList: FC<NeighborhoodList> = (props) => {
 export const DetailsPanel: FC = () => {
   const { state } = useContext(GlobalContext)
   const classes = useStyles()
+  const panelRootClasses = usePanelRootStyles()
   const match: { params: { id: string } } | null = useRouteMatch('/:any/:id')
   const matchedFeatID = match?.params?.id
 
@@ -88,7 +90,7 @@ export const DetailsPanel: FC = () => {
   // TODO: use MB's loading events to set this instead
   if (!state.langFeatures.length)
     return (
-      <div className={classes.root}>
+      <div className={`${panelRootClasses.root} ${classes.root}`}>
         <p>Loading communities...</p>
       </div>
     )
@@ -101,7 +103,7 @@ export const DetailsPanel: FC = () => {
   // TODO: send stuff to Sentry
   if (!matchingRecord)
     return (
-      <div className={classes.root}>
+      <div className={`${panelRootClasses.root} ${classes.root}`}>
         <NoFeatSel
           reason={`No community found with an ID of ${matchedFeatID}.`}
         />
@@ -128,7 +130,7 @@ export const DetailsPanel: FC = () => {
     <>
       {/* TODO: something that works */}
       {/* {state.panelState === 'default' && ( <ScrollToTopOnMount elemID={elemID} trigger={loc.pathname} /> )} */}
-      <div className={classes.root} id={elemID}>
+      <div className={`${panelRootClasses.root} ${classes.root}`} id={elemID}>
         <LangOrEndoIntro attribs={matchingRecord} />
         <NeighborhoodList neighborhoods={Neighborhood} town={Town} />
         <MoreLikeThis

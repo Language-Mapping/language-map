@@ -8,19 +8,18 @@ import { GlobalContext } from 'components'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      fontSize: '0.65em',
-      margin: '1.25em 0 0.5em',
-      lineHeight: 1.2,
-      fontStyle: 'italic',
+      alignItems: 'center',
       color: theme.palette.text.secondary,
       display: 'flex',
-      alignItems: 'center',
+      fontSize: '0.65em',
+      fontStyle: 'italic',
+      lineHeight: 1.2,
+      marginBottom: '0.5em',
     },
     fabBadge: {
       backgroundColor: theme.palette.warning.light,
       height: '0.5em',
       width: '0.5em',
-      flexGrow: 1,
       flexShrink: 0,
       marginRight: '0.4em',
       borderRadius: '100%',
@@ -59,12 +58,12 @@ export const FiltersWarning: FC = () => {
   )
 
   return (
-    <Typography className={classes.root}>
+    <Typography className={classes.root} component="div">
       {BadgeDot}
-      <div>
+      <p>
         Current filters have been applied and may affect results. You can{' '}
         {ClearFilters} or {TableLink} them if needed.
-      </div>
+      </p>
     </Typography>
   )
 }

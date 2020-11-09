@@ -21,3 +21,7 @@ export type PanelContentProps = {
   subtitle?: string | React.ReactNode
   title?: string
 }
+
+export type PanelTitleBarProps = {
+  renderCloseBtn: () => React.ReactNode
+}
