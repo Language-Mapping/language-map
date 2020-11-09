@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
     btnsContainer: {
       alignItems: 'center',
       backgroundColor: 'transparent',
-      boxShadow: '-15px 0px 7px 0px hsla(168, 41%, 29%, 0.45)',
+      boxShadow: '-15px 0px 7px 0px hsla(168, 41%, 29%, 0.5)',
       display: 'flex',
       color: theme.palette.text.primary,
       position: 'relative',

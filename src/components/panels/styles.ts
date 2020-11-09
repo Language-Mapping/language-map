@@ -12,7 +12,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     root: {
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,
-      bottom: 56, // set directly in MUI to 56
+      bottom: 48, // default is set directly in MUI to 56
       display: 'flex',
       flexDirection: 'column',
       left: 0,
