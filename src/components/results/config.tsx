@@ -80,7 +80,7 @@ export const options = {
   isLoading: true,
   maxBodyHeight: '100%',
   minBodyHeight: '100%',
-  pageSize: 20,
+  pageSize: 10,
   pageSizeOptions: [10, 20, 50],
   searchFieldAlignment: 'left',
   showTitle: false,
@@ -140,6 +140,25 @@ const hiddenCols = [
 // Size or Status in terms of filter-col-via-cell-click behavior, or the
 // boolean-ish Video column. Wishlist...
 
+// First and second column values are just buttons
+const stickyColStyle = {
+  position: 'sticky',
+  zIndex: 250,
+  backgroundColor: '#424242', // "paper" BG. Can't access theme from here 😞
+}
+
+const firstColStyle = {
+  ...stickyColStyle,
+  left: 0,
+}
+
+const secondColStyle = {
+  ...stickyColStyle,
+  left: 42,
+  paddingLeft: 0,
+  boxShadow: '5px 0px 8px 0px rgba(0,0,0,0.08)',
+}
+
 // 25px : 200char = decent ratio
 export const columns = [
   {
@@ -149,6 +168,9 @@ export const columns = [
     filtering: false,
     export: false,
     render: utils.renderIDcolumn,
+    cellStyle: firstColStyle,
+    headerStyle: firstColStyle,
+    filterCellStyle: firstColStyle,
   },
   {
     title: '',
@@ -157,7 +179,10 @@ export const columns = [
     sorting: false,
     filtering: false,
     export: false,
-    render: utils.renderDescripCol,
+    render: utils.renderDescripCol, // still adds the full value to DOM 😱
+    cellStyle: secondColStyle,
+    headerStyle: secondColStyle,
+    filterCellStyle: secondColStyle,
   },
   {
     // Average: 9.3, Longest: 31
@@ -165,6 +190,9 @@ export const columns = [
     field: 'Language',
     ...commonColProps,
     defaultSort: 'asc',
+    cellStyle: { paddingLeft: '1.25rem' }, // give room to 2nd col shadow
+    headerStyle: { paddingLeft: '1.25rem' }, // give room to 2nd col shadow
+    filterCellStyle: { paddingLeft: '1.25rem' }, // give room to 2nd col shadow
   },
   {
     // Average: 8.5, Longest: 26, Longest full: Anashinaabemowin
@@ -196,7 +224,7 @@ export const columns = [
     ...commonColProps,
     render: utils.renderCountryColumn,
     headerStyle: {
-      paddingRight: 25, // enough for `United States` cells to not wrap
+      paddingRight: 30, // enough for `South Africa` cells to not wrap
     },
   },
   {

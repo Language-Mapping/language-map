@@ -3,7 +3,8 @@ import { useQuery } from 'react-query'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
   AttributionControl,
-  Map as MbMap,
+  Map as MbMap, // TODO: try to lazy load the biggest dep of all. See:
+  // www.debugbear.com/blog/bundle-splitting-components-with-webpack-and-react
   setRTLTextPlugin,
   LngLatBounds,
 } from 'mapbox-gl'

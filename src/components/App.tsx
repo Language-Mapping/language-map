@@ -14,6 +14,8 @@ import { wpQueryIDs } from './about/config'
 // Good tut on this: https://ui.dev/react-router-v4-code-splitting/
 const LazyTable = React.lazy(
   () =>
+    // webpackChunkName does not seem to work here. Maybe because there is
+    // another webpackChunkName nested inside the imported components?
     import(/* webpackChunkName: "table" */ 'components/results/ResultsModal')
 )
 
