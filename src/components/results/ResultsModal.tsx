@@ -10,7 +10,7 @@ import { ResultsTable } from './ResultsTable'
 import { paths as routes } from '../config/routes'
 import { LocWithState } from '../config/types'
 
-export const ResultsModal: FC = () => {
+const ResultsModal: FC = () => {
   const classes = useStyles()
   const { state } = useContext(GlobalContext)
 
@@ -56,18 +56,16 @@ export const ResultsModal: FC = () => {
   // Go back in history if route wasn't table-based, otherwise go home. Also
   // avoids an infinite cycle of table-help-table backness.
   const handleClose = (): void => {
-    if (locState.from && locState.from === routes.help) {
+    if (locState && locState?.from === routes.help) {
       history.push('/')
-
-      return
+    } else {
+      history.push({
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore // TODO: take some time, fix it
+        pathname: lastLoc?.pathname || '/',
+        state: { from: currPathname },
+      })
     }
-
-    history.push({
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore // TODO: take some time, fix it
-      pathname: lastLoc?.pathname || '/',
-      state: { from: currPathname },
-    })
   }
 
   return (
@@ -87,3 +85,5 @@ export const ResultsModal: FC = () => {
     </Dialog>
   )
 }
+
+export default ResultsModal

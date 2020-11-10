@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC, useEffect, Suspense } from 'react'
 import * as Sentry from '@sentry/react'
 import { Route } from 'react-router-dom'
 import { ReactQueryCacheProvider } from 'react-query'
@@ -6,11 +6,16 @@ import { GoInfo } from 'react-icons/go'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { AboutPageView, WelcomeDialog } from 'components/about'
-import { ResultsModal } from 'components/results'
 import { queryCache } from 'components/about/utils'
 import { paths as routes } from 'components/config/routes'
 import { AppWrap } from './AppWrap'
 import { wpQueryIDs } from './about/config'
+
+// Good tut on this: https://ui.dev/react-router-v4-code-splitting/
+const LazyTable = React.lazy(
+  () =>
+    import(/* webpackChunkName: "table" */ 'components/results/ResultsModal')
+)
 
 export const App: FC = () => {
   useEffect(() => {
@@ -59,7 +64,9 @@ export const App: FC = () => {
           />
         </Route>
       </ReactQueryCacheProvider>
-      <ResultsModal />
+      <Suspense fallback={<h1>Loading table data...</h1>}>
+        <LazyTable />
+      </Suspense>
     </Sentry.ErrorBoundary>
   )
 }
