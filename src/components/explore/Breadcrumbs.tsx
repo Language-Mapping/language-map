@@ -1,24 +1,36 @@
-import React, { FC } from 'react'
+import React, { FC, useContext } from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-import { Link } from '@material-ui/core'
+import { CircularProgress, Link } from '@material-ui/core'
 import { useLocation, Link as RouterLink } from 'react-router-dom'
 import { BiHomeAlt } from 'react-icons/bi'
 
-import { toProperCase } from '../../utils'
+import { GlobalContext } from 'components/context'
+import { LangRecordSchema } from 'components/context/types'
+import { toProperCase, findFeatureByID } from '../../utils'
+
+type CurrentCrumb = {
+  value: string
+  basePath: string
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       alignItems: 'center',
       display: 'flex',
-      overflowX: 'hidden',
+      overflow: 'hidden',
       [theme.breakpoints.down('sm')]: {
-        overflowX: 'auto',
+        overflowX: 'auto', // Easter egg: scroll sideways on small screens
       },
       '& > :last-child': {
+        alignItems: 'center',
         color: theme.palette.text.secondary,
+        display: 'inline-flex',
+        whiteSpace: 'nowrap',
         flex: 1,
-        minWidth: 0,
+      },
+      '& > a > svg': {
+        color: theme.palette.text.primary, // gray icon = silly if others white
       },
       '& > :last-child > *': {
         overflow: 'hidden',
@@ -33,6 +45,29 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
+
+const CurrentCrumb: FC<CurrentCrumb> = (props) => {
+  const { value, basePath } = props
+  const { langFeatures } = useContext(GlobalContext).state
+
+  if (value === 'details' || basePath !== 'details') {
+    return <span>{toProperCase(value)}</span>
+  }
+
+  const matchingRecord = findFeatureByID(langFeatures, parseInt(value, 10))
+
+  if (!matchingRecord) return <CircularProgress size={12} />
+
+  const { Language, Neighborhood, Town } = matchingRecord as LangRecordSchema
+  const place = Neighborhood ? Neighborhood.split(', ')[0] : Town
+
+  return (
+    <>
+      {Language}
+      {` — ${place}`}
+    </>
+  )
+}
 
 export const Breadcrumbs: FC = () => {
   const classes = useStyles()
@@ -53,19 +88,18 @@ export const Breadcrumbs: FC = () => {
         // Last item gets no link, subtler text color, and ellipsis overflow.
         // Need the second child to make ellipsis work.
         // CRED: Chris to the rescue: css-tricks.com/flexbox-truncated-text/
-        return last ? (
+        return (
           <React.Fragment key={value}>
             {includeSeparator && Separator}
-            <span>
-              <span>{toProperCase(value)}</span>
-            </span>
-          </React.Fragment>
-        ) : (
-          <React.Fragment key={value}>
-            {includeSeparator && Separator}
-            <Link to={to} component={RouterLink}>
-              {toProperCase(value)}
-            </Link>
+            {(last && (
+              <span>
+                <CurrentCrumb value={value} basePath={pathnames[0]} />
+              </span>
+            )) || (
+              <Link to={to} component={RouterLink}>
+                {toProperCase(value)}
+              </Link>
+            )}
           </React.Fragment>
         )
       })}
