@@ -7,11 +7,13 @@ import {
   Typography,
   CircularProgress,
 } from '@material-ui/core'
-import { SimpleDialog } from 'components'
+
+import { SimpleDialog } from 'components/generic/modals'
 import { MediaModalProps } from './types'
 import { useStyles } from './styles'
 import * as utils from './utils'
 
+// TODO: all into types.ts
 type ModalContentProps = { url: string }
 
 // Same for playlists and individual videos

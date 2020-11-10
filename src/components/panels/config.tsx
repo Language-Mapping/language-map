@@ -5,7 +5,7 @@ import { BiHomeAlt } from 'react-icons/bi'
 
 import { FiltersPanel } from 'components/filters'
 import { DetailsPanel } from 'components/details'
-import { Explore, PreDeets, SomeMidLevel } from 'components/sift'
+import { Explore, PreDeets, SomeMidLevel } from 'components/explore'
 
 import { MapPanel } from 'components/panels/types'
 import { NavItemWithBadge } from './NavItemWithBadge'

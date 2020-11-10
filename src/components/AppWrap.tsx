@@ -4,7 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { PanelWrap } from 'components/panels'
 import { TopBar, OffCanvasNav } from 'components/nav'
 import { Map } from 'components/map'
-import { LoadingBackdrop } from 'components'
+import { LoadingBackdrop } from 'components/generic/modals'
 import { BottomNav } from './nav/BottomNav'
 
 type StyleProps = {

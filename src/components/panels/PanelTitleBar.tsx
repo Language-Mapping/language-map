@@ -5,7 +5,7 @@ import { Link } from '@material-ui/core'
 import { GoInfo } from 'react-icons/go'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
-import { Breadcrumbs } from 'components/sift'
+import { Breadcrumbs } from 'components/explore'
 import * as Types from './types'
 
 const useStyles = makeStyles((theme: Theme) =>

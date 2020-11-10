@@ -4,7 +4,7 @@ import { Route, useHistory, useLocation } from 'react-router-dom'
 import MaterialTable from 'material-table'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
-import { SimpleDialog } from 'components'
+import { SimpleDialog } from 'components/generic/modals'
 import { paths as routes } from 'components/config/routes'
 import { DetailsPanel } from 'components/details'
 import { MuiTableWithLangs } from './types'

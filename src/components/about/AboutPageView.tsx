@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core'
 import { MdClose } from 'react-icons/md'
 
-import { SlideUp } from 'components'
+import { SlideUp } from 'components/generic/modals'
 import * as Types from './types'
 import { useStyles } from './styles'
 import { createMarkup } from '../../utils'

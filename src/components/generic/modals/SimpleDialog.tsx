@@ -12,7 +12,8 @@ import {
   useMediaQuery,
 } from '@material-ui/core'
 
-import { DialogCloseBtn, SlideUp } from 'components'
+import { DialogCloseBtn } from './DialogCloseBtn'
+import { SlideUp } from './SlideUp'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

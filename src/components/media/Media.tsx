@@ -4,7 +4,7 @@ import { Button, Typography } from '@material-ui/core'
 import { FiVideo, FiShare, FiMinusSquare } from 'react-icons/fi'
 import { AiOutlineSound } from 'react-icons/ai'
 
-import { ShareButtons } from 'components'
+import { ShareButtons } from 'components/generic'
 import { RouteLocation } from 'components/config/types'
 import { MediaListItemProps, MediaProps } from './types'
 import { useStyles } from './styles'

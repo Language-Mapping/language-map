@@ -3,7 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Drawer } from '@material-ui/core'
 
 import { Nav } from 'components/nav'
-import { SimpleDialog } from 'components'
+import { SimpleDialog } from 'components/generic/modals'
 import { ToggleOffCanvasNav } from './types'
 
 type OffCanvasNavProps = {

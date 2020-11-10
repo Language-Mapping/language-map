@@ -3,7 +3,7 @@ import { Link, Typography } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { LayerSymbSelect, LayerLabelSelect, Legend } from 'components/legend'
-import { ToggleableSection } from 'components'
+import { ToggleableSection } from 'components/generic'
 import { WorldRegionMap } from './WorldRegionMap'
 import * as Types from './types'
 
