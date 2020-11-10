@@ -2,7 +2,7 @@ import React, { FC, useContext, useState, useEffect } from 'react'
 import { useRouteMatch, Link as RouterLink } from 'react-router-dom'
 import { Link } from '@material-ui/core'
 
-import { GlobalContext } from 'components'
+import { GlobalContext } from 'components/context'
 import { PanelContent } from 'components/panels'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'

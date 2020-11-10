@@ -4,7 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 import { GoSearch } from 'react-icons/go'
 
-import { GlobalContext } from 'components'
+import { GlobalContext } from 'components/context'
 import { ScrollToTopOnMount } from 'components/generic'
 import { LegendPanel } from 'components/legend'
 import { initLegend } from 'components/legend/utils'
@@ -12,9 +12,9 @@ import { usePanelRootStyles } from 'components/panels'
 import {
   useSymbAndLabelState,
   useLabelAndSymbDispatch,
-} from '../../context/SymbAndLabelContext'
+} from 'components/context/SymbAndLabelContext'
+import { LangRecordSchema } from 'components/context/types'
 import { SearchByOmnibox } from './SearchByOmnibox'
-import { LangRecordSchema } from '../../context/types'
 import { FiltersWarning } from './FiltersWarning'
 import symbLayers from '../map/config.lang-style'
 

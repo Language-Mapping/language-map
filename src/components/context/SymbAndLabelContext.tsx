@@ -2,8 +2,8 @@ import React, { FC } from 'react'
 
 import { LegendSwatch } from 'components/legend/types'
 import { LayerPropsPlusMeta } from 'components/map/types'
+import fullLangStyle from 'components/map/config.lang-style'
 import { LangSchemaCol } from './types'
-import fullLangStyle from '../components/map/config.lang-style'
 
 type LegendSymbols = { [key: string]: Partial<LayerPropsPlusMeta> }
 export type Action =

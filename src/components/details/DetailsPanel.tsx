@@ -4,7 +4,7 @@ import { Typography, Divider, Button } from '@material-ui/core'
 import { FaRandom } from 'react-icons/fa'
 import { BiMapPin } from 'react-icons/bi'
 
-import { GlobalContext } from 'components'
+import { GlobalContext } from 'components/context'
 import { RecordDescription } from 'components/results'
 import { paths as routes } from 'components/config/routes'
 import { Media } from 'components/media'

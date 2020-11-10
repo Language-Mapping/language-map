@@ -16,11 +16,11 @@ import {
   MdRemove,
 } from 'react-icons/md'
 
+import { Statuses } from 'components/context/types'
 import * as Types from './types'
 import * as utils from './utils'
 import * as Cells from './Cells'
 
-import { Statuses } from '../../context/types'
 import { VideoColumnFilter } from './VideoColumnFilter'
 import { LocalColumnTitle } from './LocalColumnTitle'
 

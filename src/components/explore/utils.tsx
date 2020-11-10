@@ -1,4 +1,4 @@
-import { LangRecordSchema } from '../../context/types'
+import { LangRecordSchema } from 'components/context/types'
 import * as Types from './types'
 
 export const getUniqueInstances = (

@@ -4,7 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Fab, Badge } from '@material-ui/core'
 import { FiChevronRight } from 'react-icons/fi'
 
-import { GlobalContext } from 'components'
+import { GlobalContext } from 'components/context'
 import { panelWidths } from 'components/panels/config'
 
 type FabStyle = { panelOpen: boolean }

@@ -2,11 +2,11 @@ import React, { FC, useContext, useEffect, useState } from 'react'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { Dialog } from '@material-ui/core'
 
-import { GlobalContext } from 'components'
+import { GlobalContext } from 'components/context'
 import { DialogCloseBtn, SlideUp } from 'components/generic/modals'
+import { LangRecordSchema } from 'components/context/types'
 import { useStyles } from './styles'
 import { ResultsTable } from './ResultsTable'
-import { LangRecordSchema } from '../../context/types'
 import { paths as routes } from '../config/routes'
 import { LocWithState } from '../config/types'
 

@@ -11,9 +11,10 @@ import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import { GlobalContext } from 'components'
+import { GlobalContext } from 'components/context'
 import { paths as routes } from 'components/config/routes'
-import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
+import { useSymbAndLabelState } from 'components/context/SymbAndLabelContext'
+import { LangRecordSchema } from 'components/context/types'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { Geolocation } from './Geolocation'
 import { MapPopup } from './MapPopup'
@@ -28,7 +29,6 @@ import * as config from './config'
 import * as events from './events'
 import symbLayers from './config.lang-style'
 
-import { LangRecordSchema } from '../../context/types'
 import {
   getIDfromURLparams,
   findFeatureByID,

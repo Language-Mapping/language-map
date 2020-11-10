@@ -1,4 +1,4 @@
-import { WorldRegion, LangRecordSchema } from '../../context/types'
+import { WorldRegion, LangRecordSchema } from 'components/context/types'
 
 export type IconID =
   | '_tree'

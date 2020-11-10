@@ -3,7 +3,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Link } from '@material-ui/core'
 
-import { GlobalContext } from 'components'
+import { GlobalContext } from 'components/context'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

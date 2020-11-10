@@ -3,7 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
 import { EndoImageWrap } from 'components/details'
-import { LangRecordSchema } from '../../context/types'
+import { LangRecordSchema } from 'components/context/types'
 
 export type LangOrEndoProps = {
   attribs: Pick<LangRecordSchema, 'Language' | 'Endonym' | 'Font Image Alt'>

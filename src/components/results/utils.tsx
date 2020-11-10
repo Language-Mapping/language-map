@@ -3,7 +3,7 @@ import { IconButton } from '@material-ui/core'
 import { GoFile } from 'react-icons/go'
 import { FaMapMarkedAlt } from 'react-icons/fa'
 
-import { LangRecordSchema } from '../../context/types'
+import { LangRecordSchema } from 'components/context/types'
 import countryCodes from './config.emojis.json'
 import * as Types from './types'
 import { CountryListItemWithFlag } from './CountryListItemWithFlag'

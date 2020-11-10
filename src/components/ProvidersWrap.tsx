@@ -3,9 +3,9 @@ import { CssBaseline } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
 
 import './style.css'
+
+import { GlobalProvider, SymbAndLabelProvider } from './context'
 import { theme } from './config/theme'
-import { GlobalProvider } from '../context'
-import { SymbAndLabelProvider } from '../context/SymbAndLabelContext'
 
 // Everything the app needs except Routes. This makes it testable and reusable
 // (e.g. <MemoryRouter>)

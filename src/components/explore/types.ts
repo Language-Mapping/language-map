@@ -1,4 +1,4 @@
-import { LangRecordSchema } from '../../context/types'
+import { LangRecordSchema } from 'components/context/types'
 
 // TODO: try to reuse some of these, they're pretty common in sev. components
 export type CategoryProps = {

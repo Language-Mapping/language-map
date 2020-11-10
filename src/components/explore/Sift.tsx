@@ -1,7 +1,7 @@
 import React, { FC, useContext } from 'react'
 import { useRouteMatch, useParams } from 'react-router-dom'
 
-import { GlobalContext } from 'components'
+import { GlobalContext } from 'components/context'
 import { SwatchOnly } from 'components/legend'
 import { BiMapPin, BiUserVoice } from 'react-icons/bi'
 import { CustomCard } from './CustomCard'

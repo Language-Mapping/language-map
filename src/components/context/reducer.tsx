@@ -1,4 +1,4 @@
-import { StoreAction, InitialState } from 'context/types'
+import { StoreAction, InitialState } from './types'
 
 export const reducer = (
   state: InitialState,

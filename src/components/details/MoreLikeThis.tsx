@@ -6,10 +6,10 @@ import { BiUserVoice } from 'react-icons/bi'
 import { IoIosPeople } from 'react-icons/io'
 
 import { paths as routes } from 'components/config/routes'
-import { useSymbAndLabelState } from 'components'
+import { useSymbAndLabelState } from 'components/context'
 import { getCodeByCountry } from 'components/results'
 import { LegendSwatch } from 'components/legend'
-import { LangRecordSchema } from '../../context/types'
+import { LangRecordSchema } from 'components/context/types'
 
 // TODO: types into details/types
 type ImportantCols = Pick<

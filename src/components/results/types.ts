@@ -4,7 +4,7 @@ import MaterialTable, {
   MaterialTableProps,
 } from 'material-table'
 
-import { LangRecordSchema } from '../../context/types'
+import { LangRecordSchema } from 'components/context/types'
 
 type ColumnWithField = Column<LangRecordSchema> & {
   field: keyof LangRecordSchema

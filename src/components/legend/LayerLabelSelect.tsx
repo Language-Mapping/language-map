@@ -4,9 +4,9 @@ import { TextField } from '@material-ui/core'
 import {
   useSymbAndLabelState,
   useLabelAndSymbDispatch,
-} from '../../context/SymbAndLabelContext'
+} from 'components/context/SymbAndLabelContext'
+import { LangRecordSchema, LangSchemaCol } from 'components/context/types'
 import { commonSelectProps } from './config'
-import { LangRecordSchema, LangSchemaCol } from '../../context/types'
 
 export const LayerLabelSelect: FC = () => {
   const labelFields: LangSchemaCol[] = ['Language', 'Endonym']

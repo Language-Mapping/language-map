@@ -1,6 +1,6 @@
+import { LangRecordSchema } from 'components/context/types'
 import * as utils from './utils'
 import * as MapTypes from './types'
-import { LangRecordSchema } from '../../context/types'
 
 export const onHover: MapTypes.OnHover = (
   event,

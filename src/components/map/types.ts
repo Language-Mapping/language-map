@@ -17,7 +17,7 @@ import {
 } from 'mapbox-gl'
 import * as GeoJSON from 'geojson'
 
-import { LangRecordSchema } from 'context/types'
+import { LangRecordSchema } from 'components/context/types'
 
 type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
 type Padding =

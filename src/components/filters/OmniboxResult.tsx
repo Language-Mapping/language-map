@@ -3,7 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Box } from '@material-ui/core'
 import { FaStreetView } from 'react-icons/fa'
 
-import { LangRecordSchema } from '../../context/types'
+import { LangRecordSchema } from 'components/context/types'
 
 type SmallDetailProps = {
   label: string

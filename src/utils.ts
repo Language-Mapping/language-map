@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Theme } from '@material-ui/core/styles'
 
-import { LangRecordSchema } from './context/types'
+import { LangRecordSchema } from 'components/context/types'
 
 // TODO: into config since it's used in multiple places...
 const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhood and Country
