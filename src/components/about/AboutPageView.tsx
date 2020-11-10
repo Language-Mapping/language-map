@@ -4,7 +4,6 @@ import { useQuery } from 'react-query'
 import { useTheme } from '@material-ui/core/styles'
 import {
   useMediaQuery,
-  Backdrop,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -13,7 +12,7 @@ import {
 } from '@material-ui/core'
 import { MdClose } from 'react-icons/md'
 
-import { SlideUp } from 'components/generic/modals'
+import { SlideUp, LoadingBackdrop } from 'components/generic/modals'
 import * as Types from './types'
 import { useStyles } from './styles'
 import { createMarkup } from '../../utils'
@@ -33,15 +32,14 @@ export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
   const wpData = data as Types.WpApiPageResponse
 
   // TODO: aria-something
-  if (isFetching) {
+  if (isFetching)
     return (
-      <Backdrop
-        className={classes.backdrop}
-        open
+      <LoadingBackdrop
+        centerOnScreen
+        text="" // default "Loading..." text kind of annoying here
         data-testid="about-page-backdrop" // TODO: something?
       />
     )
-  }
 
   // Go back in history if route wasn't table-based, otherwise go home. Also
   // avoids an infinite cycle of table-help-table backness.

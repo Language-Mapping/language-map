@@ -4,6 +4,11 @@ import { Backdrop, CircularProgress, Typography } from '@material-ui/core'
 
 import { useStyles as useNavStyles } from 'components/nav/styles'
 
+type LoadingBackdrop = {
+  centerOnScreen?: boolean
+  text?: string
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     backdropRoot: {
@@ -27,9 +32,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const LoadingBackdrop: FC = () => {
+export const LoadingBackdrop: FC<LoadingBackdrop> = (props) => {
+  const { centerOnScreen, text = 'Loading...' } = props
   const classes = useStyles()
-  const navClasses = useNavStyles({ panelOpen: true })
+  const navClasses = useNavStyles({ panelOpen: !centerOnScreen })
 
   return (
     <Backdrop className={classes.backdropRoot} open>
@@ -39,7 +45,7 @@ export const LoadingBackdrop: FC = () => {
         />
         <div>
           <Typography variant="h4" component="h2" className={classes.text}>
-            Loading...
+            {text}
           </Typography>
           <CircularProgress color="inherit" size={38} />
         </div>
