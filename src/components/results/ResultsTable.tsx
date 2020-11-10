@@ -179,7 +179,12 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
             icon: () => <AiOutlineQuestionCircle />,
             tooltip: 'Help',
             isFreeAction: true,
-            onClick: () => history.push(`/help${loc.search}`),
+            onClick: () =>
+              // Avoid an infinite cycle of table-help-table backness
+              history.push({
+                pathname: '/help',
+                state: { from: loc.pathname }, // TODO: spread ...loc.state ??
+              }),
           },
         ]}
       />

@@ -1,12 +1,16 @@
-import { wpConfigs, WP_API_PAGES_ENDPOINT } from './config'
+import { QueryCache } from 'react-query'
+import { WP_API_PAGES_ENDPOINT } from './config'
 
-// TODO: DRY this all out with same process as `map.utils.fetchBoundariesLookup`
+// Define a default query function that will receive the query key
+export const defaultQueryFn = async (key: number): Promise<void> =>
+  (await fetch(`${WP_API_PAGES_ENDPOINT}/${key}`)).json()
 
-export const fetchAbout = async (): Promise<void> =>
-  (await fetch(`${WP_API_PAGES_ENDPOINT}/${wpConfigs[0].pageID}`)).json()
-
-export const fetchHelp = async (): Promise<void> =>
-  (await fetch(`${WP_API_PAGES_ENDPOINT}/${wpConfigs[1].pageID}`)).json()
-
-export const fetchWelcome = async (): Promise<void> =>
-  (await fetch(`${WP_API_PAGES_ENDPOINT}/${wpConfigs[2].pageID}`)).json()
+// Provide the default query function to your app with defaultConfig
+export const queryCache = new QueryCache({
+  defaultConfig: {
+    queries: {
+      queryFn: defaultQueryFn,
+      cacheTime: 1000 * 60 * 30, // ms * sec * min. Default is 5 min.
+    },
+  },
+})
