@@ -3,9 +3,9 @@ import { TiDocumentText, TiThList } from 'react-icons/ti'
 import { FaBinoculars } from 'react-icons/fa'
 import { BiHomeAlt } from 'react-icons/bi'
 
-import { FiltersPanel } from 'components/filters'
+import { Home } from 'components/home'
 import { DetailsPanel } from 'components/details'
-import { Explore, PreDeets, SomeMidLevel } from 'components/explore'
+import { Explore, LangCardsList, MidLevelExplore } from 'components/explore'
 
 import { MapPanel } from 'components/panels/types'
 import { NavItemWithBadge } from './NavItemWithBadge'
@@ -17,28 +17,28 @@ export const panelsConfig = [
   {
     heading: 'Home',
     icon: <BiHomeAlt />,
-    component: <FiltersPanel />,
+    component: <Home />,
     rootPath: '/',
     exact: true,
   },
   {
     heading: 'Language dead-end',
-    component: <PreDeets />,
+    component: <LangCardsList />,
     rootPath: '/Explore/Language/:value',
   },
   {
     heading: 'Pre-details, nested w/extra params',
-    component: <PreDeets />,
+    component: <LangCardsList />,
     rootPath: '/Explore/:field/:value/:language',
   },
   {
     heading: 'Level 2 cat',
-    component: <SomeMidLevel />,
+    component: <MidLevelExplore />,
     rootPath: '/Explore/:field/:value',
   },
   {
     heading: 'Level 1 cat',
-    component: <SomeMidLevel />,
+    component: <MidLevelExplore />,
     rootPath: '/Explore/:field',
   },
   {

@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const FiltersPanel: FC = () => {
+export const Home: FC = () => {
   const { state } = useContext(GlobalContext)
   const symbLabelState = useSymbAndLabelState()
   const symbLabelDispatch = useLabelAndSymbDispatch()

@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
-import { FiltersWarning } from 'components/filters/FiltersWarning'
+import { FiltersWarning } from 'components/home/FiltersWarning'
 import * as Types from './types'
 
 export const usePanelRootStyles = makeStyles((theme: Theme) =>

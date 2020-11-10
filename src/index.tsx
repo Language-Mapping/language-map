@@ -4,7 +4,8 @@ import * as Sentry from '@sentry/react'
 import { BrowserRouter } from 'react-router-dom'
 import WebFont from 'webfontloader'
 
-import { App, ProvidersWrap } from 'components'
+import { App } from 'components'
+import { ProvidersWrap } from 'components/context'
 import * as serviceWorker from './serviceWorker'
 
 const SENTRY_DSN =
