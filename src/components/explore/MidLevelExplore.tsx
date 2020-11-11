@@ -93,6 +93,20 @@ export const MidLevelExplore: FC = () => {
     ]
   }, [] as Types.CardConfig[]) as Types.CardConfig[]
 
+  const uniqueAlmost = (all: string[], thisOne: LangRecordSchema) => {
+    if (!value) {
+      if (all.includes(thisOne.Language)) return all
+
+      return [...all, thisOne.Language]
+    }
+
+    if (!thisOne.Neighborhood) {
+      return all.includes(thisOne.Town) ? all : [...all, thisOne.Town]
+    }
+
+    return [...all, ...thisOne.Neighborhood.split(', ')]
+  }
+
   return (
     <ExploreSubView instancesCount={uniqueInstances.length}>
       <CardList>
@@ -105,7 +119,7 @@ export const MidLevelExplore: FC = () => {
               // @ts-ignore
               row[fieldInQuestion].split(', ').includes(instance.title)
             )
-            .map((row) => row.Language)
+            .reduce(uniqueAlmost, [] as string[])
 
           const uniques = friends.reduce(
             (all, thisOne) => (all.includes(thisOne) ? all : [...all, thisOne]),
@@ -116,6 +130,7 @@ export const MidLevelExplore: FC = () => {
             <CustomCard
               key={instance.title}
               {...instance}
+              // TODO: footerIcon as a separate prop
               uniqueInstances={uniques}
               url={`${url}/${instance.to}`}
             />
