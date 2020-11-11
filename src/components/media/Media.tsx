@@ -1,8 +1,9 @@
 import React, { FC, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useRouteMatch } from 'react-router-dom'
 import { Button, Typography } from '@material-ui/core'
 import { FiVideo, FiShare, FiMinusSquare } from 'react-icons/fi'
 import { AiOutlineSound } from 'react-icons/ai'
+import { FaMapMarkedAlt } from 'react-icons/fa'
 
 import { ShareButtons } from 'components/generic'
 import { RouteLocation } from 'components/config/types'
@@ -47,6 +48,7 @@ export const Media: FC<MediaProps> = (props) => {
   const { language, description, audio, video } = props
   const history = useHistory()
   const [mediaUrl, setMediaUrl] = useState<string>()
+  const isTable: { params: { id: string } } | null = useRouteMatch('/table/:id')
   const [showShareBtns, setShowShareBtns] = useState<boolean>(false)
   const classes = useStyles({ showShareBtns })
   const shareSrcAndTitle = `${language} - Languages of New York City Map`
@@ -59,12 +61,21 @@ export const Media: FC<MediaProps> = (props) => {
         <MediaModal url={mediaUrl} closeModal={() => setMediaUrl('')} />
       )}
       <ul className={classes.root}>
-        <MediaListItem
-          label="Clear selection"
-          icon={<FiMinusSquare />}
-          type="clear"
-          handleClick={() => history.push('/details' as RouteLocation)}
-        />
+        {(!isTable && (
+          <MediaListItem
+            label="Clear selection"
+            icon={<FiMinusSquare />}
+            type="clear"
+            handleClick={() => history.push('/details' as RouteLocation)}
+          />
+        )) || (
+          <MediaListItem
+            label="View in map"
+            icon={<FaMapMarkedAlt />}
+            type="view"
+            handleClick={() => history.push(`/details/${isTable?.params?.id}`)}
+          />
+        )}
         {config.map((item) => (
           <MediaListItem
             key={item.label}

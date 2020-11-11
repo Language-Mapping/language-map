@@ -104,6 +104,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
       <Route path="/table/:id">
         <SimpleDialog
           open
+          lessHorizPad // Details already has it
           onClose={() =>
             history.push({
               pathname: routes.table,
