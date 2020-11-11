@@ -1,6 +1,7 @@
 import React from 'react'
-import { TiDocumentText, TiThList } from 'react-icons/ti'
+import { TiThList } from 'react-icons/ti'
 import { FaBinoculars } from 'react-icons/fa'
+import { GoFile } from 'react-icons/go'
 import { BiHomeAlt } from 'react-icons/bi'
 
 import { Home } from 'components/home'
@@ -59,7 +60,7 @@ export const panelsConfig = [
   },
   {
     heading: 'Details',
-    icon: <TiDocumentText />,
+    icon: <GoFile />,
     component: <DetailsPanel />,
     rootPath: '/details',
   },

@@ -13,6 +13,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,
       bottom: 48, // default is set directly in MUI to 56
+      boxShadow: '0 -2px 7px hsla(0, 0%, 0%, 0.25)',
       display: 'flex',
       flexDirection: 'column',
       left: 0,
