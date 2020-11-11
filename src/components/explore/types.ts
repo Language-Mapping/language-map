@@ -9,6 +9,9 @@ export type CategoryProps = {
   icon?: React.ReactNode
   uniqueInstances?: unknown[]
 }
+export type CustomCardProps = CategoryProps & {
+  footerIcon?: React.ReactNode
+}
 
 export type CategoryConfig = {
   name: keyof LangRecordSchema
@@ -41,4 +44,8 @@ export type Field = {
   instancesCount: number
   subtitle?: string
   subSubtitle?: string | React.ReactNode
+}
+
+export type LangFilterArgs = RouteMatch & {
+  langFeatures: LangRecordSchema[]
 }

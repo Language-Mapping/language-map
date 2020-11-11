@@ -7,6 +7,8 @@ import Typography from '@material-ui/core/Typography'
 import * as Types from './types'
 import * as utils from './utils'
 
+type GlottoIsoFooterProps = { glotto?: string; iso?: string }
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
@@ -54,9 +56,11 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       color: theme.palette.text.secondary,
       display: 'inline-flex',
-      fontSize: 10,
+      fontSize: '0.5em',
       '& svg': {
         marginRight: '0.25em',
+        fontSize: '1.25em',
+        flexShrink: 0,
       },
     },
     accentBar: {
@@ -75,8 +79,20 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const CustomCard: FC<Types.CategoryProps> = (props) => {
-  const { title, url, uniqueInstances, intro, icon, footer } = props
+export const GlottoIsoFooter: FC<GlottoIsoFooterProps> = (props) => {
+  const { glotto, iso } = props
+
+  return (
+    <>
+      GLOTTOCODE: {glotto || 'N/A'}
+      <br />
+      ISO 639-3: {iso || 'N/A'}
+    </>
+  )
+}
+
+export const CustomCard: FC<Types.CustomCardProps> = (props) => {
+  const { title, url, uniqueInstances, intro, icon, footer, footerIcon } = props
   const classes = useStyles()
 
   return (
@@ -107,11 +123,10 @@ export const CustomCard: FC<Types.CategoryProps> = (props) => {
         variant="caption"
         className={classes.footer}
       >
-        {/* eslint-disable operator-linebreak */}
-        {uniqueInstances
-          ? utils.prettyTruncate(uniqueInstances as string[])
-          : footer}
-        {/* eslint-enable operator-linebreak */}
+        {footerIcon}
+        {footer ||
+          (uniqueInstances !== undefined &&
+            utils.prettyTruncate(uniqueInstances as string[]))}
       </Typography>
     </Card>
   )
