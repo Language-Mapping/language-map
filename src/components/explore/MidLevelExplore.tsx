@@ -1,7 +1,7 @@
 import React, { FC, useContext } from 'react'
 import { useRouteMatch, useParams } from 'react-router-dom'
 
-import { GlobalContext } from 'components/context'
+import { GlobalContext, LangRecordSchema } from 'components/context'
 import { BiMapPin, BiUserVoice } from 'react-icons/bi'
 import { SwatchOrFlagOrIcon } from 'components/generic/icons-and-swatches'
 import { CustomCard } from './CustomCard'
@@ -18,7 +18,7 @@ export const MidLevelExplore: FC = () => {
 
   if (!langFeatures.length) return <ExploreSubView instancesCount={0} />
 
-  let filtered
+  let filtered: LangRecordSchema[]
   const fieldInQuestion = value ? 'Language' : field
 
   // Filter out undefined values and those not matching `value` as needed
@@ -96,14 +96,31 @@ export const MidLevelExplore: FC = () => {
   return (
     <ExploreSubView instancesCount={uniqueInstances.length}>
       <CardList>
-        {uniqueInstances.sort(utils.sortByTitle).map((instance) => (
-          <CustomCard
-            key={instance.title}
-            {...instance}
-            uniqueInstances={[]}
-            url={`${url}/${instance.to}`}
-          />
-        ))}
+        {uniqueInstances.sort(utils.sortByTitle).map((instance) => {
+          const friends = filtered
+            .filter((row) =>
+              // Error makes no sense, didn't even work if filters length was
+              // confirmed first.
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              row[fieldInQuestion].split(', ').includes(instance.title)
+            )
+            .map((row) => row.Language)
+
+          const uniques = friends.reduce(
+            (all, thisOne) => (all.includes(thisOne) ? all : [...all, thisOne]),
+            [] as string[]
+          ) as string[]
+
+          return (
+            <CustomCard
+              key={instance.title}
+              {...instance}
+              uniqueInstances={uniques}
+              url={`${url}/${instance.to}`}
+            />
+          )
+        })}
       </CardList>
     </ExploreSubView>
   )

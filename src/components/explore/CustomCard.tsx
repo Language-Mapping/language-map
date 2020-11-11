@@ -107,8 +107,11 @@ export const CustomCard: FC<Types.CategoryProps> = (props) => {
         variant="caption"
         className={classes.footer}
       >
-        {/* TODO: find the uniques here, not from a prop */}
-        {footer || utils.prettyTruncate(uniqueInstances as string[])}
+        {/* eslint-disable operator-linebreak */}
+        {uniqueInstances
+          ? utils.prettyTruncate(uniqueInstances as string[])
+          : footer}
+        {/* eslint-enable operator-linebreak */}
       </Typography>
     </Card>
   )
