@@ -381,12 +381,12 @@ export const Map: FC<Types.MapProps> = (props) => {
       setViewport({ ...viewport, pitch: 0 })
 
       // Pitch reset in 50/50 page layout on smaller screens needs extra love:
-      if (breakpoint === 'mobile') {
+      if (panelOpen && breakpoint === 'mobile') {
         setTimeout(() => {
           map.panBy([0, 2 * offset[1] + 50], undefined, {
             forceViewportUpdate: true,
           })
-        }, 1)
+        }, 5)
       }
     } else if (actionID === 'in') {
       map.zoomIn({ offset }, popupSettings || undefined)

@@ -5,27 +5,31 @@ import { panelWidths } from 'components/panels/config'
 import * as Types from './types'
 import { useWindowResize } from '../../utils'
 
+// Set offsets to account for the panel-on-map layout as it would otherwise
+// expect the map center to be the screen center. Did not find a good way to do
+// this on init, so instead it gets used dynamically on each zoom-to-stuff
+// scenario. The values are pretty approximate and somewhat fragile as they were
+// determined through much trial and error.
 export function useOffset(panelOpen: boolean): Types.Offset {
   const { width, height } = useWindowResize()
   const breakpoint = useBreakpoint()
   const bottomBarHeight = 48
+  const deskGutter = 24
+  const topBarHeightIsh = 75
 
   let left = 0
-  let bottom = 0
+  let bottom = deskGutter / 2 // roughly ok on larger screens
 
   if (panelOpen) {
     if (breakpoint === 'mobile') {
-      const topBarHeightIsh = 75
       bottom = (-1 * (height - bottomBarHeight - topBarHeightIsh)) / 4
     } else if (breakpoint === 'huge') {
-      left = panelWidths.midLarge / 2 - 24
+      left = (width - panelWidths.midLarge - deskGutter * 4) / 4
     } else {
-      left = panelWidths.mid / 2 - 24
+      left = (width - panelWidths.mid + deskGutter * 4) / 4
     }
   } else if (breakpoint === 'mobile') {
-    bottom = -1 * (height / 4 - bottomBarHeight)
-  } else {
-    left = width
+    bottom = 0
   }
 
   return [left, bottom]
