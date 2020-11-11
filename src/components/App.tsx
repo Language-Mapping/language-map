@@ -66,7 +66,8 @@ export const App: FC = () => {
           />
         </Route>
       </ReactQueryCacheProvider>
-      <Suspense fallback={<h1>Loading table data...</h1>}>
+      {/* TODO: understand this and create legit fallback element */}
+      <Suspense fallback={<div />}>
         <LazyTable />
       </Suspense>
     </Sentry.ErrorBoundary>

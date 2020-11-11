@@ -13,8 +13,9 @@ export const TopBar: FC = () => {
   const classes = useStyles({ panelOpen: state.panelState === 'default' })
   const { spacerDesktop, spacerLeft, title, topBarRoot, logo } = classes
 
-  // Need the `id` in order to find unique element for `map.setPadding`
+  // TODO: account for panel being open on desktop. If it isn't, slide left.
   return (
+    // Need the `id` in order to find unique element for `map.setPadding`
     <header className={topBarRoot} id={PAGE_HEADER_ID}>
       <div className={`${spacerDesktop} ${spacerLeft}`} />
       <Typography variant="h2" component="h1" className={title}>

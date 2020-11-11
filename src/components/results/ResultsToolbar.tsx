@@ -132,7 +132,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
       payload: gangsAllHere ? 0 : 1,
     })
 
-    history.push(routes.home)
+    history.push(routes.home) // TODO: ideally, go back
   }
 
   // CRED: 🎉
