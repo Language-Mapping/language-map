@@ -8,7 +8,7 @@ import { GlobalContext } from 'components/context'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      alignItems: 'center',
+      alignItems: 'baseline',
       color: theme.palette.text.secondary,
       display: 'flex',
       fontSize: '0.65em',
@@ -16,13 +16,13 @@ const useStyles = makeStyles((theme: Theme) =>
       lineHeight: 1.2,
       marginBottom: '0.5em',
     },
-    fabBadge: {
+    badgeDot: {
       backgroundColor: theme.palette.warning.light,
-      height: '0.5em',
-      width: '0.5em',
-      flexShrink: 0,
-      marginRight: '0.4em',
       borderRadius: '100%',
+      flexShrink: 0,
+      height: 6,
+      marginRight: '0.4em',
+      width: 6,
     },
   })
 )
@@ -34,7 +34,7 @@ export const FiltersWarning: FC = () => {
 
   if (state.langFeatsLenCache === state.langFeatures.length) return null
 
-  const BadgeDot = <span className={classes.fabBadge} />
+  const BadgeDot = <div className={classes.badgeDot} />
 
   const ClearFilters = (
     <Link

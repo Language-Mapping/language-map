@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
       lineHeight: 1.5,
       marginBottom: '0.25em', // otherwise crowded when wrapped
       transition: '300ms backgroundColor ease',
+      whiteSpace: 'nowrap',
       '&:hover': {
         backgroundColor: theme.palette.grey[800],
       },
