@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme: Theme) =>
       marginLeft: 'auto',
       marginRight: 'auto',
       marginTop: '0.25em',
-      maxWidth: '85%',
+      maxWidth: '90%',
       paddingBottom: '0.75em',
     },
   })
