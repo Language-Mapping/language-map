@@ -43,6 +43,8 @@ export type PopupSettings = PopupContent & LongLat
 export type SheetsValues = [string, string]
 export type UseStyleProps = { panelOpen: boolean }
 export type ViewportState = Partial<ViewportProps> & ViewState
+export type Breakpoint = 'mobile' | 'desktop' | 'huge'
+export type Offset = [number, number] // [x, y]
 
 export type LayerPropsPlusMeta = Omit<LayerProps, 'paint' | 'layout' | 'id'> & {
   id: string

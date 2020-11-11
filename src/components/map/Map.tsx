@@ -64,6 +64,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   const symbLabelState = useSymbAndLabelState()
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
   const offset = hooks.useOffset(panelOpen)
+  const breakpoint = hooks.useBreakpoint()
   const [boundariesVisible, setBoundariesVisible] = useState<boolean>(false)
   const [geolocActive, setGeolocActive] = useState<boolean>(false)
 
@@ -369,7 +370,6 @@ export const Map: FC<Types.MapProps> = (props) => {
     utils.flyToBounds(map, settings, null)
   }
 
-  // TODO: into utils if it doesn't require passing 1000 args
   function onMapCtrlClick(actionID: Types.MapControlAction) {
     if (!mapRef.current) return
 
@@ -378,7 +378,16 @@ export const Map: FC<Types.MapProps> = (props) => {
     if (actionID === 'home') {
       flyHome(map)
     } else if (actionID === 'reset-pitch') {
-      setViewport({ ...viewport, pitch: 0 }) // TODO: fix offset on mobile/iPad?
+      setViewport({ ...viewport, pitch: 0 })
+
+      // Pitch reset in 50/50 page layout on smaller screens needs extra love:
+      if (breakpoint === 'mobile') {
+        setTimeout(() => {
+          map.panBy([0, 2 * offset[1] + 50], undefined, {
+            forceViewportUpdate: true,
+          })
+        }, 1)
+      }
     } else if (actionID === 'in') {
       map.zoomIn({ offset }, popupSettings || undefined)
     } else if (actionID === 'out') {

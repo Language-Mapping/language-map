@@ -5,21 +5,18 @@ import { panelWidths } from 'components/panels/config'
 import * as Types from './types'
 import { useWindowResize } from '../../utils'
 
-type Breakpoint = 'mobile' | 'desktop' | 'huge'
-type Offset = [number, number] // [x, y]
-
-export function useOffset(panelOpen: boolean): Offset {
+export function useOffset(panelOpen: boolean): Types.Offset {
   const { width, height } = useWindowResize()
   const breakpoint = useBreakpoint()
+  const bottomBarHeight = 48
 
   let left = 0
   let bottom = 0
 
-  const bottomBarHeight = 56
-
   if (panelOpen) {
     if (breakpoint === 'mobile') {
-      bottom = (-1 * height) / 4 + 50 // account for logo/title
+      const topBarHeightIsh = 75
+      bottom = (-1 * (height - bottomBarHeight - topBarHeightIsh)) / 4
     } else if (breakpoint === 'huge') {
       left = panelWidths.midLarge / 2 - 24
     } else {
@@ -34,7 +31,7 @@ export function useOffset(panelOpen: boolean): Offset {
   return [left, bottom]
 }
 
-export function useBreakpoint(): Breakpoint {
+export function useBreakpoint(): Types.Breakpoint {
   const theme = useTheme()
   const { width } = useWindowResize()
 
