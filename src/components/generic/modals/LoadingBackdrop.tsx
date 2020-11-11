@@ -7,6 +7,7 @@ import { useStyles as useNavStyles } from 'components/nav/styles'
 type LoadingBackdrop = {
   centerOnScreen?: boolean
   text?: string
+  testID?: string
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -33,12 +34,13 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const LoadingBackdrop: FC<LoadingBackdrop> = (props) => {
-  const { centerOnScreen, text = 'Loading...' } = props
+  const { centerOnScreen, text = 'Loading...', testID } = props
   const classes = useStyles()
   const navClasses = useNavStyles({ panelOpen: !centerOnScreen })
 
   return (
-    <Backdrop className={classes.backdropRoot} open>
+    // TODO: aria-something // NOTE: about's testid must = 'about-page-backdrop'
+    <Backdrop className={classes.backdropRoot} open data-testid={testID}>
       <div className={classes.backdropContent}>
         <div
           className={`${navClasses.spacerDesktop} ${navClasses.spacerLeft}`}

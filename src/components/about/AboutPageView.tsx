@@ -31,13 +31,12 @@ export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
   const { data, isFetching, error } = useQuery(queryKey)
   const wpData = data as Types.WpApiPageResponse
 
-  // TODO: aria-something
   if (isFetching)
     return (
       <LoadingBackdrop
         centerOnScreen
         text="" // default "Loading..." text kind of annoying here
-        data-testid="about-page-backdrop" // TODO: something?
+        testID={`${title?.replace(' ', '').toLowerCase()}-page-backdrop`}
       />
     )
 
