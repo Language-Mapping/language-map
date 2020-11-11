@@ -6,28 +6,27 @@ import { createMarkup, isAlpha } from '../../utils'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    recDescripRoot: {
+    root: {
       fontFamily: theme.typography.h1.fontFamily,
-      marginTop: theme.spacing(2),
+      marginTop: '0.5em',
       whiteSpace: 'pre-line',
     },
     firstLetter: {
-      display: 'inline-block',
-      fontSize: theme.typography.h1.fontSize,
-      fontFamily: theme.typography.h1.fontFamily,
-      fontWeight: theme.typography.h1.fontWeight,
-      lineHeight: 0,
-      marginRight: 4,
-      marginTop: '1rem',
+      float: 'left',
+      fontFamily: theme.typography.h2.fontFamily,
+      fontSize: '3.6em',
+      fontWeight: theme.typography.h2.fontWeight,
+      lineHeight: 0.75,
+      marginRight: '0.1em',
     },
     body: {
       fontSize: '0.85em',
     },
     closeBtn: {
       position: 'absolute',
-      zIndex: 1,
-      top: theme.spacing(1),
       right: theme.spacing(1),
+      top: theme.spacing(1),
+      zIndex: 1,
     },
   })
 )
@@ -48,7 +47,7 @@ export const RecordDescription: FC<{ text: string }> = (props) => {
   const firstCharAlpha = isAlpha(firstChar)
 
   return (
-    <Typography className={classes.recDescripRoot}>
+    <Typography className={classes.root}>
       {firstCharAlpha && <FancyFirstLetter text={firstChar} />}
       <span
         className={classes.body}

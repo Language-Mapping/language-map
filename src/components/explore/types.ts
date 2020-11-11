@@ -1,4 +1,4 @@
-import { LangRecordSchema } from '../../context/types'
+import { LangRecordSchema } from 'components/context/types'
 
 // TODO: try to reuse some of these, they're pretty common in sev. components
 export type CategoryProps = {
@@ -8,6 +8,9 @@ export type CategoryProps = {
   footer?: string
   icon?: React.ReactNode
   uniqueInstances?: unknown[]
+}
+export type CustomCardProps = CategoryProps & {
+  footerIcon?: React.ReactNode
 }
 
 export type CategoryConfig = {
@@ -41,4 +44,8 @@ export type Field = {
   instancesCount: number
   subtitle?: string
   subSubtitle?: string | React.ReactNode
+}
+
+export type LangFilterArgs = RouteMatch & {
+  langFeatures: LangRecordSchema[]
 }

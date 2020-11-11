@@ -7,9 +7,10 @@ type ToggleableProps = {
 
 const useStyles = makeStyles(() =>
   createStyles({
-    toggleableRoot: {
+    root: {
       display: 'flex',
       flexDirection: 'column',
+      marginTop: '0.25em',
     },
     innerContent: {
       flex: (props: ToggleableProps) => (props.show ? 1 : 0),
@@ -27,7 +28,7 @@ export const ToggleableSection: FC<ToggleableProps> = (props) => {
   const classes = useStyles({ show })
 
   return (
-    <div className={classes.toggleableRoot}>
+    <div className={classes.root}>
       <div className={classes.innerContent}>{children}</div>
     </div>
   )

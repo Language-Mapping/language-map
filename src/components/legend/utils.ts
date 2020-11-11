@@ -1,7 +1,7 @@
 import { LayerPropsPlusMeta } from 'components/map/types'
+import { Action as SymbLabelAction } from 'components/context/SymbAndLabelContext'
 import { LegendSwatch, IconID } from './types'
 import { langLabelsStyle } from '../map/config.points' // just need defaults
-import { Action as SymbLabelAction } from '../../context/SymbAndLabelContext'
 import styleConfig from '../map/config.lang-style'
 
 const createMapLegend = (layers: LayerPropsPlusMeta[]): LegendSwatch[] => {

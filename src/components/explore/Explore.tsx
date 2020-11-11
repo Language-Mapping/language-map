@@ -2,7 +2,7 @@ import React, { FC, useContext, useState, useEffect } from 'react'
 import { useRouteMatch, Link as RouterLink } from 'react-router-dom'
 import { Link } from '@material-ui/core'
 
-import { GlobalContext } from 'components'
+import { GlobalContext } from 'components/context'
 import { PanelContent } from 'components/panels'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
@@ -44,11 +44,16 @@ export const Explore: FC<{ icon: React.ReactNode }> = (props) => {
 
   const intro = (
     <>
-      For an explanation of the options below, visit{' '}
+      For an explanation of the options below, visit the{' '}
       <Link component={RouterLink} to="/help">
-        Help
+        Help page
       </Link>{' '}
-      for definitions and additional info.
+      for definitions and additional info. You can also view and filter all
+      language communities in the{' '}
+      <Link component={RouterLink} to="/table">
+        Data table
+      </Link>{' '}
+      as well.
     </>
   )
 

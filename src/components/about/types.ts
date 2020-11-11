@@ -12,4 +12,10 @@ export type RemoteContentState = {
   content: string | null
 }
 
-export type WpQueryNames = 'about' | 'help' | 'welcome'
+export type WpQueryKeys = 'about' | 'help' | 'welcome'
+
+export type AboutPageProps = {
+  queryKey: number
+  icon?: React.ReactNode
+  title?: string
+}

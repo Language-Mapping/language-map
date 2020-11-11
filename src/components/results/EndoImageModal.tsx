@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Link, Typography } from '@material-ui/core'
 
-import { SimpleDialog } from 'components'
+import { SimpleDialog } from 'components/generic/modals'
 import { correctDropboxURL } from '../../utils'
 
 type EndoImageComponent = {

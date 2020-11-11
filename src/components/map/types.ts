@@ -17,7 +17,7 @@ import {
 } from 'mapbox-gl'
 import * as GeoJSON from 'geojson'
 
-import { LangRecordSchema } from 'context/types'
+import { LangRecordSchema } from 'components/context/types'
 
 type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
 type Padding =
@@ -43,6 +43,8 @@ export type PopupSettings = PopupContent & LongLat
 export type SheetsValues = [string, string]
 export type UseStyleProps = { panelOpen: boolean }
 export type ViewportState = Partial<ViewportProps> & ViewState
+export type Breakpoint = 'mobile' | 'desktop' | 'huge'
+export type Offset = [number, number] // [x, y]
 
 export type LayerPropsPlusMeta = Omit<LayerProps, 'paint' | 'layout' | 'id'> & {
   id: string
@@ -107,7 +109,6 @@ export type GeocodeResult = {
 
 export type MapProps = {
   mapLoaded: boolean
-  openOffCanvasNav: () => void
   panelOpen: boolean
   setMapLoaded: React.Dispatch<boolean>
 }

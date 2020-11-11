@@ -4,12 +4,12 @@ import { Route, useHistory, useLocation } from 'react-router-dom'
 import MaterialTable from 'material-table'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
-import { SimpleDialog } from 'components'
+import { SimpleDialog } from 'components/generic/modals'
 import { paths as routes } from 'components/config/routes'
 import { DetailsPanel } from 'components/details'
+import { LangRecordSchema } from 'components/context/types'
 import { MuiTableWithLangs } from './types'
 import { ResultsToolbar } from './ResultsToolbar'
-import { LangRecordSchema } from '../../context/types'
 
 import * as Types from './types'
 import * as config from './config'
@@ -104,6 +104,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
       <Route path="/table/:id">
         <SimpleDialog
           open
+          lessHorizPad // Details already has it
           onClose={() =>
             history.push({
               pathname: routes.table,
@@ -179,7 +180,12 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
             icon: () => <AiOutlineQuestionCircle />,
             tooltip: 'Help',
             isFreeAction: true,
-            onClick: () => history.push(`/help${loc.search}`),
+            onClick: () =>
+              // Avoid an infinite cycle of table-help-table backness
+              history.push({
+                pathname: '/help',
+                state: { from: loc.pathname }, // TODO: spread ...loc.state ??
+              }),
           },
         ]}
       />

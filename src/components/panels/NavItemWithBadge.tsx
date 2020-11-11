@@ -2,7 +2,7 @@ import React, { FC, useContext } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Badge } from '@material-ui/core'
 
-import { GlobalContext } from 'components'
+import { GlobalContext } from 'components/context'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

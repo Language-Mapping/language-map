@@ -3,11 +3,11 @@ import { queryCache, useQuery } from 'react-query'
 import { AnyLayout, Expression } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
+import { useSymbAndLabelState } from 'components/context/SymbAndLabelContext'
 import * as config from './config'
 
 import { LayerPropsPlusMeta, SheetsValues } from './types'
 import { asyncAwaitFetch, prepEndoFilters } from './utils'
-import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
 
 const { mbStyleTileConfig, langLabelsStyle, QUERY_ID, MB_FONTS_URL } = config
 

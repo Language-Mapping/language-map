@@ -9,8 +9,8 @@ import { MdCheck } from 'react-icons/md'
 import { GoCircleSlash } from 'react-icons/go'
 
 import { LegendSwatch } from 'components/legend'
-import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
-import { LangRecordSchema } from '../../context/types'
+import { useSymbAndLabelState } from 'components/context/SymbAndLabelContext'
+import { LangRecordSchema } from 'components/context/types'
 
 type CellProps = { data: LangRecordSchema }
 

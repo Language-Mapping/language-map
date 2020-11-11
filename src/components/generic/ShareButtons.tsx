@@ -30,7 +30,7 @@ type ShareBtnProps = {
 const DEFAULT_URL = 'https://map.languagemapping.org/'
 const DEFAULT_TITLE = 'Languages of New York City Map'
 const DEFAULT_SUMMARY =
-  'An interactive map of language diversity in York City, one of the world’s most linguistically diverse metropolitan areas.'
+  'An interactive map of language diversity in New York City, one of the world’s most linguistically diverse metropolitan areas.'
 const DEFAULT_SOURCE = 'Languages of New York City Map'
 
 const sharedProps = { size: 32, round: true }

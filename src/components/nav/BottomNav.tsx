@@ -1,11 +1,7 @@
 import React, { FC, useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import {
-  Paper,
-  BottomNavigation,
-  BottomNavigationAction,
-} from '@material-ui/core'
+import { BottomNavigation, BottomNavigationAction } from '@material-ui/core'
 
 import { RouteLocation } from 'components/config/types'
 import { panelsConfig, panelWidths } from '../panels/config'
@@ -16,14 +12,20 @@ type BottomNav = {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    bottomNavRoot: {
-      position: 'absolute',
+    root: {
+      backgroundColor: theme.palette.primary.dark,
+      borderBottomLeftRadius: 4,
+      borderBottomRightRadius: 4,
       bottom: 0,
+      boxShadow: '0px 0px 5px 0px rgba(0,0,0,0.1)',
       left: 0,
+      position: 'absolute',
       right: 0,
       zIndex: 1,
-      '& svg': {
-        fontSize: '1.2em',
+      [theme.breakpoints.down('sm')]: {
+        boxShadow: '0px -5px 5px 0px rgba(0,0,0,0.1)',
+        borderRadius: 0,
+        height: 48, // TODO: store as var somewhere
       },
       [theme.breakpoints.up('md')]: {
         left: 24,
@@ -36,15 +38,39 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     // TODO: clip-path notch instead of boring rounded corners
-    bottomNav: {
-      borderTopRightRadius: 0,
-      borderTopLeftRadius: 0,
+    bottomNavAction: {
+      borderBottomColor: 'transparent',
+      borderBottomStyle: 'solid',
+      borderBottomWidth: 0,
+      color: theme.palette.text.secondary,
+      minWidth: 'auto', // 80 = too-large default,
+      outline: `solid 1px hsla(168, 41%, 19%, 0.15)`,
+      transition: 'all 300ms ease',
       [theme.breakpoints.down('sm')]: {
-        borderRadius: 0,
+        padding: '0 !important',
+      },
+      '& svg': {
+        transition: '300ms ease all',
+        fontSize: '1.4em',
       },
     },
-    bottomNavAction: {
-      minWidth: 'auto', // 80 = too-large default,
+    bottomNavIconOnly: {
+      paddingTop: 24,
+    },
+    bottomNavLabel: {
+      [theme.breakpoints.down('sm')]: {
+        display: 'none',
+      },
+    },
+    bottomNavSelected: {
+      color: theme.palette.text.primary,
+      borderBottomWidth: 4,
+      borderBottomColor: theme.palette.primary.main,
+      fontSize: '0.85em',
+      '& svg': {
+        fill: theme.palette.text.primary,
+        fontSize: '1.2em',
+      },
     },
   })
 )
@@ -81,34 +107,33 @@ export const BottomNav: FC<BottomNav> = (props) => {
   }, [loc.pathname])
 
   return (
-    <div className={classes.bottomNavRoot}>
-      <BottomNavigation
-        component={Paper}
-        elevation={8}
-        value={`${loc.pathname.split('/')[1]}` || '/'}
-        onChange={handleChange}
-        className={classes.bottomNav}
-      >
-        {panelsConfig
-          .filter(({ rootPath }) => !rootPath.includes('/:')) // omit sub-routes
-          .map((config) => {
-            const subRouteStateKey = config.rootPath.split('/')[1] || '/'
+    <BottomNavigation
+      component="nav"
+      value={`${loc.pathname.split('/')[1]}` || '/'}
+      onChange={handleChange}
+      className={classes.root}
+    >
+      {panelsConfig
+        .filter(({ rootPath }) => !rootPath.includes('/:')) // omit sub-routes
+        .map((config) => {
+          const subRouteStateKey = config.rootPath.split('/')[1] || '/'
 
-            return (
-              <BottomNavigationAction
-                key={config.heading}
-                component={NavLink}
-                label={config.heading}
-                icon={config.icon}
-                value={subRouteStateKey}
-                to={subRoutePath[subRouteStateKey] || config.rootPath}
-                classes={{
-                  root: classes.bottomNavAction,
-                }}
-              />
-            )
-          })}
-      </BottomNavigation>
-    </div>
+          return (
+            <BottomNavigationAction
+              key={config.heading}
+              component={NavLink}
+              label={config.heading}
+              icon={config.icon}
+              value={subRouteStateKey}
+              to={subRoutePath[subRouteStateKey] || config.rootPath}
+              classes={{
+                selected: classes.bottomNavSelected,
+                root: classes.bottomNavAction,
+                label: classes.bottomNavLabel,
+              }}
+            />
+          )
+        })}
+    </BottomNavigation>
   )
 }

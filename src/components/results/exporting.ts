@@ -1,9 +1,9 @@
 import { CsvBuilder } from 'filefy'
 import jsPDF from 'jspdf'
 import autoTable, { RowInput, UserOptions } from 'jspdf-autotable'
+import { LangRecordSchema } from 'components/context/types'
 import * as config from './config'
 import { ColumnList } from './types'
-import { LangRecordSchema } from '../../context/types'
 
 const getColumns = (columnList: ColumnList) =>
   columnList.filter(

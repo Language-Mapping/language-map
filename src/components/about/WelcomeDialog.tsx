@@ -1,22 +1,21 @@
 import React, { FC, useState } from 'react'
 import { useQuery } from 'react-query'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-
 import {
-  Backdrop,
   Dialog,
   DialogContent,
   DialogTitle,
   Typography,
 } from '@material-ui/core'
 
-import { WpApiPageResponse, WpQueryNames } from './types'
+import { LoadingBackdrop } from 'components/generic/modals'
+import { WpApiPageResponse } from './types'
 import { WelcomeFooter } from './WelcomeFooter'
 import { createMarkup } from '../../utils'
 import { ReactComponent as ProjectLogo } from '../../img/logo.svg'
 
 type AboutPageProps = {
-  queryName: WpQueryNames
+  queryKey: number
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -91,21 +90,22 @@ export const Logo: FC = (props) => {
 }
 
 export const WelcomeDialog: FC<AboutPageProps> = (props) => {
-  const { queryName } = props
+  const { queryKey } = props
   const classes = useStyles()
-  const { backdrop, dialogContent, welcomePaper } = classes
-  const { data, isFetching, error } = useQuery(queryName)
+  const { dialogContent, welcomePaper } = classes
+  const { data, isFetching, error } = useQuery(queryKey)
   const wpData = data as WpApiPageResponse
   const [open, setOpen] = useState<boolean>(true)
 
   // TODO: aria-something
-  if (isFetching) {
-    return <Backdrop className={backdrop} open />
-  }
+  if (isFetching)
+    return (
+      <LoadingBackdrop
+        data-testid="about-page-backdrop" // TODO: something?
+      />
+    )
 
-  const handleClose = () => {
-    setOpen(false)
-  }
+  const handleClose = () => setOpen(false)
 
   // TODO: wire up Sentry // TODO: aria
   // TODO: TS for error (`error.message` is a string)
@@ -126,8 +126,8 @@ export const WelcomeDialog: FC<AboutPageProps> = (props) => {
       onClose={handleClose}
       disableEscapeKeyDown
       disableBackdropClick
-      aria-labelledby={`${queryName}-dialog-title`}
-      aria-describedby={`${queryName}-dialog-description`}
+      aria-labelledby={`${queryKey}-dialog-title`}
+      aria-describedby={`${queryKey}-dialog-description`}
       maxWidth="md"
       PaperProps={{ className: welcomePaper }}
     >
@@ -140,7 +140,7 @@ export const WelcomeDialog: FC<AboutPageProps> = (props) => {
           dangerouslySetInnerHTML={createMarkup(
             (wpData && wpData.content.rendered) || ''
           )}
-          id={`${queryName}-dialog-description`}
+          id={`${queryKey}-dialog-description`}
         />
       </DialogContent>
       <WelcomeFooter handleClose={handleClose} />

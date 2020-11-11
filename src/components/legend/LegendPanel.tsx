@@ -1,38 +1,23 @@
 import React, { FC, useState } from 'react'
 import { Link, Typography } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { FaGlobeAmericas } from 'react-icons/fa'
 
 import { LayerSymbSelect, LayerLabelSelect, Legend } from 'components/legend'
-import { ToggleableSection } from 'components'
-import { GoInfo } from 'react-icons/go'
-import { LegendSwatch } from './types'
+import { ToggleableSection } from 'components/generic'
 import { WorldRegionMap } from './WorldRegionMap'
-
-type LegendPanelComponent = {
-  legendItems: LegendSwatch[]
-  groupName: string
-}
+import * as Types from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      marginTop: '1.25em',
+      marginTop: '1em',
     },
     legendCtrls: {
-      margin: '0.25em 0',
-      display: 'flex',
       alignItems: 'center',
+      display: 'flex',
+      margin: '0.25em 0 0.75em',
       '& > * + *': {
         marginLeft: '1em',
-      },
-    },
-    changeLegendLink: {
-      alignItems: 'center',
-      display: 'inline-flex',
-      fontSize: '0.8em',
-      '& svg': {
-        marginRight: 4,
       },
     },
     legendTip: {
@@ -43,16 +28,34 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const LegendPanel: FC<LegendPanelComponent> = (props) => {
+export const LegendPanel: FC<Types.LegendPanelComponent> = (props) => {
   const { legendItems, groupName } = props
   const classes = useStyles()
   const [showWorldMap, setShowWorldMap] = useState<boolean>(false)
 
+  const WorldMapToggle = (
+    <Link
+      href="#"
+      onClick={(e: React.MouseEvent) => {
+        e.preventDefault()
+        setShowWorldMap(!showWorldMap)
+      }}
+    >
+      {showWorldMap ? 'Hide' : 'Show'} world map
+    </Link>
+  )
+
   const LegendTip = (
-    <Typography className={`${classes.changeLegendLink} ${classes.legendTip}`}>
-      <GoInfo />
-      Click any of the items in the legend to view similar communities.
+    <Typography className={classes.legendTip}>
+      Click any world region below to see languages from that region which are
+      spoken locally. {WorldMapToggle}
     </Typography>
+  )
+
+  const WorldMap = (
+    <ToggleableSection show={showWorldMap}>
+      <WorldRegionMap />
+    </ToggleableSection>
   )
 
   return (
@@ -61,22 +64,13 @@ export const LegendPanel: FC<LegendPanelComponent> = (props) => {
         <LayerSymbSelect />
         <LayerLabelSelect />
       </div>
-      {LegendTip}
+      {groupName === 'World Region' && (
+        <>
+          {LegendTip}
+          {WorldMap}
+        </>
+      )}
       <Legend legendItems={legendItems} groupName={groupName} />
-      <Link
-        href="#"
-        className={classes.changeLegendLink}
-        onClick={(e: React.MouseEvent) => {
-          e.preventDefault()
-          setShowWorldMap(!showWorldMap)
-        }}
-      >
-        <FaGlobeAmericas />
-        {showWorldMap ? 'Hide' : 'Show'} world map
-      </Link>
-      <ToggleableSection show={showWorldMap}>
-        <WorldRegionMap />
-      </ToggleableSection>
     </div>
   )
 }

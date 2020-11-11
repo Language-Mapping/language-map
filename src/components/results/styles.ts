@@ -1,18 +1,8 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-const bodyRow = '.MuiTableRow-root:not(:first-of-type)'
-const bodyCell = '.MuiTableCell-body'
 const footerCell = '.MuiTableCell-footer'
 const footerWrap = '.MuiPaper-root > .MuiTable-root'
 const headCell = '.MuiTableCell-head'
-const first = ':first-of-type'
-const second = ':nth-of-type(2)'
-
-// Handy. Rm if not using.
-// const filterRow = '.MuiTableRow-root:first-of-type'
-// const headRow = '.MuiTableRow-head'
-// const filterCell = `${filterRow} ${bodyCell}`
-// const third = ':nth-of-type(3)'
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -36,7 +26,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         fontSize: '0.8rem',
         backgroundColor: theme.palette.background.paper,
       },
-      '& .MuiTableHead-root': {
+      '& .MuiTableHead-root > tr': {
         backgroundColor: theme.palette.background.paper,
       },
       // e.g. the Filter icon at beginning of column filters
@@ -48,19 +38,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       // Default cushion of non-dense table cell is 16px
       '& .MuiTableCell-root': { padding: '0.5rem' },
-      // First column's values are just a button
-      [`& ${bodyRow} ${bodyCell}${first}`]: {
-        position: 'sticky !important',
-        backgroundColor: theme.palette.background.paper,
-        left: '0 !important',
-      },
-      // Second column's values are just a button
-      [`& ${bodyRow} ${bodyCell}${second}`]: {
-        position: 'sticky !important',
-        backgroundColor: theme.palette.background.paper,
-        paddingLeft: 0,
-        left: '42px !important', // FRAGILE, needs smaller than width on mobile
-      },
       // Pagination
       [`& ${footerCell}`]: {
         borderBottom: 'none',
@@ -103,6 +80,12 @@ export const useStyles = makeStyles((theme: Theme) =>
       // The wrapper around the wrapper around the wrapper around the table
       '& > .MuiPaper-root > :nth-child(2)': {
         overflow: 'auto',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      },
+      '& > .MuiPaper-root > :nth-child(2) > div > div': {
+        overflowY: 'unset !important', // forces horiz. scrollbar to show
       },
       '& .MuiPaper-root': {
         display: 'flex',

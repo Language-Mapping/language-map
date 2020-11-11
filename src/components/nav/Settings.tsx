@@ -4,7 +4,7 @@ import { Box, FormControlLabel, Switch, Typography } from '@material-ui/core'
 import { FiShare } from 'react-icons/fi'
 import { GoGear } from 'react-icons/go'
 
-import { ShareButtons } from 'components'
+import { ShareButtons } from 'components/generic'
 
 type SettingsProps = {
   smallerTextClass: string

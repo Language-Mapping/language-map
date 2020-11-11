@@ -15,7 +15,7 @@ const groupedLegendConfigs = {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    legendRoot: {
+    root: {
       listStyleType: 'none',
       marginBottom: theme.spacing(1),
       marginTop: 0,
@@ -53,7 +53,7 @@ export const GroupedLegend: FC<GroupedLegendProps> = (props) => {
       <Typography component="h4" variant="overline">
         {groupName}
       </Typography>
-      <ul className={classes.legendRoot}>
+      <ul className={classes.root}>
         {/* @ts-ignore */}
         {groupConfig[groupName].map((item) => {
           const corresponding = legendItems.find(
@@ -94,26 +94,24 @@ export const Legend: FC<LegendComponent> = (props) => {
   if (groupConfig) {
     return (
       <div className={classes.groupedLegend}>
-        {Object.keys(groupConfig).map((groupHeading) => {
-          return (
-            <GroupedLegend
-              key={groupHeading}
-              groupName={groupHeading}
-              baseRoute={`${routes.grid}/${groupName}`}
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              groupConfig={groupConfig}
-              legendItems={legendItems}
-            />
-          )
-        })}
+        {Object.keys(groupConfig).map((groupHeading) => (
+          <GroupedLegend
+            key={groupHeading}
+            groupName={groupHeading}
+            baseRoute={`${routes.grid}/${groupName}`}
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            groupConfig={groupConfig}
+            legendItems={legendItems}
+          />
+        ))}
       </div>
     )
   }
 
   return (
     <ul
-      className={classes.legendRoot}
+      className={classes.root}
       style={{ paddingLeft: groupName === 'Status' ? '0.25em' : 0 }}
     >
       {legendItems.map((item) => {
@@ -130,8 +128,7 @@ export const Legend: FC<LegendComponent> = (props) => {
             key={item.legendLabel}
             {...item}
             icon={matchingConfig && matchingConfig.icon}
-            component={RouterLink}
-            to={`${routes.grid}/${groupName}/${item.legendLabel}`}
+            component={item.to ? RouterLink : 'li'}
           />
         )
       })}

@@ -3,7 +3,8 @@ import { useQuery } from 'react-query'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
   AttributionControl,
-  Map as MbMap,
+  Map as MbMap, // TODO: try to lazy load the biggest dep of all. See:
+  // www.debugbear.com/blog/bundle-splitting-components-with-webpack-and-react
   setRTLTextPlugin,
   LngLatBounds,
 } from 'mapbox-gl'
@@ -11,9 +12,10 @@ import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import { GlobalContext } from 'components'
+import { GlobalContext } from 'components/context'
 import { paths as routes } from 'components/config/routes'
-import { useSymbAndLabelState } from '../../context/SymbAndLabelContext'
+import { useSymbAndLabelState } from 'components/context/SymbAndLabelContext'
+import { LangRecordSchema } from 'components/context/types'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { Geolocation } from './Geolocation'
 import { MapPopup } from './MapPopup'
@@ -28,7 +30,6 @@ import * as config from './config'
 import * as events from './events'
 import symbLayers from './config.lang-style'
 
-import { LangRecordSchema } from '../../context/types'
 import {
   getIDfromURLparams,
   findFeatureByID,
@@ -54,7 +55,7 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
 }
 
 export const Map: FC<Types.MapProps> = (props) => {
-  const { openOffCanvasNav, mapLoaded, setMapLoaded, panelOpen } = props
+  const { mapLoaded, setMapLoaded, panelOpen } = props
   const history = useHistory()
   const loc = useLocation()
   const match: { params: { id: string } } | null = useRouteMatch('/details/:id')
@@ -63,6 +64,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   const symbLabelState = useSymbAndLabelState()
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
   const offset = hooks.useOffset(panelOpen)
+  const breakpoint = hooks.useBreakpoint()
   const [boundariesVisible, setBoundariesVisible] = useState<boolean>(false)
   const [geolocActive, setGeolocActive] = useState<boolean>(false)
 
@@ -368,18 +370,24 @@ export const Map: FC<Types.MapProps> = (props) => {
     utils.flyToBounds(map, settings, null)
   }
 
-  // TODO: into utils if it doesn't require passing 1000 args
   function onMapCtrlClick(actionID: Types.MapControlAction) {
     if (!mapRef.current) return
 
     const map: MbMap = mapRef.current.getMap()
 
-    if (actionID === 'info') {
-      openOffCanvasNav()
-    } else if (actionID === 'home') {
+    if (actionID === 'home') {
       flyHome(map)
     } else if (actionID === 'reset-pitch') {
-      setViewport({ ...viewport, pitch: 0 }) // TODO: fix offset on mobile/iPad?
+      setViewport({ ...viewport, pitch: 0 })
+
+      // Pitch reset in 50/50 page layout on smaller screens needs extra love:
+      if (panelOpen && breakpoint === 'mobile') {
+        setTimeout(() => {
+          map.panBy([0, 2 * offset[1] + 50], undefined, {
+            forceViewportUpdate: true,
+          })
+        }, 5)
+      }
     } else if (actionID === 'in') {
       map.zoomIn({ offset }, popupSettings || undefined)
     } else if (actionID === 'out') {

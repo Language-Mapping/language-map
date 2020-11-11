@@ -3,7 +3,6 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import { SpeedDial, SpeedDialAction } from '@material-ui/lab'
 import { MdYoutubeSearchedFor } from 'react-icons/md'
 import { TiCompass } from 'react-icons/ti'
-import { GoInfo } from 'react-icons/go'
 import { FaSearchPlus, FaSearchMinus, FaSearchLocation } from 'react-icons/fa'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
@@ -64,11 +63,6 @@ const ctrlBtnsConfig = [
     icon: <FaSearchLocation />,
     name: 'Search by location',
     customFn: true,
-  },
-  {
-    id: 'info',
-    icon: <GoInfo style={{ fontSize: '1.55em' }} />,
-    name: 'About & Info',
   },
   {
     id: 'reset-pitch',

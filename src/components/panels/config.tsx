@@ -1,14 +1,14 @@
 import React from 'react'
-import { TiDocumentText, TiThList } from 'react-icons/ti'
+import { TiThList } from 'react-icons/ti'
 import { FaBinoculars } from 'react-icons/fa'
+import { GoFile } from 'react-icons/go'
 import { BiHomeAlt } from 'react-icons/bi'
 
-import { FiltersPanel } from 'components/filters'
+import { Home } from 'components/home'
 import { DetailsPanel } from 'components/details'
-import { Explore, PreDeets, SomeMidLevel } from 'components/sift'
+import { Explore, LangCardsList, MidLevelExplore } from 'components/explore'
 
 import { MapPanel } from 'components/panels/types'
-import { AiOutlineQuestionCircle } from 'react-icons/ai'
 import { NavItemWithBadge } from './NavItemWithBadge'
 
 export const MOBILE_PANEL_HEADER_HT = '3rem'
@@ -18,28 +18,28 @@ export const panelsConfig = [
   {
     heading: 'Home',
     icon: <BiHomeAlt />,
-    component: <FiltersPanel />,
+    component: <Home />,
     rootPath: '/',
     exact: true,
   },
   {
     heading: 'Language dead-end',
-    component: <PreDeets />,
+    component: <LangCardsList />,
     rootPath: '/Explore/Language/:value',
   },
   {
     heading: 'Pre-details, nested w/extra params',
-    component: <PreDeets />,
+    component: <LangCardsList />,
     rootPath: '/Explore/:field/:value/:language',
   },
   {
     heading: 'Level 2 cat',
-    component: <SomeMidLevel />,
+    component: <MidLevelExplore />,
     rootPath: '/Explore/:field/:value',
   },
   {
     heading: 'Level 1 cat',
-    component: <SomeMidLevel />,
+    component: <MidLevelExplore />,
     rootPath: '/Explore/:field',
   },
   {
@@ -60,14 +60,8 @@ export const panelsConfig = [
   },
   {
     heading: 'Details',
-    icon: <TiDocumentText />,
+    icon: <GoFile />,
     component: <DetailsPanel />,
     rootPath: '/details',
-  },
-  {
-    heading: 'Help',
-    icon: <AiOutlineQuestionCircle />,
-    component: null, // TODO: consider into panel rather than modal
-    rootPath: '/help',
   },
 ] as MapPanel[]

@@ -12,18 +12,23 @@ export const useStyles = makeStyles((theme: Theme) =>
     root: {
       borderBottomLeftRadius: 0,
       borderBottomRightRadius: 0,
-      bottom: 56, // set directly in MUI to 56
+      bottom: 48, // default is set directly in MUI to 56
+      boxShadow: '0 -2px 7px hsla(0, 0%, 0%, 0.25)',
       display: 'flex',
       flexDirection: 'column',
-      left: 2,
+      left: 0,
       opacity: (props: StylesProps) => (props.panelOpen ? 1 : 0),
       overflowX: 'hidden',
       position: 'absolute',
-      right: 2,
+      right: 0,
       top: '45%',
       transition: '300ms ease all',
       transform: (props: StylesProps) =>
         `translateY(${props.panelOpen ? 0 : '100%'})`,
+      [theme.breakpoints.up('sm')]: {
+        left: 8,
+        right: 8,
+      },
       [theme.breakpoints.up('md')]: {
         top: 24,
         left: 24,
@@ -37,20 +42,6 @@ export const useStyles = makeStyles((theme: Theme) =>
         color: theme.palette.text.secondary,
         fontSize: '1rem',
       },
-    },
-    crumbsNcloseWrap: {
-      alignItems: 'center',
-      backgroundColor: theme.palette.primary.dark,
-      boxShadow: '0 2px 7px hsla(0, 0%, 0%, 0.25)',
-      display: 'flex',
-      flexBasis: 32,
-      flexShrink: 0,
-      justifyContent: 'space-between',
-      padding: '0.15em 0.2em',
-      position: 'sticky',
-      top: 0,
-      zIndex: 1,
-      [theme.breakpoints.up('sm')]: { padding: '0.15em 0.5em' },
     },
   })
 )

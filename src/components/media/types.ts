@@ -1,11 +1,12 @@
-type MediaKey = 'video' | 'audio' | 'share' | 'clear'
+type MediaKey = 'video' | 'audio' | 'share' | 'clear' | 'view'
 
 export type MediaProps = {
   language: string
-  clear?: string // not needed whatsoever, just going through the TS motions
+  clear?: string // not needed whatsoever, just going through the TS motions?
   share?: string
   audio?: string
   video?: string
+  view?: string // not needed whatsoever, just going through the TS motions?
   description?: string
 }
 

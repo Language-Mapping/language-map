@@ -1,4 +1,4 @@
-import { LangRecordSchema } from '../../context/types'
+import { LangRecordSchema } from 'components/context/types'
 import * as Types from './types'
 
 export const getUniqueInstances = (
@@ -19,6 +19,7 @@ export const getUniqueInstances = (
     // Split out neighborhoods, countries, etc.
     // const DEFAULT_DELIM = ', ' // TODO: you know what
     if (parse && typeof value === 'string') {
+      // TODO: what if the value is "Wayne, NJ"? Need to deal with commas.
       const parsed = value.split(', ').filter((indiv) => !all.includes(indiv))
 
       if (searchValue && !parsed.includes(searchValue as string)) return all
@@ -30,6 +31,49 @@ export const getUniqueInstances = (
 
     return [...all, value as string | number]
   }, [] as string[]) as string[]
+
+export const uniqueLanguages = (
+  all: string[],
+  thisOne: LangRecordSchema
+): string[] =>
+  all.includes(thisOne.Language) ? all : [...all, thisOne.Language]
+
+export const allPlacenames = (
+  all: string[],
+  thisOne: LangRecordSchema
+): string[] => {
+  if (!thisOne.Neighborhood) {
+    return all.includes(thisOne.Town) ? all : [...all, thisOne.Town]
+  }
+
+  return [...all, ...thisOne.Neighborhood.split(', ')]
+}
+
+export const filterLangsByRoute = (
+  settings: Types.LangFilterArgs
+): LangRecordSchema[] => {
+  const { value, field, langFeatures } = settings
+  let filtered: LangRecordSchema[]
+
+  // Filter out undefined values and those not matching `value` as needed
+  if (value) {
+    filtered = langFeatures.filter((feat) => {
+      const thisValue = feat[field]
+
+      if (!thisValue) return false
+      if (!thisValue.toString().split(', ').includes(value)) return false
+
+      return true
+    })
+  } else if (['Neighborhood', 'Macrocommunity'].includes(field)) {
+    // Make sure no undefined
+    filtered = langFeatures.filter((feat) => feat[field] !== '')
+  } else {
+    filtered = langFeatures
+  }
+
+  return filtered
+}
 
 // Create nice listy thing w/truncation like
 // a, b, c, d, e...
@@ -66,3 +110,7 @@ export const pluralTextIfNeeded = (length: number, text = 'item'): string => {
 
   return `${length} ${text}s`
 }
+
+// Super-repetitive icons are not useful in card lists.
+export const deservesCardIcon = (field: string, value?: string): boolean =>
+  value !== undefined || ['Country', 'World Region'].includes(field)

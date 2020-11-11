@@ -2,7 +2,8 @@ import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { render, screen, fireEvent } from '@testing-library/react'
 
-import { ProvidersWrap, App } from 'components'
+import { App } from 'components'
+import { ProvidersWrap } from 'components/context'
 import { PAGE_HEADER_ID } from 'components/nav/config'
 
 // TODO: figure out how to restore this without breaking the route tests. It

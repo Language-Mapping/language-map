@@ -12,22 +12,27 @@ import {
   useMediaQuery,
 } from '@material-ui/core'
 
-import { DialogCloseBtn, SlideUp } from 'components'
+import { DialogCloseBtn } from './DialogCloseBtn'
+import { SlideUp } from './SlideUp'
+
+type StyleProps = {
+  lessHorizPad?: boolean // e.g. for /table/:id "details" view
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     dialogContent: {
-      paddingTop: theme.spacing(4),
-      paddingBottom: theme.spacing(4),
+      padding: (props: StyleProps) =>
+        `${theme.spacing(4)}px${props.lessHorizPad ? ' 0.5em' : ''}`,
     },
   })
 )
 
 // TODO: don't make close go back in history, or some other smooth way:
 // https://stackoverflow.com/questions/47409586
-export const SimpleDialog: FC<DialogProps> = (props) => {
-  const classes = useStyles()
-  const { onClose, children } = props
+export const SimpleDialog: FC<DialogProps & StyleProps> = (props) => {
+  const { onClose, children, lessHorizPad } = props
+  const classes = useStyles({ lessHorizPad })
   const theme = useTheme()
   const lilGuy = useMediaQuery(theme.breakpoints.only('xs'))
 
@@ -41,7 +46,7 @@ export const SimpleDialog: FC<DialogProps> = (props) => {
       {...props}
     >
       <DialogCloseBtn onClose={onClose} />
-      <DialogContent className={`${classes.dialogContent}`}>
+      <DialogContent className={classes.dialogContent}>
         {children}
       </DialogContent>
     </Dialog>

@@ -4,7 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { PanelWrap } from 'components/panels'
 import { TopBar, OffCanvasNav } from 'components/nav'
 import { Map } from 'components/map'
-import { LoadingBackdrop } from 'components'
+import { LoadingBackdrop } from 'components/generic/modals'
 import { BottomNav } from './nav/BottomNav'
 
 type StyleProps = {
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         '& .mapboxgl-ctrl-bottom-right, .mapboxgl-ctrl-bottom-left': {
           transition: 'bottom 300ms ease',
-          bottom: (props: StyleProps) => (props.panelOpen ? '50%' : 0),
+          bottom: (props: StyleProps) => (props.panelOpen ? '51' : 0),
         },
       },
     },
@@ -81,14 +81,20 @@ export const AppWrap: FC = () => {
       <main className={classes.mainWrap}>
         <div className={classes.mapWrap}>
           <Map
-            openOffCanvasNav={() => setOffCanvasNavOpen(true)}
             mapLoaded={mapLoaded}
             setMapLoaded={setMapLoaded}
             panelOpen={panelOpen}
           />
         </div>
+        <PanelWrap
+          panelOpen={panelOpen}
+          setPanelOpen={setPanelOpen}
+          openOffCanvasNav={(e: React.MouseEvent) => {
+            e.preventDefault()
+            setOffCanvasNavOpen(true)
+          }}
+        />
         <BottomNav setPanelOpen={setPanelOpen} />
-        <PanelWrap panelOpen={panelOpen} setPanelOpen={setPanelOpen} />
       </main>
       <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />
     </>

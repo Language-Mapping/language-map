@@ -7,7 +7,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { MdClose } from 'react-icons/md'
 
 import { paths as routes } from 'components/config/routes'
-import { LangRecordSchema } from '../../context/types'
+import { LangRecordSchema } from 'components/context/types'
 import { OmniboxResult } from './OmniboxResult'
 import { ListboxComponent } from './ListboxComponent'
 import { renderGroup } from './utils'

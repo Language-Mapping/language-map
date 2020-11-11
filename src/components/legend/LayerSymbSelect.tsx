@@ -4,9 +4,9 @@ import { TextField } from '@material-ui/core'
 import {
   useSymbAndLabelState,
   useLabelAndSymbDispatch,
-} from '../../context/SymbAndLabelContext'
+} from 'components/context/SymbAndLabelContext'
+import { LangRecordSchema } from 'components/context/types'
 import { commonSelectProps } from './config'
-import { LangRecordSchema } from '../../context/types'
 
 // TODO: consider passing down some of the global stuff as props
 export const LayerSymbSelect: FC = () => {

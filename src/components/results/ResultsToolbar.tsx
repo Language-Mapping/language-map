@@ -7,7 +7,7 @@ import { BiMapPin } from 'react-icons/bi'
 import { FaMap } from 'react-icons/fa'
 import { RiFilterOffFill } from 'react-icons/ri'
 
-import { GlobalContext } from 'components'
+import { GlobalContext } from 'components/context'
 import { paths as routes } from 'components/config/routes'
 import { ResultsTitle } from './ResultsTitle'
 
@@ -132,7 +132,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
       payload: gangsAllHere ? 0 : 1,
     })
 
-    history.push(routes.home)
+    history.push(routes.home) // TODO: ideally, go back
   }
 
   // CRED: 🎉

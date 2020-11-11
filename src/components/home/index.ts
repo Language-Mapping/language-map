@@ -1,2 +1,2 @@
 export * from './ClearFiltersBtn'
-export * from './FiltersPanel'
+export * from './Home'

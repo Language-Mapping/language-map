@@ -1,4 +1,4 @@
-import { WorldRegion } from '../../context/types'
+import { WorldRegion, LangRecordSchema } from 'components/context/types'
 
 export type IconID =
   | '_tree'
@@ -23,6 +23,11 @@ export type LegendSwatchComponent = LegendSwatch & {
   component?: React.ElementType
   labelStyleOverride?: React.CSSProperties
   to?: string
+}
+
+export type LegendPanelComponent = {
+  legendItems: LegendSwatch[]
+  groupName: string | keyof LangRecordSchema
 }
 
 export type LegendGroupConfig = {
