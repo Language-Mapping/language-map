@@ -1,3 +1,3 @@
 import * as MapTypes from 'components/map/types'
 
-export type SpatialPanel = MapTypes.GeocoderProps
+export type SpatialPanel = MapTypes.SpatialPanelProps

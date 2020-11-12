@@ -61,14 +61,23 @@ export const AppWrap: FC = () => {
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
   const [boundariesVisible, setBoundariesVisible] = useState<boolean>(false)
+  const [censusVisible, setCensusVisible] = useState<boolean>(false)
   const [geolocActive, setGeolocActive] = useState<boolean>(false)
   const propsForEveryone = {
     panelOpen,
     mapRef,
     boundariesVisible,
     geolocActive,
+    censusVisible,
+    setCensusVisible,
   }
   const propsForMost = { mapLoaded, setMapLoaded }
+  const andThen = {
+    setBoundariesVisible,
+    setCensusVisible,
+    setPanelOpen,
+    setGeolocActive,
+  }
 
   // TODO: restore then rm all this from global state. Should only need router
   // stuff and state.langFeatures in Details to get selFeatAttribs.
@@ -96,9 +105,7 @@ export const AppWrap: FC = () => {
         <PanelWrap
           {...propsForEveryone}
           {...propsForMost}
-          setBoundariesVisible={setBoundariesVisible}
-          setPanelOpen={setPanelOpen}
-          setGeolocActive={setGeolocActive}
+          {...andThen}
           openOffCanvasNav={(e: React.MouseEvent) => {
             e.preventDefault()
             setOffCanvasNavOpen(true)

@@ -14,6 +14,13 @@ const neighbPaint = {
   ],
 }
 
+const censusSrcID = 'tract'
+const censusLyrSrc = {
+  source: censusSrcID,
+  'source-layer': 'boundaries_stats_4',
+  minzoom: 9.5,
+}
+
 // TODO: if the missing "Sheepshead Bay" polygon is added to Boundaries by MB,
 // then the lookup table for this layer will need to be updated.
 const neighbSrcID = 'neighborhoods'
@@ -29,6 +36,41 @@ const countiesLyrSrc = {
   'source-layer': 'boundaries_admin_2',
   minzoom: 6, // thanks Suffolk County
 }
+
+export const censusConfig = {
+  lookupPath: '/data/lookup-tables/sta4-v3-new-york.json',
+  source: {
+    id: censusSrcID,
+    url: 'mapbox://mapbox.boundaries-sta4-v3',
+  },
+  layers: [
+    {
+      id: 'census-poly',
+      type: 'fill',
+      paint: {
+        'fill-color': 'purple',
+        'fill-opacity': [
+          'case',
+          ['boolean', ['feature-state', 'selected'], false],
+          0.44,
+          ['boolean', ['feature-state', 'hover'], false],
+          0.29,
+          0.14,
+        ],
+      },
+      ...censusLyrSrc,
+    },
+    {
+      id: 'census-line',
+      type: 'line',
+      ...censusLyrSrc,
+      paint: {
+        'line-color': 'purple',
+        'line-opacity': 0.4,
+      },
+    },
+  ],
+} as Types.BoundaryConfig
 
 export const neighbConfig = {
   lookupPath: '/data/lookup-tables/loc4-v3-new-york.json',

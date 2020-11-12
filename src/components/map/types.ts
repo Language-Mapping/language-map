@@ -79,6 +79,11 @@ export type BoundaryFeat = Omit<
   source: 'neighorhoods' | 'counties'
 }
 
+export type BoundariesLayerProps = {
+  visible: boolean
+  beforeId?: string
+} & BoundaryConfig
+
 export type MapEvent = Omit<PointerEvent, 'features'> & {
   features: LangFeature[] | BoundaryFeat[]
 }
@@ -113,27 +118,37 @@ export type PopoutContentProps = {
 }
 
 export type GeolocationProps = Pick<
-  GeocoderProps,
+  SpatialPanelProps,
   'geolocActive' | 'setGeolocActive'
+>
+
+export type CensusToggleProps = Pick<
+  SpatialPanelProps,
+  'censusVisible' | 'setCensusVisible'
 >
 
 export type MapProps = {
   mapLoaded: boolean
   setMapLoaded: React.Dispatch<boolean>
-} & Omit<GeocoderProps, 'setBoundariesVisible' | 'setGeolocActive'>
+} & Omit<
+  SpatialPanelProps,
+  'setBoundariesVisible' | 'setGeolocActive' | 'setCensusVisible'
+>
 
 export type MapCtrlBtnsProps = {
   isPitchZero: boolean
   onMapCtrlClick: (actionID: MapControlAction) => void
 }
 
-export type GeocoderProps = {
+export type SpatialPanelProps = {
   boundariesVisible: boolean
+  censusVisible: boolean
   geolocActive: boolean
   mapRef: React.RefObject<InteractiveMap>
   panelOpen: boolean
   setBoundariesVisible: React.Dispatch<boolean>
   setGeolocActive: React.Dispatch<boolean>
+  setCensusVisible: React.Dispatch<boolean>
 }
 
 export type CtrlBtnConfig = {

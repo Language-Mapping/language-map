@@ -1,10 +1,8 @@
+// TODO: rename file to something logical; mv it and all children to ../spatial
 import React, { FC } from 'react'
 import { Map } from 'mapbox-gl'
-// TODO: use the web merc center method so that popups are not offset on mobile
-// import { WebMercatorViewport } from 'react-map-gl'
 import Geocoder from 'react-map-gl-geocoder'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { Typography, FormControlLabel, Box, Switch } from '@material-ui/core'
+import { FormControlLabel, Switch } from '@material-ui/core'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
@@ -13,85 +11,23 @@ import { useWindowResize } from '../../utils'
 import * as hooks from './hooks'
 import * as utils from './utils'
 import * as Types from './types'
+import { CensusToggle } from './CensusToggle'
+import { GeolocToggle } from './GeolocToggle'
+import { LocationSearchContent } from './LocationSearchContent'
+import { useSpatialPanelStyles } from './styles'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      '&:not(:first-of-type)': { marginTop: '0.5rem' },
-      '& > *': {
-        marginBottom: '0.3rem',
-        marginTop: '0.3rem',
-      },
-    },
-    explanation: {
-      color: theme.palette.text.secondary,
-      fontSize: '0.7em',
-    },
-    // Toggle switches
-    switchFormCtrlRoot: {
-      marginLeft: 0,
-    },
-    smallerText: {
-      fontSize: '0.8rem',
-    },
-  })
-)
-
-const LocationSearchContent: FC<Types.PopoutContentProps> = (props) => {
-  const { children, explanation, heading } = props
-  const classes = useStyles()
-
-  return (
-    <Box className={classes.root}>
-      <Typography variant="h5" component="h3">
-        {heading}
-      </Typography>
-      <Typography className={classes.explanation}>{explanation}</Typography>
-      {children}
-    </Box>
-  )
-}
-
-// TODO: separate file
-const Geolocation: FC<Types.GeolocationProps> = (props) => {
-  const { setGeolocActive, geolocActive } = props
-  const classes = useStyles()
-
-  return (
-    <LocationSearchContent
-      heading="Zoom to my location"
-      explanation="Your location is not sent, shared, stored, or used for anything except zooming to your current location."
-    >
-      <FormControlLabel
-        // onClick={(event) => event.stopPropagation()} // TODO: something
-        classes={{
-          label: classes.smallerText,
-          root: classes.switchFormCtrlRoot,
-        }}
-        control={
-          <Switch
-            checked={geolocActive}
-            onChange={() => setGeolocActive(!geolocActive)}
-            name="toggle-geolocation"
-            size="small"
-          />
-        }
-        label="Show and zoom to my location"
-      />
-    </LocationSearchContent>
-  )
-}
-
-export const GeocoderPopout: FC<Types.GeocoderProps> = (props) => {
+export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
   const {
     boundariesVisible,
+    censusVisible,
     geolocActive,
     mapRef,
     panelOpen,
     setBoundariesVisible,
+    setCensusVisible,
     setGeolocActive,
   } = props
-  const classes = useStyles()
+  const classes = useSpatialPanelStyles()
   const { smallerText, switchFormCtrlRoot } = classes
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
   const { width, height } = useWindowResize()
@@ -169,8 +105,12 @@ export const GeocoderPopout: FC<Types.GeocoderProps> = (props) => {
 
   return (
     <>
+      <CensusToggle
+        setCensusVisible={setCensusVisible}
+        censusVisible={censusVisible}
+      />
       {SearchByLocation}
-      <Geolocation
+      <GeolocToggle
         geolocActive={geolocActive}
         setGeolocActive={setGeolocActive}
       />

@@ -8,10 +8,10 @@ export type MapPanel = {
   exact?: boolean
   icon?: React.ReactNode
   // TODO: de-fragilize?
-  renderComponent?: (props: MapTypes.GeocoderProps) => React.ReactNode
+  renderComponent?: (props: MapTypes.SpatialPanelProps) => React.ReactNode
 }
 
-export type MapPanelProps = MapTypes.GeocoderProps & {
+export type MapPanelProps = MapTypes.SpatialPanelProps & {
   openOffCanvasNav: (e: React.MouseEvent) => void
   setPanelOpen: React.Dispatch<boolean>
 }
