@@ -1,5 +1,6 @@
 import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { InteractiveMap } from 'react-map-gl'
 
 import { PanelWrap } from 'components/panels'
 import { TopBar, OffCanvasNav } from 'components/nav'
@@ -58,6 +59,16 @@ export const AppWrap: FC = () => {
   const classes = useStyles({ panelOpen })
   const [offCanvasNavOpen, setOffCanvasNavOpen] = useState<boolean>(false)
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
+  const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
+  const [boundariesVisible, setBoundariesVisible] = useState<boolean>(false)
+  const [geolocActive, setGeolocActive] = useState<boolean>(false)
+  const propsForEveryone = {
+    panelOpen,
+    mapRef,
+    boundariesVisible,
+    geolocActive,
+  }
+  const propsForMost = { mapLoaded, setMapLoaded }
 
   // TODO: restore then rm all this from global state. Should only need router
   // stuff and state.langFeatures in Details to get selFeatAttribs.
@@ -80,15 +91,14 @@ export const AppWrap: FC = () => {
       <TopBar />
       <main className={classes.mainWrap}>
         <div className={classes.mapWrap}>
-          <Map
-            mapLoaded={mapLoaded}
-            setMapLoaded={setMapLoaded}
-            panelOpen={panelOpen}
-          />
+          <Map {...propsForEveryone} {...propsForMost} />
         </div>
         <PanelWrap
-          panelOpen={panelOpen}
+          {...propsForEveryone}
+          {...propsForMost}
+          setBoundariesVisible={setBoundariesVisible}
           setPanelOpen={setPanelOpen}
+          setGeolocActive={setGeolocActive}
           openOffCanvasNav={(e: React.MouseEvent) => {
             e.preventDefault()
             setOffCanvasNavOpen(true)

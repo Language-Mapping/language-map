@@ -8,7 +8,7 @@ import {
   setRTLTextPlugin,
   LngLatBounds,
 } from 'mapbox-gl'
-import MapGL, { InteractiveMap, MapLoadEvent } from 'react-map-gl'
+import MapGL, { MapLoadEvent } from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
@@ -55,18 +55,25 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
 }
 
 export const Map: FC<Types.MapProps> = (props) => {
-  const { mapLoaded, setMapLoaded, panelOpen } = props
+  const {
+    boundariesVisible,
+    geolocActive,
+    mapLoaded,
+    mapRef,
+    panelOpen,
+    setMapLoaded,
+  } = props
+
+  // Routing
   const history = useHistory()
   const loc = useLocation()
   const match: { params: { id: string } } | null = useRouteMatch('/details/:id')
   const matchedFeatID = match?.params?.id
+
   const { state, dispatch } = useContext(GlobalContext)
   const symbLabelState = useSymbAndLabelState()
-  const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
   const offset = hooks.useOffset(panelOpen)
   const breakpoint = hooks.useBreakpoint()
-  const [boundariesVisible, setBoundariesVisible] = useState<boolean>(false)
-  const [geolocActive, setGeolocActive] = useState<boolean>(false)
 
   // Down to ONE state prop- `langFeatures`. Hook w/GlobalContext, router?
   const { langFeatures } = state
@@ -440,12 +447,6 @@ export const Map: FC<Types.MapProps> = (props) => {
         )}
       </MapGL>
       <MapCtrlBtns
-        mapRef={mapRef}
-        panelOpen={panelOpen}
-        geolocActive={geolocActive}
-        setGeolocActive={setGeolocActive}
-        boundariesVisible={boundariesVisible}
-        setBoundariesVisible={setBoundariesVisible}
         isPitchZero={viewport.pitch === 0}
         onMapCtrlClick={(actionID: Types.MapControlAction) => {
           onMapCtrlClick(actionID)

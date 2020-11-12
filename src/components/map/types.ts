@@ -107,27 +107,31 @@ export type GeocodeResult = {
   }
 }
 
-export type MapProps = {
-  mapLoaded: boolean
-  panelOpen: boolean
-  setMapLoaded: React.Dispatch<boolean>
+export type PopoutContentProps = {
+  heading: string
+  explanation?: string
 }
 
-export type MapCtrlBtnsProps = Omit<
+export type GeolocationProps = Pick<
   GeocoderProps,
-  'anchorEl' | 'setAnchorEl'
-> & {
+  'geolocActive' | 'setGeolocActive'
+>
+
+export type MapProps = {
+  mapLoaded: boolean
+  setMapLoaded: React.Dispatch<boolean>
+} & Omit<GeocoderProps, 'setBoundariesVisible' | 'setGeolocActive'>
+
+export type MapCtrlBtnsProps = {
   isPitchZero: boolean
   onMapCtrlClick: (actionID: MapControlAction) => void
 }
 
 export type GeocoderProps = {
-  anchorEl: null | HTMLElement
   boundariesVisible: boolean
   geolocActive: boolean
   mapRef: React.RefObject<InteractiveMap>
   panelOpen: boolean
-  setAnchorEl: React.Dispatch<null | HTMLElement>
   setBoundariesVisible: React.Dispatch<boolean>
   setGeolocActive: React.Dispatch<boolean>
 }

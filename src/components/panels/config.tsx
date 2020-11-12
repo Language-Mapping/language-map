@@ -1,10 +1,11 @@
 import React from 'react'
 import { TiThList } from 'react-icons/ti'
-import { FaBinoculars } from 'react-icons/fa'
+import { FaBinoculars, FaSearchLocation } from 'react-icons/fa'
 import { GoFile } from 'react-icons/go'
 import { BiHomeAlt } from 'react-icons/bi'
 
 import { Home } from 'components/home'
+import { SpatialPanel } from 'components/spatial'
 import { DetailsPanel } from 'components/details'
 import { Explore, LangCardsList, MidLevelExplore } from 'components/explore'
 
@@ -57,6 +58,14 @@ export const panelsConfig = [
     ),
     component: null,
     rootPath: '/table',
+  },
+  {
+    heading: 'Spatial',
+    icon: <FaSearchLocation />,
+    component: null,
+    // eslint-disable-next-line react/display-name
+    renderComponent: (props) => <SpatialPanel {...props} />,
+    rootPath: '/spatial',
   },
   {
     heading: 'Details',

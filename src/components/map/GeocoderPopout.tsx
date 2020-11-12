@@ -4,31 +4,19 @@ import { Map } from 'mapbox-gl'
 // import { WebMercatorViewport } from 'react-map-gl'
 import Geocoder from 'react-map-gl-geocoder'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import {
-  Typography,
-  FormControlLabel,
-  Popover,
-  Box,
-  Switch,
-} from '@material-ui/core'
+import { Typography, FormControlLabel, Box, Switch } from '@material-ui/core'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
-import { GeocoderProps, GeocodeResult } from './types'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
 import * as hooks from './hooks'
 import * as utils from './utils'
-import * as MapTypes from './types'
-
-type PopoutContentProps = {
-  heading: string
-  explanation?: string
-}
+import * as Types from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    popoverContent: {
+    root: {
       '&:not(:first-of-type)': { marginTop: '0.5rem' },
       '& > *': {
         marginBottom: '0.3rem',
@@ -39,7 +27,6 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.secondary,
       fontSize: '0.7em',
     },
-    layersMenuPaper: { overflow: 'visible', padding: '1em', width: 310 },
     // Toggle switches
     switchFormCtrlRoot: {
       marginLeft: 0,
@@ -50,12 +37,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const LocationSearchContent: FC<PopoutContentProps> = (props) => {
+const LocationSearchContent: FC<Types.PopoutContentProps> = (props) => {
   const { children, explanation, heading } = props
   const classes = useStyles()
 
   return (
-    <Box className={classes.popoverContent}>
+    <Box className={classes.root}>
       <Typography variant="h5" component="h3">
         {heading}
       </Typography>
@@ -65,47 +52,67 @@ const LocationSearchContent: FC<PopoutContentProps> = (props) => {
   )
 }
 
-export const GeocoderPopout: FC<GeocoderProps> = (props) => {
+// TODO: separate file
+const Geolocation: FC<Types.GeolocationProps> = (props) => {
+  const { setGeolocActive, geolocActive } = props
+  const classes = useStyles()
+
+  return (
+    <LocationSearchContent
+      heading="Zoom to my location"
+      explanation="Your location is not sent, shared, stored, or used for anything except zooming to your current location."
+    >
+      <FormControlLabel
+        // onClick={(event) => event.stopPropagation()} // TODO: something
+        classes={{
+          label: classes.smallerText,
+          root: classes.switchFormCtrlRoot,
+        }}
+        control={
+          <Switch
+            checked={geolocActive}
+            onChange={() => setGeolocActive(!geolocActive)}
+            name="toggle-geolocation"
+            size="small"
+          />
+        }
+        label="Show and zoom to my location"
+      />
+    </LocationSearchContent>
+  )
+}
+
+export const GeocoderPopout: FC<Types.GeocoderProps> = (props) => {
   const {
-    anchorEl,
     boundariesVisible,
     geolocActive,
     mapRef,
     panelOpen,
-    setAnchorEl,
     setBoundariesVisible,
     setGeolocActive,
   } = props
   const classes = useStyles()
   const { smallerText, switchFormCtrlRoot } = classes
-  const layersMenuOpen = Boolean(anchorEl)
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
   const { width, height } = useWindowResize()
   const offset = hooks.useOffset(panelOpen)
 
-  const handleLayersMenuClose = () => setAnchorEl(null)
-
   // TODO: most def different file
-  const handleGeocodeResult = (geocodeResult: GeocodeResult) => {
-    handleLayersMenuClose()
-
+  const handleGeocodeResult = (geocodeResult: Types.GeocodeResult) => {
     if (!mapRef.current) return
 
     const map: Map = mapRef.current.getMap()
     const { center, bbox, text } = geocodeResult.result
 
     if (bbox) {
-      // TODO:
-      // if (geocodeResult.result.place_type[0] === 'neighborhood') {
-      //   special things...
-      // }
+      // TODO: if (geocodeResult.result.place_type[0] === 'neighborhood')...
       const settings = {
         height,
         width,
         bounds: [
           [bbox[0], bbox[1]],
           [bbox[2], bbox[3]],
-        ] as MapTypes.BoundsArray,
+        ] as Types.BoundsArray,
         padding: 25,
         offset,
       }
@@ -124,68 +131,49 @@ export const GeocoderPopout: FC<GeocoderProps> = (props) => {
     }
   }
 
-  return (
-    <Popover
-      id="layers-menu"
-      anchorEl={anchorEl}
-      onClose={handleLayersMenuClose}
-      open={layersMenuOpen}
-      PaperProps={{ className: classes.layersMenuPaper }}
-      transformOrigin={{ vertical: 'center', horizontal: 'right' }}
+  const SearchByLocation = (
+    <LocationSearchContent
+      heading="Search by location"
+      explanation="Enter an address, municipality, neighborhood, postal code, landmark,
+      or other point of interest within the New York City metro area."
     >
-      <LocationSearchContent
-        heading="Search by location"
-        explanation="Enter an address, municipality, neighborhood, postal code, landmark,
-          or other point of interest within the New York City metro area."
-      >
-        <div ref={geocoderContainerRef} />
-        <FormControlLabel
-          // Prevent off-canvas from closing (but we want that to happen for all
-          // the other elements in the off-canvas).
-          onClick={(event) => event.stopPropagation()}
-          classes={{ label: smallerText, root: switchFormCtrlRoot }}
-          control={
-            <Switch
-              checked={boundariesVisible}
-              onChange={() => setBoundariesVisible(!boundariesVisible)}
-              name="show-welcome-switch"
-              size="small"
-            />
-          }
-          label="Show neighborhoods and counties"
-        />
-        <Geocoder
-          containerRef={geocoderContainerRef}
-          countries="us"
-          mapboxApiAccessToken={MAPBOX_TOKEN}
-          mapRef={mapRef}
-          onResult={handleGeocodeResult}
-          placeholder="Enter a location"
-          proximity={NYC_LAT_LONG}
-          types="address,poi,postcode,locality,place,neighborhood"
-          bbox={[-77.5, 38.4, -70.7, 42.89]}
-        />
-      </LocationSearchContent>
-      <LocationSearchContent
-        heading="Zoom to my location"
-        explanation="Your location is not sent, shared, stored, or used for anything except zooming to your current location."
-      >
-        <FormControlLabel
-          // Prevent off-canvas from closing (but we want that to happen for all
-          // the other elements in the off-canvas).
-          onClick={(event) => event.stopPropagation()}
-          classes={{ label: smallerText, root: switchFormCtrlRoot }}
-          control={
-            <Switch
-              checked={geolocActive}
-              onChange={() => setGeolocActive(!geolocActive)}
-              name="toggle-geolocation"
-              size="small"
-            />
-          }
-          label="Show and zoom to my location"
-        />
-      </LocationSearchContent>
-    </Popover>
+      <div ref={geocoderContainerRef} />
+      <FormControlLabel
+        // Prevent off-canvas from closing (but we want that to happen for all
+        // the other elements in the off-canvas).
+        onClick={(event) => event.stopPropagation()}
+        classes={{ label: smallerText, root: switchFormCtrlRoot }}
+        control={
+          <Switch
+            checked={boundariesVisible}
+            onChange={() => setBoundariesVisible(!boundariesVisible)}
+            name="show-welcome-switch"
+            size="small"
+          />
+        }
+        label="Show neighborhoods and counties"
+      />
+      <Geocoder
+        containerRef={geocoderContainerRef}
+        countries="us"
+        mapboxApiAccessToken={MAPBOX_TOKEN}
+        mapRef={mapRef}
+        onResult={handleGeocodeResult}
+        placeholder="Enter a location"
+        proximity={NYC_LAT_LONG}
+        types="address,poi,postcode,locality,place,neighborhood"
+        bbox={[-77.5, 38.4, -70.7, 42.89]}
+      />
+    </LocationSearchContent>
+  )
+
+  return (
+    <>
+      {SearchByLocation}
+      <Geolocation
+        geolocActive={geolocActive}
+        setGeolocActive={setGeolocActive}
+      />
+    </>
   )
 }

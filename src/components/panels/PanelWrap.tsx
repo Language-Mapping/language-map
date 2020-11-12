@@ -41,7 +41,8 @@ export const PanelWrap: FC<Types.MapPanelProps> = (props) => {
             path={config.rootPath}
             key={config.heading}
           >
-            {config.component}
+            {config.component ||
+              (config.renderComponent && config.renderComponent(props))}
           </Route>
         ))}
       </Switch>
