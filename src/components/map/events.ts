@@ -80,7 +80,6 @@ export const handleBoundaryClick: MapTypes.HandleBoundaryClick = (
   lookup,
   offset
 ) => {
-  const boundaryFeat = topMostFeat
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // TODO: defeat
   const sourceLayer = topMostFeat.layer['source-layer']
@@ -91,12 +90,10 @@ export const handleBoundaryClick: MapTypes.HandleBoundaryClick = (
     {
       sourceLayer,
       source: topMostFeat.source,
-      id: boundaryFeat.id,
+      id: topMostFeat.id,
     },
     { selected: true }
   )
-
-  if (!lookup) return
 
   const matchingRecord = lookup.find((record) => topMostFeat.id === record.id)
 

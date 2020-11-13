@@ -28,7 +28,8 @@ export type BoundsArray = [[number, number], [number, number]]
 export type GeocodeMarker = LongLat & { text: string }
 export type InitialMapProps = InteractiveMapProps
 export type LangIconConfig = { icon: string; id: string }
-export type Layer = LayerProps & { 'source-layer': string; id: string }
+export type LayerBasics = { 'source-layer': string; id: string }
+export type Layer = LayerProps & LayerBasics
 export type LongLat = { longitude: number; latitude: number }
 export type LongLatAndZoom = LongLat & { zoom: number }
 export type MapControlAction =
@@ -45,6 +46,7 @@ export type UseStyleProps = { panelOpen: boolean }
 export type ViewportState = Partial<ViewportProps> & ViewState
 export type Breakpoint = 'mobile' | 'desktop' | 'huge'
 export type Offset = [number, number] // [x, y]
+export type BoundariesInternalSrcID = 'neighborhoods' | 'counties' | 'tracts'
 
 export type LayerPropsPlusMeta = Omit<LayerProps, 'paint' | 'layout' | 'id'> & {
   id: string
@@ -76,7 +78,8 @@ export type BoundaryFeat = Omit<
 > & {
   geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon
   properties: { Name: string; ID: number }
-  source: 'neighorhoods' | 'counties'
+  source: BoundariesInternalSrcID
+  'source-layer': string
 }
 
 export type BoundariesLayerProps = {
@@ -194,9 +197,9 @@ export type PrepPopupContent = (
 
 export type HandleBoundaryClick = (
   map: Map,
-  topMostFeat: LangFeature | BoundaryFeat,
+  topMostFeat: BoundaryFeat,
   boundsConfig: BoundsConfig,
-  lookup?: BoundaryLookup[],
+  lookup: BoundaryLookup[],
   offset?: [number, number]
 ) => void
 

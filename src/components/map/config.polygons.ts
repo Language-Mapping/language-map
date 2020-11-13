@@ -23,14 +23,14 @@ const censusLyrSrc = {
 
 // TODO: if the missing "Sheepshead Bay" polygon is added to Boundaries by MB,
 // then the lookup table for this layer will need to be updated.
-const neighbSrcID = 'neighborhoods'
+const neighbSrcID = 'neighborhoods' as Types.BoundariesInternalSrcID
 const neighbLyrSrc = {
   source: neighbSrcID,
   'source-layer': 'boundaries_locality_4',
   minzoom: 8,
 }
 
-const countiesSrcID = 'counties'
+const countiesSrcID = 'counties' as Types.BoundariesInternalSrcID
 const countiesLyrSrc = {
   source: countiesSrcID,
   'source-layer': 'boundaries_admin_2',

@@ -13,7 +13,7 @@ export const BoundariesLayer: FC<Types.BoundariesLayerProps> = (props) => {
   useEffect(() => {
     queryCache.prefetchQuery(source.id, () => utils.asyncAwaitFetch(lookupPath))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [lookupPath])
 
   useEffect(() => {
     if (isFetching) return
