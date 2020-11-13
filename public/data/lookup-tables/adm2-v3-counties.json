@@ -1,158 +1,132 @@
 [
   {
-    "feature_id": 146347241,
-    "names": { "en": ["Bergen County", "Bergen County, New Jersey"] },
-    "centroid": [-74.0327, 40.9477],
+    "id": 146347241,
+    "name": "Bergen County",
     "bounds": [-74.2722, 40.7616, -73.9027, 41.1337]
   },
   {
-    "feature_id": 120067305,
-    "names": { "en": ["Essex County", "Essex County, New Jersey"] },
-    "centroid": [-74.2538, 40.7945],
+    "id": 120067305,
+    "name": "Essex County",
     "bounds": [-74.3774, 40.68, -74.1184, 40.9089]
   },
   {
-    "feature_id": 69276905,
-    "names": { "en": ["Hudson County", "Hudson County, New Jersey"] },
-    "centroid": [-74.0616, 40.7338],
+    "id": 69276905,
+    "name": "Hudson County",
     "bounds": [-74.1661, 40.6438, -73.9921, 40.8236]
   },
   {
-    "feature_id": 47977705,
-    "names": { "en": ["Middlesex County", "Middlesex County, New Jersey"] },
-    "centroid": [-74.4012, 40.4301],
+    "id": 47977705,
+    "name": "Middlesex County",
     "bounds": [-74.631, 40.2511, -74.2064, 40.6087]
   },
   {
-    "feature_id": 174986473,
-    "names": { "en": ["Morris County", "Morris County, New Jersey"] },
-    "centroid": [-74.5722, 40.8676],
+    "id": 174986473,
+    "name": "Morris County",
     "bounds": [-74.8898, 40.6484, -74.2666, 41.0861]
   },
   {
-    "feature_id": 176166121,
-    "names": { "en": ["Passaic County", "Passaic County, New Jersey"] },
-    "centroid": [-74.3086, 41.0119],
+    "id": 176166121,
+    "name": "Passaic County",
     "bounds": [-74.5032, 40.8199, -74.1068, 41.2032]
   },
   {
-    "feature_id": 187045097,
-    "names": { "en": ["Somerset County", "Somerset County, New Jersey"] },
-    "centroid": [-74.625, 40.5663],
+    "id": 187045097,
+    "name": "Somerset County",
     "bounds": [-74.7979, 40.3737, -74.4017, 40.7583]
   },
   {
-    "feature_id": 43652329,
-    "names": { "en": ["Union County", "Union County, New Jersey"] },
-    "centroid": [-74.2738, 40.6658],
+    "id": 43652329,
+    "name": "Union County",
     "bounds": [-74.4633, 40.5919, -74.1389, 40.7396]
   },
   {
-    "feature_id": 192746729,
-    "names": { "en": ["Hunterdon County", "Hunterdon County, New Jersey"] },
-    "centroid": [-74.9125, 40.5639],
+    "id": 192746729,
+    "name": "Hunterdon County",
     "bounds": [-75.1955, 40.3394, -74.7027, 40.7877]
   },
   {
-    "feature_id": 122557673,
-    "names": { "en": ["Mercer County", "Mercer County, New Jersey"] },
-    "centroid": [-74.6827, 40.2806],
+    "id": 122557673,
+    "name": "Mercer County",
     "bounds": [-74.9429, 40.1368, -74.4811, 40.4242]
   },
   {
-    "feature_id": 89855209,
-    "names": { "en": ["Monmouth County", "Monmouth County, New Jersey"] },
-    "centroid": [-74.1875, 40.2806],
+    "id": 89855209,
+    "name": "Monmouth County",
     "bounds": [-74.6146, 40.0791, -73.9718, 40.4816]
   },
   {
-    "feature_id": 187241705,
-    "names": { "en": ["Ocean County", "Ocean County, New Jersey"] },
-    "centroid": [-74.2859, 39.8562],
+    "id": 187241705,
+    "name": "Ocean County",
     "bounds": [-74.5531, 39.5, -74.0315, 40.1724]
   },
   {
-    "feature_id": 16782569,
-    "names": { "en": ["Sussex County", "Sussex County, New Jersey"] },
-    "centroid": [-74.7004, 41.1287],
+    "id": 16782569,
+    "name": "Sussex County",
     "bounds": [-74.992, 40.8992, -74.3675, 41.3574]
   },
   {
-    "feature_id": 101061865,
-    "names": { "en": ["Warren County", "Warren County, New Jersey"] },
-    "centroid": [-74.9606, 40.8436],
+    "id": 101061865,
+    "name": "Warren County",
     "bounds": [-75.2039, 40.5918, -74.7694, 41.0944]
   },
   {
-    "feature_id": 9180393,
-    "names": { "en": ["Dutchess County", "Dutchess County, New York"] },
-    "centroid": [-73.728, 41.7622],
+    "id": 9180393,
+    "name": "Dutchess County",
     "bounds": [-74.0001, 41.4389, -73.4873, 42.0809]
   },
   {
-    "feature_id": 166466793,
-    "names": { "en": ["Nassau County", "Nassau County, New York"] },
-    "centroid": [-73.5726, 40.7552],
+    "id": 166466793,
+    "name": "Nassau County",
     "bounds": [-73.7674, 40.5745, -73.4232, 40.9472]
   },
   {
-    "feature_id": 122492137,
-    "names": { "en": ["Orange County", "Orange County, New York"] },
-    "centroid": [-74.3335, 41.3883],
+    "id": 122492137,
+    "name": "Orange County",
     "bounds": [-74.7626, 41.143, -73.9507, 41.6327]
   },
   {
-    "feature_id": 69735657,
-    "names": { "en": ["Putnam County", "Putnam County, New York"] },
-    "centroid": [-73.7559, 41.4249],
+    "id": 69735657,
+    "name": "Putnam County",
     "bounds": [-73.9816, 41.3221, -73.5301, 41.5272]
   },
   {
-    "feature_id": 124589289,
-    "names": { "en": ["Rockland County", "Rockland County, New York"] },
-    "centroid": [-74.0655, 41.1593],
+    "id": 124589289,
+    "name": "Rockland County",
     "bounds": [-74.2343, 40.9973, -73.8959, 41.3209]
   },
   {
-    "feature_id": 32117993,
-    "names": { "en": ["Suffolk County", "Suffolk County, New York"] },
-    "centroid": [-72.9175, 40.9087],
+    "id": 32117993,
+    "name": "Suffolk County",
     "bounds": [-73.497, 40.6099, -71.8563, 41.2924]
   },
   {
-    "feature_id": 161813737,
-    "names": { "en": ["Sullivan County", "Sullivan County, New York"] },
-    "centroid": [-74.7911, 41.7196],
+    "id": 161813737,
+    "name": "Sullivan County",
     "bounds": [-75.1464, 41.4217, -74.3643, 42.0164]
   },
   {
-    "feature_id": 37295337,
-    "names": { "en": ["Ulster County", "Ulster County, New York"] },
-    "centroid": [-74.2028, 41.8791],
+    "id": 37295337,
+    "name": "Ulster County",
     "bounds": [-74.7807, 41.5806, -73.9107, 42.177]
   },
   {
-    "feature_id": 68162793,
-    "names": { "en": ["Westchester County", "Westchester County, New York"] },
-    "centroid": [-73.7717, 41.125],
+    "id": 68162793,
+    "name": "Westchester County",
     "bounds": [-73.9805, 40.8766, -73.4827, 41.3664]
   },
   {
-    "feature_id": 82121961,
-    "names": { "en": ["Fairfield County", "Fairfield County, Connecticut"] },
-    "centroid": [-73.3269, 41.3266],
+    "id": 82121961,
+    "name": "Fairfield County",
     "bounds": [-73.7278, 40.9805, -73.0651, 41.6667]
   },
   {
-    "feature_id": 145888489,
-    "names": { "en": ["Litchfield County", "Litchfield County, Connecticut"] },
-    "centroid": [-73.2598, 41.7601],
+    "id": 145888489,
+    "name": "Litchfield County",
     "bounds": [-73.5181, 41.4674, -72.8871, 42.0505]
   },
   {
-    "feature_id": 22222057,
-    "names": { "en": ["New Haven County", "New Haven County, Connecticut"] },
-    "centroid": [-72.9093, 41.4085],
+    "id": 22222057,
+    "name": "New Haven County",
     "bounds": [-73.3271, 41.1718, -72.5365, 41.6443]
   }
 ]

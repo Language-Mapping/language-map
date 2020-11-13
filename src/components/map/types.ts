@@ -172,11 +172,13 @@ export type BoundsConfig = {
 }
 
 export type BoundaryLookup = {
-  feature_id: number
-  centroid: [number, number]
+  // It's `feature_id` in MB lookup tables. Manually change to save 8 characters
+  // (times 3000...)
+  id: number
   bounds: [number, number, number, number]
-  name?: string // neighb and county have it, but `names` is ideal in counties
-  names?: { en: string[] } // only counties has this
+  name?: string // census tracts don't have one (they DID, but not useful)
+  // NOTE: only counties has this. Manually converted to `name` instead.
+  // names?: { en: string[] }
 }
 
 export type CustomEventData = MapEventType & {

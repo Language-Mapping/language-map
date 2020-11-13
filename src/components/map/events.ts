@@ -98,15 +98,17 @@ export const handleBoundaryClick: MapTypes.HandleBoundaryClick = (
 
   if (!lookup) return
 
-  const matchingRecord = lookup.find(
-    (record) => topMostFeat.id === record.feature_id
-  )
+  const matchingRecord = lookup.find((record) => topMostFeat.id === record.id)
 
   if (!matchingRecord) return // ya never knowww
 
-  const { bounds, name, names } = matchingRecord
+  // NOTE: rather than storing bounds in the lookup tables, tried
+  // `boundaryFeat.geometry` instead. Sort of worked but since vector tiles only
+  // render what's needed, there's no guarantee the whole feature's bbox will be
+  // available in the current view. And there doesn't seem to be a way to get
+  // its full bounds other than the lookup tables. 😞
+  const { bounds, name } = matchingRecord
   const { width, height } = boundsConfig
-  const text = name || (names ? names.en[0] : '')
 
   const settings = {
     height,
@@ -119,5 +121,5 @@ export const handleBoundaryClick: MapTypes.HandleBoundaryClick = (
     offset: offset || [0, 0],
   }
 
-  utils.flyToBounds(map, settings, { heading: text })
+  utils.flyToBounds(map, settings, { heading: name || '' })
 }

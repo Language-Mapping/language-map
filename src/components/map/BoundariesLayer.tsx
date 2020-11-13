@@ -19,7 +19,7 @@ export const BoundariesLayer: FC<Types.BoundariesLayerProps> = (props) => {
     if (isFetching) return
 
     const lookup = data as Types.BoundaryLookup[]
-    const listOfIDs = lookup.map((record) => record.feature_id)
+    const listOfIDs = lookup.map((record) => record.id)
 
     setRecordIDs(listOfIDs)
     // eslint-disable-next-line react-hooks/exhaustive-deps
