@@ -3,8 +3,9 @@ import * as Types from './types'
 // Unsure why it needs the type here but not for feature coords..
 const mapCenter = [-73.96, 40.7128] as [number, number]
 
-export * from './config.polygons'
+export * from './config.census'
 export * from './config.points'
+export * from './config.polygons'
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MB_TOKEN
 export const POINT_ZOOM_LEVEL = 14 // e.g. clicked point or single-result filter

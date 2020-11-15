@@ -130,6 +130,31 @@ export type CensusToggleProps = Pick<
   'censusVisible' | 'setCensusVisible'
 >
 
+type CensusLangField = {
+  Arabic: number | typeof NaN
+  Chinese: number | typeof NaN
+  French: number | typeof NaN
+  German: number | typeof NaN
+  Korean: number | typeof NaN
+  Russian: number | typeof NaN
+  Spanish: number | typeof NaN
+  Tagalog: number | typeof NaN
+  Vietnamese: number | typeof NaN
+}
+
+export type MbReadyCensusRow = {
+  id: number // MB Boundaries' internal
+  fips: string // 2-char state code + 3-char county + 6-char tract
+} & CensusLangField
+
+export type CensusLayerProps = Pick<
+  BoundariesLayerProps,
+  'beforeId' | 'source' | 'visible'
+> & {
+  map?: Map
+  activeField?: keyof CensusLangField
+}
+
 export type MapProps = {
   mapLoaded: boolean
   setMapLoaded: React.Dispatch<boolean>

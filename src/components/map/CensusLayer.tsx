@@ -1,22 +1,12 @@
 import React, { FC, useEffect } from 'react'
 import { useQuery, queryCache } from 'react-query'
 import { Source, Layer } from 'react-map-gl'
-import { Map } from 'mapbox-gl'
 
 import * as utils from './utils'
 import * as Types from './types'
 import * as config from './config'
 
 const { censusConfig } = config
-
-export type ActiveField = keyof CensusLangField
-export type CensusLayerProps = Pick<
-  Types.BoundariesLayerProps,
-  'beforeId' | 'source' | 'visible'
-> & {
-  map?: Map
-  activeField?: ActiveField
-}
 
 // FIXME: NO MATCH:
 // 36047990100 36061000100 36081990100 36085008900 36085990100
@@ -27,25 +17,9 @@ export type CensusLayerProps = Pick<
  * MB Boundaries: STATE + CENSUS: 36085, 36047, 36081, 36061, 36005
  */
 
-type CensusLangField = {
-  Arabic: number | typeof NaN
-  Chinese: number | typeof NaN
-  French: number | typeof NaN
-  German: number | typeof NaN
-  Korean: number | typeof NaN
-  Russian: number | typeof NaN
-  Spanish: number | typeof NaN
-  Tagalog: number | typeof NaN
-  Vietnamese: number | typeof NaN
-}
-
-type MbReadyCensusRow = {
-  id: number // MB Boundaries' internal
-  fips: string
-} & CensusLangField
-
 const censusLookupQueryID: Types.BoundariesInternalSrcID = 'tracts'
 
+// TODO: into utils if using
 // function getColor(value: number): string {
 //   if (value === 0) return 'hsl(240, 20%, 80%)'
 //   if (value > 150) return 'hsl(240, 80%, 20%)'
@@ -73,10 +47,10 @@ const censusLookupQueryID: Types.BoundariesInternalSrcID = 'tracts'
 //   map.on('sourcedata', setAfterLoad)
 // }
 
-export const CensusLayer: FC<CensusLayerProps> = (props) => {
+export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   const { beforeId, source, visible, map, activeField = 'Arabic' } = props
   const { data, isFetching, error } = useQuery(censusLookupQueryID)
-  const lookupData = data as MbReadyCensusRow[]
+  const lookupData = data as Types.MbReadyCensusRow[]
 
   useEffect(() => {
     queryCache.prefetchQuery(censusLookupQueryID, () =>
