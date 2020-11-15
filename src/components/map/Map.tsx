@@ -59,15 +59,8 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
 }
 
 export const Map: FC<Types.MapProps> = (props) => {
-  const {
-    boundariesVisible,
-    geolocActive,
-    mapLoaded,
-    mapRef,
-    panelOpen,
-    setMapLoaded,
-    censusVisible,
-  } = props
+  const { geolocActive, mapLoaded, mapRef } = props
+  const { panelOpen, setMapLoaded, censusVisible } = props
   const map: MbMap | undefined = mapRef.current?.getMap()
 
   // Routing
@@ -99,7 +92,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   const [
     clickedBoundary,
     setClickedBoundary,
-  ] = useState<Types.BoundaryFeat | null>(null)
+  ] = useState<Types.BoundaryFeat | null>()
   const { data: boundariesLookup } = useQuery<Types.BoundaryLookup[]>(
     clickedBoundary?.source
   )
@@ -246,6 +239,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     })
   }
 
+  // TODO: use `if (map.isSourceLoaded('sourceId')` if possible
   // Runs only once and kicks off the whole thing
   function onLoad(mapLoadEvent: MapLoadEvent) {
     // `mapObj` "should" be same as `map` but use it here and avoid naming
@@ -345,7 +339,7 @@ export const Map: FC<Types.MapProps> = (props) => {
       return // prevent boundary click underneath
     }
 
-    if (!boundariesVisible) return
+    if (!props.boundariesVisible) return
 
     const boundariesClicked = map.queryRenderedFeatures(event.point, {
       layers: boundariesLayerIDs,
@@ -423,16 +417,18 @@ export const Map: FC<Types.MapProps> = (props) => {
           <BoundariesLayer
             key={boundaryConfig.source.id}
             {...boundaryConfig}
-            visible={boundariesVisible}
+            visible={props.boundariesVisible}
             beforeId={beforeId}
           />
         ))}
+        {/* FIXME: draw order seems inconsistent */}
+        {symbLayers && <LangMbSrcAndLayer symbLayers={symbLayers} />}
         <CensusLayer
           visible={censusVisible}
           source={config.censusConfig.source}
           beforeId={beforeId}
+          map={map}
         />
-        {symbLayers && <LangMbSrcAndLayer symbLayers={symbLayers} />}
         {popup && <MapPopup {...popup} setVisible={() => setPopup(null)} />}
         {/* Popups are annoying on mobile */}
         {!isTouchEnabled() && tooltip && (

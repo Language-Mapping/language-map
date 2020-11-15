@@ -1,3 +1,4 @@
+// TODO: break out file into config.{census,neighborhoods,counties}.ts
 import * as Types from './types'
 
 // `symbol-sort-order` useful maybe:
@@ -14,23 +15,23 @@ const neighbPaint = {
   ],
 }
 
-const censusSrcID = 'tract'
-const censusLyrSrc = {
+const censusSrcID: Types.BoundariesInternalSrcID = 'tracts'
+export const censusLyrSrc = {
   source: censusSrcID,
   'source-layer': 'boundaries_stats_4',
-  minzoom: 9.5,
+  minzoom: 8,
 }
 
 // TODO: if the missing "Sheepshead Bay" polygon is added to Boundaries by MB,
 // then the lookup table for this layer will need to be updated.
-const neighbSrcID = 'neighborhoods' as Types.BoundariesInternalSrcID
+const neighbSrcID: Types.BoundariesInternalSrcID = 'neighborhoods'
 const neighbLyrSrc = {
   source: neighbSrcID,
   'source-layer': 'boundaries_locality_4',
   minzoom: 8,
 }
 
-const countiesSrcID = 'counties' as Types.BoundariesInternalSrcID
+const countiesSrcID: Types.BoundariesInternalSrcID = 'counties'
 const countiesLyrSrc = {
   source: countiesSrcID,
   'source-layer': 'boundaries_admin_2',
@@ -48,15 +49,21 @@ export const censusConfig = {
       id: 'census-poly',
       type: 'fill',
       paint: {
-        'fill-color': 'purple',
-        'fill-opacity': [
+        'fill-color': [
           'case',
-          ['boolean', ['feature-state', 'selected'], false],
-          0.44,
-          ['boolean', ['feature-state', 'hover'], false],
-          0.29,
-          0.14,
+          ['!=', ['feature-state', 'total'], NaN],
+          [
+            'interpolate',
+            ['linear'],
+            ['feature-state', 'total'],
+            4,
+            'rgb(237, 248, 233)', // 'rgba(222,235,247,1)',
+            140,
+            'rgb(0, 109, 44)', // 'rgba(49,130,189,1)',
+          ],
+          'rgba(255, 255, 255, 0)',
         ],
+        'fill-opacity': 0.8,
       },
       ...censusLyrSrc,
     },
@@ -65,8 +72,8 @@ export const censusConfig = {
       type: 'line',
       ...censusLyrSrc,
       paint: {
-        'line-color': 'purple',
-        'line-opacity': 0.4,
+        'line-color': '#c2c2c2',
+        'line-opacity': 0.2,
       },
     },
   ],
