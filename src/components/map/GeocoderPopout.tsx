@@ -6,6 +6,7 @@ import { FormControlLabel, Switch } from '@material-ui/core'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
+import { useMapToolsState, useMapToolsDispatch } from 'components/context'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
 import * as hooks from './hooks'
@@ -15,19 +16,21 @@ import { LocationSearchContent } from './LocationSearchContent'
 import { useSpatialPanelStyles } from './styles'
 
 export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
-  const { boundariesVisible, mapRef, panelOpen, setBoundariesVisible } = props
+  const { mapRef, panelOpen } = props
   const classes = useSpatialPanelStyles()
   const { smallerText, switchFormCtrlRoot } = classes
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
   const { width, height } = useWindowResize()
   const offset = hooks.useOffset(panelOpen)
+  const { boundariesVisible } = useMapToolsState()
+  const mapToolsDispatch = useMapToolsDispatch()
 
   // TODO: most def different file
-  const handleGeocodeResult = (geocodeResult: Types.GeocodeResult) => {
+  const handleGeocodeResult = ({ result }: Types.GeocodeResult) => {
     if (!mapRef.current) return
 
     const map: Map = mapRef.current.getMap()
-    const { center, bbox, text } = geocodeResult.result
+    const { center, bbox, text } = result
 
     if (bbox) {
       // TODO: if (geocodeResult.result.place_type[0] === 'neighborhood')...
@@ -56,6 +59,13 @@ export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
     }
   }
 
+  const handleBoundariesToggle = () => {
+    mapToolsDispatch({
+      type: 'SET_BOUNDARIES_VISIBLE',
+      payload: !boundariesVisible,
+    })
+  }
+
   return (
     <LocationSearchContent
       heading="Search by location"
@@ -71,7 +81,7 @@ export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
         control={
           <Switch
             checked={boundariesVisible}
-            onChange={() => setBoundariesVisible(!boundariesVisible)}
+            onChange={handleBoundariesToggle}
             name="show-welcome-switch"
             size="small"
           />

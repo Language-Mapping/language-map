@@ -6,6 +6,7 @@ import { PanelWrap } from 'components/panels'
 import { TopBar, OffCanvasNav } from 'components/nav'
 import { Map } from 'components/map'
 import { LoadingBackdrop } from 'components/generic/modals'
+import { MapToolsProvider } from 'components/context'
 import { BottomNav } from './nav/BottomNav'
 
 type StyleProps = {
@@ -55,28 +56,13 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const AppWrap: FC = () => {
+  const [mapLoaded, setMapLoaded] = useState<boolean>(false)
   const [panelOpen, setPanelOpen] = useState<boolean>(true)
   const classes = useStyles({ panelOpen })
   const [offCanvasNavOpen, setOffCanvasNavOpen] = useState<boolean>(false)
-  const [mapLoaded, setMapLoaded] = useState<boolean>(false)
+
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
-  const [boundariesVisible, setBoundariesVisible] = useState<boolean>(false)
-  const [geolocActive, setGeolocActive] = useState<boolean>(false)
-  const [censusField, setCensusField] = React.useState<string>()
-  const propsForEveryone = {
-    panelOpen,
-    mapRef,
-    boundariesVisible,
-    geolocActive,
-    censusField,
-  }
-  const propsForMost = { mapLoaded, setMapLoaded }
-  const andThen = {
-    setBoundariesVisible,
-    setCensusField,
-    setPanelOpen,
-    setGeolocActive,
-  }
+  const propsForEveryone = { panelOpen, mapRef, mapLoaded }
 
   // TODO: restore then rm all this from global state. Should only need router
   // stuff and state.langFeatures in Details to get selFeatAttribs.
@@ -98,18 +84,19 @@ export const AppWrap: FC = () => {
       {!mapLoaded && <LoadingBackdrop />}
       <TopBar />
       <main className={classes.mainWrap}>
-        <div className={classes.mapWrap}>
-          <Map {...propsForEveryone} {...propsForMost} />
-        </div>
-        <PanelWrap
-          {...propsForEveryone}
-          {...propsForMost}
-          {...andThen}
-          openOffCanvasNav={(e: React.MouseEvent) => {
-            e.preventDefault()
-            setOffCanvasNavOpen(true)
-          }}
-        />
+        <MapToolsProvider>
+          <div className={classes.mapWrap}>
+            <Map {...propsForEveryone} setMapLoaded={setMapLoaded} />
+          </div>
+          <PanelWrap
+            {...propsForEveryone}
+            setPanelOpen={setPanelOpen}
+            openOffCanvasNav={(e: React.MouseEvent) => {
+              e.preventDefault()
+              setOffCanvasNavOpen(true)
+            }}
+          />
+        </MapToolsProvider>
         <BottomNav setPanelOpen={setPanelOpen} />
       </main>
       <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />

@@ -15,9 +15,12 @@ import MapGL, { MapLoadEvent } from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import { GlobalContext } from 'components/context'
+import {
+  GlobalContext,
+  useMapToolsState,
+  useSymbAndLabelState,
+} from 'components/context'
 import { paths as routes } from 'components/config/routes'
-import { useSymbAndLabelState } from 'components/context/SymbAndLabelContext'
 import { LangRecordSchema } from 'components/context/types'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { Geolocation } from './Geolocation'
@@ -59,8 +62,8 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
 }
 
 export const Map: FC<Types.MapProps> = (props) => {
-  const { geolocActive, mapLoaded, mapRef } = props
-  const { panelOpen, setMapLoaded, censusField } = props
+  const { mapLoaded, mapRef } = props
+  const { panelOpen, setMapLoaded } = props
   const map: MbMap | undefined = mapRef.current?.getMap()
 
   // Routing
@@ -71,6 +74,7 @@ export const Map: FC<Types.MapProps> = (props) => {
 
   const { state, dispatch } = useContext(GlobalContext)
   const symbLabelState = useSymbAndLabelState()
+  const { boundariesVisible, censusField } = useMapToolsState()
   const offset = hooks.useOffset(panelOpen)
   const breakpoint = hooks.useBreakpoint()
 
@@ -339,7 +343,7 @@ export const Map: FC<Types.MapProps> = (props) => {
       return // prevent boundary click underneath
     }
 
-    if (!props.boundariesVisible) return
+    if (!boundariesVisible) return
 
     const boundariesClicked = map.queryRenderedFeatures(event.point, {
       layers: boundariesLayerIDs,
@@ -405,7 +409,6 @@ export const Map: FC<Types.MapProps> = (props) => {
         onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
       >
         <Geolocation
-          active={geolocActive}
           onViewportChange={(mapViewport: Types.ViewportState) => {
             // CRED:
             // github.com/visgl/react-map-gl/issues/887#issuecomment-531580394
@@ -417,7 +420,7 @@ export const Map: FC<Types.MapProps> = (props) => {
           <BoundariesLayer
             key={boundaryConfig.source.id}
             {...boundaryConfig}
-            visible={props.boundariesVisible}
+            visible={boundariesVisible}
             beforeId={beforeId}
           />
         ))}

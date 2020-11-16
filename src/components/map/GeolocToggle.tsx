@@ -3,13 +3,21 @@ import { FormControlLabel, Switch } from '@material-ui/core'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
-import * as Types from './types'
+import { useMapToolsState, useMapToolsDispatch } from 'components/context'
 import { LocationSearchContent } from './LocationSearchContent'
 import { useSpatialPanelStyles } from './styles'
 
-export const GeolocToggle: FC<Types.GeolocationProps> = (props) => {
-  const { setGeolocActive, geolocActive } = props
+export const GeolocToggle: FC = () => {
+  const { geolocActive } = useMapToolsState()
+  const mapToolsDispatch = useMapToolsDispatch()
   const classes = useSpatialPanelStyles()
+
+  const handleChange = () => {
+    mapToolsDispatch({
+      type: 'SET_GEOLOC_ACTIVE',
+      payload: !geolocActive,
+    })
+  }
 
   return (
     <LocationSearchContent
@@ -25,7 +33,7 @@ export const GeolocToggle: FC<Types.GeolocationProps> = (props) => {
         control={
           <Switch
             checked={geolocActive}
-            onChange={() => setGeolocActive(!geolocActive)}
+            onChange={handleChange}
             name="toggle-geolocation"
             size="small"
           />

@@ -120,13 +120,6 @@ export type PopoutContentProps = {
   explanation?: string
 }
 
-export type GeolocationProps = Pick<
-  SpatialPanelProps,
-  'geolocActive' | 'setGeolocActive'
->
-
-export type CensusToggleProps = SpatialPanelProps
-
 export type MbReadyCensusRow = {
   id: number // MB Boundaries' internal
   fips: string // 2-char state code + 3-char county + 6-char tract
@@ -143,26 +136,16 @@ export type CensusLayerProps = Pick<
 export type MapProps = {
   mapLoaded: boolean
   setMapLoaded: React.Dispatch<boolean>
-} & Omit<
-  SpatialPanelProps,
-  'setBoundariesVisible' | 'setGeolocActive' | 'setCensusField'
->
+} & SpatialPanelProps
 
 export type MapCtrlBtnsProps = {
   isPitchZero: boolean
   onMapCtrlClick: (actionID: MapControlAction) => void
 }
 
-// TODO: into context if it gets unrulier
 export type SpatialPanelProps = {
-  boundariesVisible: boolean
-  censusField?: string
-  geolocActive: boolean
   mapRef: React.RefObject<InteractiveMap>
   panelOpen: boolean
-  setBoundariesVisible: React.Dispatch<boolean>
-  setGeolocActive: React.Dispatch<boolean>
-  setCensusField: React.Dispatch<string>
 }
 
 export type CtrlBtnConfig = {

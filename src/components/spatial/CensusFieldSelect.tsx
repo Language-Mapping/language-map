@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { FormHelperText, FormControl, NativeSelect } from '@material-ui/core'
 
-import * as Types from './types'
+import { useMapToolsState, useMapToolsDispatch } from 'components/context'
 import * as config from './config'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -15,15 +15,16 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const CensusFieldSelect: FC<Pick<
-  Types.SpatialPanel,
-  'censusField' | 'setCensusField'
->> = (props) => {
-  const { censusField, setCensusField } = props
+export const CensusFieldSelect: FC = () => {
   const classes = useStyles()
+  const { censusField } = useMapToolsState()
+  const mapToolsDispatch = useMapToolsDispatch()
 
   const handleChange = (event: React.ChangeEvent<{ value: string }>) => {
-    setCensusField(event.target.value)
+    mapToolsDispatch({
+      type: 'SET_CENSUS_FIELD',
+      payload: event.target.value,
+    })
   }
 
   return (

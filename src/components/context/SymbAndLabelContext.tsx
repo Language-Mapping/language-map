@@ -6,18 +6,19 @@ import fullLangStyle from 'components/map/config.lang-style'
 import { LangSchemaCol } from './types'
 
 type LegendSymbols = { [key: string]: Partial<LayerPropsPlusMeta> }
+type Dispatch = React.Dispatch<Action>
+
 export type Action =
   | { type: 'SET_LANG_LAYER_LABELS'; payload: LangSchemaCol | '' }
   | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatch[] }
   | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: LangSchemaCol }
+
 type InitialState = {
   activeLabelID: LangSchemaCol | '' | 'None'
   activeSymbGroupID: LangSchemaCol | '' | 'None'
   legendItems: LegendSwatch[]
   legendSymbols: LegendSymbols
 }
-type Dispatch = React.Dispatch<Action>
-type State = InitialState
 
 // TODO: consider separate file
 const legendSymbols = fullLangStyle.reduce((all, thisOne) => {
@@ -33,12 +34,14 @@ export const initialState = {
   legendSymbols,
 } as InitialState
 
-const SymbAndLabelContext = React.createContext<State | undefined>(undefined)
+const SymbAndLabelContext = React.createContext<InitialState | undefined>(
+  undefined
+)
 const SymbLabelDispatchContext = React.createContext<Dispatch | undefined>(
   undefined
 )
 
-function reducer(state: State, action: Action) {
+function reducer(state: InitialState, action: Action) {
   switch (action.type) {
     case 'SET_LANG_LAYER_LABELS':
       return {
