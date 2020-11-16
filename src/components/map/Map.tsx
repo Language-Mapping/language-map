@@ -60,7 +60,7 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
 
 export const Map: FC<Types.MapProps> = (props) => {
   const { geolocActive, mapLoaded, mapRef } = props
-  const { panelOpen, setMapLoaded, censusVisible } = props
+  const { panelOpen, setMapLoaded, censusField } = props
   const map: MbMap | undefined = mapRef.current?.getMap()
 
   // Routing
@@ -422,13 +422,13 @@ export const Map: FC<Types.MapProps> = (props) => {
           />
         ))}
         {/* FIXME: draw order seems inconsistent */}
-        {symbLayers && <LangMbSrcAndLayer symbLayers={symbLayers} />}
         <CensusLayer
-          visible={censusVisible}
           source={config.censusConfig.source}
           beforeId={beforeId}
+          censusField={censusField}
           map={map}
         />
+        {symbLayers && <LangMbSrcAndLayer symbLayers={symbLayers} />}
         {popup && <MapPopup {...popup} setVisible={() => setPopup(null)} />}
         {/* Popups are annoying on mobile */}
         {!isTouchEnabled() && tooltip && (

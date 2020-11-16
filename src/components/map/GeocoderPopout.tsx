@@ -11,22 +11,11 @@ import { useWindowResize } from '../../utils'
 import * as hooks from './hooks'
 import * as utils from './utils'
 import * as Types from './types'
-import { CensusToggle } from './CensusToggle'
-import { GeolocToggle } from './GeolocToggle'
 import { LocationSearchContent } from './LocationSearchContent'
 import { useSpatialPanelStyles } from './styles'
 
 export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
-  const {
-    boundariesVisible,
-    censusVisible,
-    geolocActive,
-    mapRef,
-    panelOpen,
-    setBoundariesVisible,
-    setCensusVisible,
-    setGeolocActive,
-  } = props
+  const { boundariesVisible, mapRef, panelOpen, setBoundariesVisible } = props
   const classes = useSpatialPanelStyles()
   const { smallerText, switchFormCtrlRoot } = classes
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
@@ -67,7 +56,7 @@ export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
     }
   }
 
-  const SearchByLocation = (
+  return (
     <LocationSearchContent
       heading="Search by location"
       explanation="Enter an address, municipality, neighborhood, postal code, landmark,
@@ -101,19 +90,5 @@ export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
         bbox={[-77.5, 38.4, -70.7, 42.89]}
       />
     </LocationSearchContent>
-  )
-
-  return (
-    <>
-      <CensusToggle
-        setCensusVisible={setCensusVisible}
-        censusVisible={censusVisible}
-      />
-      {SearchByLocation}
-      <GeolocToggle
-        geolocActive={geolocActive}
-        setGeolocActive={setGeolocActive}
-      />
-    </>
   )
 }

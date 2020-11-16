@@ -3,9 +3,10 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 import { FaSearchLocation } from 'react-icons/fa'
 
-import { GeocoderPopout } from 'components/map'
+import { GeocoderPopout, GeolocToggle } from 'components/map'
 import { usePanelRootStyles } from 'components/panels'
 import * as Types from './types'
+import { CensusFieldSelect } from './CensusFieldSelect'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,6 +44,8 @@ export const SpatialPanel: FC<Types.SpatialPanel> = (props) => {
         <FaSearchLocation />
         Census and friends
       </Typography>
+      <CensusFieldSelect {...props} />
+      <GeolocToggle {...props} />
       <GeocoderPopout {...props} />
     </div>
   )

@@ -125,34 +125,19 @@ export type GeolocationProps = Pick<
   'geolocActive' | 'setGeolocActive'
 >
 
-export type CensusToggleProps = Pick<
-  SpatialPanelProps,
-  'censusVisible' | 'setCensusVisible'
->
-
-type CensusLangField = {
-  Arabic: number | typeof NaN
-  Chinese: number | typeof NaN
-  French: number | typeof NaN
-  German: number | typeof NaN
-  Korean: number | typeof NaN
-  Russian: number | typeof NaN
-  Spanish: number | typeof NaN
-  Tagalog: number | typeof NaN
-  Vietnamese: number | typeof NaN
-}
+export type CensusToggleProps = SpatialPanelProps
 
 export type MbReadyCensusRow = {
   id: number // MB Boundaries' internal
   fips: string // 2-char state code + 3-char county + 6-char tract
-} & CensusLangField
+} & { [key: string]: number }
 
 export type CensusLayerProps = Pick<
   BoundariesLayerProps,
-  'beforeId' | 'source' | 'visible'
+  'beforeId' | 'source'
 > & {
   map?: Map
-  activeField?: keyof CensusLangField
+  censusField?: string
 }
 
 export type MapProps = {
@@ -160,7 +145,7 @@ export type MapProps = {
   setMapLoaded: React.Dispatch<boolean>
 } & Omit<
   SpatialPanelProps,
-  'setBoundariesVisible' | 'setGeolocActive' | 'setCensusVisible'
+  'setBoundariesVisible' | 'setGeolocActive' | 'setCensusField'
 >
 
 export type MapCtrlBtnsProps = {
@@ -168,15 +153,16 @@ export type MapCtrlBtnsProps = {
   onMapCtrlClick: (actionID: MapControlAction) => void
 }
 
+// TODO: into context if it gets unrulier
 export type SpatialPanelProps = {
   boundariesVisible: boolean
-  censusVisible: boolean
+  censusField?: string
   geolocActive: boolean
   mapRef: React.RefObject<InteractiveMap>
   panelOpen: boolean
   setBoundariesVisible: React.Dispatch<boolean>
   setGeolocActive: React.Dispatch<boolean>
-  setCensusVisible: React.Dispatch<boolean>
+  setCensusField: React.Dispatch<string>
 }
 
 export type CtrlBtnConfig = {

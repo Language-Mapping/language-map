@@ -61,20 +61,19 @@ export const AppWrap: FC = () => {
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
   const [boundariesVisible, setBoundariesVisible] = useState<boolean>(false)
-  const [censusVisible, setCensusVisible] = useState<boolean>(false)
   const [geolocActive, setGeolocActive] = useState<boolean>(false)
+  const [censusField, setCensusField] = React.useState<string>()
   const propsForEveryone = {
     panelOpen,
     mapRef,
     boundariesVisible,
     geolocActive,
-    censusVisible,
-    setCensusVisible,
+    censusField,
   }
   const propsForMost = { mapLoaded, setMapLoaded }
   const andThen = {
     setBoundariesVisible,
-    setCensusVisible,
+    setCensusField,
     setPanelOpen,
     setGeolocActive,
   }
