@@ -2087,7 +2087,6 @@
   { "id": 3111663849, "fips": "36085009601", "Arabic": 0, "Chinese": 139, "French": 0, "German": 0, "Korean": 20, "Russian": 97, "Spanish": 103, "Tagalog": 0, "Vietnamese": 0 },
   { "id": 3111729385, "fips": "36085009602", "Arabic": 0, "Chinese": 0, "French": 0, "German": 0, "Korean": 0, "Russian": 55, "Spanish": 22, "Tagalog": 30, "Vietnamese": 0 },
   { "id": 3112122601, "fips": "36085009700", "Arabic": 0, "Chinese": 37, "French": 15, "German": 0, "Korean": 0, "Russian": 14, "Spanish": 249, "Tagalog": 0, "Vietnamese": 0 },
-  { "id": 3112122601, "fips": "36085009700", "Arabic": null, "Chinese": null, "French": null, "German": null, "Korean": null, "Russian": null, "Spanish": null, "Tagalog": null, "Vietnamese": null },
   { "id": 2894543081, "fips": "36085010500", "Arabic": 37, "Chinese": 34, "French": 11, "German": 0, "Korean": 0, "Russian": 0, "Spanish": 324, "Tagalog": 14, "Vietnamese": 0 },
   { "id": 3116513513, "fips": "36085011201", "Arabic": 0, "Chinese": 155, "French": 24, "German": 0, "Korean": 0, "Russian": 283, "Spanish": 249, "Tagalog": 0, "Vietnamese": 0 },
   { "id": 3114154217, "fips": "36085011202", "Arabic": 0, "Chinese": 188, "French": 0, "German": 0, "Korean": 0, "Russian": 274, "Spanish": 261, "Tagalog": 0, "Vietnamese": 0 },
