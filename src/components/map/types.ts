@@ -47,6 +47,8 @@ export type ViewportState = Partial<ViewportProps> & ViewState
 export type Breakpoint = 'mobile' | 'desktop' | 'huge'
 export type Offset = [number, number] // [x, y]
 export type BoundariesInternalSrcID = 'neighborhoods' | 'counties' | 'tracts'
+export type InterpRateOfChange = 'linear' | 'exponential' | 'cubic-bezier'
+// `exponential` is valid but didn't look right ^^^^
 
 export type LayerPropsPlusMeta = Omit<LayerProps, 'paint' | 'layout' | 'id'> & {
   id: string
@@ -130,7 +132,6 @@ export type CensusLayerProps = Pick<
   'beforeId' | 'source'
 > & {
   map?: Map
-  censusField?: string
 }
 
 export type MapProps = {

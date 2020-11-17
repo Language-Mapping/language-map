@@ -7,12 +7,6 @@ import { LangSchemaCol } from './types'
 
 type LegendSymbols = { [key: string]: Partial<LayerPropsPlusMeta> }
 type Dispatch = React.Dispatch<Action>
-
-export type Action =
-  | { type: 'SET_LANG_LAYER_LABELS'; payload: LangSchemaCol | '' }
-  | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatch[] }
-  | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: LangSchemaCol }
-
 type InitialState = {
   activeLabelID: LangSchemaCol | '' | 'None'
   activeSymbGroupID: LangSchemaCol | '' | 'None'
@@ -20,14 +14,18 @@ type InitialState = {
   legendSymbols: LegendSymbols
 }
 
-// TODO: consider separate file
+export type Action =
+  | { type: 'SET_LANG_LAYER_LABELS'; payload: LangSchemaCol | '' }
+  | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatch[] }
+  | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: LangSchemaCol }
+
 const legendSymbols = fullLangStyle.reduce((all, thisOne) => {
   const { paint, type, layout } = thisOne
 
   return { ...all, [thisOne.id as string]: { paint, type, layout } }
 }, {})
 
-export const initialState = {
+const initialState = {
   activeLabelID: '',
   activeSymbGroupID: 'World Region',
   legendItems: [],

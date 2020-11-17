@@ -1,7 +1,11 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useQuery, queryCache } from 'react-query'
 import { Source, Layer } from 'react-map-gl'
+import { FillPaint } from 'mapbox-gl'
+import * as stats from 'simple-statistics'
 
+import { useMapToolsState } from 'components/context'
+import { InterpRateOfChange } from 'components/map/types'
 import * as utils from './utils'
 import * as Types from './types'
 import * as config from './config'
@@ -34,10 +38,46 @@ const censusLookupQueryID: Types.BoundariesInternalSrcID = 'tracts'
 //   map.on('sourcedata', setAfterLoad)
 // }
 
+const setFill = (
+  rateOfChange: InterpRateOfChange,
+  highest: number
+): FillPaint => {
+  let rate: number[] = []
+
+  // `interpolate` docs:
+  // https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#interpolate
+  // if (rateOfChange === 'linear') rate = [rateOfChange]
+  if (rateOfChange === 'exponential') rate = [0.5]
+  else if (rateOfChange === 'cubic-bezier') rate = [0.85, 0.7, 0.65, 1]
+
+  return {
+    'fill-color': [
+      'case',
+      ['!=', ['feature-state', 'total'], NaN],
+      [
+        'interpolate',
+        [rateOfChange, ...rate],
+        ['feature-state', 'total'],
+        0,
+        'rgb(237, 248, 233)',
+        highest,
+        'rgb(0, 109, 44)',
+      ],
+      'rgba(255, 255, 255, 0)',
+    ],
+    'fill-opacity': 0.85,
+  }
+}
+
 export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
-  const { beforeId, source, map, censusField } = props
+  const { beforeId, source, map } = props
   const { data, isFetching, error } = useQuery(censusLookupQueryID)
   const lookupData = data as Types.MbReadyCensusRow[]
+  const { censusField, censusRateOfChange } = useMapToolsState()
+  const [censusFillPaint, setCensusFillPaint] = useState<FillPaint>({
+    'fill-color': 'blue',
+  })
+  const [highest, setHighest] = useState<number>(0)
 
   useEffect(() => {
     queryCache.prefetchQuery(censusLookupQueryID, () =>
@@ -46,7 +86,20 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   }, [])
 
   useEffect(() => {
+    if (isFetching || !map || !censusField || !highest) return
+
+    setCensusFillPaint(setFill(censusRateOfChange, highest))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFetching, censusField, censusRateOfChange, highest])
+
+  useEffect(() => {
     if (isFetching || !map || !censusField) return
+
+    const valuesCurrField = lookupData.map((record) => record[censusField])
+    setHighest(stats.max(valuesCurrField))
+
+    // const means = ckmeans(valuesCurrField, 5)
+    // const quant = stats.quantileRank(valuesCurrField, 0.5)
 
     lookupData.forEach((row, i) => {
       map.setFeatureState(
@@ -60,10 +113,11 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
         } as { total: number | typeof NaN }
       )
     })
+    // }, [censusField, lookupData, censusRateOfChange])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [censusField, lookupData])
+  }, [censusField])
 
-  if (error || isFetching) return null
+  if (error || isFetching || !censusField) return null
 
   // Don't draw anything outside of 5-county region
   const listOfIDs = lookupData.map((record) => record.id)
@@ -75,6 +129,9 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
         <Layer
           key={layer.id}
           {...layer}
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          paint={layer.type === 'line' ? layer.paint : censusFillPaint}
           beforeId={beforeId}
           layout={{
             ...layer.layout,

@@ -74,7 +74,7 @@ export const Map: FC<Types.MapProps> = (props) => {
 
   const { state, dispatch } = useContext(GlobalContext)
   const symbLabelState = useSymbAndLabelState()
-  const { boundariesVisible, censusField } = useMapToolsState()
+  const { boundariesVisible } = useMapToolsState()
   const offset = hooks.useOffset(panelOpen)
   const breakpoint = hooks.useBreakpoint()
 
@@ -428,7 +428,6 @@ export const Map: FC<Types.MapProps> = (props) => {
         <CensusLayer
           source={config.censusConfig.source}
           beforeId={beforeId}
-          censusField={censusField}
           map={map}
         />
         {symbLayers && <LangMbSrcAndLayer symbLayers={symbLayers} />}

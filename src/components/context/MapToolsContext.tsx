@@ -1,21 +1,26 @@
 import React, { FC } from 'react'
 
-type Dispatch = React.Dispatch<MapToolsAction>
+import { InterpRateOfChange } from 'components/map/types'
 
-export type MapToolsAction =
+type MapToolsAction =
   | { type: 'SET_BOUNDARIES_VISIBLE'; payload: boolean }
   | { type: 'SET_GEOLOC_ACTIVE'; payload: boolean }
   | { type: 'SET_CENSUS_FIELD'; payload: string }
+  | { type: 'SET_CENSUS_RATE_OF_CHANGE'; payload: InterpRateOfChange }
+
+type Dispatch = React.Dispatch<MapToolsAction>
 
 type InitialState = {
   boundariesVisible: boolean
   geolocActive: boolean
+  censusRateOfChange: InterpRateOfChange
   censusField?: string
 }
 
-export const initMapToolsState = {
+const initialState = {
   boundariesVisible: false,
   geolocActive: false,
+  censusRateOfChange: 'linear',
 } as InitialState
 
 const MapToolsContext = React.createContext<InitialState | undefined>(undefined)
@@ -40,6 +45,11 @@ function reducer(state: InitialState, action: MapToolsAction) {
         ...state,
         censusField: action.payload,
       }
+    case 'SET_CENSUS_RATE_OF_CHANGE':
+      return {
+        ...state,
+        censusRateOfChange: action.payload,
+      }
     default: {
       return state
     }
@@ -48,7 +58,7 @@ function reducer(state: InitialState, action: MapToolsAction) {
 
 export const MapToolsProvider: FC = (props) => {
   const { children } = props
-  const [state, dispatch] = React.useReducer(reducer, initMapToolsState)
+  const [state, dispatch] = React.useReducer(reducer, initialState)
 
   return (
     <MapToolsContext.Provider value={state}>

@@ -12,3 +12,6 @@ export const censusLangFields = [
   'Tagalog',
   'Vietnamese',
 ]
+
+// `exponential` was bad w/given data, and `step`
+export const ratesOfChange = ['linear', 'cubic-bezier']
