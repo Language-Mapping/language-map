@@ -81,7 +81,11 @@ export const Map: FC<Types.MapProps> = (props) => {
   // Down to ONE state prop- `langFeatures`. Hook w/GlobalContext, router?
   const { langFeatures } = state
   const { legendItems } = symbLabelState
-  const beforeId = legendItems.length ? legendItems[0].legendLabel : ''
+  /* eslint-disable operator-linebreak */
+  const beforeId = legendItems.length
+    ? legendItems[0].legendLabel
+    : 'Eastern Africa'
+  /* eslint-disable operator-linebreak */
 
   // Local states
   const [

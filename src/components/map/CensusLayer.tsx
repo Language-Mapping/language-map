@@ -40,15 +40,15 @@ const censusLookupQueryID: Types.BoundariesInternalSrcID = 'tracts'
 
 const setFill = (
   rateOfChange: InterpRateOfChange,
-  highest: number
+  highest: number,
+  lowest?: number
 ): FillPaint => {
-  let rate: number[] = []
+  let rate: number[] = [] // empty array for `linear` rateOfChange
 
   // `interpolate` docs:
   // https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#interpolate
-  // if (rateOfChange === 'linear') rate = [rateOfChange]
-  if (rateOfChange === 'exponential') rate = [0.5]
-  else if (rateOfChange === 'cubic-bezier') rate = [0.85, 0.7, 0.65, 1]
+  if (rateOfChange === 'exponential') rate = [0.95]
+  else if (rateOfChange === 'cubic-bezier') rate = [0, 0.5, 1, 0.5]
 
   return {
     'fill-color': [
@@ -58,14 +58,14 @@ const setFill = (
         'interpolate',
         [rateOfChange, ...rate],
         ['feature-state', 'total'],
-        0,
+        lowest || 0,
         'rgb(237, 248, 233)',
         highest,
         'rgb(0, 109, 44)',
       ],
       'rgba(255, 255, 255, 0)',
     ],
-    'fill-opacity': 0.85,
+    'fill-opacity': 0.9,
   }
 }
 
@@ -77,7 +77,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   const [censusFillPaint, setCensusFillPaint] = useState<FillPaint>({
     'fill-color': 'blue',
   })
-  const [highest, setHighest] = useState<number>(0)
+  const [highLow, setHighLow] = useState<{ high: number; low?: number }>()
 
   useEffect(() => {
     queryCache.prefetchQuery(censusLookupQueryID, () =>
@@ -86,20 +86,25 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   }, [])
 
   useEffect(() => {
-    if (isFetching || !map || !censusField || !highest) return
+    if (isFetching || !map || !censusField || !highLow) return
 
-    setCensusFillPaint(setFill(censusRateOfChange, highest))
+    setCensusFillPaint(setFill(censusRateOfChange, highLow.high, highLow.low))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetching, censusField, censusRateOfChange, highest])
+  }, [isFetching, censusField, censusRateOfChange, highLow])
 
   useEffect(() => {
     if (isFetching || !map || !censusField) return
 
     const valuesCurrField = lookupData.map((record) => record[censusField])
-    setHighest(stats.max(valuesCurrField))
+    const means = stats.ckmeans(valuesCurrField, 5)
+    const firstItemLastClass = means[4][0]
+    const max = stats.max(valuesCurrField)
 
-    // const means = ckmeans(valuesCurrField, 5)
-    // const quant = stats.quantileRank(valuesCurrField, 0.5)
+    setHighLow({
+      high: (firstItemLastClass / max) * 100,
+      // TODO: rm if not using min
+      // low: (firstItemLastClass / stats.min(valuesCurrField)) * 100,
+    })
 
     lookupData.forEach((row, i) => {
       map.setFeatureState(
@@ -109,7 +114,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
           id: row.id,
         },
         {
-          total: row[censusField],
+          total: (row[censusField] / max) * 100,
         } as { total: number | typeof NaN }
       )
     })
