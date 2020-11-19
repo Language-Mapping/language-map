@@ -5,7 +5,6 @@ import { FillPaint } from 'mapbox-gl'
 import * as stats from 'simple-statistics'
 
 import { useMapToolsState } from 'components/context'
-import { InterpRateOfChange } from 'components/map/types'
 import * as utils from './utils'
 import * as Types from './types'
 import * as config from './config'
@@ -38,42 +37,11 @@ const censusLookupQueryID: Types.BoundariesInternalSrcID = 'tracts'
 //   map.on('sourcedata', setAfterLoad)
 // }
 
-const setFill = (
-  rateOfChange: InterpRateOfChange,
-  highest: number,
-  lowest?: number
-): FillPaint => {
-  let rate: number[] = [] // empty array for `linear` rateOfChange
-
-  // `interpolate` docs:
-  // https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#interpolate
-  if (rateOfChange === 'exponential') rate = [0.95]
-  else if (rateOfChange === 'cubic-bezier') rate = [0, 0.5, 1, 0.5]
-
-  return {
-    'fill-color': [
-      'case',
-      ['!=', ['feature-state', 'total'], NaN],
-      [
-        'interpolate',
-        [rateOfChange, ...rate],
-        ['feature-state', 'total'],
-        lowest || 0,
-        'rgb(237, 248, 233)',
-        highest,
-        'rgb(0, 109, 44)',
-      ],
-      'rgba(255, 255, 255, 0)',
-    ],
-    'fill-opacity': 0.9,
-  }
-}
-
 export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   const { beforeId, source, map } = props
   const { data, isFetching, error } = useQuery(censusLookupQueryID)
   const lookupData = data as Types.MbReadyCensusRow[]
-  const { censusField, censusRateOfChange } = useMapToolsState()
+  const { censusField } = useMapToolsState()
   const [censusFillPaint, setCensusFillPaint] = useState<FillPaint>({
     'fill-color': 'blue',
   })
@@ -88,9 +56,9 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   useEffect(() => {
     if (isFetching || !map || !censusField || !highLow) return
 
-    setCensusFillPaint(setFill(censusRateOfChange, highLow.high, highLow.low))
+    setCensusFillPaint(utils.setInterpolatedFill(highLow.high, highLow.low))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetching, censusField, censusRateOfChange, highLow])
+  }, [isFetching, censusField, highLow])
 
   useEffect(() => {
     if (isFetching || !map || !censusField) return

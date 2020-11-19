@@ -8,7 +8,6 @@ import {
 } from '@material-ui/core'
 
 import { useMapToolsState, useMapToolsDispatch } from 'components/context'
-import { InterpRateOfChange } from 'components/map/types'
 import * as config from './config'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -23,20 +22,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const CensusFieldSelect: FC = () => {
   const classes = useStyles()
-  const { censusField, censusRateOfChange } = useMapToolsState()
+  const { censusField } = useMapToolsState()
   const mapToolsDispatch = useMapToolsDispatch()
 
   const handleChange = (event: React.ChangeEvent<{ value: string }>) => {
     mapToolsDispatch({
       type: 'SET_CENSUS_FIELD',
       payload: event.target.value,
-    })
-  }
-
-  const handleRocChange = (event: React.ChangeEvent<{ value: string }>) => {
-    mapToolsDispatch({
-      type: 'SET_CENSUS_RATE_OF_CHANGE',
-      payload: event.target.value as InterpRateOfChange,
     })
   }
 
@@ -59,32 +51,5 @@ export const CensusFieldSelect: FC = () => {
     </FormControl>
   )
 
-  const ChangeRate = (
-    <FormControl className={classes.formControl}>
-      <InputLabel htmlFor="census-roc-helper">Rate of change</InputLabel>
-      <NativeSelect
-        value={censusRateOfChange}
-        onChange={handleRocChange}
-        inputProps={{ name: 'field', id: 'census-roc-helper' }}
-      >
-        {config.ratesOfChange.map((item) => (
-          <option
-            key={item}
-            value={item}
-            selected={item === censusRateOfChange}
-          >
-            {item}
-          </option>
-        ))}
-      </NativeSelect>
-      <FormHelperText>Different classifications, etc.</FormHelperText>
-    </FormControl>
-  )
-
-  return (
-    <div className={classes.root}>
-      {ChangeField}
-      {ChangeRate}
-    </div>
-  )
+  return <div className={classes.root}>{ChangeField}</div>
 }

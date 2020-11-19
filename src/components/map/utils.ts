@@ -1,4 +1,4 @@
-import { Map } from 'mapbox-gl'
+import { Map, FillPaint } from 'mapbox-gl'
 import { WebMercatorViewport } from 'react-map-gl'
 
 import * as MapTypes from './types'
@@ -209,3 +209,26 @@ export const prepEndoFilters = (data: MapTypes.SheetsValues[]): any[] => {
   ]
 }
 /* eslint-enable @typescript-eslint/no-explicit-any */
+
+// Exponential looks pretty good, at least for the tract-level so far
+// https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#interpolate
+export const setInterpolatedFill = (
+  highest: number,
+  lowest?: number
+): FillPaint => ({
+  'fill-color': [
+    'case',
+    ['!=', ['feature-state', 'total'], NaN],
+    [
+      'interpolate',
+      ['exponential', ...[0.95]],
+      ['feature-state', 'total'],
+      lowest || 0,
+      'rgb(237, 248, 233)',
+      highest,
+      'rgb(0, 109, 44)',
+    ],
+    'rgba(255, 255, 255, 0)',
+  ],
+  'fill-opacity': 0.9,
+})

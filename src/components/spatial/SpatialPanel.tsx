@@ -44,7 +44,7 @@ export const SpatialPanel: FC<Types.SpatialPanel> = (props) => {
         <FaSearchLocation />
         Census and friends
       </Typography>
-      <CensusFieldSelect {...props} />
+      <CensusFieldSelect />
       <GeolocToggle />
       <GeocoderPopout {...props} />
     </div>

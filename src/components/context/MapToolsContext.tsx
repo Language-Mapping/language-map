@@ -1,26 +1,21 @@
 import React, { FC } from 'react'
 
-import { InterpRateOfChange } from 'components/map/types'
-
 type MapToolsAction =
   | { type: 'SET_BOUNDARIES_VISIBLE'; payload: boolean }
   | { type: 'SET_GEOLOC_ACTIVE'; payload: boolean }
   | { type: 'SET_CENSUS_FIELD'; payload: string }
-  | { type: 'SET_CENSUS_RATE_OF_CHANGE'; payload: InterpRateOfChange }
 
 type Dispatch = React.Dispatch<MapToolsAction>
 
 type InitialState = {
   boundariesVisible: boolean
   geolocActive: boolean
-  censusRateOfChange: InterpRateOfChange
   censusField?: string
 }
 
 const initialState = {
   boundariesVisible: false,
   geolocActive: false,
-  censusRateOfChange: 'linear',
 } as InitialState
 
 const MapToolsContext = React.createContext<InitialState | undefined>(undefined)
@@ -44,11 +39,6 @@ function reducer(state: InitialState, action: MapToolsAction) {
       return {
         ...state,
         censusField: action.payload,
-      }
-    case 'SET_CENSUS_RATE_OF_CHANGE':
-      return {
-        ...state,
-        censusRateOfChange: action.payload,
       }
     default: {
       return state
