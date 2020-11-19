@@ -82,7 +82,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
           id: row.id,
         },
         {
-          total: (row[censusField] / max) * 100,
+          total: (row[censusField] / max) * 100, // TODO: TS for "total"
         } as { total: number | typeof NaN }
       )
     })

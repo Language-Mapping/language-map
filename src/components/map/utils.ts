@@ -222,7 +222,7 @@ export const setInterpolatedFill = (
     [
       'interpolate',
       ['exponential', ...[0.95]],
-      ['feature-state', 'total'],
+      ['feature-state', 'total'], // TODO: TS for "total"
       lowest || 0,
       'rgb(237, 248, 233)',
       highest,

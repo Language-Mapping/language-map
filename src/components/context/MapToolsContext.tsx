@@ -4,6 +4,7 @@ type MapToolsAction =
   | { type: 'SET_BOUNDARIES_VISIBLE'; payload: boolean }
   | { type: 'SET_GEOLOC_ACTIVE'; payload: boolean }
   | { type: 'SET_CENSUS_FIELD'; payload: string }
+  | { type: 'SET_PUMA_FIELD'; payload: string }
 
 type Dispatch = React.Dispatch<MapToolsAction>
 
@@ -11,6 +12,7 @@ type InitialState = {
   boundariesVisible: boolean
   geolocActive: boolean
   censusField?: string
+  pumaField?: string
 }
 
 const initialState = {
@@ -39,6 +41,11 @@ function reducer(state: InitialState, action: MapToolsAction) {
       return {
         ...state,
         censusField: action.payload,
+      }
+    case 'SET_PUMA_FIELD':
+      return {
+        ...state,
+        pumaField: action.payload,
       }
     default: {
       return state

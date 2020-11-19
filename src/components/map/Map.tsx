@@ -28,6 +28,7 @@ import { MapPopup } from './MapPopup'
 import { MapCtrlBtns } from './MapCtrlBtns'
 import { BoundariesLayer } from './BoundariesLayer'
 import { CensusLayer } from './CensusLayer'
+import { PumaLayer } from './PumaLayer'
 import { GeocodeMarker } from './GeocodeMarker'
 
 import * as Types from './types'
@@ -428,7 +429,7 @@ export const Map: FC<Types.MapProps> = (props) => {
             beforeId={beforeId}
           />
         ))}
-        {/* FIXME: draw order seems inconsistent */}
+        <PumaLayer map={map} />
         <CensusLayer
           source={config.censusConfig.source}
           beforeId={beforeId}
