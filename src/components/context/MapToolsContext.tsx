@@ -8,7 +8,7 @@ type MapToolsAction =
 
 type Dispatch = React.Dispatch<MapToolsAction>
 
-type InitialState = {
+export type InitialMapToolsState = {
   boundariesVisible: boolean
   geolocActive: boolean
   censusField?: string
@@ -18,14 +18,16 @@ type InitialState = {
 const initialState = {
   boundariesVisible: false,
   geolocActive: false,
-} as InitialState
+} as InitialMapToolsState
 
-const MapToolsContext = React.createContext<InitialState | undefined>(undefined)
+const MapToolsContext = React.createContext<InitialMapToolsState | undefined>(
+  undefined
+)
 const MapToolsDispatchContext = React.createContext<Dispatch | undefined>(
   undefined
 )
 
-function reducer(state: InitialState, action: MapToolsAction) {
+function reducer(state: InitialMapToolsState, action: MapToolsAction) {
   switch (action.type) {
     case 'SET_BOUNDARIES_VISIBLE':
       return {
@@ -66,7 +68,7 @@ export const MapToolsProvider: FC = (props) => {
   )
 }
 
-function useMapToolsState(): InitialState {
+function useMapToolsState(): InitialMapToolsState {
   const context = React.useContext(MapToolsContext)
 
   if (context === undefined) {

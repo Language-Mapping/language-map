@@ -429,7 +429,12 @@ export const Map: FC<Types.MapProps> = (props) => {
             beforeId={beforeId}
           />
         ))}
-        <PumaLayer map={map} />
+        <PumaLayer
+          map={map}
+          config={config.pumaConfig}
+          stateKey="pumaField"
+          sourceLayer={config.pumaLyrSrc['source-layer']}
+        />
         <CensusLayer
           source={config.censusConfig.source}
           beforeId={beforeId}
