@@ -17,8 +17,7 @@ type CensusLayerProps = Pick<Types.CensusLayerProps, 'map'> & {
   config: Omit<Types.BoundaryConfig, 'lookupPath'>
 } & Pick<Types.SpatialPanelProps, 'mapRef'>
 
-// NOTE: it did not seem to work when using two different Styles with the same
-// dataset unless waiting until there is something to put into <Source>.
+// TODO: rename component and file
 export const PumaLayer: FC<CensusLayerProps> = (props) => {
   const { sourceLayer, config, stateKey, map } = props
   const { layers, source } = config
@@ -33,8 +32,7 @@ export const PumaLayer: FC<CensusLayerProps> = (props) => {
 
   useEffect(() => {
     function onSourceData(e: MapSourceDataEvent) {
-      // TODO: adapt
-      if (!map || !e.isSourceLoaded || e.sourceId !== 'puma') return
+      if (!map || !e.isSourceLoaded || e.sourceId !== config.source.id) return
 
       const theFeats = map?.querySourceFeatures(source.id, { sourceLayer })
 

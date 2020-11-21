@@ -62,11 +62,26 @@ export const CensusFieldSelect: FC<CensusFieldSelectProps> = (props) => {
   }, [])
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    // TODO: adapt
-    mapToolsDispatch({
-      type: 'SET_PUMA_FIELD',
-      payload: event.target.value as string,
-    })
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const censusType = event.currentTarget.ariaLabel
+
+    // TODO: consider a 'CLEAR_CENSUS_*****' action
+    if (censusType === 'puma') {
+      mapToolsDispatch({
+        type: 'SET_PUMA_FIELD',
+        payload: event.target.value as string,
+      })
+      // FRAGILE: (if ever more than just these two): clear the other
+      mapToolsDispatch({ type: 'SET_CENSUS_FIELD', payload: '' })
+    } else if (censusType === 'tracts') {
+      mapToolsDispatch({
+        type: 'SET_CENSUS_FIELD',
+        payload: event.target.value as string,
+      })
+      // FRAGILE: (if ever more than just these two): clear the other
+      mapToolsDispatch({ type: 'SET_PUMA_FIELD', payload: '' })
+    }
   }
 
   if (isTractFetching || isPumaFetching) return <h2>Getting census data...</h2>
@@ -78,6 +93,9 @@ export const CensusFieldSelect: FC<CensusFieldSelectProps> = (props) => {
   const pumaFields = Object.keys(allPumaFields).map((key) => key)
   const tractFields = Object.keys(allTractFields).map((key) => key)
 
+  // // @ts-ignore
+  // const handleSelectChange = (index, fieldType) => (e) => {}
+
   const ChangeField = (
     <FormControl className={classes.formControl} fullWidth>
       <InputLabel htmlFor={`${stateKey}-field-helper`}>Show by</InputLabel>
@@ -87,6 +105,8 @@ export const CensusFieldSelect: FC<CensusFieldSelectProps> = (props) => {
         defaultValue="" // TODO: fix dev errors, still not right?
         value={field}
         onChange={handleChange}
+        // onChange={handleSelectChange(idx, 'age')}
+        // inputProps={{}}
       >
         <MenuItem value="">
           <em>None</em>
@@ -95,7 +115,7 @@ export const CensusFieldSelect: FC<CensusFieldSelectProps> = (props) => {
         {tractFields
           .filter((item) => !config.censusFieldsDropdownOmit.includes(item))
           .map((item) => (
-            <MenuItem key={item} value={item}>
+            <MenuItem key={item} value={item} aria-label="tracts">
               {item}
             </MenuItem>
           ))}
@@ -104,7 +124,7 @@ export const CensusFieldSelect: FC<CensusFieldSelectProps> = (props) => {
         {pumaFields
           .filter((item) => !config.censusFieldsDropdownOmit.includes(item))
           .map((item) => (
-            <MenuItem key={item} value={item}>
+            <MenuItem key={item} value={item} aria-label="puma">
               {item}
             </MenuItem>
           ))}

@@ -435,6 +435,13 @@ export const Map: FC<Types.MapProps> = (props) => {
           stateKey="pumaField"
           sourceLayer={config.pumaLyrSrc['source-layer']}
         />
+        <PumaLayer
+          map={map}
+          mapRef={mapRef}
+          config={config.tractsConfig}
+          stateKey="censusField"
+          sourceLayer={config.tractsLyrSrc['source-layer']}
+        />
         {symbLayers && <LangMbSrcAndLayer symbLayers={symbLayers} />}
         {popup && <MapPopup {...popup} setVisible={() => setPopup(null)} />}
         {/* Popups are annoying on mobile */}

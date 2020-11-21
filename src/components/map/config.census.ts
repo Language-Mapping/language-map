@@ -1,24 +1,22 @@
 import * as Types from './types'
 
-const censusSrcID: Types.BoundariesInternalSrcID = 'tracts'
+const tractsSrcId: Types.BoundariesInternalSrcID = 'tracts'
 
-export const censusLyrSrc = {
-  source: censusSrcID,
-  'source-layer': 'boundaries_stats_4',
+export const tractsLyrSrc = {
+  source: tractsSrcId,
+  'source-layer': 'NYC_tract2013_17_langHome-8cd347',
   minzoom: 8,
 }
 
-// The feature-state approach came from:
-// https://docs.mapbox.com/help/tutorials/data-joins-with-mapbox-boundaries/
-export const censusConfig = {
-  lookupPath: '/data/lookup-tables/sta4-v3-new-york.json',
+// TODO: reuse this w/PUMA as they are nearly identical. As a function perhaps?
+export const tractsConfig = {
   source: {
-    id: censusSrcID,
-    url: 'mapbox://mapbox.boundaries-sta4-v3',
+    id: tractsSrcId,
+    url: 'mapbox://elalliance.5dh31p39',
   },
   layers: [
     {
-      id: 'census-poly',
+      id: 'tracts-poly',
       type: 'fill',
       paint: {
         'fill-color': [
@@ -29,24 +27,24 @@ export const censusConfig = {
             ['linear'],
             ['feature-state', 'total'],
             4,
-            'rgb(237, 248, 233)', // 'rgba(222,235,247,1)',
+            'rgb(237, 248, 233)',
             140,
-            'rgb(0, 109, 44)', // 'rgba(49,130,189,1)',
+            'rgb(0, 109, 44)',
           ],
-          'rgba(255, 255, 255, 0)',
+          'rgba(255, 255, 255, 0)', // TODO: transparent at least
         ],
         'fill-opacity': 0.8,
       },
-      ...censusLyrSrc,
+      ...tractsLyrSrc,
     },
     {
-      id: 'census-line',
+      id: 'tracts-line',
       type: 'line',
-      ...censusLyrSrc,
+      ...tractsLyrSrc,
       paint: {
         'line-color': '#c2c2c2',
         'line-opacity': 0.2,
       },
     },
   ],
-} as Types.BoundaryConfig
+} as Omit<Types.BoundaryConfig, 'lookupPath'>
