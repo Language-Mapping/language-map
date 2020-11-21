@@ -159,21 +159,28 @@ const secondColStyle = {
   boxShadow: '5px 0px 8px 0px rgba(0,0,0,0.08)',
 }
 
+// "View in map" and "Description" can't use `hidden`, but without a title they
+// shown up as blanks in the column toggle/reorder menu. Handy workaround.
+const hidden = {
+  color: 'transparent',
+  fontSize: 0,
+}
+
 // 25px : 200char = decent ratio
 export const columns = [
   {
-    title: '',
+    title: 'View in map',
     field: 'ID',
     ...commonColProps,
     filtering: false,
     export: false,
     render: utils.renderIDcolumn,
     cellStyle: firstColStyle,
-    headerStyle: firstColStyle,
+    headerStyle: { ...firstColStyle, ...hidden },
     filterCellStyle: firstColStyle,
   },
   {
-    title: '',
+    title: 'Description',
     field: 'Description',
     ...commonColProps,
     sorting: false,
@@ -181,7 +188,7 @@ export const columns = [
     export: false,
     render: utils.renderDescripCol, // still adds the full value to DOM 😱
     cellStyle: secondColStyle,
-    headerStyle: secondColStyle,
+    headerStyle: { ...firstColStyle, ...hidden },
     filterCellStyle: secondColStyle,
   },
   {
