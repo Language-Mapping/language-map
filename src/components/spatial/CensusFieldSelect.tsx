@@ -1,14 +1,29 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect } from 'react'
+import { useQuery, queryCache } from 'react-query'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
   InputLabel,
+  ListSubheader,
   FormHelperText,
   FormControl,
-  NativeSelect,
+  Select,
+  MenuItem,
 } from '@material-ui/core'
 
 import { useMapToolsState, useMapToolsDispatch } from 'components/context'
+import { asyncAwaitFetch } from 'components/map/utils'
 import * as config from './config'
+
+// TODO: reuse, move into types.ts
+export type CensusStateKey = 'censusField' | 'pumaField'
+export type CensusFieldSelectProps = { stateKey: CensusStateKey }
+export type GenericUseQuery = {
+  data: {
+    vector_layers: { fields: string[] }[]
+  }
+  isFetching: boolean
+  error: Error
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,73 +35,83 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export type CensusFieldSelectProps = {
-  stateKey: 'censusField' | 'pumaField'
-}
-
 export const CensusFieldSelect: FC<CensusFieldSelectProps> = (props) => {
   const { stateKey } = props
   const classes = useStyles()
   const field = useMapToolsState()[stateKey]
   const mapToolsDispatch = useMapToolsDispatch()
-  const [fields, setFields] = useState<string[]>()
+  // TODO: adapt to support tract-level, and TS the query IDs
+  const {
+    data: tractData,
+    isFetching: isTractFetching,
+    error: isTractError,
+  } = useQuery('tracts') as GenericUseQuery
+  const {
+    data: pumaData,
+    isFetching: isPumaFetching,
+    error: isPumaError,
+  } = useQuery('puma') as GenericUseQuery
 
   useEffect(() => {
-    if (stateKey === 'censusField') {
-      setFields(config.censusLangFields)
-    } else if (stateKey === 'pumaField') {
-      const url =
-        'https://api.mapbox.com/v4/elalliance.5tfrskw8.json?access_token=pk.eyJ1IjoiZWxhbGxpYW5jZSIsImEiOiJja2M1Nmd6YnYwZXQ4MnJvYjd6MnJsb25lIn0.AC_4h4BmJCg2YvlygXzLxQ'
-      const fetchData = async () => {
-        const result = await fetch(url)
-        const jsonn = await result.json()
-        const pumaFieldz = jsonn.vector_layers[0].fields
-        const pumaFieldzNamez = Object.keys(pumaFieldz)
-          .map((key) => key)
-          .sort()
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        setFields(pumaFieldzNamez)
-      }
+    queryCache.prefetchQuery('tracts', () =>
+      asyncAwaitFetch(config.endpoints.tracts)
+    )
+    queryCache.prefetchQuery('puma', () =>
+      asyncAwaitFetch(config.endpoints.puma)
+    )
+  }, [])
 
-      fetchData()
-      // async (key: number): Promise<void> =>
-      // (await fetch(`${WP_API_PAGES_ENDPOINT}/${key}`)).json()
-    }
-  }, [stateKey])
-
-  const handleChange = (event: React.ChangeEvent<{ value: string }>) => {
-    if (stateKey === 'censusField') {
-      mapToolsDispatch({
-        type: 'SET_CENSUS_FIELD',
-        payload: event.target.value,
-      })
-    } else if (stateKey === 'pumaField') {
-      mapToolsDispatch({
-        type: 'SET_PUMA_FIELD',
-        payload: event.target.value,
-      })
-    }
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    // TODO: adapt
+    mapToolsDispatch({
+      type: 'SET_PUMA_FIELD',
+      payload: event.target.value as string,
+    })
   }
 
-  if (!fields) return <h2>Onnnnne second</h2>
+  if (isTractFetching || isPumaFetching) return <h2>Getting census data...</h2>
+  if (isTractError || isPumaError)
+    return <h2>Something went wrong fetching census data.</h2>
+
+  const allPumaFields = pumaData.vector_layers[0].fields
+  const allTractFields = tractData.vector_layers[0].fields
+  const pumaFields = Object.keys(allPumaFields).map((key) => key)
+  const tractFields = Object.keys(allTractFields).map((key) => key)
 
   const ChangeField = (
-    <FormControl className={classes.formControl}>
+    <FormControl className={classes.formControl} fullWidth>
       <InputLabel htmlFor={`${stateKey}-field-helper`}>Show by</InputLabel>
-      <NativeSelect
+      <Select
+        labelId="census-select-label"
+        id="census-select"
+        defaultValue="" // TODO: fix dev errors, still not right?
         value={field}
         onChange={handleChange}
-        inputProps={{ name: 'field', id: `${stateKey}-field-helper` }}
       >
-        <option aria-label="None" value="" selected />
-        {fields.map((item) => (
-          <option key={item} value={item}>
-            {item}
-          </option>
-        ))}
-      </NativeSelect>
-      <FormHelperText>Level: {stateKey}</FormHelperText>
+        <MenuItem value="">
+          <em>None</em>
+        </MenuItem>
+        <ListSubheader>Tracts</ListSubheader>
+        {tractFields
+          .filter((item) => !config.censusFieldsDropdownOmit.includes(item))
+          .map((item) => (
+            <MenuItem key={item} value={item}>
+              {item}
+            </MenuItem>
+          ))}
+        {/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
+        <ListSubheader>PUMA 🐈</ListSubheader>
+        {pumaFields
+          .filter((item) => !config.censusFieldsDropdownOmit.includes(item))
+          .map((item) => (
+            <MenuItem key={item} value={item}>
+              {item}
+            </MenuItem>
+          ))}
+      </Select>
+      <FormHelperText>
+        Heads up: will be mutually exlusive w/Neighbs
+      </FormHelperText>
     </FormControl>
   )
 

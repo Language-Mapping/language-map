@@ -186,6 +186,8 @@ corresponding lookup tables for this to be relevant. There may be a way to do
 `citysdk`](https://uscensusbureau.github.io/citysdk/examples/mapbox-choropleth/)
 and ArcGIS.
 
+<!-- TODO: adapt and rm as needed -->
+
 #### Mapbox lookup tables
 
 Whittled down MB lookup tables for `boundaries-sta4-v3-US`. Combination of CSV,

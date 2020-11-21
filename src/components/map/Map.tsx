@@ -27,7 +27,6 @@ import { Geolocation } from './Geolocation'
 import { MapPopup } from './MapPopup'
 import { MapCtrlBtns } from './MapCtrlBtns'
 import { BoundariesLayer } from './BoundariesLayer'
-import { CensusLayer } from './CensusLayer'
 import { PumaLayer } from './PumaLayer'
 import { GeocodeMarker } from './GeocodeMarker'
 
@@ -85,7 +84,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   /* eslint-disable operator-linebreak */
   const beforeId = legendItems.length
     ? legendItems[0].legendLabel
-    : 'Eastern Africa'
+    : 'Eastern Africa' // fragile hack for correct draw order of polygon layers
   /* eslint-disable operator-linebreak */
 
   // Local states
@@ -431,14 +430,10 @@ export const Map: FC<Types.MapProps> = (props) => {
         ))}
         <PumaLayer
           map={map}
+          mapRef={mapRef}
           config={config.pumaConfig}
           stateKey="pumaField"
           sourceLayer={config.pumaLyrSrc['source-layer']}
-        />
-        <CensusLayer
-          source={config.censusConfig.source}
-          beforeId={beforeId}
-          map={map}
         />
         {symbLayers && <LangMbSrcAndLayer symbLayers={symbLayers} />}
         {popup && <MapPopup {...popup} setVisible={() => setPopup(null)} />}

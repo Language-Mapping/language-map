@@ -1,17 +1,13 @@
-// TODO: if using uploaded census layer instead of Boundaries, obtain these
-// directly from column headings instead (assuming pretty column names)
-// TODO: confirm don't need English or "Other"
-export const censusLangFields = [
-  'Arabic',
-  'Chinese',
-  'French',
-  'German',
-  'Korean',
-  'Russian',
-  'Spanish',
-  'Tagalog',
-  'Vietnamese',
-]
+import { MAPBOX_TOKEN } from 'components/map'
 
-// `exponential` was bad w/given data, and `step`
-export const ratesOfChange = ['exponential', 'linear', 'cubic-bezier']
+const MB_API_BASE = 'https://api.mapbox.com/v4'
+
+export const censusFieldsDropdownOmit = ['GEOID', 'NAMELSAD', 'Total']
+
+// YO: use from config?
+export const endpoints = {
+  puma: `${MB_API_BASE}/elalliance.5tfrskw8.json?access_token=${MAPBOX_TOKEN}`,
+  tracts: `${MB_API_BASE}/elalliance.5dh31p39.json?access_token=${MAPBOX_TOKEN}`,
+}
+
+// TODO: rm tracts lookup table when ready

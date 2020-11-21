@@ -3,7 +3,11 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 import { FaSearchLocation } from 'react-icons/fa'
 
-import { GeocoderPopout, GeolocToggle } from 'components/map'
+import {
+  GeocoderPopout,
+  GeolocToggle,
+  LocationSearchContent,
+} from 'components/map'
 import { usePanelRootStyles } from 'components/panels'
 import * as Types from './types'
 import { CensusFieldSelect } from './CensusFieldSelect'
@@ -42,10 +46,14 @@ export const SpatialPanel: FC<Types.SpatialPanel> = (props) => {
         component="h2"
       >
         <FaSearchLocation />
-        Census and friends
+        Spatial dumping ground
       </Typography>
-      <CensusFieldSelect stateKey="censusField" />
-      <CensusFieldSelect stateKey="pumaField" />
+      <LocationSearchContent
+        heading="Census data"
+        explanation="Tract-level census data when available, otherwise less-granular PUMA-level. Goal is to show where these languages are spoken as a supplement to the Language Communities points. LINK TO HELP/ABOUT SECTION/S."
+      >
+        <CensusFieldSelect stateKey="pumaField" />
+      </LocationSearchContent>
       <GeolocToggle />
       <GeocoderPopout {...props} />
     </div>
