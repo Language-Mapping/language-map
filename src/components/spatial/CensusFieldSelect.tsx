@@ -11,6 +11,8 @@ import {
 } from '@material-ui/core'
 
 import { useMapToolsState, useMapToolsDispatch } from 'components/context'
+import { LocationSearchContent } from 'components/map'
+import { SimplePopover } from 'components/generic'
 import { asyncAwaitFetch } from 'components/map/utils'
 import { censusFieldsDropdownOmit, endpoints } from './config'
 import * as Types from './types'
@@ -21,6 +23,10 @@ const useStyles = makeStyles((theme: Theme) =>
     formControl: {
       margin: theme.spacing(1),
       minWidth: 120,
+    },
+    helperText: {
+      display: 'flex',
+      alignItems: 'center',
     },
   })
 )
@@ -86,44 +92,54 @@ export const CensusFieldSelect: FC<Types.CensusFieldSelectProps> = (props) => {
 
   // // @ts-ignore
   // const handleSelectChange = (index, fieldType) => (e) => {}
+  const extree =
+    'For best results, use together with ELA data [DATA]. ELA is not responsible for Census data or categories. More info here [ABOUT].'
 
   const ChangeField = (
-    <FormControl className={classes.formControl} fullWidth>
-      <InputLabel htmlFor={`${stateKey}-field-helper`}>Show by</InputLabel>
-      <Select
-        labelId="census-select-label"
-        id="census-select"
-        defaultValue="" // TODO: fix dev errors, still not right?
-        value={field}
-        onChange={handleChange}
-        // onChange={handleSelectChange(idx, 'age')}
-        // inputProps={{}}
-      >
-        <MenuItem value="">
-          <em>None (hide census layer)</em>
-        </MenuItem>
-        <ListSubheader>Tract-level</ListSubheader>
-        {tractFields
-          .filter((item) => !censusFieldsDropdownOmit.includes(item))
-          .map((item) => (
-            <MenuItem key={item} value={item} aria-label="tracts">
-              {item}
-            </MenuItem>
-          ))}
-        {/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
-        <ListSubheader>PUMA-level</ListSubheader>
-        {pumaFields
-          .filter((item) => !censusFieldsDropdownOmit.includes(item))
-          .map((item) => (
-            <MenuItem key={item} value={item} aria-label="puma">
-              {item}
-            </MenuItem>
-          ))}
-      </Select>
-      <FormHelperText>
-        Tract level if available, otherwise less-granular PUMA level
-      </FormHelperText>
-    </FormControl>
+    <LocationSearchContent
+      heading="Census data (NYC only)"
+      explanation="The Census Bureau’s American Community Survey (ACS), while recording far fewer languages than ELA, provides a useful indication of where the largest several dozen languages are distributed. Find below 5-year ACS estimates on “language spoken at home for the Population 5 Years and Over”."
+    >
+      <FormControl className={classes.formControl} fullWidth>
+        <InputLabel htmlFor={`${stateKey}-field-helper`}>
+          Choose a language
+        </InputLabel>
+        <Select
+          labelId="census-select-label"
+          id="census-select"
+          defaultValue="" // TODO: fix dev errors, still not right?
+          value={field}
+          onChange={handleChange}
+          // onChange={handleSelectChange(idx, 'age')}
+          // inputProps={{}}
+        >
+          <MenuItem value="">
+            <em>None (hide census layer)</em>
+          </MenuItem>
+          <ListSubheader>Tract-level</ListSubheader>
+          {tractFields
+            .filter((item) => !censusFieldsDropdownOmit.includes(item))
+            .map((item) => (
+              <MenuItem key={item} value={item} aria-label="tracts">
+                {item}
+              </MenuItem>
+            ))}
+          {/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
+          <ListSubheader>PUMA-level</ListSubheader>
+          {pumaFields
+            .filter((item) => !censusFieldsDropdownOmit.includes(item))
+            .map((item) => (
+              <MenuItem key={item} value={item} aria-label="puma">
+                {item}
+              </MenuItem>
+            ))}
+        </Select>
+        <FormHelperText className={classes.helperText}>
+          Tract level if available, otherwise less-granular PUMA level
+          <SimplePopover text={extree} />
+        </FormHelperText>
+      </FormControl>
+    </LocationSearchContent>
   )
 
   return <div className={classes.root}>{ChangeField}</div>

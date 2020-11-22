@@ -4,6 +4,7 @@ import { FormControlLabel, Switch } from '@material-ui/core'
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 import { useMapToolsState, useMapToolsDispatch } from 'components/context'
+import { SimplePopover } from 'components/generic'
 import { LocationSearchContent } from './LocationSearchContent'
 import { useSpatialPanelStyles } from './styles'
 
@@ -19,11 +20,15 @@ export const GeolocToggle: FC = () => {
     })
   }
 
+  const ControlLabel = (
+    <div className={classes.controlLabel}>
+      Show and zoom to my location
+      <SimplePopover text="Your location is not sent, shared, stored, or used for anything except zooming to your current location." />
+    </div>
+  )
+
   return (
-    <LocationSearchContent
-      heading="Zoom to my location"
-      explanation="Your location is not sent, shared, stored, or used for anything except zooming to your current location."
-    >
+    <LocationSearchContent>
       <FormControlLabel
         // onClick={(event) => event.stopPropagation()} // TODO: something
         classes={{
@@ -38,7 +43,7 @@ export const GeolocToggle: FC = () => {
             size="small"
           />
         }
-        label="Show and zoom to my location"
+        label={ControlLabel}
       />
     </LocationSearchContent>
   )

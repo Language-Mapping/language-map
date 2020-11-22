@@ -63,6 +63,13 @@ export const useSpatialPanelStyles = makeStyles((theme: Theme) =>
         marginBottom: '0.3rem',
         marginTop: '0.3rem',
       },
+      '& .mapboxgl-ctrl-geocoder': {
+        maxWidth: '100%',
+        width: 'auto',
+      },
+      '& .mapboxgl-ctrl-geocoder--input': {
+        padding: '0.25em 2em',
+      },
     },
     explanation: {
       color: theme.palette.text.secondary,
@@ -72,15 +79,12 @@ export const useSpatialPanelStyles = makeStyles((theme: Theme) =>
     switchFormCtrlRoot: {
       marginLeft: 0,
     },
+    controlLabel: {
+      display: 'flex',
+      alignItems: 'center',
+    },
     smallerText: {
       fontSize: '0.8rem',
-    },
-    '& .mapboxgl-ctrl-geocoder': {
-      maxWidth: '100%',
-      width: 'auto',
-    },
-    '& .mapboxgl-ctrl-geocoder--input': {
-      padding: '0.25em 2em',
     },
   })
 )

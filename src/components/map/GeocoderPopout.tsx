@@ -7,6 +7,7 @@ import { FormControlLabel, Switch } from '@material-ui/core'
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 import { useMapToolsState, useMapToolsDispatch } from 'components/context'
+import { SimplePopover } from 'components/generic'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
 import * as hooks from './hooks'
@@ -66,12 +67,15 @@ export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
     })
   }
 
+  const ControlLabel = (
+    <div className={classes.controlLabel}>
+      Show neighborhoods and counties
+      <SimplePopover text="Enter an address, municipality, neighborhood, postal code, landmark, or other point of interest within the New York City metro area." />
+    </div>
+  )
+
   return (
-    <LocationSearchContent
-      heading="Search by location"
-      explanation="Enter an address, municipality, neighborhood, postal code, landmark,
-      or other point of interest within the New York City metro area."
-    >
+    <LocationSearchContent>
       <div ref={geocoderContainerRef} />
       <FormControlLabel
         // Prevent off-canvas from closing (but we want that to happen for all
@@ -86,7 +90,7 @@ export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
             size="small"
           />
         }
-        label="Show neighborhoods and counties"
+        label={ControlLabel}
       />
       <Geocoder
         containerRef={geocoderContainerRef}
@@ -94,7 +98,7 @@ export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
         mapboxApiAccessToken={MAPBOX_TOKEN}
         mapRef={mapRef}
         onResult={handleGeocodeResult}
-        placeholder="Enter a location"
+        placeholder="Enter a metro-NYC location, e.g. Staten Island"
         proximity={NYC_LAT_LONG}
         types="address,poi,postcode,locality,place,neighborhood"
         bbox={[-77.5, 38.4, -70.7, 42.89]}

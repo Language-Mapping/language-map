@@ -121,7 +121,7 @@ export type GeocodeResult = {
 }
 
 export type PopoutContentProps = {
-  heading: string
+  heading?: string
   explanation?: string
 }
 

@@ -12,9 +12,11 @@ export const LocationSearchContent: FC<Types.PopoutContentProps> = (props) => {
 
   return (
     <Box className={classes.root}>
-      <Typography variant="h5" component="h3">
-        {heading}
-      </Typography>
+      {heading && (
+        <Typography variant="h5" component="h3">
+          {heading}
+        </Typography>
+      )}
       <Typography className={classes.explanation}>{explanation}</Typography>
       {children}
     </Box>
