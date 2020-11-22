@@ -18,6 +18,7 @@ import {
 import * as GeoJSON from 'geojson'
 
 import { LangRecordSchema } from 'components/context/types'
+import { InitialMapToolsState } from 'components/context'
 
 type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
 type Padding =
@@ -129,12 +130,12 @@ export type MbReadyCensusRow = {
   fips: string // 2-char state code + 3-char county + 6-char tract
 } & { [key: string]: number }
 
-export type CensusLayerProps = Pick<
-  BoundariesLayerProps,
-  'beforeId' | 'source'
-> & {
+export type CensusLayerProps = {
+  sourceLayer: string
+  stateKey: keyof InitialMapToolsState
+  config: Omit<BoundaryConfig, 'lookupPath'>
   map?: Map
-}
+} & Pick<SpatialPanelProps, 'mapRef'>
 
 export type MapProps = {
   mapLoaded: boolean

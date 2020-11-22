@@ -4,21 +4,12 @@ import { FillPaint, MapboxGeoJSONFeature, MapSourceDataEvent } from 'mapbox-gl'
 
 import * as stats from 'simple-statistics'
 
-import { useMapToolsState, InitialMapToolsState } from 'components/context'
+import { useMapToolsState } from 'components/context'
 import * as utils from './utils'
 import * as Types from './types'
 
-// TODO: set paint property (???)
-// https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
-
-type CensusLayerProps = Pick<Types.CensusLayerProps, 'map'> & {
-  sourceLayer: string
-  stateKey: keyof InitialMapToolsState
-  config: Omit<Types.BoundaryConfig, 'lookupPath'>
-} & Pick<Types.SpatialPanelProps, 'mapRef'>
-
 // TODO: rename component and file
-export const PumaLayer: FC<CensusLayerProps> = (props) => {
+export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   const { sourceLayer, config, stateKey, map } = props
   const { layers, source } = config
   const field = useMapToolsState()[stateKey]

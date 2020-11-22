@@ -27,7 +27,7 @@ import { Geolocation } from './Geolocation'
 import { MapPopup } from './MapPopup'
 import { MapCtrlBtns } from './MapCtrlBtns'
 import { BoundariesLayer } from './BoundariesLayer'
-import { PumaLayer } from './PumaLayer'
+import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
 
 import * as Types from './types'
@@ -428,14 +428,14 @@ export const Map: FC<Types.MapProps> = (props) => {
             beforeId={beforeId}
           />
         ))}
-        <PumaLayer
+        <CensusLayer
           map={map}
           mapRef={mapRef}
           config={config.pumaConfig}
           stateKey="pumaField"
           sourceLayer={config.pumaLyrSrc['source-layer']}
         />
-        <PumaLayer
+        <CensusLayer
           map={map}
           mapRef={mapRef}
           config={config.tractsConfig}

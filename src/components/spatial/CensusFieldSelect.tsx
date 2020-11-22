@@ -12,18 +12,8 @@ import {
 
 import { useMapToolsState, useMapToolsDispatch } from 'components/context'
 import { asyncAwaitFetch } from 'components/map/utils'
-import * as config from './config'
-
-// TODO: reuse, move into types.ts
-export type CensusStateKey = 'censusField' | 'pumaField'
-export type CensusFieldSelectProps = { stateKey: CensusStateKey }
-export type GenericUseQuery = {
-  data: {
-    vector_layers: { fields: string[] }[]
-  }
-  isFetching: boolean
-  error: Error
-}
+import { censusFieldsDropdownOmit, endpoints } from './config'
+import * as Types from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -35,9 +25,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const CensusFieldSelect: FC<CensusFieldSelectProps> = (props) => {
+export const CensusFieldSelect: FC<Types.CensusFieldSelectProps> = (props) => {
   const { stateKey } = props
   const classes = useStyles()
+  // TODO: `censusField` 24/7, no need for stateKey here?
   const field = useMapToolsState()[stateKey]
   const mapToolsDispatch = useMapToolsDispatch()
   // TODO: adapt to support tract-level, and TS the query IDs
@@ -45,26 +36,26 @@ export const CensusFieldSelect: FC<CensusFieldSelectProps> = (props) => {
     data: tractData,
     isFetching: isTractFetching,
     error: isTractError,
-  } = useQuery('tracts') as GenericUseQuery
+  } = useQuery('tracts' as Types.CensusQueryID) as Types.GenericUseQuery
   const {
     data: pumaData,
     isFetching: isPumaFetching,
     error: isPumaError,
-  } = useQuery('puma') as GenericUseQuery
+  } = useQuery('puma' as Types.CensusQueryID) as Types.GenericUseQuery
 
   useEffect(() => {
-    queryCache.prefetchQuery('tracts', () =>
-      asyncAwaitFetch(config.endpoints.tracts)
+    queryCache.prefetchQuery('tracts' as Types.CensusQueryID, () =>
+      asyncAwaitFetch(endpoints.tracts)
     )
-    queryCache.prefetchQuery('puma', () =>
-      asyncAwaitFetch(config.endpoints.puma)
+    queryCache.prefetchQuery('puma' as Types.CensusQueryID, () =>
+      asyncAwaitFetch(endpoints.puma)
     )
   }, [])
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const censusType = event.currentTarget.ariaLabel
+    const censusType: Types.CensusQueryID = event.currentTarget.ariaLabel
 
     // TODO: consider a 'CLEAR_CENSUS_*****' action
     if (censusType === 'puma') {
@@ -109,20 +100,20 @@ export const CensusFieldSelect: FC<CensusFieldSelectProps> = (props) => {
         // inputProps={{}}
       >
         <MenuItem value="">
-          <em>None</em>
+          <em>None (hide census layer)</em>
         </MenuItem>
-        <ListSubheader>Tracts</ListSubheader>
+        <ListSubheader>Tract-level</ListSubheader>
         {tractFields
-          .filter((item) => !config.censusFieldsDropdownOmit.includes(item))
+          .filter((item) => !censusFieldsDropdownOmit.includes(item))
           .map((item) => (
             <MenuItem key={item} value={item} aria-label="tracts">
               {item}
             </MenuItem>
           ))}
         {/* eslint-disable-next-line jsx-a11y/accessible-emoji */}
-        <ListSubheader>PUMA 🐈</ListSubheader>
+        <ListSubheader>PUMA-level</ListSubheader>
         {pumaFields
-          .filter((item) => !config.censusFieldsDropdownOmit.includes(item))
+          .filter((item) => !censusFieldsDropdownOmit.includes(item))
           .map((item) => (
             <MenuItem key={item} value={item} aria-label="puma">
               {item}
@@ -130,7 +121,7 @@ export const CensusFieldSelect: FC<CensusFieldSelectProps> = (props) => {
           ))}
       </Select>
       <FormHelperText>
-        Heads up: will be mutually exlusive w/Neighbs
+        Tract level if available, otherwise less-granular PUMA level
       </FormHelperText>
     </FormControl>
   )
