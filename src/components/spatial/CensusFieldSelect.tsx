@@ -29,6 +29,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     listbox: {
       paddingTop: 0,
+      [theme.breakpoints.down('sm')]: {
+        maxHeight: 225, // maybe helps prevent unwanted upward-opening menu?
+      },
     },
     groupHeader: {
       backgroundColor: theme.palette.primary.main,
@@ -168,6 +171,9 @@ export const CensusFieldSelect: FC = () => {
         renderGroup={renderGroup}
         // open // much more effective than `debug`
         fullWidth
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore // it actually DOES exist on currentTarget
+        onOpen={(e) => e.currentTarget.scrollIntoView()}
         onChange={(event, value) => handleChange(value)}
         size="small"
         renderInput={(params) => {
