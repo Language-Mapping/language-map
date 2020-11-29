@@ -1,14 +1,12 @@
 import React, { FC, useState, useEffect } from 'react'
 import { Source, Layer } from 'react-map-gl'
 import { FillPaint, MapboxGeoJSONFeature, MapSourceDataEvent } from 'mapbox-gl'
-
 import * as stats from 'simple-statistics'
 
 import { useMapToolsState } from 'components/context'
 import * as utils from './utils'
 import * as Types from './types'
 
-// TODO: rename component and file
 export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   const { sourceLayer, config, stateKey, map } = props
   const { layers, source } = config
@@ -72,10 +70,12 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
     setFillPaint(utils.setInterpolatedFill(highLow.high, highLow.low))
   }, [highLow])
 
+  const promoteIDfield = 'GEOID' // tell MB not to use default `id` as unique ID
+
   return (
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    <Source {...source} type="vector" promoteId="OBJECTID">
+    <Source {...source} type="vector" promoteId={promoteIDfield}>
       {layers.map((layer) => (
         <Layer
           key={layer.id}
