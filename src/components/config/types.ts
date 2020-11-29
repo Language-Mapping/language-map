@@ -13,4 +13,5 @@ export type RouteLocation =
 export type LocWithState = {
   pathname: string
   state: { from?: string }
+  hash?: string
 }

@@ -25,6 +25,7 @@ export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
   const {
     pathname: currPathname,
     state: locState,
+    hash,
   } = useLocation() as LocWithState
   const theme = useTheme()
   const lilGuy = useMediaQuery(theme.breakpoints.only('xs'))
@@ -55,6 +56,14 @@ export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
     else history.goBack()
   }
 
+  // Scroll id'd element into view // CRED: (partial anyway):
+  // github.com/ReactTraining/react-router/issues/394#issuecomment-128148470
+  const handleEntered = () => {
+    const targetElemID = hash?.split('#').slice(-1)[0]
+
+    document.querySelector(`#${targetElemID}`)?.scrollIntoView()
+  }
+
   // TODO: wire up Sentry; aria; TS for error (`error.message` is a string)
   if (error) {
     return (
@@ -74,6 +83,7 @@ export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
       open
       fullScreen={lilGuy}
       onClose={handleClose}
+      onEntered={handleEntered}
       aria-labelledby={`${queryKey}-dialog-title`}
       aria-describedby={`${queryKey}-dialog-description`}
       TransitionComponent={SlideUp}
