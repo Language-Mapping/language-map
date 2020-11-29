@@ -19,7 +19,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 // TODO: either rename to "InfoPopover" or support alternate icon and call it
 // "ButtonPopover"
-export const SimplePopover: FC<{ text: string }> = (props) => {
+export const SimplePopover: FC<{ text: string | React.ReactNode }> = (
+  props
+) => {
   const { text } = props
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)

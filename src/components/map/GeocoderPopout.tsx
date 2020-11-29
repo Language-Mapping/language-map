@@ -70,7 +70,14 @@ export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
   const ControlLabel = (
     <div className={classes.controlLabel}>
       Show neighborhoods and counties
-      <SimplePopover text="Enter an address, municipality, neighborhood, postal code, landmark, or other point of interest within the New York City metro area." />
+      <SimplePopover
+        text={
+          <>
+            Neighborhoods are shown within NYC's five boroughs, and counties for
+            the surrounding areas. <em>Source: Mapbox Boundaries</em>
+          </>
+        }
+      />
     </div>
   )
 
@@ -98,7 +105,7 @@ export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
         mapboxApiAccessToken={MAPBOX_TOKEN}
         mapRef={mapRef}
         onResult={handleGeocodeResult}
-        placeholder="Enter a metro-NYC location, e.g. Staten Island"
+        placeholder="e.g. Staten Island, Central Park, Statue of Liberty"
         proximity={NYC_LAT_LONG}
         types="address,poi,postcode,locality,place,neighborhood"
         bbox={[-77.5, 38.4, -70.7, 42.89]}

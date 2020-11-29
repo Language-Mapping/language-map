@@ -120,9 +120,9 @@ export type GeocodeResult = {
   }
 }
 
-export type PopoutContentProps = {
+export type PanelSectionProps = {
   heading?: string
-  explanation?: string
+  explanation?: string | React.ReactNode
 }
 
 export type MbReadyCensusRow = {

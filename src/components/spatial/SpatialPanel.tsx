@@ -2,8 +2,13 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
-import { GeocoderPopout, GeolocToggle } from 'components/map'
+import {
+  GeocoderPopout,
+  GeolocToggle,
+  LocationSearchContent,
+} from 'components/map'
 import { usePanelRootStyles } from 'components/panels'
+
 import * as Types from './types'
 import { CensusFieldSelect } from './CensusFieldSelect'
 
@@ -38,8 +43,13 @@ export const SpatialPanel: FC<Types.SpatialPanel> = (props) => {
   return (
     <div className={panelRootClasses.root}>
       <CensusFieldSelect stateKey="pumaField" />
-      <GeocoderPopout {...props} />
-      <GeolocToggle />
+      <LocationSearchContent
+        heading="Location tools"
+        explanation="Enter an address, municipality, neighborhood, postal code, landmark, or other point of interest within the New York City metro area."
+      >
+        <GeocoderPopout {...props} />
+        <GeolocToggle />
+      </LocationSearchContent>
     </div>
   )
 }

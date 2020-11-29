@@ -71,6 +71,7 @@ export const useSpatialPanelStyles = makeStyles((theme: Theme) =>
         padding: '0.25em 2em',
       },
     },
+    // TODO: small-font gray text is in high demand, so make it a component.
     explanation: {
       color: theme.palette.text.secondary,
       fontSize: '0.7em',

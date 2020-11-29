@@ -6,7 +6,7 @@ import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 import * as Types from './types'
 import { useSpatialPanelStyles } from './styles'
 
-export const LocationSearchContent: FC<Types.PopoutContentProps> = (props) => {
+export const LocationSearchContent: FC<Types.PanelSectionProps> = (props) => {
   const { children, explanation, heading } = props
   const classes = useSpatialPanelStyles()
 
