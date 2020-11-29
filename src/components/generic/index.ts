@@ -1,4 +1,5 @@
 export * from './ScrollToTopOnMount'
 export * from './ShareButtons'
 export * from './SimplePopover'
+export * from './SubtleText'
 export * from './ToggleableSection'

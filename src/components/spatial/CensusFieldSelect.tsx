@@ -2,35 +2,94 @@ import React, { FC, useEffect } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { useQuery, queryCache } from 'react-query'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { FormHelperText, TextField } from '@material-ui/core'
-import Autocomplete from '@material-ui/lab/Autocomplete'
+import { TextField, Typography, ListSubheader } from '@material-ui/core'
+import Autocomplete, {
+  AutocompleteRenderGroupParams,
+} from '@material-ui/lab/Autocomplete'
 
 import { useMapToolsDispatch } from 'components/context'
 import { LocationSearchContent } from 'components/map'
 import { asyncAwaitFetch } from 'components/map/utils'
+import { SubtleText } from 'components/generic'
 
 import * as config from './config'
 import * as utils from './utils'
 import * as Types from './types'
 
+type GroupHeaderProps = {
+  title: string
+  subTitle: string
+}
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {},
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
+    intro: {
+      fontSize: '1.1em',
+      marginBottom: '1.25em',
     },
-    helperText: {
-      display: 'flex',
-      alignItems: 'center',
+    listbox: {
+      paddingTop: 0,
     },
-    // TODO: small-font gray text is in high demand, so make it a component.
-    subtleText: {
-      color: theme.palette.text.secondary,
-      fontSize: '0.7em',
+    groupHeader: {
+      backgroundColor: theme.palette.primary.main,
+      borderTopLeftRadius: 4,
+      borderTopRightRadius: 4,
+      boxShadow: '0 2px 7px hsla(0, 0%, 0%, 0.15)',
+      lineHeight: 1,
+      paddingTop: '0.25em',
+      paddingBottom: '0.25em',
+    },
+    groupTitle: {
+      color: theme.palette.text.primary,
+      lineHeight: 1.4,
+    },
+    groupSubTitle: {
+      fontSize: '0.65em',
+    },
+    // Individual list items
+    option: {
+      fontSize: '0.75em',
+      minHeight: 32,
     },
   })
 )
+
+const GroupHeader: FC<GroupHeaderProps> = (props) => {
+  const { title, subTitle } = props
+  const classes = useStyles()
+
+  return (
+    <ListSubheader className={classes.groupHeader}>
+      <Typography className={classes.groupTitle} variant="h6">
+        {title}
+      </Typography>
+      <Typography className={classes.groupSubTitle}>{subTitle}</Typography>
+    </ListSubheader>
+  )
+}
+
+const renderGroup = (params: AutocompleteRenderGroupParams) => {
+  const split = params.group.split('|||')
+
+  return [
+    <GroupHeader key={params.key} title={split[0]} subTitle={split[1]} />,
+    params.children,
+  ]
+}
+
+const Intro: FC = () => {
+  const classes = useStyles()
+
+  return (
+    <Typography className={classes.intro}>
+      The Census Bureau’s American Community Survey provides an indication of
+      where the largest several dozen languages are distributed. The options
+      below are 5-year ACS estimates on “language spoken at home for the
+      Population 5 Years and Over”, sorted by population size.{' '}
+      <RouterLink to="/about#census">More info</RouterLink>
+    </Typography>
+  )
+}
 
 export const CensusFieldSelect: FC = () => {
   const classes = useStyles()
@@ -81,36 +140,34 @@ export const CensusFieldSelect: FC = () => {
   if (isTractError || isPumaError)
     return <h2>Something went wrong fetching census data.</h2>
 
-  const pumaFields = utils
-    .prepCensusFields(pumaData, 'Public Use Microdata Areas (PUMAs)')
-    .sort(utils.sortBySort)
   const tractFields = utils
-    .prepCensusFields(tractData, 'Census Tracts')
+    .prepCensusFields(
+      tractData,
+      'Census Tracts|||The smallest census unit at which language data is provided, tract-level information will be used whenever available.'
+    )
     .sort(utils.sortBySort)
 
-  const Explanation = (
-    <>
-      The Census Bureau’s American Community Survey (ACS), while recording far
-      fewer languages than ELA, provides a useful indication of where the
-      largest several dozen languages are distributed. Find below 5-year ACS
-      estimates on “language spoken at home for the Population 5 Years and
-      Over”, in descending order by population size.{' '}
-      <RouterLink to="/about#census">More info</RouterLink>
-    </>
-  )
+  const pumaFields = utils
+    .prepCensusFields(
+      pumaData,
+      'Public Use Microdata Areas (PUMAs)|||Larger than tracts, PUMAs are a less-granular census unit used whenever tract-level data is unavailable.'
+    )
+    .sort(utils.sortBySort)
 
-  const ChangeField = (
+  return (
     <LocationSearchContent
-      heading="Census (NYC only)"
-      explanation={Explanation}
+      heading="Census Language Data (NYC only)"
+      explanation={<Intro />}
     >
       <Autocomplete
         id="census-autocomplete"
+        classes={{ option: classes.option, listbox: classes.listbox }}
         options={[...tractFields, ...pumaFields]}
         getOptionLabel={({ pretty }) => pretty}
         groupBy={({ groupTitle }) => groupTitle}
+        renderGroup={renderGroup}
+        // open // much more effective than `debug`
         fullWidth
-        className={classes.formControl}
         onChange={(event, value) => handleChange(value)}
         size="small"
         renderInput={(params) => {
@@ -123,11 +180,9 @@ export const CensusFieldSelect: FC = () => {
           )
         }}
       />
-      <FormHelperText className={classes.helperText}>
-        Tract level if available, otherwise less-granular PUMA level
-      </FormHelperText>
+      <SubtleText>
+        *Census Bureau category, component languages unclear
+      </SubtleText>
     </LocationSearchContent>
   )
-
-  return <div className={classes.root}>{ChangeField}</div>
 }

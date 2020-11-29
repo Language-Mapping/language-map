@@ -58,10 +58,8 @@ export const useStyles = makeStyles((theme: Theme) =>
 export const useSpatialPanelStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      '&:not(:first-of-type)': { marginTop: '0.5rem' },
-      '& > *': {
-        marginBottom: '0.3rem',
-        marginTop: '0.3rem',
+      '& > * + *': {
+        marginTop: '0.25em',
       },
       '& .mapboxgl-ctrl-geocoder': {
         maxWidth: '100%',
@@ -70,11 +68,6 @@ export const useSpatialPanelStyles = makeStyles((theme: Theme) =>
       '& .mapboxgl-ctrl-geocoder--input': {
         padding: '0.25em 2em',
       },
-    },
-    // TODO: small-font gray text is in high demand, so make it a component.
-    explanation: {
-      color: theme.palette.text.secondary,
-      fontSize: '0.7em',
     },
     // Toggle switches
     switchFormCtrlRoot: {

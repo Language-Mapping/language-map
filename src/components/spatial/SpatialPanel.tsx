@@ -14,6 +14,11 @@ import { CensusFieldSelect } from './CensusFieldSelect'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      '& > * + *': {
+        marginTop: '1.25em',
+      },
+    },
     panelMainHeading: {
       alignItems: 'center',
       display: 'flex',
@@ -33,7 +38,7 @@ export const SpatialPanel: FC<Types.SpatialPanel> = (props) => {
 
   if (!mapRef.current)
     return (
-      <div className={panelRootClasses.root}>
+      <div className={`${panelRootClasses.root} ${classes.root}`}>
         <Typography className={classes.panelMainHeading}>
           Map loading...
         </Typography>
@@ -41,7 +46,7 @@ export const SpatialPanel: FC<Types.SpatialPanel> = (props) => {
     )
 
   return (
-    <div className={panelRootClasses.root}>
+    <div className={`${panelRootClasses.root} ${classes.root}`}>
       <CensusFieldSelect />
       <LocationSearchContent
         heading="Location tools"

@@ -10,11 +10,11 @@ import { useMapToolsState, useMapToolsDispatch } from 'components/context'
 import { SimplePopover } from 'components/generic'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
+import { useSpatialPanelStyles } from './styles'
+
 import * as hooks from './hooks'
 import * as utils from './utils'
 import * as Types from './types'
-import { LocationSearchContent } from './LocationSearchContent'
-import { useSpatialPanelStyles } from './styles'
 
 export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
   const { mapRef, panelOpen } = props
@@ -82,13 +82,14 @@ export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
   )
 
   return (
-    <LocationSearchContent>
+    <>
       <div ref={geocoderContainerRef} />
       <FormControlLabel
         // Prevent off-canvas from closing (but we want that to happen for all
         // the other elements in the off-canvas).
         onClick={(event) => event.stopPropagation()}
         classes={{ label: smallerText, root: switchFormCtrlRoot }}
+        style={{ marginTop: '0.5em' }}
         control={
           <Switch
             checked={boundariesVisible}
@@ -105,11 +106,11 @@ export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
         mapboxApiAccessToken={MAPBOX_TOKEN}
         mapRef={mapRef}
         onResult={handleGeocodeResult}
-        placeholder="e.g. Staten Island, Central Park, Statue of Liberty"
+        placeholder="e.g. Staten Island, Astoria, Yankee Stadium"
         proximity={NYC_LAT_LONG}
         types="address,poi,postcode,locality,place,neighborhood"
         bbox={[-77.5, 38.4, -70.7, 42.89]}
       />
-    </LocationSearchContent>
+    </>
   )
 }

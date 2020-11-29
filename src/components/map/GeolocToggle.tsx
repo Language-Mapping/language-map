@@ -5,7 +5,6 @@ import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 import { useMapToolsState, useMapToolsDispatch } from 'components/context'
 import { SimplePopover } from 'components/generic'
-import { LocationSearchContent } from './LocationSearchContent'
 import { useSpatialPanelStyles } from './styles'
 
 export const GeolocToggle: FC = () => {
@@ -28,23 +27,21 @@ export const GeolocToggle: FC = () => {
   )
 
   return (
-    <LocationSearchContent>
-      <FormControlLabel
-        // onClick={(event) => event.stopPropagation()} // TODO: something
-        classes={{
-          label: classes.smallerText,
-          root: classes.switchFormCtrlRoot,
-        }}
-        control={
-          <Switch
-            checked={geolocActive}
-            onChange={handleChange}
-            name="toggle-geolocation"
-            size="small"
-          />
-        }
-        label={ControlLabel}
-      />
-    </LocationSearchContent>
+    <FormControlLabel
+      // onClick={(event) => event.stopPropagation()} // TODO: something
+      classes={{
+        label: classes.smallerText,
+        root: classes.switchFormCtrlRoot,
+      }}
+      control={
+        <Switch
+          checked={geolocActive}
+          onChange={handleChange}
+          name="toggle-geolocation"
+          size="small"
+        />
+      }
+      label={ControlLabel}
+    />
   )
 }

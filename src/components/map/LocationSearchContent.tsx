@@ -3,6 +3,7 @@ import { Typography, Box } from '@material-ui/core'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
+import { SubtleText } from 'components/generic'
 import * as Types from './types'
 import { useSpatialPanelStyles } from './styles'
 
@@ -17,7 +18,7 @@ export const LocationSearchContent: FC<Types.PanelSectionProps> = (props) => {
           {heading}
         </Typography>
       )}
-      <Typography className={classes.explanation}>{explanation}</Typography>
+      <SubtleText>{explanation}</SubtleText>
       {children}
     </Box>
   )
