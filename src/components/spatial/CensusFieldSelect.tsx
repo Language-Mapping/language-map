@@ -118,7 +118,7 @@ export const CensusFieldSelect: FC = () => {
     )
   }, [])
 
-  const handleChange = (value: Types.PreppedCensusRow | null) => {
+  const handleChange = (value: Types.PreppedCensusLUTrow | null) => {
     // TODO: consider a 'CLEAR_CENSUS_*****' action
     if (!value) {
       mapToolsDispatch({ type: 'SET_CENSUS_FIELD', payload: '' })

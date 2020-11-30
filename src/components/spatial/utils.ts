@@ -1,8 +1,8 @@
 import * as Types from './types'
 
 export const sortBySort = (
-  a: Types.PreppedCensusRow,
-  b: Types.PreppedCensusRow
+  a: Types.PreppedCensusLUTrow,
+  b: Types.PreppedCensusLUTrow
 ): number => {
   let comparison = 0
 
@@ -13,9 +13,9 @@ export const sortBySort = (
 }
 
 export const prepCensusFields = (
-  data: Types.SheetsResponse,
+  data: Types.SheetsLUTresponse,
   groupTitle: string
-): Types.PreppedCensusRow[] =>
+): Types.PreppedCensusLUTrow[] =>
   data.values.map((row) => {
     const complicated = row[2] === 'TRUE'
 

@@ -1,48 +1,71 @@
 import React, { FC, useState, useEffect } from 'react'
 import { Source, Layer } from 'react-map-gl'
-import { FillPaint, MapboxGeoJSONFeature, MapSourceDataEvent } from 'mapbox-gl'
+import { FillPaint } from 'mapbox-gl'
 import * as stats from 'simple-statistics'
+import { useQuery, queryCache } from 'react-query'
 
 import { useMapToolsState } from 'components/context'
+import { tableEndpoints } from '../spatial/config'
+
 import * as utils from './utils'
 import * as Types from './types'
+
+type PreppedRow = { [key: string]: number } & { GEOID: string }
+type SheetsResponse = {
+  data: { values: [string[]] }
+  error: Error
+  isFetching: boolean
+}
 
 export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   const { sourceLayer, config, stateKey, map } = props
   const { layers, source } = config
   const field = useMapToolsState()[stateKey]
+  const censusUnit = config.source.id as 'tracts' | 'puma'
+  const { data, error, isFetching } = useQuery(
+    `${censusUnit}-table`
+  ) as SheetsResponse
   const [fillPaint, setFillPaint] = useState<FillPaint>({
     'fill-color': 'transparent', // mitigates the brief lag before load
   })
   const [highLow, setHighLow] = useState<{ high: number; low?: number }>()
   const visible = field !== undefined && field !== ''
-  const [features, setFeatures] = useState<MapboxGeoJSONFeature[]>([])
-  const [loaded, setLoaded] = useState<boolean>(false)
+  const [tableRows, setTableRows] = useState<PreppedRow[]>()
 
   useEffect(() => {
-    function onSourceData(e: MapSourceDataEvent) {
-      if (!map || !e.isSourceLoaded || e.sourceId !== config.source.id) return
-
-      const theFeats = map?.querySourceFeatures(source.id, { sourceLayer })
-
-      setFeatures(theFeats || [])
-      map.off('sourcedata', onSourceData)
-      setLoaded(true)
-    }
-
-    if (!features.length) map?.on('sourcedata', onSourceData)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [field])
-
-  // TODO: into utils
-  useEffect(() => {
-    if (!map || !loaded || !field) return
-
-    const valuesCurrField = features.map(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      ({ properties }) => properties[field]
+    // TODO: learn react-query caching and apply it appropriately everywhere
+    queryCache.prefetchQuery(`${censusUnit}-table`, () =>
+      utils.asyncAwaitFetch(tableEndpoints[censusUnit])
     )
+  }, [censusUnit])
+
+  useEffect(() => {
+    if (isFetching || !data) return
+
+    const headings = data.values[0]
+
+    // TODO: deal w/google's built-in `data.error` (adjust TS first)
+    const tableRowsPrepped = data.values.slice(1).map((row, i) => {
+      const rowAsJS = {} as PreppedRow
+
+      headings.forEach((heading, index) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore // TODO: don't let TS win
+        rowAsJS[heading] =
+          heading === 'GEOID' ? row[index] : parseInt(row[index], 10)
+      })
+
+      return rowAsJS
+    })
+
+    setTableRows(tableRowsPrepped)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFetching])
+
+  useEffect(() => {
+    if (!map || !tableRows || !field) return
+
+    const valuesCurrField = tableRows.map((row) => row[field])
     const means = stats.ckmeans(valuesCurrField, 5)
     const firstItemLastClass = means[4][0]
     const max = stats.max(valuesCurrField)
@@ -51,24 +74,25 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
     // low: (firstItemLastClass / stats.min(valuesCurrField)) * 100,
     setHighLow({ high: (firstItemLastClass / max) * 100 })
 
-    features.forEach((row, i) => {
-      const featConfig = { source: config.source.id, sourceLayer, id: row.id }
+    tableRows.forEach((row) => {
+      const featConfig = { source: censusUnit, sourceLayer, id: row.GEOID }
+      const total = row[field]
 
       map.setFeatureState(featConfig, {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        total: (row.properties[field] / max) * 100, // TODO: TS for "total"
+        total: (total / max) * 100,
       } as { total: number })
     })
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [field, loaded])
+  }, [field])
 
   useEffect(() => {
     if (!highLow) return
 
     setFillPaint(utils.setInterpolatedFill(highLow.high, highLow.low))
   }, [highLow])
+
+  if (error) return null // TODO: sentry
 
   const promoteIDfield = 'GEOID' // tell MB not to use default `id` as unique ID
 
