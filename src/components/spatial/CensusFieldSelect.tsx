@@ -111,10 +111,10 @@ export const CensusFieldSelect: FC = () => {
 
   useEffect(() => {
     queryCache.prefetchQuery('tracts' as Types.CensusQueryID, () =>
-      asyncAwaitFetch(config.endpoints.tracts)
+      asyncAwaitFetch(config.configEndpoints.tracts)
     )
     queryCache.prefetchQuery('puma' as Types.CensusQueryID, () =>
-      asyncAwaitFetch(config.endpoints.puma)
+      asyncAwaitFetch(config.configEndpoints.puma)
     )
   }, [])
 
@@ -131,10 +131,10 @@ export const CensusFieldSelect: FC = () => {
 
     // Clear the one not in question (FRAGILE, if ever more than just these two)
     if (lowerCase.includes('puma')) {
-      mapToolsDispatch({ type: 'SET_PUMA_FIELD', payload: value.pretty })
+      mapToolsDispatch({ type: 'SET_PUMA_FIELD', payload: value.id })
       mapToolsDispatch({ type: 'SET_CENSUS_FIELD', payload: '' })
     } else if (lowerCase.includes('tracts')) {
-      mapToolsDispatch({ type: 'SET_CENSUS_FIELD', payload: value.pretty })
+      mapToolsDispatch({ type: 'SET_CENSUS_FIELD', payload: value.id })
       mapToolsDispatch({ type: 'SET_PUMA_FIELD', payload: '' })
     }
   }
@@ -146,14 +146,14 @@ export const CensusFieldSelect: FC = () => {
   const tractFields = utils
     .prepCensusFields(
       tractData,
-      'Census Tracts|||The smallest census unit at which language data is provided, tract-level information will be used whenever available.'
+      'Census Tracts|||Tracts are the smallest census unit at which language data is provided and will be used here whenever available.'
     )
     .sort(utils.sortBySort)
 
   const pumaFields = utils
     .prepCensusFields(
       pumaData,
-      'Public Use Microdata Areas (PUMAs)|||Larger than tracts, PUMAs are a less-granular census unit used whenever tract-level data is unavailable.'
+      'Public Use Microdata Areas (PUMAs)|||Larger than tracts, PUMAs are a less granular census unit used here whenever tract-level is unavailable.'
     )
     .sort(utils.sortBySort)
 
@@ -169,6 +169,8 @@ export const CensusFieldSelect: FC = () => {
         getOptionLabel={({ pretty }) => pretty}
         groupBy={({ groupTitle }) => groupTitle}
         renderGroup={renderGroup}
+        blurOnSelect="touch"
+        selectOnFocus={false}
         // open // much more effective than `debug`
         fullWidth
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
