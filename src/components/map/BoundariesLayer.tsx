@@ -3,14 +3,9 @@ import { queryCache, useQuery } from 'react-query'
 import { Source, Layer } from 'react-map-gl'
 
 import * as utils from './utils'
-import * as MapTypes from './types'
+import * as Types from './types'
 
-type BoundariesLayerProps = {
-  visible: boolean
-  beforeId?: string
-} & MapTypes.BoundaryConfig
-
-export const BoundariesLayer: FC<BoundariesLayerProps> = (props) => {
+export const BoundariesLayer: FC<Types.BoundariesLayerProps> = (props) => {
   const { beforeId, source, layers, lookupPath, visible } = props
   const { data, isFetching, error } = useQuery(source.id)
   const [recordIDs, setRecordIDs] = useState<number[]>()
@@ -18,13 +13,13 @@ export const BoundariesLayer: FC<BoundariesLayerProps> = (props) => {
   useEffect(() => {
     queryCache.prefetchQuery(source.id, () => utils.asyncAwaitFetch(lookupPath))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [lookupPath])
 
   useEffect(() => {
     if (isFetching) return
 
-    const lookup = data as MapTypes.BoundaryLookup[]
-    const listOfIDs = lookup.map((record) => record.feature_id)
+    const lookup = data as Types.BoundaryLookup[]
+    const listOfIDs = lookup.map((record) => record.id)
 
     setRecordIDs(listOfIDs)
     // eslint-disable-next-line react-hooks/exhaustive-deps

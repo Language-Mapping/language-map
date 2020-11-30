@@ -1,4 +1,5 @@
 import { RouteLocation } from 'components/config/types'
+import * as MapTypes from 'components/map/types'
 
 export type MapPanel = {
   heading: string
@@ -6,11 +7,12 @@ export type MapPanel = {
   rootPath: RouteLocation
   exact?: boolean
   icon?: React.ReactNode
+  // TODO: de-fragilize?
+  renderComponent?: (props: MapTypes.SpatialPanelProps) => React.ReactNode
 }
 
-export type MapPanelProps = {
+export type MapPanelProps = MapTypes.SpatialPanelProps & {
   openOffCanvasNav: (e: React.MouseEvent) => void
-  panelOpen: boolean
   setPanelOpen: React.Dispatch<boolean>
 }
 

@@ -175,6 +175,99 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 - Anything in _package.json_
 - [Country flags](https://github.com/hjnilsson/country-flags)
 
+## Data
+
+### Census data
+
+...was obtained using the following steps. **Note that this does not apply to
+anyone who is not using Mapbox Boundaries** as you need that service and the
+corresponding lookup tables for this to be relevant. There may be a way to do
+[something similar using
+`citysdk`](https://uscensusbureau.github.io/citysdk/examples/mapbox-choropleth/)
+and ArcGIS.
+
+<!-- TODO: adapt and rm as needed -->
+
+#### Mapbox lookup tables
+
+Whittled down MB lookup tables for `boundaries-sta4-v3-US`. Combination of CSV,
+GeoJSON, spreadsheets to make formulas for creating lat/lng for QGIS temporary
+use. Resulting schema:
+
+```json
+[{ "id": 3125098729, "fips": "36005000100" }]
+```
+
+Note `id` instead of MB's `feature_id` for brevity. The `fips` field is from
+2-char state code + 3-char county + 6-char tract and serves as the foreign key
+by which to join data from the Census API.
+
+#### Census API
+
+...was hit using the `citysdk` lib using this config:
+
+```js
+const censusLangFields = [
+  'Age5p_Arabic_ACS_13_17',
+  'Age5p_Chinese_ACS_13_17',
+  'Age5p_French_ACS_13_17',
+  'Age5p_German_ACS_13_17',
+  'Age5p_Korean_ACS_13_17',
+  'Age5p_Russian_ACS_13_17',
+  'Age5p_Spanish_ACS_13_17',
+  'Age5p_Tagalog_ACS_13_17',
+  'Age5p_Vietnamese_ACS_13_17',
+]
+
+const pdbConfig = {
+  vintage: 2019,
+  geoHierarchy: {
+    state: '36', // NY = 36
+    county: '085,047,081,061,005',
+    tract: '*',
+  },
+  sourcePath: ['pdb', 'tract'],
+  values: censusLangFields,
+}
+```
+
+This includes the 5-county area (Richmond, Kings, Queens, New York, Bronx) and
+the `censusLangFields` columns (aka "variables in Census API). It returns ~2100
+records, which were manually copied using `console.copy()`, then looped over and
+"joined" against the MB lookup's `fips` column. Note that instead of `NaN` the
+`citysdk` tool returns a `'NAN: null'` string for empty values (`0` is not
+empty).
+
+There were only 5 records which didn't match:
+
+```
+36047990100 36061000100 36081990100 36085008900 36085990100
+```
+
+but this may have been a result of incorrect lookup whittling. Will look into.
+
+#### Result
+
+The result of the manicured join is a custom schema like so:
+
+```json
+{
+  "id": 3125098729,
+  "fips": "36005000100",
+  "Arabic": 29,
+  "Chinese": 24,
+  "French": 53,
+  "German": 7,
+  "Korean": 3,
+  "Russian": 46,
+  "Spanish": 1233,
+  "Tagalog": 0,
+  "Vietnamese": 0
+}
+```
+
+So far this being committed to the repo but obviously this is not an ideal soln.
+
 ## TODOs
 
 ### Fonts documentation

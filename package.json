@@ -32,6 +32,7 @@
     "react-scripts": "3.4.1",
     "react-share": "^4.2.1",
     "react-window": "^1.8.5",
+    "simple-statistics": "^7.3.2",
     "typescript": "3.9.5",
     "webfontloader": "^1.6.28"
   },

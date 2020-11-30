@@ -4,6 +4,7 @@ export type RouteLocation =
   | '/table'
   | '/about'
   | '/help'
+  | '/spatial'
   | '/Explore'
   | '/Explore/:field'
   | '/Explore/:field/:value'
@@ -12,4 +13,5 @@ export type RouteLocation =
 export type LocWithState = {
   pathname: string
   state: { from?: string }
+  hash?: string
 }

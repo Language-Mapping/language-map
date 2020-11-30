@@ -18,6 +18,7 @@ import {
 import * as GeoJSON from 'geojson'
 
 import { LangRecordSchema } from 'components/context/types'
+import { InitialMapToolsState } from 'components/context'
 
 type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
 type Padding =
@@ -28,7 +29,8 @@ export type BoundsArray = [[number, number], [number, number]]
 export type GeocodeMarker = LongLat & { text: string }
 export type InitialMapProps = InteractiveMapProps
 export type LangIconConfig = { icon: string; id: string }
-export type Layer = LayerProps & { 'source-layer': string; id: string }
+export type LayerBasics = { 'source-layer': string; id: string }
+export type Layer = LayerProps & LayerBasics
 export type LongLat = { longitude: number; latitude: number }
 export type LongLatAndZoom = LongLat & { zoom: number }
 export type MapControlAction =
@@ -45,6 +47,11 @@ export type UseStyleProps = { panelOpen: boolean }
 export type ViewportState = Partial<ViewportProps> & ViewState
 export type Breakpoint = 'mobile' | 'desktop' | 'huge'
 export type Offset = [number, number] // [x, y]
+export type BoundariesInternalSrcID =
+  | 'neighborhoods'
+  | 'counties'
+  | 'tracts'
+  | 'puma'
 
 export type LayerPropsPlusMeta = Omit<LayerProps, 'paint' | 'layout' | 'id'> & {
   id: string
@@ -76,8 +83,14 @@ export type BoundaryFeat = Omit<
 > & {
   geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon
   properties: { Name: string; ID: number }
-  source: 'neighorhoods' | 'counties'
+  source: BoundariesInternalSrcID
+  'source-layer': string
 }
+
+export type BoundariesLayerProps = {
+  visible: boolean
+  beforeId?: string
+} & BoundaryConfig
 
 export type MapEvent = Omit<PointerEvent, 'features'> & {
   features: LangFeature[] | BoundaryFeat[]
@@ -107,29 +120,36 @@ export type GeocodeResult = {
   }
 }
 
-export type MapProps = {
-  mapLoaded: boolean
-  panelOpen: boolean
-  setMapLoaded: React.Dispatch<boolean>
+export type PanelSectionProps = {
+  heading?: string
+  explanation?: string | React.ReactNode
 }
 
-export type MapCtrlBtnsProps = Omit<
-  GeocoderProps,
-  'anchorEl' | 'setAnchorEl'
-> & {
+export type MbReadyCensusRow = {
+  id: number // MB Boundaries' internal
+  fips: string // 2-char state code + 3-char county + 6-char tract
+} & { [key: string]: number }
+
+export type CensusLayerProps = {
+  sourceLayer: string
+  stateKey: keyof InitialMapToolsState
+  config: Omit<BoundaryConfig, 'lookupPath'>
+  map?: Map
+} & Pick<SpatialPanelProps, 'mapRef'>
+
+export type MapProps = {
+  mapLoaded: boolean
+  setMapLoaded: React.Dispatch<boolean>
+} & SpatialPanelProps
+
+export type MapCtrlBtnsProps = {
   isPitchZero: boolean
   onMapCtrlClick: (actionID: MapControlAction) => void
 }
 
-export type GeocoderProps = {
-  anchorEl: null | HTMLElement
-  boundariesVisible: boolean
-  geolocActive: boolean
+export type SpatialPanelProps = {
   mapRef: React.RefObject<InteractiveMap>
   panelOpen: boolean
-  setAnchorEl: React.Dispatch<null | HTMLElement>
-  setBoundariesVisible: React.Dispatch<boolean>
-  setGeolocActive: React.Dispatch<boolean>
 }
 
 export type CtrlBtnConfig = {
@@ -153,11 +173,13 @@ export type BoundsConfig = {
 }
 
 export type BoundaryLookup = {
-  feature_id: number
-  centroid: [number, number]
+  // It's `feature_id` in MB lookup tables. Manually change to save 8 characters
+  // (times 3000...)
+  id: number
   bounds: [number, number, number, number]
-  name?: string // neighb and county have it, but `names` is ideal in counties
-  names?: { en: string[] } // only counties has this
+  name?: string // census tracts don't have one (they DID, but not useful)
+  // NOTE: only counties has this. Manually converted to `name` instead.
+  // names?: { en: string[] }
 }
 
 export type CustomEventData = MapEventType & {
@@ -173,9 +195,9 @@ export type PrepPopupContent = (
 
 export type HandleBoundaryClick = (
   map: Map,
-  topMostFeat: LangFeature | BoundaryFeat,
+  topMostFeat: BoundaryFeat,
   boundsConfig: BoundsConfig,
-  lookup?: BoundaryLookup[],
+  lookup: BoundaryLookup[],
   offset?: [number, number]
 ) => void
 

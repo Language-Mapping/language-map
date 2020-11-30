@@ -54,3 +54,31 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
+
+export const useSpatialPanelStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      '& > * + *': {
+        marginTop: '0.25em',
+      },
+      '& .mapboxgl-ctrl-geocoder': {
+        maxWidth: '100%',
+        width: 'auto',
+      },
+      '& .mapboxgl-ctrl-geocoder--input': {
+        padding: '0.25em 2em',
+      },
+    },
+    // Toggle switches
+    switchFormCtrlRoot: {
+      marginLeft: 0,
+    },
+    controlLabel: {
+      display: 'flex',
+      alignItems: 'center',
+    },
+    smallerText: {
+      fontSize: '0.8rem',
+    },
+  })
+)

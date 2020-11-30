@@ -1,3 +1,4 @@
+// TODO: break out file into config.{census,neighborhoods,counties}.ts
 import * as Types from './types'
 
 // `symbol-sort-order` useful maybe:
@@ -16,14 +17,14 @@ const neighbPaint = {
 
 // TODO: if the missing "Sheepshead Bay" polygon is added to Boundaries by MB,
 // then the lookup table for this layer will need to be updated.
-const neighbSrcID = 'neighborhoods'
+const neighbSrcID: Types.BoundariesInternalSrcID = 'neighborhoods'
 const neighbLyrSrc = {
   source: neighbSrcID,
   'source-layer': 'boundaries_locality_4',
   minzoom: 8,
 }
 
-const countiesSrcID = 'counties'
+const countiesSrcID: Types.BoundariesInternalSrcID = 'counties'
 const countiesLyrSrc = {
   source: countiesSrcID,
   'source-layer': 'boundaries_admin_2',
