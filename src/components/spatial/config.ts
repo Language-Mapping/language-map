@@ -19,3 +19,22 @@ export const configEndpoints = {
 }
 
 // TODO: rm tracts lookup table when ready
+// TODO: migrate non-LUT config to separate file?
+const DEFAULT_SHEET_NAME = 'Sheet1'
+
+// "Tracts2013-2017" workbook
+const TRACTS_SPREADSHEET_ID = '1pMvLpzdqO40MZWcyU5Lxabs-tP_eqoY6_TRF4p-EIXg'
+const TRACTS_VALUES_ENDPOINT = `${GOOGLE_API_BASE}/${TRACTS_SPREADSHEET_ID}/values`
+const TRACTS_SUFFIX = `!A:K?key=${GOOGLE_API_KEY}`
+
+// "PUMA2013-2017" workbook
+const PUMA_SPREADSHEET_ID = '1oDRHKvmCQVEG_OoczA_IwsJUIO51IIOBnMgK6utuwO4'
+const PUMA_VALUES_ENDPOINT = `${GOOGLE_API_BASE}/${PUMA_SPREADSHEET_ID}/values`
+const PUMA_SUFFIX = `?key=${GOOGLE_API_KEY}`
+
+export const tableEndpoints = {
+  puma: `${PUMA_VALUES_ENDPOINT}/${DEFAULT_SHEET_NAME}${PUMA_SUFFIX}`,
+  tracts: `${TRACTS_VALUES_ENDPOINT}/${DEFAULT_SHEET_NAME}${TRACTS_SUFFIX}`,
+} as {
+  [key in CensusQueryID]: string
+}

@@ -18,7 +18,6 @@ import {
 import * as GeoJSON from 'geojson'
 
 import { LangRecordSchema } from 'components/context/types'
-import { InitialMapToolsState } from 'components/context'
 
 type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
 type Padding =
@@ -132,7 +131,7 @@ export type MbReadyCensusRow = {
 
 export type CensusLayerProps = {
   sourceLayer: string
-  stateKey: keyof InitialMapToolsState
+  stateKey: 'censusField' | 'pumaField' // TODO: de-grossify
   config: Omit<BoundaryConfig, 'lookupPath'>
   map?: Map
 } & Pick<SpatialPanelProps, 'mapRef'>
