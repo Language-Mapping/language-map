@@ -1,16 +1,14 @@
 import * as MapTypes from 'components/map/types'
 
-export type SpatialPanel = MapTypes.SpatialPanelProps
-export type CensusQueryID = MapTypes.BoundariesInternalSrcID
+export type SpatialPanelProps = MapTypes.SpatialPanelProps
+export type CensusQueryID = 'tracts' | 'puma' | 'langConfig'
 
-// TODO: make this shared/reusable as it will be hit in several places
-export type SheetsQuery = {
-  data: SheetsLUTresponse
-  isFetching: boolean
-  error: Error
-}
+export type ReactQueryStatus = { isFetching: boolean; error: Error }
+
+export type SheetsQuery = { data: SheetsLUTresponse } & ReactQueryStatus
 
 // e.g. ['_original', 'pretty', 'complicated', 'sort_order']
+// TODO: convert cols to JSON, don't fart around with col order
 export type CensusLUTrow = [string, string, 'TRUE' | 'FALSE', string]
 
 // TODO: deal w/google's built-in `data.error`

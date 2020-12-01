@@ -4,7 +4,6 @@ import * as Types from './types'
 const mapCenter = [-73.96, 40.7128] as [number, number]
 
 export * from './config.census'
-export * from './config.puma'
 export * from './config.points'
 export * from './config.polygons'
 

@@ -46,11 +46,7 @@ export type UseStyleProps = { panelOpen: boolean }
 export type ViewportState = Partial<ViewportProps> & ViewState
 export type Breakpoint = 'mobile' | 'desktop' | 'huge'
 export type Offset = [number, number] // [x, y]
-export type BoundariesInternalSrcID =
-  | 'neighborhoods'
-  | 'counties'
-  | 'tracts'
-  | 'puma'
+export type BoundariesInternalSrcID = 'neighborhoods' | 'counties'
 
 export type LayerPropsPlusMeta = Omit<LayerProps, 'paint' | 'layout' | 'id'> & {
   id: string
