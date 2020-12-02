@@ -28,6 +28,7 @@
     "react-map-gl": "^5.2.7",
     "react-map-gl-geocoder": "^2.0.16",
     "react-query": "^2.12.1",
+    "react-query-devtools": "^2.6.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-share": "^4.2.1",

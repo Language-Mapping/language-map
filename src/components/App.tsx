@@ -2,6 +2,7 @@ import React, { FC, useEffect, Suspense } from 'react'
 import * as Sentry from '@sentry/react'
 import { Route } from 'react-router-dom'
 import { ReactQueryCacheProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query-devtools'
 import { GoInfo } from 'react-icons/go'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
@@ -70,6 +71,7 @@ export const App: FC = () => {
       <Suspense fallback={<div />}>
         <LazyTable />
       </Suspense>
+      <ReactQueryDevtools initialIsOpen />
     </Sentry.ErrorBoundary>
   )
 }
