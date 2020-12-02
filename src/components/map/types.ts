@@ -42,6 +42,7 @@ export type MapControlAction =
 export type PopupContent = { heading: string; subheading?: string }
 export type PopupSettings = PopupContent & LongLat
 export type SheetsValues = [string, string]
+export type SheetsResponse = { values: SheetsValues[] }
 export type UseStyleProps = { panelOpen: boolean }
 export type ViewportState = Partial<ViewportProps> & ViewState
 export type Breakpoint = 'mobile' | 'desktop' | 'huge'
@@ -81,6 +82,8 @@ export type BoundaryFeat = Omit<
   source: BoundariesInternalSrcID
   'source-layer': string
 }
+
+export type LangMbSrcAndLayerProps = { symbLayers: LayerPropsPlusMeta[] }
 
 export type BoundariesLayerProps = {
   visible: boolean
@@ -129,6 +132,7 @@ export type CensusLayerProps = {
   sourceLayer: string
   stateKey: 'censusField' | 'pumaField' // TODO: de-grossify
   config: Omit<BoundaryConfig, 'lookupPath'>
+  beforeId?: string
   map?: Map
 } & Pick<SpatialPanelProps, 'mapRef'>
 

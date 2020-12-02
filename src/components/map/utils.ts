@@ -64,8 +64,9 @@ export const filterLayersByFeatIDs = (
   })
 }
 
-export const asyncAwaitFetch = async (path: string): Promise<void> =>
-  (await fetch(path)).json()
+export const asyncAwaitFetch = async <T extends unknown>(
+  path: string
+): Promise<T> => (await fetch(path)).json()
 
 export const prepPopupContent: MapTypes.PrepPopupContent = (
   selFeatAttribs,

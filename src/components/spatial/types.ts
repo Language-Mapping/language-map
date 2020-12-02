@@ -1,10 +1,8 @@
 import * as MapTypes from 'components/map/types'
+import { ReactQueryStatus } from '../config/types'
 
 export type SpatialPanelProps = MapTypes.SpatialPanelProps
 export type CensusQueryID = 'tracts' | 'puma' | 'langConfig'
-
-export type ReactQueryStatus = { isFetching: boolean; error: Error }
-
 export type SheetsQuery = { data: SheetsLUTresponse } & ReactQueryStatus
 
 // e.g. ['_original', 'pretty', 'complicated', 'sort_order']

@@ -2,7 +2,8 @@ import React, { FC, useState, useEffect } from 'react'
 import { Source, Layer } from 'react-map-gl'
 import { FillPaint } from 'mapbox-gl'
 import * as stats from 'simple-statistics'
-import { useQuery, queryCache } from 'react-query'
+// import { useQuery, QueryCache, useQueryCache } from 'react-query'
+import { useQuery } from 'react-query'
 
 import { useMapToolsState } from 'components/context'
 import { tableEndpoints } from '../spatial/config'
@@ -17,27 +18,34 @@ type SheetsResponse = {
   isFetching: boolean
 }
 
+// const queryCache = new QueryCache({
+//   defaultConfig: {
+//     queries: {
+//       staleTime: Infinity,
+//     },
+//   },
+// })
+
 export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
-  const { sourceLayer, config, stateKey, map } = props
+  const { sourceLayer, config, stateKey, map, beforeId } = props
   const { layers, source } = config
   const field = useMapToolsState()[stateKey]
   const censusUnit = config.source.id as 'tracts' | 'puma'
+  const visible = field !== undefined && field !== ''
   const { data, error, isFetching } = useQuery(
-    `${censusUnit}-table`
+    `${censusUnit}-table`,
+    () => utils.asyncAwaitFetch(tableEndpoints[censusUnit]),
+    { enabled: true, refetchOnMount: false }
   ) as SheetsResponse
   const [fillPaint, setFillPaint] = useState<FillPaint>({
     'fill-color': 'transparent', // mitigates the brief lag before load
   })
   const [highLow, setHighLow] = useState<{ high: number; low?: number }>()
-  const visible = field !== undefined && field !== ''
   const [tableRows, setTableRows] = useState<PreppedRow[]>()
 
-  useEffect(() => {
-    // TODO: learn react-query caching and apply it appropriately everywhere
-    queryCache.prefetchQuery(`${censusUnit}-table`, () =>
-      utils.asyncAwaitFetch(tableEndpoints[censusUnit])
-    )
-  }, [censusUnit])
+  // useEffect(() => {
+  //   await queryCache.prefetchQuery(queryKey, queryFn)
+  // }, [])
 
   useEffect(() => {
     if (isFetching || !data) return
@@ -82,7 +90,6 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
         total: (total / max) * 100,
       } as { total: number })
     })
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [field])
 
@@ -92,7 +99,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
     setFillPaint(utils.setInterpolatedFill(highLow.high, highLow.low))
   }, [highLow])
 
-  if (error) return null // TODO: sentry
+  if (error || isFetching) return null // TODO: sentry
 
   const promoteIDfield = 'GEOID' // tell MB not to use default `id` as unique ID
 
@@ -103,6 +110,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
       {layers.map((layer) => (
         <Layer
           key={layer.id}
+          beforeId={beforeId}
           {...layer}
           paint={layer.type === 'line' ? layer.paint : fillPaint}
           layout={{

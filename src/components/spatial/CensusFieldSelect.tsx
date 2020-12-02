@@ -1,6 +1,7 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { useQuery, queryCache } from 'react-query'
+// import { useQuery, queryCache } from 'react-query'
+import { useQuery } from 'react-query'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { TextField, Typography, ListSubheader } from '@material-ui/core'
 import Autocomplete, {
@@ -97,26 +98,22 @@ const Intro: FC = () => {
 export const CensusFieldSelect: FC = () => {
   const classes = useStyles()
   const mapToolsDispatch = useMapToolsDispatch()
-  // TODO: adapt to support tract-level, and TS the query IDs
+
   const {
     data: tractData,
     isFetching: isTractFetching,
     error: isTractError,
-  } = useQuery('tracts' as Types.CensusQueryID) as Types.SheetsQuery
+  } = useQuery('tracts' as Types.CensusQueryID, () =>
+    asyncAwaitFetch<Types.SheetsLUTresponse>(config.configEndpoints.tracts)
+  )
+
   const {
     data: pumaData,
     isFetching: isPumaFetching,
     error: isPumaError,
-  } = useQuery('puma' as Types.CensusQueryID) as Types.SheetsQuery
-
-  useEffect(() => {
-    queryCache.prefetchQuery('tracts' as Types.CensusQueryID, () =>
-      asyncAwaitFetch(config.configEndpoints.tracts)
-    )
-    queryCache.prefetchQuery('puma' as Types.CensusQueryID, () =>
-      asyncAwaitFetch(config.configEndpoints.puma)
-    )
-  }, [])
+  } = useQuery('puma' as Types.CensusQueryID, () =>
+    asyncAwaitFetch<Types.SheetsLUTresponse>(config.configEndpoints.puma)
+  )
 
   const handleChange = (value: Types.PreppedCensusLUTrow | null) => {
     // TODO: consider a 'CLEAR_CENSUS_*****' action
@@ -139,7 +136,8 @@ export const CensusFieldSelect: FC = () => {
     }
   }
 
-  if (isTractFetching || isPumaFetching) return <h2>Getting census data...</h2>
+  if (isTractFetching || isPumaFetching || !tractData || !pumaData)
+    return <h2>Getting census data...</h2>
   if (isTractError || isPumaError)
     return <h2>Something went wrong fetching census data.</h2>
 

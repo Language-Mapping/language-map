@@ -1,33 +1,26 @@
 import React, { FC, useEffect, useState } from 'react'
-import { queryCache, useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 import { AnyLayout, Expression } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
 import { useSymbAndLabelState } from 'components/context/SymbAndLabelContext'
-import * as config from './config'
-
-import { LayerPropsPlusMeta, SheetsValues } from './types'
 import { asyncAwaitFetch, prepEndoFilters } from './utils'
+
+import * as config from './config'
+import * as Types from './types'
 
 const { mbStyleTileConfig, langLabelsStyle, QUERY_ID, MB_FONTS_URL } = config
 
-type SheetsResponse = { values: SheetsValues[] }
-
-type SourceAndLayerComponent = {
-  symbLayers: LayerPropsPlusMeta[]
-}
-
-// TODO: set paint property (???)
-// https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
-
 // NOTE: it did not seem to work when using two different Styles with the same
 // dataset unless waiting until there is something to put into <Source>.
-export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
+export const LangMbSrcAndLayer: FC<Types.LangMbSrcAndLayerProps> = ({
   symbLayers,
 }) => {
   const symbLabelState = useSymbAndLabelState()
   const { activeLabelID, activeSymbGroupID } = symbLabelState
-  const { data, isFetching, error } = useQuery(QUERY_ID)
+  const { data, isFetching, error } = useQuery(QUERY_ID, () =>
+    asyncAwaitFetch<Types.SheetsResponse>(MB_FONTS_URL)
+  )
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [endoFonts, setEndoFonts] = useState<any[]>()
 
@@ -66,19 +59,9 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
   }
 
   useEffect(() => {
-    // TODO: maybe not prefetch?
-    queryCache.prefetchQuery(QUERY_ID, () => asyncAwaitFetch(MB_FONTS_URL))
-  }, [])
+    if (isFetching || !data?.values) return
 
-  useEffect(() => {
-    if (isFetching) return
-
-    const { values: sheetsResponse } = data as SheetsResponse
-
-    if (!sheetsResponse) return
-
-    setEndoFonts(prepEndoFilters(sheetsResponse))
-
+    setEndoFonts(prepEndoFilters(data.values))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetching])
 
@@ -93,7 +76,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
       url={`mapbox://${mbStyleTileConfig.tilesetId}`}
       id={mbStyleTileConfig.langSrcID}
     >
-      {symbLayers.map((layer: LayerPropsPlusMeta) => {
+      {symbLayers.map((layer: Types.LayerPropsPlusMeta) => {
         let { paint, layout } = layer
         const isInActiveGroup = layer.group === activeSymbGroupID
 
@@ -117,8 +100,6 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
           />
         )
       })}
-      {/* TODO: set "text-size" value based on zoom level */}
-      {/* TODO: make expressions less redundant */}
     </Source>
   )
 }

@@ -15,3 +15,5 @@ export type LocWithState = {
   state: { from?: string }
   hash?: string
 }
+
+export type ReactQueryStatus = { isFetching: boolean; error: Error }
