@@ -61,6 +61,8 @@ export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
   const handleEntered = () => {
     const targetElemID = hash?.split('#').slice(-1)[0]
 
+    if (!targetElemID) return
+
     document.querySelector(`#${targetElemID}`)?.scrollIntoView()
   }
 
