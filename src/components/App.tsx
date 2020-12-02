@@ -78,7 +78,7 @@ export const App: FC = () => {
       <Suspense fallback={<div />}>
         <LazyTable />
       </Suspense>
-      <ReactQueryDevtools initialIsOpen />
+      <ReactQueryDevtools />
     </Sentry.ErrorBoundary>
   )
 }

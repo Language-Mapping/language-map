@@ -40,3 +40,12 @@ export const tableEndpoints = {
 } as {
   [key in CensusQueryID]: string
 }
+
+export const censusGroupHeadings = {
+  tracts:
+    'Census Tracts|||Tracts are the smallest census unit at which language data is provided and will be used here whenever available.',
+  puma:
+    'Public Use Microdata Areas (PUMAs)|||Larger than tracts, PUMAs are a less granular census unit used here whenever tract-level is unavailable.',
+} as {
+  [key in CensusQueryID]: string
+}

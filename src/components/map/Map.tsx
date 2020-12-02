@@ -74,7 +74,7 @@ export const Map: FC<Types.MapProps> = (props) => {
 
   const { state, dispatch } = useContext(GlobalContext)
   const symbLabelState = useSymbAndLabelState()
-  // const { boundariesVisible, censusField, pumaField } = useMapToolsState()
+  // const { boundariesVisible, tractsField, pumaField } = useMapToolsState()
   const { boundariesVisible } = useMapToolsState()
   const offset = hooks.useOffset(panelOpen)
   const breakpoint = hooks.useBreakpoint()
@@ -448,7 +448,7 @@ export const Map: FC<Types.MapProps> = (props) => {
           map={map}
           mapRef={mapRef}
           config={config.tractsConfig}
-          stateKey="censusField"
+          stateKey="tractsField"
           beforeId={beforeId}
           sourceLayer={config.tractsLyrSrc['source-layer']}
         />

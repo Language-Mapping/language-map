@@ -130,7 +130,7 @@ export type MbReadyCensusRow = {
 
 export type CensusLayerProps = {
   sourceLayer: string
-  stateKey: 'censusField' | 'pumaField' // TODO: de-grossify
+  stateKey: 'tractsField' | 'pumaField' // TODO: de-grossify
   config: Omit<BoundaryConfig, 'lookupPath'>
   beforeId?: string
   map?: Map

@@ -16,7 +16,7 @@ export const prepCensusFields = (
   data: Types.SheetsLUTresponse,
   groupTitle: string
 ): Types.PreppedCensusLUTrow[] =>
-  data.values.map((row) => {
+  data?.values.map((row) => {
     const complicated = row[2] === 'TRUE'
 
     return {
@@ -26,4 +26,4 @@ export const prepCensusFields = (
       sortOrder: parseFloat(row[3]),
       groupTitle,
     }
-  })
+  }) || []

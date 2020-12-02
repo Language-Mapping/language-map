@@ -35,7 +35,13 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   const { data, error, isFetching } = useQuery(
     `${censusUnit}-table`,
     () => utils.asyncAwaitFetch(tableEndpoints[censusUnit]),
-    { enabled: true, refetchOnMount: false }
+    {
+      enabled: true,
+      staleTime: Infinity,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+    }
   ) as SheetsResponse
   const [fillPaint, setFillPaint] = useState<FillPaint>({
     'fill-color': 'transparent', // mitigates the brief lag before load

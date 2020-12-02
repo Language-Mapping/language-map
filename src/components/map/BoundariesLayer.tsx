@@ -11,8 +11,10 @@ export const BoundariesLayer: FC<Types.BoundariesLayerProps> = (props) => {
     source.id,
     () => utils.asyncAwaitFetch<Types.BoundaryLookup[]>(lookupPath),
     {
-      staleTime: 300000,
+      staleTime: Infinity,
       refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
       enabled: visible,
     }
   )

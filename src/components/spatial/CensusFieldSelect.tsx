@@ -1,26 +1,17 @@
 import React, { FC } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-// import { useQuery, queryCache } from 'react-query'
-import { useQuery } from 'react-query'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { TextField, Typography, ListSubheader } from '@material-ui/core'
 import Autocomplete, {
   AutocompleteRenderGroupParams,
 } from '@material-ui/lab/Autocomplete'
 
-import { useMapToolsDispatch } from 'components/context'
+import { useMapToolsDispatch, useMapToolsState } from 'components/context'
 import { LocationSearchContent } from 'components/map'
-import { asyncAwaitFetch } from 'components/map/utils'
 import { SubtleText } from 'components/generic'
+import { useCensusData } from './hooks'
 
-import * as config from './config'
-import * as utils from './utils'
 import * as Types from './types'
-
-type GroupHeaderProps = {
-  title: string
-  subTitle: string
-}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -58,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const GroupHeader: FC<GroupHeaderProps> = (props) => {
+const GroupHeader: FC<Types.GroupHeaderProps> = (props) => {
   const { title, subTitle } = props
   const classes = useStyles()
 
@@ -97,28 +88,16 @@ const Intro: FC = () => {
 
 export const CensusFieldSelect: FC = () => {
   const classes = useStyles()
+  const { tractsFields, pumaFields } = useMapToolsState()
   const mapToolsDispatch = useMapToolsDispatch()
 
-  const {
-    data: tractData,
-    isFetching: isTractFetching,
-    error: isTractError,
-  } = useQuery('tracts' as Types.CensusQueryID, () =>
-    asyncAwaitFetch<Types.SheetsLUTresponse>(config.configEndpoints.tracts)
-  )
-
-  const {
-    data: pumaData,
-    isFetching: isPumaFetching,
-    error: isPumaError,
-  } = useQuery('puma' as Types.CensusQueryID, () =>
-    asyncAwaitFetch<Types.SheetsLUTresponse>(config.configEndpoints.puma)
-  )
+  const { error: tractsError } = useCensusData('tracts', tractsFields.length)
+  const { error: pumaError } = useCensusData('puma', pumaFields.length)
 
   const handleChange = (value: Types.PreppedCensusLUTrow | null) => {
     // TODO: consider a 'CLEAR_CENSUS_*****' action
     if (!value) {
-      mapToolsDispatch({ type: 'SET_CENSUS_FIELD', payload: '' })
+      mapToolsDispatch({ type: 'SET_TRACTS_FIELD', payload: '' })
       mapToolsDispatch({ type: 'SET_PUMA_FIELD', payload: '' })
 
       return
@@ -129,31 +108,18 @@ export const CensusFieldSelect: FC = () => {
     // Clear the one not in question (FRAGILE, if ever more than just these two)
     if (lowerCase.includes('puma')) {
       mapToolsDispatch({ type: 'SET_PUMA_FIELD', payload: value.id })
-      mapToolsDispatch({ type: 'SET_CENSUS_FIELD', payload: '' })
+      mapToolsDispatch({ type: 'SET_TRACTS_FIELD', payload: '' })
     } else if (lowerCase.includes('tracts')) {
-      mapToolsDispatch({ type: 'SET_CENSUS_FIELD', payload: value.id })
+      mapToolsDispatch({ type: 'SET_TRACTS_FIELD', payload: value.id })
       mapToolsDispatch({ type: 'SET_PUMA_FIELD', payload: '' })
     }
   }
 
-  if (isTractFetching || isPumaFetching || !tractData || !pumaData)
-    return <h2>Getting census data...</h2>
-  if (isTractError || isPumaError)
+  if (tractsError || pumaError)
     return <h2>Something went wrong fetching census data.</h2>
 
-  const tractFields = utils
-    .prepCensusFields(
-      tractData,
-      'Census Tracts|||Tracts are the smallest census unit at which language data is provided and will be used here whenever available.'
-    )
-    .sort(utils.sortBySort)
-
-  const pumaFields = utils
-    .prepCensusFields(
-      pumaData,
-      'Public Use Microdata Areas (PUMAs)|||Larger than tracts, PUMAs are a less granular census unit used here whenever tract-level is unavailable.'
-    )
-    .sort(utils.sortBySort)
+  if (!tractsFields.length || !pumaFields.length)
+    return <h2>Getting census data...</h2>
 
   return (
     <LocationSearchContent
@@ -163,7 +129,7 @@ export const CensusFieldSelect: FC = () => {
       <Autocomplete
         id="census-autocomplete"
         classes={{ option: classes.option, listbox: classes.listbox }}
-        options={[...tractFields, ...pumaFields]}
+        options={[...tractsFields, ...pumaFields]}
         getOptionLabel={({ pretty }) => pretty}
         groupBy={({ groupTitle }) => groupTitle}
         renderGroup={renderGroup}

@@ -18,8 +18,15 @@ export const LangMbSrcAndLayer: FC<Types.LangMbSrcAndLayerProps> = ({
 }) => {
   const symbLabelState = useSymbAndLabelState()
   const { activeLabelID, activeSymbGroupID } = symbLabelState
-  const { data, isFetching, error } = useQuery(QUERY_ID, () =>
-    asyncAwaitFetch<Types.SheetsResponse>(MB_FONTS_URL)
+  const { data, isFetching, error } = useQuery(
+    QUERY_ID,
+    () => asyncAwaitFetch<Types.SheetsResponse>(MB_FONTS_URL),
+    {
+      staleTime: Infinity,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+    }
   )
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [endoFonts, setEndoFonts] = useState<any[]>()

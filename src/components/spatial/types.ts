@@ -1,4 +1,5 @@
 import * as MapTypes from 'components/map/types'
+
 import { ReactQueryStatus } from '../config/types'
 
 export type SpatialPanelProps = MapTypes.SpatialPanelProps
@@ -18,4 +19,9 @@ export type PreppedCensusLUTrow = {
   complicated: boolean
   sortOrder: number
   groupTitle: string
+}
+
+export type GroupHeaderProps = {
+  title: string
+  subTitle: string
 }
