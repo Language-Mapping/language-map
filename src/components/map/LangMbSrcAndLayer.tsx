@@ -56,10 +56,11 @@ export const LangMbSrcAndLayer: FC<Types.LangMbSrcAndLayerProps> = ({
     const isEndo = activeLabelID === 'Endonym'
     const defaultFont = ['Noto Sans Regular', 'Arial Unicode MS Regular']
     const defaultTextField: Expression = ['to-string', ['get', activeLabelID]]
-    // TODO: check if 'Font Image Alt' is popuplated instead of using http
+    // TODO: check if 'Font Image Alt' is populated instead of using this
+    // remnant of the Endo http check implemented before that field existed.
     const imgCheck: Expression = [
       'case',
-      ['==', ['slice', ['get', 'Endonym'], 0, 4], 'http'],
+      ['==', ['slice', ['get', 'Endonym'], 0, 4], ''],
       ['get', 'Language'],
       ['get', 'Endonym'],
     ]

@@ -19,6 +19,7 @@ export const mbStyleTileConfig = {
   customStyles: {
     dark: 'mapbox://styles/elalliance/ckdqj968x01ot19lf5yg472f2',
     light: 'mapbox://styles/elalliance/ckdovh9us01wz1ipa5fjihv7l',
+    blank: 'mapbox://styles/elalliance/cki50pk2s00ux19phcg6k2tjc',
   },
 }
 
