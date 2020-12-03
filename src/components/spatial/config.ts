@@ -1,11 +1,6 @@
 import { CensusQueryID } from './types'
-import { GOOGLE_API_KEY } from '../config'
+import { GOOGLE_API_KEY, GOOGLE_API_BASE, BASE_ENDPOINT } from '../config'
 
-const GOOGLE_API_BASE = `https://sheets.googleapis.com/v4/spreadsheets`
-
-// "Languages Config" workbook
-const SPREADSHEET_ID = '1Ts7CvmlKVqCZs_AJ3hf5x1my2p-vaX7q5HxaXiduiEc'
-const BASE_ENDPOINT = `${GOOGLE_API_BASE}/${SPREADSHEET_ID}/values`
 const CONFIG_SHEET = 'Config'
 const PUMA_LUT_SHEET = 'LUT_PUMA_Fields'
 const TRACT_LUT_SHEET = 'LUT_Tract_Fields'

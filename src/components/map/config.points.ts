@@ -1,6 +1,5 @@
 import { CirclePaint } from 'mapbox-gl'
 import { IconID } from '../legend/types'
-import { GOOGLE_API_KEY } from '../config'
 
 // `Status` icons
 import iconBook from './icons/book.svg'
@@ -10,12 +9,7 @@ import iconMuseum from './icons/museum.svg'
 import iconTree from './icons/tree.svg'
 import iconUsers from './icons/users.svg'
 
-const SHEET_ID = '1QfySFNpD2VnLand3-lTNAPAlrm0Cmv9As01LAXgXC0E'
-const SHEET_NAME = 'Mapbox_Fonts'
-const SHEETS_API_ROOT = 'https://sheets.googleapis.com/v4/spreadsheets'
-
-export const QUERY_ID = 'sheets-mb-fonts' // unique react-query ID
-export const MB_FONTS_URL = `${SHEETS_API_ROOT}/${SHEET_ID}/values/${SHEET_NAME}?key=${GOOGLE_API_KEY}`
+export const CONFIG_QUERY_ID = 'sheets-config'
 
 // TODO: consider orig. Region colors for `Status`: https://bit.ly/34szqZe
 

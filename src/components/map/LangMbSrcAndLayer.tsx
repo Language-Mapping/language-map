@@ -3,13 +3,20 @@ import { useQuery } from 'react-query'
 import { AnyLayout, Expression } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
-import { useSymbAndLabelState } from 'components/context/SymbAndLabelContext'
+import {
+  useSymbAndLabelState,
+  useMapToolsDispatch,
+  LangConfig,
+} from 'components/context'
+import { configEndpoints } from 'components/spatial/config'
+import { RawSheetsResponse } from 'components/config/types'
 import { asyncAwaitFetch, prepEndoFilters } from './utils'
+import { sheetsToJSON } from '../../utils'
 
 import * as config from './config'
 import * as Types from './types'
 
-const { mbStyleTileConfig, langLabelsStyle, QUERY_ID, MB_FONTS_URL } = config
+const { mbStyleTileConfig, langLabelsStyle, CONFIG_QUERY_ID } = config
 
 // NOTE: it did not seem to work when using two different Styles with the same
 // dataset unless waiting until there is something to put into <Source>.
@@ -17,10 +24,11 @@ export const LangMbSrcAndLayer: FC<Types.LangMbSrcAndLayerProps> = ({
   symbLayers,
 }) => {
   const symbLabelState = useSymbAndLabelState()
+  const mapToolsDispatch = useMapToolsDispatch()
   const { activeLabelID, activeSymbGroupID } = symbLabelState
   const { data, isFetching, error } = useQuery(
-    QUERY_ID,
-    () => asyncAwaitFetch<Types.SheetsResponse>(MB_FONTS_URL),
+    CONFIG_QUERY_ID,
+    () => asyncAwaitFetch<RawSheetsResponse>(configEndpoints.langConfig),
     {
       staleTime: Infinity,
       refetchOnMount: false,
@@ -56,19 +64,24 @@ export const LangMbSrcAndLayer: FC<Types.LangMbSrcAndLayerProps> = ({
       ['get', 'Endonym'],
     ]
 
-    /* eslint-disable operator-linebreak */
     return {
       ...bareMinimum,
       'text-font': isEndo ? endoFonts : defaultFont,
       'text-field': isEndo ? imgCheck : defaultTextField,
     }
-    /* eslint-enable operator-linebreak */
   }
 
   useEffect(() => {
+    // TODO: check `status === 'loading'` instead?
     if (isFetching || !data?.values) return
 
-    setEndoFonts(prepEndoFilters(data.values))
+    const dataAsJson = sheetsToJSON<LangConfig>(data.values)
+
+    mapToolsDispatch({
+      type: 'SET_LANG_CONFIG_VIA_SHEETS',
+      payload: dataAsJson,
+    })
+    setEndoFonts(prepEndoFilters(dataAsJson))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetching])
 
