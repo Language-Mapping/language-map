@@ -440,7 +440,6 @@ export const Map: FC<Types.MapProps> = (props) => {
           map={map}
           mapRef={mapRef}
           config={config.pumaConfig}
-          stateKey="pumaField"
           beforeId={beforeId}
           sourceLayer={config.pumaLyrSrc['source-layer']}
         />
@@ -448,7 +447,6 @@ export const Map: FC<Types.MapProps> = (props) => {
           map={map}
           mapRef={mapRef}
           config={config.tractsConfig}
-          stateKey="tractsField"
           beforeId={beforeId}
           sourceLayer={config.tractsLyrSrc['source-layer']}
         />

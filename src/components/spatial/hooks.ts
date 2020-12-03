@@ -5,17 +5,19 @@ import * as config from './config'
 import * as Types from './types'
 import * as utils from './utils'
 
+type JustAnError = { error?: string }
+
 export const useCensusData = (
   type: Types.CensusQueryID,
   allSet: number
-): { error?: string } => {
+): JustAnError => {
   const mapToolsDispatch = useMapToolsDispatch()
   const [error, setError] = useState<string>()
 
   useEffect(() => {
     if (allSet) return
 
-    const fetchCensusLUTData = async (action: string) => {
+    const fetchCensusLUTData = async () => {
       try {
         const response = await fetch(config.configEndpoints[type])
         const data: Types.SheetsLUTresponse = await response.json()
@@ -25,9 +27,8 @@ export const useCensusData = (
           .sort(utils.sortBySort)
 
         mapToolsDispatch({
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          type: action,
+          censusType: type,
+          type: 'SET_CENSUS_FIELDS',
           payload: fields,
         })
       } catch (err) {
@@ -35,9 +36,7 @@ export const useCensusData = (
       }
     }
 
-    // TODO: in context, use object w/same keys instead of multiple actions
-    if (type === 'tracts') fetchCensusLUTData('SET_TRACTS_FIELDS')
-    else if (type === 'puma') fetchCensusLUTData('SET_PUMA_FIELDS')
+    fetchCensusLUTData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allSet])
 

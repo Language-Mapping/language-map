@@ -2,6 +2,8 @@
 // MIT License, available here:
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
 
+export * from './types.mapToolsContext'
+
 export type PanelState = 'default' | 'maximized' | 'minimized'
 export type LangSchemaCol = keyof LangRecordSchema
 

@@ -12,6 +12,7 @@ import { SubtleText } from 'components/generic'
 import { useCensusData } from './hooks'
 
 import * as Types from './types'
+import { setCensusField } from './utils'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -86,75 +87,65 @@ const Intro: FC = () => {
   )
 }
 
-export const CensusFieldSelect: FC = () => {
+const CensusAutocomplete: FC<Types.CensusSelectProps> = (props) => {
+  const { tracts, puma } = props
   const classes = useStyles()
-  const { tractsFields, pumaFields } = useMapToolsState()
   const mapToolsDispatch = useMapToolsDispatch()
 
-  const { error: tractsError } = useCensusData('tracts', tractsFields.length)
-  const { error: pumaError } = useCensusData('puma', pumaFields.length)
-
   const handleChange = (value: Types.PreppedCensusLUTrow | null) => {
-    // TODO: consider a 'CLEAR_CENSUS_*****' action
-    if (!value) {
-      mapToolsDispatch({ type: 'SET_TRACTS_FIELD', payload: '' })
-      mapToolsDispatch({ type: 'SET_PUMA_FIELD', payload: '' })
-
-      return
-    }
-
-    const lowerCase = value.groupTitle.toLowerCase()
-
-    // Clear the one not in question (FRAGILE, if ever more than just these two)
-    if (lowerCase.includes('puma')) {
-      mapToolsDispatch({ type: 'SET_PUMA_FIELD', payload: value.id })
-      mapToolsDispatch({ type: 'SET_TRACTS_FIELD', payload: '' })
-    } else if (lowerCase.includes('tracts')) {
-      mapToolsDispatch({ type: 'SET_TRACTS_FIELD', payload: value.id })
-      mapToolsDispatch({ type: 'SET_PUMA_FIELD', payload: '' })
-    }
+    setCensusField(value, mapToolsDispatch)
   }
 
-  if (tractsError || pumaError)
-    return <h2>Something went wrong fetching census data.</h2>
+  return (
+    <>
+      <Autocomplete
+        id="census-autocomplete"
+        classes={{ option: classes.option, listbox: classes.listbox }}
+        options={[...tracts, ...puma]}
+        getOptionLabel={({ pretty }) => pretty}
+        groupBy={({ groupTitle }) => groupTitle}
+        renderGroup={renderGroup}
+        blurOnSelect="touch"
+        selectOnFocus={false}
+        fullWidth
+        // open // much more effective than `debug`
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore // it actually DOES exist on currentTarget
+        onOpen={(e) => e.currentTarget.scrollIntoView()}
+        onChange={(event, value) => handleChange(value)}
+        size="small"
+        renderInput={(params) => (
+          <TextField {...params} label="Choose a language" variant="outlined" />
+        )}
+      />
+      <SubtleText>
+        *Census Bureau category, component languages unclear
+      </SubtleText>
+    </>
+  )
+}
 
-  if (!tractsFields.length || !pumaFields.length)
-    return <h2>Getting census data...</h2>
+export const CensusFieldSelect: FC = () => {
+  const {
+    puma: pumaFields,
+    tracts: tractsFields,
+  } = useMapToolsState().censusDropDownFields
+
+  const { error: pumaError } = useCensusData('puma', pumaFields.length)
+  const { error: tractsError } = useCensusData('tracts', tractsFields.length)
+
+  if (tractsError || pumaError)
+    return <p>Something went wrong fetching census data.</p>
 
   return (
     <LocationSearchContent
       heading="Census Language Data (NYC only)"
       explanation={<Intro />}
     >
-      <Autocomplete
-        id="census-autocomplete"
-        classes={{ option: classes.option, listbox: classes.listbox }}
-        options={[...tractsFields, ...pumaFields]}
-        getOptionLabel={({ pretty }) => pretty}
-        groupBy={({ groupTitle }) => groupTitle}
-        renderGroup={renderGroup}
-        blurOnSelect="touch"
-        selectOnFocus={false}
-        // open // much more effective than `debug`
-        fullWidth
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore // it actually DOES exist on currentTarget
-        onOpen={(e) => e.currentTarget.scrollIntoView()}
-        onChange={(event, value) => handleChange(value)}
-        size="small"
-        renderInput={(params) => {
-          return (
-            <TextField
-              {...params}
-              label="Choose a language"
-              variant="outlined"
-            />
-          )
-        }}
-      />
-      <SubtleText>
-        *Census Bureau category, component languages unclear
-      </SubtleText>
+      {!tractsFields.length ||
+        (!pumaFields.length && <p>Getting census data...</p>) || (
+          <CensusAutocomplete tracts={tractsFields} puma={pumaFields} />
+        )}
     </LocationSearchContent>
   )
 }

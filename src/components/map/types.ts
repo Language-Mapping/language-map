@@ -23,6 +23,10 @@ type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
 type Padding =
   | number
   | { top: number; bottom: number; left: number; right: number }
+type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
+  id: string
+  promoteId?: string
+}
 
 export type BoundsArray = [[number, number], [number, number]]
 export type GeocodeMarker = LongLat & { text: string }
@@ -123,14 +127,18 @@ export type PanelSectionProps = {
   explanation?: string | React.ReactNode
 }
 
-export type MbReadyCensusRow = {
-  id: number // MB Boundaries' internal
-  fips: string // 2-char state code + 3-char county + 6-char tract
-} & { [key: string]: number }
+export type PreppedCensusTableRow = { [key: string]: number } & {
+  GEOID: string
+}
+
+export type SheetsRawResponse = {
+  data: { values: [string[]] }
+  error: Error
+  isFetching: boolean
+}
 
 export type CensusLayerProps = {
   sourceLayer: string
-  stateKey: 'tractsField' | 'pumaField' // TODO: de-grossify
   config: Omit<BoundaryConfig, 'lookupPath'>
   beforeId?: string
   map?: Map
@@ -157,11 +165,6 @@ export type CtrlBtnConfig = {
   name: string
   customFn?: boolean
   disabledOnProp?: keyof MapCtrlBtnsProps
-}
-
-export type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
-  id: string
-  promoteId?: string
 }
 
 export type BoundsConfig = {

@@ -2,35 +2,22 @@ import React, { FC, useState, useEffect } from 'react'
 import { Source, Layer } from 'react-map-gl'
 import { FillPaint } from 'mapbox-gl'
 import * as stats from 'simple-statistics'
-// import { useQuery, QueryCache, useQueryCache } from 'react-query'
 import { useQuery } from 'react-query'
 
 import { useMapToolsState } from 'components/context'
+import { CensusQueryID } from 'components/spatial/types'
 import { tableEndpoints } from '../spatial/config'
 
 import * as utils from './utils'
 import * as Types from './types'
 
-type PreppedRow = { [key: string]: number } & { GEOID: string }
-type SheetsResponse = {
-  data: { values: [string[]] }
-  error: Error
-  isFetching: boolean
-}
-
-// const queryCache = new QueryCache({
-//   defaultConfig: {
-//     queries: {
-//       staleTime: Infinity,
-//     },
-//   },
-// })
-
 export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
-  const { sourceLayer, config, stateKey, map, beforeId } = props
+  const { sourceLayer, config, map, beforeId } = props
   const { layers, source } = config
-  const field = useMapToolsState()[stateKey]
-  const censusUnit = config.source.id as 'tracts' | 'puma'
+  const censusUnit = config.source.id as CensusQueryID
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const field = useMapToolsState().censusActiveFields[censusUnit]
   const visible = field !== undefined && field !== ''
   const { data, error, isFetching } = useQuery(
     `${censusUnit}-table`,
@@ -42,16 +29,12 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
       refetchOnReconnect: false,
       refetchOnWindowFocus: false,
     }
-  ) as SheetsResponse
+  ) as Types.SheetsRawResponse
   const [fillPaint, setFillPaint] = useState<FillPaint>({
     'fill-color': 'transparent', // mitigates the brief lag before load
   })
   const [highLow, setHighLow] = useState<{ high: number; low?: number }>()
-  const [tableRows, setTableRows] = useState<PreppedRow[]>()
-
-  // useEffect(() => {
-  //   await queryCache.prefetchQuery(queryKey, queryFn)
-  // }, [])
+  const [tableRows, setTableRows] = useState<Types.PreppedCensusTableRow[]>()
 
   useEffect(() => {
     if (isFetching || !data) return
@@ -60,7 +43,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
 
     // TODO: deal w/google's built-in `data.error` (adjust TS first)
     const tableRowsPrepped = data.values.slice(1).map((row, i) => {
-      const rowAsJS = {} as PreppedRow
+      const rowAsJS = {} as Types.PreppedCensusTableRow
 
       headings.forEach((heading, index) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
