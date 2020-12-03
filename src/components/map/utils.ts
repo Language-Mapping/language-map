@@ -189,7 +189,7 @@ export const clearBoundaries: MapTypes.ClearStuff = (map) => {
 // any impact, the fonts must be uploaded to the Mapbox account and their names
 // must be identical to those in the sheet.
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const prepEndoFilters = (data: MapTypes.SheetsValues[]): any[] => {
+export const prepEndoFilters = (data: MapTypes.TwoColSheetsValues[]): any[] => {
   // Skip the first row, which contains only column headings
   const filters = data.slice(1).reduce((all, row) => {
     const lang = ['==', ['var', 'lang'], row[0]]

@@ -1,4 +1,5 @@
 import { MapToolsAction } from 'components/context'
+
 import * as Types from './types'
 
 export const sortBySort = (
@@ -7,24 +8,25 @@ export const sortBySort = (
 ): number => {
   let comparison = 0
 
-  if (a.sortOrder > b.sortOrder) comparison = 1
-  else if (a.sortOrder < b.sortOrder) comparison = -1
+  if (a.sort_order > b.sort_order) comparison = 1
+  else if (a.sort_order < b.sort_order) comparison = -1
 
   return comparison
 }
 
 export const prepCensusFields = (
-  data: Types.SheetsLUTresponse,
+  data: Types.LUTschema[],
   groupTitle: string
 ): Types.PreppedCensusLUTrow[] =>
-  data?.values.map((row) => {
-    const complicated = row[2] === 'TRUE'
+  data?.map((row) => {
+    const complicated = row.complicated === 'TRUE'
+    const { original, pretty, sort_order: sortOrder } = row
 
     return {
-      id: row[0],
-      pretty: `${row[1]}${complicated ? '*' : ''}`,
+      original,
+      pretty: `${pretty}${complicated ? '*' : ''}`,
       complicated,
-      sortOrder: parseFloat(row[3]),
+      sort_order: parseFloat(sortOrder),
       groupTitle,
     }
   }) || []
@@ -60,7 +62,7 @@ export const setCensusField = (
 
   mapToolsDispatch({
     type: 'SET_CENSUS_FIELD',
-    payload: value.id,
+    payload: value.original,
     censusType: setType,
   })
   mapToolsDispatch({ type: 'SET_CENSUS_FIELD', censusType: clearType })

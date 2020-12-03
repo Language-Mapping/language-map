@@ -45,8 +45,8 @@ export type MapControlAction =
   | 'reset-pitch'
 export type PopupContent = { heading: string; subheading?: string }
 export type PopupSettings = PopupContent & LongLat
-export type SheetsValues = [string, string]
-export type SheetsResponse = { values: SheetsValues[] }
+export type TwoColSheetsValues = [string, string]
+export type SheetsResponse = { values: TwoColSheetsValues[] }
 export type UseStyleProps = { panelOpen: boolean }
 export type ViewportState = Partial<ViewportProps> & ViewState
 export type Breakpoint = 'mobile' | 'desktop' | 'huge'
@@ -129,12 +129,6 @@ export type PanelSectionProps = {
 
 export type PreppedCensusTableRow = { [key: string]: number } & {
   GEOID: string
-}
-
-export type SheetsRawResponse = {
-  data: { values: [string[]] }
-  error: Error
-  isFetching: boolean
 }
 
 export type CensusLayerProps = {

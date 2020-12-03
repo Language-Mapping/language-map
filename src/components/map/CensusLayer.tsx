@@ -5,8 +5,10 @@ import * as stats from 'simple-statistics'
 import { useQuery } from 'react-query'
 
 import { useMapToolsState } from 'components/context'
+import { SheetsReactQueryResponse } from 'components/config/types'
 import { CensusQueryID } from 'components/spatial/types'
 import { tableEndpoints } from '../spatial/config'
+import { sheetsToJSON } from '../../utils'
 
 import * as utils from './utils'
 import * as Types from './types'
@@ -29,7 +31,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
       refetchOnReconnect: false,
       refetchOnWindowFocus: false,
     }
-  ) as Types.SheetsRawResponse
+  ) as SheetsReactQueryResponse
   const [fillPaint, setFillPaint] = useState<FillPaint>({
     'fill-color': 'transparent', // mitigates the brief lag before load
   })
@@ -39,21 +41,10 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   useEffect(() => {
     if (isFetching || !data) return
 
-    const headings = data.values[0]
-
-    // TODO: deal w/google's built-in `data.error` (adjust TS first)
-    const tableRowsPrepped = data.values.slice(1).map((row, i) => {
-      const rowAsJS = {} as Types.PreppedCensusTableRow
-
-      headings.forEach((heading, index) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore // TODO: don't let TS win
-        rowAsJS[heading] =
-          heading === 'GEOID' ? row[index] : parseInt(row[index], 10)
-      })
-
-      return rowAsJS
-    })
+    const tableRowsPrepped = sheetsToJSON<Types.PreppedCensusTableRow>(
+      data.values,
+      ['GEOID']
+    )
 
     setTableRows(tableRowsPrepped)
     // eslint-disable-next-line react-hooks/exhaustive-deps

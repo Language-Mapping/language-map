@@ -1,11 +1,20 @@
 import { useEffect, useState } from 'react'
 import { useMapToolsDispatch } from 'components/context/MapToolsContext'
+import { RawSheetsResponse } from 'components/config/types'
+import { sheetsToJSON } from 'utils'
 
 import * as config from './config'
 import * as Types from './types'
 import * as utils from './utils'
 
 type JustAnError = { error?: string }
+
+export type LUTschema = {
+  original: string
+  pretty: string
+  complicated: string
+  sort_order: string
+}
 
 export const useCensusData = (
   type: Types.CensusQueryID,
@@ -20,10 +29,10 @@ export const useCensusData = (
     const fetchCensusLUTData = async () => {
       try {
         const response = await fetch(config.configEndpoints[type])
-        const data: Types.SheetsLUTresponse = await response.json()
-
+        const { values } = (await response.json()) as RawSheetsResponse
+        const tableRowsPrepped = sheetsToJSON<LUTschema>(values)
         const fields = utils
-          .prepCensusFields(data, config.censusGroupHeadings[type])
+          .prepCensusFields(tableRowsPrepped, config.censusGroupHeadings[type])
           .sort(utils.sortBySort)
 
         mapToolsDispatch({

@@ -9,7 +9,7 @@ const BASE_ENDPOINT = `${GOOGLE_API_BASE}/${SPREADSHEET_ID}/values`
 const CONFIG_SHEET = 'Config'
 const PUMA_LUT_SHEET = 'LUT_PUMA_Fields'
 const TRACT_LUT_SHEET = 'LUT_Tract_Fields'
-const CENSUS_LUT_RANGE = '!A2:D' // slightly safer than Named Ranges?
+const CENSUS_LUT_RANGE = '!A1:D' // slightly safer than Named Ranges?
 const CENSUS_LUT_SUFFIX = `${CENSUS_LUT_RANGE}?key=${GOOGLE_API_KEY}`
 
 export const configEndpoints = {
