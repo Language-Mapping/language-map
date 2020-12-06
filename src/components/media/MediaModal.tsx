@@ -92,8 +92,10 @@ const MediaModalContent: FC<ModalContentProps> = (props) => {
 
   // CRED: (my goodness):
   // https://github.com/microsoft/TypeScript/issues/12815#issuecomment-568965455
-  if ('items' in data) {
+  if ('items' in data && data.items[0]) {
     goods = data.items?.[0].snippet
+    // TODO: confirm fixed (can't reproduce it though)
+    // sentry.io/organizations/endangered-language-alliance/issues/2067154316
   } else if ('result' in data) {
     goods = data.result
   }
