@@ -104,7 +104,6 @@ export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
       </IconButton>
       <DialogContent dividers className={classes.dialogContent}>
         <div
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={createMarkup(data?.content.rendered || '')}
           id={`${queryKey}-dialog-description`}
         />
