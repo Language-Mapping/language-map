@@ -10,7 +10,7 @@ const CENSUS_LUT_SUFFIX = `${CENSUS_LUT_RANGE}?key=${GOOGLE_API_KEY}`
 export const configEndpoints = {
   puma: `${BASE_ENDPOINT}/${PUMA_LUT_SHEET}${CENSUS_LUT_SUFFIX}`,
   tracts: `${BASE_ENDPOINT}/${TRACT_LUT_SHEET}${CENSUS_LUT_SUFFIX}`,
-  langConfig: `${BASE_ENDPOINT}/${CONFIG_SHEET}!A:J?key=${GOOGLE_API_KEY}`,
+  langConfig: `${BASE_ENDPOINT}/${CONFIG_SHEET}!A:K?key=${GOOGLE_API_KEY}`,
 } as {
   [key in CensusQueryID]: string
 }

@@ -3,6 +3,7 @@ import { createStyles, makeStyles } from '@material-ui/core/styles'
 
 type ToggleableProps = {
   show: boolean
+  initialHeight?: number | string
 }
 
 const useStyles = makeStyles(() =>
@@ -14,8 +15,10 @@ const useStyles = makeStyles(() =>
     },
     innerContent: {
       flex: (props: ToggleableProps) => (props.show ? 1 : 0),
-      maxHeight: (props: ToggleableProps) => (props.show ? 500 : 0),
-      opacity: (props: ToggleableProps) => (props.show ? 1 : 0),
+      maxHeight: (props: ToggleableProps) =>
+        props.show ? 500 : props.initialHeight,
+      opacity: ({ initialHeight, show }: ToggleableProps) =>
+        initialHeight || show ? 1 : 0,
       height: 'auto',
       overflow: 'hidden',
       transition: '300ms all',
@@ -24,8 +27,8 @@ const useStyles = makeStyles(() =>
 )
 
 export const ToggleableSection: FC<ToggleableProps> = (props) => {
-  const { children, show } = props
-  const classes = useStyles({ show })
+  const { children, show, initialHeight = 0 } = props
+  const classes = useStyles({ show, initialHeight })
 
   return (
     <div className={classes.root}>

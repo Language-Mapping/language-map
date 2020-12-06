@@ -1,19 +1,22 @@
 import React, { FC, useContext } from 'react'
 import { useParams } from 'react-router-dom'
-
-import { GlobalContext } from 'components/context'
 import { BiMapPin } from 'react-icons/bi'
+
+import { GlobalContext, useMapToolsState } from 'components/context'
+import { ReadMore } from 'components/generic'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
+import { ExploreSubView } from './ExploreSubView'
+
 import * as Types from './types'
 import * as utils from './utils'
-import { ExploreSubView } from './ExploreSubView'
 
 export const LangCardsList: FC = () => {
   const { value, language } = useParams() as Types.RouteMatch
   const { state } = useContext(GlobalContext)
   const { langFeatures } = state
   const icon = <BiMapPin />
+  const { langConfigViaSheets } = useMapToolsState()
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // not for lack of trying
@@ -44,13 +47,12 @@ export const LangCardsList: FC = () => {
     ]
   }, [] as Types.CardConfig[]) as Types.CardConfig[]
 
-  // TODO: find more efficient way of getting this
-  const sampleRecord = langFeatures.find(
-    ({ Language }) => Language === (language || value)
-  )
+  const { 'ISO 639-3': iso, Glottocode, Endonym, Description } =
+    langConfigViaSheets.find(
+      ({ Language }) => Language === (language || value)
+    ) || {}
 
-  const { 'ISO 639-3': iso, Glottocode, Endonym } = sampleRecord || {}
-
+  // TODO: FaClipboardList for census chip
   return (
     <ExploreSubView
       instancesCount={uniqueInstances.length}
@@ -59,6 +61,7 @@ export const LangCardsList: FC = () => {
         <>
           {Glottocode && `GLOTTOCODE: ${Glottocode}`}
           {iso && `${Glottocode && ' | '}ISO 639-3: ${iso}`}
+          {Description && <ReadMore text={Description} />}
         </>
       }
     >
