@@ -12,7 +12,10 @@ const initialState = {
     tracts: [],
     puma: [],
   },
-  censusActiveFields: {},
+  censusActiveFields: {
+    tracts: '',
+    puma: '',
+  },
 } as Types.InitialMapToolsState
 
 const MapToolsContext = React.createContext<
@@ -28,20 +31,11 @@ function reducer(
 ) {
   switch (action.type) {
     case 'SET_LANG_CONFIG_VIA_SHEETS':
-      return {
-        ...state,
-        langConfigViaSheets: action.payload,
-      }
+      return { ...state, langConfigViaSheets: action.payload }
     case 'SET_BOUNDARIES_VISIBLE':
-      return {
-        ...state,
-        boundariesVisible: action.payload,
-      }
+      return { ...state, boundariesVisible: action.payload }
     case 'SET_GEOLOC_ACTIVE':
-      return {
-        ...state,
-        geolocActive: action.payload,
-      }
+      return { ...state, geolocActive: action.payload }
     case 'SET_CENSUS_FIELD':
       return {
         ...state,
@@ -50,6 +44,8 @@ function reducer(
           [action.censusType]: action.payload,
         },
       }
+    case 'CLEAR_CENSUS_FIELD':
+      return { ...state, censusActiveFields: { puma: '', tracts: '' } }
     case 'SET_CENSUS_FIELDS':
       return {
         ...state,

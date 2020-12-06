@@ -17,7 +17,11 @@ import { setCensusField } from './utils'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     intro: {
-      fontSize: '1.1em',
+      fontSize: '1.1rem',
+      marginBottom: '1.25em',
+    },
+    introSmall: {
+      fontSize: '0.5rem',
       marginBottom: '1.25em',
     },
     listbox: {
@@ -73,16 +77,18 @@ const renderGroup = (params: AutocompleteRenderGroupParams) => {
   ]
 }
 
-const Intro: FC = () => {
+export const CensusIntro: FC<{ concise?: boolean }> = (props) => {
+  const { concise } = props // TODO: less ridiculous
   const classes = useStyles()
 
+  const Extree =
+    'The options below are 5-year ACS estimates on “language spoken at home for the Population 5 Years and Over”, sorted by population size.'
+
   return (
-    <Typography className={classes.intro}>
+    <Typography className={concise ? classes.introSmall : classes.intro}>
       The Census Bureau’s American Community Survey provides an indication of
-      where the largest several dozen languages are distributed. The options
-      below are 5-year ACS estimates on “language spoken at home for the
-      Population 5 Years and Over”, sorted by population size.{' '}
-      <RouterLink to="/about#census">More info</RouterLink>
+      where the largest several dozen languages are distributed.
+      {!concise && Extree} <RouterLink to="/about#census">More info</RouterLink>
     </Typography>
   )
 }
@@ -140,7 +146,7 @@ export const CensusFieldSelect: FC = () => {
   return (
     <LocationSearchContent
       heading="Census Language Data (NYC only)"
-      explanation={<Intro />}
+      explanation={<CensusIntro />}
     >
       {!tractsFields.length ||
         (!pumaFields.length && <p>Getting census data...</p>) || (

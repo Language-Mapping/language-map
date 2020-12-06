@@ -15,5 +15,5 @@ export type ChipWithClickProps = {
   text: string
   title?: string
   icon?: React.ReactNode
-  handleClick?: () => void
+  handleClick: (e: React.MouseEvent<HTMLDivElement>) => void
 }

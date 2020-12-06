@@ -101,6 +101,7 @@ export type MapToolsAction =
   | { type: 'SET_LANG_CONFIG_VIA_SHEETS'; payload: LangConfig[] }
   | { type: 'SET_BOUNDARIES_VISIBLE'; payload: boolean }
   | { type: 'SET_GEOLOC_ACTIVE'; payload: boolean }
+  | { type: 'CLEAR_CENSUS_FIELD' }
   | {
       type: 'SET_CENSUS_FIELD'
       payload?: string
@@ -139,7 +140,7 @@ export type InitialMapToolsState = {
     puma: PreppedCensusLUTrow[]
   }
   censusActiveFields: {
-    tracts?: string
-    puma?: string
+    tracts: string
+    puma: string
   }
 }

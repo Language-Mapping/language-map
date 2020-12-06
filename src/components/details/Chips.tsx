@@ -8,13 +8,14 @@ import * as Types from './types'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     chip: {
-      display: 'inline-flex',
       alignItems: 'center',
-      borderRadius: 5,
       backgroundColor: theme.palette.grey[700],
-      padding: '0.15em 0.45em',
+      borderRadius: 5,
+      cursor: 'pointer',
+      display: 'inline-flex',
       lineHeight: 1.5,
       marginBottom: '0.25em', // otherwise crowded when wrapped
+      padding: '0.15em 0.45em',
       transition: '300ms backgroundColor ease',
       whiteSpace: 'nowrap',
       '&:hover': {
