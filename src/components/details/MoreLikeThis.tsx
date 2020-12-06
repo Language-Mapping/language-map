@@ -1,7 +1,5 @@
 import React, { FC } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Paper } from '@material-ui/core'
 import { BiUserVoice } from 'react-icons/bi'
 import { IoIosPeople } from 'react-icons/io'
 
@@ -9,24 +7,9 @@ import { paths as routes } from 'components/config/routes'
 import { useSymbAndLabelState } from 'components/context'
 import { getCodeByCountry } from 'components/results'
 import { LegendSwatch } from 'components/legend'
-import { LangRecordSchema } from 'components/context/types'
+import { SeeRelatedChip } from 'components/details'
 
-// TODO: types into details/types
-type ImportantCols = Pick<
-  LangRecordSchema,
-  'Language' | 'Country' | 'World Region'
->
-type ColumnKeys = keyof ImportantCols
-
-// TODO: simplify all this to just need routeValues and a country flag
-type MoreLikeThis = {
-  language: string
-  region: string
-  country: string
-  macro?: string
-}
-
-type CustomChip = { to: string; name: string; variant?: 'subtle' }
+import * as Types from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,54 +23,10 @@ const useStyles = makeStyles((theme: Theme) =>
         marginLeft: '0.5em',
       },
     },
-    chip: {
-      display: 'inline-flex',
-      alignItems: 'center',
-      borderRadius: 5,
-      backgroundColor: theme.palette.grey[700],
-      padding: '0.15em 0.45em',
-      lineHeight: 1.5,
-      marginBottom: '0.25em', // otherwise crowded when wrapped
-      transition: '300ms backgroundColor ease',
-      whiteSpace: 'nowrap',
-      '&:hover': {
-        backgroundColor: theme.palette.grey[800],
-      },
-      '& > :first-child': {
-        marginRight: '0.35em',
-      },
-      '& > svg': {
-        fontSize: '1.25em',
-      },
-      '& .country-flag': {
-        // Ensure outer white shapes are seen
-        outline: `solid 1px ${theme.palette.divider}`,
-        height: 12,
-      },
-    },
   })
 )
 
-const CustomChip: FC<CustomChip> = (props) => {
-  const classes = useStyles()
-  const { children, to, name } = props
-
-  return (
-    <Paper
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      component={RouterLink}
-      to={to}
-      title={`View more ${name} communities`}
-      elevation={2}
-      className={classes.chip}
-    >
-      {children}
-    </Paper>
-  )
-}
-
-export const MoreLikeThis: FC<MoreLikeThis> = (props) => {
+export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
   const { language, region, country, macro } = props
   const symbLabelState = useSymbAndLabelState()
   const classes = useStyles()
@@ -99,11 +38,14 @@ export const MoreLikeThis: FC<MoreLikeThis> = (props) => {
   // Careful, not using TS on the mid-route paths, e.g. "World Region"
   return (
     <div className={classes.root}>
-      <CustomChip name={language} to={`${routes.grid}/Language/${language}`}>
+      <SeeRelatedChip
+        name={language}
+        to={`${routes.grid}/Language/${language}`}
+      >
         <BiUserVoice /> {language}
-      </CustomChip>
+      </SeeRelatedChip>
       {country.split(', ').map((countryName) => (
-        <CustomChip
+        <SeeRelatedChip
           key={countryName}
           name={countryName}
           to={`${routes.grid}/Country/${countryName}`}
@@ -116,9 +58,12 @@ export const MoreLikeThis: FC<MoreLikeThis> = (props) => {
             ).toLowerCase()}.svg`}
           />{' '}
           {countryName}
-        </CustomChip>
+        </SeeRelatedChip>
       ))}
-      <CustomChip name={region} to={`${routes.grid}/World Region/${region}`}>
+      <SeeRelatedChip
+        name={region}
+        to={`${routes.grid}/World Region/${region}`}
+      >
         <LegendSwatch
           legendLabel={region}
           labelStyleOverride={{ fontSize: 'inherit' }}
@@ -126,11 +71,14 @@ export const MoreLikeThis: FC<MoreLikeThis> = (props) => {
           iconID="_circle"
           backgroundColor={regionSwatchColor || 'transparent'}
         />
-      </CustomChip>
+      </SeeRelatedChip>
       {macro && (
-        <CustomChip name={macro} to={`${routes.grid}/Macrocommunity/${macro}`}>
+        <SeeRelatedChip
+          name={macro}
+          to={`${routes.grid}/Macrocommunity/${macro}`}
+        >
           <IoIosPeople /> {macro}
-        </CustomChip>
+        </SeeRelatedChip>
       )}
     </div>
   )
