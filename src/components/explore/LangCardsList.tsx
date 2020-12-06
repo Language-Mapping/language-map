@@ -1,8 +1,14 @@
 import React, { FC, useContext } from 'react'
 import { useParams } from 'react-router-dom'
+import { Button } from '@material-ui/core'
 import { BiMapPin } from 'react-icons/bi'
+import { FaClipboardList } from 'react-icons/fa'
 
-import { GlobalContext, useMapToolsState } from 'components/context'
+import {
+  GlobalContext,
+  useMapToolsState,
+  useMapToolsDispatch,
+} from 'components/context'
 import { ReadMore } from 'components/generic'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
@@ -17,6 +23,7 @@ export const LangCardsList: FC = () => {
   const { langFeatures } = state
   const icon = <BiMapPin />
   const { langConfigViaSheets } = useMapToolsState()
+  const mapToolsDispatch = useMapToolsDispatch()
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // not for lack of trying
@@ -47,23 +54,61 @@ export const LangCardsList: FC = () => {
     ]
   }, [] as Types.CardConfig[]) as Types.CardConfig[]
 
-  const { 'ISO 639-3': iso, Glottocode, Endonym, Description } =
+  const {
+    'ISO 639-3': iso,
+    Glottocode,
+    Endonym,
+    Description,
+    'PUMA Field': pumaField,
+    'Tract Field': tractField,
+  } =
     langConfigViaSheets.find(
       ({ Language }) => Language === (language || value)
     ) || {}
+
+  const hasCensus = pumaField || tractField
+
+  const CensusLink = (
+    <div style={{ marginTop: '1em' }}>
+      <Button
+        size="small"
+        color="primary"
+        variant="contained"
+        onClick={(e: React.MouseEvent) => {
+          mapToolsDispatch({
+            type: 'SET_CENSUS_FIELD',
+            censusType: pumaField ? 'puma' : 'tracts', // CAREFUL: Assumptions
+            payload: pumaField || tractField,
+          })
+        }}
+      >
+        <FaClipboardList
+          style={{ color: 'inherit', height: '1.2em', width: '1.2em' }}
+        />{' '}
+        Set census (works)
+      </Button>
+      <br />
+      <br />
+      ...but will be a chip with a popout containing all the stuff mentioned in
+      GH.
+    </div>
+  )
+
+  const SubTitle = (
+    <>
+      {Glottocode && `GLOTTOCODE: ${Glottocode}`}
+      {iso && `${Glottocode && ' | '}ISO 639-3: ${iso}`}
+      {hasCensus ? CensusLink : null}
+      {Description && <ReadMore text={Description} />}
+    </>
+  )
 
   // TODO: FaClipboardList for census chip
   return (
     <ExploreSubView
       instancesCount={uniqueInstances.length}
       subtitle={Endonym}
-      subSubtitle={
-        <>
-          {Glottocode && `GLOTTOCODE: ${Glottocode}`}
-          {iso && `${Glottocode && ' | '}ISO 639-3: ${iso}`}
-          {Description && <ReadMore text={Description} />}
-        </>
-      }
+      subSubtitle={SubTitle}
     >
       <CardList>
         {uniqueInstances.sort(utils.sortByTitle).map((instance) => (
