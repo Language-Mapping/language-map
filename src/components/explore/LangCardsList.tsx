@@ -55,6 +55,7 @@ export const LangCardsList: FC = () => {
     Description,
     'PUMA Field': pumaField,
     'Tract Field': tractField,
+    'Census Pretty': censusPretty,
   } =
     langConfigViaSheets.find(
       ({ Language }) => Language === (language || value)
@@ -64,7 +65,7 @@ export const LangCardsList: FC = () => {
     <>
       {Glottocode && `GLOTTOCODE: ${Glottocode}`}
       {iso && `${Glottocode && ' | '}ISO 639-3: ${iso}`}
-      <CensusPopover tractField={tractField} pumaField={pumaField} />
+      <CensusPopover {...{ tractField, pumaField, censusPretty }} />
       {Description && <ReadMore text={Description} />}
     </>
   )

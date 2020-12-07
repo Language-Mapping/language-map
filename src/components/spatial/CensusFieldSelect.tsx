@@ -17,11 +17,7 @@ import { setCensusField } from './utils'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     intro: {
-      fontSize: '1.1rem',
-      marginBottom: '1.25em',
-    },
-    introSmall: {
-      fontSize: '0.5rem',
+      fontSize: '0.75rem',
       marginBottom: '1.25em',
     },
     listbox: {
@@ -78,14 +74,14 @@ const renderGroup = (params: AutocompleteRenderGroupParams) => {
 }
 
 export const CensusIntro: FC<{ concise?: boolean }> = (props) => {
-  const { concise } = props // TODO: less ridiculous
+  const { concise } = props
   const classes = useStyles()
 
   const Extree =
     'The options below are 5-year ACS estimates on “language spoken at home for the Population 5 Years and Over”, sorted by population size.'
 
   return (
-    <Typography className={concise ? classes.introSmall : classes.intro}>
+    <Typography className={classes.intro}>
       The Census Bureau’s American Community Survey provides an indication of
       where the largest several dozen languages are distributed.
       {!concise && Extree} <RouterLink to="/about#census">More info</RouterLink>

@@ -126,6 +126,7 @@ export type LangConfig = Pick<
 > & {
   'PUMA Field'?: string
   'Tract Field'?: string
+  'Census Pretty'?: string // MATCH/INDEX convenience lookup
   Font?: string
 }
 
