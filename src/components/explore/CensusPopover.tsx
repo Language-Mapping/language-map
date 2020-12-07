@@ -35,12 +35,6 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
   const classes = useStyles()
   const censusFieldThisLang = pumaField || tractField
   const { censusActiveFields } = useMapToolsState()
-  let censusType: CensusQueryID | '' = ''
-
-  if (pumaField) censusType = 'puma'
-  else if (tractField) censusType = 'tracts'
-
-  const activeField = censusType ? censusActiveFields[censusType] : ''
 
   if (!censusFieldThisLang) return null
 
@@ -63,9 +57,29 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
   const handleClose = () => setAnchorEl(null)
   const open = Boolean(anchorEl)
   const id = open ? 'census-popover' : undefined
+  let censusType: CensusQueryID | '' = ''
+  let censusLabel
+
+  if (pumaField) {
+    censusType = 'puma'
+    censusLabel = 'PUMA'
+  } else if (tractField) {
+    censusType = 'tracts'
+    censusLabel = 'Tract'
+  }
+
+  const activeField = censusType ? censusActiveFields[censusType] : ''
+
   const Heading = (
     <Typography variant="h6" className={classes.popoverHeading}>
       Census Language Data (NYC only)
+    </Typography>
+  )
+
+  const Granularity = (
+    <Typography variant="caption" paragraph>
+      {/* TODO: don't hardcode! */}
+      Related ACS 2014-2018 Data ({censusLabel}-level): <b>{censusPretty}</b>
     </Typography>
   )
 
@@ -75,21 +89,13 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
       open={open}
       anchorEl={anchorEl}
       onClose={handleClose}
-      PaperProps={{ className: classes.popover }}
+      PaperProps={{ className: classes.popover, elevation: 12 }}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       transformOrigin={{ vertical: 'top', horizontal: 'center' }}
     >
       {Heading}
       <CensusIntro concise />
-      <Typography variant="caption" paragraph>
-        <b>Related Census Data:</b> {censusType === 'puma' && 'PUMA-level'}
-        {censusType === 'tracts' && 'Tract-level'}
-        {` `}
-        {censusPretty}
-      </Typography>
-      <Typography variant="caption" component="div">
-        Census options
-      </Typography>
+      {Granularity}
       <div className={classes.buttonGroup}>
         <Button
           color="primary"

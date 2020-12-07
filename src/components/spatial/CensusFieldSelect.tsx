@@ -82,8 +82,8 @@ export const CensusIntro: FC<{ concise?: boolean }> = (props) => {
 
   return (
     <Typography className={classes.intro}>
-      The Census Bureau’s American Community Survey provides an indication of
-      where the largest several dozen languages are distributed.
+      The Census Bureau’s American Community Survey (ACS) provides an indication
+      of where the largest several dozen languages are distributed.{' '}
       {!concise && Extree} <RouterLink to="/about#census">More info</RouterLink>
     </Typography>
   )
