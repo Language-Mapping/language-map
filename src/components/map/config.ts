@@ -4,12 +4,11 @@ import * as Types from './types'
 const mapCenter = [-73.96, 40.7128] as [number, number]
 
 export * from './config.census'
-export * from './config.puma'
 export * from './config.points'
 export * from './config.polygons'
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MB_TOKEN
-export const POINT_ZOOM_LEVEL = 14 // e.g. clicked point or single-result filter
+export const POINT_ZOOM_LEVEL = 14.5 // e.g. clicked point or single-3result filter
 export const NYC_LAT_LONG = { latitude: 40.7128, longitude: -74.006 }
 export const mbStyleTileConfig = {
   symbStyleUrl: '/data/mb-styles.langs.json',
@@ -20,6 +19,7 @@ export const mbStyleTileConfig = {
   customStyles: {
     dark: 'mapbox://styles/elalliance/ckdqj968x01ot19lf5yg472f2',
     light: 'mapbox://styles/elalliance/ckdovh9us01wz1ipa5fjihv7l',
+    blank: 'mapbox://styles/elalliance/cki50pk2s00ux19phcg6k2tjc',
   },
 }
 

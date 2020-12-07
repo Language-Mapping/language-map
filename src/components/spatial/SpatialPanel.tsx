@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const SpatialPanel: FC<Types.SpatialPanel> = (props) => {
+export const SpatialPanel: FC<Types.SpatialPanelProps> = (props) => {
   const { mapRef } = props
   const panelRootClasses = usePanelRootStyles()
   const classes = useStyles()

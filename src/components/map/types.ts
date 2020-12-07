@@ -23,6 +23,10 @@ type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
 type Padding =
   | number
   | { top: number; bottom: number; left: number; right: number }
+type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
+  id: string
+  promoteId?: string
+}
 
 export type BoundsArray = [[number, number], [number, number]]
 export type GeocodeMarker = LongLat & { text: string }
@@ -41,16 +45,11 @@ export type MapControlAction =
   | 'reset-pitch'
 export type PopupContent = { heading: string; subheading?: string }
 export type PopupSettings = PopupContent & LongLat
-export type SheetsValues = [string, string]
 export type UseStyleProps = { panelOpen: boolean }
 export type ViewportState = Partial<ViewportProps> & ViewState
 export type Breakpoint = 'mobile' | 'desktop' | 'huge'
 export type Offset = [number, number] // [x, y]
-export type BoundariesInternalSrcID =
-  | 'neighborhoods'
-  | 'counties'
-  | 'tracts'
-  | 'puma'
+export type BoundariesInternalSrcID = 'neighborhoods' | 'counties'
 
 export type LayerPropsPlusMeta = Omit<LayerProps, 'paint' | 'layout' | 'id'> & {
   id: string
@@ -85,6 +84,8 @@ export type BoundaryFeat = Omit<
   source: BoundariesInternalSrcID
   'source-layer': string
 }
+
+export type LangMbSrcAndLayerProps = { symbLayers: LayerPropsPlusMeta[] }
 
 export type BoundariesLayerProps = {
   visible: boolean
@@ -124,15 +125,14 @@ export type PanelSectionProps = {
   explanation?: string | React.ReactNode
 }
 
-export type MbReadyCensusRow = {
-  id: number // MB Boundaries' internal
-  fips: string // 2-char state code + 3-char county + 6-char tract
-} & { [key: string]: number }
+export type PreppedCensusTableRow = { [key: string]: number } & {
+  GEOID: string
+}
 
 export type CensusLayerProps = {
   sourceLayer: string
-  stateKey: 'censusField' | 'pumaField' // TODO: de-grossify
   config: Omit<BoundaryConfig, 'lookupPath'>
+  beforeId?: string
   map?: Map
 } & Pick<SpatialPanelProps, 'mapRef'>
 
@@ -157,11 +157,6 @@ export type CtrlBtnConfig = {
   name: string
   customFn?: boolean
   disabledOnProp?: keyof MapCtrlBtnsProps
-}
-
-export type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
-  id: string
-  promoteId?: string
 }
 
 export type BoundsConfig = {

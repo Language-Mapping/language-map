@@ -1,33 +1,41 @@
 import React, { FC, useEffect, useState } from 'react'
-import { queryCache, useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 import { AnyLayout, Expression } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
-import { useSymbAndLabelState } from 'components/context/SymbAndLabelContext'
-import * as config from './config'
-
-import { LayerPropsPlusMeta, SheetsValues } from './types'
+import {
+  useSymbAndLabelState,
+  useMapToolsDispatch,
+  LangConfig,
+} from 'components/context'
+import { configEndpoints } from 'components/spatial/config'
+import { RawSheetsResponse } from 'components/config/types'
 import { asyncAwaitFetch, prepEndoFilters } from './utils'
+import { sheetsToJSON } from '../../utils'
 
-const { mbStyleTileConfig, langLabelsStyle, QUERY_ID, MB_FONTS_URL } = config
+import * as config from './config'
+import * as Types from './types'
 
-type SheetsResponse = { values: SheetsValues[] }
-
-type SourceAndLayerComponent = {
-  symbLayers: LayerPropsPlusMeta[]
-}
-
-// TODO: set paint property (???)
-// https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setpaintproperty
+const { mbStyleTileConfig, langLabelsStyle, CONFIG_QUERY_ID } = config
 
 // NOTE: it did not seem to work when using two different Styles with the same
 // dataset unless waiting until there is something to put into <Source>.
-export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
+export const LangMbSrcAndLayer: FC<Types.LangMbSrcAndLayerProps> = ({
   symbLayers,
 }) => {
   const symbLabelState = useSymbAndLabelState()
+  const mapToolsDispatch = useMapToolsDispatch()
   const { activeLabelID, activeSymbGroupID } = symbLabelState
-  const { data, isFetching, error } = useQuery(QUERY_ID)
+  const { data, isFetching, error } = useQuery(
+    CONFIG_QUERY_ID,
+    () => asyncAwaitFetch<RawSheetsResponse>(configEndpoints.langConfig),
+    {
+      staleTime: Infinity,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+    }
+  )
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [endoFonts, setEndoFonts] = useState<any[]>()
 
@@ -48,37 +56,33 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
     const isEndo = activeLabelID === 'Endonym'
     const defaultFont = ['Noto Sans Regular', 'Arial Unicode MS Regular']
     const defaultTextField: Expression = ['to-string', ['get', activeLabelID]]
-    // TODO: check if 'Font Image Alt' is popuplated instead of using http
+    // TODO: check if 'Font Image Alt' is populated instead of using this
+    // remnant of the Endo http check implemented before that field existed.
     const imgCheck: Expression = [
       'case',
-      ['==', ['slice', ['get', 'Endonym'], 0, 4], 'http'],
+      ['==', ['slice', ['get', 'Endonym'], 0, 4], ''],
       ['get', 'Language'],
       ['get', 'Endonym'],
     ]
 
-    /* eslint-disable operator-linebreak */
     return {
       ...bareMinimum,
       'text-font': isEndo ? endoFonts : defaultFont,
       'text-field': isEndo ? imgCheck : defaultTextField,
     }
-    /* eslint-enable operator-linebreak */
   }
 
   useEffect(() => {
-    // TODO: maybe not prefetch?
-    queryCache.prefetchQuery(QUERY_ID, () => asyncAwaitFetch(MB_FONTS_URL))
-  }, [])
+    // TODO: check `status === 'loading'` instead?
+    if (isFetching || !data?.values) return
 
-  useEffect(() => {
-    if (isFetching) return
+    const dataAsJson = sheetsToJSON<LangConfig>(data.values)
 
-    const { values: sheetsResponse } = data as SheetsResponse
-
-    if (!sheetsResponse) return
-
-    setEndoFonts(prepEndoFilters(sheetsResponse))
-
+    mapToolsDispatch({
+      type: 'SET_LANG_CONFIG_VIA_SHEETS',
+      payload: dataAsJson,
+    })
+    setEndoFonts(prepEndoFilters(dataAsJson))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetching])
 
@@ -93,7 +97,7 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
       url={`mapbox://${mbStyleTileConfig.tilesetId}`}
       id={mbStyleTileConfig.langSrcID}
     >
-      {symbLayers.map((layer: LayerPropsPlusMeta) => {
+      {symbLayers.map((layer: Types.LayerPropsPlusMeta) => {
         let { paint, layout } = layer
         const isInActiveGroup = layer.group === activeSymbGroupID
 
@@ -117,8 +121,6 @@ export const LangMbSrcAndLayer: FC<SourceAndLayerComponent> = ({
           />
         )
       })}
-      {/* TODO: set "text-size" value based on zoom level */}
-      {/* TODO: make expressions less redundant */}
     </Source>
   )
 }

@@ -1,19 +1,23 @@
 import React, { FC, useContext } from 'react'
 import { useParams } from 'react-router-dom'
-
-import { GlobalContext } from 'components/context'
 import { BiMapPin } from 'react-icons/bi'
+
+import { GlobalContext, useMapToolsState } from 'components/context'
+import { ReadMore } from 'components/generic'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
+import { ExploreSubView } from './ExploreSubView'
+import { CensusPopover } from './CensusPopover'
+
 import * as Types from './types'
 import * as utils from './utils'
-import { ExploreSubView } from './ExploreSubView'
 
 export const LangCardsList: FC = () => {
   const { value, language } = useParams() as Types.RouteMatch
   const { state } = useContext(GlobalContext)
   const { langFeatures } = state
   const icon = <BiMapPin />
+  const { langConfigViaSheets } = useMapToolsState()
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // not for lack of trying
@@ -44,23 +48,33 @@ export const LangCardsList: FC = () => {
     ]
   }, [] as Types.CardConfig[]) as Types.CardConfig[]
 
-  // TODO: find more efficient way of getting this
-  const sampleRecord = langFeatures.find(
-    ({ Language }) => Language === (language || value)
-  )
+  const {
+    'ISO 639-3': iso,
+    Glottocode,
+    Endonym,
+    Description,
+    'PUMA Field': pumaField,
+    'Tract Field': tractField,
+    'Census Pretty': censusPretty,
+  } =
+    langConfigViaSheets.find(
+      ({ Language }) => Language === (language || value)
+    ) || {}
 
-  const { 'ISO 639-3': iso, Glottocode, Endonym } = sampleRecord || {}
+  const SubTitle = (
+    <>
+      {Glottocode && `GLOTTOCODE: ${Glottocode}`}
+      {iso && `${Glottocode && ' | '}ISO 639-3: ${iso}`}
+      <CensusPopover {...{ tractField, pumaField, censusPretty }} />
+      {Description && <ReadMore text={Description} />}
+    </>
+  )
 
   return (
     <ExploreSubView
       instancesCount={uniqueInstances.length}
       subtitle={Endonym}
-      subSubtitle={
-        <>
-          {Glottocode && `GLOTTOCODE: ${Glottocode}`}
-          {iso && `${Glottocode && ' | '}ISO 639-3: ${iso}`}
-        </>
-      }
+      subSubtitle={SubTitle}
     >
       <CardList>
         {uniqueInstances.sort(utils.sortByTitle).map((instance) => (

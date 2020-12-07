@@ -1,7 +1,8 @@
 import { Map, FillPaint } from 'mapbox-gl'
 import { WebMercatorViewport } from 'react-map-gl'
 
-import * as MapTypes from './types'
+import { LangConfig } from 'components/context'
+import * as Types from './types'
 import * as config from './config' // TODO: pass this as fn args, don't import
 
 // NOTE: Firefox needs SVG width/height to be explicitly set on the SVG in order
@@ -10,12 +11,15 @@ import * as config from './config' // TODO: pass this as fn args, don't import
 // https://github.com/mapbox/mapbox-gl-js/issues/5529#issuecomment-465403194
 export const addLangTypeIconsToMap = (
   map: Map,
-  iconsConfig: MapTypes.LangIconConfig[]
+  iconsConfig: Types.LangIconConfig[]
 ): void => {
+  if (!map) return // maybe fixes this:
+  // sentry.io/organizations/endangered-language-alliance/issues/2073089812
+
   iconsConfig.forEach((iconConfig) => {
     const { id, icon } = iconConfig
 
-    if (map && map.hasImage(id)) {
+    if (map.hasImage(id)) {
       map.removeImage(id)
     }
 
@@ -25,7 +29,10 @@ export const addLangTypeIconsToMap = (
 
     // Enabling the `sdf` property allows icons to be colored on the fly:
     // https://docs.mapbox.com/help/troubleshooting/using-recolorable-images-in-mapbox-maps/#mapbox-gl-js
-    img.onload = () => map.addImage(id, img, { sdf: true })
+    img.onload = () => map?.addImage(id, img, { sdf: true })
+    // TODO: confirm fixed (same as Sentry comment above):
+    // `TypeError: null is not an object (evaluating 'e.addImage')
+    // sentry.io/organizations/endangered-language-alliance/issues/2073089812
     img.src = icon
   })
 }
@@ -64,10 +71,11 @@ export const filterLayersByFeatIDs = (
   })
 }
 
-export const asyncAwaitFetch = async (path: string): Promise<void> =>
-  (await fetch(path)).json()
+export const asyncAwaitFetch = async <T extends unknown>(
+  path: string
+): Promise<T> => (await fetch(path)).json()
 
-export const prepPopupContent: MapTypes.PrepPopupContent = (
+export const prepPopupContent: Types.PrepPopupContent = (
   selFeatAttribs,
   popupHeading
 ) => {
@@ -82,7 +90,7 @@ export const prepPopupContent: MapTypes.PrepPopupContent = (
   }
 }
 
-export const flyToBounds: MapTypes.FlyToBounds = (
+export const flyToBounds: Types.FlyToBounds = (
   map,
   { height, width, bounds, offset },
   popupContent
@@ -100,10 +108,10 @@ export const flyToBounds: MapTypes.FlyToBounds = (
   map.flyTo({ essential: true, zoom, center: [longitude, latitude], offset }, {
     forceViewportUpdate: true,
     popupSettings,
-  } as MapTypes.CustomEventData)
+  } as Types.CustomEventData)
 }
 
-export const flyToPoint: MapTypes.FlyToPoint = (
+export const flyToPoint: Types.FlyToPoint = (
   map,
   settings,
   popupContent,
@@ -130,7 +138,7 @@ export const flyToPoint: MapTypes.FlyToPoint = (
   const customEventData = {
     forceViewportUpdate: true,
     popupSettings,
-  } as MapTypes.CustomEventData
+  } as Types.CustomEventData
 
   if (geocodeMarkerText) {
     customEventData.geocodeMarker = {
@@ -155,7 +163,7 @@ export const flyToPoint: MapTypes.FlyToPoint = (
   }
 }
 
-export const langFeatsUnderClick: MapTypes.LangFeatsUnderClick = (
+export const langFeatsUnderClick: Types.LangFeatsUnderClick = (
   point,
   map,
   interactiveLayerIds
@@ -171,7 +179,7 @@ export const langFeatsUnderClick: MapTypes.LangFeatsUnderClick = (
   )
 }
 
-export const clearBoundaries: MapTypes.ClearStuff = (map) => {
+export const clearBoundaries: Types.ClearStuff = (map) => {
   map.removeFeatureState({
     source: config.neighSrcId,
     sourceLayer: config.neighPolyID,
@@ -188,14 +196,15 @@ export const clearBoundaries: MapTypes.ClearStuff = (map) => {
 // any impact, the fonts must be uploaded to the Mapbox account and their names
 // must be identical to those in the sheet.
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const prepEndoFilters = (data: MapTypes.SheetsValues[]): any[] => {
-  // Skip the first row, which contains only column headings
-  const filters = data.slice(1).reduce((all, row) => {
-    const lang = ['==', ['var', 'lang'], row[0]]
-    const font = ['literal', [row[1]]]
+export const prepEndoFilters = (data: LangConfig[]): any[] => {
+  const filters = data
+    .filter((row) => row.Font)
+    .reduce((all, thisOne) => {
+      const lang = ['==', ['var', 'lang'], thisOne.Language]
+      const font = ['literal', [thisOne.Font]]
 
-    return [...all, lang, font]
-  }, [] as any[])
+      return [...all, lang, font]
+    }, [] as any[])
 
   return [
     'let',

@@ -1,53 +1,58 @@
 import React, { FC } from 'react'
 
-type MapToolsAction =
-  | { type: 'SET_BOUNDARIES_VISIBLE'; payload: boolean }
-  | { type: 'SET_GEOLOC_ACTIVE'; payload: boolean }
-  | { type: 'SET_CENSUS_FIELD'; payload: string }
-  | { type: 'SET_PUMA_FIELD'; payload: string }
-
-type Dispatch = React.Dispatch<MapToolsAction>
-
-export type InitialMapToolsState = {
-  boundariesVisible: boolean
-  geolocActive: boolean
-  censusField?: string
-  pumaField?: string
-}
+import * as Types from './types'
 
 const initialState = {
   boundariesVisible: false,
   geolocActive: false,
-} as InitialMapToolsState
+  tractsFields: [],
+  pumaFields: [],
+  langConfigViaSheets: [],
+  censusDropDownFields: {
+    tracts: [],
+    puma: [],
+  },
+  censusActiveFields: {
+    tracts: '',
+    puma: '',
+  },
+} as Types.InitialMapToolsState
 
-const MapToolsContext = React.createContext<InitialMapToolsState | undefined>(
-  undefined
-)
-const MapToolsDispatchContext = React.createContext<Dispatch | undefined>(
-  undefined
-)
+const MapToolsContext = React.createContext<
+  Types.InitialMapToolsState | undefined
+>(undefined)
+const MapToolsDispatchContext = React.createContext<
+  Types.MapToolsDispatch | undefined
+>(undefined)
 
-function reducer(state: InitialMapToolsState, action: MapToolsAction) {
+function reducer(
+  state: Types.InitialMapToolsState,
+  action: Types.MapToolsAction
+) {
   switch (action.type) {
+    case 'SET_LANG_CONFIG_VIA_SHEETS':
+      return { ...state, langConfigViaSheets: action.payload }
     case 'SET_BOUNDARIES_VISIBLE':
-      return {
-        ...state,
-        boundariesVisible: action.payload,
-      }
+      return { ...state, boundariesVisible: action.payload }
     case 'SET_GEOLOC_ACTIVE':
-      return {
-        ...state,
-        geolocActive: action.payload,
-      }
+      return { ...state, geolocActive: action.payload }
     case 'SET_CENSUS_FIELD':
       return {
         ...state,
-        censusField: action.payload,
+        censusActiveFields: {
+          ...state.censusActiveFields,
+          [action.censusType]: action.payload,
+        },
       }
-    case 'SET_PUMA_FIELD':
+    case 'CLEAR_CENSUS_FIELD':
+      return { ...state, censusActiveFields: { puma: '', tracts: '' } }
+    case 'SET_CENSUS_FIELDS':
       return {
         ...state,
-        pumaField: action.payload,
+        censusDropDownFields: {
+          ...state.censusDropDownFields,
+          [action.censusType]: action.payload,
+        },
       }
     default: {
       return state
@@ -68,7 +73,7 @@ export const MapToolsProvider: FC = (props) => {
   )
 }
 
-function useMapToolsState(): InitialMapToolsState {
+function useMapToolsState(): Types.InitialMapToolsState {
   const context = React.useContext(MapToolsContext)
 
   if (context === undefined) {
@@ -78,7 +83,7 @@ function useMapToolsState(): InitialMapToolsState {
   return context
 }
 
-function useMapToolsDispatch(): Dispatch {
+function useMapToolsDispatch(): Types.MapToolsDispatch {
   const context = React.useContext(MapToolsDispatchContext)
 
   if (context === undefined) {

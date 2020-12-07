@@ -1,25 +1,36 @@
 import * as MapTypes from 'components/map/types'
+import { ArrayOfStringArrays } from 'components/config/types'
+import { ReactQueryStatus } from '../config/types'
 
-export type SpatialPanel = MapTypes.SpatialPanelProps
-export type CensusQueryID = MapTypes.BoundariesInternalSrcID
-
-// TODO: make this shared/reusable as it will be hit in several places
-export type SheetsQuery = {
-  data: SheetsLUTresponse
-  isFetching: boolean
-  error: Error
-}
-
-// e.g. ['_original', 'pretty', 'complicated', 'sort_order']
-export type CensusLUTrow = [string, string, 'TRUE' | 'FALSE', string]
+export type SpatialPanelProps = MapTypes.SpatialPanelProps
+export type CensusQueryID = 'tracts' | 'puma' | 'langConfig'
 
 // TODO: deal w/google's built-in `data.error`
-export type SheetsLUTresponse = { values: CensusLUTrow[] }
+export type SheetsQuery = {
+  data: { values: ArrayOfStringArrays }
+} & ReactQueryStatus
 
 export type PreppedCensusLUTrow = {
-  id: string
+  original: string
   pretty: string
   complicated: boolean
-  sortOrder: number
+  sort_order: number
   groupTitle: string
+}
+
+export type GroupHeaderProps = {
+  title: string
+  subTitle: string
+}
+
+export type CensusSelectProps = {
+  tracts: PreppedCensusLUTrow[]
+  puma: PreppedCensusLUTrow[]
+}
+
+export type LUTschema = {
+  original: string
+  pretty: string
+  complicated: string
+  sort_order: string
 }

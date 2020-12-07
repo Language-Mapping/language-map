@@ -2,61 +2,49 @@ import React, { FC, useState, useEffect } from 'react'
 import { Source, Layer } from 'react-map-gl'
 import { FillPaint } from 'mapbox-gl'
 import * as stats from 'simple-statistics'
-import { useQuery, queryCache } from 'react-query'
+import { useQuery } from 'react-query'
 
 import { useMapToolsState } from 'components/context'
+import { SheetsReactQueryResponse } from 'components/config/types'
+import { CensusQueryID } from 'components/spatial/types'
 import { tableEndpoints } from '../spatial/config'
+import { sheetsToJSON } from '../../utils'
 
 import * as utils from './utils'
 import * as Types from './types'
 
-type PreppedRow = { [key: string]: number } & { GEOID: string }
-type SheetsResponse = {
-  data: { values: [string[]] }
-  error: Error
-  isFetching: boolean
-}
-
 export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
-  const { sourceLayer, config, stateKey, map } = props
+  const { sourceLayer, config, map, beforeId } = props
   const { layers, source } = config
-  const field = useMapToolsState()[stateKey]
-  const censusUnit = config.source.id as 'tracts' | 'puma'
+  const censusUnit = config.source.id as CensusQueryID
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const field = useMapToolsState().censusActiveFields[censusUnit]
+  const visible = field !== undefined && field !== ''
   const { data, error, isFetching } = useQuery(
-    `${censusUnit}-table`
-  ) as SheetsResponse
+    `${censusUnit}-table`,
+    () => utils.asyncAwaitFetch(tableEndpoints[censusUnit]),
+    {
+      enabled: true,
+      staleTime: Infinity,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+    }
+  ) as SheetsReactQueryResponse
   const [fillPaint, setFillPaint] = useState<FillPaint>({
     'fill-color': 'transparent', // mitigates the brief lag before load
   })
   const [highLow, setHighLow] = useState<{ high: number; low?: number }>()
-  const visible = field !== undefined && field !== ''
-  const [tableRows, setTableRows] = useState<PreppedRow[]>()
-
-  useEffect(() => {
-    // TODO: learn react-query caching and apply it appropriately everywhere
-    queryCache.prefetchQuery(`${censusUnit}-table`, () =>
-      utils.asyncAwaitFetch(tableEndpoints[censusUnit])
-    )
-  }, [censusUnit])
+  const [tableRows, setTableRows] = useState<Types.PreppedCensusTableRow[]>()
 
   useEffect(() => {
     if (isFetching || !data) return
 
-    const headings = data.values[0]
-
-    // TODO: deal w/google's built-in `data.error` (adjust TS first)
-    const tableRowsPrepped = data.values.slice(1).map((row, i) => {
-      const rowAsJS = {} as PreppedRow
-
-      headings.forEach((heading, index) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore // TODO: don't let TS win
-        rowAsJS[heading] =
-          heading === 'GEOID' ? row[index] : parseInt(row[index], 10)
-      })
-
-      return rowAsJS
-    })
+    const tableRowsPrepped = sheetsToJSON<Types.PreppedCensusTableRow>(
+      data.values,
+      ['GEOID']
+    )
 
     setTableRows(tableRowsPrepped)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -82,7 +70,6 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
         total: (total / max) * 100,
       } as { total: number })
     })
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [field])
 
@@ -92,7 +79,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
     setFillPaint(utils.setInterpolatedFill(highLow.high, highLow.low))
   }, [highLow])
 
-  if (error) return null // TODO: sentry
+  if (error || isFetching) return null // TODO: sentry
 
   const promoteIDfield = 'GEOID' // tell MB not to use default `id` as unique ID
 
@@ -103,6 +90,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
       {layers.map((layer) => (
         <Layer
           key={layer.id}
+          beforeId={beforeId}
           {...layer}
           paint={layer.type === 'line' ? layer.paint : fillPaint}
           layout={{

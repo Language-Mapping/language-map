@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react'
-import { queryCache, useQuery } from 'react-query'
+import { useQuery } from 'react-query'
 import { Source, Layer } from 'react-map-gl'
 
 import * as utils from './utils'
@@ -7,25 +7,27 @@ import * as Types from './types'
 
 export const BoundariesLayer: FC<Types.BoundariesLayerProps> = (props) => {
   const { beforeId, source, layers, lookupPath, visible } = props
-  const { data, isFetching, error } = useQuery(source.id)
+  const { data, isFetching, error } = useQuery(
+    source.id,
+    () => utils.asyncAwaitFetch<Types.BoundaryLookup[]>(lookupPath),
+    {
+      staleTime: Infinity,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+      enabled: visible,
+    }
+  )
   const [recordIDs, setRecordIDs] = useState<number[]>()
 
   useEffect(() => {
-    queryCache.prefetchQuery(source.id, () => utils.asyncAwaitFetch(lookupPath))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lookupPath])
+    if (isFetching || !data) return
 
-  useEffect(() => {
-    if (isFetching) return
-
-    const lookup = data as Types.BoundaryLookup[]
-    const listOfIDs = lookup.map((record) => record.id)
-
-    setRecordIDs(listOfIDs)
+    setRecordIDs(data.map((record) => record.id))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetching])
 
-  if (error || !recordIDs) return null
+  if (error || !recordIDs || !visible || isFetching) return null
 
   return (
     <Source {...source} type="vector">

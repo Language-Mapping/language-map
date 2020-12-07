@@ -17,6 +17,7 @@ import * as Types from './types'
 import { useStyles } from './styles'
 import { createMarkup } from '../../utils'
 import { LocWithState } from '../config/types'
+import { defaultQueryFn } from './utils'
 
 export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
   const { queryKey, icon, title } = props
@@ -29,8 +30,9 @@ export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
   } = useLocation() as LocWithState
   const theme = useTheme()
   const lilGuy = useMediaQuery(theme.breakpoints.only('xs'))
-  const { data, isFetching, error } = useQuery(queryKey)
-  const wpData = data as Types.WpApiPageResponse
+  const { data, isFetching, error } = useQuery(queryKey, () =>
+    defaultQueryFn<Types.WpApiPageResponse>(queryKey)
+  )
 
   if (isFetching)
     return (
@@ -60,6 +62,8 @@ export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
   // github.com/ReactTraining/react-router/issues/394#issuecomment-128148470
   const handleEntered = () => {
     const targetElemID = hash?.split('#').slice(-1)[0]
+
+    if (!targetElemID) return
 
     document.querySelector(`#${targetElemID}`)?.scrollIntoView()
   }
@@ -100,10 +104,7 @@ export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
       </IconButton>
       <DialogContent dividers className={classes.dialogContent}>
         <div
-          // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={createMarkup(
-            (wpData && wpData.content.rendered) || ''
-          )}
+          dangerouslySetInnerHTML={createMarkup(data?.content.rendered || '')}
           id={`${queryKey}-dialog-description`}
         />
       </DialogContent>

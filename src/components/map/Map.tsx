@@ -2,7 +2,7 @@
 // TOO annoying. I'll take the risk, esp. since it has not seemed problematic:
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useState, useContext, useEffect } from 'react'
-import { useQuery } from 'react-query'
+import { useQueryCache } from 'react-query'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import {
   AttributionControl,
@@ -74,9 +74,11 @@ export const Map: FC<Types.MapProps> = (props) => {
 
   const { state, dispatch } = useContext(GlobalContext)
   const symbLabelState = useSymbAndLabelState()
+  // const { boundariesVisible, tractsField, pumaField } = useMapToolsState()
   const { boundariesVisible } = useMapToolsState()
   const offset = hooks.useOffset(panelOpen)
   const breakpoint = hooks.useBreakpoint()
+  const cache = useQueryCache()
 
   // Down to ONE state prop- `langFeatures`. Hook w/GlobalContext, router?
   const { langFeatures } = state
@@ -101,20 +103,22 @@ export const Map: FC<Types.MapProps> = (props) => {
     clickedBoundary,
     setClickedBoundary,
   ] = useState<Types.BoundaryFeat | null>()
-  const { data: boundariesLookup } = useQuery<Types.BoundaryLookup[]>(
-    clickedBoundary?.source
-  )
 
   // Handle MB Boundaries feature click. Had this inside the handler before, but
   // using state and more on-demand-ness seemed more efficient.
   useEffect((): void => {
-    if (!map || !clickedBoundary || !boundariesLookup) return
+    // if (!map || !clickedBoundary || !boundariesLookup) return
+    if (!map || !clickedBoundary) return
+
+    const boundaryData = cache.getQueryData(
+      clickedBoundary.source
+    ) as Types.BoundaryLookup[]
 
     events.handleBoundaryClick(
       map,
       clickedBoundary,
       { width: viewport.width as number, height: viewport.height as number },
-      boundariesLookup,
+      boundaryData,
       offset
     )
   }, [clickedBoundary])
@@ -239,7 +243,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   /* eslint-enable react-hooks/exhaustive-deps */
 
   function onHover(event: Types.MapEvent) {
-    if (!mapRef.current || !mapLoaded) return
+    if (!mapRef.current || !mapLoaded || !boundariesVisible) return
 
     events.onHover(event, setTooltip, mapRef.current.getMap(), {
       lang: interactiveLayerIds,
@@ -250,11 +254,10 @@ export const Map: FC<Types.MapProps> = (props) => {
   // TODO: use `if (map.isSourceLoaded('sourceId')` if possible
   // Runs only once and kicks off the whole thing
   function onLoad(mapLoadEvent: MapLoadEvent) {
-    // `mapObj` "should" be same as `map` but use it here and avoid naming
-    // conflict just in case:
+    // `mapObj` should === `map` but avoid naming conflict just in case:
     const { target: mapObj } = mapLoadEvent
     const idFromUrl = getIDfromURLparams(window.location.search)
-    const cacheOfIDs: number[] = []
+    const cacheOfIDs: number[] = [] // TODO: use `reduce` instead of `push`
     const uniqueRecords: LangRecordSchema[] = []
 
     // This only works because of a very low zoom of 4. Otherwise not all of the
@@ -374,6 +377,7 @@ export const Map: FC<Types.MapProps> = (props) => {
       offset,
     }
 
+    // TODO: prevent errors on resize-while-loading
     utils.flyToBounds(mapObj, settings, null)
   }
 
@@ -406,7 +410,11 @@ export const Map: FC<Types.MapProps> = (props) => {
         {...viewport}
         {...config.mapProps}
         ref={mapRef}
-        interactiveLayerIds={[...boundariesLayerIDs, ...interactiveLayerIds]}
+        interactiveLayerIds={
+          boundariesVisible
+            ? [...boundariesLayerIDs, ...interactiveLayerIds]
+            : [...interactiveLayerIds]
+        }
         onViewportChange={setViewport}
         onClick={(event: Types.MapEvent) => onClick(event)}
         onHover={onHover}
@@ -425,21 +433,21 @@ export const Map: FC<Types.MapProps> = (props) => {
             key={boundaryConfig.source.id}
             {...boundaryConfig}
             visible={boundariesVisible}
-            beforeId={beforeId}
+            {...{ beforeId, map, clickedBoundary }}
           />
         ))}
         <CensusLayer
           map={map}
           mapRef={mapRef}
           config={config.pumaConfig}
-          stateKey="pumaField"
+          beforeId={beforeId}
           sourceLayer={config.pumaLyrSrc['source-layer']}
         />
         <CensusLayer
           map={map}
           mapRef={mapRef}
           config={config.tractsConfig}
-          stateKey="censusField"
+          beforeId={beforeId}
           sourceLayer={config.tractsLyrSrc['source-layer']}
         />
         {symbLayers && <LangMbSrcAndLayer symbLayers={symbLayers} />}

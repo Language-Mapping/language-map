@@ -4,8 +4,8 @@ import { useRouteMatch, useParams } from 'react-router-dom'
 import { GlobalContext } from 'components/context'
 import { SwatchOrFlagOrIcon } from 'components/generic/icons-and-swatches'
 import { PanelContent } from 'components/panels/PanelContent'
+
 import * as Types from './types'
-import * as utils from './utils'
 
 export const ExploreSubView: FC<Types.Field> = (props) => {
   const { children, instancesCount, subtitle, subSubtitle } = props
@@ -19,7 +19,6 @@ export const ExploreSubView: FC<Types.Field> = (props) => {
   return (
     <PanelContent
       title={language || value || field}
-      intro={utils.pluralTextIfNeeded(instancesCount)}
       icon={
         <SwatchOrFlagOrIcon
           field={

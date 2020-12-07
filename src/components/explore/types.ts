@@ -49,3 +49,9 @@ export type Field = {
 export type LangFilterArgs = RouteMatch & {
   langFeatures: LangRecordSchema[]
 }
+
+export type CensusPopoverProps = {
+  tractField?: string
+  pumaField?: string
+  censusPretty?: string
+}

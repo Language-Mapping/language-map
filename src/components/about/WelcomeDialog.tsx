@@ -136,7 +136,6 @@ export const WelcomeDialog: FC<AboutPageProps> = (props) => {
       </DialogTitle>
       <DialogContent dividers className={dialogContent}>
         <div
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={createMarkup(
             (wpData && wpData.content.rendered) || ''
           )}

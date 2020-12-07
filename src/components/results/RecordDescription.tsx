@@ -51,7 +51,6 @@ export const RecordDescription: FC<{ text: string }> = (props) => {
       {firstCharAlpha && <FancyFirstLetter text={firstChar} />}
       <span
         className={classes.body}
-        // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={createMarkup(
           firstCharAlpha ? text.slice(1) : text
         )}

@@ -1,19 +1,16 @@
 import { CensusQueryID } from './types'
-import { GOOGLE_API_KEY } from '../config'
+import { GOOGLE_API_KEY, GOOGLE_API_BASE, BASE_ENDPOINT } from '../config'
 
-const GOOGLE_API_BASE = `https://sheets.googleapis.com/v4/spreadsheets`
-
-// "Languages Config" workbook
-const CONFIG_SPREADSHEET_ID = '1Ts7CvmlKVqCZs_AJ3hf5x1my2p-vaX7q5HxaXiduiEc'
-const CONFIG_VALUES_ENDPOINT = `${GOOGLE_API_BASE}/${CONFIG_SPREADSHEET_ID}/values`
-const PUMA_LUT_SHEET_NAME = 'LUT_PUMA_Fields'
-const TRACT_LUT_SHEET_NAME = 'LUT_Tract_Fields'
-const CENSUS_LUT_RANGE = '!A2:D' // slightly safer than Named Ranges?
+const CONFIG_SHEET = 'Config'
+const PUMA_LUT_SHEET = 'LUT_PUMA_Fields'
+const TRACT_LUT_SHEET = 'LUT_Tract_Fields'
+const CENSUS_LUT_RANGE = '!A1:D' // slightly safer than Named Ranges?
 const CENSUS_LUT_SUFFIX = `${CENSUS_LUT_RANGE}?key=${GOOGLE_API_KEY}`
 
 export const configEndpoints = {
-  puma: `${CONFIG_VALUES_ENDPOINT}/${PUMA_LUT_SHEET_NAME}${CENSUS_LUT_SUFFIX}`,
-  tracts: `${CONFIG_VALUES_ENDPOINT}/${TRACT_LUT_SHEET_NAME}${CENSUS_LUT_SUFFIX}`,
+  puma: `${BASE_ENDPOINT}/${PUMA_LUT_SHEET}${CENSUS_LUT_SUFFIX}`,
+  tracts: `${BASE_ENDPOINT}/${TRACT_LUT_SHEET}${CENSUS_LUT_SUFFIX}`,
+  langConfig: `${BASE_ENDPOINT}/${CONFIG_SHEET}!A:L?key=${GOOGLE_API_KEY}`,
 } as {
   [key in CensusQueryID]: string
 }
@@ -35,6 +32,15 @@ const PUMA_SUFFIX = `?key=${GOOGLE_API_KEY}`
 export const tableEndpoints = {
   puma: `${PUMA_VALUES_ENDPOINT}/${DEFAULT_SHEET_NAME}${PUMA_SUFFIX}`,
   tracts: `${TRACTS_VALUES_ENDPOINT}/${DEFAULT_SHEET_NAME}${TRACTS_SUFFIX}`,
+} as {
+  [key in CensusQueryID]: string
+}
+
+export const censusGroupHeadings = {
+  tracts:
+    'Census Tracts|||Tracts are the smallest census unit at which language data is provided and will be used here whenever available.',
+  puma:
+    'Public Use Microdata Areas (PUMAs)|||Larger than tracts, PUMAs are a less granular census unit used here whenever tract-level is unavailable.',
 } as {
   [key in CensusQueryID]: string
 }
