@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.75rem',
       justifyContent: 'center',
       flexWrap: 'wrap',
-      marginBottom: '0.5em',
+      margin: '0.5rem 0',
       '& > * + *': {
         marginLeft: '0.5em',
       },
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
-  const { language, region, country, macro } = props
+  const { children, language, region, country, macro } = props
   const symbLabelState = useSymbAndLabelState()
   const classes = useStyles()
   const regionSwatchColor =
@@ -38,12 +38,15 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
   // Careful, not using TS on the mid-route paths, e.g. "World Region"
   return (
     <div className={classes.root}>
-      <SeeRelatedChip
-        name={language}
-        to={`${routes.grid}/Language/${language}`}
-      >
-        <BiUserVoice /> {language}
-      </SeeRelatedChip>
+      {children}
+      {language && (
+        <SeeRelatedChip
+          name={language}
+          to={`${routes.grid}/Language/${language}`}
+        >
+          <BiUserVoice /> {language}
+        </SeeRelatedChip>
+      )}
       {country.split(', ').map((countryName) => (
         <SeeRelatedChip
           key={countryName}

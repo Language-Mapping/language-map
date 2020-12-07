@@ -1,8 +1,10 @@
 import React, { FC, useContext } from 'react'
 import { useParams } from 'react-router-dom'
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import { BiMapPin } from 'react-icons/bi'
 
 import { GlobalContext, useMapToolsState } from 'components/context'
+import { MoreLikeThis } from 'components/details'
 import { ReadMore } from 'components/generic'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
@@ -11,6 +13,39 @@ import { CensusPopover } from './CensusPopover'
 
 import * as Types from './types'
 import * as utils from './utils'
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    statsAndMeta: {
+      listStyle: 'none',
+      padding: 0,
+      margin: 0,
+      display: 'inline-flex',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      '& > :not(:last-child)': {
+        borderRight: `solid 1px ${theme.palette.text.secondary}`,
+        marginRight: '0.35rem',
+        paddingRight: '0.35rem',
+      },
+    },
+  })
+)
+
+const StatsAndMeta: FC<Types.StatsAndMetaProps> = (props) => {
+  const { glotto, iso, speakers } = props
+  const classes = useStyles()
+
+  return (
+    <ul className={classes.statsAndMeta}>
+      {glotto && <li>{`GLOTTOCODE: ${glotto}`}</li>}
+      {iso && <li>{`ISO 639-3: ${iso}`}</li>}
+      {speakers && (
+        <li>{`Global Speakers: ${parseInt(speakers, 10).toLocaleString()}`}</li>
+      )}
+    </ul>
+  )
+}
 
 export const LangCardsList: FC = () => {
   const { value, language } = useParams() as Types.RouteMatch
@@ -48,24 +83,40 @@ export const LangCardsList: FC = () => {
     ]
   }, [] as Types.CardConfig[]) as Types.CardConfig[]
 
+  const thisLangConfig = langConfigViaSheets.find(
+    ({ Language }) => Language === (language || value)
+  )
+
+  if (!thisLangConfig) {
+    return (
+      <ExploreSubView
+        instancesCount={uniqueInstances.length}
+        subtitle={`Not found: ${language || value}`}
+      />
+    )
+  }
+
   const {
     'ISO 639-3': iso,
-    Glottocode,
+    Glottocode: glotto,
     Endonym,
     Description,
+    Language,
+    Country,
+    'Global Speaker Total': speakers,
+    'World Region': region,
     'PUMA Field': pumaField,
     'Tract Field': tractField,
     'Census Pretty': censusPretty,
-  } =
-    langConfigViaSheets.find(
-      ({ Language }) => Language === (language || value)
-    ) || {}
+  } = thisLangConfig
 
-  const SubTitle = (
+  const SubTitle = <StatsAndMeta {...{ iso, glotto, speakers }} />
+
+  const Extree = (
     <>
-      {Glottocode && `GLOTTOCODE: ${Glottocode}`}
-      {iso && `${Glottocode && ' | '}ISO 639-3: ${iso}`}
-      <CensusPopover {...{ tractField, pumaField, censusPretty }} />
+      <MoreLikeThis region={region} country={Country}>
+        <CensusPopover {...{ tractField, pumaField, censusPretty }} />
+      </MoreLikeThis>
       {Description && <ReadMore text={Description} />}
     </>
   )
@@ -73,8 +124,9 @@ export const LangCardsList: FC = () => {
   return (
     <ExploreSubView
       instancesCount={uniqueInstances.length}
-      subtitle={Endonym}
+      subtitle={Endonym === Language ? '' : Endonym}
       subSubtitle={SubTitle}
+      extree={Extree}
     >
       <CardList>
         {uniqueInstances.sort(utils.sortByTitle).map((instance) => (

@@ -1,7 +1,7 @@
 export type MoreLikeThisProps = {
-  language: string
   region: string
   country: string
+  language?: string
   macro?: string
 }
 

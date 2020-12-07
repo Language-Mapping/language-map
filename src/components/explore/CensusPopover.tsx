@@ -132,7 +132,7 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
   )
 
   return (
-    <div style={{ marginTop: '1em' }}>
+    <>
       <ChipWithClick
         icon={<FaClipboardList />}
         title="Show census options"
@@ -140,6 +140,6 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
         handleClick={handleClick}
       />
       {PopoverMenu}
-    </div>
+    </>
   )
 }

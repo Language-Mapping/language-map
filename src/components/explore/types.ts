@@ -9,6 +9,7 @@ export type CategoryProps = {
   icon?: React.ReactNode
   uniqueInstances?: unknown[]
 }
+
 export type CustomCardProps = CategoryProps & {
   footerIcon?: React.ReactNode
 }
@@ -40,10 +41,11 @@ export type SwatchOrFlagOrIcon = {
   value?: string
 }
 
-export type Field = {
+export type ExploreSubViewProps = {
   instancesCount: number
   subtitle?: string
   subSubtitle?: string | React.ReactNode
+  extree?: string | React.ReactNode
 }
 
 export type LangFilterArgs = RouteMatch & {
@@ -54,4 +56,10 @@ export type CensusPopoverProps = {
   tractField?: string
   pumaField?: string
   censusPretty?: string
+}
+
+export type StatsAndMetaProps = {
+  iso?: string
+  glotto?: string
+  speakers?: string // string if from Sheets API, number if from MB
 }

@@ -5,29 +5,31 @@ import { Link } from '@material-ui/core'
 import { createMarkup } from 'utils'
 import { ToggleableSection } from 'components/generic'
 
-type ReadMoreProps = { text: string }
-type ReadMoreStyles = { open?: boolean }
+type ReadMoreProps = { text: string; fontSize?: string | number }
+type ReadMoreStyles = { open?: boolean } & Pick<ReadMoreProps, 'fontSize'>
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    readMoreLink: {
+    link: {
       display: 'block',
+      height: 0,
+      justifyContent: 'center',
       position: 'relative',
       // CRED: (partial): https://codepen.io/mahtab-alam/pen/aPKLBq
       '&:before': {
         content: '""',
-        opacity: (props: { open: boolean }) => (props.open ? 0 : 1),
-        transform: (props: { open: boolean }) =>
+        opacity: (props: ReadMoreStyles) => (props.open ? 0 : 1),
+        transform: (props: ReadMoreStyles) =>
           props.open ? 'scaleY(0)' : 'scaleY(1)',
         position: 'absolute',
         transition: '300ms all ease',
-        top: '-5.5em',
-        height: '5.5em',
+        top: '-3rem',
+        height: '3.5rem',
         left: -8,
         right: -8,
         [theme.breakpoints.up('sm')]: {
-          top: '-4em',
-          height: '4em',
+          top: '-3rem',
+          height: '3rem',
         },
         backgroundImage: `linear-gradient(
           to bottom,
@@ -38,25 +40,30 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     innerText: {
       position: 'relative',
-      top: (props: { open: boolean }) => (props.open ? 0 : '-0.75em'),
+      top: '-1rem',
       fontWeight: 'bold',
+      fontSize: '0.8rem',
     },
     description: {
-      marginTop: '0.5em',
       textAlign: 'left',
+      fontSize: (props: ReadMoreStyles) => props.fontSize,
+      marginBottom: '0.25rem',
     },
   })
 )
 
 export const ReadMore: FC<ReadMoreProps> = (props) => {
+  const { text, fontSize } = props
   const [showDescrip, setShowDescrip] = useState<boolean>(false)
-  const classes = useStyles({ open: showDescrip })
-  const { text } = props
+  const classes = useStyles({
+    open: showDescrip,
+    fontSize: fontSize || '0.7rem',
+  })
 
   const ToggleDescription = (
     <Link
       href="#"
-      className={classes.readMoreLink}
+      className={classes.link}
       onClick={(e: React.MouseEvent) => {
         e.preventDefault()
         setShowDescrip(!showDescrip)
@@ -70,7 +77,7 @@ export const ReadMore: FC<ReadMoreProps> = (props) => {
 
   return (
     <>
-      <ToggleableSection show={showDescrip} initialHeight="4rem">
+      <ToggleableSection show={showDescrip} initialHeight="2.5rem">
         <div
           className={classes.description}
           dangerouslySetInnerHTML={createMarkup(text)}
