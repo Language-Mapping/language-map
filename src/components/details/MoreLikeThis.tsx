@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexWrap: 'wrap',
       margin: '0.5rem 0',
       '& > * + *': {
-        marginLeft: '0.5em',
+        marginLeft: '0.35rem',
       },
     },
   })
@@ -47,29 +47,30 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
           <BiUserVoice /> {language}
         </SeeRelatedChip>
       )}
-      {country.split(', ').map((countryName) => (
-        <SeeRelatedChip
-          key={countryName}
-          name={countryName}
-          to={`${routes.grid}/Country/${countryName}`}
-        >
-          <img
-            className="country-flag"
-            alt={`${countryName} flag`}
-            src={`/img/country-flags/${getCodeByCountry(
-              countryName
-            ).toLowerCase()}.svg`}
-          />{' '}
-          {countryName}
-        </SeeRelatedChip>
-      ))}
+      {country &&
+        country.split(', ').map((countryName) => (
+          <SeeRelatedChip
+            key={countryName}
+            name={countryName}
+            to={`${routes.grid}/Country/${countryName}`}
+          >
+            <img
+              className="country-flag"
+              alt={`${countryName} flag`}
+              src={`/img/country-flags/${getCodeByCountry(
+                countryName
+              ).toLowerCase()}.svg`}
+            />{' '}
+            {countryName}
+          </SeeRelatedChip>
+        ))}
       <SeeRelatedChip
         name={region}
         to={`${routes.grid}/World Region/${region}`}
       >
         <LegendSwatch
           legendLabel={region}
-          labelStyleOverride={{ fontSize: 'inherit' }}
+          labelStyleOverride={{ fontSize: '0.7rem' }}
           component="div"
           iconID="_circle"
           backgroundColor={regionSwatchColor || 'transparent'}

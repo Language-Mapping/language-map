@@ -25,8 +25,8 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       '& > :not(:last-child)': {
         borderRight: `solid 1px ${theme.palette.text.secondary}`,
-        marginRight: '0.35rem',
-        paddingRight: '0.35rem',
+        marginRight: '0.4rem',
+        paddingRight: '0.4rem',
       },
     },
   })
@@ -38,10 +38,20 @@ const StatsAndMeta: FC<Types.StatsAndMetaProps> = (props) => {
 
   return (
     <ul className={classes.statsAndMeta}>
-      {glotto && <li>{`GLOTTOCODE: ${glotto}`}</li>}
-      {iso && <li>{`ISO 639-3: ${iso}`}</li>}
+      {glotto && (
+        <li>
+          <b>Glottocode:</b> {glotto}
+        </li>
+      )}
+      {iso && (
+        <li>
+          <b>ISO 639-3:</b> {iso}
+        </li>
+      )}
       {speakers && (
-        <li>{`Global Speakers: ${parseInt(speakers, 10).toLocaleString()}`}</li>
+        <li>
+          <b>Global speakers:</b> {parseInt(speakers, 10).toLocaleString()}
+        </li>
       )}
     </ul>
   )
