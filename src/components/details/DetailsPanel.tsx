@@ -1,83 +1,17 @@
 import React, { FC, useContext } from 'react'
-import { Link as RouterLink, useRouteMatch } from 'react-router-dom'
-import { Typography, Divider, Button } from '@material-ui/core'
-import { FaRandom } from 'react-icons/fa'
-import { BiMapPin } from 'react-icons/bi'
+import { useRouteMatch } from 'react-router-dom'
+import { Typography, Divider } from '@material-ui/core'
 
 import { GlobalContext } from 'components/context'
 import { RecordDescription } from 'components/results'
-import { paths as routes } from 'components/config/routes'
 import { Media } from 'components/media'
 import { MoreLikeThis } from 'components/details'
 import { usePanelRootStyles } from 'components/panels/PanelContent'
 import { LangOrEndoIntro } from './LangOrEndoIntro'
+import { NeighborhoodList } from './NeighborhoodList'
+import { NoFeatSel } from './NoFeatSel'
 import { useStyles } from './styles'
 import { findFeatureByID } from '../../utils'
-
-type NeighborhoodList = {
-  town: string
-  neighborhoods: string
-}
-
-// TODO: separate files
-const RandomLinkBtn: FC = () => {
-  const { state } = useContext(GlobalContext)
-  const { langFeatures } = state
-
-  if (!langFeatures.length) return null
-
-  const randoIndex = Math.floor(Math.random() * (langFeatures.length - 1))
-  const id = langFeatures[randoIndex].ID
-
-  return (
-    <Button
-      variant="contained"
-      color="primary"
-      component={RouterLink}
-      size="small"
-      startIcon={<FaRandom />}
-      to={`${routes.details}/${id}`}
-    >
-      Try one at random
-    </Button>
-  )
-}
-
-const NoFeatSel: FC<{ reason?: string }> = (props) => {
-  const { reason = 'No community selected.' } = props
-  const classes = useStyles()
-
-  return (
-    <div style={{ textAlign: 'center', maxWidth: '85%', margin: '16px auto' }}>
-      <Typography className={classes.noFeatSel}>
-        {reason} Click a community in the map or in the data table.
-      </Typography>
-      <RandomLinkBtn />
-    </div>
-  )
-}
-
-const NeighborhoodList: FC<NeighborhoodList> = (props) => {
-  const { town, neighborhoods } = props
-  const classes = useStyles()
-
-  return (
-    <Typography className={classes.neighborhoods}>
-      <BiMapPin />
-      {neighborhoods &&
-        neighborhoods.split(', ').map((place, i) => (
-          <React.Fragment key={place}>
-            {i !== 0 && <span className={classes.separator}>|</span>}
-            <RouterLink to={`/Explore/Neighborhood/${place}`}>
-              {place}
-            </RouterLink>
-          </React.Fragment>
-        ))}
-      {/* At least for now, not linking to Towns */}
-      {!neighborhoods && town}
-    </Typography>
-  )
-}
 
 export const DetailsPanel: FC = () => {
   const { state } = useContext(GlobalContext)

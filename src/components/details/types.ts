@@ -17,3 +17,8 @@ export type ChipWithClickProps = {
   icon?: React.ReactNode
   handleClick: (e: React.MouseEvent<HTMLDivElement>) => void
 }
+
+export type NeighborhoodList = {
+  town: string
+  neighborhoods: string
+}
