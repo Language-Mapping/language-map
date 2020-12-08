@@ -2,8 +2,8 @@ import React, { FC, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Popover, Button } from '@material-ui/core'
-import { FaClipboardList, FaCheck, FaListUl } from 'react-icons/fa'
-import { MdClear } from 'react-icons/md'
+import { FaClipboardList } from 'react-icons/fa'
+import { MdLayersClear, MdLayers } from 'react-icons/md'
 
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'
 import { CensusQueryID, CensusIntro } from 'components/spatial'
@@ -14,22 +14,34 @@ import * as Types from './types'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     popover: {
-      maxWidth: 325,
-      padding: '1em',
+      maxWidth: 350,
+      padding: '1rem',
     },
     popoverHeading: {
       fontSize: '1.25rem',
     },
     buttonGroup: {
       justifyContent: 'space-evenly',
-      display: 'flex',
-      width: '100%',
+      display: 'grid',
+      gridTemplateColumns: 'auto auto',
+      gridColumnGap: '0.5rem',
+    },
+    metaPara: {
+      fontSize: '0.75rem',
+      margin: '0 0 0.75rem',
+      paddingTop: '1rem',
+      borderTop: `dashed 1px ${theme.palette.divider}`,
+    },
+    viewAllLink: {
+      display: 'block',
+      fontSize: '0.75rem',
+      marginTop: '0.5rem',
     },
   })
 )
 
 export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
-  const { pumaField, tractField, censusPretty } = props
+  const { pumaField, tractField, censusPretty, language } = props
   const mapToolsDispatch = useMapToolsDispatch()
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
   const classes = useStyles()
@@ -57,6 +69,7 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
   const handleClose = () => setAnchorEl(null)
   const open = Boolean(anchorEl)
   const id = open ? 'census-popover' : undefined
+
   let censusType: CensusQueryID | '' = ''
   let censusLabel
 
@@ -65,10 +78,11 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
     censusLabel = 'PUMA'
   } else if (tractField) {
     censusType = 'tracts'
-    censusLabel = 'Tract'
+    censusLabel = 'tract'
   }
 
   const activeField = censusType ? censusActiveFields[censusType] : ''
+  const vintage = '2014-2018' // TODO: don't hardcode year!
 
   const Heading = (
     <Typography variant="h6" className={classes.popoverHeading}>
@@ -76,10 +90,11 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
     </Typography>
   )
 
-  const Granularity = (
-    <Typography variant="caption" paragraph>
-      {/* TODO: don't hardcode! */}
-      Related ACS 2014-2018 Data ({censusLabel}-level): <b>{censusPretty}</b>
+  const MetaPara = (
+    <Typography className={classes.metaPara}>
+      The related ACS {vintage} data for <em>{language}</em> is available at the{' '}
+      <em>{censusLabel}</em> level and is grouped within the language category
+      of <b>{censusPretty}</b>.
     </Typography>
   )
 
@@ -90,44 +105,44 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
       anchorEl={anchorEl}
       onClose={handleClose}
       PaperProps={{ className: classes.popover, elevation: 12 }}
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      transformOrigin={{ vertical: 'center', horizontal: 'left' }}
     >
       {Heading}
-      <CensusIntro concise />
-      {Granularity}
+      <CensusIntro subtle />
+      {MetaPara}
       <div className={classes.buttonGroup}>
         <Button
-          color="primary"
+          variant="contained"
+          color="secondary"
           size="small"
           onClick={handleCensusClick}
           title="Set census layer language"
           disabled={censusFieldThisLang === activeField}
-          startIcon={<FaCheck />}
+          startIcon={<MdLayers />}
         >
-          Set
+          Show in map
         </Button>
         <Button
-          color="primary"
+          variant="contained"
+          color="secondary"
           size="small"
           title="Clear census layer language"
           disabled={activeField === ''}
           onClick={() => mapToolsDispatch({ type: 'CLEAR_CENSUS_FIELD' })}
-          startIcon={<MdClear />}
+          startIcon={<MdLayersClear />}
         >
-          Clear
-        </Button>
-        <Button
-          color="primary"
-          size="small"
-          title="View all census languages and other map options"
-          component={RouterLink}
-          to="/spatial"
-          startIcon={<FaListUl />}
-        >
-          All languages
+          Clear census
         </Button>
       </div>
+      <Typography
+        component={RouterLink}
+        to="/spatial"
+        align="center"
+        className={classes.viewAllLink}
+      >
+        View all census languages
+      </Typography>
     </Popover>
   )
 

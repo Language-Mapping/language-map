@@ -125,7 +125,10 @@ export const LangCardsList: FC = () => {
   const Extree = (
     <>
       <MoreLikeThis region={region} country={Country}>
-        <CensusPopover {...{ tractField, pumaField, censusPretty }} />
+        <CensusPopover
+          {...{ tractField, pumaField, censusPretty }}
+          language={Language}
+        />
       </MoreLikeThis>
       {Description && <ReadMore text={Description} />}
     </>

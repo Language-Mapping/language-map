@@ -12,14 +12,11 @@ import { SubtleText } from 'components/generic'
 import { useCensusData } from './hooks'
 
 import * as Types from './types'
+
 import { setCensusField } from './utils'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    intro: {
-      fontSize: '0.75rem',
-      marginBottom: '1.25em',
-    },
     listbox: {
       paddingTop: 0,
       [theme.breakpoints.down('sm')]: {
@@ -49,6 +46,19 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
+const useIntroStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      fontSize: ({ subtle }: Types.CensusIntroProps) => {
+        return subtle ? '0.5rem' : '0.75rem'
+      },
+      color: ({ subtle }: Types.CensusIntroProps) => {
+        return subtle ? theme.palette.text.secondary : 'inherit'
+      },
+      marginBottom: '1.25em',
+    },
+  })
+)
 
 const GroupHeader: FC<Types.GroupHeaderProps> = (props) => {
   const { title, subTitle } = props
@@ -73,18 +83,18 @@ const renderGroup = (params: AutocompleteRenderGroupParams) => {
   ]
 }
 
-export const CensusIntro: FC<{ concise?: boolean }> = (props) => {
-  const { concise } = props
-  const classes = useStyles()
+export const CensusIntro: FC<Types.CensusIntroProps> = (props) => {
+  const { subtle } = props
+  const classes = useIntroStyles({ subtle })
 
   const Extree =
     'The options below are 5-year ACS estimates on “language spoken at home for the Population 5 Years and Over”, sorted by population size.'
 
   return (
-    <Typography className={classes.intro}>
+    <Typography className={classes.root}>
       The Census Bureau’s American Community Survey (ACS) provides an indication
       of where the largest several dozen languages are distributed.{' '}
-      {!concise && Extree} <RouterLink to="/about#census">More info</RouterLink>
+      {!subtle && Extree} <RouterLink to="/about#census">More info</RouterLink>
     </Typography>
   )
 }

@@ -34,3 +34,7 @@ export type LUTschema = {
   complicated: string
   sort_order: string
 }
+
+export type CensusIntroProps = {
+  subtle?: boolean
+}

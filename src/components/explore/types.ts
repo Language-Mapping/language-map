@@ -53,6 +53,7 @@ export type LangFilterArgs = RouteMatch & {
 }
 
 export type CensusPopoverProps = {
+  language: string
   tractField?: string
   pumaField?: string
   censusPretty?: string
