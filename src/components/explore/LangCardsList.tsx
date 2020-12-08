@@ -138,6 +138,7 @@ export const LangCardsList: FC = () => {
         audio={Audio || ''}
         video={Video || ''}
         language={Language}
+        shareNoun="profile"
         omitClear
       />
       {Description && <ReadMore text={Description} />}

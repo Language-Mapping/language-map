@@ -60,7 +60,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       opacity: (props: StyleProps) => (props.showShareBtns ? 1 : 0),
     },
     shareBtnHeading: {
-      fontSize: '0.8em',
+      fontSize: '0.75rem',
       marginBottom: '0.5em',
     },
   })
