@@ -11,7 +11,6 @@ const useStyles = makeStyles(() =>
     root: {
       display: 'flex',
       flexDirection: 'column',
-      marginTop: '0.25em',
     },
     innerContent: {
       flex: (props: ToggleableProps) => (props.show ? 1 : 0),

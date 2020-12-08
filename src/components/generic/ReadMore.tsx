@@ -15,6 +15,9 @@ const useStyles = makeStyles((theme: Theme) =>
       height: 0,
       justifyContent: 'center',
       position: 'relative',
+      '&:hover': {
+        textDecoration: 'none',
+      },
       // CRED: (partial): https://codepen.io/mahtab-alam/pen/aPKLBq
       '&:before': {
         content: '""',

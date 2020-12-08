@@ -27,6 +27,7 @@ export const MidLevelExplore: FC = () => {
     value,
   })
 
+  // TODO: into './hooks'
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // not for lack of trying
   const uniqueInstances = filtered.reduce((all, thisOne) => {

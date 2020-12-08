@@ -23,25 +23,28 @@ const useStyles = makeStyles((theme: Theme) =>
       overflowY: 'auto',
     },
     introWrap: {
-      marginBottom: '0.75em',
+      marginBottom: '1rem',
       textAlign: 'center',
       borderBottom: `solid 1px ${theme.palette.divider}`,
       paddingBottom: '0.75rem',
     },
     titleAndIcon: {
       display: 'flex',
-      fontSize: '2em',
+      fontSize: '2rem',
       lineHeight: 1.25,
       alignItems: 'center',
       textShadow: '1px 1px 3px hsla(0, 0%, 0%, 0.45)',
       justifyContent: 'center',
+      '& svg': {
+        color: theme.palette.text.secondary,
+      },
       '& > :first-child': {
-        marginRight: '0.25em',
+        marginRight: '0.5rem',
       },
     },
     // e.g. Endonym
     subtitle: {
-      fontSize: '1.5em',
+      fontSize: '1.25rem',
       marginTop: 0,
       lineHeight: 1,
       color: theme.palette.text.secondary,
@@ -49,11 +52,8 @@ const useStyles = makeStyles((theme: Theme) =>
     // e.g. glotto/iso/global speakers
     subSubtitle: {
       fontSize: '0.65rem',
-      margin: '0.75rem 0',
+      margin: '0.5rem 0 0.25rem',
       color: theme.palette.text.secondary,
-    },
-    header: {
-      marginBottom: '0.75em',
     },
   })
 )
