@@ -43,6 +43,8 @@ export const FabPanelToggle: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
   const panelOpen = state.panelState === 'default'
   const classes = useStyles({ panelOpen })
+  // TODO: find an alternative to selFeatAttribs. This is literally the ONLY
+  // instance where it remains in global state.
   const showBadge = !panelOpen && state.selFeatAttribs !== null
 
   return (

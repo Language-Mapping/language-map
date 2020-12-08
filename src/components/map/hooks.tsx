@@ -1,7 +1,9 @@
+import { useContext } from 'react'
 import { WebMercatorViewport } from 'react-map-gl'
 import { useTheme } from '@material-ui/core/styles'
 
 import { panelWidths } from 'components/panels/config'
+import { GlobalContext, LangRecordSchema } from 'components/context'
 import * as Types from './types'
 import { useWindowResize } from '../../utils'
 
@@ -51,15 +53,29 @@ export const useInitialViewport: Types.GetWebMercViewport = (params) => {
   const { width, height } = useWindowResize()
   const { bounds, padding } = params
 
-  const coords = {
-    ...params,
-    width,
-    height,
-    // zoom: 14, // need?
-  }
-
+  const coords = { ...params, width, height } // zoom: 14, // need?
   const initMerc = new WebMercatorViewport(coords)
   const initMercBounds = bounds
 
   return initMerc.fitBounds(initMercBounds, { padding })
+}
+
+export const useLangFeatByKeyVal = (
+  value?: string,
+  convertToInt?: boolean,
+  field?: keyof LangRecordSchema
+): Types.UseLangReturn => {
+  const { state } = useContext(GlobalContext)
+  const stateReady = state.langFeatsLenCache !== 0
+
+  if (!value) return { feature: undefined, stateReady }
+
+  const valuePrepped = convertToInt ? parseInt(value, 10) : value
+
+  return {
+    feature: state.langFeatures.find(
+      (record) => record[field || 'ID'] === valuePrepped
+    ),
+    stateReady,
+  }
 }

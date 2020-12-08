@@ -230,3 +230,8 @@ export type LangFeatsUnderClick = (
   map: Map,
   interactiveLayerIds: Omit<InteractiveLayerIds, 'boundaries'>
 ) => MapboxGeoJSONFeature[]
+
+export type UseLangReturn = {
+  feature: LangRecordSchema | undefined
+  stateReady: boolean
+}

@@ -64,3 +64,8 @@ export type StatsAndMetaProps = {
   glotto?: string
   speakers?: string // string if from Sheets API, number if from MB
 }
+
+export type CurrentCrumbProps = {
+  value: string
+  basePath: string
+}

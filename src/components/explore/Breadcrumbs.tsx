@@ -1,17 +1,12 @@
-import React, { FC, useContext } from 'react'
+import React, { FC } from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { CircularProgress, Link } from '@material-ui/core'
 import { useLocation, Link as RouterLink } from 'react-router-dom'
 import { BiHomeAlt } from 'react-icons/bi'
 
-import { GlobalContext } from 'components/context'
-import { LangRecordSchema } from 'components/context/types'
-import { toProperCase, findFeatureByID } from '../../utils'
-
-type CurrentCrumb = {
-  value: string
-  basePath: string
-}
+import { useLangFeatByKeyVal } from 'components/map/hooks'
+import { toProperCase } from '../../utils'
+import { CurrentCrumbProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,19 +41,17 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const CurrentCrumb: FC<CurrentCrumb> = (props) => {
+const CurrentCrumb: FC<CurrentCrumbProps> = (props) => {
   const { value, basePath } = props
-  const { langFeatures } = useContext(GlobalContext).state
+  const { feature } = useLangFeatByKeyVal(value, true)
 
   if (value === 'details' || basePath !== 'details') {
     return <span>{toProperCase(value)}</span>
   }
 
-  const matchingRecord = findFeatureByID(langFeatures, parseInt(value, 10))
+  if (!feature) return <CircularProgress size={12} />
 
-  if (!matchingRecord) return <CircularProgress size={12} />
-
-  const { Language, Neighborhood, Town } = matchingRecord as LangRecordSchema
+  const { Language, Neighborhood, Town } = feature
   const place = Neighborhood ? Neighborhood.split(', ')[0] : Town
 
   return (
