@@ -2,12 +2,12 @@ import { LangRecordSchema } from 'components/context/types'
 
 // TODO: try to reuse some of these, they're pretty common in sev. components
 export type CategoryProps = {
-  intro: string
   title: string
+  uniqueInstances?: unknown[]
   url: string
   footer?: string
   icon?: React.ReactNode
-  uniqueInstances?: unknown[]
+  intro?: string
 }
 
 export type CustomCardProps = CategoryProps & {
@@ -28,12 +28,9 @@ export type RouteMatch = {
   language?: string
 }
 
-export type CardConfig = {
+export type CardConfig = CategoryProps & {
   footer: string
-  intro: string
-  title: string
   to: string
-  icon?: React.ReactNode
 }
 
 export type SwatchOrFlagOrIcon = {

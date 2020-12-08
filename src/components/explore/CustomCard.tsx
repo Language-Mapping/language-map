@@ -32,8 +32,9 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     intro: {
-      fontSize: '0.75em',
-      marginBottom: '0.5em',
+      fontSize: '0.75rem',
+      marginBottom: '0.5rem',
+      display: 'block',
     },
     header: {
       display: 'flex',
@@ -105,14 +106,16 @@ export const CustomCard: FC<Types.CustomCardProps> = (props) => {
       // @ts-ignore // it's fine TS, chill out
       component={Link}
     >
-      <Typography
-        className={classes.intro}
-        variant="overline"
-        color="textSecondary"
-        gutterBottom
-      >
-        {intro}
-      </Typography>
+      {intro && (
+        <Typography
+          className={classes.intro}
+          variant="overline"
+          color="textSecondary"
+          gutterBottom
+        >
+          {intro}
+        </Typography>
+      )}
       <Typography variant="h6" component="header" className={classes.header}>
         {icon}
         {title}

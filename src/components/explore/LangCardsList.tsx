@@ -1,12 +1,12 @@
-import React, { FC, useContext } from 'react'
+import React, { FC } from 'react'
 import { useParams } from 'react-router-dom'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { BiMapPin } from 'react-icons/bi'
 
-import { GlobalContext, useMapToolsState } from 'components/context'
+import { useMapToolsState } from 'components/context'
 import { Media } from 'components/media'
 import { MoreLikeThis } from 'components/details'
 import { ReadMore } from 'components/generic'
+import { useLangFeatByKeyVal } from 'components/map/hooks'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
 import { ExploreSubView } from './ExploreSubView'
@@ -14,6 +14,7 @@ import { CensusPopover } from './CensusPopover'
 
 import * as Types from './types'
 import * as utils from './utils'
+import { useUniqueInstances } from './hooks'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,6 +40,11 @@ const StatsAndMeta: FC<Types.StatsAndMetaProps> = (props) => {
 
   return (
     <ul className={classes.statsAndMeta}>
+      {speakers && (
+        <li>
+          <b>Global speakers:</b> {parseInt(speakers, 10).toLocaleString()}
+        </li>
+      )}
       {glotto && (
         <li>
           <b>Glottocode:</b> {glotto}
@@ -49,55 +55,22 @@ const StatsAndMeta: FC<Types.StatsAndMetaProps> = (props) => {
           <b>ISO 639-3:</b> {iso}
         </li>
       )}
-      {speakers && (
-        <li>
-          <b>Global speakers:</b> {parseInt(speakers, 10).toLocaleString()}
-        </li>
-      )}
     </ul>
   )
 }
 
 export const LangCardsList: FC = () => {
   const { value, language } = useParams() as Types.RouteMatch
-  const { state } = useContext(GlobalContext)
-  const { langFeatures } = state
-  const icon = <BiMapPin />
   const { langConfigViaSheets } = useMapToolsState()
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore // not for lack of trying
-  const uniqueInstances = langFeatures.reduce((all, thisOne) => {
-    const { Neighborhood, Town, Language, Description } = thisOne
-
-    // Deep depth
-    if (language) {
-      if (Language !== language) return all
-    } else if (Language !== value) return all
-
-    if (!Neighborhood && all.find((item) => item.title === Town)) return all
-
-    const common = {
-      footer: `${Description.slice(0, 100).trimEnd()}...`,
-      intro: '', // TODO: rm if not using
-      to: thisOne.ID,
-      icon,
-    }
-
-    if (!Neighborhood) return [...all, { title: Town, ...common }]
-
-    return [
-      ...all,
-      ...Neighborhood.split(', ')
-        .filter((hood) => !all.find((item) => item.title === hood))
-        .map((hood) => ({ title: hood, ...common })),
-    ]
-  }, [] as Types.CardConfig[]) as Types.CardConfig[]
-
+  const { feature } = useLangFeatByKeyVal(
+    language || value || undefined,
+    false,
+    'Language'
+  )
+  const uniqueInstances = useUniqueInstances(value, language)
   const thisLangConfig = langConfigViaSheets.find(
     ({ Language }) => Language === (language || value)
   )
-
   if (!thisLangConfig) {
     return (
       <ExploreSubView
@@ -123,7 +96,7 @@ export const LangCardsList: FC = () => {
     Video,
   } = thisLangConfig
 
-  const SubTitle = <StatsAndMeta {...{ iso, glotto, speakers }} />
+  const description = Description || feature?.Description || ''
 
   const Extree = (
     <>
@@ -134,14 +107,14 @@ export const LangCardsList: FC = () => {
         />
       </MoreLikeThis>
       <Media
-        description={Description}
+        description={description}
         audio={Audio || ''}
         video={Video || ''}
         language={Language}
         shareNoun="profile"
         omitClear
       />
-      {Description && <ReadMore text={Description} />}
+      {description && <ReadMore text={description} />}
     </>
   )
 
@@ -149,7 +122,7 @@ export const LangCardsList: FC = () => {
     <ExploreSubView
       instancesCount={uniqueInstances.length}
       subtitle={Endonym === Language ? '' : Endonym}
-      subSubtitle={SubTitle}
+      subSubtitle={<StatsAndMeta {...{ iso, glotto, speakers }} />}
       extree={Extree}
     >
       <CardList>
