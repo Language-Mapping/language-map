@@ -27,10 +27,6 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       borderBottom: `solid 1px ${theme.palette.divider}`,
       paddingBottom: '0.75rem',
-      '& svg': {
-        fontSize: '0.75em',
-        fill: theme.palette.text.secondary,
-      },
     },
     titleAndIcon: {
       display: 'flex',

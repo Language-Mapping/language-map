@@ -8,6 +8,7 @@ export type MediaProps = {
   video?: string
   view?: string // not needed whatsoever, just going through the TS motions?
   description?: string
+  omitClear?: boolean // e.g. for pre-Details Explore view
 }
 
 export type MediaChildProps = {

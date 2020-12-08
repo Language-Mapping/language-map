@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '1rem',
     },
     popoverHeading: {
-      fontSize: '1.25rem',
+      fontSize: '1.3rem',
     },
     buttonGroup: {
       justifyContent: 'space-evenly',
@@ -92,9 +92,9 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
 
   const MetaPara = (
     <Typography className={classes.metaPara}>
-      The related ACS {vintage} data for <em>{language}</em> is available at the{' '}
-      <em>{censusLabel}</em> level and is grouped within the language category
-      of <b>{censusPretty}</b>.
+      Speakers of <em>{language}</em> are likely to be included within the
+      census category of <b>{censusPretty}</b> at the ACS {vintage}{' '}
+      <em>{censusLabel}</em> level.
     </Typography>
   )
 
@@ -141,7 +141,7 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
         align="center"
         className={classes.viewAllLink}
       >
-        View all census languages
+        View all census language categories
       </Typography>
     </Popover>
   )

@@ -13,7 +13,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     mediaLink: {
       alignItems: 'center',
       display: 'flex',
-      fontSize: '0.8em',
+      fontSize: '0.8rem',
       '& svg': {
         marginRight: '0.5em',
       },

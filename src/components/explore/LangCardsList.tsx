@@ -4,6 +4,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import { BiMapPin } from 'react-icons/bi'
 
 import { GlobalContext, useMapToolsState } from 'components/context'
+import { Media } from 'components/media'
 import { MoreLikeThis } from 'components/details'
 import { ReadMore } from 'components/generic'
 import { CustomCard } from './CustomCard'
@@ -118,6 +119,8 @@ export const LangCardsList: FC = () => {
     'PUMA Field': pumaField,
     'Tract Field': tractField,
     'Census Pretty': censusPretty,
+    Audio,
+    Video,
   } = thisLangConfig
 
   const SubTitle = <StatsAndMeta {...{ iso, glotto, speakers }} />
@@ -130,6 +133,13 @@ export const LangCardsList: FC = () => {
           language={Language}
         />
       </MoreLikeThis>
+      <Media
+        description={Description}
+        audio={Audio || ''}
+        video={Video || ''}
+        language={Language}
+        omitClear
+      />
       {Description && <ReadMore text={Description} />}
     </>
   )
