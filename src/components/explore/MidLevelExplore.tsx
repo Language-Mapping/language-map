@@ -11,6 +11,7 @@ import * as utils from './utils'
 import { ExploreSubView } from './ExploreSubView'
 
 export const MidLevelExplore: FC = () => {
+  // NOTE: basically using these three things to determine a LOT of decisions
   const { field, value, language } = useParams() as Types.RouteMatch
   const { url } = useRouteMatch()
   const { state } = useContext(GlobalContext)
@@ -26,6 +27,7 @@ export const MidLevelExplore: FC = () => {
     value,
   })
 
+  // TODO: into './hooks'
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // not for lack of trying
   const uniqueInstances = filtered.reduce((all, thisOne) => {

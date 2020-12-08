@@ -190,6 +190,9 @@ and ArcGIS.
 
 #### Mapbox lookup tables
 
+**DEPRECATED: no longer using Boundaries for census, custom tileset instead**.
+Removed after `b9086b0`.
+
 Whittled down MB lookup tables for `boundaries-sta4-v3-US`. Combination of CSV,
 GeoJSON, spreadsheets to make formulas for creating lat/lng for QGIS temporary
 use. Resulting schema:

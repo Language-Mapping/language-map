@@ -14,18 +14,20 @@ const useStyles = makeStyles((theme: Theme) =>
       cursor: 'pointer',
       display: 'inline-flex',
       lineHeight: 1.5,
-      marginBottom: '0.25em', // otherwise crowded when wrapped
-      padding: '0.15em 0.45em',
+      marginBottom: '0.25rem', // otherwise crowded when wrapped
+      padding: '0.1rem 0.35rem',
       transition: '300ms backgroundColor ease',
       whiteSpace: 'nowrap',
+      fontSize: '0.7rem',
       '&:hover': {
         backgroundColor: theme.palette.grey[800],
       },
-      '& > :first-child': {
-        marginRight: '0.35em',
+      '& img, svg': {
+        marginRight: '0.35rem',
       },
       '& > svg': {
-        fontSize: '1.25em',
+        fontSize: '0.8rem',
+        marginRight: '0.25rem',
       },
       '& .country-flag': {
         // Ensure outer white shapes are seen

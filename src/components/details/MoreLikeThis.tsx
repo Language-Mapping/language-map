@@ -18,16 +18,16 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.75rem',
       justifyContent: 'center',
       flexWrap: 'wrap',
-      marginBottom: '0.5em',
+      margin: '0.5rem 0 0',
       '& > * + *': {
-        marginLeft: '0.5em',
+        marginLeft: '0.35rem',
       },
     },
   })
 )
 
 export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
-  const { language, region, country, macro } = props
+  const { children, language, region, country, macro } = props
   const symbLabelState = useSymbAndLabelState()
   const classes = useStyles()
   const regionSwatchColor =
@@ -38,35 +38,39 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
   // Careful, not using TS on the mid-route paths, e.g. "World Region"
   return (
     <div className={classes.root}>
-      <SeeRelatedChip
-        name={language}
-        to={`${routes.grid}/Language/${language}`}
-      >
-        <BiUserVoice /> {language}
-      </SeeRelatedChip>
-      {country.split(', ').map((countryName) => (
+      {children}
+      {language && (
         <SeeRelatedChip
-          key={countryName}
-          name={countryName}
-          to={`${routes.grid}/Country/${countryName}`}
+          name={language}
+          to={`${routes.grid}/Language/${language}`}
         >
-          <img
-            className="country-flag"
-            alt={`${countryName} flag`}
-            src={`/img/country-flags/${getCodeByCountry(
-              countryName
-            ).toLowerCase()}.svg`}
-          />{' '}
-          {countryName}
+          <BiUserVoice /> {language}
         </SeeRelatedChip>
-      ))}
+      )}
+      {country &&
+        country.split(', ').map((countryName) => (
+          <SeeRelatedChip
+            key={countryName}
+            name={countryName}
+            to={`${routes.grid}/Country/${countryName}`}
+          >
+            <img
+              className="country-flag"
+              alt={`${countryName} flag`}
+              src={`/img/country-flags/${getCodeByCountry(
+                countryName
+              ).toLowerCase()}.svg`}
+            />{' '}
+            {countryName}
+          </SeeRelatedChip>
+        ))}
       <SeeRelatedChip
         name={region}
         to={`${routes.grid}/World Region/${region}`}
       >
         <LegendSwatch
           legendLabel={region}
-          labelStyleOverride={{ fontSize: 'inherit' }}
+          labelStyleOverride={{ fontSize: '0.7rem' }}
           component="div"
           iconID="_circle"
           backgroundColor={regionSwatchColor || 'transparent'}

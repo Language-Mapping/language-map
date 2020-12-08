@@ -1,9 +1,12 @@
-import React, { FC, useContext } from 'react'
+import React, { FC } from 'react'
 import { useParams } from 'react-router-dom'
-import { BiMapPin } from 'react-icons/bi'
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 
-import { GlobalContext, useMapToolsState } from 'components/context'
+import { useMapToolsState } from 'components/context'
+import { Media } from 'components/media'
+import { MoreLikeThis } from 'components/details'
 import { ReadMore } from 'components/generic'
+import { useLangFeatByKeyVal } from 'components/map/hooks'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
 import { ExploreSubView } from './ExploreSubView'
@@ -11,70 +14,116 @@ import { CensusPopover } from './CensusPopover'
 
 import * as Types from './types'
 import * as utils from './utils'
+import { useUniqueInstances } from './hooks'
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    statsAndMeta: {
+      listStyle: 'none',
+      padding: 0,
+      margin: 0,
+      display: 'inline-flex',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      '& > :not(:last-child)': {
+        borderRight: `solid 1px ${theme.palette.text.secondary}`,
+        marginRight: '0.4rem',
+        paddingRight: '0.4rem',
+      },
+    },
+  })
+)
+
+const StatsAndMeta: FC<Types.StatsAndMetaProps> = (props) => {
+  const { glotto, iso, speakers } = props
+  const classes = useStyles()
+
+  return (
+    <ul className={classes.statsAndMeta}>
+      {speakers && (
+        <li>
+          <b>Global speakers:</b> {parseInt(speakers, 10).toLocaleString()}
+        </li>
+      )}
+      {glotto && (
+        <li>
+          <b>Glottocode:</b> {glotto}
+        </li>
+      )}
+      {iso && (
+        <li>
+          <b>ISO 639-3:</b> {iso}
+        </li>
+      )}
+    </ul>
+  )
+}
 
 export const LangCardsList: FC = () => {
   const { value, language } = useParams() as Types.RouteMatch
-  const { state } = useContext(GlobalContext)
-  const { langFeatures } = state
-  const icon = <BiMapPin />
   const { langConfigViaSheets } = useMapToolsState()
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore // not for lack of trying
-  const uniqueInstances = langFeatures.reduce((all, thisOne) => {
-    const { Neighborhood, Town, Language, Description } = thisOne
-
-    // Deep depth
-    if (language) {
-      if (Language !== language) return all
-    } else if (Language !== value) return all
-
-    if (!Neighborhood && all.find((item) => item.title === Town)) return all
-
-    const common = {
-      footer: `${Description.slice(0, 100).trimEnd()}...`,
-      intro: '', // TODO: rm if not using
-      to: thisOne.ID,
-      icon,
-    }
-
-    if (!Neighborhood) return [...all, { title: Town, ...common }]
-
-    return [
-      ...all,
-      ...Neighborhood.split(', ')
-        .filter((hood) => !all.find((item) => item.title === hood))
-        .map((hood) => ({ title: hood, ...common })),
-    ]
-  }, [] as Types.CardConfig[]) as Types.CardConfig[]
+  const { feature } = useLangFeatByKeyVal(
+    language || value || undefined,
+    false,
+    'Language'
+  )
+  const uniqueInstances = useUniqueInstances(value, language)
+  const thisLangConfig = langConfigViaSheets.find(
+    ({ Language }) => Language === (language || value)
+  )
+  if (!thisLangConfig) {
+    return (
+      <ExploreSubView
+        instancesCount={uniqueInstances.length}
+        subtitle={`Not found: ${language || value}`}
+      />
+    )
+  }
 
   const {
     'ISO 639-3': iso,
-    Glottocode,
+    Glottocode: glotto,
     Endonym,
     Description,
+    Language,
+    Country,
+    'Global Speaker Total': speakers,
+    'World Region': region,
     'PUMA Field': pumaField,
     'Tract Field': tractField,
     'Census Pretty': censusPretty,
-  } =
-    langConfigViaSheets.find(
-      ({ Language }) => Language === (language || value)
-    ) || {}
+    Audio,
+    Video,
+  } = thisLangConfig
 
-  const SubTitle = (
+  const description = Description || feature?.Description || ''
+
+  const Extree = (
     <>
-      {Glottocode && `GLOTTOCODE: ${Glottocode}`}
-      {iso && `${Glottocode && ' | '}ISO 639-3: ${iso}`}
-      <CensusPopover {...{ tractField, pumaField, censusPretty }} />
-      {Description && <ReadMore text={Description} />}
+      <MoreLikeThis region={region} country={Country}>
+        <CensusPopover
+          {...{ tractField, pumaField, censusPretty }}
+          language={Language}
+        />
+      </MoreLikeThis>
+      <Media
+        description={description}
+        audio={Audio || ''}
+        video={Video || ''}
+        language={Language}
+        shareNoun="profile"
+        omitClear
+      />
+      {description && <ReadMore text={description} />}
     </>
   )
 
   return (
     <ExploreSubView
       instancesCount={uniqueInstances.length}
-      subtitle={Endonym}
-      subSubtitle={SubTitle}
+      subtitle={Endonym === Language ? '' : Endonym}
+      subSubtitle={<StatsAndMeta {...{ iso, glotto, speakers }} />}
+      extree={Extree}
     >
       <CardList>
         {uniqueInstances.sort(utils.sortByTitle).map((instance) => (

@@ -114,19 +114,24 @@ export type MapToolsAction =
     }
 
 export type MapToolsDispatch = React.Dispatch<MapToolsAction>
-export type LangConfig = Pick<
+
+// NOTE: it's not actually ALL the cols, but most
+export type LangConfig = Omit<
   LangRecordSchema,
-  | 'Language'
-  | 'Endonym'
-  | 'Global Speaker Total'
-  | 'Language Family'
-  | 'ISO 639-3'
-  | 'Glottocode'
-  | 'Description'
+  | 'County'
+  | 'ID'
+  | 'Latitude'
+  | 'Longitude'
+  | 'Macrocommunity'
+  | 'Neighborhood'
+  | 'Size'
+  | 'Status'
+  | 'Town'
 > & {
   'PUMA Field'?: string
   'Tract Field'?: string
   'Census Pretty'?: string // MATCH/INDEX convenience lookup
+  'Global Speaker Total'?: string // MB has int, Google API string
   Font?: string
 }
 

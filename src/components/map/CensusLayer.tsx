@@ -21,6 +21,8 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   // @ts-ignore
   const field = useMapToolsState().censusActiveFields[censusUnit]
   const visible = field !== undefined && field !== ''
+
+  // TODO: prevent this from happening before it's actually used
   const { data, error, isFetching } = useQuery(
     `${censusUnit}-table`,
     () => utils.asyncAwaitFetch(tableEndpoints[censusUnit]),

@@ -15,13 +15,10 @@ import MapGL, { MapLoadEvent } from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import {
-  GlobalContext,
-  useMapToolsState,
-  useSymbAndLabelState,
-} from 'components/context'
 import { paths as routes } from 'components/config/routes'
 import { LangRecordSchema } from 'components/context/types'
+import * as contexts from 'components/context'
+
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { Geolocation } from './Geolocation'
 import { MapPopup } from './MapPopup'
@@ -30,19 +27,13 @@ import { BoundariesLayer } from './BoundariesLayer'
 import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
 
-import * as Types from './types'
-import * as utils from './utils'
-import * as hooks from './hooks'
 import * as config from './config'
 import * as events from './events'
+import * as hooks from './hooks'
+import * as sharedUtils from '../../utils'
+import * as Types from './types'
+import * as utils from './utils'
 import symbLayers from './config.lang-style'
-
-import {
-  getIDfromURLparams,
-  findFeatureByID,
-  getAllLangFeatIDs,
-  isTouchEnabled,
-} from '../../utils'
 
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
 const { neighbConfig, countiesConfig, boundariesLayerIDs } = config
@@ -72,10 +63,10 @@ export const Map: FC<Types.MapProps> = (props) => {
   const match: { params: { id: string } } | null = useRouteMatch('/details/:id')
   const matchedID = match?.params?.id
 
-  const { state, dispatch } = useContext(GlobalContext)
-  const symbLabelState = useSymbAndLabelState()
+  const { state, dispatch } = useContext(contexts.GlobalContext)
+  const symbLabelState = contexts.useSymbAndLabelState()
   // const { boundariesVisible, tractsField, pumaField } = useMapToolsState()
-  const { boundariesVisible } = useMapToolsState()
+  const { boundariesVisible } = contexts.useMapToolsState()
   const offset = hooks.useOffset(panelOpen)
   const breakpoint = hooks.useBreakpoint()
   const cache = useQueryCache()
@@ -185,7 +176,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     utils.filterLayersByFeatIDs(
       map,
       currentLayerNames,
-      getAllLangFeatIDs(langFeatures)
+      sharedUtils.getAllLangFeatIDs(langFeatures)
     )
   }, [langFeatures.length, legendItems])
 
@@ -210,7 +201,7 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     if (!matchedID) return
 
-    const matchingRecord = findFeatureByID(
+    const matchingRecord = sharedUtils.findFeatureByID(
       langFeatures,
       parseInt(matchedID, 10)
     )
@@ -256,8 +247,9 @@ export const Map: FC<Types.MapProps> = (props) => {
   function onLoad(mapLoadEvent: MapLoadEvent) {
     // `mapObj` should === `map` but avoid naming conflict just in case:
     const { target: mapObj } = mapLoadEvent
-    const idFromUrl = getIDfromURLparams(window.location.search)
-    const cacheOfIDs: number[] = [] // TODO: use `reduce` instead of `push`
+    // TODO: hook for this:
+    const idFromUrl = sharedUtils.getIDfromURLparams(window.location.search)
+    const cacheOfIDs: number[] = [] // TODO: use `reduce` instead of `push`?
     const uniqueRecords: LangRecordSchema[] = []
 
     // This only works because of a very low zoom of 4. Otherwise not all of the
@@ -280,7 +272,7 @@ export const Map: FC<Types.MapProps> = (props) => {
       uniqueRecords.push(thisFeat.properties as LangRecordSchema)
     })
 
-    const matchingRecord = findFeatureByID(uniqueRecords, idFromUrl)
+    const matchingRecord = sharedUtils.findFeatureByID(uniqueRecords, idFromUrl)
 
     // NOTE: could not get this into the same `useEffect` that handles when
     // selFeatAttribs or mapLoaded are changed with an MB error/crash.
@@ -289,9 +281,8 @@ export const Map: FC<Types.MapProps> = (props) => {
     dispatch({ type: 'SET_LANG_LAYER_FEATURES', payload: uniqueRecords })
     setMapLoaded(true)
 
-    // Give MB some well-deserved cred
     mapObj.addControl(
-      new AttributionControl({ compact: false }),
+      new AttributionControl({ compact: false }), // Give MB well-deserved cred
       'bottom-right'
     )
 
@@ -453,7 +444,7 @@ export const Map: FC<Types.MapProps> = (props) => {
         {symbLayers && <LangMbSrcAndLayer symbLayers={symbLayers} />}
         {popup && <MapPopup {...popup} setVisible={() => setPopup(null)} />}
         {/* Popups are annoying on mobile */}
-        {!isTouchEnabled() && tooltip && (
+        {!sharedUtils.isTouchEnabled() && tooltip && (
           <MapPopup {...tooltip} setVisible={() => setTooltip(null)} />
         )}
       </MapGL>

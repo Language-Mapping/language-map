@@ -16,13 +16,13 @@ export type MapPanelProps = MapTypes.SpatialPanelProps & {
   setPanelOpen: React.Dispatch<boolean>
 }
 
-// TODO: detangle this mess like a professional web developer
+// TODO: detangle this mess like a professional web developer, reuse existing
 export type PanelContentProps = {
   icon?: React.ReactNode
-  intro?: string | React.ReactNode
   subSubtitle?: string | React.ReactNode
   subtitle?: string | React.ReactNode
   title?: string
+  extree?: string | React.ReactNode // catch-all stuff for intro bottom
 }
 
 export type PanelTitleBarProps = Pick<MapPanelProps, 'openOffCanvasNav'>

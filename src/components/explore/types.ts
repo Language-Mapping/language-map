@@ -2,13 +2,14 @@ import { LangRecordSchema } from 'components/context/types'
 
 // TODO: try to reuse some of these, they're pretty common in sev. components
 export type CategoryProps = {
-  intro: string
   title: string
+  uniqueInstances?: unknown[]
   url: string
   footer?: string
   icon?: React.ReactNode
-  uniqueInstances?: unknown[]
+  intro?: string
 }
+
 export type CustomCardProps = CategoryProps & {
   footerIcon?: React.ReactNode
 }
@@ -27,12 +28,9 @@ export type RouteMatch = {
   language?: string
 }
 
-export type CardConfig = {
+export type CardConfig = CategoryProps & {
   footer: string
-  intro: string
-  title: string
   to: string
-  icon?: React.ReactNode
 }
 
 export type SwatchOrFlagOrIcon = {
@@ -40,10 +38,11 @@ export type SwatchOrFlagOrIcon = {
   value?: string
 }
 
-export type Field = {
+export type ExploreSubViewProps = {
   instancesCount: number
   subtitle?: string
   subSubtitle?: string | React.ReactNode
+  extree?: string | React.ReactNode
 }
 
 export type LangFilterArgs = RouteMatch & {
@@ -51,7 +50,19 @@ export type LangFilterArgs = RouteMatch & {
 }
 
 export type CensusPopoverProps = {
+  language: string
   tractField?: string
   pumaField?: string
   censusPretty?: string
+}
+
+export type StatsAndMetaProps = {
+  iso?: string
+  glotto?: string
+  speakers?: string // string if from Sheets API, number if from MB
+}
+
+export type CurrentCrumbProps = {
+  value: string
+  basePath: string
 }

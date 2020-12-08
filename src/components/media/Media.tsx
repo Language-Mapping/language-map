@@ -45,7 +45,14 @@ const MediaListItem: FC<MediaListItemProps> = (props) => {
 }
 
 export const Media: FC<MediaProps> = (props) => {
-  const { language, description, audio, video } = props
+  const {
+    language,
+    description,
+    audio,
+    video,
+    omitClear,
+    shareNoun = 'community',
+  } = props
   const history = useHistory()
   const [mediaUrl, setMediaUrl] = useState<string>()
   const isTable: { params: { id: string } } | null = useRouteMatch('/table/:id')
@@ -61,21 +68,24 @@ export const Media: FC<MediaProps> = (props) => {
         <MediaModal url={mediaUrl} closeModal={() => setMediaUrl('')} />
       )}
       <ul className={classes.root}>
-        {(!isTable && (
-          <MediaListItem
-            label="Clear selection"
-            icon={<FiMinusSquare />}
-            type="clear"
-            handleClick={() => history.push('/details' as RouteLocation)}
-          />
-        )) || (
-          <MediaListItem
-            label="View in map"
-            icon={<FaMapMarkedAlt />}
-            type="view"
-            handleClick={() => history.push(`/details/${isTable?.params?.id}`)}
-          />
-        )}
+        {!omitClear &&
+          ((!isTable && (
+            <MediaListItem
+              label="Clear selection"
+              icon={<FiMinusSquare />}
+              type="clear"
+              handleClick={() => history.push('/details' as RouteLocation)}
+            />
+          )) || (
+            <MediaListItem
+              label="View in map"
+              icon={<FaMapMarkedAlt />}
+              type="view"
+              handleClick={() =>
+                history.push(`/details/${isTable?.params?.id}`)
+              }
+            />
+          ))}
         {config.map((item) => (
           <MediaListItem
             key={item.label}
@@ -94,7 +104,7 @@ export const Media: FC<MediaProps> = (props) => {
       {showShareBtns && (
         <div className={classes.shareBtns}>
           <Typography className={classes.shareBtnHeading}>
-            Share this {language} community:
+            Share this <em>{language}</em> {shareNoun}:
           </Typography>
           <ShareButtons
             spacing={2}

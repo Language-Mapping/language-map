@@ -112,5 +112,6 @@ export const pluralTextIfNeeded = (length: number, text = 'item'): string => {
 }
 
 // Super-repetitive icons are not useful in card lists.
-export const deservesCardIcon = (field: string, value?: string): boolean =>
-  value !== undefined || ['Country', 'World Region'].includes(field)
+export const deservesCardIcon = (field: string, value?: string): boolean => {
+  return !value && ['Country', 'World Region'].includes(field)
+}

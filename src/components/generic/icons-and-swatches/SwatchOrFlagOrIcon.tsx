@@ -3,6 +3,7 @@ import React, { FC } from 'react'
 import { SwatchOnly } from 'components/legend'
 import * as Types from 'components/explore/types'
 import * as config from 'components/explore/config'
+
 import { getSwatchColorByConfig } from '../../legend/utils'
 import { FlagWithTitle } from './FlagWithTitle'
 
