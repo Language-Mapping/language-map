@@ -8,6 +8,7 @@ import { MdLayersClear, MdLayers } from 'react-icons/md'
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'
 import { CensusQueryID, CensusIntro } from 'components/spatial'
 import { ChipWithClick } from 'components/details'
+import { DialogCloseBtn } from 'components/generic/modals'
 
 import * as Types from './types'
 
@@ -50,6 +51,8 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
 
   if (!censusFieldThisLang) return null
 
+  const handleClose = () => setAnchorEl(null)
+
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget)
   }
@@ -64,12 +67,14 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
       censusType,
       payload: censusFieldThisLang,
     })
+
+    handleClose()
   }
 
-  const handleClose = () => setAnchorEl(null)
   const open = Boolean(anchorEl)
   const id = open ? 'census-popover' : undefined
 
+  // TODO: util for all this basic presentation stuff
   let censusType: CensusQueryID | '' = ''
   let censusLabel
 
@@ -143,6 +148,10 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
       >
         View all census language categories
       </Typography>
+      <DialogCloseBtn
+        tooltip="Close census menu"
+        onClose={() => handleClose()}
+      />
     </Popover>
   )
 
