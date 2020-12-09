@@ -1,5 +1,4 @@
 import React, { FC } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { TextField, Typography, ListSubheader } from '@material-ui/core'
 import Autocomplete, {
@@ -10,9 +9,9 @@ import { useMapToolsDispatch, useMapToolsState } from 'components/context'
 import { LocationSearchContent } from 'components/map'
 import { SubtleText } from 'components/generic'
 import { useCensusData } from './hooks'
+import { CensusIntro } from './CensusIntro'
 
 import * as Types from './types'
-
 import { setCensusField } from './utils'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -46,19 +45,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
-const useIntroStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      fontSize: ({ subtle }: Types.CensusIntroProps) => {
-        return subtle ? '0.5rem' : '0.75rem'
-      },
-      color: ({ subtle }: Types.CensusIntroProps) => {
-        return subtle ? theme.palette.text.secondary : 'inherit'
-      },
-      marginBottom: '1.25em',
-    },
-  })
-)
 
 const GroupHeader: FC<Types.GroupHeaderProps> = (props) => {
   const { title, subTitle } = props
@@ -83,26 +69,19 @@ const renderGroup = (params: AutocompleteRenderGroupParams) => {
   ]
 }
 
-export const CensusIntro: FC<Types.CensusIntroProps> = (props) => {
-  const { subtle } = props
-  const classes = useIntroStyles({ subtle })
-
-  const Extree =
-    'The options below are 5-year ACS estimates on “language spoken at home for the Population 5 Years and Over”, sorted by population size.'
-
-  return (
-    <Typography className={classes.root}>
-      The Census Bureau’s American Community Survey (ACS) provides an indication
-      of where the largest several dozen languages are distributed.{' '}
-      {!subtle && Extree} <RouterLink to="/about#census">More info</RouterLink>
-    </Typography>
-  )
-}
-
 const CensusAutocomplete: FC<Types.CensusSelectProps> = (props) => {
   const { tracts, puma } = props
   const classes = useStyles()
   const mapToolsDispatch = useMapToolsDispatch()
+  const {
+    puma: pumaField,
+    tracts: tractsField,
+  } = useMapToolsState().censusActiveFields
+
+  const defaultValue =
+    [...tracts, ...puma].find(
+      ({ original }) => original === pumaField || original === tractsField
+    ) || null
 
   const handleChange = (value: Types.PreppedCensusLUTrow | null) => {
     setCensusField(value, mapToolsDispatch)
@@ -113,21 +92,22 @@ const CensusAutocomplete: FC<Types.CensusSelectProps> = (props) => {
       <Autocomplete
         id="census-autocomplete"
         classes={{ option: classes.option, listbox: classes.listbox }}
-        options={[...tracts, ...puma]}
-        getOptionLabel={({ pretty }) => pretty}
-        groupBy={({ groupTitle }) => groupTitle}
-        renderGroup={renderGroup}
-        blurOnSelect="touch"
-        selectOnFocus={false}
-        fullWidth
-        // open // much more effective than `debug`
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore // it actually DOES exist on currentTarget
         onOpen={(e) => e.currentTarget.scrollIntoView()}
+        blurOnSelect="touch"
+        fullWidth
+        getOptionLabel={({ pretty }) => pretty}
+        groupBy={({ groupTitle }) => groupTitle}
         onChange={(event, value) => handleChange(value)}
+        options={[...tracts, ...puma]}
+        renderGroup={renderGroup}
+        selectOnFocus={false}
         size="small"
+        value={defaultValue}
+        // open // much more effective than `debug`
         renderInput={(params) => (
-          <TextField {...params} label="Choose a language" variant="outlined" />
+          <TextField {...params} label="Choose a language" variant="standard" />
         )}
       />
       <SubtleText>
@@ -143,21 +123,23 @@ export const CensusFieldSelect: FC = () => {
     tracts: tractsFields,
   } = useMapToolsState().censusDropDownFields
 
-  const { error: pumaError } = useCensusData('puma', pumaFields.length)
-  const { error: tractsError } = useCensusData('tracts', tractsFields.length)
+  // TODO: use state directly from the hook if can find a way to make it persist
+  // between route changes
+  const { error: pumaError } = useCensusData('puma', pumaFields)
+  const { error: tractsError } = useCensusData('tracts', tractsFields)
 
   if (tractsError || pumaError)
     return <p>Something went wrong fetching census data.</p>
+
+  const ready = tractsFields.length !== 0 && pumaFields.length !== 0
 
   return (
     <LocationSearchContent
       heading="Census Language Data (NYC only)"
       explanation={<CensusIntro />}
     >
-      {!tractsFields.length ||
-        (!pumaFields.length && <p>Getting census data...</p>) || (
-          <CensusAutocomplete tracts={tractsFields} puma={pumaFields} />
-        )}
+      {!ready && <p>Getting census data...</p>}
+      {ready && <CensusAutocomplete tracts={tractsFields} puma={pumaFields} />}
     </LocationSearchContent>
   )
 }
