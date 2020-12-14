@@ -41,7 +41,7 @@ export const Home: FC = () => {
   const panelRootClasses = usePanelRootStyles()
   const [data, setData] = useState<LangRecordSchema[]>([])
   const elemID = 'filters-panel'
-  const { activeSymbGroupID, legendItems } = symbLabelState
+  const { activeSymbGroupID } = symbLabelState
 
   useEffect((): void => {
     initLegend(symbLabelDispatch, activeSymbGroupID, symbLayers)
@@ -67,7 +67,7 @@ export const Home: FC = () => {
         </Typography>
         <SearchByOmnibox data={data} />
         <FiltersWarning />
-        <LegendPanel legendItems={legendItems} groupName={activeSymbGroupID} />
+        <LegendPanel activeGroupName={activeSymbGroupID} />
       </div>
     </>
   )

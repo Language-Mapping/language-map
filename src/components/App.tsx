@@ -4,6 +4,7 @@ import { Route } from 'react-router-dom'
 // import { ReactQueryCacheProvider, QueryCache } from 'react-query'
 import { ReactQueryCacheProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query-devtools'
+import Airtable from 'airtable'
 import { GoInfo } from 'react-icons/go'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
@@ -11,6 +12,7 @@ import { AboutPageView, WelcomeDialog } from 'components/about'
 import { wpQueryCache } from 'components/about/utils'
 // import { asyncAwaitFetch } from 'components/map/utils'
 import { paths as routes } from 'components/config/routes'
+import { AIRTABLE_API_KEY } from 'components/config'
 import { AppWrap } from './AppWrap'
 import { wpQueryIDs } from './about/config'
 
@@ -24,6 +26,10 @@ import { wpQueryIDs } from './about/config'
 //     },
 //   },
 // })
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore // great start 🙄
+Airtable.configure({ apiKey: AIRTABLE_API_KEY })
 
 // Good tut on this: https://ui.dev/react-router-v4-code-splitting/
 const LazyTable = React.lazy(

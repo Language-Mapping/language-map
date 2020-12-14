@@ -19,6 +19,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/react-window": "^1.8.2",
     "@types/webfontloader": "^1.6.32",
+    "airtable": "^0.10.1",
     "jest-canvas-mock": "^2.2.0",
     "match-sorter": "^4.2.0",
     "material-table": "1.68.1",

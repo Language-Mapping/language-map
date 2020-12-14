@@ -1,24 +1,22 @@
 import { LayerPropsPlusMeta } from 'components/map/types'
 import { Action as SymbLabelAction } from 'components/context/SymbAndLabelContext'
-import { LegendSwatch, IconID } from './types'
+import * as Types from './types'
 import { langLabelsStyle } from '../map/config.points' // just need defaults
 import styleConfig from '../map/config.lang-style'
 
-const createMapLegend = (layers: LayerPropsPlusMeta[]): LegendSwatch[] => {
+const createMapLegend = (
+  layers: LayerPropsPlusMeta[]
+): Types.LegendSwatch[] => {
   return layers.map((layer) => {
     const { id, layout, paint } = layer
-    const settings = { legendLabel: id } as LegendSwatch
+    const settings = { legendLabel: id } as Types.LegendSwatch
     const size = layout['icon-size'] ? (layout['icon-size'] as number) * 20 : 5
     const backgroundColor = (paint['icon-color'] as string) || 'transparent'
     const iconID =
-      (layout['icon-image'] as IconID) || langLabelsStyle.layout['icon-image']
+      (layout['icon-image'] as Types.IconID) ||
+      langLabelsStyle.layout['icon-image']
 
-    return {
-      ...settings,
-      size,
-      backgroundColor,
-      iconID,
-    }
+    return { ...settings, size, backgroundColor, iconID }
   })
 }
 
@@ -42,4 +40,112 @@ export const getSwatchColorByConfig = (id: string): string => {
   if (!matchedConfig) return '#444' // better than nothing, JIC
 
   return matchedConfig.paint['icon-color'] as string
+}
+
+type Compare<T> = (a: T, b: T) => number // TODO: defeat
+
+const sortArrOfObjects = <T>(key: keyof T): Compare<T> => {
+  return (a: T, b: T): number => {
+    let comparison = 0
+
+    if (a[key] > b[key]) comparison = 1
+    else if (a[key] < b[key]) comparison = -1
+
+    return comparison
+  }
+}
+
+const finalPrep = (
+  rows: Types.WorldRegionFields[],
+  labelByField?: string,
+  sortByField = 'name'
+): Types.WorldRegionFields[] => {
+  let labeled
+
+  rows.sort(sortArrOfObjects(sortByField))
+
+  if (labelByField)
+    labeled = rows.map((row) => ({
+      ...row,
+      name: row[labelByField],
+    })) as Types.WorldRegionFields[]
+  else labeled = rows
+
+  return labeled
+}
+
+export const prepAirtableResponse = (
+  rows: Types.WorldRegionFields[],
+  tableName: string,
+  config: Types.LegendConfigItem
+): Types.PreppedLegend[] => {
+  const { groupByField, labelByField } = config
+
+  if (!groupByField)
+    return [{ items: finalPrep(rows, labelByField), groupName: tableName }]
+
+  const prepped = rows.reduce((all, thisOne) => {
+    const groupName = thisOne[groupByField] as string
+    const existing = all[groupName]
+    const items = existing ? [...existing.items, thisOne] : [thisOne]
+
+    return { ...all, [groupName]: { groupName, items } }
+  }, {} as { [key: string]: Types.PreppedLegend })
+
+  return Object.keys(prepped)
+    .sort() // assumes intent is alphbetical sorting
+    .map((group) => {
+      const { groupName, items } = prepped[group]
+
+      // Was easier to pass groupName as an object property than to try and mix
+      // array/obj (e.g. use key) in the component, so setting it here:
+      return {
+        groupName,
+        items: finalPrep(items.sort(sortArrOfObjects('name')), labelByField),
+      }
+    })
+}
+
+// TODO: wire up for Size
+// // Just a bit bigger than the circle icons
+// const statusIconSize = {
+//   'icon-size': [
+//     'step',
+//     ['zoom'],
+//     0.25,
+//     10,
+//     0.28,
+//     11,
+//     0.3,
+//     12,
+//     0.32,
+//     14,
+//     0.35,
+//     17,
+//     0.4,
+//   ],
+//   'icon-ignore-placement': false,
+// }
+
+export const createLayerStyles = (
+  settings: Types.LegendGroupConfig,
+  addlLayoutProps = {}
+) => {
+  const { name, groupName } = settings
+  // TODO: make icon color and image conditional/optional
+
+  return {
+    id: name,
+    group: groupName, // aka Airtable table name, and possibly query ID
+    filter: ['match', ['get', groupName], [name], true, false],
+    layout: {
+      ...addlLayoutProps,
+      'icon-image': settings['icon-image'],
+    },
+    paint: {
+      'icon-color': settings['icon-color'],
+      'text-color': settings['text-color'],
+      'text-halo-color': settings['text-halo-color'],
+    },
+  }
 }

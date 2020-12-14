@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
 // No text, no frills. Just a circle with a color
 export const SwatchOnly: FC<Types.SwatchOnly> = (props) => {
   const { backgroundColor, size = 7 } = props
-  const adjustedSize = size * 1.5
+  const adjustedSize = Math.round(size * 1.5) // avoid squished circles
 
   return (
     <span
