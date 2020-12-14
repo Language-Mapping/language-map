@@ -1,6 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-// TOO annoying. I'll take the risk, esp. since it has not seemed problematic:
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useQueryCache } from 'react-query'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
@@ -230,8 +227,6 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     utils.flyToPoint(map, settings, utils.prepPopupContent(matchingRecord))
   }, [matchedID, mapLoaded])
-
-  /* eslint-enable react-hooks/exhaustive-deps */
 
   function onHover(event: Types.MapEvent) {
     if (!mapRef.current || !mapLoaded || !boundariesVisible) return

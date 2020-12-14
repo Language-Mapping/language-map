@@ -103,7 +103,6 @@ export const BottomNav: FC<BottomNav> = (props) => {
       ...subRoutePath,
       [currPathSansSlash]: loc.pathname,
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loc.pathname])
 
   return (

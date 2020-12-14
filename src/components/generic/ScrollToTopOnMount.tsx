@@ -19,7 +19,6 @@ export const ScrollToTopOnMount: FC<ScrollToTopProps> = (props) => {
           behavior: 'smooth',
         })
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     trigger ? [elemID, trigger] : [elemID]
   )
 

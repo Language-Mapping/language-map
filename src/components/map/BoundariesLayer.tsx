@@ -24,7 +24,6 @@ export const BoundariesLayer: FC<Types.BoundariesLayerProps> = (props) => {
     if (isFetching || !data) return
 
     setRecordIDs(data.map((record) => record.id))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetching])
 
   if (error || !recordIDs || !visible || isFetching) return null

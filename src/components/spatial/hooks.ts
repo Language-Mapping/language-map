@@ -50,7 +50,6 @@ export const useCensusData = (
     }
 
     fetchCensusLUTData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [existing])
 
   return { error, data }

@@ -76,7 +76,6 @@ export const AppWrap: FC = () => {
   //     return
   //   }
   // TODO: handle scenario where feature exists in cached but not filtered
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [loc.search, state.langFeatures.length])
 
   return (
