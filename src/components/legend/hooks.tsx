@@ -34,7 +34,7 @@ export const useLegend = (
       })
 
     // dispatch({ type: 'SET_LANG_LAYER_LEGEND', payload: legend })
-  }, [tableName])
+  }, [base, config, tableName])
 
   return { error, data }
 }
