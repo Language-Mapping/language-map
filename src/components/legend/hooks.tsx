@@ -1,7 +1,7 @@
 import { useQuery } from 'react-query'
 import Airtable from 'airtable'
 
-import { AIRTABLE_BASE } from 'components/config'
+import { AIRTABLE_BASE, reactQueryDefaults } from 'components/config'
 import * as utils from './utils'
 import * as Types from './types'
 
@@ -12,13 +12,6 @@ export type LegendReturn = {
   legendHeading?: string
   legendSummary?: string
   routeable?: boolean
-}
-
-export const queryDefaults = {
-  staleTime: Infinity,
-  refetchOnMount: false,
-  refetchOnReconnect: false,
-  refetchOnWindowFocus: false,
 }
 
 // TODO: fix TS nightmares
@@ -37,7 +30,7 @@ export const useLegend = (tableName: string): LegendReturn => {
 
       return sel.then((records) => records)
     },
-    queryDefaults
+    reactQueryDefaults
   )
 
   const firstRecord = symbConfig ? symbConfig[0] : undefined
@@ -54,7 +47,7 @@ export const useLegend = (tableName: string): LegendReturn => {
       return sel.then((records) => records)
     },
     {
-      ...queryDefaults,
+      ...reactQueryDefaults,
       enabled: !!firstRecord,
     }
   )

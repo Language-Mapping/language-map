@@ -9,6 +9,7 @@ import {
   LangConfig,
 } from 'components/context'
 import { configEndpoints } from 'components/spatial/config'
+import { reactQueryDefaults } from 'components/config'
 import { RawSheetsResponse } from 'components/config/types'
 import { asyncAwaitFetch, prepEndoFilters } from './utils'
 import { sheetsToJSON } from '../../utils'
@@ -29,12 +30,7 @@ export const LangMbSrcAndLayer: FC<Types.LangMbSrcAndLayerProps> = ({
   const { data, isFetching, error } = useQuery(
     CONFIG_QUERY_ID,
     () => asyncAwaitFetch<RawSheetsResponse>(configEndpoints.langConfig),
-    {
-      staleTime: Infinity,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
-    }
+    reactQueryDefaults
   )
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [endoFonts, setEndoFonts] = useState<any[]>()

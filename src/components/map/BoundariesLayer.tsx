@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { Source, Layer } from 'react-map-gl'
 
+import { reactQueryDefaults } from 'components/config'
 import * as utils from './utils'
 import * as Types from './types'
 
@@ -10,13 +11,7 @@ export const BoundariesLayer: FC<Types.BoundariesLayerProps> = (props) => {
   const { data, isFetching, error } = useQuery(
     source.id,
     () => utils.asyncAwaitFetch<Types.BoundaryLookup[]>(lookupPath),
-    {
-      staleTime: Infinity,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
-      enabled: visible,
-    }
+    reactQueryDefaults
   )
   const [recordIDs, setRecordIDs] = useState<number[]>()
 

@@ -7,6 +7,7 @@ import { useQuery } from 'react-query'
 import { useMapToolsState } from 'components/context'
 import { SheetsReactQueryResponse } from 'components/config/types'
 import { CensusQueryID } from 'components/spatial/types'
+import { reactQueryDefaults } from 'components/config'
 import { tableEndpoints } from '../spatial/config'
 import { sheetsToJSON } from '../../utils'
 
@@ -26,13 +27,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   const { data, error, isFetching } = useQuery(
     `${censusUnit}-table`,
     () => utils.asyncAwaitFetch(tableEndpoints[censusUnit]),
-    {
-      enabled: true,
-      staleTime: Infinity,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
-    }
+    reactQueryDefaults
   ) as SheetsReactQueryResponse
   const [fillPaint, setFillPaint] = useState<FillPaint>({
     'fill-color': 'transparent', // mitigates the brief lag before load

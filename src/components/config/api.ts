@@ -8,3 +8,11 @@ export const CONFIG_ENDPOINT = `${GOOGLE_API_BASE}/${CONFIG_WORKBOOK_ID}/values`
 export const CONFIG_QUERY_ID = 'sheets-config'
 
 export const AIRTABLE_BASE = 'applPEl3BsnpuszQu'
+
+// TODO: get this into provider/global so it doesn't need adding every time
+export const reactQueryDefaults = {
+  staleTime: Infinity,
+  refetchOnMount: false,
+  refetchOnReconnect: false,
+  refetchOnWindowFocus: false,
+}
