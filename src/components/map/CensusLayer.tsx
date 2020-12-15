@@ -49,6 +49,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
     )
 
     setTableRows(tableRowsPrepped)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetching])
 
   useEffect(() => {
@@ -71,6 +72,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
         total: (total / max) * 100,
       } as { total: number })
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [field])
 
   useEffect(() => {

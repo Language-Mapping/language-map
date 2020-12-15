@@ -51,6 +51,7 @@ export const Explore: FC<{ icon: React.ReactNode }> = (props) => {
     })
 
     setCategories(preppedCats)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [langFeatsLenCache])
 
   const intro = (

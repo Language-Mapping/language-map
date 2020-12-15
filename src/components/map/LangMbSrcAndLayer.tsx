@@ -83,6 +83,7 @@ export const LangMbSrcAndLayer: FC<Types.LangMbSrcAndLayerProps> = ({
       payload: dataAsJson,
     })
     setEndoFonts(prepEndoFilters(dataAsJson))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetching])
 
   if (error) throw new Error('Something went wrong fetching Le Sheetz')

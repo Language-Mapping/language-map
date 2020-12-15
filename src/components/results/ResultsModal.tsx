@@ -27,6 +27,7 @@ const ResultsModal: FC = () => {
   const [oneAndDone, setOneAndDone] = useState<boolean>(false)
   const [lastLoc, setLastLoc] = useState()
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect((): void => {
     if (oneAndDone || !state.langFeatures.length) return
     if (!oneAndDone) setOneAndDone(true)
@@ -46,6 +47,7 @@ const ResultsModal: FC = () => {
       setLastLoc(loc)
     }
   }, [loc])
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   // TODO: make this whole mess right. Can't use this approach on AboutPageView
   // b/c that isn't always mounted like ResultsModal. Have to supply it with

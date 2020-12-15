@@ -112,6 +112,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
     if (state.clearFilters === 555) {
       clearFiltersBtnClick()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.clearFilters])
 
   function mapFilterBtnClick(): void {
