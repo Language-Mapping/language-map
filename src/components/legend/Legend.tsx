@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const Legend: FC<Types.PreppedLegend> = (props) => {
+export const Legend: FC<Types.LegendProps> = (props) => {
   const { groupName, items, routeName, legendSummary } = props
   const classes = useStyles()
 

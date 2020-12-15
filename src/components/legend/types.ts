@@ -29,73 +29,49 @@ export type LegendPanelProps = {
   activeGroupName: string | keyof LangRecordSchema
 }
 
-export type LegendGroupConfig = {
-  name: string
-  groupName: string
-  'icon-image'?: string
-  'icon-color'?: string
-  'text-color'?: string
-  'text-halo-color'?: string
-}
+type UNgeoscheme = 'Africa' | 'Americas' | 'Asia' | 'Europe' | 'Oceania'
 
-// TODO: more generic, and combined w/above. Clean up all garbage once Airtable
-// all-in w/the map.
-export type WorldRegionFields = {
+export type WorldRegionLegend = { [key in UNgeoscheme]: WorldRegion[] }
+
+export type AtSchemaRecord = { id: string; fields: AtSchemaFields }
+export type AtSymbRecord = { id: string; fields: AtSymbFields }
+
+export type AtSymbFields = {
   name: string
-  [key: string]: unknown
   continent?: string
   'icon-color'?: string
   'icon-image'?: IconID
   'icon-size'?: number
-  src_img?: {
-    url: string
-  }[]
+  'text-color'?: string
+  'text-halo-color'?: string
+  src_img?: { url: string }[]
 }
 
-export type UNgeoscheme = 'Africa' | 'Americas' | 'Asia' | 'Europe' | 'Oceania'
+export type LegendGroupConfig = AtSymbFields & { groupName: string }
+
+// Columns from Schema table, or at least a few of them
+export type AtSchemaFields = {
+  groupByField?: keyof AtSymbFields
+  labelByField?: keyof AtSymbFields
+  sortByField?: keyof AtSymbFields
+  legendHeading?: string
+  legendSummary?: string
+  routeable?: boolean
+  queryFields?: Array<keyof AtSymbFields>
+  // Not using this but super handy for future reference. Rm when memorized:
+  // CRED: https://stackoverflow.com/a/51808262/1048518
+  // queryFields?: Array<Extract<keyof AtSymbFields, string>> // NOYCE
+}
 
 export type LegendProps = {
-  legendItems?: LegendSwatchComponent[]
   groupName: string
-  url?: string
-}
-
-export type WorldRegionLegend = {
-  [key in UNgeoscheme]: WorldRegion[]
-}
-
-export type GroupedLegendProps = LegendProps & {
-  baseRoute: string
-  groupConfig: LegendGroupConfig[]
-  url?: string
-}
-
-export type Prepped = {
-  [continent: string]: { 'icon-color': string; name: string }[]
-}
-
-export type AirtableRecord = {
-  id: string
-}
-
-export type WorldRegionRecord = AirtableRecord & { fields: WorldRegionFields }
-
-export type AirtableResponse = {
-  records: AirtableRecord[]
-}
-
-export type LegendConfigItem = {
-  fields: string[]
-  groupByField?: string
-  labelByField?: string
-  routeable?: boolean
-}
-
-export type LegendConfig = { [key: string]: LegendConfigItem }
-
-export type PreppedLegend = {
-  groupName: string
-  items: WorldRegionFields[]
-  routeName?: string
+  items: AtSymbFields[]
   legendSummary?: string
+  routeName?: string // may differ from "groupName" if custom heading exists
 }
+
+export type FinalPrep = (
+  rows: AtSymbFields[],
+  labelByField?: keyof AtSymbFields,
+  sortByField?: 'name' | keyof AtSymbFields
+) => AtSymbFields[]

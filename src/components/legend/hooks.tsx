@@ -6,22 +6,18 @@ import * as utils from './utils'
 import * as Types from './types'
 
 export type LegendReturn = {
-  data: Types.PreppedLegend[]
+  data: Types.LegendProps[]
   isLoading: boolean
   error?: unknown
-  legendHeading?: string
-  legendSummary?: string
-  routeable?: boolean
-}
+} & Types.AtSchemaFields
 
-// TODO: fix TS nightmares
 export const useLegend = (tableName: string): LegendReturn => {
   const base = new Airtable().base(AIRTABLE_BASE)
   const {
     data: symbConfig,
     isLoading: isSymbLoading,
     error: symbError,
-  } = useQuery<Types.LegendConfigItem[]>(
+  } = useQuery<Types.AtSchemaRecord[]>(
     ['Schema', tableName],
     (schemaTableName, table) => {
       const sel = base(schemaTableName)
@@ -34,14 +30,13 @@ export const useLegend = (tableName: string): LegendReturn => {
   )
 
   const firstRecord = symbConfig ? symbConfig[0] : undefined
+  const { fields } = firstRecord || {}
 
-  const { data, isLoading, error } = useQuery<Types.WorldRegionRecord[]>(
+  const { data, isLoading, error } = useQuery<Types.AtSymbRecord[]>(
     tableName,
     () => {
       const sel = base(tableName)
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        .select({ fields: firstRecord.fields.queryFields })
+        .select({ fields: fields?.queryFields || [] })
         .firstPage()
 
       return sel.then((records) => records)
@@ -52,37 +47,20 @@ export const useLegend = (tableName: string): LegendReturn => {
     }
   )
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  let prepped = []
+  let prepped: Types.LegendProps[] = []
 
   if (data && symbConfig) {
     prepped = utils.prepAirtableResponse(
       data?.map((record) => record.fields) || [],
       tableName,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      firstRecord.fields
+      fields
     )
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const legendHeading = firstRecord?.fields?.legendHeading
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const legendSummary = firstRecord?.fields?.legendSummary
-
   return {
     error: error || symbError,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     data: prepped,
     isLoading: isLoading || isSymbLoading,
-    legendHeading,
-    legendSummary,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    routeable: firstRecord?.fields?.routeable,
+    ...fields,
   }
 }

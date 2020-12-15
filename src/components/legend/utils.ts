@@ -55,11 +55,11 @@ const sortArrOfObjects = <T>(key: keyof T): Compare<T> => {
   }
 }
 
-const finalPrep = (
-  rows: Types.WorldRegionFields[],
-  labelByField?: string,
+const finalPrep: Types.FinalPrep = (
+  rows,
+  labelByField,
   sortByField = 'name'
-): Types.WorldRegionFields[] => {
+) => {
   let labeled
 
   rows.sort(sortArrOfObjects(sortByField))
@@ -68,17 +68,19 @@ const finalPrep = (
     labeled = rows.map((row) => ({
       ...row,
       name: row[labelByField],
-    })) as Types.WorldRegionFields[]
+    })) as Types.AtSymbFields[]
   else labeled = rows
 
   return labeled
 }
 
 export const prepAirtableResponse = (
-  rows: Types.WorldRegionFields[],
+  rows: Types.AtSymbFields[],
   tableName: string,
-  config: Types.LegendConfigItem
-): Types.PreppedLegend[] => {
+  config?: Types.AtSchemaFields
+): Types.LegendProps[] => {
+  if (!config) return []
+
   const { groupByField, labelByField } = config
 
   if (!groupByField)
@@ -90,7 +92,7 @@ export const prepAirtableResponse = (
     const items = existing ? [...existing.items, thisOne] : [thisOne]
 
     return { ...all, [groupName]: { groupName, items } }
-  }, {} as { [key: string]: Types.PreppedLegend })
+  }, {} as { [key: string]: Types.LegendProps })
 
   return Object.keys(prepped)
     .sort() // assumes intent is alphbetical sorting
