@@ -1,40 +1,44 @@
-import { useState, useEffect } from 'react'
+import { useQuery } from 'react-query'
 import Airtable from 'airtable'
 
-import { AIRTABLE_API_KEY, AIRTABLE_BASE } from 'components/config'
+import { AIRTABLE_BASE } from 'components/config'
 import * as utils from './utils'
 import * as Types from './types'
+
+export type LegendReturn = {
+  data: Types.PreppedLegend[]
+  isLoading: boolean
+  error?: unknown
+}
 
 export const useLegend = (
   config: Types.LegendConfigItem,
   tableName: string
-): { error?: Error; data: Types.PreppedLegend[] } => {
-  const [error, setError] = useState()
-  const [data, setData] = useState<Types.PreppedLegend[]>([])
-  const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(AIRTABLE_BASE)
+): LegendReturn => {
+  const { fields } = config
+  const base = new Airtable().base(AIRTABLE_BASE)
 
-  useEffect(() => {
-    const { fields } = config
-
-    base(tableName)
-      .select({ fields })
+  const { data, isLoading, error } = useQuery<Types.WorldRegionRecord[]>(
+    tableName,
+    () => {
       // .all() // implement for larger queries over 100+
-      .firstPage()
-      .then((records) => {
-        const prepped = utils.prepAirtableResponse(
-          records.map((record) => record.fields),
-          tableName,
-          config
-        )
+      const sel = base(tableName).select({ fields }).firstPage()
 
-        setData(prepped)
-      })
-      .catch((err) => {
-        setError(err)
-      })
+      return sel.then((records) => records)
+    },
+    {
+      staleTime: Infinity,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+    }
+  )
 
-    // dispatch({ type: 'SET_LANG_LAYER_LEGEND', payload: legend })
-  }, [base, config, tableName])
+  const prepped = utils.prepAirtableResponse(
+    data?.map((record) => record.fields) || [],
+    tableName,
+    config
+  )
 
-  return { error, data }
+  return { error, data: prepped, isLoading }
 }
