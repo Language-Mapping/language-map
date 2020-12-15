@@ -9,36 +9,87 @@ export type LegendReturn = {
   data: Types.PreppedLegend[]
   isLoading: boolean
   error?: unknown
+  legendHeading?: string
+  legendSummary?: string
+  routeable?: boolean
 }
 
-export const useLegend = (
-  config: Types.LegendConfigItem,
-  tableName: string
-): LegendReturn => {
-  const { fields } = config
+export const queryDefaults = {
+  staleTime: Infinity,
+  refetchOnMount: false,
+  refetchOnReconnect: false,
+  refetchOnWindowFocus: false,
+}
+
+// TODO: fix TS nightmares
+export const useLegend = (tableName: string): LegendReturn => {
   const base = new Airtable().base(AIRTABLE_BASE)
+  const {
+    data: symbConfig,
+    isLoading: isSymbLoading,
+    error: symbError,
+  } = useQuery<Types.LegendConfigItem[]>(
+    ['Schema', tableName],
+    (schemaTableName, table) => {
+      const sel = base(schemaTableName)
+        .select({ filterByFormula: `{name} = '${table}'` })
+        .firstPage()
+
+      return sel.then((records) => records)
+    },
+    queryDefaults
+  )
+
+  const firstRecord = symbConfig ? symbConfig[0] : undefined
 
   const { data, isLoading, error } = useQuery<Types.WorldRegionRecord[]>(
     tableName,
     () => {
-      // .all() // implement for larger queries over 100+
-      const sel = base(tableName).select({ fields }).firstPage()
+      const sel = base(tableName)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        .select({ fields: firstRecord.fields.queryFields })
+        .firstPage()
 
       return sel.then((records) => records)
     },
     {
-      staleTime: Infinity,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
+      ...queryDefaults,
+      enabled: !!firstRecord,
     }
   )
 
-  const prepped = utils.prepAirtableResponse(
-    data?.map((record) => record.fields) || [],
-    tableName,
-    config
-  )
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  let prepped = []
 
-  return { error, data: prepped, isLoading }
+  if (data && symbConfig) {
+    prepped = utils.prepAirtableResponse(
+      data?.map((record) => record.fields) || [],
+      tableName,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      firstRecord.fields
+    )
+  }
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const legendHeading = firstRecord?.fields?.legendHeading
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const legendSummary = firstRecord?.fields?.legendSummary
+
+  return {
+    error: error || symbError,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    data: prepped,
+    isLoading: isLoading || isSymbLoading,
+    legendHeading,
+    legendSummary,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    routeable: firstRecord?.fields?.routeable,
+  }
 }

@@ -44,24 +44,3 @@ export const worldRegionLegend = {
     'Polynesia',
   ],
 } as Types.WorldRegionLegend
-
-export const legendConfig = {
-  'World Region': {
-    groupByField: 'continent',
-    routeable: true,
-    fields: [
-      'name',
-      'continent',
-      'icon-color',
-      'text-color',
-      'text-halo-color',
-    ],
-  },
-  Size: {
-    labelByField: 'label',
-    fields: ['name', 'label', 'icon-color', 'icon-size'],
-  },
-  Status: {
-    fields: ['name', 'icon-color', 'icon-image', 'src_img'],
-  },
-} as Types.LegendConfig

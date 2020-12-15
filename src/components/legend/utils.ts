@@ -127,6 +127,7 @@ export const prepAirtableResponse = (
 //   'icon-ignore-placement': false,
 // }
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const createLayerStyles = (
   settings: Types.LegendGroupConfig,
   addlLayoutProps = {}

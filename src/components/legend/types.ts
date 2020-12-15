@@ -85,7 +85,7 @@ export type AirtableResponse = {
 }
 
 export type LegendConfigItem = {
-  fields?: string[]
+  fields: string[]
   groupByField?: string
   labelByField?: string
   routeable?: boolean
@@ -97,4 +97,5 @@ export type PreppedLegend = {
   groupName: string
   items: WorldRegionFields[]
   routeName?: string
+  legendSummary?: string
 }

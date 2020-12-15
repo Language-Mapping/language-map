@@ -5,7 +5,6 @@ import { LayerSymbSelect, LayerLabelSelect, Legend } from 'components/legend'
 import { WorldRegionMap } from './WorldRegionMap'
 import * as Types from './types'
 import * as hooks from './hooks'
-import { legendConfig } from './config'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,11 +45,14 @@ const useStyles = makeStyles((theme: Theme) =>
 export const LegendPanel: FC<Types.LegendPanelProps> = (props) => {
   const { activeGroupName } = props
   const classes = useStyles()
-  const settings = legendConfig[activeGroupName]
-  const { error, data, isLoading } = hooks.useLegend(
-    legendConfig[activeGroupName],
-    activeGroupName
-  )
+  const {
+    error,
+    data,
+    isLoading,
+    legendHeading,
+    routeable,
+    legendSummary,
+  } = hooks.useLegend(activeGroupName)
 
   if (error)
     return <p>Something went wrong setting up the {activeGroupName} legend.</p>
@@ -68,8 +70,9 @@ export const LegendPanel: FC<Types.LegendPanelProps> = (props) => {
           {data.map((item) => (
             <Legend
               key={item.groupName}
-              routeName={settings.routeable ? activeGroupName : undefined}
-              groupName={item.groupName}
+              routeName={routeable ? activeGroupName : undefined}
+              groupName={legendHeading || item.groupName}
+              legendSummary={legendSummary}
               items={item.items}
             />
           ))}
