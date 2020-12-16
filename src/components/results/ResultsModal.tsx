@@ -1,18 +1,16 @@
-import React, { FC, useContext, useEffect, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { Dialog } from '@material-ui/core'
 
-import { GlobalContext } from 'components/context'
 import { DialogCloseBtn, SlideUp } from 'components/generic/modals'
-import { LangRecordSchema } from 'components/context/types'
 import { useStyles } from './styles'
 import { ResultsTable } from './ResultsTable'
 import { paths as routes } from '../config/routes'
 import { LocWithState } from '../config/types'
+import { useFullData } from './hooks'
 
 const ResultsModal: FC = () => {
   const classes = useStyles()
-  const { state } = useContext(GlobalContext)
 
   // Routing
   const history = useHistory()
@@ -23,17 +21,8 @@ const ResultsModal: FC = () => {
     state: locState,
   } = useLocation() as LocWithState
 
-  const [tableData, setTableData] = useState<LangRecordSchema[]>([])
-  const [oneAndDone, setOneAndDone] = useState<boolean>(false)
   const [lastLoc, setLastLoc] = useState()
-
-  /* eslint-disable react-hooks/exhaustive-deps */
-  useEffect((): void => {
-    if (oneAndDone || !state.langFeatures.length) return
-    if (!oneAndDone) setOneAndDone(true)
-
-    setTableData([...state.langFeatures])
-  }, [state.langFeatures])
+  const { data } = useFullData()
 
   // CRED:
   // help.mouseflow.com/en/articles/4310818-tracking-url-changes-with-react
@@ -46,8 +35,7 @@ const ResultsModal: FC = () => {
       // @ts-ignore // TODO: take some time, fix it
       setLastLoc(loc)
     }
-  }, [loc])
-  /* eslint-enable react-hooks/exhaustive-deps */
+  }, [loc, locState])
 
   // TODO: make this whole mess right. Can't use this approach on AboutPageView
   // b/c that isn't always mounted like ResultsModal. Have to supply it with
@@ -81,7 +69,7 @@ const ResultsModal: FC = () => {
       PaperProps={{ className: classes.resultsModalPaper }}
     >
       <DialogCloseBtn onClose={handleClose} tooltip="Exit to map" />
-      <ResultsTable data={tableData} />
+      <ResultsTable data={data} />
     </Dialog>
   )
 }

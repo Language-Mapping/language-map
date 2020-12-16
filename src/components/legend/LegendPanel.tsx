@@ -52,7 +52,7 @@ export const LegendPanel: FC<Types.LegendPanelProps> = (props) => {
     legendHeading,
     routeable,
     legendSummary,
-  } = hooks.useLegend(activeGroupName)
+  } = hooks.useLegendConfig(activeGroupName)
 
   if (error)
     return <p>Something went wrong setting up the {activeGroupName} legend.</p>

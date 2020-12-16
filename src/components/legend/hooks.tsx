@@ -5,46 +5,56 @@ import { AIRTABLE_BASE, reactQueryDefaults } from 'components/config'
 import * as utils from './utils'
 import * as Types from './types'
 
-export type LegendReturn = {
-  data: Types.LegendProps[]
-  isLoading: boolean
-  error?: unknown
-} & Types.AtSchemaFields
+const defaultSymbQueryFields: (keyof Types.AtSymbFields)[] = [
+  'icon-color',
+  'icon-image',
+  'icon-size',
+  'text-color',
+  'text-halo-color',
+  'name',
+]
 
-export const useLegend = (tableName: string): LegendReturn => {
+// Same as useLayerConfig but takes a table name param for single-table us.
+// TODO: consider reusing this whole thing. It could get repetitive.
+export const useLegendConfig: Types.UseLegendConfig = (tableName) => {
   const base = new Airtable().base(AIRTABLE_BASE)
   const {
     data: symbConfig,
     isLoading: isSymbLoading,
     error: symbError,
   } = useQuery<Types.AtSchemaRecord[]>(
-    ['Schema', tableName],
-    (schemaTableName, table) => {
-      const sel = base(schemaTableName)
-        .select({ filterByFormula: `{name} = '${table}'` })
+    ['Schema', 'symbolizeable'],
+    (schemaTableName, field) => {
+      const symbolizeables = base(schemaTableName)
+        .select({ filterByFormula: `{${field}} != ''` })
         .firstPage()
 
-      return sel.then((records) => records)
+      return symbolizeables.then((records) => records)
     },
-    reactQueryDefaults
+    { ...reactQueryDefaults, refetchOnMount: true }
   )
 
-  const firstRecord = symbConfig ? symbConfig[0] : undefined
+  let firstRecord
+
+  if (symbConfig) {
+    firstRecord = symbConfig.find((row) => row.fields.name === tableName)
+  }
+
   const { fields } = firstRecord || {}
+  const queryFields = fields?.queryFields || []
 
   const { data, isLoading, error } = useQuery<Types.AtSymbRecord[]>(
-    tableName,
+    [tableName, 'legend'],
     () => {
       const sel = base(tableName)
-        .select({ fields: fields?.queryFields || [] })
+        .select({
+          fields: [...defaultSymbQueryFields, ...queryFields] || [],
+        })
         .firstPage()
 
       return sel.then((records) => records)
     },
-    {
-      ...reactQueryDefaults,
-      enabled: !!firstRecord,
-    }
+    { ...reactQueryDefaults, refetchOnMount: true, enabled: !!firstRecord }
   )
 
   let prepped: Types.LegendProps[] = []

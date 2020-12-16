@@ -1,4 +1,4 @@
-import { CirclePaint } from 'mapbox-gl'
+import { CirclePaint, SymbolLayout } from 'mapbox-gl'
 import { IconID } from '../legend/types'
 
 // `Status` icons
@@ -8,8 +8,6 @@ import iconHome from './icons/home.svg'
 import iconMuseum from './icons/museum.svg'
 import iconTree from './icons/tree.svg'
 import iconUsers from './icons/users.svg'
-
-export const CONFIG_QUERY_ID = 'sheets-config'
 
 // TODO: consider orig. Region colors for `Status`: https://bit.ly/34szqZe
 
@@ -53,6 +51,26 @@ const iconDefaults = {
   'icon-ignore-placement': true,
 }
 
+// Just a bit bigger than the circle icons
+export const iconStyleOverride = {
+  'icon-size': [
+    'step',
+    ['zoom'],
+    0.25,
+    10,
+    0.28,
+    11,
+    0.3,
+    12,
+    0.32,
+    14,
+    0.35,
+    17,
+    0.4,
+  ],
+  'icon-ignore-placement': false,
+} as SymbolLayout
+
 const textLayoutDefaults = {
   // TODO: look into text max width, or whatever the one is that's in `em`s
   'text-field': ['to-string', ['get', 'Language']],
@@ -73,7 +91,7 @@ const textLayoutDefaults = {
   ],
 }
 
-export const langLabelsStyle = {
+export const mapLabelDefaults = {
   layout: {
     ...textLayoutDefaults,
     ...iconDefaults,

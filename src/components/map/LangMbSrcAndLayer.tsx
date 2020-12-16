@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react'
-import { useQuery } from 'react-query'
+import { useQuery, useIsFetching } from 'react-query'
 import { AnyLayout, Expression } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
@@ -11,27 +11,34 @@ import {
 import { configEndpoints } from 'components/spatial/config'
 import { reactQueryDefaults } from 'components/config'
 import { RawSheetsResponse } from 'components/config/types'
-import { asyncAwaitFetch, prepEndoFilters } from './utils'
+
 import { sheetsToJSON } from '../../utils'
+import { asyncAwaitFetch, prepEndoFilters } from './utils'
+import { useLayersConfig } from './hooks'
 
 import * as config from './config'
 import * as Types from './types'
 
-const { mbStyleTileConfig, langLabelsStyle, CONFIG_QUERY_ID } = config
-
-// NOTE: it did not seem to work when using two different Styles with the same
-// dataset unless waiting until there is something to put into <Source>.
-export const LangMbSrcAndLayer: FC<Types.LangMbSrcAndLayerProps> = ({
-  symbLayers,
-}) => {
+export const LangMbSrcAndLayer: FC = () => {
   const symbLabelState = useSymbAndLabelState()
   const mapToolsDispatch = useMapToolsDispatch()
   const { activeLabelID, activeSymbGroupID } = symbLabelState
-  const { data, isFetching, error } = useQuery(
-    CONFIG_QUERY_ID,
+  const {
+    data: fontsData,
+    isLoading: isFontsLoading,
+    error: fontsError,
+  } = useQuery(
+    'sheets-config',
     () => asyncAwaitFetch<RawSheetsResponse>(configEndpoints.langConfig),
     reactQueryDefaults
   )
+  const {
+    data: layersData,
+    isLoading: isLayersLoading,
+    error: layersError,
+  } = useLayersConfig(activeSymbGroupID)
+  const globalIsFetching = useIsFetching()
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [endoFonts, setEndoFonts] = useState<any[]>()
 
@@ -40,7 +47,7 @@ export const LangMbSrcAndLayer: FC<Types.LangMbSrcAndLayerProps> = ({
     isInActiveGroup: boolean
   ): AnyLayout => {
     const bareMinimum: AnyLayout = {
-      ...config.langLabelsStyle.layout,
+      ...config.mapLabelDefaults.layout,
       ...layout,
       visibility: isInActiveGroup ? 'visible' : 'none', // hide if inactive
     }
@@ -70,9 +77,9 @@ export const LangMbSrcAndLayer: FC<Types.LangMbSrcAndLayerProps> = ({
 
   useEffect(() => {
     // TODO: check `status === 'loading'` instead?
-    if (isFetching || !data?.values) return
+    if (isFontsLoading || !fontsData?.values) return
 
-    const dataAsJson = sheetsToJSON<LangConfig>(data.values)
+    const dataAsJson = sheetsToJSON<LangConfig>(fontsData.values)
 
     mapToolsDispatch({
       type: 'SET_LANG_CONFIG_VIA_SHEETS',
@@ -80,9 +87,12 @@ export const LangMbSrcAndLayer: FC<Types.LangMbSrcAndLayerProps> = ({
     })
     setEndoFonts(prepEndoFilters(dataAsJson))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetching])
+  }, [isFontsLoading])
 
-  if (error) throw new Error('Something went wrong fetching Le Sheetz')
+  if (fontsError || layersError)
+    throw new Error(`Something went wrong setting up ${activeSymbGroupID}`)
+  if (globalIsFetching || isLayersLoading || isFontsLoading || !layersData)
+    return null
 
   return (
     <Source
@@ -90,10 +100,11 @@ export const LangMbSrcAndLayer: FC<Types.LangMbSrcAndLayerProps> = ({
       // @ts-ignore // promoteId is just not anywhere in the source...
       promoteId="ID"
       type="vector"
-      url={`mapbox://${mbStyleTileConfig.tilesetId}`}
-      id={mbStyleTileConfig.langSrcID}
+      url={`mapbox://${config.mbStyleTileConfig.tilesetId}`}
+      id={config.mbStyleTileConfig.langSrcID}
     >
-      {symbLayers.map((layer: Types.LayerPropsPlusMeta) => {
+      {/* @ts-ignore */}
+      {layersData.map((layer: Types.LayerPropsPlusMeta) => {
         let { paint, layout } = layer
         const isInActiveGroup = layer.group === activeSymbGroupID
 
@@ -103,7 +114,7 @@ export const LangMbSrcAndLayer: FC<Types.LangMbSrcAndLayerProps> = ({
         // set layout properties base on feature-state though, so maybe this:
         // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setlayoutproperty
         if (activeLabelID && activeLabelID !== 'None') {
-          paint = { ...langLabelsStyle.paint, ...paint }
+          paint = { ...config.mapLabelDefaults.paint, ...paint }
         }
 
         return (
@@ -111,7 +122,7 @@ export const LangMbSrcAndLayer: FC<Types.LangMbSrcAndLayerProps> = ({
             key={layer.id}
             {...layer}
             type="symbol" // R.I.P. circles
-            source-layer={mbStyleTileConfig.layerId}
+            source-layer={config.mbStyleTileConfig.layerId}
             layout={layout}
             paint={paint}
           />

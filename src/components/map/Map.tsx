@@ -16,7 +16,6 @@ import MapGL, { MapLoadEvent } from 'react-map-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { paths as routes } from 'components/config/routes'
-import { LangRecordSchema } from 'components/context/types'
 import * as contexts from 'components/context'
 
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
@@ -33,11 +32,9 @@ import * as hooks from './hooks'
 import * as sharedUtils from '../../utils'
 import * as Types from './types'
 import * as utils from './utils'
-import symbLayers from './config.lang-style'
 
 const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
 const { neighbConfig, countiesConfig, boundariesLayerIDs } = config
-const interactiveLayerIds = symbLayers.map((symbLayer) => symbLayer.id)
 
 // Jest or whatever CANNOT find this plugin. And importing it from
 // `react-map-gl` is useless as well.
@@ -65,7 +62,6 @@ export const Map: FC<Types.MapProps> = (props) => {
 
   const { state, dispatch } = useContext(contexts.GlobalContext)
   const symbLabelState = contexts.useSymbAndLabelState()
-  // const { boundariesVisible, tractsField, pumaField } = useMapToolsState()
   const { boundariesVisible } = contexts.useMapToolsState()
   const offset = hooks.useOffset(panelOpen)
   const breakpoint = hooks.useBreakpoint()
@@ -73,12 +69,14 @@ export const Map: FC<Types.MapProps> = (props) => {
 
   // Down to ONE state prop- `langFeatures`. Hook w/GlobalContext, router?
   const { langFeatures } = state
-  const { legendItems } = symbLabelState
-  /* eslint-disable operator-linebreak */
-  const beforeId = legendItems.length
-    ? legendItems[0].legendLabel
-    : 'Eastern Africa' // fragile hack for correct draw order of polygon layers
-  /* eslint-disable operator-linebreak */
+  const { activeSymbGroupID } = symbLabelState
+
+  // FIXME: you know what
+  const symbCache = cache.getQueryData([activeSymbGroupID, 'legend']) || []
+  const interactiveLayerIds = symbCache
+
+  const beforeId = 'background' // FIXME: you know what
+  // was 'Eastern Africa'... fragile hack for correct order of polygon layers
 
   // Local states
   const [
@@ -171,14 +169,16 @@ export const Map: FC<Types.MapProps> = (props) => {
   useEffect((): void => {
     if (!map || !mapLoaded) return
 
-    const currentLayerNames = legendItems.map((item) => item.legendLabel)
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const currentLayerNames = symbCache.map((row) => row.fields.name)
 
     utils.filterLayersByFeatIDs(
       map,
       currentLayerNames,
       sharedUtils.getAllLangFeatIDs(langFeatures)
     )
-  }, [langFeatures.length, legendItems])
+  }, [langFeatures.length, activeSymbGroupID, map, cache, langSrcID])
 
   // (Re)load symbol icons. Must be done on load and whenever `baselayer` is
   // changed, otherwise the images no longer exist.
@@ -237,6 +237,8 @@ export const Map: FC<Types.MapProps> = (props) => {
     if (!mapRef.current || !mapLoaded || !boundariesVisible) return
 
     events.onHover(event, setTooltip, mapRef.current.getMap(), {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       lang: interactiveLayerIds,
       boundaries: boundariesLayerIDs,
     })
@@ -249,36 +251,13 @@ export const Map: FC<Types.MapProps> = (props) => {
     const { target: mapObj } = mapLoadEvent
     // TODO: hook for this:
     const idFromUrl = sharedUtils.getIDfromURLparams(window.location.search)
-    const cacheOfIDs: number[] = [] // TODO: use `reduce` instead of `push`?
-    const uniqueRecords: LangRecordSchema[] = []
 
-    // This only works because of a very low zoom of 4. Otherwise not all of the
-    // features are included. Even 5 in Firefox only makes ~70% of them appear.
-    const rawLangFeats = mapObj.querySourceFeatures(langSrcID, { sourceLayer })
-
-    // Just the properties for the table/results, don't need GeoJSON cruft. Also
-    // making sure each ID is unique as there were initial data inconsistencies.
-    rawLangFeats.forEach((thisFeat) => {
-      if (
-        !thisFeat.properties ||
-        cacheOfIDs.indexOf(thisFeat.properties.ID) !== -1
-      ) {
-        return
-      }
-
-      const justTheProps = thisFeat.properties as LangRecordSchema
-
-      cacheOfIDs.push(justTheProps.ID)
-      uniqueRecords.push(thisFeat.properties as LangRecordSchema)
-    })
-
-    const matchingRecord = sharedUtils.findFeatureByID(uniqueRecords, idFromUrl)
+    // FIXME: you know what
+    const matchingRecord = sharedUtils.findFeatureByID([], idFromUrl)
 
     // NOTE: could not get this into the same `useEffect` that handles when
     // selFeatAttribs or mapLoaded are changed with an MB error/crash.
-    if (!matchingRecord) flyHome(mapObj)
-
-    dispatch({ type: 'SET_LANG_LAYER_FEATURES', payload: uniqueRecords })
+    if (!matchingRecord) flyHome(mapObj) // FIXME: you know what
     setMapLoaded(true)
 
     mapObj.addControl(
@@ -326,6 +305,8 @@ export const Map: FC<Types.MapProps> = (props) => {
     if (!map || !mapLoaded) return
 
     const topLangFeat = utils.langFeatsUnderClick(event.point, map, {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       lang: interactiveLayerIds,
     })[0]
 
@@ -401,11 +382,17 @@ export const Map: FC<Types.MapProps> = (props) => {
         {...viewport}
         {...config.mapProps}
         ref={mapRef}
+        /* eslint-disable operator-linebreak */
         interactiveLayerIds={
           boundariesVisible
-            ? [...boundariesLayerIDs, ...interactiveLayerIds]
-            : [...interactiveLayerIds]
+            ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              [...boundariesLayerIDs, ...interactiveLayerIds]
+            : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              [...interactiveLayerIds]
         }
+        /* eslint-enable operator-linebreak */
         onViewportChange={setViewport}
         onClick={(event: Types.MapEvent) => onClick(event)}
         onHover={onHover}
@@ -441,7 +428,7 @@ export const Map: FC<Types.MapProps> = (props) => {
           beforeId={beforeId}
           sourceLayer={config.tractsLyrSrc['source-layer']}
         />
-        {symbLayers && <LangMbSrcAndLayer symbLayers={symbLayers} />}
+        <LangMbSrcAndLayer />
         {popup && <MapPopup {...popup} setVisible={() => setPopup(null)} />}
         {/* Popups are annoying on mobile */}
         {!sharedUtils.isTouchEnabled() && tooltip && (

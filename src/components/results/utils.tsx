@@ -18,14 +18,16 @@ export const getCodeByCountry = (countryName: string): string => {
   return countryCodesTyped[countryName] || ''
 }
 
+// FIXME: you know what
 export function renderCountryColumn(
   data: LangRecordSchema
 ): string | React.ReactNode {
   // TODO: defeat this:
   const countryCodesTyped = countryCodes as Types.CountryCodes
-  const countries = data.Country.split(DEFAULT_DELIM)
-
-  const countriesWithFlags = countries.map((country) => {
+  // const countries = data.Country.split(DEFAULT_DELIM)
+  /* eslint-disable @typescript-eslint/ban-ts-comment */
+  // @ts-ignore
+  const countriesWithFlags = data.Country.map((country) => {
     if (countryCodesTyped[country]) {
       return countryCodesTyped[country]
     }
@@ -35,15 +37,20 @@ export function renderCountryColumn(
 
   return (
     <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
+      {/* @ts-ignore */}
       {countriesWithFlags.map((countryWithFlag, i) => (
         <CountryListItemWithFlag
-          key={countries[i]}
+          // @ts-ignore
+          key={data.Country[i]}
+          // @ts-ignore
           countryCode={countryWithFlag}
-          name={countries[i]}
+          // @ts-ignore
+          name={data.Country[i]}
         />
       ))}
     </ul>
   )
+  /* eslint-enable @typescript-eslint/ban-ts-comment */
 }
 
 export function renderEndoColumn(

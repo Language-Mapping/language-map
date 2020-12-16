@@ -1,20 +1,20 @@
 import { LayerPropsPlusMeta } from 'components/map/types'
 import { Action as SymbLabelAction } from 'components/context/SymbAndLabelContext'
 import * as Types from './types'
-import { langLabelsStyle } from '../map/config.points' // just need defaults
+import { mapLabelDefaults } from '../map/config.points' // just need defaults
 import styleConfig from '../map/config.lang-style'
 
 const createMapLegend = (
   layers: LayerPropsPlusMeta[]
-): Types.LegendSwatch[] => {
+): Types.LegendSwatchBareMin[] => {
   return layers.map((layer) => {
     const { id, layout, paint } = layer
-    const settings = { legendLabel: id } as Types.LegendSwatch
+    const settings = { legendLabel: id } as Types.LegendSwatchBareMin
     const size = layout['icon-size'] ? (layout['icon-size'] as number) * 20 : 5
     const backgroundColor = (paint['icon-color'] as string) || 'transparent'
     const iconID =
       (layout['icon-image'] as Types.IconID) ||
-      langLabelsStyle.layout['icon-image']
+      mapLabelDefaults.layout['icon-image']
 
     return { ...settings, size, backgroundColor, iconID }
   })
@@ -106,49 +106,4 @@ export const prepAirtableResponse = (
         items: finalPrep(items.sort(sortArrOfObjects('name')), labelByField),
       }
     })
-}
-
-// TODO: wire up for Size
-// // Just a bit bigger than the circle icons
-// const statusIconSize = {
-//   'icon-size': [
-//     'step',
-//     ['zoom'],
-//     0.25,
-//     10,
-//     0.28,
-//     11,
-//     0.3,
-//     12,
-//     0.32,
-//     14,
-//     0.35,
-//     17,
-//     0.4,
-//   ],
-//   'icon-ignore-placement': false,
-// }
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const createLayerStyles = (
-  settings: Types.LegendGroupConfig,
-  addlLayoutProps = {}
-) => {
-  const { name, groupName } = settings
-  // TODO: make icon color and image conditional/optional
-
-  return {
-    id: name,
-    group: groupName, // aka Airtable table name, and possibly query ID
-    filter: ['match', ['get', groupName], [name], true, false],
-    layout: {
-      ...addlLayoutProps,
-      'icon-image': settings['icon-image'],
-    },
-    paint: {
-      'icon-color': settings['icon-color'],
-      'text-color': settings['text-color'],
-      'text-halo-color': settings['text-halo-color'],
-    },
-  }
 }

@@ -8,17 +8,20 @@ export type IconID =
   | '_museum'
   | '_circle'
 
-export type LegendSwatch = {
+export type LegendSwatchBareMin = {
   legendLabel: string
   backgroundColor?: string
   iconID?: IconID
   size?: number
 }
 
-export type SwatchOnly = Pick<LegendSwatch, 'backgroundColor' | 'size'>
+export type SwatchOnlyProps = Pick<
+  LegendSwatchBareMin,
+  'backgroundColor' | 'size'
+>
 
 // Same as the regular swatch but will have SVG element if it is a symbol
-export type LegendSwatchComponent = LegendSwatch & {
+export type LegendSwatchProps = LegendSwatchBareMin & {
   icon?: string
   component?: React.ElementType
   labelStyleOverride?: React.CSSProperties
@@ -51,6 +54,7 @@ export type LegendGroupConfig = AtSymbFields & { groupName: string }
 
 // Columns from Schema table, or at least a few of them
 export type AtSchemaFields = {
+  name: string
   groupByField?: keyof AtSymbFields
   labelByField?: keyof AtSymbFields
   sortByField?: keyof AtSymbFields
@@ -75,3 +79,11 @@ export type FinalPrep = (
   labelByField?: keyof AtSymbFields,
   sortByField?: 'name' | keyof AtSymbFields
 ) => AtSymbFields[]
+
+export type UseLegendConfig = (
+  tableName: string
+) => {
+  data: LegendProps[]
+  isLoading: boolean
+  error?: unknown
+} & Omit<AtSchemaFields, 'name'>

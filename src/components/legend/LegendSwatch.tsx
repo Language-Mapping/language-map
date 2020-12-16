@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 // No text, no frills. Just a circle with a color
-export const SwatchOnly: FC<Types.SwatchOnly> = (props) => {
+export const SwatchOnly: FC<Types.SwatchOnlyProps> = (props) => {
   const { backgroundColor, size = 7 } = props
   const adjustedSize = Math.round(size * 1.5) // avoid squished circles
 
@@ -46,7 +46,7 @@ export const SwatchOnly: FC<Types.SwatchOnly> = (props) => {
   )
 }
 
-export const LegendSwatch: FC<Types.LegendSwatchComponent> = (props) => {
+export const LegendSwatch: FC<Types.LegendSwatchProps> = (props) => {
   const {
     backgroundColor,
     icon,

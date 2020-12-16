@@ -1,11 +1,15 @@
 import { useContext } from 'react'
+import { useQuery } from 'react-query'
 import { WebMercatorViewport } from 'react-map-gl'
 import { useTheme } from '@material-ui/core/styles'
 
 import { panelWidths } from 'components/panels/config'
 import { GlobalContext, LangRecordSchema } from 'components/context'
+import * as LegendTypes from 'components/legend'
+import { LayerPropsPlusMeta } from 'components/map/types'
 import * as Types from './types'
 import { useWindowResize } from '../../utils'
+import { iconStyleOverride } from './config'
 
 // Set offsets to account for the panel-on-map layout as it would otherwise
 // expect the map center to be the screen center. Did not find a good way to do
@@ -78,4 +82,61 @@ export const useLangFeatByKeyVal = (
     ),
     stateReady,
   }
+}
+
+export const useLayersConfig = (
+  tableName: keyof LangRecordSchema | '' | 'None'
+): Types.UseLayersConfig => {
+  const { data, isLoading, error } = useQuery<LegendTypes.AtSchemaRecord[]>([
+    tableName,
+    'legend',
+  ])
+
+  let prepped: LayerPropsPlusMeta[] = []
+
+  if (data && tableName && tableName !== 'None') {
+    prepped = createLayerStyles(
+      data.map((row) => row.fields),
+      tableName
+    )
+  }
+
+  // TODO: fix/understand fetching/loading
+  return { error, data: prepped, isLoading }
+}
+
+export const createLayerStyles = (
+  rows: LegendTypes.AtSymbFields[],
+  group: keyof LangRecordSchema | '' | 'None'
+): LayerPropsPlusMeta[] => {
+  if (!group || group === 'None') return []
+
+  return rows.map((settings) => {
+    const { name: id } = settings
+
+    // CRED: fo' spread: https://bit.ly/37nzMRT
+    return {
+      id,
+      type: 'symbol', // not being used at time of writing, just satisfy TS
+      group, // aka Airtable table name, and possibly query ID
+      filter: ['match', ['get', group], [id], true, false],
+      layout: {
+        // Making an assumption that image-based icons will look better with the
+        // slightly-larger, placement-ignorant style
+        ...(settings['icon-image'] && {
+          'icon-image': settings['icon-image'],
+          ...iconStyleOverride,
+        }),
+        ...(!settings['icon-image'] &&
+          settings['icon-size'] && { 'icon-size': settings['icon-size'] }),
+      },
+      paint: {
+        ...(settings['icon-color'] && { 'icon-color': settings['icon-color'] }),
+        ...(settings['text-color'] && { 'text-color': settings['text-color'] }),
+        ...(settings['text-halo-color'] && {
+          'text-halo-color': settings['text-halo-color'],
+        }),
+      },
+    }
+  })
 }

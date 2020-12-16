@@ -59,14 +59,10 @@ export const CommSize: FC<{
   data: LangRecordSchema
   lookup: { [key: number]: string }
 }> = (props) => {
-  const symbLabelState = useSymbAndLabelState()
   const theme = useTheme()
   const { data, lookup } = props
   const valAsPrettyStr = lookup[data.Size]
-  const swatchColor =
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    symbLabelState.legendSymbols[valAsPrettyStr].paint['icon-color'] as string
+  const swatchColor = 'green' // FIXME: you know what
 
   return (
     <LegendSwatch

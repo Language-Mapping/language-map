@@ -12,8 +12,10 @@ export const POINT_ZOOM_LEVEL = 14.5 // e.g. clicked point or single-3result fil
 export const NYC_LAT_LONG = { latitude: 40.7128, longitude: -74.006 }
 export const mbStyleTileConfig = {
   symbStyleUrl: '/data/mb-styles.langs.json',
-  layerId: 'jason-schema-no-disp-5eaf8w', // TODO: a dev/deploy-only instance!
-  tilesetId: 'elalliance.5okvgals',
+  // layerId: 'jason-schema-no-disp-5eaf8w', // TODO: a dev/deploy-only instance! // ORIG
+  layerId: 'Data-For_Map-2jwj5r',
+  // tilesetId: 'elalliance.5okvgals', // orig
+  tilesetId: 'elalliance.bvewtroy',
   langSrcID: 'languages-src', // arbitrary, set in code, never changes
   // So far this is the only known way to use the custom fonts
   customStyles: {

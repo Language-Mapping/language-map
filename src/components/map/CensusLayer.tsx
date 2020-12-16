@@ -24,7 +24,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   const visible = field !== undefined && field !== ''
 
   // TODO: prevent this from happening before it's actually used
-  const { data, error, isFetching } = useQuery(
+  const { data, error, isLoading } = useQuery(
     `${censusUnit}-table`,
     () => utils.asyncAwaitFetch(tableEndpoints[censusUnit]),
     reactQueryDefaults
@@ -36,7 +36,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   const [tableRows, setTableRows] = useState<Types.PreppedCensusTableRow[]>()
 
   useEffect(() => {
-    if (isFetching || !data) return
+    if (isLoading || !data) return
 
     const tableRowsPrepped = sheetsToJSON<Types.PreppedCensusTableRow>(
       data.values,
@@ -45,7 +45,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
 
     setTableRows(tableRowsPrepped)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetching])
+  }, [isLoading])
 
   useEffect(() => {
     if (!map || !tableRows || !field) return
@@ -76,7 +76,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
     setFillPaint(utils.setInterpolatedFill(highLow.high, highLow.low))
   }, [highLow])
 
-  if (error || isFetching) return null // TODO: sentry
+  if (error || isLoading) return null // TODO: sentry
 
   const promoteIDfield = 'GEOID' // tell MB not to use default `id` as unique ID
 

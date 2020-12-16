@@ -43,6 +43,8 @@ export const filterLayersByFeatIDs = (
   layerNames: string[],
   langFeatIDs: number[]
 ): void => {
+  if (!layerNames.length) return // FIXME: you know what
+
   layerNames.forEach((name) => {
     // CRED: https://gis.stackexchange.com/a/287629/5824
     const filterLangsByID = ['in', ['get', 'ID'], ['literal', langFeatIDs]]

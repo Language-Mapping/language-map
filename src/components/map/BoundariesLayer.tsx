@@ -8,7 +8,7 @@ import * as Types from './types'
 
 export const BoundariesLayer: FC<Types.BoundariesLayerProps> = (props) => {
   const { beforeId, source, layers, lookupPath, visible } = props
-  const { data, isFetching, error } = useQuery(
+  const { data, isLoading, error } = useQuery(
     source.id,
     () => utils.asyncAwaitFetch<Types.BoundaryLookup[]>(lookupPath),
     reactQueryDefaults
@@ -16,13 +16,13 @@ export const BoundariesLayer: FC<Types.BoundariesLayerProps> = (props) => {
   const [recordIDs, setRecordIDs] = useState<number[]>()
 
   useEffect(() => {
-    if (isFetching || !data) return
+    if (isLoading || !data) return
 
     setRecordIDs(data.map((record) => record.id))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetching])
+  }, [isLoading])
 
-  if (error || !recordIDs || !visible || isFetching) return null
+  if (error || !recordIDs || !visible || isLoading) return null
 
   return (
     <Source {...source} type="vector">

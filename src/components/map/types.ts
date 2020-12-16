@@ -85,8 +85,6 @@ export type BoundaryFeat = Omit<
   'source-layer': string
 }
 
-export type LangMbSrcAndLayerProps = { symbLayers: LayerPropsPlusMeta[] }
-
 export type BoundariesLayerProps = {
   visible: boolean
   beforeId?: string
@@ -234,4 +232,10 @@ export type LangFeatsUnderClick = (
 export type UseLangReturn = {
   feature: LangRecordSchema | undefined
   stateReady: boolean
+}
+
+export type UseLayersConfig = {
+  data: LayerPropsPlusMeta[]
+  isLoading: boolean
+  error: unknown
 }
