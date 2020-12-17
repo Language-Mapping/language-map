@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react'
-import { useQuery, useIsFetching } from 'react-query'
+import { useQuery } from 'react-query'
 import { AnyLayout, Expression } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
@@ -37,7 +37,6 @@ export const LangMbSrcAndLayer: FC = () => {
     isLoading: isLayersLoading,
     error: layersError,
   } = useLayersConfig(activeSymbGroupID)
-  const globalIsFetching = useIsFetching()
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [endoFonts, setEndoFonts] = useState<any[]>()
@@ -91,14 +90,12 @@ export const LangMbSrcAndLayer: FC = () => {
 
   if (fontsError || layersError)
     throw new Error(`Something went wrong setting up ${activeSymbGroupID}`)
-  if (globalIsFetching || isLayersLoading || isFontsLoading || !layersData)
-    return null
+  if (isLayersLoading || isFontsLoading || !layersData) return null
 
   return (
     <Source
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore // promoteId is just not anywhere in the source...
-      promoteId="ID"
       type="vector"
       url={`mapbox://${config.mbStyleTileConfig.tilesetId}`}
       id={config.mbStyleTileConfig.langSrcID}

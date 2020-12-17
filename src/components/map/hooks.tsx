@@ -78,7 +78,7 @@ export const useLangFeatByKeyVal = (
 
   return {
     feature: state.langFeatures.find(
-      (record) => record[field || 'ID'] === valuePrepped
+      (record) => record[field || 'id'] === valuePrepped
     ),
     stateReady,
   }

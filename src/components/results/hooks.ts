@@ -14,9 +14,9 @@ const fields = [
   'Country',
   'Description',
   'Endonym',
-  'ID',
+  'id',
   'Global Speaker Total',
-  'Addl Neighborhoods',
+  'Additional Neighborhoods',
   'Glottocode',
   'ISO 639-3',
   'Language Family',
@@ -34,11 +34,13 @@ export const useFullData = (): UseFullData => {
   const { data, isLoading, error } = useQuery(
     ['Data', 'full'],
     (schemaTableName: string, field) => {
-      const allData = base(schemaTableName).select({ fields }).firstPage()
+      const allData = base(schemaTableName)
+        .select({ fields, filterByFormula: '{id} = 37' }) // FIXME: bad
+        .firstPage()
 
       return allData.then((records) => records)
     },
-    { ...reactQueryDefaults, refetchOnMount: true }
+    { ...reactQueryDefaults }
   )
 
   return {

@@ -50,8 +50,8 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
     const newFilterVal = rowData[field]
 
     // Show feature in map
-    if (field === 'ID') {
-      history.push(`${routes.details}/${rowData.ID}`)
+    if (field === 'id') {
+      history.push(`${routes.details}/${rowData.id}`)
 
       return
     }
@@ -61,7 +61,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
 
     // Open Details modal
     if (field === 'Description') {
-      history.push(`${routes.table}/${rowData.ID}`)
+      history.push(`${routes.table}/${rowData.id}`)
 
       return
     }

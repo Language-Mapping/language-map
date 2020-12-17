@@ -30,7 +30,7 @@ export const useUniqueInstances = (
 
     if (!Neighborhood && all.find((item) => item.title === Town)) return all
 
-    const common = { footer, to: thisOne.ID, icon }
+    const common = { footer, to: thisOne.id, icon }
 
     if (!Neighborhood) return [...all, { title: Town, ...common }]
 

@@ -33,7 +33,7 @@ export const initLegend = (
   dispatch({ type: 'SET_LANG_LAYER_LEGEND', payload: legend })
 }
 
-// Dig through the MB style config to find the matching ID. Return icon color.
+// Dig through the MB style config to find the matching `id`. Return icon color.
 export const getSwatchColorByConfig = (id: string): string => {
   const matchedConfig = styleConfig.find((config) => config.id === id)
 

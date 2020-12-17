@@ -17,7 +17,7 @@ import {
 } from 'mapbox-gl'
 import * as GeoJSON from 'geojson'
 
-import { LangRecordSchema } from 'components/context/types'
+import { LangRecordSchema, DetailsSchema } from 'components/context'
 
 type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
 type Padding =
@@ -181,7 +181,7 @@ export type CustomEventData = MapEventType & {
 }
 
 export type PrepPopupContent = (
-  selFeatAttribs: LangRecordSchema | null,
+  selFeatAttribs: DetailsSchema | null,
   popupHeading?: string | null
 ) => PopupContent | null
 

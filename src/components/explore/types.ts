@@ -1,3 +1,5 @@
+import { DetailsSchema } from 'components/context'
+
 import { LangRecordSchema } from 'components/context/types'
 
 // TODO: try to reuse some of these, they're pretty common in sev. components
@@ -50,10 +52,7 @@ export type LangFilterArgs = RouteMatch & {
 }
 
 export type CensusPopoverProps = {
-  language: string
-  tractField?: string
-  pumaField?: string
-  censusPretty?: string
+  data: DetailsSchema
 }
 
 export type StatsAndMetaProps = {

@@ -47,7 +47,7 @@ export const filterLayersByFeatIDs = (
 
   layerNames.forEach((name) => {
     // CRED: https://gis.stackexchange.com/a/287629/5824
-    const filterLangsByID = ['in', ['get', 'ID'], ['literal', langFeatIDs]]
+    const filterLangsByID = ['in', ['get', 'id'], ['literal', langFeatIDs]]
     const currentFilters = map.getFilter(name)
 
     let origFilter = []

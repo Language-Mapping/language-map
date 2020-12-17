@@ -12,7 +12,7 @@ export const findFeatureByID = (
   id: number,
   idField?: keyof LangRecordSchema
 ): LangRecordSchema | undefined =>
-  langLayerRecords.find((record) => record[idField || 'ID'] === id)
+  langLayerRecords.find((record) => record[idField || 'id'] === id)
 
 export const getIDfromURLparams = (url: string): number => {
   const urlParams = new URLSearchParams(url)
@@ -100,7 +100,7 @@ export const createMarkup = (content: string): { __html: string } => ({
 export const isAlpha = (ch: string): boolean => ch.match(/^[a-z]+$/i) !== null
 
 export const getAllLangFeatIDs = (data: LangRecordSchema[]): number[] =>
-  data.map((record) => record.ID)
+  data.map((record) => record.id)
 
 // CRED:
 // www.geeksforgeeks.org/how-to-detect-touch-screen-device-using-javascript/

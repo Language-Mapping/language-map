@@ -170,7 +170,7 @@ const hidden = {
 export const columns = [
   {
     title: 'View in map',
-    field: 'ID',
+    field: 'id',
     ...commonColProps,
     filtering: false,
     export: false,

@@ -7,12 +7,12 @@ import { MdLayersClear, MdLayers } from 'react-icons/md'
 
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'
 import { CensusQueryID, CensusIntro } from 'components/spatial'
-import { ChipWithClick } from 'components/details'
+import { Chip } from 'components/details'
 import { DialogCloseBtn } from 'components/generic/modals'
 
 import * as Types from './types'
 
-const useStyles = makeStyles((theme: Theme) =>
+export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     popover: {
       maxWidth: 350,
@@ -42,12 +42,18 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
-  const { pumaField, tractField, censusPretty, language } = props
+  const { data } = props
   const mapToolsDispatch = useMapToolsDispatch()
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
   const classes = useStyles()
-  const censusFieldThisLang = pumaField || tractField
   const { censusActiveFields } = useMapToolsState()
+  const {
+    Language,
+    'PUMA Field': pumaField,
+    'Tract Field': tractField,
+    'Census Pretty': censusPretty,
+  } = data
+  const censusFieldThisLang = pumaField || tractField
 
   if (!censusFieldThisLang) return null
 
@@ -97,7 +103,7 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
 
   const MetaPara = (
     <Typography className={classes.metaPara}>
-      Speakers of <em>{language}</em> are likely to be included within the
+      Speakers of <em>{Language}</em> are likely to be included within the
       census category of <b>{censusPretty}</b> at the ACS {vintage}{' '}
       <em>{censusLabel}</em> level.
     </Typography>
@@ -157,7 +163,7 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
 
   return (
     <>
-      <ChipWithClick
+      <Chip
         icon={<FaClipboardList />}
         title="Show census options"
         text="Census"

@@ -20,7 +20,7 @@ export const langTypeIconsConfig = [
   { icon: iconCircle, id: '_circle' },
 ] as { icon: string; id: IconID }[]
 
-// TODO: rm once soln is found for indicating selected feature if type = symbol
+// TODO: rm once soln is found for type = symbol (below is not in use)
 export const commonCirclePaint = {
   'circle-stroke-color': 'cyan',
   'circle-stroke-width': [

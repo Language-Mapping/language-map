@@ -38,33 +38,18 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const SeeRelatedChip: FC<Types.SeeRelatedChipProps> = (props) => {
+export const Chip: FC<Types.ChipProps> = (props) => {
   const classes = useStyles()
-  const { children, to, name } = props
+  const { title, icon, handleClick, text, to } = props
 
   return (
     <Paper
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      component={RouterLink}
+      component={to ? RouterLink : 'div'}
+      title={title || `View more ${text} communities`}
+      elevation={2}
       to={to}
-      title={`View more ${name} communities`}
-      elevation={2}
-      className={classes.chip}
-    >
-      {children}
-    </Paper>
-  )
-}
-
-export const ChipWithClick: FC<Types.ChipWithClickProps> = (props) => {
-  const classes = useStyles()
-  const { title, icon, handleClick, text } = props
-
-  return (
-    <Paper
-      title={title}
-      elevation={2}
       role="button"
       className={classes.chip}
       onClick={handleClick}

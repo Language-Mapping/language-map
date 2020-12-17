@@ -1,13 +1,12 @@
-type MediaKey = 'video' | 'audio' | 'share' | 'clear' | 'view'
+import { DetailsSchema } from 'components/context'
+
+type MediaKey = 'Video' | 'Audio' | 'share' | 'clear' | 'view'
 
 export type MediaProps = {
-  language: string
+  data: DetailsSchema
   clear?: string // not needed whatsoever, just going through the TS motions?
   share?: string
-  audio?: string
-  video?: string
   view?: string // not needed whatsoever, just going through the TS motions?
-  description?: string
   shareNoun?: string // e.g. "community" or "profile"
   omitClear?: boolean // e.g. for pre-Details Explore view
 }

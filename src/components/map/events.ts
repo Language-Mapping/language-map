@@ -1,4 +1,5 @@
-import { LangRecordSchema } from 'components/context/types'
+import { DetailsSchema } from 'components/context'
+
 import * as utils from './utils'
 import * as MapTypes from './types'
 
@@ -41,7 +42,7 @@ export const onHover: MapTypes.OnHover = (
 
   if (langsHovered.length) {
     const headingAndSubheading = utils.prepPopupContent(
-      langsHovered[0].properties as LangRecordSchema
+      langsHovered[0].properties as DetailsSchema
     )
 
     if (!headingAndSubheading) return // should also be something tho...

@@ -1,24 +1,16 @@
+import { DetailsSchema } from 'components/context'
+
 export type MoreLikeThisProps = {
-  region: string
-  country: string
-  language?: string
-  macro?: string
+  data: DetailsSchema
 }
 
-export type SeeRelatedChipProps = {
-  to: string
-  name: string
-  variant?: 'subtle'
-}
-
-export type ChipWithClickProps = {
+export type ChipProps = {
   text: string
+  icon: React.ReactNode
   title?: string
-  icon?: React.ReactNode
-  handleClick: (e: React.MouseEvent<HTMLDivElement>) => void
+  to?: string
+  handleClick?: (e: React.MouseEvent<HTMLDivElement>) => void
 }
 
-export type NeighborhoodList = {
-  town: string
-  neighborhoods: string
-}
+export type NeighborhoodListProps = MoreLikeThisProps
+export type LangOrEndoIntroProps = MoreLikeThisProps

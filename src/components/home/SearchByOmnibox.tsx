@@ -78,7 +78,7 @@ export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
       popupIcon={null}
       onChange={(event, value) => {
         // Can't just do <RouterLink>, otherwise keyboard selection no-go...
-        if (value) history.push(`${routes.details}/${value.ID}`)
+        if (value) history.push(`${routes.details}/${value.id}`)
       }}
       filterOptions={(options, { inputValue }) => {
         return matchSorter(options, inputValue, {

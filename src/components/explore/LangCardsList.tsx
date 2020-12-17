@@ -86,34 +86,20 @@ export const LangCardsList: FC = () => {
     Endonym,
     Description,
     Language,
-    Country,
     'Global Speaker Total': speakers,
-    'World Region': region,
-    'PUMA Field': pumaField,
-    'Tract Field': tractField,
-    'Census Pretty': censusPretty,
-    Audio,
-    Video,
   } = thisLangConfig
 
   const description = Description || feature?.Description || ''
 
+  // FIXME: just schema/type
   const Extree = (
     <>
-      <MoreLikeThis region={region} country={Country}>
-        <CensusPopover
-          {...{ tractField, pumaField, censusPretty }}
-          language={Language}
-        />
-      </MoreLikeThis>
-      <Media
-        description={description}
-        audio={Audio || ''}
-        video={Video || ''}
-        language={Language}
-        shareNoun="profile"
-        omitClear
-      />
+      {/* @ts-ignore */}
+      <MoreLikeThis data={thisLangConfig} />
+      {/* @ts-ignore */}
+      <CensusPopover data={thisLangConfig} />
+      {/* @ts-ignore */}
+      <Media data={thisLangConfig} shareNoun="profile" omitClear />
       {description && <ReadMore text={description} />}
     </>
   )

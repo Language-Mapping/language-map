@@ -63,7 +63,7 @@ export type Statuses =
 
 // Aka user doesn't really see them
 type InternalUse = {
-  ID: number // unique (ultimately)
+  id: number // unique (ultimately)
   Latitude: number // nice convenience over geometry.coordinates
   Longitude: number // nice convenience over geometry.coordinates
 }
@@ -74,25 +74,53 @@ type CommunitySize = 1 | 2 | 3 | 4 | 5
 // TODO: consider separate file
 // In the order that should be followed in Filters, Data/Results, and Details
 export type LangRecordSchema = InternalUse & {
-  Language: string
+  'Font Image Alt'?: string // for images to use instead of fonts, e.g. ASL
+  'Global Speaker Total'?: number // string in MB tileset b/c some blanks
+  'ISO 639-3'?: string
+  'Language Family': string
+  'World Region': WorldRegion
+  Audio?: string // TODO: TS for URL?
+  Country: string
+  County: string
+  Description: string
   Endonym: string // often same as English name, may be an http link to image
+  Glottocode?: string
+  Language: string
+  Macrocommunity?: string
   Neighborhood: string | '' // NYC-metro only // TODO: make optional
   Size: CommunitySize
   Status: Statuses
-  'World Region': WorldRegion
-  Country: string
-  'Global Speaker Total'?: number // string in MB tileset b/c some blanks
-  'Font Image Alt'?: string // for images to use instead of fonts, e.g. ASL
-  'Language Family': string
-  Macrocommunity?: string
-  Description: string
-  Video?: string // TODO: TS for URL?
-  Audio?: string // TODO: TS for URL?
   Town: string
-  County: string
-  'ISO 639-3'?: string
-  Glottocode?: string
+  Video?: string // TODO: TS for URL?
 }
+
+// For Details, for now
+export type DetailsSchema = Pick<
+  LangRecordSchema,
+  | 'Audio'
+  | 'Description'
+  | 'Endonym'
+  | 'Language'
+  | 'id'
+  | 'Latitude'
+  | 'Longitude'
+  | 'Macrocommunity'
+  | 'Town'
+  | 'Video'
+  | 'World Region'
+> & {
+  Country: string[]
+  countryFlags: { url: string }[]
+  // Couldn't get this into string as an Airtable field:
+  'Font Image Alt': { url: string }[]
+  worldRegionColor: string
+  languageDescrip?: string
+  'Primary Neighborhood': string
+  'Additional Neighborhoods'?: string[] // suuuper shakes mcgee
+} & CensusFields
+
+// TODO: set up TableSchema. Should be very similar to Details.
+// TODO: set up OmniboxSchema: iso, glotto, language, primaries, IDs
 
 /**
  * MAP TOOLS CONTEXT (could not get all imports to work w/o dep cycle error)
@@ -115,11 +143,17 @@ export type MapToolsAction =
 
 export type MapToolsDispatch = React.Dispatch<MapToolsAction>
 
+export type CensusFields = {
+  'PUMA Field'?: string
+  'Tract Field'?: string
+  'Census Pretty'?: string // MATCH/INDEX convenience lookup
+}
+
 // NOTE: it's not actually ALL the cols, but most
 export type LangConfig = Omit<
   LangRecordSchema,
   | 'County'
-  | 'ID'
+  | 'id'
   | 'Latitude'
   | 'Longitude'
   | 'Macrocommunity'
@@ -127,13 +161,11 @@ export type LangConfig = Omit<
   | 'Size'
   | 'Status'
   | 'Town'
-> & {
-  'PUMA Field'?: string
-  'Tract Field'?: string
-  'Census Pretty'?: string // MATCH/INDEX convenience lookup
-  'Global Speaker Total'?: string // MB has int, Google API string
-  Font?: string
-}
+> &
+  CensusFields & {
+    'Global Speaker Total'?: string // MB has int, Google API string
+    Font?: string
+  }
 
 export type InitialMapToolsState = {
   boundariesVisible: boolean

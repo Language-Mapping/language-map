@@ -36,7 +36,7 @@ export const mbStyleTileConfig = {
 export const initialMapState = {
   latitude: mapCenter[1],
   longitude: mapCenter[0],
-  zoom: 4, // if set to 5, Firefox only sees ~70% of the features
+  zoom: 10, // if set to 5, Firefox only sees ~70% of the features
 }
 
 export const mapProps: Types.InitialMapProps = {

@@ -3,7 +3,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useQueryCache } from 'react-query'
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import {
   AttributionControl,
   Map as MbMap, // TODO: try to lazy load the biggest dep of all. See:
@@ -18,6 +18,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import { paths as routes } from 'components/config/routes'
 import * as contexts from 'components/context'
 
+import { useDetails } from 'components/details'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { Geolocation } from './Geolocation'
 import { MapPopup } from './MapPopup'
@@ -53,19 +54,34 @@ export const Map: FC<Types.MapProps> = (props) => {
   const { mapLoaded, mapRef } = props
   const { panelOpen, setMapLoaded } = props
   const map: MbMap | undefined = mapRef.current?.getMap()
+  // TODO: // error, // notFound,
+  const { isLoading, data: selFeatAttribss } = useDetails()
 
   // Routing
   const history = useHistory()
   const loc = useLocation()
-  const match: { params: { id: string } } | null = useRouteMatch('/details/:id')
-  const matchedID = match?.params?.id
+  const featId = loc.pathname.split('/').slice(-1)[0]
 
   const { state, dispatch } = useContext(contexts.GlobalContext)
   const symbLabelState = contexts.useSymbAndLabelState()
   const { boundariesVisible } = contexts.useMapToolsState()
   const offset = hooks.useOffset(panelOpen)
   const breakpoint = hooks.useBreakpoint()
+
   const cache = useQueryCache()
+  let selFeatAttribs: contexts.DetailsSchema | null = null
+  if (
+    /* eslint-disable @typescript-eslint/ban-ts-comment */
+    cache.getQueryData(['Details', featId]) &&
+    // @ts-ignore
+    cache.getQueryData(['Details', featId])[0]
+  ) {
+    // @ts-ignore
+    selFeatAttribs =
+      // @ts-ignore
+      cache.getQueryData(['Details', featId])[0].fields
+    /* eslint-enable @typescript-eslint/ban-ts-comment */
+  }
 
   // Down to ONE state prop- `langFeatures`. Hook w/GlobalContext, router?
   const { langFeatures } = state
@@ -96,7 +112,6 @@ export const Map: FC<Types.MapProps> = (props) => {
   // Handle MB Boundaries feature click. Had this inside the handler before, but
   // using state and more on-demand-ness seemed more efficient.
   useEffect((): void => {
-    // if (!map || !clickedBoundary || !boundariesLookup) return
     if (!map || !clickedBoundary) return
 
     const boundaryData = cache.getQueryData(
@@ -178,7 +193,7 @@ export const Map: FC<Types.MapProps> = (props) => {
       currentLayerNames,
       sharedUtils.getAllLangFeatIDs(langFeatures)
     )
-  }, [langFeatures.length, activeSymbGroupID, map, cache, langSrcID])
+  }, [langFeatures.length])
 
   // (Re)load symbol icons. Must be done on load and whenever `baselayer` is
   // changed, otherwise the images no longer exist.
@@ -190,28 +205,24 @@ export const Map: FC<Types.MapProps> = (props) => {
       config.langTypeIconsConfig
     )
   }, []) // add `baselayer` as dep if using more than just light BG
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   // Do selected feature stuff on sel feat change or map load
   useEffect((): void => {
     if (!map || !mapLoaded) return
 
     // Deselect any language features // TODO: add `selected` key?
-    map.removeFeatureState({ source: langSrcID, sourceLayer })
+    // map.removeFeatureState({ source: langSrcID, sourceLayer }) // FIXME
     nuclearClear()
 
-    if (!matchedID) return
-
-    const matchingRecord = sharedUtils.findFeatureByID(
-      langFeatures,
-      parseInt(matchedID, 10)
-    )
-
-    if (!matchingRecord) return
+    if (!selFeatAttribs && !selFeatAttribss) return
 
     // NOTE: won't get this far on load even if feature is selected. The timing
     // and order of the whole process prevent that.
 
-    const { ID, Latitude: latitude, Longitude: longitude } = matchingRecord
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const { id, Latitude: latitude, Longitude: longitude } = selFeatAttribs
     const settings = {
       latitude,
       longitude,
@@ -224,15 +235,15 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     // Make feature appear selected // TODO: higher zIndex on selected feature
     map.setFeatureState(
-      { sourceLayer, source: langSrcID, id: ID },
+      { sourceLayer, source: langSrcID, id },
       { selected: true }
     )
 
-    utils.flyToPoint(map, settings, utils.prepPopupContent(matchingRecord))
-  }, [matchedID, mapLoaded])
+    utils.flyToPoint(map, settings, utils.prepPopupContent(selFeatAttribs))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapLoaded, isLoading, selFeatAttribs, map, cache])
 
-  /* eslint-enable react-hooks/exhaustive-deps */
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function onHover(event: Types.MapEvent) {
     if (!mapRef.current || !mapLoaded || !boundariesVisible) return
 
@@ -249,15 +260,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   function onLoad(mapLoadEvent: MapLoadEvent) {
     // `mapObj` should === `map` but avoid naming conflict just in case:
     const { target: mapObj } = mapLoadEvent
-    // TODO: hook for this:
-    const idFromUrl = sharedUtils.getIDfromURLparams(window.location.search)
 
-    // FIXME: you know what
-    const matchingRecord = sharedUtils.findFeatureByID([], idFromUrl)
-
-    // NOTE: could not get this into the same `useEffect` that handles when
-    // selFeatAttribs or mapLoaded are changed with an MB error/crash.
-    if (!matchingRecord) flyHome(mapObj) // FIXME: you know what
     setMapLoaded(true)
 
     mapObj.addControl(
@@ -304,20 +307,31 @@ export const Map: FC<Types.MapProps> = (props) => {
   function onClick(event: Types.MapEvent): void {
     if (!map || !mapLoaded) return
 
-    const topLangFeat = utils.langFeatsUnderClick(event.point, map, {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // FIXME: alll this mess
+    /* eslint-disable @typescript-eslint/ban-ts-comment */
+    // CRED: https://stackoverflow.com/a/42984268/1048518
+    // @ts-ignore
+    const lang = map
       // @ts-ignore
-      lang: interactiveLayerIds,
+      .getStyle()
+      // @ts-ignore
+      .layers.filter((layer) => layer.source === langSrcID)
+      // @ts-ignore
+      .map((layer) => layer.id)
+
+    const topLangFeat = utils.langFeatsUnderClick(event.point, map, {
+      // @ts-ignore
+      lang,
     })[0]
+    /* eslint-disable @typescript-eslint/ban-ts-comment */
 
     nuclearClear() // can't rely on history
 
-    // No language features under the click
     if (!topLangFeat) {
       history.push(loc.pathname)
       dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
     } else {
-      history.push(`${routes.details}/${topLangFeat.properties?.ID}`)
+      history.push(`${routes.details}/${topLangFeat.id}`)
 
       return // prevent boundary click underneath
     }
@@ -383,19 +397,19 @@ export const Map: FC<Types.MapProps> = (props) => {
         {...config.mapProps}
         ref={mapRef}
         /* eslint-disable operator-linebreak */
-        interactiveLayerIds={
-          boundariesVisible
-            ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              [...boundariesLayerIDs, ...interactiveLayerIds]
-            : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              [...interactiveLayerIds]
-        }
+        // interactiveLayerIds={
+        //   boundariesVisible
+        //     ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //       // @ts-ignore
+        //       [...boundariesLayerIDs, ...interactiveLayerIds]
+        //     : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //       // @ts-ignore
+        //       [...interactiveLayerIds]
+        // }
         /* eslint-enable operator-linebreak */
         onViewportChange={setViewport}
         onClick={(event: Types.MapEvent) => onClick(event)}
-        onHover={onHover}
+        // onHover={onHover}
         onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
       >
         <Geolocation
