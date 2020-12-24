@@ -52,6 +52,7 @@ export const LegendPanel: FC<Types.LegendPanelProps> = (props) => {
     legendHeading,
     routeable,
     legendSummary,
+    sourceCredits,
   } = hooks.useLegendConfig(activeGroupName)
 
   if (error)
@@ -73,6 +74,7 @@ export const LegendPanel: FC<Types.LegendPanelProps> = (props) => {
               routeName={routeable ? activeGroupName : undefined}
               groupName={legendHeading || item.groupName}
               legendSummary={legendSummary}
+              sourceCredits={sourceCredits}
               items={item.items}
             />
           ))}

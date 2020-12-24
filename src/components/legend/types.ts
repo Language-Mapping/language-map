@@ -60,6 +60,7 @@ export type AtSchemaFields = {
   sortByField?: keyof AtSymbFields
   legendHeading?: string
   legendSummary?: string
+  sourceCredits?: string
   routeable?: boolean
   queryFields?: Array<keyof AtSymbFields>
   // Not using this but super handy for future reference. Rm when memorized:
@@ -71,6 +72,7 @@ export type LegendProps = {
   groupName: string
   items: AtSymbFields[]
   legendSummary?: string
+  sourceCredits?: string
   routeName?: string // may differ from "groupName" if custom heading exists
 }
 

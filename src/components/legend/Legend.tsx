@@ -14,29 +14,37 @@ const useStyles = makeStyles((theme: Theme) =>
       marginTop: 0,
       paddingLeft: 0,
     },
-    summary: {
+    subtle: {
       fontSize: '0.65rem',
       whiteSpace: 'pre-line',
-      margin: '0.75rem 0',
       color: theme.palette.text.secondary,
+    },
+    intro: {
+      margin: '0 0 0.75rem',
+    },
+    sourceCredits: {
+      margin: '0.5rem 0 0.75rem',
     },
   })
 )
 
 export const Legend: FC<Types.LegendProps> = (props) => {
-  const { groupName, items, routeName, legendSummary } = props
+  const { groupName, items, routeName, legendSummary, sourceCredits } = props
   const classes = useStyles()
 
   return (
     <div>
-      {legendSummary && (
-        <Typography component="p" className={classes.summary}>
-          {legendSummary}
-        </Typography>
-      )}
       <Typography component="h4" variant="overline">
         {groupName}
       </Typography>
+      {legendSummary && (
+        <Typography
+          component="p"
+          className={`${classes.subtle} ${classes.intro}`}
+        >
+          {legendSummary}
+        </Typography>
+      )}
       <ul className={classes.list}>
         {items.map((item) => {
           const { name, src_img: img, 'icon-size': size } = item
@@ -55,6 +63,14 @@ export const Legend: FC<Types.LegendProps> = (props) => {
           )
         })}
       </ul>
+      {sourceCredits && (
+        <Typography
+          component="p"
+          className={`${classes.subtle} ${classes.sourceCredits}`}
+        >
+          <b>Sources:</b> {sourceCredits}
+        </Typography>
+      )}
     </div>
   )
 }

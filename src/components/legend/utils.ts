@@ -81,10 +81,18 @@ export const prepAirtableResponse = (
 ): Types.LegendProps[] => {
   if (!config) return []
 
-  const { groupByField, labelByField } = config
+  // Pretty fragile because the `sortByField` must be included in `queryFields`
+  // in the Schema table. An alternative would be to include all fields, but
+  // that's an awful lot of unneeded data for some of the UI views.
+  const { groupByField, labelByField, sortByField } = config
 
   if (!groupByField)
-    return [{ items: finalPrep(rows, labelByField), groupName: tableName }]
+    return [
+      {
+        items: finalPrep(rows, labelByField, sortByField),
+        groupName: tableName,
+      },
+    ]
 
   const prepped = rows.reduce((all, thisOne) => {
     const groupName = thisOne[groupByField] as string
