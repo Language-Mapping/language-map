@@ -5,13 +5,12 @@ import { Paper } from '@material-ui/core'
 import { panelsConfig } from './config'
 import { useStyles } from './styles'
 import { CloseBtn } from './PanelCloseBtn'
-import * as Types from './types'
 import { PanelTitleBar } from './PanelTitleBar'
-import { toProperCase } from '../../utils'
+import { MapPanelProps } from './types'
 
 // TODO: consider swipeable views for moving between panels:
 // https://react-swipeable-views.com/demos/demos/
-export const PanelWrap: FC<Types.MapPanelProps> = (props) => {
+export const PanelWrap: FC<MapPanelProps> = (props) => {
   const { setPanelOpen, panelOpen, openOffCanvasNav } = props
   const classes = useStyles({ panelOpen })
   const { pathname } = useLocation()
@@ -25,8 +24,7 @@ export const PanelWrap: FC<Types.MapPanelProps> = (props) => {
   if (!pageTitle) document.title = 'Languages of New York City'
   // Everything else gets the first available path segment, except for detail
   // view via Details or Table.
-  else if (!isPageWithID)
-    document.title = `${toProperCase(pageTitle)} - NYC Languages`
+  else if (!isPageWithID) document.title = `${pageTitle} - NYC Languages`
 
   // Need the `id` in order to find unique element for `map.setPadding`
   return (

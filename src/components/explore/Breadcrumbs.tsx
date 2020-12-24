@@ -5,7 +5,6 @@ import { useLocation, Link as RouterLink } from 'react-router-dom'
 import { BiHomeAlt } from 'react-icons/bi'
 
 import { useLangFeatByKeyVal } from 'components/map/hooks'
-import { toProperCase } from '../../utils'
 import { CurrentCrumbProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -46,7 +45,7 @@ const CurrentCrumb: FC<CurrentCrumbProps> = (props) => {
   const { feature } = useLangFeatByKeyVal(value, true)
 
   if (value === 'details' || basePath !== 'details') {
-    return <span>{toProperCase(value)}</span>
+    return <span>{value}</span>
   }
 
   if (!feature) return <CircularProgress size={12} />
@@ -90,7 +89,7 @@ export const Breadcrumbs: FC = () => {
               </span>
             )) || (
               <Link to={to} component={RouterLink}>
-                {toProperCase(value)}
+                {value}
               </Link>
             )}
           </React.Fragment>
