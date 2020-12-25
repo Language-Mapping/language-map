@@ -1,29 +1,64 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography, CircularProgress } from '@material-ui/core'
+import { Typography, CircularProgress, LinearProgress } from '@material-ui/core'
+
+type LoadingProps = {
+  omitText?: boolean
+}
+
+type LoadingIndicatorProps = LoadingProps & {
+  size?: number
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    loadingIndicatorRoot: {
+    root: {
       paddingTop: theme.spacing(2),
       paddingBottom: theme.spacing(2),
+      margin: '0 auto',
       textAlign: 'center',
+      maxWidth: '80%',
     },
     loadingText: {
       marginBottom: theme.spacing(2),
     },
+    bar: {
+      height: 2,
+      borderRadius: 15,
+    },
   })
 )
 
-export const LoadingIndicator: FC = () => {
+const LoadingText: FC = () => {
   const classes = useStyles()
 
   return (
-    <div className={classes.loadingIndicatorRoot}>
-      <Typography variant="h5" component="p" className={classes.loadingText}>
-        Loading...
-      </Typography>
-      <CircularProgress color="inherit" />
+    <Typography variant="h5" component="p" className={classes.loadingText}>
+      Loading...
+    </Typography>
+  )
+}
+
+export const LoadingIndicator: FC<LoadingIndicatorProps> = (props) => {
+  const { size = 40, omitText } = props
+  const classes = useStyles()
+
+  return (
+    <div className={classes.root}>
+      {!omitText && <LoadingText />}
+      <CircularProgress color="inherit" size={size} />
+    </div>
+  )
+}
+
+export const LoadingIndicatorBar: FC<LoadingProps> = (props) => {
+  const { omitText } = props
+  const classes = useStyles()
+
+  return (
+    <div className={classes.root}>
+      {!omitText && <LoadingText />}
+      <LinearProgress classes={{ root: classes.bar }} />
     </div>
   )
 }

@@ -25,7 +25,7 @@ const fields = [
   'Size',
   'Status',
   'World Region',
-]
+] // TODO: TS, fix a bunch
 
 // Same as useLayerConfig but takes a table name param for single-table us.
 // TODO: consider reusing this whole thing. It could get repetitive.

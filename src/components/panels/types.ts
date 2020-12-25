@@ -2,9 +2,9 @@ import { RouteLocation } from 'components/config/types'
 import * as MapTypes from 'components/map/types'
 
 export type MapPanel = {
-  heading: string
   component: React.ReactNode
   rootPath: RouteLocation
+  heading?: string
   exact?: boolean
   icon?: React.ReactNode
   // TODO: de-fragilize?
@@ -21,6 +21,7 @@ export type PanelContentProps = {
   icon?: React.ReactNode
   subSubtitle?: string | React.ReactNode
   subtitle?: string | React.ReactNode
+  introParagraph?: string | React.ReactNode
   title?: string
   extree?: string | React.ReactNode // catch-all stuff for intro bottom
 }

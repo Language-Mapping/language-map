@@ -49,32 +49,6 @@ export const allPlacenames = (
   return [...all, ...thisOne.Neighborhood.split(', ')]
 }
 
-export const filterLangsByRoute = (
-  settings: Types.LangFilterArgs
-): LangRecordSchema[] => {
-  const { value, field, langFeatures } = settings
-  let filtered: LangRecordSchema[]
-
-  // Filter out undefined values and those not matching `value` as needed
-  if (value) {
-    filtered = langFeatures.filter((feat) => {
-      const thisValue = feat[field]
-
-      if (!thisValue) return false
-      if (!thisValue.toString().split(', ').includes(value)) return false
-
-      return true
-    })
-  } else if (['Neighborhood', 'Macrocommunity'].includes(field)) {
-    // Make sure no undefined
-    filtered = langFeatures.filter((feat) => feat[field] !== '')
-  } else {
-    filtered = langFeatures
-  }
-
-  return filtered
-}
-
 // Create nice listy thing w/truncation like
 // a, b, c, d, e...
 // a, b, c, d

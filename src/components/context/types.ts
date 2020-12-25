@@ -73,7 +73,8 @@ type CommunitySize = 1 | 2 | 3 | 4 | 5
 
 // TODO: consider separate file
 // In the order that should be followed in Filters, Data/Results, and Details
-export type LangRecordSchema = InternalUse & {
+export type LangRecordSchema = InternalUse & NonInternal
+export type NonInternal = {
   'Font Image Alt'?: string // for images to use instead of fonts, e.g. ASL
   'Global Speaker Total'?: number // string in MB tileset b/c some blanks
   'ISO 639-3'?: string
@@ -95,20 +96,7 @@ export type LangRecordSchema = InternalUse & {
 }
 
 // For Details, for now
-export type DetailsSchema = Pick<
-  LangRecordSchema,
-  | 'Audio'
-  | 'Description'
-  | 'Endonym'
-  | 'Language'
-  | 'id'
-  | 'Latitude'
-  | 'Longitude'
-  | 'Macrocommunity'
-  | 'Town'
-  | 'Video'
-  | 'World Region'
-> & {
+export type DetailsSchema = NonInternal & {
   Country: string[]
   countryFlags: { url: string }[]
   // Couldn't get this into string as an Airtable field:
@@ -117,6 +105,8 @@ export type DetailsSchema = Pick<
   languageDescrip?: string
   'Primary Neighborhood': string
   'Additional Neighborhoods'?: string[] // suuuper shakes mcgee
+  'Primary Location'?: string[] // Town or Primary Neighborhood (TODO: confirm)
+  'Primary Locations'?: string[] // Town or Primary Neighborhood (TODO: confirm)
 } & CensusFields
 
 // TODO: set up TableSchema. Should be very similar to Details.

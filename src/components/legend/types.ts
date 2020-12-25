@@ -42,12 +42,13 @@ export type AtSymbRecord = { id: string; fields: AtSymbFields }
 export type AtSymbFields = {
   name: string
   continent?: string
+  languages?: string[] // not used for symbology, just mid-level Explore
   'icon-color'?: string
   'icon-image'?: IconID
   'icon-size'?: number
   'text-color'?: string
   'text-halo-color'?: string
-  src_img?: { url: string }[]
+  src_image?: { url: string }[]
 }
 
 export type LegendGroupConfig = AtSymbFields & { groupName: string }

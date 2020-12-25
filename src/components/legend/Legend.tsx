@@ -47,7 +47,7 @@ export const Legend: FC<Types.LegendProps> = (props) => {
       )}
       <ul className={classes.list}>
         {items.map((item) => {
-          const { name, src_img: img, 'icon-size': size } = item
+          const { name, src_image: img, 'icon-size': size } = item
 
           return (
             <LegendSwatch

@@ -15,33 +15,17 @@ import { NavItemWithBadge } from './NavItemWithBadge'
 export const MOBILE_PANEL_HEADER_HT = '3rem'
 export const panelWidths = { mid: 450, midLarge: 600 }
 
-export const panelsConfig = [
+const landingFields = ['name', 'languages']
+const instanceFields = ['Endonym', 'name', 'Primary Locations']
+
+// For the bottom bar nav panel
+export const navRoutes = [
   {
     heading: 'Home',
     icon: <BiHomeAlt />,
     component: <Home />,
     rootPath: '/',
     exact: true,
-  },
-  {
-    heading: 'Language dead-end',
-    component: <LangCardsList />,
-    rootPath: '/Explore/Language/:value',
-  },
-  {
-    heading: 'Pre-details, nested w/extra params',
-    component: <LangCardsList />,
-    rootPath: '/Explore/:field/:value/:language',
-  },
-  {
-    heading: 'Level 2 cat',
-    component: <MidLevelExplore />,
-    rootPath: '/Explore/:field/:value',
-  },
-  {
-    heading: 'Level 1 cat',
-    component: <MidLevelExplore />,
-    rootPath: '/Explore/:field',
   },
   {
     heading: 'Explore',
@@ -73,4 +57,48 @@ export const panelsConfig = [
     component: <DetailsPanel />,
     rootPath: '/details',
   },
+] as MapPanel[]
+
+export const panelsConfig = [
+  {
+    component: <LangCardsList />,
+    rootPath: '/Explore/Language/:value',
+  },
+  {
+    component: <LangCardsList />,
+    rootPath: '/Explore/:field/:value/:language',
+  },
+  {
+    component: <MidLevelExplore tableName="Language" />,
+    rootPath: '/Explore/:field/:value',
+  },
+  {
+    component: (
+      <MidLevelExplore
+        tableName="World Region"
+        filterByFormula="{languages} != ''"
+        fields={[...landingFields, 'icon-color']}
+      />
+    ),
+    rootPath: '/Explore/World Region',
+  },
+  {
+    component: (
+      <MidLevelExplore
+        tableName="Country"
+        filterByFormula="{languages} != ''"
+        fields={[...landingFields, 'src_image']}
+      />
+    ),
+    rootPath: '/Explore/Country',
+  },
+  {
+    component: <MidLevelExplore tableName="Language" fields={instanceFields} />,
+    rootPath: '/Explore/Language',
+  },
+  {
+    component: <MidLevelExplore filterByFormula="{languages} != ''" />,
+    rootPath: '/Explore/:field',
+  },
+  ...navRoutes,
 ] as MapPanel[]

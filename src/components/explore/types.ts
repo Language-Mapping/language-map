@@ -25,7 +25,7 @@ export type CategoryConfig = {
 
 // /Explore/:field/:value/:language
 export type RouteMatch = {
-  field: keyof LangRecordSchema
+  field: keyof DetailsSchema
   value?: string
   language?: string
 }
@@ -36,12 +36,12 @@ export type CardConfig = CategoryProps & {
 }
 
 export type SwatchOrFlagOrIcon = {
-  field: keyof LangRecordSchema
+  field: keyof DetailsSchema
   value?: string
 }
 
 export type ExploreSubViewProps = {
-  instancesCount: number
+  instancesCount?: number
   subtitle?: string
   subSubtitle?: string | React.ReactNode
   extree?: string | React.ReactNode
@@ -64,4 +64,12 @@ export type StatsAndMetaProps = {
 export type CurrentCrumbProps = {
   value: string
   basePath: string
+}
+
+export type MidLevelExploreProps = {
+  tableName?: keyof DetailsSchema
+  isInstance?: boolean // easy way to determine if nested route
+  fields?: string[] // default: ['name', 'languages']
+  sortByField?: string
+  filterByFormula?: string
 }

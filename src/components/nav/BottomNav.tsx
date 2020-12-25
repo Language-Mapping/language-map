@@ -4,7 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { BottomNavigation, BottomNavigationAction } from '@material-ui/core'
 
 import { RouteLocation } from 'components/config/types'
-import { panelsConfig, panelWidths } from '../panels/config'
+import { navRoutes, panelWidths } from '../panels/config'
 
 type BottomNav = {
   setPanelOpen: React.Dispatch<boolean>
@@ -113,27 +113,25 @@ export const BottomNav: FC<BottomNav> = (props) => {
       onChange={handleChange}
       className={classes.root}
     >
-      {panelsConfig
-        .filter(({ rootPath }) => !rootPath.includes('/:')) // omit sub-routes
-        .map((config) => {
-          const subRouteStateKey = config.rootPath.split('/')[1] || '/'
+      {navRoutes.map((config) => {
+        const subRouteStateKey = config.rootPath.split('/')[1] || '/'
 
-          return (
-            <BottomNavigationAction
-              key={config.heading}
-              component={NavLink}
-              label={config.heading}
-              icon={config.icon}
-              value={subRouteStateKey}
-              to={subRoutePath[subRouteStateKey] || config.rootPath}
-              classes={{
-                selected: classes.bottomNavSelected,
-                root: classes.bottomNavAction,
-                label: classes.bottomNavLabel,
-              }}
-            />
-          )
-        })}
+        return (
+          <BottomNavigationAction
+            key={config.heading}
+            component={NavLink}
+            label={config.heading}
+            icon={config.icon}
+            value={subRouteStateKey}
+            to={subRoutePath[subRouteStateKey] || config.rootPath}
+            classes={{
+              selected: classes.bottomNavSelected,
+              root: classes.bottomNavAction,
+              label: classes.bottomNavLabel,
+            }}
+          />
+        )
+      })}
     </BottomNavigation>
   )
 }
