@@ -86,8 +86,9 @@ export const LangCardsList: FC<{ field?: string }> = (props) => {
 
   const Extree = (
     <>
-      <MoreLikeThis data={thisLangConfig} omitLocation omitMacro />
-      <CensusPopover data={thisLangConfig} />
+      <MoreLikeThis data={thisLangConfig} omitLocation omitMacro>
+        <CensusPopover data={thisLangConfig} />
+      </MoreLikeThis>
       <Media data={thisLangConfig} shareNoun="profile" omitClear />
       {Description && <ReadMore text={Description} />}
     </>

@@ -98,6 +98,11 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
           />
         </>
       )}
+      <Chip
+        text={WorldRegion}
+        to={`${routes.grid}/World Region/${WorldRegion}`}
+        icon={<SwatchOnly backgroundColor={worldRegionColor} />}
+      />
       {Country.map((countryName, i) => (
         <Chip
           key={countryName}
@@ -112,11 +117,6 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
           }
         />
       ))}
-      <Chip
-        text={WorldRegion}
-        to={`${routes.grid}/World Region/${WorldRegion}`}
-        icon={<SwatchOnly backgroundColor={worldRegionColor} />}
-      />
       {!omitMacro && macro && (
         <Chip
           text={macro}
