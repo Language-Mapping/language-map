@@ -67,6 +67,7 @@ const airtableQuery = async (tableName: string, options: AirtableOptions) => {
   // return query.then((records) => records)
 }
 
+// TODO: all into Types file
 export type SchemaTableFields = {
   name: string
   plural?: string
@@ -105,4 +106,26 @@ export const useAirtable: UseAirtable = (tableName, options) => {
     data: data?.map((row) => row.fields) || [],
     isLoading,
   }
+}
+
+export const useIcon = (
+  value: string,
+  tableName = 'Country',
+  imgField = 'src_image'
+): string => {
+  // TODO: handle errors
+  // const { data, isLoading, error } = useAirtable(tableName, {
+  const { data, isLoading } = useAirtable(tableName, {
+    fields: [imgField],
+    filterByFormula: `{name} = '${value}'`,
+  })
+
+  // TODO: deal w/TS
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  if (isLoading || !data || !data[0] || !data[0][imgField]) return ''
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  return data[0][imgField][0].url
 }

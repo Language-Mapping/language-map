@@ -2,11 +2,12 @@ import React, { FC } from 'react'
 import { useRouteMatch, useParams } from 'react-router-dom'
 
 import { BiMapPin } from 'react-icons/bi'
-import { SwatchOrFlagOrIcon } from 'components/generic/icons-and-swatches'
+import { FlagFromHook } from 'components/generic/icons-and-swatches'
 import { SwatchOnly } from 'components/legend'
 import { PanelContent } from 'components/panels/PanelContent'
 import { LoadingIndicatorBar } from 'components/generic/modals'
 import { DetailsSchema } from 'components/context'
+import { exploreIcons } from 'components/explore/config'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
 import * as Types from './types'
@@ -38,7 +39,8 @@ const prepFormula = (field: keyof DetailsSchema, value?: string): string => {
 
 // Mid-level fields are consistent except a couple tables need an extra field.
 const prepFields = (tableName: keyof DetailsSchema): string[] => {
-  if (tableName === 'Language') return ['Endonym', 'name', 'Primary Locations']
+  if (tableName === 'Language')
+    return ['Endonym', 'name', 'Primary Locations', 'worldRegionColor']
 
   const landingFields = ['name', 'languages']
   const addlFields: {
@@ -98,7 +100,14 @@ export const MidLevelExplore: FC<Types.MidLevelExploreProps> = (props) => {
     <BiMapPin />
   )
   const { definition, plural } = landingData[0] || {}
-  const Icon = <SwatchOrFlagOrIcon field={tableName} value={value} />
+
+  // TODO: re-componentize
+  let Icon = null
+
+  if (value && field === 'World Region') {
+    Icon = <SwatchOnly backgroundColor={data ? data[0].worldRegionColor : ''} />
+  } else if (value && field === 'Country') Icon = <FlagFromHook value={value} />
+  else Icon = <>{exploreIcons[field]}</>
 
   // TODO: better logic for instances, e.g. allow definition
   return (

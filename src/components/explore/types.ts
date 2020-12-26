@@ -40,13 +40,6 @@ export type SwatchOrFlagOrIcon = {
   value?: string
 }
 
-export type ExploreSubViewProps = {
-  instancesCount?: number
-  subtitle?: string
-  subSubtitle?: string | React.ReactNode
-  extree?: string | React.ReactNode
-}
-
 export type LangFilterArgs = RouteMatch & {
   langFeatures: LangRecordSchema[]
 }
