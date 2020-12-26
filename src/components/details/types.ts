@@ -2,6 +2,8 @@ import { DetailsSchema } from 'components/context'
 
 export type MoreLikeThisProps = {
   data: DetailsSchema
+  omitLocation?: boolean // don't show Primary Location chip
+  omitMacro?: boolean // don't show Macrocommunity chip
 }
 
 export type ChipProps = {

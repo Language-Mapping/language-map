@@ -4,6 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Link } from '@material-ui/core'
 import { BiMapPin } from 'react-icons/bi'
 
+import { CustomCard, CardList } from 'components/explore'
 import * as Types from './types'
 
 export const useStyles = makeStyles((theme: Theme) =>
@@ -17,9 +18,17 @@ export const useStyles = makeStyles((theme: Theme) =>
     explanation: {
       color: theme.palette.text.secondary,
       fontSize: '0.75rem',
+      margin: '0.5rem 0',
     },
     sectionHeading: {
       marginTop: '1rem',
+    },
+    verticalAlign: {
+      display: 'flex',
+      alignItems: 'center',
+      '& svg': {
+        marginRight: '0.25em',
+      },
     },
   })
 )
@@ -28,45 +37,60 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
   const { data } = props
   const classes = useStyles()
   const {
-    'Additional Neighborhoods': addlNeighbs,
+    addlNeighborhoods,
     'Primary Neighborhood': primaryNeighb,
+    'Primary Locations': primaryLocs,
     Town,
-  } = data
+    instanceIDs = [],
+    instanceDescrips = [],
+  } = data || {}
   const locName = primaryNeighb || Town
   const exploreRoute = primaryNeighb ? 'Neighborhood' : 'Town' // shaaaky
+  const primaries = primaryLocs || [locName]
 
   return (
     <Typography className={classes.root}>
-      <Typography variant="h5">
+      <Typography variant="h5" className={classes.verticalAlign}>
         <BiMapPin />
-        Locations
+        Primary Location/s
       </Typography>
       <Typography component="p" className={classes.explanation}>
         Neighborhoods and towns where there this language is spoken AND there's
-        a point for them (???).
-      </Typography>
-      <Typography variant="h6" className={classes.sectionHeading}>
-        The main one/s
-      </Typography>
-      <Typography component="p" className={classes.explanation} paragraph>
-        View neighborhood/s or town/s where this is the nicely-worded, carefully
-        presented and curated way of describing this.{' '}
-        <b>THIS WILL BE A CARD, DON'T WORRY</b>
+        a point for them (???). This doesn't mean, liiiike, it's not spoken
+        elsewhere, there's just not a point represented in this project...
       </Typography>
       <Link component={RouterLink} to={`/Explore/${exploreRoute}/${locName}`}>
         {locName}
       </Link>
-      {addlNeighbs && (
+      {primaries && (
+        <CardList>
+          {primaries.map((loc, i) => {
+            let footer
+
+            if (instanceDescrips.length)
+              footer = `${instanceDescrips[i].slice(0, 125)}...`
+
+            return (
+              <CustomCard
+                key={loc}
+                title={loc}
+                url={`/details/${instanceIDs ? instanceIDs[i] : 999999}`}
+                footer={footer}
+              />
+            )
+          })}
+        </CardList>
+      )}
+      {addlNeighborhoods && (
         <>
           <Typography variant="h6" className={classes.sectionHeading}>
-            Everybody else
+            Additional neighborhoods
           </Typography>
-          <Typography component="p" className={classes.explanation}>
-            Other neighborhoods where this language is spoken. CAN'T WRITE USER
-            DOCUMENTATION TONIGHT, I JUST CAN'T.
+          <Typography component="p" className={classes.explanation} paragraph>
+            Other neighborhoods where this language is spoken.
           </Typography>
           <ul className={classes.addlNeighbsList}>
-            {addlNeighbs.map((place) => (
+            {addlNeighborhoods.map((place) => (
               <li key={place}>
                 <Link
                   component={RouterLink}

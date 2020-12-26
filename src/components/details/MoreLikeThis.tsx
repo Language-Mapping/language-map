@@ -37,16 +37,16 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
-  const { data, children } = props
+  const { data, children, omitLocation, omitMacro } = props
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
 
   const {
     'Primary Neighborhood': primaryNeighb,
-    'Additional Neighborhoods': addlNeighbs,
+    addlNeighborhoods: addlNeighbs,
     'World Region': WorldRegion,
     Country,
-    countryFlags,
+    countryImg,
     Macrocommunity: macro,
     Town,
     worldRegionColor,
@@ -87,13 +87,17 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
   return (
     <div className={classes.root}>
       {children}
-      {NeighbsMenu}
-      <Chip
-        text={neighbsChipText}
-        icon={<BiMapPin />}
-        title="Show neighborhood or town options"
-        handleClick={handleClick}
-      />
+      {!omitLocation && (
+        <>
+          {NeighbsMenu}
+          <Chip
+            text={neighbsChipText}
+            icon={<BiMapPin />}
+            title="Show neighborhood or town options"
+            handleClick={handleClick}
+          />
+        </>
+      )}
       {Country.map((countryName, i) => (
         <Chip
           key={countryName}
@@ -103,7 +107,7 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
             <img
               className="country-flag"
               alt={`${countryName} flag`}
-              src={countryFlags[i].url}
+              src={countryImg[i].url}
             />
           }
         />
@@ -113,7 +117,7 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
         to={`${routes.grid}/World Region/${WorldRegion}`}
         icon={<SwatchOnly backgroundColor={worldRegionColor} />}
       />
-      {macro && (
+      {!omitMacro && macro && (
         <Chip
           text={macro}
           icon={<IoIosPeople />}

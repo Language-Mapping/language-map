@@ -59,7 +59,7 @@ export const navRoutes = [
   },
 ] as MapPanel[]
 
-export const panelsConfig = [
+export const nonNavRoutesConfig = [
   {
     component: <LangCardsList />,
     rootPath: '/Explore/Language/:value',

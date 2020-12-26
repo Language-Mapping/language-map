@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { Route, Switch, useRouteMatch, useLocation } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 
-import { panelsConfig } from './config'
+import { nonNavRoutesConfig } from './config'
 import { useStyles } from './styles'
 import { CloseBtn } from './PanelCloseBtn'
 import { PanelTitleBar } from './PanelTitleBar'
@@ -33,7 +33,7 @@ export const PanelWrap: FC<MapPanelProps> = (props) => {
         <CloseBtn onClick={() => setPanelOpen(false)} />
       </PanelTitleBar>
       <Switch>
-        {panelsConfig.map((config) => (
+        {nonNavRoutesConfig.map((config) => (
           <Route
             exact={config.exact}
             path={config.rootPath}

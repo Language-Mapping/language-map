@@ -98,15 +98,18 @@ export type NonInternal = {
 // For Details, for now
 export type DetailsSchema = NonInternal & {
   Country: string[]
-  countryFlags: { url: string }[]
+  countryImg: { url: string }[]
   // Couldn't get this into string as an Airtable field:
   'Font Image Alt': { url: string }[]
   worldRegionColor: string
   languageDescrip?: string
   'Primary Neighborhood': string
-  'Additional Neighborhoods'?: string[] // suuuper shakes mcgee
+  addlNeighborhoods?: string[] // suuuper shakes mcgee
   'Primary Location'?: string[] // Town or Primary Neighborhood (TODO: confirm)
   'Primary Locations'?: string[] // Town or Primary Neighborhood (TODO: confirm)
+  // TODO: break out all the lang-level props into separate type
+  instanceIDs?: number[]
+  instanceDescrips?: string[]
 } & CensusFields
 
 // TODO: set up TableSchema. Should be very similar to Details.

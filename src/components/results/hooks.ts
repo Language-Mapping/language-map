@@ -11,13 +11,13 @@ export type UseFullData = {
 }
 
 const fields = [
+  'addlNeighborhoods',
   'Country',
   'Description',
   'Endonym',
-  'id',
   'Global Speaker Total',
-  'Additional Neighborhoods',
   'Glottocode',
+  'id',
   'ISO 639-3',
   'Language Family',
   'Language',

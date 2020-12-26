@@ -2,19 +2,16 @@ import React, { FC } from 'react'
 import { useParams } from 'react-router-dom'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 
-import { useMapToolsState } from 'components/context'
+import { DetailsSchema } from 'components/context'
 import { Media } from 'components/media'
-import { MoreLikeThis } from 'components/details'
+import { MoreLikeThis, NeighborhoodList } from 'components/details'
+import { LoadingIndicatorBar } from 'components/generic/modals'
+import { PanelContent } from 'components/panels'
 import { ReadMore } from 'components/generic'
-import { useLangFeatByKeyVal } from 'components/map/hooks'
-import { CustomCard } from './CustomCard'
-import { CardList } from './CardList'
-import { ExploreSubView } from './ExploreSubView'
 import { CensusPopover } from './CensusPopover'
+import { useAirtable } from './hooks'
 
 import * as Types from './types'
-import * as utils from './utils'
-import { useUniqueInstances } from './hooks'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,92 +31,73 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const StatsAndMeta: FC<Types.StatsAndMetaProps> = (props) => {
-  const { glotto, iso, speakers } = props
+const StatsAndMeta: FC<{ data: Partial<DetailsSchema> }> = (props) => {
+  const { data = {} } = props
   const classes = useStyles()
 
   return (
     <ul className={classes.statsAndMeta}>
-      {speakers && (
+      {data['Global Speaker Total'] && (
         <li>
-          <b>Global speakers:</b> {parseInt(speakers, 10).toLocaleString()}
+          <b>Global speakers:</b>{' '}
+          {data['Global Speaker Total'].toLocaleString()}
         </li>
       )}
-      {glotto && (
+      {data.Glottocode && (
         <li>
-          <b>Glottocode:</b> {glotto}
+          <b>Glottocode:</b> {data.Glottocode}
         </li>
       )}
-      {iso && (
+      {data['ISO 639-3'] && (
         <li>
-          <b>ISO 639-3:</b> {iso}
+          <b>ISO 639-3:</b> {data['ISO 639-3']}
         </li>
       )}
     </ul>
   )
 }
 
+// aka pre-Details, aka Language Profile
 export const LangCardsList: FC = () => {
-  const { value, language } = useParams() as Types.RouteMatch
-  const { langConfigViaSheets } = useMapToolsState()
-  const { feature } = useLangFeatByKeyVal(
-    language || value || undefined,
-    false,
-    'Language'
-  )
-  const uniqueInstances = useUniqueInstances(value, language)
-  const thisLangConfig = langConfigViaSheets.find(
-    ({ Language }) => Language === (language || value)
-  )
-  if (!thisLangConfig) {
+  const { field, value, language } = useParams() as Types.RouteMatch
+  let filterByFormula
+  if (language)
+    filterByFormula = `AND(FIND('${value}', ARRAYJOIN({${field}})) != 0, {name} = '${language}')`
+  else filterByFormula = `{name} = '${value}'`
+
+  const { data, error, isLoading } = useAirtable('Language', {
+    filterByFormula,
+  })
+
+  if (isLoading)
     return (
-      <ExploreSubView
-        instancesCount={uniqueInstances.length}
-        subtitle={`Not found: ${language || value}`}
-      />
+      <PanelContent>
+        <LoadingIndicatorBar omitText />
+      </PanelContent>
     )
-  }
 
-  const {
-    'ISO 639-3': iso,
-    Glottocode: glotto,
-    Endonym,
-    Description,
-    Language,
-    'Global Speaker Total': speakers,
-  } = thisLangConfig
+  if (error) return <PanelContent>{error?.message}</PanelContent>
+  if (!data.length) return <PanelContent>No match found.</PanelContent>
 
-  const description = Description || feature?.Description || ''
+  const thisLangConfig = data[0]
+  const { Endonym, Description, Language } = thisLangConfig || {}
 
-  // FIXME: just schema/type
   const Extree = (
     <>
-      {/* @ts-ignore */}
-      <MoreLikeThis data={thisLangConfig} />
-      {/* @ts-ignore */}
+      <MoreLikeThis data={thisLangConfig} omitLocation omitMacro />
       <CensusPopover data={thisLangConfig} />
-      {/* @ts-ignore */}
       <Media data={thisLangConfig} shareNoun="profile" omitClear />
-      {description && <ReadMore text={description} />}
+      {Description && <ReadMore text={Description} />}
     </>
   )
 
   return (
-    <ExploreSubView
-      instancesCount={uniqueInstances.length}
+    <PanelContent
       subtitle={Endonym === Language ? '' : Endonym}
-      subSubtitle={<StatsAndMeta {...{ iso, glotto, speakers }} />}
+      subSubtitle={<StatsAndMeta data={data[0]} />}
       extree={Extree}
     >
-      <CardList>
-        {uniqueInstances.sort(utils.sortByTitle).map((instance) => (
-          <CustomCard
-            key={instance.title}
-            {...instance}
-            url={`/details/${instance.to}`}
-          />
-        ))}
-      </CardList>
-    </ExploreSubView>
+      <NeighborhoodList data={thisLangConfig} />
+    </PanelContent>
   )
 }
