@@ -6,33 +6,68 @@ import { SwatchOrFlagOrIcon } from 'components/generic/icons-and-swatches'
 import { SwatchOnly } from 'components/legend'
 import { PanelContent } from 'components/panels/PanelContent'
 import { LoadingIndicatorBar } from 'components/generic/modals'
+import { DetailsSchema } from 'components/context'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
 import * as Types from './types'
 import { useAirtable } from './hooks'
 
-export const MidLevelExplore: FC<Types.MidLevelExploreProps> = (props) => {
-  // NOTE: basically using these three things to determine a LOT of decisions
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { field, value, language } = useParams() as Types.RouteMatch
-  const {
-    fields,
-    tableName = field,
-    sortByField = 'name',
-    filterByFormula,
-  } = props
-  const { url } = useRouteMatch()
-  let filter
+// Mid-level formulas are pretty consistent, except:
+//  1. /Explore/Landing does not need a formula
+//  2. /Explore/{anything with array field in Language}/:value must check for
+//     value existence and then a "contains" since there does not appear to be a
+//     way to filter arrays in Airtable.
+const prepFormula = (field: keyof DetailsSchema, value?: string): string => {
+  if (field === 'Language') return '' // /Explore/Language
+  if (!value) return "{languages} != ''" // e.g. /Explore/Country
 
-  if (filterByFormula) filter = filterByFormula
-  else if (value) filter = `{${field}} = '${value}'`
+  const midLevelArrayFields = [
+    'Country',
+    'Macrocommunity',
+    'Neighborhood',
+    'Town',
+  ]
+
+  if (value && midLevelArrayFields.includes(field))
+    return `AND({${field}} != '', FIND('${value}', ARRAYJOIN({${field}})) != 0)`
+
+  if (value) return `{${field}} = '${value}'`
+
+  return ''
+}
+
+// Mid-level fields are consistent except a couple tables need an extra field.
+const prepFields = (tableName: keyof DetailsSchema): string[] => {
+  if (tableName === 'Language') return ['Endonym', 'name', 'Primary Locations']
+
+  const landingFields = ['name', 'languages']
+  const addlFields: {
+    [key: string]: string[]
+  } = {
+    'World Region': [...landingFields, 'icon-color'],
+    Country: [...landingFields, 'src_image'],
+  }
+
+  if (addlFields[tableName] !== undefined) return addlFields[tableName]
+
+  return landingFields
+}
+
+export const MidLevelExplore: FC<Types.MidLevelExploreProps> = (props) => {
+  const { field, value } = useParams() as Types.RouteMatch
+  const { tableName = field, sortByField = 'name' } = props
+  const { url } = useRouteMatch()
+
+  const filterByFormula = prepFormula(field, value)
+  const fields = prepFields(tableName)
 
   const { data, error, isLoading } = useAirtable(tableName, {
     fields,
-    ...(filter && { filterByFormula: filter }),
+    ...(filterByFormula && { filterByFormula }),
     sort: [{ field: sortByField }],
   })
 
+  // TODO: make panel intro a separate component that deals with this
   const {
     data: landingData,
     isLoading: isLandingLoading,

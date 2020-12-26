@@ -58,12 +58,14 @@ const StatsAndMeta: FC<{ data: Partial<DetailsSchema> }> = (props) => {
 }
 
 // aka pre-Details, aka Language Profile
-export const LangCardsList: FC = () => {
+export const LangCardsList: FC<{ field?: string }> = (props) => {
+  const { field: explicitField } = props
   const { field, value, language } = useParams() as Types.RouteMatch
+
   let filterByFormula
-  if (language)
+  if (explicitField) filterByFormula = `{name} = '${language}'`
+  else
     filterByFormula = `AND(FIND('${value}', ARRAYJOIN({${field}})) != 0, {name} = '${language}')`
-  else filterByFormula = `{name} = '${value}'`
 
   const { data, error, isLoading } = useAirtable('Language', {
     filterByFormula,

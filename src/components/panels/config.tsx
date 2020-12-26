@@ -15,9 +15,6 @@ import { NavItemWithBadge } from './NavItemWithBadge'
 export const MOBILE_PANEL_HEADER_HT = '3rem'
 export const panelWidths = { mid: 450, midLarge: 600 }
 
-const landingFields = ['name', 'languages']
-const instanceFields = ['Endonym', 'name', 'Primary Locations']
-
 // For the bottom bar nav panel
 export const navRoutes = [
   {
@@ -61,8 +58,8 @@ export const navRoutes = [
 
 export const nonNavRoutesConfig = [
   {
-    component: <LangCardsList />,
-    rootPath: '/Explore/Language/:value',
+    component: <LangCardsList field="Language" />, // set field explicitly
+    rootPath: '/Explore/Language/:language',
   },
   {
     component: <LangCardsList />,
@@ -73,31 +70,7 @@ export const nonNavRoutesConfig = [
     rootPath: '/Explore/:field/:value',
   },
   {
-    component: (
-      <MidLevelExplore
-        tableName="World Region"
-        filterByFormula="{languages} != ''"
-        fields={[...landingFields, 'icon-color']}
-      />
-    ),
-    rootPath: '/Explore/World Region',
-  },
-  {
-    component: (
-      <MidLevelExplore
-        tableName="Country"
-        filterByFormula="{languages} != ''"
-        fields={[...landingFields, 'src_image']}
-      />
-    ),
-    rootPath: '/Explore/Country',
-  },
-  {
-    component: <MidLevelExplore tableName="Language" fields={instanceFields} />,
-    rootPath: '/Explore/Language',
-  },
-  {
-    component: <MidLevelExplore filterByFormula="{languages} != ''" />,
+    component: <MidLevelExplore />,
     rootPath: '/Explore/:field',
   },
   ...navRoutes,

@@ -68,8 +68,5 @@ export type CurrentCrumbProps = {
 
 export type MidLevelExploreProps = {
   tableName?: keyof DetailsSchema
-  isInstance?: boolean // easy way to determine if nested route
-  fields?: string[] // default: ['name', 'languages']
   sortByField?: string
-  filterByFormula?: string
 }
