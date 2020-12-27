@@ -5,7 +5,7 @@ import { BiMapPin } from 'react-icons/bi'
 import { FlagFromHook } from 'components/generic/icons-and-swatches'
 import { SwatchOnly } from 'components/legend'
 import { PanelContent } from 'components/panels/PanelContent'
-import { LoadingIndicatorBar } from 'components/generic/modals'
+import { LoadingIndicatorPanel } from 'components/generic/modals'
 import { DetailsSchema } from 'components/context'
 import { exploreIcons } from 'components/explore/config'
 import { CustomCard } from './CustomCard'
@@ -79,14 +79,7 @@ export const MidLevelExplore: FC<Types.MidLevelExploreProps> = (props) => {
     filterByFormula: `{name} = '${tableName}'`,
   })
 
-  if (isLoading || isLandingLoading)
-    // TODO: componentize
-    return (
-      <PanelContent>
-        <LoadingIndicatorBar omitText />
-      </PanelContent>
-    )
-
+  if (isLoading || isLandingLoading) return <LoadingIndicatorPanel />
   if (error || landingError) {
     return (
       <PanelContent>

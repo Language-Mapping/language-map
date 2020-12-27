@@ -62,6 +62,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+export const PanelContentSimple: FC = (props) => {
+  const { children } = props
+  const panelRootClasses = usePanelRootStyles()
+
+  return <div className={panelRootClasses.root}>{children}</div>
+}
+
 // TODO: consider swipeable views for moving between panels:
 // https://react-swipeable-views.com/demos/demos/
 // TODO: git mv into Panels.tsx

@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
-  const { data, children, omitLocation, omitMacro } = props
+  const { data, children, isInstance } = props
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
 
@@ -86,8 +86,7 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
   // Careful, not using TS on the mid-route paths, e.g. "World Region"
   return (
     <div className={classes.root}>
-      {children}
-      {!omitLocation && (
+      {isInstance && (
         <>
           {NeighbsMenu}
           <Chip
@@ -117,13 +116,14 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
           }
         />
       ))}
-      {!omitMacro && macro && (
+      {!isInstance && macro && (
         <Chip
           text={macro}
           icon={<IoIosPeople />}
           to={`${routes.grid}/Macrocommunity/${macro}`}
         />
       )}
+      {children}
     </div>
   )
 }

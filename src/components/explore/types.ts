@@ -1,6 +1,5 @@
-import { DetailsSchema } from 'components/context'
-
-import { LangRecordSchema } from 'components/context/types'
+import { DetailsSchema, LangRecordSchema } from 'components/context/types'
+import { AtSymbFields } from 'components/legend/types'
 
 // TODO: try to reuse some of these, they're pretty common in sev. components
 export type CategoryProps = {
@@ -48,11 +47,7 @@ export type CensusPopoverProps = {
   data: DetailsSchema
 }
 
-export type StatsAndMetaProps = {
-  iso?: string
-  glotto?: string
-  speakers?: string // string if from Sheets API, number if from MB
-}
+export type StatsAndMetaProps = { data: Partial<DetailsSchema> }
 
 export type CurrentCrumbProps = {
   value: string
@@ -62,4 +57,39 @@ export type CurrentCrumbProps = {
 export type MidLevelExploreProps = {
   tableName?: keyof DetailsSchema
   sortByField?: string
+}
+
+export type AirtableOptions = {
+  fields?: string[]
+  filterByFormula?: string
+  maxRecords?: number
+  sort?: { field: string }[]
+}
+
+type SchemaTableFields = {
+  name: string
+  plural?: string
+  definition?: string
+  legendHeading?: string
+  exploreSortOrder?: number
+  routeable?: boolean
+  symbolizeable?: boolean
+  includeInTable?: boolean
+}
+
+export type TonsOfFields = DetailsSchema & AtSymbFields & SchemaTableFields
+export type AirtableError = {
+  error: string // error type, e.g. UNKNOWN_FIELD_NAME
+  message: string
+  statusCode: number
+}
+
+export type UseAirtable = (
+  tableName: string,
+  options: AirtableOptions,
+  reactQueryOptions?: { enabled?: boolean } // TODO: ugh
+) => {
+  data: TonsOfFields[]
+  error: AirtableError | null
+  isLoading: boolean
 }

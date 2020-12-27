@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, Route, Switch } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Link } from '@material-ui/core'
 import { BiMapPin } from 'react-icons/bi'
@@ -19,6 +19,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.secondary,
       fontSize: '0.75rem',
       margin: '0.5rem 0',
+    },
+    mainHeading: {
+      marginBottom: 0,
     },
     sectionHeading: {
       marginTop: '1rem',
@@ -42,52 +45,56 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
     'Primary Locations': primaryLocs,
     Town,
     instanceIDs = [],
-    instanceDescrips = [],
   } = data || {}
   const locName = primaryNeighb || Town
-  const exploreRoute = primaryNeighb ? 'Neighborhood' : 'Town' // shaaaky
-  const primaries = primaryLocs || [locName]
+  const primaries = (locName ? [locName] : primaryLocs) || []
 
   return (
     <Typography className={classes.root}>
-      <Typography variant="h5" className={classes.verticalAlign}>
-        <BiMapPin />
-        Primary Location/s
+      <Typography
+        variant="h6"
+        component="h3"
+        className={`${classes.verticalAlign} ${classes.mainHeading}`}
+      >
+        <BiMapPin /> Locations
       </Typography>
       <Typography component="p" className={classes.explanation}>
-        Neighborhoods and towns where there this language is spoken AND there's
-        a point for them (???). This doesn't mean, liiiike, it's not spoken
-        elsewhere, there's just not a point represented in this project...
+        <Switch>
+          <Route path="/details">
+            NYC neighborhood or metro region town for this community
+          </Route>
+          <Route>
+            NYC neighborhoods or towns in the metro region where the language
+            community has a significant site, marked by a point on the map
+          </Route>
+        </Switch>
       </Typography>
-      <Link component={RouterLink} to={`/Explore/${exploreRoute}/${locName}`}>
-        {locName}
-      </Link>
-      {primaries && (
-        <CardList>
-          {primaries.map((loc, i) => {
-            let footer
+      <CardList>
+        {primaries.map((loc, i) => {
+          const footer = (
+            <Switch>
+              <Route path="/details">View more languages spoken in {loc}</Route>
+              <Route>View details and show in map</Route>
+            </Switch>
+          )
 
-            if (instanceDescrips.length)
-              footer = `${instanceDescrips[i].slice(0, 125)}...`
+          let url // TODO: de-shabbify, wire up w/Town
 
-            return (
-              <CustomCard
-                key={loc}
-                title={loc}
-                url={`/details/${instanceIDs ? instanceIDs[i] : 999999}`}
-                footer={footer}
-              />
-            )
-          })}
-        </CardList>
-      )}
+          if (!locName)
+            url = `/details/${instanceIDs ? instanceIDs[i] : 999999}`
+          else url = `/Explore/Neighborhood/${loc}`
+
+          return <CustomCard key={loc} title={loc} url={url} footer={footer} />
+        })}
+      </CardList>
       {addlNeighborhoods && (
         <>
-          <Typography variant="h6" className={classes.sectionHeading}>
-            Additional neighborhoods
-          </Typography>
-          <Typography component="p" className={classes.explanation} paragraph>
-            Other neighborhoods where this language is spoken.
+          <Typography
+            variant="overline"
+            component="h4"
+            className={classes.sectionHeading}
+          >
+            Additional neighborhoods (NYC only)
           </Typography>
           <ul className={classes.addlNeighbsList}>
             {addlNeighborhoods.map((place) => (

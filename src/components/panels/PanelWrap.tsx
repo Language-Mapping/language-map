@@ -37,7 +37,7 @@ export const PanelWrap: FC<MapPanelProps> = (props) => {
           <Route
             exact={config.exact}
             path={config.rootPath}
-            key={config.heading}
+            key={config.rootPath}
           >
             {config.component ||
               (config.renderComponent && config.renderComponent(props))}

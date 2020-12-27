@@ -2,8 +2,7 @@ import { DetailsSchema } from 'components/context'
 
 export type MoreLikeThisProps = {
   data: DetailsSchema
-  omitLocation?: boolean // don't show Primary Location chip
-  omitMacro?: boolean // don't show Macrocommunity chip
+  isInstance?: boolean
 }
 
 export type ChipProps = {
@@ -15,4 +14,9 @@ export type ChipProps = {
 }
 
 export type NeighborhoodListProps = MoreLikeThisProps
-export type LangOrEndoIntroProps = MoreLikeThisProps
+export type DetailedIntroProps = MoreLikeThisProps & { shareNoun?: string }
+
+// TODO: UGH
+export type LangOrEndoIntroProps = Pick<MoreLikeThisProps, 'isInstance'> & {
+  data: DetailsSchema & { name?: string }
+}

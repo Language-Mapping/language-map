@@ -88,7 +88,6 @@ export type DetailsSchema = NonInternal & {
   'Primary Locations'?: string[] // Town or Primary Neighborhood (TODO: confirm)
   // TODO: break out all the lang-level props into separate type
   instanceIDs?: number[]
-  instanceDescrips?: string[]
 } & CensusFields
 
 // TODO: set up TableSchema. Should be very similar to Details.

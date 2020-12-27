@@ -1,10 +1,11 @@
 import React, { FC } from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-import { CircularProgress, Link } from '@material-ui/core'
+// import { CircularProgress, Link } from '@material-ui/core'
+import { Link } from '@material-ui/core'
 import { useLocation, Link as RouterLink } from 'react-router-dom'
 import { BiHomeAlt } from 'react-icons/bi'
 
-import { useLangFeatByKeyVal } from 'components/map/hooks'
+import { useDetails } from 'components/details/hooks'
 import { CurrentCrumbProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -32,6 +33,9 @@ const useStyles = makeStyles((theme: Theme) =>
         whiteSpace: 'nowrap',
       },
     },
+    capital: {
+      textTransform: 'capitalize',
+    },
     separator: {
       color: theme.palette.text.secondary,
       marginLeft: '0.2em',
@@ -41,14 +45,16 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const CurrentCrumb: FC<CurrentCrumbProps> = (props) => {
+  const classes = useStyles()
   const { value, basePath } = props
-  const { feature } = useLangFeatByKeyVal(value, true)
+  const { data: feature } = useDetails()
 
-  if (value === 'details' || basePath !== 'details') {
-    return <span>{value}</span>
+  if (value === 'details' || basePath !== 'details' || !feature) {
+    return <span className={classes.capital}>{value}</span>
   }
 
-  if (!feature) return <CircularProgress size={12} />
+  // TODO:
+  // if (!feature) return <CircularProgress size={12} />
 
   const { Language, Neighborhood, Town } = feature
   const place = Neighborhood ? Neighborhood.split(', ')[0] : Town
@@ -88,7 +94,7 @@ export const Breadcrumbs: FC = () => {
                 <CurrentCrumb value={value} basePath={pathnames[0]} />
               </span>
             )) || (
-              <Link to={to} component={RouterLink}>
+              <Link to={to} component={RouterLink} className={classes.capital}>
                 {value}
               </Link>
             )}

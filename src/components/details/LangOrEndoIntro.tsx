@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography, Link } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 
 import { EndoImageWrap } from 'components/details'
 import { paths as routes } from 'components/config/routes'
@@ -21,12 +21,13 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: (props: StyleProps) => (props.tooLong ? '2.3rem' : '3rem'),
       },
     },
-    // TODO: already got this in Explore bruh...
     subHeading: {
+      fontSize: '1.25rem',
+      marginBottom: '0.5rem',
       lineHeight: 1,
-    },
-    moreLangsLink: {
-      fontSize: '0.5rem',
+      textDecoration: `dotted underline ${theme.palette.primary.light} 1px`,
+      display: 'block',
+      color: theme.palette.primary.light,
     },
   })
 )
@@ -36,7 +37,8 @@ const useStyles = makeStyles((theme: Theme) =>
 export const LangOrEndoIntro: FC<LangOrEndoIntroProps> = (props) => {
   const CHAR_CUTOFF = 17
   const { data } = props
-  const { Endonym, Language, 'Font Image Alt': altImage } = data
+  const { Endonym, Language, 'Font Image Alt': altImage, name } = data
+  const language = name || Language // TODO: deal with this somehow
 
   const classes = useStyles({
     // SEMI-GROSS: if there are no spaces in the Endonym and it's over the
@@ -46,23 +48,21 @@ export const LangOrEndoIntro: FC<LangOrEndoIntroProps> = (props) => {
 
   return (
     <>
-      {(altImage && <EndoImageWrap url={altImage[0].url} alt={Language} />) || (
+      {(altImage && <EndoImageWrap url={altImage[0].url} alt={language} />) || (
         <Typography variant="h3" className={classes.heading}>
           {Endonym}
         </Typography>
       )}
-      {Language !== Endonym && (
-        <Typography variant="h6" className={classes.subHeading}>
-          ({Language})
+      {language !== Endonym && (
+        <Typography
+          variant="h6"
+          component={RouterLink}
+          to={`${routes.grid}/Language/${language}`}
+          className={classes.subHeading}
+        >
+          ({language})
         </Typography>
       )}
-      <Link
-        component={RouterLink}
-        to={`${routes.grid}/Language/${Language}`}
-        className={classes.moreLangsLink}
-      >
-        More like this
-      </Link>
     </>
   )
 }
