@@ -1,4 +1,4 @@
-import { WorldRegion, LangRecordSchema } from 'components/context/types'
+import { LangRecordSchema } from 'components/context/types'
 
 export type IconID =
   | '_tree'
@@ -31,10 +31,6 @@ export type LegendSwatchProps = LegendSwatchBareMin & {
 export type LegendPanelProps = {
   activeGroupName: string | keyof LangRecordSchema
 }
-
-type UNgeoscheme = 'Africa' | 'Americas' | 'Asia' | 'Europe' | 'Oceania'
-
-export type WorldRegionLegend = { [key in UNgeoscheme]: WorldRegion[] }
 
 export type AtSchemaRecord = { id: string; fields: AtSchemaFields }
 export type AtSymbRecord = { id: string; fields: AtSymbFields }

@@ -50,7 +50,6 @@ export const useUniqueInstances = (
 type AirtableOptions = {
   fields?: string[]
   filterByFormula?: string
-  view?: string
   sort?: { field: string }[]
 }
 

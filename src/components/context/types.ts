@@ -29,30 +29,6 @@ export type InitialState = {
 //
 // ========================================================================== //
 
-export type WorldRegion =
-  | 'Australia and New Zealand' // maybe issues w/ampersand
-  | 'Caribbean'
-  | 'Central America'
-  | 'Central Asia'
-  | 'Eastern Africa'
-  | 'Eastern Asia'
-  | 'Eastern Europe'
-  | 'Melanesia'
-  | 'Micronesia'
-  | 'Middle Africa'
-  | 'Northern Africa'
-  | 'Northern America'
-  | 'Northern Europe'
-  | 'Polynesia'
-  | 'South America'
-  | 'Southeastern Asia'
-  | 'Southern Africa'
-  | 'Southern Asia'
-  | 'Southern Europe'
-  | 'Western Africa'
-  | 'Western Asia'
-  | 'Western Europe'
-
 // Formerly "Type"
 export type Statuses =
   | 'Historical'
@@ -79,7 +55,7 @@ export type NonInternal = {
   'Global Speaker Total'?: number // string in MB tileset b/c some blanks
   'ISO 639-3'?: string
   'Language Family': string
-  'World Region': WorldRegion
+  'World Region': string
   Audio?: string // TODO: TS for URL?
   Country: string
   County: string
@@ -88,12 +64,15 @@ export type NonInternal = {
   Glottocode?: string
   Language: string
   Macrocommunity?: string
-  Neighborhood: string | '' // NYC-metro only // TODO: make optional
+  Neighborhood?: string // NYC-metro only // TODO: make optional
   Size: CommunitySize
   Status: Statuses
   Town: string
   Video?: string // TODO: TS for URL?
 }
+
+// TODO: break out all types by Airtable table (instance vs. schema vs. lookup
+// vs. data), and optional vs. required
 
 // For Details, for now
 export type DetailsSchema = NonInternal & {
@@ -102,7 +81,7 @@ export type DetailsSchema = NonInternal & {
   // Couldn't get this into string as an Airtable field:
   'Font Image Alt': { url: string }[]
   worldRegionColor: string
-  languageDescrip?: string
+  'Language Description'?: string
   'Primary Neighborhood': string
   addlNeighborhoods?: string[] // suuuper shakes mcgee
   'Primary Location'?: string[] // Town or Primary Neighborhood (TODO: confirm)

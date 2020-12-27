@@ -111,8 +111,8 @@ export function sortNeighbs(
   b: LangRecordSchema
 ): 0 | 1 | -1 {
   if (a.Neighborhood === b.Neighborhood) return 0
-  if (a.Neighborhood === '') return 1 // nulls sort after anything else
-  if (b.Neighborhood === '') return -1
+  if (!a.Neighborhood) return 1 // nulls sort after anything else
+  if (!b.Neighborhood) return -1
 
   return a.Neighborhood < b.Neighborhood ? -1 : 1
 

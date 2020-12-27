@@ -7,7 +7,7 @@ export type CategoryProps = {
   title: string
   uniqueInstances?: unknown[]
   url: string
-  footer?: string
+  footer?: string | React.ReactNode
   icon?: React.ReactNode
   intro?: string
 }
