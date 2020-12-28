@@ -84,12 +84,13 @@ export type AirtableError = {
   statusCode: number
 }
 
-export type UseAirtable = (
-  tableName: string,
-  options: AirtableOptions,
-  reactQueryOptions?: { enabled?: boolean } // TODO: ugh
-) => {
-  data: TonsOfFields[]
-  error: AirtableError | null
-  isLoading: boolean
-}
+// TODO: figure it out
+// export type UseAirtable<TResult> = (
+//   tableName: string,
+//   options: AirtableOptions,
+//   reactQueryOptions?: { enabled?: boolean } // TODO: ugh
+// ) => {
+//   data: TResult[]
+//   error: AirtableError | null
+//   isLoading: boolean
+// }

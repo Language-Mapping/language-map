@@ -1,12 +1,13 @@
 import { useContext } from 'react'
-import { useQuery } from 'react-query'
 import { WebMercatorViewport } from 'react-map-gl'
 import { useTheme } from '@material-ui/core/styles'
 
 import { panelWidths } from 'components/panels/config'
 import { GlobalContext, LangRecordSchema } from 'components/context'
-import * as LegendTypes from 'components/legend'
+import { AtSymbFields, AtSchemaFields } from 'components/legend/types'
+import { layerSymbFields } from 'components/legend/config'
 import { LayerPropsPlusMeta } from 'components/map/types'
+import { useAirtable } from 'components/explore/hooks'
 import * as Types from './types'
 import { useWindowResize } from '../../utils'
 import { iconStyleOverride } from './config'
@@ -87,26 +88,27 @@ export const useLangFeatByKeyVal = (
 export const useLayersConfig = (
   tableName: keyof LangRecordSchema | '' | 'None'
 ): Types.UseLayersConfig => {
-  const { data, isLoading, error } = useQuery<LegendTypes.AtSchemaRecord[]>([
-    tableName,
-    'legend',
-  ])
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const moreFields = layerSymbFields[tableName] || []
+  const { data, isLoading, error } = useAirtable<AtSchemaFields>(tableName, {
+    // WOW: field order really matters in regards to react-query. If this is the
+    // same as the one being used by legend config, it doesn't load properly on
+    // page load
+    fields: ['name', ...moreFields],
+  })
 
   let prepped: LayerPropsPlusMeta[] = []
 
-  if (data && tableName && tableName !== 'None') {
-    prepped = createLayerStyles(
-      data.map((row) => row.fields),
-      tableName
-    )
+  if (tableName && tableName !== 'None' && data.length) {
+    prepped = createLayerStyles(data, tableName)
   }
 
-  // TODO: fix/understand fetching/loading
   return { error, data: prepped, isLoading }
 }
 
-export const createLayerStyles = (
-  rows: LegendTypes.AtSymbFields[],
+const createLayerStyles = (
+  rows: AtSymbFields[],
   group: keyof LangRecordSchema | '' | 'None'
 ): LayerPropsPlusMeta[] => {
   if (!group || group === 'None') return []

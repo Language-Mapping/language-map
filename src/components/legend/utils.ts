@@ -71,9 +71,7 @@ export const prepAirtableResponse = (
 ): Types.LegendProps[] => {
   if (!config) return []
 
-  // Pretty fragile because the `sortByField` must be included in `queryFields`
-  // in the Schema table. An alternative would be to include all fields, but
-  // that's an awful lot of unneeded data for some of the UI views.
+  // Fragile: the field to sort on must be included in config.layerSymbFields
   const { groupByField, labelByField, sortByField } = config
 
   if (!groupByField)

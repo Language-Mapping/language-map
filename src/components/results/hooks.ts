@@ -11,7 +11,7 @@ export type UseFullData = {
 }
 
 const fields = [
-  'addlNeighborhoods',
+  'Additional Neighborhoods',
   'Country',
   'Description',
   'Endonym',
