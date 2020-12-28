@@ -1,4 +1,4 @@
-import { Map, FillPaint } from 'mapbox-gl'
+import { Map as MbMap, FillPaint } from 'mapbox-gl'
 import { WebMercatorViewport } from 'react-map-gl'
 
 import { LangConfig } from 'components/context'
@@ -10,7 +10,7 @@ import * as config from './config' // TODO: pass this as fn args, don't import
 // CRED:
 // https://github.com/mapbox/mapbox-gl-js/issues/5529#issuecomment-465403194
 export const addLangTypeIconsToMap = (
-  map: Map,
+  map: MbMap,
   iconsConfig: Types.LangIconConfig[]
 ): void => {
   if (!map) return // maybe fixes this:
@@ -39,7 +39,7 @@ export const addLangTypeIconsToMap = (
 
 // Includes
 export const filterLayersByFeatIDs = (
-  map: Map,
+  map: MbMap,
   layerNames: string[],
   langFeatIDs: number[]
 ): void => {
@@ -243,3 +243,21 @@ export const setInterpolatedFill = (
   ],
   'fill-opacity': 0.9,
 })
+
+export const flyHome = (
+  map: MbMap,
+  nuclearClear: () => void,
+  offset: Types.Offset
+): void => {
+  nuclearClear()
+
+  const settings = {
+    height: map.getContainer().clientHeight,
+    width: map.getContainer().clientWidth,
+    bounds: config.initialBounds,
+    offset,
+  }
+
+  // TODO: prevent errors on resize-while-loading
+  flyToBounds(map, settings, null)
+}

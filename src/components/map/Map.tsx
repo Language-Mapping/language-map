@@ -136,7 +136,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     // TODO: better check/decouple the fly-home-on-filter-reset behavior so that
     // there are no surprise fly-to-home scenarios.
     if (langFeatures.length === state.langFeatsLenCache) {
-      flyHome(map)
+      utils.flyHome(map, nuclearClear, offset)
 
       return
     }
@@ -261,7 +261,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     // `mapObj` should === `map` but avoid naming conflict just in case:
     const { target: mapObj } = mapLoadEvent
 
-    setMapLoaded(true)
+    utils.flyHome(mapObj, nuclearClear, offset)
 
     mapObj.addControl(
       new AttributionControl({ compact: false }), // Give MB well-deserved cred
@@ -302,6 +302,8 @@ export const Map: FC<Types.MapProps> = (props) => {
       if (geocodeMarkerParams) setGeocodeMarker(geocodeMarkerParams)
       if (popupParams as Types.PopupSettings) setPopup(popupParams)
     })
+
+    setMapLoaded(true)
   }
 
   function onClick(event: Types.MapEvent): void {
@@ -353,25 +355,11 @@ export const Map: FC<Types.MapProps> = (props) => {
     setTooltip(null)
   }
 
-  const flyHome = (mapObj: MbMap): void => {
-    nuclearClear()
-
-    const settings = {
-      height: mapObj.getContainer().clientHeight,
-      width: mapObj.getContainer().clientWidth,
-      bounds: config.initialBounds,
-      offset,
-    }
-
-    // TODO: prevent errors on resize-while-loading
-    utils.flyToBounds(mapObj, settings, null)
-  }
-
   function onMapCtrlClick(actionID: Types.MapControlAction) {
     if (!map || !mapLoaded) return
 
     if (actionID === 'home') {
-      flyHome(map)
+      utils.flyHome(map, nuclearClear, offset)
     } else if (actionID === 'reset-pitch') {
       setViewport({ ...viewport, pitch: 0 })
 
