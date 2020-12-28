@@ -58,7 +58,6 @@ export type NonInternal = {
   'World Region': string
   Audio?: string // TODO: TS for URL?
   Country: string
-  County: string
   Description: string
   Endonym: string // often same as English name, may be an http link to image
   Glottocode?: string
@@ -76,20 +75,19 @@ export type NonInternal = {
 
 // For Details, for now
 export type DetailsSchema = NonInternal & {
+  'Font Image Alt': { url: string }[]
+  'Language Description'?: string
+  'Primary Locations'?: string[] // Town or primary Neighborhood
+  'Additional Neighborhoods'?: string[]
+  // Couldn't get this into string as an Airtable field:
+  addlNeighborhoods?: string[] // suuuper shakes mcgee
   Country: string[]
   countryImg: { url: string }[]
-  // Couldn't get this into string as an Airtable field:
-  'Font Image Alt': { url: string }[]
-  worldRegionColor: string
-  'Language Description'?: string
-  'Primary Neighborhood': string
-  addlNeighborhoods?: string[] // suuuper shakes mcgee
-  'Primary Location'?: string[] // Town or Primary Neighborhood (TODO: confirm)
-  'Primary Locations'?: string[] // Town or Primary Neighborhood (TODO: confirm)
-  // TODO: break out all the lang-level props into separate type
   instanceIDs?: number[]
+  worldRegionColor: string
 } & CensusFields
 
+// TODO: break out all the lang-level props into separate type
 // TODO: set up TableSchema. Should be very similar to Details.
 // TODO: set up OmniboxSchema: iso, glotto, language, primaries, IDs
 

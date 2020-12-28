@@ -42,15 +42,16 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
 
   const {
-    'Primary Neighborhood': primaryNeighb,
-    addlNeighborhoods: addlNeighbs,
     'World Region': WorldRegion,
     Country,
     countryImg,
     Macrocommunity: macro,
-    Town,
     worldRegionColor,
+    Town,
+    Neighborhood,
   } = data
+
+  const primaryLoc = Town || Neighborhood
 
   const handleClose = () => setAnchorEl(null)
 
@@ -71,17 +72,15 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       transformOrigin={{ vertical: 'center', horizontal: 'left' }}
     >
-      <NeighborhoodList data={data} />
+      <NeighborhoodList data={data} isInstance={isInstance} />
       <DialogCloseBtn
         tooltip="Close census menu"
         onClose={() => handleClose()}
       />
     </Popover>
   )
-  const addlCount = addlNeighbs?.length
-  const neighbsChipText = `${primaryNeighb || Town}${
-    addlCount ? ` +${addlCount}` : ''
-  }`
+  const addlCount = isInstance && data['Additional Neighborhoods']?.length
+  const neighbsChipText = `${primaryLoc}${addlCount ? ` +${addlCount}` : ''}`
 
   // Careful, not using TS on the mid-route paths, e.g. "World Region"
   return (

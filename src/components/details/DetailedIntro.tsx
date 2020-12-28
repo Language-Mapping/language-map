@@ -13,7 +13,7 @@ import { DetailedIntroProps } from './types'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: { textAlign: 'center' },
-    divider: { margin: '1.5rem 0 0.5rem' },
+    divider: { margin: '1rem 0 0.5rem' },
   })
 )
 
@@ -29,7 +29,7 @@ export const DetailedIntro: FC<DetailedIntroProps> = (props) => {
       <MoreLikeThis data={data} isInstance={isInstance}>
         <CensusPopover data={data} />
       </MoreLikeThis>
-      <Media data={data} shareNoun={shareNoun} />
+      <Media data={data} shareNoun={shareNoun} omitClear={!isInstance} />
       {langDescrip && <ReadMore text={langDescrip} />}
       <Divider variant="middle" className={classes.divider} />
     </header>

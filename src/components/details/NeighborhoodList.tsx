@@ -37,17 +37,44 @@ export const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
-  const { data } = props
+  const { data, isInstance } = props
   const classes = useStyles()
   const {
     addlNeighborhoods,
-    'Primary Neighborhood': primaryNeighb,
+    Neighborhood,
     'Primary Locations': primaryLocs,
     Town,
     instanceIDs = [],
   } = data || {}
-  const locName = primaryNeighb || Town
-  const primaries = (locName ? [locName] : primaryLocs) || []
+  const locName = Neighborhood || Town
+  const primaries = (isInstance ? [locName] : primaryLocs) || []
+  const locRouteName = Town ? 'Town' : 'Neighborhood'
+  let additional
+
+  if (isInstance) additional = data['Additional Neighborhoods']
+  else additional = addlNeighborhoods
+  const gahhhh = additional || []
+
+  const More = (
+    <>
+      <Typography
+        variant="overline"
+        component="h4"
+        className={classes.sectionHeading}
+      >
+        Additional neighborhoods (NYC only)
+      </Typography>
+      <ul className={classes.addlNeighbsList}>
+        {gahhhh.map((place) => (
+          <li key={place}>
+            <Link component={RouterLink} to={`/Explore/Neighborhood/${place}`}>
+              {place}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </>
+  )
 
   return (
     <Typography className={classes.root}>
@@ -80,36 +107,14 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
 
           let url // TODO: de-shabbify, wire up w/Town
 
-          if (!locName)
+          if (!isInstance)
             url = `/details/${instanceIDs ? instanceIDs[i] : 999999}`
-          else url = `/Explore/Neighborhood/${loc}`
+          else url = `/Explore/${locRouteName}/${loc}`
 
           return <CustomCard key={loc} title={loc} url={url} footer={footer} />
         })}
       </CardList>
-      {addlNeighborhoods && (
-        <>
-          <Typography
-            variant="overline"
-            component="h4"
-            className={classes.sectionHeading}
-          >
-            Additional neighborhoods (NYC only)
-          </Typography>
-          <ul className={classes.addlNeighbsList}>
-            {addlNeighborhoods.map((place) => (
-              <li key={place}>
-                <Link
-                  component={RouterLink}
-                  to={`/Explore/Neighborhood/${place}`}
-                >
-                  {place}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+      {gahhhh.length ? More : null}
     </Typography>
   )
 }

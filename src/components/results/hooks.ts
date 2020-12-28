@@ -21,7 +21,7 @@ const fields = [
   'ISO 639-3',
   'Language Family',
   'Language',
-  'Primary Location',
+  'Neighborhood',
   'Size',
   'Status',
   'World Region',

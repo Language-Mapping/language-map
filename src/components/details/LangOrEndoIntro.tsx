@@ -23,9 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     subHeading: {
       fontSize: '1.25rem',
-      marginBottom: '0.5rem',
-      lineHeight: 1,
-      textDecoration: `dotted underline ${theme.palette.primary.light} 1px`,
+      lineHeight: 1.25,
       display: 'block',
       color: theme.palette.primary.light,
     },
@@ -60,7 +58,7 @@ export const LangOrEndoIntro: FC<LangOrEndoIntroProps> = (props) => {
           to={`${routes.grid}/Language/${language}`}
           className={classes.subHeading}
         >
-          ({language})
+          ( {language} )
         </Typography>
       )}
     </>

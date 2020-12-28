@@ -49,6 +49,7 @@ export const useDetails = (paramsField = 'id'): UseDetails => {
   }
 }
 
+// TODO: put the logic of isInstance in here
 export const useDetailsNew = (paramsField = 'id'): UseDetails => {
   const params = useParams() as { [key: string]: string }
   const param = params[paramsField]
@@ -58,8 +59,8 @@ export const useDetailsNew = (paramsField = 'id'): UseDetails => {
       'Language',
       'Description',
       'Town',
-      'Primary Neighborhood',
-      'addlNeighborhoods',
+      'Neighborhood',
+      'Additional Neighborhoods',
     ],
     filterByFormula: `{id} = ${param}`,
     maxRecords: 1,
@@ -90,6 +91,8 @@ export const useDetailsNew = (paramsField = 'id'): UseDetails => {
       ...langLevel,
       ...instanceLevel,
       'Language Description': langLevel?.Description,
+      Neighborhood: instanceLevel?.Neighborhood,
+      Town: instanceLevel?.Town,
     },
     isLoading: isLoading || isLangLoading,
     notFound: instanceLevel === undefined,
