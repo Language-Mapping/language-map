@@ -12,7 +12,7 @@ export const AIRTABLE_BASE = 'applPEl3BsnpuszQu'
 // TODO: get this into provider/global so it doesn't need adding every time
 export const reactQueryDefaults = {
   staleTime: Infinity,
-  refetchOnMount: false,
-  refetchOnReconnect: false,
+  // refetchOnMount: false, // TODO: rm/restore if needed
+  refetchOnReconnect: true,
   refetchOnWindowFocus: false,
 }

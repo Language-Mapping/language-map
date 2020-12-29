@@ -3,7 +3,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useQueryCache } from 'react-query'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory, Route } from 'react-router-dom'
 import {
   AttributionControl,
   Map as MbMap, // TODO: try to lazy load the biggest dep of all. See:
@@ -18,10 +18,9 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import { paths as routes } from 'components/config/routes'
 import * as contexts from 'components/context'
 
-import { useDetails } from 'components/details'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { Geolocation } from './Geolocation'
-import { MapPopup } from './MapPopup'
+import { LanguagePopup, MapPopup } from './MapPopup'
 import { MapCtrlBtns } from './MapCtrlBtns'
 import { BoundariesLayer } from './BoundariesLayer'
 import { CensusLayer } from './CensusLayer'
@@ -34,7 +33,7 @@ import * as sharedUtils from '../../utils'
 import * as Types from './types'
 import * as utils from './utils'
 
-const { layerId: sourceLayer, langSrcID } = config.mbStyleTileConfig
+const { langSrcID } = config.mbStyleTileConfig
 const { neighbConfig, countiesConfig, boundariesLayerIDs } = config
 
 // Jest or whatever CANNOT find this plugin. And importing it from
@@ -51,48 +50,23 @@ if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
 }
 
 export const Map: FC<Types.MapProps> = (props) => {
-  const { mapLoaded, mapRef } = props
-  const { panelOpen, setMapLoaded } = props
-  const map: MbMap | undefined = mapRef.current?.getMap()
-  // TODO: // error, // notFound,
-  const { isLoading, data: selFeatAttribss } = useDetails()
-
-  // Routing
   const history = useHistory()
-  const loc = useLocation()
-  const featId = loc.pathname.split('/').slice(-1)[0]
-
-  const { state, dispatch } = useContext(contexts.GlobalContext)
+  const { mapLoaded, mapRef, panelOpen, setMapLoaded } = props
+  const map: MbMap | undefined = mapRef.current?.getMap()
+  // TODO: // error, notFound? // TODO: useEffect
+  const { selFeatAttribs } = hooks.usePopupFeatDetails()
+  const { state } = useContext(contexts.GlobalContext)
   const symbLabelState = contexts.useSymbAndLabelState()
   const { boundariesVisible } = contexts.useMapToolsState()
   const offset = hooks.useOffset(panelOpen)
   const breakpoint = hooks.useBreakpoint()
-
   const cache = useQueryCache()
-  let selFeatAttribs: contexts.DetailsSchema | null = null
-  if (
-    /* eslint-disable @typescript-eslint/ban-ts-comment */
-    cache.getQueryData(['Details', featId]) &&
-    // @ts-ignore
-    cache.getQueryData(['Details', featId])[0]
-  ) {
-    // @ts-ignore
-    selFeatAttribs =
-      // @ts-ignore
-      cache.getQueryData(['Details', featId])[0].fields
-    /* eslint-enable @typescript-eslint/ban-ts-comment */
-  }
-
-  // Down to ONE state prop- `langFeatures`. Hook w/GlobalContext, router?
-  const { langFeatures } = state
+  const { langFeatures } = state // TODO: IDs, Lat, Lon from Table filter
   const { activeSymbGroupID } = symbLabelState
 
-  // FIXME: you know what
   const symbCache = cache.getQueryData([activeSymbGroupID, 'legend']) || []
-  const interactiveLayerIds = symbCache
-
-  const beforeId = 'background' // FIXME: you know what
-  // was 'Eastern Africa'... fragile hack for correct order of polygon layers
+  // const interactiveLayerIds = symbCache // FIXME: all this mess
+  const beforeId = 'background' // must be a layer in the MB style
 
   // Local states
   const [
@@ -102,15 +76,14 @@ export const Map: FC<Types.MapProps> = (props) => {
   const [viewport, setViewport] = useState<Types.ViewportState>(
     config.initialMapState
   )
+  const [hidePopup, setHidePopup] = useState<boolean>(false)
   const [tooltip, setTooltip] = useState<Types.PopupSettings | null>(null)
-  const [popup, setPopup] = useState<Types.PopupSettings | null>(null)
   const [
     clickedBoundary,
     setClickedBoundary,
   ] = useState<Types.BoundaryFeat | null>()
 
-  // Handle MB Boundaries feature click. Had this inside the handler before, but
-  // using state and more on-demand-ness seemed more efficient.
+  // Handle MB Boundaries feature click
   useEffect((): void => {
     if (!map || !clickedBoundary) return
 
@@ -129,8 +102,6 @@ export const Map: FC<Types.MapProps> = (props) => {
 
   // Fly to extent of lang features on length change
   useEffect((): void => {
-    // At time of writing, a "no features" scenario should only occur on load
-    // since "View results..." btn in table is disabled if no records.
     if (!map || !langFeatures.length) return
 
     // TODO: better check/decouple the fly-home-on-filter-reset behavior so that
@@ -148,17 +119,17 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     // Zooming to "bounds" gets crazy if there is only one feature
     if (langFeatures.length === 1) {
-      utils.flyToPoint(
-        map,
-        {
-          latitude: firstCoords[1],
-          longitude: firstCoords[0],
-          zoom: config.POINT_ZOOM_LEVEL,
-          pitch: 80,
-          offset,
-        },
-        null
-      )
+      // utils.flyToPoint(
+      //   map,
+      //   {
+      //     latitude: firstCoords[1],
+      //     longitude: firstCoords[0],
+      //     zoom: config.POINT_ZOOM_LEVEL,
+      //     pitch: 80,
+      //     offset,
+      //   },
+      //   null
+      // )
 
       return
     }
@@ -209,69 +180,38 @@ export const Map: FC<Types.MapProps> = (props) => {
 
   // Do selected feature stuff on sel feat change or map load
   useEffect((): void => {
-    if (!map || !mapLoaded) return
+    if (!map || !mapLoaded || !selFeatAttribs) return
 
-    // Deselect any language features // TODO: add `selected` key?
-    // map.removeFeatureState({ source: langSrcID, sourceLayer }) // FIXME
     nuclearClear()
 
-    if (!selFeatAttribs && !selFeatAttribss) return
+    const { Latitude: latitude, Longitude: longitude } = selFeatAttribs
 
-    // NOTE: won't get this far on load even if feature is selected. The timing
-    // and order of the whole process prevent that.
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const { id, Latitude: latitude, Longitude: longitude } = selFeatAttribs
+    // bearing: 80, // TODO: consider it as it does add a new element of fancy
     const settings = {
       latitude,
       longitude,
       zoom: config.POINT_ZOOM_LEVEL,
       disregardCurrZoom: true,
-      // bearing: 80, // TODO: consider it as it does add a new element of fancy
       pitch: 80,
       offset,
     }
 
-    // Make feature appear selected // TODO: higher zIndex on selected feature
-    map.setFeatureState(
-      { sourceLayer, source: langSrcID, id },
-      { selected: true }
-    )
-
-    utils.flyToPoint(map, settings, utils.prepPopupContent(selFeatAttribs))
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    utils.flyToPoint(map, settings, utils.prepPopupContent(selFeatAttribs.id))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapLoaded, isLoading, selFeatAttribs, map, cache])
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function onHover(event: Types.MapEvent) {
-    if (!mapRef.current || !mapLoaded || !boundariesVisible) return
-
-    events.onHover(event, setTooltip, mapRef.current.getMap(), {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      lang: interactiveLayerIds,
-      boundaries: boundariesLayerIDs,
-    })
-  }
+  }, [selFeatAttribs])
 
   // TODO: use `if (map.isSourceLoaded('sourceId')` if possible
   // Runs only once and kicks off the whole thing
   function onLoad(mapLoadEvent: MapLoadEvent) {
     // `mapObj` should === `map` but avoid naming conflict just in case:
     const { target: mapObj } = mapLoadEvent
-
-    utils.flyHome(mapObj, nuclearClear, offset)
-
-    mapObj.addControl(
-      new AttributionControl({ compact: false }), // Give MB well-deserved cred
-      'bottom-right'
-    )
-
-    // TODO: put all these init events below into `utils.events.ts`
     // Maintain viewport state sync if needed (e.g. after `flyTo`), otherwise
     // the map shifts back to previous position after panning or zooming.
     mapObj.on('moveend', function onMoveEnd(zoomEndEvent) {
+      setHidePopup(false)
+
       // No custom event data, regular move event
       if (zoomEndEvent.forceViewportUpdate) {
         setViewport({
@@ -286,22 +226,26 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     // Close popup on the start of moving so no jank
     mapObj.on('movestart', function onMoveStart(zoomEndEvent) {
+      setHidePopup(true)
+
       if (zoomEndEvent.forceViewportUpdate) nuclearClear()
     })
 
     mapObj.on('zoomend', function onMoveEnd(customEventData) {
-      const {
-        popupSettings: popupParams,
-        geocodeMarker: geocodeMarkerParams,
-      } = customEventData // as MapTypes.CustomEventData // WHYYYY ERRORS
+      const { geocodeMarker: geocodeMarkerParams } = customEventData
+      // as MapTypes.CustomEventData // WHYYYY ERRORS
 
-      if (mapObj.isMoving()) return
-
-      setPopup(null)
+      setHidePopup(false)
 
       if (geocodeMarkerParams) setGeocodeMarker(geocodeMarkerParams)
-      if (popupParams as Types.PopupSettings) setPopup(popupParams)
     })
+
+    mapObj.addControl(
+      new AttributionControl({ compact: false }), // Give MB well-deserved cred
+      'bottom-right'
+    )
+
+    utils.flyHome(mapObj, nuclearClear, offset)
 
     setMapLoaded(true)
   }
@@ -330,10 +274,9 @@ export const Map: FC<Types.MapProps> = (props) => {
     nuclearClear() // can't rely on history
 
     if (!topLangFeat) {
-      history.push(loc.pathname)
-      dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
+      history.push('/details')
     } else {
-      history.push(`${routes.details}/${topLangFeat.id}`)
+      history.push(`${routes.details}/${topLangFeat.properties?.id}`)
 
       return // prevent boundary click underneath
     }
@@ -350,7 +293,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   }
 
   const nuclearClear = () => {
-    setPopup(null)
+    setHidePopup(true)
     setGeocodeMarker(null)
     setTooltip(null)
   }
@@ -372,9 +315,9 @@ export const Map: FC<Types.MapProps> = (props) => {
         }, 5)
       }
     } else if (actionID === 'in') {
-      map.zoomIn({ offset }, popup || undefined)
+      map.zoomIn({ offset })
     } else if (actionID === 'out') {
-      map.zoomOut({ offset }, popup || undefined)
+      map.zoomOut({ offset })
     }
   }
 
@@ -431,7 +374,11 @@ export const Map: FC<Types.MapProps> = (props) => {
           sourceLayer={config.tractsLyrSrc['source-layer']}
         />
         <LangMbSrcAndLayer />
-        {popup && <MapPopup {...popup} setVisible={() => setPopup(null)} />}
+        <Route path="/details/:id">
+          {mapLoaded && !hidePopup && (
+            <LanguagePopup settings={selFeatAttribs} />
+          )}
+        </Route>
         {/* Popups are annoying on mobile */}
         {!sharedUtils.isTouchEnabled() && tooltip && (
           <MapPopup {...tooltip} setVisible={() => setTooltip(null)} />

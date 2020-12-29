@@ -83,17 +83,22 @@ export const useDetailsNew = (paramsField = 'id'): UseDetails => {
   )
 
   const langLevel = langData[0] || {}
+  let theData = null
 
-  return {
-    error: error || langError,
-    id: param,
-    data: {
+  if (langData.length) {
+    theData = {
       ...langLevel,
       ...instanceLevel,
       'Language Description': langLevel?.Description,
       Neighborhood: instanceLevel?.Neighborhood,
       Town: instanceLevel?.Town,
-    },
+    }
+  }
+
+  return {
+    error: error || langError,
+    id: param,
+    data: theData,
     isLoading: isLoading || isLangLoading,
     notFound: instanceLevel === undefined,
   }

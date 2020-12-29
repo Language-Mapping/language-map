@@ -3,11 +3,8 @@ import { Popup } from 'react-map-gl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
-import * as MapTypes from './types'
-
-type MapPopupComponent = MapTypes.PopupSettings & {
-  setVisible: () => void
-}
+import { useHistory } from 'react-router-dom'
+import { MapPopupProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const MapPopup: FC<MapPopupComponent> = (props) => {
+export const MapPopup: FC<MapPopupProps> = (props) => {
   const classes = useStyles()
   const { longitude, latitude, setVisible, heading, subheading } = props
   const { mapPopupRoot, popupHeading, subHeading } = classes
@@ -61,7 +58,7 @@ export const MapPopup: FC<MapPopupComponent> = (props) => {
       tipSize={10}
       longitude={longitude}
       latitude={latitude}
-      closeOnClick={false}
+      closeOnClick
       className={mapPopupRoot}
       onClose={() => setVisible()}
     >
@@ -72,5 +69,33 @@ export const MapPopup: FC<MapPopupComponent> = (props) => {
         {subheading && <small className={subHeading}>{subheading}</small>}
       </header>
     </Popup>
+  )
+}
+
+type Ugh = {
+  Language: string
+  Endonym: string
+  Latitude: number
+  Longitude: number
+}
+
+type Ffff = {
+  settings?: Ugh
+}
+
+export const LanguagePopup: FC<Ffff> = ({ settings }) => {
+  const history = useHistory()
+  if (!settings) return null
+
+  const { Language, Endonym, Latitude, Longitude } = settings
+
+  return (
+    <MapPopup
+      longitude={Longitude}
+      latitude={Latitude}
+      setVisible={() => history.push('/details')}
+      heading={Endonym}
+      subheading={Language}
+    />
   )
 }

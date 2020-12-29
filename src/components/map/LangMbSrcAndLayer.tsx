@@ -3,11 +3,7 @@ import { useQuery } from 'react-query'
 import { AnyLayout, Expression } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
-import {
-  useSymbAndLabelState,
-  useMapToolsDispatch,
-  LangConfig,
-} from 'components/context'
+import { useSymbAndLabelState, LangConfig } from 'components/context'
 import { configEndpoints } from 'components/spatial/config'
 import { reactQueryDefaults } from 'components/config'
 import { RawSheetsResponse } from 'components/config/types'
@@ -21,7 +17,6 @@ import * as Types from './types'
 
 export const LangMbSrcAndLayer: FC = () => {
   const symbLabelState = useSymbAndLabelState()
-  const mapToolsDispatch = useMapToolsDispatch()
   const { activeLabelID, activeSymbGroupID } = symbLabelState
   const {
     data: fontsData,
@@ -32,23 +27,17 @@ export const LangMbSrcAndLayer: FC = () => {
     () => asyncAwaitFetch<RawSheetsResponse>(configEndpoints.langConfig),
     reactQueryDefaults
   )
-  const {
-    data: layersData,
-    isLoading: isLayersLoading,
-    error: layersError,
-  } = useLayersConfig(activeSymbGroupID)
+  const { data: layersData, error: layersError } = useLayersConfig(
+    activeSymbGroupID
+  )
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [endoFonts, setEndoFonts] = useState<any[]>()
 
-  const getLayout = (
-    layout: AnyLayout,
-    isInActiveGroup: boolean
-  ): AnyLayout => {
+  const getLayout = (layout: AnyLayout): AnyLayout => {
     const bareMinimum: AnyLayout = {
       ...config.mapLabelDefaults.layout,
       ...layout,
-      visibility: isInActiveGroup ? 'visible' : 'none', // hide if inactive
     }
 
     if (!activeLabelID || activeLabelID === 'None' || !endoFonts) {
@@ -75,22 +64,16 @@ export const LangMbSrcAndLayer: FC = () => {
   }
 
   useEffect(() => {
-    // TODO: check `status === 'loading'` instead?
     if (isFontsLoading || !fontsData?.values) return
 
     const dataAsJson = sheetsToJSON<LangConfig>(fontsData.values)
 
-    mapToolsDispatch({
-      type: 'SET_LANG_CONFIG_VIA_SHEETS',
-      payload: dataAsJson,
-    })
     setEndoFonts(prepEndoFilters(dataAsJson))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFontsLoading])
 
   if (fontsError || layersError)
     throw new Error(`Something went wrong setting up ${activeSymbGroupID}`)
-  if (isLayersLoading || isFontsLoading || !layersData) return null
 
   return (
     <Source
@@ -103,13 +86,10 @@ export const LangMbSrcAndLayer: FC = () => {
       {/* @ts-ignore */}
       {layersData.map((layer: Types.LayerPropsPlusMeta) => {
         let { paint, layout } = layer
-        const isInActiveGroup = layer.group === activeSymbGroupID
 
-        layout = getLayout(layout, isInActiveGroup)
+        layout = getLayout(layout)
 
-        // TODO: change symbol size (???) for selected feat. Evidently cannot
-        // set layout properties base on feature-state though, so maybe this:
-        // https://docs.mapbox.com/mapbox-gl-js/api/map/#map#setlayoutproperty
+        // TODO: marker for selected feature
         if (activeLabelID && activeLabelID !== 'None') {
           paint = { ...config.mapLabelDefaults.paint, ...paint }
         }

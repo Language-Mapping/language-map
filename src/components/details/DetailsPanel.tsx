@@ -19,6 +19,7 @@ const DetailsWrap: FC = () => {
     return <NoFeatSel reason={`No community found with an id of ${id}.`} />
 
   const { Description, 'Language Description': langDescrip = '' } = data
+  const description = Description || langDescrip
 
   document.title = `${data.Language} - NYC Languages`
 
@@ -27,9 +28,11 @@ const DetailsWrap: FC = () => {
       {/* TODO: something that works */}
       {/* {state.panelState === 'default' && ( <ScrollToTopOnMount elemID={elemID} trigger={loc.pathname} /> )} */}
       <DetailedIntro data={data} isInstance />
-      <Typography variant="body2" component="div" align="left">
-        <RecordDescription text={Description || langDescrip} />
-      </Typography>
+      {description && (
+        <Typography variant="body2" component="div" align="left">
+          <RecordDescription text={description} />
+        </Typography>
+      )}
     </>
   )
 }

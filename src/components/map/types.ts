@@ -239,3 +239,7 @@ export type UseLayersConfig = {
   isLoading: boolean
   error: unknown
 }
+
+export type MapPopupProps = PopupSettings & {
+  setVisible: () => void
+}

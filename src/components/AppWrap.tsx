@@ -64,21 +64,6 @@ export const AppWrap: FC = () => {
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
   const propsForEveryone = { panelOpen, mapRef, mapLoaded }
 
-  // TODO: restore then rm all this from global state. Should only need router
-  // stuff and state.langFeatures in Details to get selFeatAttribs.
-  // Do selected feature stuff on location change
-  // useEffect((): void => {
-  //   const idFromUrl = getIDfromURLparams(loc.search)
-
-  //   if (!langFeatures.length || !idFromUrl) {
-  //     dispatch({ type: 'SET_SEL_FEAT_ATTRIBS', payload: null })
-
-  //     return
-  //   }
-  // TODO: handle scenario where feature exists in cached but not filtered
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [loc.search, state.langFeatures.length])
-
   return (
     <>
       {!mapLoaded && <LoadingBackdrop />}

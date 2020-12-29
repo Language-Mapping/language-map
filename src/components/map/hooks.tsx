@@ -8,6 +8,7 @@ import { AtSymbFields, AtSchemaFields } from 'components/legend/types'
 import { layerSymbFields } from 'components/legend/config'
 import { LayerPropsPlusMeta } from 'components/map/types'
 import { useAirtable } from 'components/explore/hooks'
+import { useRouteMatch } from 'react-router-dom'
 import * as Types from './types'
 import { useWindowResize } from '../../utils'
 import { iconStyleOverride } from './config'
@@ -141,4 +142,36 @@ const createLayerStyles = (
       },
     }
   })
+}
+
+export type UsePopupFeatDetailsReturn = {
+  selFeatAttribs?: Omit<Ugh, 'id'>
+  error: unknown
+  isLoading: boolean
+}
+
+type Ugh = {
+  Language: string
+  Endonym: string
+  Latitude: number
+  Longitude: number
+  id: number
+}
+
+export const usePopupFeatDetails = (): UsePopupFeatDetailsReturn => {
+  const match = useRouteMatch<{ id: string }>({ path: '/details/:id' })
+
+  const { data, error, isLoading } = useAirtable<Ugh>(
+    'Data',
+    {
+      fields: ['Language', 'Endonym', 'Latitude', 'Longitude', 'id'],
+      filterByFormula: `{id} = ${match?.params.id}`,
+      maxRecords: 1,
+    },
+    { enabled: !!match }
+  )
+
+  if (isLoading || error) return { isLoading, error }
+
+  return { selFeatAttribs: data[0], error, isLoading }
 }

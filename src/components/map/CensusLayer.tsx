@@ -12,9 +12,9 @@ import { tableEndpoints } from '../spatial/config'
 import { sheetsToJSON } from '../../utils'
 
 import * as utils from './utils'
-import * as Types from './types'
+import { CensusLayerProps, PreppedCensusTableRow } from './types'
 
-export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
+export const CensusLayer: FC<CensusLayerProps> = (props) => {
   const { sourceLayer, config, map, beforeId } = props
   const { layers, source } = config
   const censusUnit = config.source.id as CensusQueryID
@@ -33,15 +33,15 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
     'fill-color': 'transparent', // mitigates the brief lag before load
   })
   const [highLow, setHighLow] = useState<{ high: number; low?: number }>()
-  const [tableRows, setTableRows] = useState<Types.PreppedCensusTableRow[]>()
+  const [tableRows, setTableRows] = useState<PreppedCensusTableRow[]>()
 
   useEffect(() => {
     if (isLoading || !data) return
 
-    const tableRowsPrepped = sheetsToJSON<Types.PreppedCensusTableRow>(
-      data.values,
-      ['GEOID']
-    )
+    /* eslint-disable array-bracket-newline */
+    const tableRowsPrepped = sheetsToJSON<PreppedCensusTableRow>(data.values, [
+      'GEOID',
+    ])
 
     setTableRows(tableRowsPrepped)
     // eslint-disable-next-line react-hooks/exhaustive-deps
