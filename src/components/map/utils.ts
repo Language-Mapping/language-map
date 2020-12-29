@@ -149,14 +149,9 @@ export const flyToPoint: Types.FlyToPoint = (
       text: geocodeMarkerText,
     }
   }
-  const params = {
-    essential: true,
-    zoom,
-    center: [longitude, latitude] as [number, number],
-    bearing,
-    pitch,
-    offset,
-  }
+
+  const center = [longitude, latitude] as [number, number]
+  const params = { essential: true, zoom, center, bearing, pitch, offset }
 
   if (disregardCurrZoom) {
     map.flyTo(params, customEventData)
@@ -261,3 +256,16 @@ export const flyHome = (
   // TODO: prevent errors on resize-while-loading
   flyToBounds(map, settings, null)
 }
+
+export const getFlyToPointSettings = (
+  selFeatAttribs: Types.SelFeatAttribs,
+  offset: Types.Offset
+): Types.FlyToPointSettings => ({
+  // bearing: 80, // TODO: consider it as it does add a new element of fancy
+  longitude: selFeatAttribs.Longitude,
+  latitude: selFeatAttribs.Latitude,
+  zoom: config.POINT_ZOOM_LEVEL,
+  disregardCurrZoom: true,
+  pitch: 80,
+  offset,
+})

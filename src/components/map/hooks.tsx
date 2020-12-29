@@ -6,7 +6,6 @@ import { panelWidths } from 'components/panels/config'
 import { GlobalContext, LangRecordSchema } from 'components/context'
 import { AtSymbFields, AtSchemaFields } from 'components/legend/types'
 import { layerSymbFields } from 'components/legend/config'
-import { LayerPropsPlusMeta } from 'components/map/types'
 import { useAirtable } from 'components/explore/hooks'
 import { useRouteMatch } from 'react-router-dom'
 import * as Types from './types'
@@ -99,7 +98,7 @@ export const useLayersConfig = (
     fields: ['name', ...moreFields],
   })
 
-  let prepped: LayerPropsPlusMeta[] = []
+  let prepped: Types.LayerPropsPlusMeta[] = []
 
   if (tableName && tableName !== 'None' && data.length) {
     prepped = createLayerStyles(data, tableName)
@@ -111,7 +110,7 @@ export const useLayersConfig = (
 const createLayerStyles = (
   rows: AtSymbFields[],
   group: keyof LangRecordSchema | '' | 'None'
-): LayerPropsPlusMeta[] => {
+): Types.LayerPropsPlusMeta[] => {
   if (!group || group === 'None') return []
 
   return rows.map((settings) => {
@@ -145,26 +144,26 @@ const createLayerStyles = (
 }
 
 export type UsePopupFeatDetailsReturn = {
-  selFeatAttribs?: Omit<Ugh, 'id'>
+  selFeatAttribs?: Types.SelFeatAttribs
   error: unknown
   isLoading: boolean
 }
 
-type Ugh = {
-  Language: string
-  Endonym: string
-  Latitude: number
-  Longitude: number
-  id: number
-}
-
 export const usePopupFeatDetails = (): UsePopupFeatDetailsReturn => {
   const match = useRouteMatch<{ id: string }>({ path: '/details/:id' })
+  const fields = [
+    'Language',
+    'Endonym',
+    'Latitude',
+    'Longitude',
+    'id',
+    'Font Image Alt',
+  ]
 
-  const { data, error, isLoading } = useAirtable<Ugh>(
+  const { data, error, isLoading } = useAirtable<Types.SelFeatAttribs>(
     'Data',
     {
-      fields: ['Language', 'Endonym', 'Latitude', 'Longitude', 'id'],
+      fields,
       filterByFormula: `{id} = ${match?.params.id}`,
       maxRecords: 1,
     },

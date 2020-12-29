@@ -17,7 +17,11 @@ import {
 } from 'mapbox-gl'
 import * as GeoJSON from 'geojson'
 
-import { LangRecordSchema, DetailsSchema } from 'components/context'
+import {
+  LangRecordSchema,
+  DetailsSchema,
+  InternalUse,
+} from 'components/context'
 
 type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
 type Padding =
@@ -242,4 +246,16 @@ export type UseLayersConfig = {
 
 export type MapPopupProps = PopupSettings & {
   setVisible: () => void
+}
+
+export type SelFeatAttribs = InternalUse &
+  Pick<DetailsSchema, 'Language' | 'Endonym' | 'Font Image Alt'>
+
+export type FlyToPointSettings = {
+  longitude: number
+  latitude: number
+  zoom: number
+  disregardCurrZoom: boolean
+  pitch: number
+  offset: Offset
 }

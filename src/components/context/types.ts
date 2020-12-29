@@ -36,7 +36,7 @@ export type Statuses =
   | 'Reviving'
 
 // Aka user doesn't really see them
-type InternalUse = {
+export type InternalUse = {
   id: number // unique (ultimately)
   Latitude: number // nice convenience over geometry.coordinates
   Longitude: number // nice convenience over geometry.coordinates

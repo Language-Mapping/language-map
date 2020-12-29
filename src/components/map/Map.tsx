@@ -184,29 +184,18 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     nuclearClear()
 
-    const { Latitude: latitude, Longitude: longitude } = selFeatAttribs
+    const settings = utils.getFlyToPointSettings(selFeatAttribs, offset)
 
-    // bearing: 80, // TODO: consider it as it does add a new element of fancy
-    const settings = {
-      latitude,
-      longitude,
-      zoom: config.POINT_ZOOM_LEVEL,
-      disregardCurrZoom: true,
-      pitch: 80,
-      offset,
-    }
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    utils.flyToPoint(map, settings, utils.prepPopupContent(selFeatAttribs.id))
+    utils.flyToPoint(map, settings, null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selFeatAttribs])
+  }, [selFeatAttribs]) // LEGIT disabling of deps. Breaks otherwise.
 
   // TODO: use `if (map.isSourceLoaded('sourceId')` if possible
   // Runs only once and kicks off the whole thing
   function onLoad(mapLoadEvent: MapLoadEvent) {
     // `mapObj` should === `map` but avoid naming conflict just in case:
     const { target: mapObj } = mapLoadEvent
+
     // Maintain viewport state sync if needed (e.g. after `flyTo`), otherwise
     // the map shifts back to previous position after panning or zooming.
     mapObj.on('moveend', function onMoveEnd(zoomEndEvent) {
@@ -219,7 +208,7 @@ export const Map: FC<Types.MapProps> = (props) => {
           latitude: mapObj.getCenter().lat,
           longitude: mapObj.getCenter().lng,
           pitch: mapObj.getPitch(),
-          zoom: mapObj.getZoom(), // bearing: // TODO: consider, looks cool
+          zoom: mapObj.getZoom(),
         })
       }
     })
@@ -245,9 +234,15 @@ export const Map: FC<Types.MapProps> = (props) => {
       'bottom-right'
     )
 
-    utils.flyHome(mapObj, nuclearClear, offset)
-
     setMapLoaded(true)
+
+    if (selFeatAttribs) {
+      const settings = utils.getFlyToPointSettings(selFeatAttribs, offset)
+
+      utils.flyToPoint(mapObj, settings, null)
+    } else {
+      utils.flyHome(mapObj, nuclearClear, offset)
+    }
   }
 
   function onClick(event: Types.MapEvent): void {
