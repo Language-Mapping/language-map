@@ -33,8 +33,12 @@ import * as sharedUtils from '../../utils'
 import * as Types from './types'
 import * as utils from './utils'
 
-const { langSrcID } = config.mbStyleTileConfig
-const { neighbConfig, countiesConfig, boundariesLayerIDs } = config
+const {
+  neighbConfig,
+  countiesConfig,
+  boundariesLayerIDs,
+  langTypeIconsConfig,
+} = config
 
 // Jest or whatever CANNOT find this plugin. And importing it from
 // `react-map-gl` is useless as well.
@@ -53,7 +57,6 @@ export const Map: FC<Types.MapProps> = (props) => {
   const history = useHistory()
   const { mapLoaded, mapRef, panelOpen, setMapLoaded } = props
   const map: MbMap | undefined = mapRef.current?.getMap()
-  // TODO: // error, notFound? // TODO: useEffect
   const { selFeatAttribs } = hooks.usePopupFeatDetails()
   const { state } = useContext(contexts.GlobalContext)
   const symbLabelState = contexts.useSymbAndLabelState()
@@ -61,14 +64,12 @@ export const Map: FC<Types.MapProps> = (props) => {
   const offset = hooks.useOffset(panelOpen)
   const breakpoint = hooks.useBreakpoint()
   const cache = useQueryCache()
-  const { langFeatures } = state // TODO: IDs, Lat, Lon from Table filter
+  const { langFeatures } = state // FIXME: IDs, Lat, Lon from Table filter
   const { activeSymbGroupID } = symbLabelState
-
+  const [beforeId, setBeforeId] = useState<string>('background')
   const symbCache = cache.getQueryData([activeSymbGroupID, 'legend']) || []
   // const interactiveLayerIds = symbCache // FIXME: all this mess
-  const beforeId = 'background' // must be a layer in the MB style
 
-  // Local states
   const [
     geocodeMarker,
     setGeocodeMarker,
@@ -158,6 +159,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const currentLayerNames = symbCache.map((row) => row.fields.name)
+    // FIXME: doubtful this is working now, symb cache totally different
 
     utils.filterLayersByFeatIDs(
       map,
@@ -171,10 +173,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   useEffect((): void => {
     if (!mapRef.current) return
 
-    utils.addLangTypeIconsToMap(
-      mapRef.current.getMap(),
-      config.langTypeIconsConfig
-    )
+    utils.addLangTypeIconsToMap(mapRef.current.getMap(), langTypeIconsConfig)
   }, []) // add `baselayer` as dep if using more than just light BG
   /* eslint-enable react-hooks/exhaustive-deps */
 
@@ -190,8 +189,13 @@ export const Map: FC<Types.MapProps> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selFeatAttribs]) // LEGIT disabling of deps. Breaks otherwise.
 
+  const nuclearClear = () => {
+    setHidePopup(true)
+    setGeocodeMarker(null)
+    setTooltip(null)
+  }
+
   // TODO: use `if (map.isSourceLoaded('sourceId')` if possible
-  // Runs only once and kicks off the whole thing
   function onLoad(mapLoadEvent: MapLoadEvent) {
     // `mapObj` should === `map` but avoid naming conflict just in case:
     const { target: mapObj } = mapLoadEvent
@@ -218,6 +222,15 @@ export const Map: FC<Types.MapProps> = (props) => {
       setHidePopup(true)
 
       if (zoomEndEvent.forceViewportUpdate) nuclearClear()
+    })
+
+    mapObj.on('sourcedata', function onStyleData(e) {
+      if (!e.isSourceLoaded) return
+
+      const layers = e.style._layers
+      const before = utils.getBeforeID(activeSymbGroupID, layers)
+
+      setBeforeId(before)
     })
 
     mapObj.on('zoomend', function onMoveEnd(customEventData) {
@@ -248,23 +261,10 @@ export const Map: FC<Types.MapProps> = (props) => {
   function onClick(event: Types.MapEvent): void {
     if (!map || !mapLoaded) return
 
-    // FIXME: alll this mess
-    /* eslint-disable @typescript-eslint/ban-ts-comment */
-    // CRED: https://stackoverflow.com/a/42984268/1048518
-    // @ts-ignore
-    const lang = map
-      // @ts-ignore
-      .getStyle()
-      // @ts-ignore
-      .layers.filter((layer) => layer.source === langSrcID)
-      // @ts-ignore
-      .map((layer) => layer.id)
-
     const topLangFeat = utils.langFeatsUnderClick(event.point, map, {
-      // @ts-ignore
-      lang,
+      // CRED: https://stackoverflow.com/a/42984268/1048518
+      lang: utils.getLangLayersIDs(map.getStyle().layers || []),
     })[0]
-    /* eslint-disable @typescript-eslint/ban-ts-comment */
 
     nuclearClear() // can't rely on history
 
@@ -285,12 +285,6 @@ export const Map: FC<Types.MapProps> = (props) => {
     if (!boundariesClicked.length) return
 
     setClickedBoundary(boundariesClicked[0])
-  }
-
-  const nuclearClear = () => {
-    setHidePopup(true)
-    setGeocodeMarker(null)
-    setTooltip(null)
   }
 
   function onMapCtrlClick(actionID: Types.MapControlAction) {

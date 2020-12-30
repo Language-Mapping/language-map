@@ -24,6 +24,8 @@ export const BoundariesLayer: FC<Types.BoundariesLayerProps> = (props) => {
 
   if (error || !recordIDs || !visible || isLoading) return null
 
+  if (!visible) return null
+
   return (
     <Source {...source} type="vector">
       {layers.map((layer) => (
@@ -31,10 +33,7 @@ export const BoundariesLayer: FC<Types.BoundariesLayerProps> = (props) => {
           key={layer.id}
           beforeId={beforeId}
           {...layer}
-          layout={{
-            ...layer.layout,
-            visibility: visible ? 'visible' : 'none',
-          }}
+          layout={{ ...layer.layout }}
           filter={['in', ['id'], ['literal', recordIDs]]}
         />
       ))}

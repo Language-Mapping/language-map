@@ -1,4 +1,4 @@
-import { Map as MbMap, FillPaint } from 'mapbox-gl'
+import { Map as MbMap, FillPaint, Layer } from 'mapbox-gl'
 import { WebMercatorViewport } from 'react-map-gl'
 
 import { LangConfig } from 'components/context'
@@ -269,3 +269,29 @@ export const getFlyToPointSettings = (
   pitch: 80,
   offset,
 })
+
+export const getLangLayersIDs = (layers: Layer[]): string[] => {
+  // TODO: just reduce it one go instead of mapping, filtering, mapping again
+  const mapped = Object.keys(layers).map((layer) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore // TODO
+    const { source, id } = layers[layer]
+
+    return { source, id }
+  })
+
+  if (!mapped.length) return []
+
+  return mapped
+    .filter((layer) => layer.source === config.mbStyleTileConfig.langSrcID)
+    .map((layer) => layer.id)
+}
+
+export const getBeforeID = (
+  activeSymbGroupID: string,
+  layers: Layer[]
+): string => {
+  if (['', 'None'].includes(activeSymbGroupID)) return 'background'
+
+  return getLangLayersIDs(layers)[0] || 'background'
+}
