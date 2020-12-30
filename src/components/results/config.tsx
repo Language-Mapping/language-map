@@ -17,6 +17,7 @@ import {
 } from 'react-icons/md'
 
 import { Statuses } from 'components/context/types'
+
 import * as Types from './types'
 import * as utils from './utils'
 import * as Cells from './Cells'
@@ -42,13 +43,22 @@ export const tableExportMeta = {
     'https://docs.google.com/spreadsheets/d/1CZLDDyxNM3euikks8NJfKt3ajNXToVGbwEObSOJkbfA/edit',
 }
 
-// TODO: TS it up
-export const COMM_SIZE_COL_MAP = {
-  1: 'Smallest',
-  2: 'Small',
-  3: 'Medium',
-  4: 'Large',
-  5: 'Largest',
+// TODO: TS it up (may need for sorting again)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const SIZE_MAP = {
+  Smallest: 1,
+  Small: 2,
+  Medium: 3,
+  Large: 4,
+  Largest: 5,
+}
+
+const COMM_SIZES = {
+  Smallest: 'Smallest',
+  Small: 'Small',
+  Medium: 'Medium',
+  Large: 'Large',
+  Largest: 'Largest',
 }
 
 export const localization: Localization = {
@@ -261,11 +271,9 @@ export const columns = [
   },
   {
     // Average: 12, Longest: 26
-    title: <LocalColumnTitle text="Neighborhood" />,
-    field: 'Neighborhood',
+    title: <LocalColumnTitle text="Location" />,
+    field: 'Primary Location',
     ...commonColProps,
-    render: utils.renderNeighbColumn,
-    customSort: utils.sortNeighbs,
   },
   {
     // Longest: 14
@@ -273,11 +281,11 @@ export const columns = [
     field: 'Size',
     ...commonColProps,
     align: 'left',
-    lookup: COMM_SIZE_COL_MAP,
+    lookup: COMM_SIZES,
     disableClick: true,
     customSort: (a, b) => {
-      if (a.Size === b.Size) return 0
-      if (a.Size > b.Size) return 1
+      if (SIZE_MAP[a.Size] === SIZE_MAP[b.Size]) return 0
+      if (SIZE_MAP[a.Size] > SIZE_MAP[b.Size]) return 1
 
       return -1
     },
@@ -288,7 +296,6 @@ export const columns = [
     },
   },
   {
-    // Longest: 13
     title: <LocalColumnTitle text="Status" />,
     field: 'Status',
     ...commonColProps,
@@ -307,6 +314,16 @@ export const columns = [
     render: (data) => <Cells.VideoColumnCell data={data} />,
     searchable: false,
     disableClick: true,
+  },
+  {
+    title: <LocalColumnTitle text="Additional Neighborhoods" />,
+    field: 'Additional Neighborhoods',
+    ...commonColProps,
+    render: utils.renderNeighbColumn,
+    customSort: utils.sortNeighbs,
+    headerStyle: {
+      whiteSpace: 'nowrap',
+    },
   },
   ...hiddenCols,
 ] as Types.ColumnsConfig[]

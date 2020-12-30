@@ -24,6 +24,7 @@ const fields: Array<Extract<keyof LangRecordSchema, string>> = [
   'Language Family',
   'Language',
   'Neighborhood',
+  'Primary Location',
   'sizeColor',
   'Size',
   'Status',

@@ -9,6 +9,7 @@ import { paths as routes } from 'components/config/routes'
 import { DetailsPanel } from 'components/details'
 import { DetailsSchema } from 'components/context/types'
 import { MuiTableWithLangs } from './types'
+import { FILTER_CLASS } from './utils'
 import { ResultsToolbar } from './ResultsToolbar'
 
 import * as Types from './types'
@@ -47,7 +48,15 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
 
     const colIndex = tdElem.cellIndex
     const { field } = columns[colIndex]
-    const newFilterVal = rowData[field]
+
+    // Support multi-line value clicks, e.g. Country, Additional Neighborhoods
+    const elemWithFilter = path.find((elem) => {
+      const asElement = elem as HTMLElement
+
+      return asElement.classList?.contains(FILTER_CLASS)
+    }) as HTMLElement
+
+    const newFilterVal = elemWithFilter?.innerText || rowData[field]
 
     // Show feature in map
     if (field === 'id') {

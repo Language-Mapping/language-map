@@ -69,3 +69,9 @@ export type ResultsToolbarProps = MaterialTableProps<LangRecordSchema> & {
   clearBtnEnabled: boolean
   setClearBtnEnabled: React.Dispatch<boolean>
 }
+
+export type CountryListItemWithFlagProps = {
+  name: string
+  url: string
+  filterClassName: string
+}

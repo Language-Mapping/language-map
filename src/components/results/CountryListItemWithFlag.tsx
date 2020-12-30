@@ -1,6 +1,8 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
+import { CountryListItemWithFlagProps } from './types'
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     countryWithFlagRoot: {
@@ -28,15 +30,15 @@ const useStyles = makeStyles((theme: Theme) =>
 // country code/name was edited in `config.emojis.json` accordingly. Anything
 // wrong may have to be addressed in that config, the data, the SVG icons
 // themselves, or some combination thereof.
-export const CountryListItemWithFlag: FC<{ name: string; url: string }> = (
+export const CountryListItemWithFlag: FC<CountryListItemWithFlagProps> = (
   props
 ) => {
   const classes = useStyles()
   const { countryWithFlagRoot, emojiFlag } = classes
-  const { name, url } = props
+  const { name, url, filterClassName } = props
 
   return (
-    <li className={countryWithFlagRoot}>
+    <li className={`${countryWithFlagRoot} ${filterClassName}`}>
       <div className={emojiFlag}>
         <img alt={`${name} flag`} src={url} />
       </div>

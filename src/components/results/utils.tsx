@@ -7,7 +7,7 @@ import { DetailsSchema } from 'components/context/types'
 import { CountryListItemWithFlag } from './CountryListItemWithFlag'
 import { EndoImageModal } from './EndoImageModal'
 
-const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhood and Country
+export const FILTER_CLASS = 'for-filter'
 
 export function renderCountryColumn(
   data: DetailsSchema
@@ -19,6 +19,7 @@ export function renderCountryColumn(
           key={data.Country[i]}
           name={data.Country[i]}
           url={data.countryImg[i].url}
+          filterClassName={FILTER_CLASS}
         />
       ))}
     </ul>
@@ -59,19 +60,20 @@ export function renderIDcolumn(): string | React.ReactNode {
 export function renderNeighbColumn(
   data: DetailsSchema
 ): string | React.ReactNode {
-  if (!data.Neighborhood || !data.Neighborhood.includes(DEFAULT_DELIM)) {
-    // Only NYC hoods will be populated, and not all have more than one value
-    return data.Neighborhood
-  }
+  const addlNeighbs = data['Additional Neighborhoods']
+
+  if (!addlNeighbs) return null
+  if (addlNeighbs.length === 1)
+    return <span className={FILTER_CLASS}>{addlNeighbs[0]}</span>
 
   return (
     <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
-      {data.Neighborhood.split(DEFAULT_DELIM)
+      {addlNeighbs
         // .sort() // no! order is intentional ("primary" is first)
         .map((neighborhood) => (
           <li key={neighborhood}>
             <span style={{ marginRight: 4 }}>•</span>
-            {neighborhood}
+            <span className={FILTER_CLASS}>{neighborhood}</span>
           </li>
         ))}
     </ul>
@@ -82,11 +84,11 @@ export function renderNeighbColumn(
 // properly (blanks last, regardless of direction)
 // CRED: https://stackoverflow.com/a/29829361/1048518
 export function sortNeighbs(a: DetailsSchema, b: DetailsSchema): 0 | 1 | -1 {
-  if (a.Neighborhood === b.Neighborhood) return 0
-  if (!b.Neighborhood) return -1
-  if (!a.Neighborhood) return 1 // nulls sort after anything else
+  if (a['Additional Neighborhoods'] === b['Additional Neighborhoods']) return 0
+  if (!b['Additional Neighborhoods']) return -1
+  if (!a['Additional Neighborhoods']) return 1 // nulls sort after anything else
 
-  return a.Neighborhood < b.Neighborhood ? -1 : 1
+  return a['Additional Neighborhoods'] < b['Additional Neighborhoods'] ? -1 : 1
 
   // If descending, highest sorts first
   // return a.Neighborhood < b.Neighborhood ? 1 : -1
