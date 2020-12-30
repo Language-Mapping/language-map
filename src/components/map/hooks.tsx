@@ -151,7 +151,7 @@ export type UsePopupFeatDetailsReturn = {
 
 export const usePopupFeatDetails = (): UsePopupFeatDetailsReturn => {
   const match = useRouteMatch<{ id: string }>({ path: '/details/:id' })
-  const fields = [
+  const fields: Array<Extract<keyof LangRecordSchema, string>> = [
     'Language',
     'Endonym',
     'Latitude',

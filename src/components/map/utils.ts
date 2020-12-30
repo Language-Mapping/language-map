@@ -1,7 +1,6 @@
 import { Map as MbMap, FillPaint, Layer } from 'mapbox-gl'
 import { WebMercatorViewport } from 'react-map-gl'
 
-import { LangConfig } from 'components/context'
 import * as Types from './types'
 import * as config from './config' // TODO: pass this as fn args, don't import
 
@@ -193,7 +192,9 @@ export const clearBoundaries: Types.ClearStuff = (map) => {
 // any impact, the fonts must be uploaded to the Mapbox account and their names
 // must be identical to those in the sheet.
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const prepEndoFilters = (data: LangConfig[]): any[] => {
+export const prepEndoFilters = (
+  data: { Font: string; Language: string }[]
+): any[] => {
   const filters = data
     .filter((row) => row.Font)
     .reduce((all, thisOne) => {

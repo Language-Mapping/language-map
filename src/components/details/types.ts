@@ -1,7 +1,9 @@
 import { DetailsSchema } from 'components/context'
 
+type WithLangDescrip = DetailsSchema & { 'Language Description'?: string }
+
 export type MoreLikeThisProps = {
-  data: DetailsSchema
+  data: WithLangDescrip
   isInstance?: boolean
 }
 
@@ -18,5 +20,15 @@ export type DetailedIntroProps = MoreLikeThisProps & { shareNoun?: string }
 
 // TODO: UGH
 export type LangOrEndoIntroProps = Pick<MoreLikeThisProps, 'isInstance'> & {
-  data: DetailsSchema & { name?: string }
+  data: WithLangDescrip & { name?: string }
 }
+
+export type UseDetails = {
+  error: unknown
+  isLoading: boolean
+  data: WithLangDescrip | null
+  notFound?: boolean
+  id: string
+}
+
+export type DetailsRecord = { id: string; fields: DetailsSchema }

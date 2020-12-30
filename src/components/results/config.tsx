@@ -281,7 +281,7 @@ export const columns = [
 
       return -1
     },
-    render: (data) => <Cells.CommSize data={data} lookup={COMM_SIZE_COL_MAP} />,
+    render: (data) => <Cells.CommSize data={data} />,
     searchable: false,
     headerStyle: {
       paddingRight: 25, // "Smallest" is ironically the longest

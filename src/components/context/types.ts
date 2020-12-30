@@ -2,6 +2,7 @@
 // MIT License, available here:
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
 
+import { ArrayOfStringArrays } from 'components/config/types'
 import { PreppedCensusLUTrow, CensusQueryID } from 'components/spatial/types'
 
 export type PanelState = 'default' | 'maximized' | 'minimized'
@@ -19,15 +20,6 @@ export type InitialState = {
   panelState: PanelState
 }
 
-// ========================================================================== //
-//
-//    IF THIS PROJECT IS TO BE REUSED, THE CUSTOM PART BEGINS HERE AND
-//    SHOULD ULTIMATELY BE MOVED TO A NEW FILE (e.g types.custom.ts). TRY TO
-//    KEEP TRACK OF WHAT IS CUSTOM AND WHAT IS GENERIC WHENEVER POSSIBLE.
-//
-// ========================================================================== //
-
-// Formerly "Type"
 export type Statuses =
   | 'Historical'
   | 'Community'
@@ -42,58 +34,72 @@ export type InternalUse = {
   Longitude: number // nice convenience over geometry.coordinates
 }
 
-// TODO: TS it up
-type CommunitySize = 1 | 2 | 3 | 4 | 5
-
-// TODO: consider separate file
-// In the order that should be followed in Filters, Data/Results, and Details
-export type LangRecordSchema = InternalUse & NonInternal
-export type NonInternal = {
-  'Font Image Alt'?: string // for images to use instead of fonts, e.g. ASL
-  'Global Speaker Total'?: number // string in MB tileset b/c some blanks
-  'ISO 639-3'?: string
+type LangLevelReqd = {
+  name: string
+  Endonym: string // often same as English name, may be an http link to image
+  countryImg: { url: string }[]
+  Country: string[]
+  worldRegionColor: string
   'Language Family': string
   'World Region': string
-  Audio?: string // TODO: TS for URL?
-  Country: string
-  Description: string
-  Endonym: string // often same as English name, may be an http link to image
-  Glottocode?: string
-  Language: string
-  Macrocommunity?: string
-  Neighborhood?: string // NYC-metro only // TODO: make optional
-  Size: CommunitySize
-  Status: Statuses
-  Town: string
-  Video?: string // TODO: TS for URL?
+  'Primary Locations': string[] // Town or primary Neighborhood
+  instanceIDs: number[]
 }
 
-// TODO: break out all types by Airtable table (instance vs. schema vs. lookup
-// vs. data), and optional vs. required
+type LangLevelOptional = CensusFields &
+  Partial<{
+    Font: string
+    'Font Image Alt': { url: string }[] // e.g. ASL, Mongolian
+    'Global Speaker Total': number
+    addlNeighborhoods: string[] // suuuper shakes mcgee
+    Audio: string
+    Description: string // same column name in Data table
+    Glottocode: string
+    Macrocommunity: string
+    Neighborhood: string[]
+    Town: string[]
+    Video: string
+    'ISO 639-3': string
+  }>
 
-// For Details, for now
-export type DetailsSchema = NonInternal & {
-  'Font Image Alt': { url: string }[]
-  'Language Description'?: string
-  'Primary Locations'?: string[] // Town or primary Neighborhood
-  'Additional Neighborhoods'?: string[]
-  // Couldn't get this into string as an Airtable field:
-  addlNeighborhoods?: string[] // suuuper shakes mcgee
-  Country: string[]
-  countryImg: { url: string }[]
-  instanceIDs?: number[]
-  worldRegionColor: string
-} & CensusFields
+type InstanceLevelReqd = InternalUse & {
+  Language: string
+  Size: 'Smallest' | 'Small' | 'Medium' | 'Large' | 'Largest'
+  Status: Statuses
+  sizeColor: string
+  'Primary Location': string // Town or primary Neighborhood convenience
+} & Omit<LangLevelReqd, 'name'>
 
-// TODO: break out all the lang-level props into separate type
-// TODO: set up TableSchema. Should be very similar to Details.
-// TODO: set up OmniboxSchema: iso, glotto, language, primaries, IDs
+type InstanceLevelOptional = LangLevelOptional & {
+  'Additional Neighborhoods': string[]
+  Description: string // same column name in Language table
+  Neighborhood: string // NYC-metro only
+  Town: string
+}
 
-/**
- * MAP TOOLS CONTEXT (could not get all imports to work w/o dep cycle error)
- */
+type CensusFields = {
+  'PUMA Field'?: string
+  'Tract Field'?: string
+  'Census Pretty'?: string
+}
+
+export type InitialMapToolsState = {
+  boundariesVisible: boolean
+  geolocActive: boolean
+  tractsField?: string
+  pumaField?: string
+  censusDropDownFields: {
+    tracts: PreppedCensusLUTrow[]
+    puma: PreppedCensusLUTrow[]
+  }
+  censusActiveFields: {
+    tracts: string
+    puma: string
+  }
+}
+
 export type MapToolsAction =
-  | { type: 'SET_LANG_CONFIG_VIA_SHEETS'; payload: LangConfig[] }
+  | { type: 'SET_LANG_CONFIG_VIA_SHEETS'; payload: ArrayOfStringArrays }
   | { type: 'SET_BOUNDARIES_VISIBLE'; payload: boolean }
   | { type: 'SET_GEOLOC_ACTIVE'; payload: boolean }
   | { type: 'CLEAR_CENSUS_FIELD' }
@@ -110,41 +116,10 @@ export type MapToolsAction =
 
 export type MapToolsDispatch = React.Dispatch<MapToolsAction>
 
-export type CensusFields = {
-  'PUMA Field'?: string
-  'Tract Field'?: string
-  'Census Pretty'?: string // MATCH/INDEX convenience lookup
-}
+// Fields in the actual Airtable tables
+export type LangLevelSchema = LangLevelOptional & LangLevelReqd
+export type InstanceLevelSchema = InstanceLevelOptional & InstanceLevelReqd
 
-// NOTE: it's not actually ALL the cols, but most
-export type LangConfig = Omit<
-  LangRecordSchema,
-  | 'County'
-  | 'id'
-  | 'Latitude'
-  | 'Longitude'
-  | 'Macrocommunity'
-  | 'Neighborhood'
-  | 'Size'
-  | 'Status'
-  | 'Town'
-> &
-  CensusFields & {
-    'Global Speaker Total'?: string // MB has int, Google API string
-    Font?: string
-  }
-
-export type InitialMapToolsState = {
-  boundariesVisible: boolean
-  geolocActive: boolean
-  tractsField?: string
-  pumaField?: string
-  censusDropDownFields: {
-    tracts: PreppedCensusLUTrow[]
-    puma: PreppedCensusLUTrow[]
-  }
-  censusActiveFields: {
-    tracts: string
-    puma: string
-  }
-}
+// Dupes to avoid find-and-replace of originals
+export type LangRecordSchema = InstanceLevelSchema
+export type DetailsSchema = InstanceLevelSchema

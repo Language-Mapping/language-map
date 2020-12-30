@@ -10,8 +10,10 @@ export type UseFullData = {
   error: unknown
 }
 
-const fields = [
+// CRED: https://stackoverflow.com/a/51808262/1048518
+const fields: Array<Extract<keyof LangRecordSchema, string>> = [
   'Additional Neighborhoods',
+  'countryImg',
   'Country',
   'Description',
   'Endonym',
@@ -22,10 +24,11 @@ const fields = [
   'Language Family',
   'Language',
   'Neighborhood',
+  'sizeColor',
   'Size',
   'Status',
   'World Region',
-] // TODO: TS, fix a bunch
+]
 
 // Same as useLayerConfig but takes a table name param for single-table us.
 // TODO: consider reusing this whole thing. It could get repetitive.
@@ -34,9 +37,7 @@ export const useFullData = (): UseFullData => {
   const { data, isLoading, error } = useQuery(
     ['Data', 'full'],
     (schemaTableName: string, field) => {
-      const allData = base(schemaTableName)
-        .select({ fields, filterByFormula: '{id} = 37' }) // FIXME: bad
-        .firstPage()
+      const allData = base(schemaTableName).select({ fields }).firstPage()
 
       return allData.then((records) => records)
     },

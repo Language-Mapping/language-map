@@ -7,7 +7,7 @@ import { AiOutlineQuestionCircle } from 'react-icons/ai'
 import { SimpleDialog } from 'components/generic/modals'
 import { paths as routes } from 'components/config/routes'
 import { DetailsPanel } from 'components/details'
-import { LangRecordSchema } from 'components/context/types'
+import { DetailsSchema } from 'components/context/types'
 import { MuiTableWithLangs } from './types'
 import { ResultsToolbar } from './ResultsToolbar'
 
@@ -26,7 +26,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
 
   const onRowClick = (
     event: React.MouseEvent,
-    rowData: LangRecordSchema
+    rowData: DetailsSchema
   ): void => {
     if (!tableRef || !tableRef.current || !event || !rowData) return
 

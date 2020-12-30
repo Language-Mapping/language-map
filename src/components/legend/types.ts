@@ -59,9 +59,6 @@ export type AtSchemaFields = {
   legendSummary?: string
   sourceCredits?: string
   routeable?: boolean
-  // Not using this but super handy for future reference. Rm when memorized:
-  // CRED: https://stackoverflow.com/a/51808262/1048518
-  // queryFields?: Array<Extract<keyof AtSymbFields, string>> // NOYCE
 }
 
 export type LegendProps = {

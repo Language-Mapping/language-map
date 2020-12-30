@@ -3,65 +3,40 @@ import { IconButton } from '@material-ui/core'
 import { GoFile } from 'react-icons/go'
 import { FaMapMarkedAlt } from 'react-icons/fa'
 
-import { LangRecordSchema } from 'components/context/types'
-import countryCodes from './config.emojis.json'
-import * as Types from './types'
+import { DetailsSchema } from 'components/context/types'
 import { CountryListItemWithFlag } from './CountryListItemWithFlag'
 import { EndoImageModal } from './EndoImageModal'
 
 const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhood and Country
 
-export const getCodeByCountry = (countryName: string): string => {
-  // TODO: defeat this:
-  const countryCodesTyped = countryCodes as Types.CountryCodes
-
-  return countryCodesTyped[countryName] || ''
-}
-
-// FIXME: you know what
 export function renderCountryColumn(
-  data: LangRecordSchema
+  data: DetailsSchema
 ): string | React.ReactNode {
-  // TODO: defeat this:
-  const countryCodesTyped = countryCodes as Types.CountryCodes
-  // const countries = data.Country.split(DEFAULT_DELIM)
-  /* eslint-disable @typescript-eslint/ban-ts-comment */
-  // @ts-ignore
-  const countriesWithFlags = data.Country.map((country) => {
-    if (countryCodesTyped[country]) {
-      return countryCodesTyped[country]
-    }
-
-    return '' // there SHOULD be a match but if not then just use blank
-  })
-
   return (
     <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
-      {/* @ts-ignore */}
-      {countriesWithFlags.map((countryWithFlag, i) => (
+      {data.Country.map((countryWithFlag, i) => (
         <CountryListItemWithFlag
-          // @ts-ignore
           key={data.Country[i]}
-          // @ts-ignore
-          countryCode={countryWithFlag}
-          // @ts-ignore
           name={data.Country[i]}
+          url={data.countryImg[i].url}
         />
       ))}
     </ul>
   )
-  /* eslint-enable @typescript-eslint/ban-ts-comment */
 }
 
 export function renderEndoColumn(
-  data: LangRecordSchema
+  data: DetailsSchema
 ): string | React.ReactNode {
   if (!data['Font Image Alt']) {
     return data.Endonym
   }
 
   return (
-    <EndoImageModal url={data['Font Image Alt']} language={data.Language} />
+    <EndoImageModal
+      url={data['Font Image Alt'][0].url}
+      language={data.Language}
+    />
   )
 }
 
@@ -82,10 +57,10 @@ export function renderIDcolumn(): string | React.ReactNode {
 }
 
 export function renderNeighbColumn(
-  data: LangRecordSchema
+  data: DetailsSchema
 ): string | React.ReactNode {
-  // Only NYC hoods will be populated, and not all have more than one value
   if (!data.Neighborhood || !data.Neighborhood.includes(DEFAULT_DELIM)) {
+    // Only NYC hoods will be populated, and not all have more than one value
     return data.Neighborhood
   }
 
@@ -106,13 +81,10 @@ export function renderNeighbColumn(
 // TODO: some kind of `useState` to set asc/desc and sort Neighborhood
 // properly (blanks last, regardless of direction)
 // CRED: https://stackoverflow.com/a/29829361/1048518
-export function sortNeighbs(
-  a: LangRecordSchema,
-  b: LangRecordSchema
-): 0 | 1 | -1 {
+export function sortNeighbs(a: DetailsSchema, b: DetailsSchema): 0 | 1 | -1 {
   if (a.Neighborhood === b.Neighborhood) return 0
-  if (!a.Neighborhood) return 1 // nulls sort after anything else
   if (!b.Neighborhood) return -1
+  if (!a.Neighborhood) return 1 // nulls sort after anything else
 
   return a.Neighborhood < b.Neighborhood ? -1 : 1
 

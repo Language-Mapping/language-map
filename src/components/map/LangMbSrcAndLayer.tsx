@@ -3,7 +3,7 @@ import { useQuery } from 'react-query'
 import { AnyLayout, Expression } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
-import { useSymbAndLabelState, LangConfig } from 'components/context'
+import { useSymbAndLabelState } from 'components/context'
 import { configEndpoints } from 'components/spatial/config'
 import { reactQueryDefaults } from 'components/config'
 import { RawSheetsResponse } from 'components/config/types'
@@ -66,8 +66,12 @@ export const LangMbSrcAndLayer: FC = () => {
   useEffect(() => {
     if (isFontsLoading || !fontsData?.values) return
 
-    const dataAsJson = sheetsToJSON<LangConfig>(fontsData.values)
+    const dataAsJson = sheetsToJSON<{ Font: string; Language: string }[]>(
+      fontsData.values
+    )
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore // don't care, will be from Airtable soon
     setEndoFonts(prepEndoFilters(dataAsJson))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFontsLoading])

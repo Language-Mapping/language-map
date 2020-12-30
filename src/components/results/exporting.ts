@@ -16,9 +16,6 @@ const getData = (columns: ColumnList, initialData: LangRecordSchema[]) =>
       const { field } = columnDef
       const value = rowData[field] as number | string
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore // couldn't figure this one out
-      if (field === 'Size') return config.COMM_SIZE_COL_MAP[value]
       if (field === 'Global Speaker Total') return value.toLocaleString()
 
       return value

@@ -5,7 +5,7 @@ import { Link } from '@material-ui/core'
 import { useLocation, Link as RouterLink } from 'react-router-dom'
 import { BiHomeAlt } from 'react-icons/bi'
 
-import { useDetails } from 'components/details/hooks'
+// import { useDetailsNew } from 'components/details/hooks' // TODO
 import { CurrentCrumbProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -45,26 +45,29 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const CurrentCrumb: FC<CurrentCrumbProps> = (props) => {
+  // TODO: new hook or at least AT w/useParams (or useroutematch?)
   const classes = useStyles()
   const { value, basePath } = props
-  const { data: feature } = useDetails()
+  // const { data: feature } = useDetails()
 
-  if (value === 'details' || basePath !== 'details' || !feature) {
+  // if (value === 'details' || basePath !== 'details' || !feature) {
+  if (value === 'details' || basePath !== 'details') {
     return <span className={classes.capital}>{value}</span>
   }
 
-  // TODO:
-  // if (!feature) return <CircularProgress size={12} />
+  return null
+  // // TODO:
+  // // if (!feature) return <CircularProgress size={12} />
 
-  const { Language, Neighborhood, Town } = feature
-  const place = Neighborhood ? Neighborhood.split(', ')[0] : Town
+  // const { Language, Neighborhood, Town } = feature
+  // const place = Neighborhood ? Neighborhood.split(', ')[0] : Town
 
-  return (
-    <>
-      {Language}
-      {` — ${place}`}
-    </>
-  )
+  // return (
+  //   <>
+  //     {Language}
+  //     {` — ${place}`}
+  //   </>
+  // )
 }
 
 export const Breadcrumbs: FC = () => {
