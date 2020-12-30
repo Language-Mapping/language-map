@@ -8,6 +8,7 @@ import { usePanelRootStyles } from 'components/panels/PanelContent'
 import { LoadingIndicatorPanel } from 'components/generic/modals'
 import { NoFeatSel } from './NoFeatSel'
 import { useDetailsNew } from './hooks'
+import { DetailsPanelProps } from './types'
 
 const DetailsWrap: FC = () => {
   const { isLoading, error, data, id } = useDetailsNew()
@@ -37,16 +38,17 @@ const DetailsWrap: FC = () => {
   )
 }
 
-export const DetailsPanel: FC = () => {
+export const DetailsPanel: FC<DetailsPanelProps> = (props) => {
+  const { routeBase = 'details', id } = props
   const panelRootClasses = usePanelRootStyles()
 
   return (
-    <div className={panelRootClasses.root} id="details">
+    <div className={panelRootClasses.root} id={id || routeBase}>
       <Switch>
-        <Route path="/details/:id">
+        <Route path={`/${routeBase}/:id`}>
           <DetailsWrap />
         </Route>
-        <Route path="/details" exact>
+        <Route path={`/${routeBase}`} exact>
           <NoFeatSel />
         </Route>
       </Switch>
