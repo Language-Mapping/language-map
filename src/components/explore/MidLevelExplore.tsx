@@ -29,6 +29,18 @@ const prepFormula = (field: keyof DetailsSchema, value?: string): string => {
     'Town',
   ]
 
+  if (value && field === 'Neighborhood')
+    return `AND(
+      {${field}} != '',
+      FIND(
+        '${value}',
+        CONCATENATE(
+          ARRAYJOIN({${field}}),
+          ARRAYJOIN({addlNeighborhoods})
+        )
+      ) != 0
+    )`
+
   if (value && midLevelArrayFields.includes(field))
     return `AND({${field}} != '', FIND('${value}', ARRAYJOIN({${field}})) != 0)`
 
@@ -40,7 +52,13 @@ const prepFormula = (field: keyof DetailsSchema, value?: string): string => {
 // Mid-level fields are consistent except a couple tables need an extra field.
 const prepFields = (tableName: keyof DetailsSchema): string[] => {
   if (tableName === 'Language')
-    return ['Endonym', 'name', 'Primary Locations', 'worldRegionColor']
+    return [
+      'Endonym',
+      'name',
+      'Primary Locations',
+      'worldRegionColor',
+      'addlNeighborhoods',
+    ]
 
   const landingFields = ['name', 'languages']
   const addlFields: {
