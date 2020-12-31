@@ -300,9 +300,9 @@ export const Map: FC<Types.MapProps> = (props) => {
         }, 5)
       }
     } else if (actionID === 'in') {
-      map.zoomIn({ offset })
+      map.zoomIn({ offset }, { forceViewportUpdate: true })
     } else if (actionID === 'out') {
-      map.zoomOut({ offset })
+      map.zoomOut({ offset }, { forceViewportUpdate: true })
     }
   }
 
