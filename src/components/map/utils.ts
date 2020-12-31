@@ -40,13 +40,17 @@ export const addLangTypeIconsToMap = (
 export const filterLayersByFeatIDs = (
   map: MbMap,
   layerNames: string[],
-  langFeatIDs: number[]
+  langFeatIDs: string[]
 ): void => {
   if (!layerNames.length) return // FIXME: you know what
 
   layerNames.forEach((name) => {
     // CRED: https://gis.stackexchange.com/a/287629/5824
-    const filterLangsByID = ['in', ['get', 'id'], ['literal', langFeatIDs]]
+    const filterLangsByID = [
+      'in',
+      ['get', 'id'],
+      ['literal', langFeatIDs.map((id) => id.toString())],
+    ]
     const currentFilters = map.getFilter(name)
 
     let origFilter = []
@@ -271,8 +275,8 @@ export const getFlyToPointSettings = (
   offset,
 })
 
+// REFACTOR: just reduce it one go instead of mapping, filtering, mapping again
 export const getLangLayersIDs = (layers: Layer[]): string[] => {
-  // TODO: just reduce it one go instead of mapping, filtering, mapping again
   const mapped = Object.keys(layers).map((layer) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore // TODO

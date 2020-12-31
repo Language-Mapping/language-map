@@ -1,9 +1,8 @@
-import { useContext } from 'react'
 import { WebMercatorViewport } from 'react-map-gl'
 import { useTheme } from '@material-ui/core/styles'
 
 import { panelWidths } from 'components/panels/config'
-import { GlobalContext, LangRecordSchema } from 'components/context'
+import { LangRecordSchema } from 'components/context'
 import { AtSymbFields, AtSchemaFields } from 'components/legend/types'
 import { layerSymbFields } from 'components/legend/config'
 import { useAirtable } from 'components/explore/hooks'
@@ -63,26 +62,6 @@ export const useInitialViewport: Types.GetWebMercViewport = (params) => {
   const initMercBounds = bounds
 
   return initMerc.fitBounds(initMercBounds, { padding })
-}
-
-export const useLangFeatByKeyVal = (
-  value?: string,
-  convertToInt?: boolean,
-  field?: keyof LangRecordSchema
-): Types.UseLangReturn => {
-  const { state } = useContext(GlobalContext)
-  const stateReady = state.langFeatsLenCache !== 0
-
-  if (!value) return { feature: undefined, stateReady }
-
-  const valuePrepped = convertToInt ? parseInt(value, 10) : value
-
-  return {
-    feature: state.langFeatures.find(
-      (record) => record[field || 'id'] === valuePrepped
-    ),
-    stateReady,
-  }
 }
 
 export const useLayersConfig = (

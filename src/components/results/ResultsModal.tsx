@@ -1,18 +1,43 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useContext, useEffect, useState } from 'react'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { Dialog } from '@material-ui/core'
 
 import { DialogCloseBtn, SlideUp } from 'components/generic/modals'
+import { DetailsSchema, GlobalContext } from 'components/context'
+import { useAirtable } from 'components/explore/hooks'
 import { useStyles } from './styles'
 import { ResultsTable } from './ResultsTable'
 import { paths as routes } from '../config/routes'
 import { LocWithState } from '../config/types'
-import { useFullData } from './hooks'
+import { whittleLangFeats } from './utils'
+
+// CRED: https://stackoverflow.com/a/51808262/1048518
+const fields: Array<Extract<keyof DetailsSchema, string>> = [
+  'Additional Neighborhoods',
+  'countryImg',
+  'Country',
+  'Description',
+  'Endonym',
+  'Global Speaker Total',
+  'Glottocode',
+  'id',
+  'ISO 639-3',
+  'Language Family',
+  'Language',
+  'Latitude',
+  'Longitude',
+  'Neighborhood',
+  'Primary Location',
+  'sizeColor',
+  'Size',
+  'Status',
+  'World Region',
+]
 
 const ResultsModal: FC = () => {
   const classes = useStyles()
+  const { dispatch } = useContext(GlobalContext)
 
-  // Routing
   const history = useHistory()
   const loc = useLocation()
   const match = useRouteMatch('/table')
@@ -22,7 +47,9 @@ const ResultsModal: FC = () => {
   } = useLocation() as LocWithState
 
   const [lastLoc, setLastLoc] = useState()
-  const { data } = useFullData()
+  const { data, isLoading, error } = useAirtable('Data', {
+    fields,
+  })
 
   // CRED:
   // help.mouseflow.com/en/articles/4310818-tracking-url-changes-with-react
@@ -36,6 +63,16 @@ const ResultsModal: FC = () => {
       setLastLoc(loc)
     }
   }, [loc, locState])
+
+  useEffect(() => {
+    if (isLoading || !data.length) return
+
+    dispatch({
+      type: 'SET_LANG_LAYER_FEATURES',
+      payload: whittleLangFeats(data),
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading])
 
   // TODO: make this whole mess right. Can't use this approach on AboutPageView
   // b/c that isn't always mounted like ResultsModal. Have to supply it with
@@ -59,7 +96,7 @@ const ResultsModal: FC = () => {
   return (
     <Dialog
       open={match !== null}
-      keepMounted
+      keepMounted // TODO: come on
       TransitionComponent={SlideUp}
       className={`${classes.resultsModalRoot}`}
       onClose={handleClose}
@@ -69,7 +106,8 @@ const ResultsModal: FC = () => {
       PaperProps={{ className: classes.resultsModalPaper }}
     >
       <DialogCloseBtn onClose={handleClose} tooltip="Exit to map" />
-      <ResultsTable data={data} />
+      {error ? 'An error occurred fetching table data' : null}
+      {!error && <ResultsTable data={data} />}
     </Dialog>
   )
 }

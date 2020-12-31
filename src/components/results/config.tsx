@@ -43,8 +43,7 @@ export const tableExportMeta = {
     'https://docs.google.com/spreadsheets/d/1CZLDDyxNM3euikks8NJfKt3ajNXToVGbwEObSOJkbfA/edit',
 }
 
-// TODO: TS it up (may need for sorting again)
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// TODO: Enum??
 const SIZE_MAP = {
   Smallest: 1,
   Small: 2,

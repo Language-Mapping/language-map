@@ -7,7 +7,7 @@ import { AiOutlineQuestionCircle } from 'react-icons/ai'
 import { SimpleDialog } from 'components/generic/modals'
 import { paths as routes } from 'components/config/routes'
 import { DetailsPanel } from 'components/details'
-import { DetailsSchema } from 'components/context/types'
+import { DetailsSchema } from 'components/context'
 import { MapToolsProvider } from 'components/context/MapToolsContext'
 import { MuiTableWithLangs } from './types'
 import { FILTER_CLASS } from './utils'
@@ -23,9 +23,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
   const tableRef = React.useRef<MuiTableWithLangs>(null)
   const [clearBtnEnabled, setClearBtnEnabled] = useState<boolean>(false)
 
-  // TODO: some kind of `useState` to set asc/desc and sort Neighborhood
-  // properly (blanks last, regardless of direction)
-
+  // TODO: get this monster into utils or events or something
   const onRowClick = (
     event: React.MouseEvent,
     rowData: DetailsSchema

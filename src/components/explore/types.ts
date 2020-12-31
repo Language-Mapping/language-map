@@ -39,10 +39,6 @@ export type SwatchOrFlagOrIcon = {
   value?: string
 }
 
-export type LangFilterArgs = RouteMatch & {
-  langFeatures: LangRecordSchema[]
-}
-
 export type CensusPopoverProps = {
   data: DetailsSchema
 }

@@ -83,6 +83,7 @@ export const LangMbSrcAndLayer: FC = () => {
     <Source
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore // promoteId is just not anywhere in the source...
+      promoteId="id"
       type="vector"
       url={`mapbox://${config.mbStyleTileConfig.tilesetId}`}
       id={config.mbStyleTileConfig.langSrcID}

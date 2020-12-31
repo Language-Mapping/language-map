@@ -10,12 +10,12 @@ export type LangSchemaCol = keyof LangRecordSchema
 
 export type StoreAction =
   | { type: 'CLEAR_FILTERS'; payload: number }
-  | { type: 'SET_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
+  | { type: 'SET_LANG_LAYER_FEATURES'; payload: InternalUse[] }
   | { type: 'SET_PANEL_STATE'; payload: PanelState }
 
 export type InitialState = {
   clearFilters: number
-  langFeatures: LangRecordSchema[]
+  langFeatures: InternalUse[]
   langFeatsLenCache: number
   panelState: PanelState
 }
@@ -29,7 +29,7 @@ export type Statuses =
 
 // Aka user doesn't really see them
 export type InternalUse = {
-  id: number // unique (ultimately)
+  id: string // unique (ultimately)
   Latitude: number // nice convenience over geometry.coordinates
   Longitude: number // nice convenience over geometry.coordinates
 }

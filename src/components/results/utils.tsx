@@ -3,7 +3,7 @@ import { IconButton } from '@material-ui/core'
 import { GoFile } from 'react-icons/go'
 import { FaMapMarkedAlt } from 'react-icons/fa'
 
-import { DetailsSchema } from 'components/context/types'
+import { DetailsSchema, InternalUse } from 'components/context/types'
 import { CountryListItemWithFlag } from './CountryListItemWithFlag'
 import { EndoImageModal } from './EndoImageModal'
 
@@ -93,3 +93,10 @@ export function sortNeighbs(a: DetailsSchema, b: DetailsSchema): 0 | 1 | -1 {
   // If descending, highest sorts first
   // return a.Neighborhood < b.Neighborhood ? 1 : -1
 }
+
+export const whittleLangFeats = (data: DetailsSchema[]): InternalUse[] =>
+  data.map((row) => {
+    const { id, Latitude, Longitude } = row
+
+    return { id, Latitude, Longitude }
+  })

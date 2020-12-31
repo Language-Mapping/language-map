@@ -1,25 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Theme } from '@material-ui/core/styles'
 
-import { LangRecordSchema } from 'components/context/types'
+import { InternalUse } from 'components/context/types'
 import { ArrayOfStringArrays } from 'components/config/types'
 
 // TODO: into config since it's used in multiple places...
 const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhood and Country
-
-export const findFeatureByID = (
-  langLayerRecords: LangRecordSchema[],
-  id: number,
-  idField?: keyof LangRecordSchema
-): LangRecordSchema | undefined =>
-  langLayerRecords.find((record) => record[idField || 'id'] === id)
-
-export const getIDfromURLparams = (url: string): number => {
-  const urlParams = new URLSearchParams(url)
-  const idAsString = urlParams.get('id') as string
-
-  return parseInt(idAsString, 10)
-}
 
 // CRED: github.com/mbrn/material-table/issues/709#issuecomment-566097441
 // TODO: put into hooks file and/or folder along with any others
@@ -99,7 +85,7 @@ export const createMarkup = (content: string): { __html: string } => ({
 // CRED: https://lowrey.me/test-if-a-string-is-alphanumeric-in-javascript/
 export const isAlpha = (ch: string): boolean => ch.match(/^[a-z]+$/i) !== null
 
-export const getAllLangFeatIDs = (data: LangRecordSchema[]): number[] =>
+export const getAllLangFeatIDs = (data: InternalUse[]): string[] =>
   data.map((record) => record.id)
 
 // CRED:

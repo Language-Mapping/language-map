@@ -7,9 +7,7 @@ import { AirtableOptions, TonsOfFields, AirtableError } from './types'
 const airtableQuery = async (tableName: string, options: AirtableOptions) => {
   const base = new Airtable().base(AIRTABLE_BASE)
 
-  return base(tableName)
-    .select({ ...options })
-    .firstPage()
+  return base(tableName).select(options).all()
 }
 
 export function useAirtable<TResult = TonsOfFields>(

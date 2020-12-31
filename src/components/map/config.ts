@@ -10,10 +10,12 @@ export const initialMapState = { ...NYC_LAT_LONG, zoom: 8.5 }
 export const POINT_ZOOM_LEVEL = 14.5 // clicked point or single-result filter
 export const mbStyleTileConfig = {
   // layerId: 'Data-For_Map-2jwj5r', // TODO: a dev/deploy-only instance!
-  layerId: 'language-points', // TODO: a dev/deploy-only instance!
+  // layerId: 'language-points', // TODO: a dev/deploy-only instance!
+  layerId: 'mb-data', // TODO: a dev/deploy-only instance!
   langSrcID: 'languages-src', // arbitrary, set in code, never changes
   // tilesetId: 'elalliance.bvewtroy',
-  tilesetId: 'elalliance.ckja99koi2iq623pep38azez5-84txo',
+  // tilesetId: 'elalliance.ckja99koi2iq623pep38azez5-84txo',
+  tilesetId: 'elalliance.ckja99koi2iq623pep38azez5-1ea9g',
   // This is the only known way to use the custom fonts
   customStyles: {
     dark: 'mapbox://styles/elalliance/ckdqj968x01ot19lf5yg472f2',

@@ -2,7 +2,6 @@
 // TOO annoying. I'll take the risk, esp. since it has not seemed problematic:
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useState, useContext, useEffect } from 'react'
-import { useQueryCache } from 'react-query'
 import { useHistory, Route } from 'react-router-dom'
 import {
   AttributionControl,
@@ -27,7 +26,7 @@ import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
 
 import * as config from './config'
-import * as events from './events'
+// import * as events from './events' // FIXME: boundary stuff
 import * as hooks from './hooks'
 import * as sharedUtils from '../../utils'
 import * as Types from './types'
@@ -63,12 +62,9 @@ export const Map: FC<Types.MapProps> = (props) => {
   const { boundariesVisible } = contexts.useMapToolsState()
   const offset = hooks.useOffset(panelOpen)
   const breakpoint = hooks.useBreakpoint()
-  const cache = useQueryCache()
-  const { langFeatures } = state // FIXME: IDs, Lat, Lon from Table filter
+  const { langFeatures } = state
   const { activeSymbGroupID } = symbLabelState
   const [beforeId, setBeforeId] = useState<string>('background')
-  const symbCache = cache.getQueryData([activeSymbGroupID, 'legend']) || []
-  // const interactiveLayerIds = symbCache // FIXME: all this mess
 
   const [
     geocodeMarker,
@@ -84,22 +80,25 @@ export const Map: FC<Types.MapProps> = (props) => {
     setClickedBoundary,
   ] = useState<Types.BoundaryFeat | null>()
 
+  // const cache = useQueryCache() // FIXME: all this mess
+  // const symbCache = cache.getQueryData([activeSymbGroupID, 'legend']) || []
+  // const interactiveLayerIds = symbCache
   // Handle MB Boundaries feature click
-  useEffect((): void => {
-    if (!map || !clickedBoundary) return
+  // useEffect((): void => {
+  //   if (!map || !clickedBoundary) return
 
-    const boundaryData = cache.getQueryData(
-      clickedBoundary.source
-    ) as Types.BoundaryLookup[]
+  //   const boundaryData = cache.getQueryData(
+  //     clickedBoundary.source
+  //   ) as Types.BoundaryLookup[]
 
-    events.handleBoundaryClick(
-      map,
-      clickedBoundary,
-      { width: viewport.width as number, height: viewport.height as number },
-      boundaryData,
-      offset
-    )
-  }, [clickedBoundary])
+  //   events.handleBoundaryClick(
+  //     map,
+  //     clickedBoundary,
+  //     { width: viewport.width as number, height: viewport.height as number },
+  //     boundaryData,
+  //     offset
+  //   )
+  // }, [clickedBoundary])
 
   // Fly to extent of lang features on length change
   useEffect((): void => {
@@ -120,17 +119,17 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     // Zooming to "bounds" gets crazy if there is only one feature
     if (langFeatures.length === 1) {
-      // utils.flyToPoint(
-      //   map,
-      //   {
-      //     latitude: firstCoords[1],
-      //     longitude: firstCoords[0],
-      //     zoom: config.POINT_ZOOM_LEVEL,
-      //     pitch: 80,
-      //     offset,
-      //   },
-      //   null
-      // )
+      utils.flyToPoint(
+        map,
+        {
+          latitude: firstCoords[1],
+          longitude: firstCoords[0],
+          zoom: config.POINT_ZOOM_LEVEL,
+          pitch: 80,
+          offset,
+        },
+        null
+      )
 
       return
     }
@@ -156,17 +155,14 @@ export const Map: FC<Types.MapProps> = (props) => {
   useEffect((): void => {
     if (!map || !mapLoaded) return
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const currentLayerNames = symbCache.map((row) => row.fields.name)
-    // FIXME: doubtful this is working now, symb cache totally different
+    const getLangLayersIDs = utils.getLangLayersIDs(map.getStyle().layers || [])
 
     utils.filterLayersByFeatIDs(
       map,
-      currentLayerNames,
+      getLangLayersIDs,
       sharedUtils.getAllLangFeatIDs(langFeatures)
     )
-  }, [langFeatures.length])
+  }, [langFeatures.length, beforeId])
 
   // (Re)load symbol icons. Must be done on load and whenever `baselayer` is
   // changed, otherwise the images no longer exist.

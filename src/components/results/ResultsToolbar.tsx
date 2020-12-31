@@ -12,6 +12,7 @@ import { paths as routes } from 'components/config/routes'
 import { ResultsTitle } from './ResultsTitle'
 
 import * as Types from './types'
+import { whittleLangFeats } from './utils'
 
 const TOOLBAR_ID = 'custom-toolbar'
 
@@ -116,21 +117,18 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
   }, [state.clearFilters])
 
   function mapFilterBtnClick(): void {
-    if (!tableRef?.current) return
+    const currentData = tableRef?.current.state.data
 
-    const currentData = tableRef.current.state.data
+    if (!currentData) return
 
     dispatch({
       type: 'SET_LANG_LAYER_FEATURES',
-      payload: currentData,
+      payload: whittleLangFeats(currentData),
     })
 
     const gangsAllHere = state.langFeatsLenCache === currentData.length
 
-    dispatch({
-      type: 'CLEAR_FILTERS',
-      payload: gangsAllHere ? 0 : 1,
-    })
+    dispatch({ type: 'CLEAR_FILTERS', payload: gangsAllHere ? 0 : 1 })
 
     history.push(routes.home) // TODO: ideally, go back
   }
@@ -174,7 +172,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
 
       dispatch({
         type: 'SET_LANG_LAYER_FEATURES',
-        payload: dataManager.data,
+        payload: whittleLangFeats(dataManager.data),
       })
     }
   }
