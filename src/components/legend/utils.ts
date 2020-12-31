@@ -34,7 +34,7 @@ export const initLegend = (
 
 type Compare<T> = (a: T, b: T) => number // TODO: defeat
 
-const sortArrOfObjects = <T>(key: keyof T): Compare<T> => {
+export const sortArrOfObjects = <T>(key: keyof T): Compare<T> => {
   return (a: T, b: T): number => {
     let comparison = 0
 

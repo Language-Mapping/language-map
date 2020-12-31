@@ -59,7 +59,7 @@ export type AirtableOptions = {
   fields?: string[]
   filterByFormula?: string
   maxRecords?: number
-  sort?: { field: string }[]
+  sort?: { field: string; direction?: 'asc' | 'desc' }[]
 }
 
 type SchemaTableFields = {

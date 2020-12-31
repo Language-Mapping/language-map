@@ -7,14 +7,13 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { MdClose } from 'react-icons/md'
 
 import { paths as routes } from 'components/config/routes'
-import { LangRecordSchema } from 'components/context/types'
+import { useAirtable } from 'components/explore/hooks'
+import { LangLevelReqd } from 'components/context/types'
+import { sortArrOfObjects } from 'components/legend/utils'
 import { OmniboxResult } from './OmniboxResult'
 import { ListboxComponent } from './ListboxComponent'
-import { renderGroup } from './utils'
-
-type SearchByOmniProps = {
-  data: LangRecordSchema[]
-}
+import { renderGroup, prepAutocompleteGroups } from './utils'
+import { PreppedAutocompleteGroup } from './types'
 
 // TODO: maybe this: https://github.com/mui-org/material-ui/issues/4393
 // ...to make sure it fits on iPhone?
@@ -52,12 +51,30 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+const fields = [
+  'name',
+  'Endonym',
+  'Glottocode',
+  'ISO 639-3',
+  'instanceIDs',
+  'Primary Locations',
+]
+
 // CRED: https://material-ui.com/components/autocomplete/#virtualization
 // ^^^ definitely wouldn't have gotten the `react-window` virtualization w/o it!
-export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
-  const { data } = props
+export const SearchByOmnibox: FC = (props) => {
+  const { data, isLoading, error } = useAirtable<LangLevelReqd>('Language', {
+    fields,
+    sort: [{ field: 'name' }],
+  })
   const classes = useStyles()
   const history = useHistory()
+
+  if (error) return <div>Something went wrong fetching search data.</div>
+
+  const options = prepAutocompleteGroups(data).sort(
+    sortArrOfObjects<PreppedAutocompleteGroup>('location')
+  )
 
   return (
     <Autocomplete
@@ -69,9 +86,11 @@ export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
       // blurOnSelect="touch"
       // open // much more effective than `debug`
       // openOnFocus // TODO: rm if not using. Seems fine without it?
-      getOptionLabel={(option) => option.Language}
-      groupBy={(option) => option.Language}
-      options={data}
+      groupBy={(option) => option.name}
+      getOptionLabel={(option) => option.name}
+      options={options}
+      loading={isLoading}
+      loadingText="Loading language data..."
       renderGroup={renderGroup}
       renderOption={(option) => <OmniboxResult data={option} />}
       size="small"
@@ -80,9 +99,9 @@ export const SearchByOmnibox: FC<SearchByOmniProps> = (props) => {
         // Can't just do <RouterLink>, otherwise keyboard selection no-go...
         if (value) history.push(`${routes.details}/${value.id}`)
       }}
-      filterOptions={(options, { inputValue }) => {
-        return matchSorter(options, inputValue, {
-          keys: ['Language', 'Endonym', 'ISO 639-3', 'Glottocode'],
+      filterOptions={(opts, { inputValue }) => {
+        return matchSorter(opts, inputValue, {
+          keys: ['name', 'Endonym', 'ISO 639-3', 'Glottocode'],
           threshold: matchSorter.rankings.WORD_STARTS_WITH,
         })
       }}

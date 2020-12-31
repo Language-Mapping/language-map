@@ -34,7 +34,7 @@ export type InternalUse = {
   Longitude: number // nice convenience over geometry.coordinates
 }
 
-type LangLevelReqd = {
+export type LangLevelReqd = {
   name: string
   Endonym: string // often same as English name, may be an http link to image
   countryImg: { url: string }[]
@@ -46,7 +46,7 @@ type LangLevelReqd = {
   instanceIDs: number[]
 }
 
-type LangLevelOptional = CensusFields &
+export type LangLevelOptional = CensusFields &
   Partial<{
     Font: string
     'Font Image Alt': { url: string }[] // e.g. ASL, Mongolian

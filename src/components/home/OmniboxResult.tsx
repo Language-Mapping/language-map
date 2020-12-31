@@ -3,7 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Box } from '@material-ui/core'
 import { FaStreetView } from 'react-icons/fa'
 
-import { LangRecordSchema } from 'components/context/types'
+import { PreppedAutocompleteGroup } from './types'
 
 type SmallDetailProps = {
   label: string
@@ -61,17 +61,19 @@ const SmallDetail: FC<SmallDetailProps> = (props) => {
   )
 }
 
-export const OmniboxResult: FC<{ data: LangRecordSchema }> = (props) => {
+export const OmniboxResult: FC<{ data: PreppedAutocompleteGroup }> = (
+  props
+) => {
   const { data } = props
   const classes = useStyles()
   const { resultRoot, resultHeading, details } = classes
-  const { Neighborhood, Town, Glottocode, 'ISO 639-3': iso } = data
+  const { Glottocode, 'ISO 639-3': iso } = data
 
   return (
     <Box className={resultRoot}>
       <Typography component="h4" className={resultHeading}>
         <FaStreetView />
-        {Neighborhood || Town}
+        {data.location}
       </Typography>
       <Box component="footer" className={details}>
         {Glottocode ? (
