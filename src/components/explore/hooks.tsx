@@ -7,6 +7,7 @@ import { AirtableOptions, TonsOfFields, AirtableError } from './types'
 const airtableQuery = async (tableName: string, options: AirtableOptions) => {
   const base = new Airtable().base(AIRTABLE_BASE)
 
+  // CRED: github.com/Airtable/airtable.js/issues/69#issuecomment-414394657
   return base(tableName).select(options).all()
 }
 

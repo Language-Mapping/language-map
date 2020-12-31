@@ -23,7 +23,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
   const tableRef = React.useRef<MuiTableWithLangs>(null)
   const [clearBtnEnabled, setClearBtnEnabled] = useState<boolean>(false)
 
-  // TODO: get this monster into utils or events or something
+  // REFACTOR: get this monster into utils or events or something
   const onRowClick = (
     event: React.MouseEvent,
     rowData: DetailsSchema

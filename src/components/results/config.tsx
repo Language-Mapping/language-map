@@ -269,6 +269,17 @@ export const columns = [
     headerStyle: { whiteSpace: 'nowrap' },
   },
   {
+    title: 'Video',
+    field: 'Video',
+    ...commonColProps,
+    export: false,
+    filterComponent: VideoColumnFilter,
+    headerStyle: { whiteSpace: 'nowrap' },
+    render: (data) => <Cells.VideoColumnCell data={data} />,
+    searchable: false,
+    disableClick: true,
+  },
+  {
     // Average: 12, Longest: 26
     title: <LocalColumnTitle text="Location" />,
     field: 'Primary Location',
@@ -302,17 +313,6 @@ export const columns = [
     searchable: false,
     render: (data) => <Cells.CommStatus data={data} />,
     lookup: COMM_STATUS_LOOKUP,
-  },
-  {
-    title: 'Video',
-    field: 'Video',
-    ...commonColProps,
-    export: false,
-    filterComponent: VideoColumnFilter,
-    headerStyle: { whiteSpace: 'nowrap' },
-    render: (data) => <Cells.VideoColumnCell data={data} />,
-    searchable: false,
-    disableClick: true,
   },
   {
     title: <LocalColumnTitle text="Additional Neighborhoods" />,

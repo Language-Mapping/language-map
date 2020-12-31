@@ -58,7 +58,7 @@ export const LangOrEndoIntro: FC<LangOrEndoIntroProps> = (props) => {
           to={`${routes.grid}/Language/${language}`}
           className={classes.subHeading}
         >
-          ( {language} )
+          {language}
         </Typography>
       )}
     </>
