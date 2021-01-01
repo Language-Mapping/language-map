@@ -2,21 +2,40 @@ import { useParams } from 'react-router-dom'
 
 import { reactQueryDefaults } from 'components/config'
 import { useAirtable } from 'components/explore/hooks'
+import { InstanceLevelSchema, LangLevelSchema } from 'components/context'
 import { UseDetails } from './types'
 
+const dataFields: Array<Extract<keyof InstanceLevelSchema, string>> = [
+  'Language',
+  'Description',
+  'Town',
+  'Neighborhood',
+  'Additional Neighborhoods',
+]
+
+const langFields: Array<Extract<keyof LangLevelSchema, string>> = [
+  'Description',
+  'Endonym',
+  'name',
+  'Font Image Alt',
+  'Census Pretty',
+  'Tract Field',
+  'PUMA Field',
+  'Country',
+  'World Region',
+  'worldRegionColor',
+  'countryImg',
+  'Video',
+  'Audio',
+]
+
 // TODO: put the logic of isInstance in here
-export const useDetailsNew = (paramsField = 'id'): UseDetails => {
+export const useDetails = (paramsField = 'id'): UseDetails => {
   const params = useParams() as { [key: string]: string }
   const param = params[paramsField]
 
   const { data, isLoading, error } = useAirtable('Data', {
-    fields: [
-      'Language',
-      'Description',
-      'Town',
-      'Neighborhood',
-      'Additional Neighborhoods',
-    ],
+    fields: dataFields,
     filterByFormula: `{id} = ${param}`,
     maxRecords: 1,
   })
@@ -30,7 +49,7 @@ export const useDetailsNew = (paramsField = 'id'): UseDetails => {
   } = useAirtable(
     'Language',
     {
-      // fields: [], // TODO
+      fields: langFields,
       filterByFormula: `{name} = '${instanceLevel?.Language}'`,
       maxRecords: 1,
     },

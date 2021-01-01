@@ -7,11 +7,11 @@ import { DetailedIntro } from 'components/details'
 import { usePanelRootStyles } from 'components/panels/PanelContent'
 import { LoadingIndicatorPanel } from 'components/generic/modals'
 import { NoFeatSel } from './NoFeatSel'
-import { useDetailsNew } from './hooks'
+import { useDetails } from './hooks'
 import { DetailsPanelProps } from './types'
 
 const DetailsWrap: FC = () => {
-  const { isLoading, error, data, id } = useDetailsNew()
+  const { isLoading, error, data, id } = useDetails()
 
   if (isLoading) return <LoadingIndicatorPanel />
   if (error) return <p>Something went wrong looking for this community.</p>

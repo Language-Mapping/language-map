@@ -56,6 +56,7 @@ export type MidLevelExploreProps = {
 }
 
 export type AirtableOptions = {
+  // fields?: Array<Extract<keyof LangRecordSchema, string>> // REFACTOR
   fields?: string[]
   filterByFormula?: string
   maxRecords?: number
