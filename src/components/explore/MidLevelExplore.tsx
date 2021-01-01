@@ -1,5 +1,7 @@
 import React, { FC } from 'react'
-import { useRouteMatch, useParams } from 'react-router-dom'
+import { useRouteMatch, useParams, Route } from 'react-router-dom'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Typography } from '@material-ui/core'
 
 import { BiMapPin } from 'react-icons/bi'
 import { FlagFromHook } from 'components/generic/icons-and-swatches'
@@ -12,6 +14,21 @@ import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
 import * as Types from './types'
 import { useAirtable } from './hooks'
+
+export const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    divider: { marginBottom: '1.5em' },
+    addlNeighbsList: {
+      margin: 0,
+      fontSize: '1rem',
+    },
+    explanation: {
+      color: theme.palette.text.secondary,
+      fontSize: '0.75rem',
+      margin: '1rem 0',
+    },
+  })
+)
 
 // Mid-level formulas are pretty consistent, except:
 //  1. /Explore/Landing does not need a formula
@@ -73,6 +90,17 @@ const prepFields = (tableName: keyof DetailsSchema): string[] => {
   return landingFields
 }
 
+const Explanation: FC = (props) => {
+  const { children } = props
+  const classes = useStyles()
+
+  return (
+    <Typography component="p" className={classes.explanation} paragraph>
+      {children}
+    </Typography>
+  )
+}
+
 export const MidLevelExplore: FC<Types.MidLevelExploreProps> = (props) => {
   const { field, value } = useParams() as Types.RouteMatch
   const { tableName = field, sortByField = 'name' } = props
@@ -87,7 +115,6 @@ export const MidLevelExplore: FC<Types.MidLevelExploreProps> = (props) => {
     sort: [{ field: sortByField }],
   })
 
-  // TODO: make panel intro a separate component that deals with this
   const {
     data: landingData,
     isLoading: isLandingLoading,
@@ -112,13 +139,20 @@ export const MidLevelExplore: FC<Types.MidLevelExploreProps> = (props) => {
   )
   const { definition, plural } = landingData[0] || {}
 
-  // TODO: re-componentize
-  let Icon = null
+  let Icon = null // TODO: re-componentize
 
   if (value && field === 'World Region') {
     Icon = <SwatchOnly backgroundColor={data ? data[0].worldRegionColor : ''} />
   } else if (value && field === 'Country') Icon = <FlagFromHook value={value} />
   else Icon = <>{exploreIcons[field]}</>
+
+  let primaryData
+
+  if (value && field === 'Neighborhood') {
+    primaryData = data.filter((row) => row['Primary Locations'].includes(value))
+  } else {
+    primaryData = data
+  }
 
   // TODO: better logic for instances, e.g. allow definition
   return (
@@ -127,33 +161,67 @@ export const MidLevelExplore: FC<Types.MidLevelExploreProps> = (props) => {
       icon={Icon}
       introParagraph={!value && definition}
     >
+      <Route path="/Explore/Neighborhood">
+        <Explanation>
+          Languages with a significant site in this community, marked by a point
+          on the map:
+        </Explanation>
+      </Route>
       <CardList>
-        {data.map((row) => (
-          <CustomCard
-            key={row.name || row.Language}
-            title={row.name || row.Language}
-            intro={row.Endonym}
-            footerIcon={footerIcon}
-            uniqueInstances={row.languages || row['Primary Locations'] || []}
-            url={`${url}/${row.name || row.Language}`}
-            // TODO: use and refactor SwatchOrFlagOrIcon for icon prop
-            icon={
-              <>
-                {row['icon-color'] && (
-                  <SwatchOnly backgroundColor={row['icon-color']} />
-                )}
-                {row.src_image && (
-                  <img
-                    style={{ height: '0.8em', marginRight: '0.25em' }}
-                    src={row.src_image[0].url}
-                    alt={row.name || row.Language}
-                  />
-                )}
-              </>
-            }
-          />
-        ))}
+        {primaryData.map((row) => {
+          let uniqueInstances = []
+
+          if (row.languages) {
+            uniqueInstances = row.languages
+            // FIXME: include additional neighbs in card footers:
+            // else if (!value && field === 'Neighborhood' && row.addlNeighborhoods){
+          } else {
+            uniqueInstances = row['Primary Locations']
+          }
+
+          return (
+            <CustomCard
+              key={row.name || row.Language}
+              title={row.name || row.Language}
+              intro={row.Endonym}
+              footerIcon={footerIcon}
+              uniqueInstances={uniqueInstances}
+              url={`${url}/${row.name || row.Language}`}
+              // TODO: use and refactor SwatchOrFlagOrIcon for icon prop
+              icon={
+                <>
+                  {row['icon-color'] && (
+                    <SwatchOnly backgroundColor={row['icon-color']} />
+                  )}
+                  {row.src_image && (
+                    <img
+                      style={{ height: '0.8em', marginRight: '0.25em' }}
+                      src={row.src_image[0].url}
+                      alt={row.name || row.Language}
+                    />
+                  )}
+                </>
+              }
+            />
+          )
+        })}
       </CardList>
+      {field === 'Neighborhood' && (
+        <>
+          <Explanation>
+            Additional languages spoken in this community:
+          </Explanation>
+          <ul>
+            {data
+              .filter(
+                (row) => value && !row['Primary Locations'].includes(value)
+              )
+              .map((row) => (
+                <li key={row.name}>{row.name}</li>
+              ))}
+          </ul>
+        </>
+      )}
     </PanelContent>
   )
 }

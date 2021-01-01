@@ -5,6 +5,7 @@ import { Typography, Link } from '@material-ui/core'
 import { BiMapPin } from 'react-icons/bi'
 
 import { CustomCard, CardList } from 'components/explore'
+import { Explanation } from 'components/generic'
 import * as Types from './types'
 
 export const useStyles = makeStyles((theme: Theme) =>
@@ -79,23 +80,23 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
   return (
     <Typography className={classes.root}>
       <Typography
-        variant="h6"
+        variant="h5"
         component="h3"
         className={`${classes.verticalAlign} ${classes.mainHeading}`}
       >
         <BiMapPin /> Locations
       </Typography>
-      <Typography component="p" className={classes.explanation}>
+      <Explanation>
         <Switch>
           <Route path="/details">
-            NYC neighborhood or metro region town for this community
+            NYC neighborhood or metro region town for this community:
           </Route>
           <Route>
             NYC neighborhoods or towns in the metro region where the language
-            community has a significant site, marked by a point on the map
+            community has a significant site, marked by a point on the map:
           </Route>
         </Switch>
-      </Typography>
+      </Explanation>
       <CardList>
         {primaries.map((loc, i) => {
           const footer = (
