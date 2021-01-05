@@ -8,7 +8,7 @@ import { FlagFromHook } from 'components/generic/icons-and-swatches'
 import { SwatchOnly } from 'components/legend'
 import { PanelContent } from 'components/panels/PanelContent'
 import { LoadingIndicatorPanel } from 'components/generic/modals'
-import { DetailsSchema } from 'components/context'
+import { DetailsSchema, LangLevelSchema } from 'components/context'
 import { exploreIcons } from 'components/explore/config'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
@@ -98,6 +98,29 @@ const Explanation: FC = (props) => {
     <Typography component="p" className={classes.explanation} paragraph>
       {children}
     </Typography>
+  )
+}
+
+const AddlLanguages: FC<{ data: LangLevelSchema[]; value?: string }> = (
+  props
+) => {
+  const { data } = props
+  const { value } = useParams<{ value: string }>()
+  const addlLanguages = data.filter(
+    (row) => !row['Primary Locations'].includes(value)
+  )
+
+  if (!addlLanguages.length) return null
+
+  return (
+    <>
+      <Explanation>Additional languages spoken in this community:</Explanation>
+      <ul>
+        {addlLanguages.map((row) => (
+          <li key={row.name}>{row.name}</li>
+        ))}
+      </ul>
+    </>
   )
 }
 
@@ -206,22 +229,9 @@ export const MidLevelExplore: FC<Types.MidLevelExploreProps> = (props) => {
           )
         })}
       </CardList>
-      {field === 'Neighborhood' && (
-        <>
-          <Explanation>
-            Additional languages spoken in this community:
-          </Explanation>
-          <ul>
-            {data
-              .filter(
-                (row) => value && !row['Primary Locations'].includes(value)
-              )
-              .map((row) => (
-                <li key={row.name}>{row.name}</li>
-              ))}
-          </ul>
-        </>
-      )}
+      <Route path="/Explore/Neighborhood/:value">
+        <AddlLanguages data={data} />
+      </Route>
     </PanelContent>
   )
 }
