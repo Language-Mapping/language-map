@@ -3,6 +3,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useHistory, Route } from 'react-router-dom'
+import { useQueryCache } from 'react-query'
 import {
   AttributionControl,
   Map as MbMap, // TODO: try to lazy load the biggest dep of all. See:
@@ -26,9 +27,9 @@ import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
 
 import * as config from './config'
-// import * as events from './events' // FIXME: boundary stuff
-import * as hooks from './hooks'
-import * as sharedUtils from '../../utils'
+import { handleBoundaryClick } from './events'
+import { usePopupFeatDetails, useOffset, useBreakpoint } from './hooks'
+import { getAllLangFeatIDs, isTouchEnabled } from '../../utils'
 import * as Types from './types'
 import * as utils from './utils'
 
@@ -56,12 +57,12 @@ export const Map: FC<Types.MapProps> = (props) => {
   const history = useHistory()
   const { mapLoaded, mapRef, panelOpen, setMapLoaded } = props
   const map: MbMap | undefined = mapRef.current?.getMap()
-  const { selFeatAttribs } = hooks.usePopupFeatDetails()
+  const { selFeatAttribs } = usePopupFeatDetails()
   const { state } = useContext(contexts.GlobalContext)
   const symbLabelState = contexts.useSymbAndLabelState()
   const { boundariesVisible } = contexts.useMapToolsState()
-  const offset = hooks.useOffset(panelOpen)
-  const breakpoint = hooks.useBreakpoint()
+  const offset = useOffset(panelOpen)
+  const breakpoint = useBreakpoint()
   const { langFeatures } = state
   const { activeSymbGroupID } = symbLabelState
   const [beforeId, setBeforeId] = useState<string>('background')
@@ -79,26 +80,33 @@ export const Map: FC<Types.MapProps> = (props) => {
     clickedBoundary,
     setClickedBoundary,
   ] = useState<Types.BoundaryFeat | null>()
+  const cache = useQueryCache()
+  const [
+    boundaryPopup,
+    setBoundaryPopup,
+  ] = useState<Types.PopupSettings | null>(null)
 
-  // const cache = useQueryCache() // FIXME: all this mess
   // const symbCache = cache.getQueryData([activeSymbGroupID, 'legend']) || []
   // const interactiveLayerIds = symbCache
+
   // Handle MB Boundaries feature click
-  // useEffect((): void => {
-  //   if (!map || !clickedBoundary) return
+  useEffect((): void => {
+    if (!map || !clickedBoundary) return
 
-  //   const boundaryData = cache.getQueryData(
-  //     clickedBoundary.source
-  //   ) as Types.BoundaryLookup[]
+    const boundaryData = cache.getQueryData(
+      clickedBoundary.source
+    ) as Types.BoundaryLookup[]
 
-  //   events.handleBoundaryClick(
-  //     map,
-  //     clickedBoundary,
-  //     { width: viewport.width as number, height: viewport.height as number },
-  //     boundaryData,
-  //     offset
-  //   )
-  // }, [clickedBoundary])
+    const boundaryPopupSettings = handleBoundaryClick(
+      map,
+      clickedBoundary,
+      { width: viewport.width as number, height: viewport.height as number },
+      boundaryData,
+      offset
+    )
+
+    if (boundaryPopupSettings) setBoundaryPopup(boundaryPopupSettings)
+  }, [clickedBoundary])
 
   // Fly to extent of lang features on length change
   useEffect((): void => {
@@ -160,7 +168,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     utils.filterLayersByFeatIDs(
       map,
       getLangLayersIDs,
-      sharedUtils.getAllLangFeatIDs(langFeatures)
+      getAllLangFeatIDs(langFeatures)
     )
   }, [langFeatures.length, beforeId])
 
@@ -264,21 +272,27 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     nuclearClear() // can't rely on history
 
-    if (!topLangFeat) {
-      history.push('/details')
-    } else {
+    if (topLangFeat) {
       history.push(`${routes.details}/${topLangFeat.properties?.id}`)
 
       return // prevent boundary click underneath
     }
 
-    if (!boundariesVisible) return
+    if (!boundariesVisible) {
+      history.push('/details')
+
+      return
+    }
 
     const boundariesClicked = map.queryRenderedFeatures(event.point, {
       layers: boundariesLayerIDs,
     }) as Types.BoundaryFeat[]
 
-    if (!boundariesClicked.length) return
+    if (!boundariesClicked.length) {
+      history.push('/details')
+
+      return
+    }
 
     setClickedBoundary(boundariesClicked[0])
   }
@@ -364,8 +378,14 @@ export const Map: FC<Types.MapProps> = (props) => {
             <LanguagePopup settings={selFeatAttribs} />
           )}
         </Route>
+        {mapLoaded && boundaryPopup?.latitude && (
+          <MapPopup
+            {...boundaryPopup}
+            setVisible={() => setBoundaryPopup(null)}
+          />
+        )}
         {/* Popups are annoying on mobile */}
-        {!sharedUtils.isTouchEnabled() && tooltip && (
+        {!isTouchEnabled() && tooltip && (
           <MapPopup {...tooltip} setVisible={() => setTooltip(null)} />
         )}
       </MapGL>

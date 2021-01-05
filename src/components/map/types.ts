@@ -195,7 +195,7 @@ export type HandleBoundaryClick = (
   boundsConfig: BoundsConfig,
   lookup: BoundaryLookup[],
   offset?: [number, number]
-) => void
+) => PopupSettings | null
 
 export type FlyToBounds = (
   map: Map,
