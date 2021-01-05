@@ -5,6 +5,7 @@ import MaterialTable, {
 } from 'material-table'
 
 import { LangRecordSchema } from 'components/context/types'
+import { AirtableError } from 'components/explore/types'
 
 type ColumnWithField = Column<LangRecordSchema> & {
   field: keyof LangRecordSchema
@@ -74,4 +75,17 @@ export type CountryListItemWithFlagProps = {
   name: string
   url: string
   filterClassName: string
+}
+
+export type DescripResponse = { Description: string }
+export type DescripsTableName = 'Descriptions' | 'Language Descriptions'
+export type UseDescription = {
+  data: DescripResponse[]
+  error: AirtableError | null
+  isLoading: boolean
+}
+
+export type RecordDescriptionProps = {
+  descripTable: DescripsTableName
+  descriptionID: string
 }

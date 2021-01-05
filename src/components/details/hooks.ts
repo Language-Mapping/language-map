@@ -7,14 +7,14 @@ import { UseDetails } from './types'
 
 const dataFields: Array<Extract<keyof InstanceLevelSchema, string>> = [
   'Language',
-  'Description',
+  'descriptionID',
   'Town',
   'Neighborhood',
   'Additional Neighborhoods',
 ]
 
 const langFields: Array<Extract<keyof LangLevelSchema, string>> = [
-  'Description',
+  'descriptionID',
   'Endonym',
   'name',
   'Font Image Alt',
@@ -63,7 +63,8 @@ export const useDetails = (paramsField = 'id'): UseDetails => {
     theData = {
       ...langLevel,
       ...instanceLevel,
-      'Language Description': langLevel?.Description,
+      instanceDescripID: instanceLevel?.descriptionID,
+      langDescripID: langLevel?.descriptionID,
       Neighborhood: instanceLevel?.Neighborhood,
       Town: instanceLevel?.Town,
     }

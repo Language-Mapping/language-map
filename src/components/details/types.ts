@@ -1,6 +1,9 @@
 import { DetailsSchema } from 'components/context'
 
-type WithLangDescrip = DetailsSchema & { 'Language Description'?: string }
+type WithLangDescrip = DetailsSchema & {
+  langDescripID?: string
+  instanceDescripID?: string
+}
 
 export type MoreLikeThisProps = {
   data: WithLangDescrip

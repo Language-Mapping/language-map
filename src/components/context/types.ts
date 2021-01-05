@@ -53,7 +53,7 @@ export type LangLevelOptional = CensusFields &
     'Global Speaker Total': number
     addlNeighborhoods: string[] // suuuper shakes mcgee
     Audio: string
-    Description: string // same column name in Data table
+    descriptionID: string
     Glottocode: string
     Macrocommunity: string
     Neighborhood: string[]
@@ -72,7 +72,8 @@ type InstanceLevelReqd = InternalUse & {
 
 type InstanceLevelOptional = LangLevelOptional & {
   'Additional Neighborhoods': string[]
-  Description: string // same column name in Language table
+  Description: string
+  descriptionID: string
   Neighborhood: string // NYC-metro only
   Town: string
 }
