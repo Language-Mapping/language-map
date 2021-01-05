@@ -24,7 +24,13 @@ export const PanelWrap: FC<MapPanelProps> = (props) => {
   if (!pageTitle) document.title = 'Languages of New York City'
   // Everything else gets the first available path segment, except for detail
   // view via Details or Table.
-  else if (!isPageWithID) document.title = `${pageTitle} - NYC Languages`
+  else if (!isPageWithID) {
+    // CRED: https://flaviocopes.com/how-to-uppercase-first-letter-javascript/
+    const pageTitleCapitalized =
+      pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1)
+
+    document.title = `${pageTitleCapitalized} - NYC Languages`
+  }
 
   // Need the `id` in order to find unique element for `map.setPadding`
   return (

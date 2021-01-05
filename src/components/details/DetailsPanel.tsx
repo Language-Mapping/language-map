@@ -19,10 +19,10 @@ const DetailsWrap: FC = () => {
   if (!data)
     return <NoFeatSel reason={`No community found with an id of ${id}.`} />
 
-  const { instanceDescripID, langDescripID } = data
+  const { instanceDescripID, langDescripID, Language } = data
   const descripID = instanceDescripID || langDescripID
 
-  document.title = `${data.Language} - NYC Languages`
+  document.title = `${Language} - NYC Languages`
 
   return (
     <>
