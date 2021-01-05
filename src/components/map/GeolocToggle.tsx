@@ -5,12 +5,12 @@ import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 import { useMapToolsState, useMapToolsDispatch } from 'components/context'
 import { SimplePopover } from 'components/generic'
-import { useSpatialPanelStyles } from './styles'
+import { useLocalPanelStyles } from './styles'
 
 export const GeolocToggle: FC = () => {
   const { geolocActive } = useMapToolsState()
   const mapToolsDispatch = useMapToolsDispatch()
-  const classes = useSpatialPanelStyles()
+  const classes = useLocalPanelStyles()
 
   const handleChange = () => {
     mapToolsDispatch({

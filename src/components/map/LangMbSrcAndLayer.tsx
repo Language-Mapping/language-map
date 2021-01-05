@@ -4,7 +4,7 @@ import { AnyLayout, Expression } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
 import { useSymbAndLabelState } from 'components/context'
-import { configEndpoints } from 'components/spatial/config'
+import { configEndpoints } from 'components/local/config'
 import { reactQueryDefaults } from 'components/config'
 import { RawSheetsResponse } from 'components/config/types'
 

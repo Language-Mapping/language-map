@@ -55,7 +55,7 @@ export const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const useSpatialPanelStyles = makeStyles((theme: Theme) =>
+export const useLocalPanelStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       '& > * + *': {

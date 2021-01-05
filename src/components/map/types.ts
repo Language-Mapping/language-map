@@ -136,19 +136,19 @@ export type CensusLayerProps = {
   config: Omit<BoundaryConfig, 'lookupPath'>
   beforeId?: string
   map?: Map
-} & Pick<SpatialPanelProps, 'mapRef'>
+} & Pick<LocalPanelProps, 'mapRef'>
 
 export type MapProps = {
   mapLoaded: boolean
   setMapLoaded: React.Dispatch<boolean>
-} & SpatialPanelProps
+} & LocalPanelProps
 
 export type MapCtrlBtnsProps = {
   isPitchZero: boolean
   onMapCtrlClick: (actionID: MapControlAction) => void
 }
 
-export type SpatialPanelProps = {
+export type LocalPanelProps = {
   mapRef: React.RefObject<InteractiveMap>
   panelOpen: boolean
 }

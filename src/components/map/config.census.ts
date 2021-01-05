@@ -1,8 +1,8 @@
-import * as SpatialTypes from 'components/spatial'
+import * as LocalTypes from 'components/local'
 import * as Types from './types'
 
-const tractsSrcId: SpatialTypes.CensusQueryID = 'tracts'
-const pumaSrcID: SpatialTypes.CensusQueryID = 'puma'
+const tractsSrcId: LocalTypes.CensusQueryID = 'tracts'
+const pumaSrcID: LocalTypes.CensusQueryID = 'puma'
 
 export const pumaLyrSrc = {
   source: pumaSrcID,

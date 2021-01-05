@@ -6,9 +6,9 @@ import { useQuery } from 'react-query'
 
 import { useMapToolsState } from 'components/context'
 import { SheetsReactQueryResponse } from 'components/config/types'
-import { CensusQueryID } from 'components/spatial/types'
+import { CensusQueryID } from 'components/local/types'
 import { reactQueryDefaults } from 'components/config'
-import { tableEndpoints } from '../spatial/config'
+import { tableEndpoints } from '../local/config'
 import { sheetsToJSON } from '../../utils'
 
 import * as utils from './utils'

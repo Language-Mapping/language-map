@@ -112,14 +112,14 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
       )}
       <Chip
         text={WorldRegion}
-        to={`${routes.grid}/World Region/${WorldRegion}`}
+        to={`${routes.explore}/World Region/${WorldRegion}`}
         icon={<SwatchOnly backgroundColor={worldRegionColor} />}
       />
       {Country.map((countryName, i) => (
         <Chip
           key={countryName}
           text={countryName}
-          to={`${routes.grid}/Country/${countryName}`}
+          to={`${routes.explore}/Country/${countryName}`}
           icon={
             <img
               className="country-flag"
@@ -133,7 +133,7 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
         <Chip
           text={macro}
           icon={<IoIosPeople />}
-          to={`${routes.grid}/Macrocommunity/${macro}`}
+          to={`${routes.explore}/Macrocommunity/${macro}`}
         />
       )}
       {children}

@@ -4,7 +4,7 @@ export type RouteLocation =
   | '/table'
   | '/about'
   | '/help'
-  | '/spatial'
+  | '/local'
   | '/Explore'
   | '/Explore/:field'
   | '/Explore/:field/:value'

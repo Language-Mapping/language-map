@@ -1,4 +1,4 @@
-// TODO: rename file to something logical; mv it and all children to ../spatial
+// TODO: rename file to something logical; mv it and all children to ../local
 import React, { FC } from 'react'
 import { Map } from 'mapbox-gl'
 import Geocoder from 'react-map-gl-geocoder'
@@ -10,15 +10,15 @@ import { useMapToolsState, useMapToolsDispatch } from 'components/context'
 import { SimplePopover } from 'components/generic'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
-import { useSpatialPanelStyles } from './styles'
+import { useLocalPanelStyles } from './styles'
 
 import * as hooks from './hooks'
 import * as utils from './utils'
 import * as Types from './types'
 
-export const GeocoderPopout: FC<Types.SpatialPanelProps> = (props) => {
+export const GeocoderPopout: FC<Types.LocalPanelProps> = (props) => {
   const { mapRef, panelOpen } = props
-  const classes = useSpatialPanelStyles()
+  const classes = useLocalPanelStyles()
   const { smallerText, switchFormCtrlRoot } = classes
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
   const { width, height } = useWindowResize()

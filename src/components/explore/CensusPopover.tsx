@@ -6,7 +6,7 @@ import { FaClipboardList } from 'react-icons/fa'
 import { MdLayersClear, MdLayers } from 'react-icons/md'
 
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'
-import { CensusQueryID, CensusIntro } from 'components/spatial'
+import { CensusQueryID, CensusIntro } from 'components/local'
 import { Chip } from 'components/details'
 import { DialogCloseBtn } from 'components/generic/modals'
 
@@ -148,7 +148,7 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
       </div>
       <Typography
         component={RouterLink}
-        to="/spatial"
+        to="/local"
         align="center"
         className={classes.viewAllLink}
       >

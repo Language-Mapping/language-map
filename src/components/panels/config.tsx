@@ -1,11 +1,11 @@
 import React from 'react'
 import { TiThList } from 'react-icons/ti'
-import { FaBinoculars, FaSearchLocation } from 'react-icons/fa'
+import { FaBinoculars } from 'react-icons/fa'
 import { GoFile } from 'react-icons/go'
-import { BiHomeAlt } from 'react-icons/bi'
+import { BiHomeAlt, BiMapPin } from 'react-icons/bi'
 
 import { Home } from 'components/home'
-import { SpatialPanel } from 'components/spatial'
+import { LocalPanel } from 'components/local'
 import { DetailsPanel } from 'components/details'
 import { Explore, LangCardsList, MidLevelExplore } from 'components/explore'
 
@@ -41,12 +41,12 @@ export const navRoutes = [
     rootPath: '/table',
   },
   {
-    heading: 'Spatial',
-    icon: <FaSearchLocation />,
+    heading: 'Local',
+    icon: <BiMapPin />,
     component: null,
     // eslint-disable-next-line react/display-name
-    renderComponent: (props) => <SpatialPanel {...props} />,
-    rootPath: '/spatial',
+    renderComponent: (props) => <LocalPanel {...props} />,
+    rootPath: '/local',
   },
   {
     heading: 'Details',

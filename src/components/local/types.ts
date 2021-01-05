@@ -2,7 +2,7 @@ import * as MapTypes from 'components/map/types'
 import { ArrayOfStringArrays } from 'components/config/types'
 import { ReactQueryStatus } from '../config/types'
 
-export type SpatialPanelProps = MapTypes.SpatialPanelProps
+export type LocalPanelProps = MapTypes.LocalPanelProps
 export type CensusQueryID = 'tracts' | 'puma' | 'langConfig'
 
 // TODO: deal w/google's built-in `data.error`

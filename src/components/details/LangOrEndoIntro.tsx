@@ -55,7 +55,7 @@ export const LangOrEndoIntro: FC<LangOrEndoIntroProps> = (props) => {
         <Typography
           variant="h6"
           component={RouterLink}
-          to={`${routes.grid}/Language/${language}`}
+          to={`${routes.explore}/Language/${language}`}
           className={classes.subHeading}
         >
           {language}

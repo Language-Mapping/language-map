@@ -3,7 +3,7 @@
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
 
 import { ArrayOfStringArrays } from 'components/config/types'
-import { PreppedCensusLUTrow, CensusQueryID } from 'components/spatial/types'
+import { PreppedCensusLUTrow, CensusQueryID } from 'components/local/types'
 
 export type PanelState = 'default' | 'maximized' | 'minimized'
 export type LangSchemaCol = keyof LangRecordSchema
