@@ -9,6 +9,7 @@ import { SwatchOnly } from 'components/legend'
 import { Chip, NeighborhoodList } from 'components/details'
 import { DialogCloseBtn } from 'components/generic/modals'
 
+import { useHistory } from 'react-router-dom'
 import * as Types from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,6 +41,7 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
   const { data, children, isInstance } = props
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
+  const history = useHistory()
 
   const {
     'World Region': WorldRegion,
@@ -81,19 +83,31 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
   )
   const addlCount = isInstance && data['Additional Neighborhoods']?.length
   const neighbsChipText = `${primaryLoc}${addlCount ? ` +${addlCount}` : ''}`
+  const explorePath = Town ? 'Town' : 'Neighborhood'
 
-  // Careful, not using TS on the mid-route paths, e.g. "World Region"
+  // TODO: use TS on all mid-route paths, e.g. "World Region"
   return (
     <div className={classes.root}>
       {isInstance && (
         <>
-          {NeighbsMenu}
-          <Chip
-            text={neighbsChipText}
-            icon={<BiMapPin />}
-            title="Show neighborhood or town options"
-            handleClick={handleClick}
-          />
+          {addlCount ? NeighbsMenu : null}
+          {addlCount ? (
+            <Chip
+              text={neighbsChipText}
+              icon={<BiMapPin />}
+              title="Show neighborhood or town options"
+              handleClick={handleClick}
+            />
+          ) : (
+            <Chip
+              text={neighbsChipText}
+              icon={<BiMapPin />}
+              title={`View more languages spoken in ${primaryLoc}`}
+              handleClick={() =>
+                history.push(`/Explore/${explorePath}/${primaryLoc}`)
+              }
+            />
+          )}
         </>
       )}
       <Chip

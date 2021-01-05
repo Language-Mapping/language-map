@@ -37,6 +37,15 @@ export const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+const CardFooter: FC<{ text?: string }> = ({ text }) => {
+  return (
+    <Switch>
+      <Route path="/details">View more languages spoken in {text}</Route>
+      <Route>View details and show in map</Route>
+    </Switch>
+  )
+}
+
 export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
   const { data, isInstance } = props
   const classes = useStyles()
@@ -99,14 +108,8 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
       </Explanation>
       <CardList>
         {primaries.map((loc, i) => {
-          const footer = (
-            <Switch>
-              <Route path="/details">View more languages spoken in {loc}</Route>
-              <Route>View details and show in map</Route>
-            </Switch>
-          )
-
           let url // TODO: de-shabbify, wire up w/Town
+          const footer = <CardFooter text={loc} />
 
           if (!isInstance)
             url = `/details/${instanceIDs ? instanceIDs[i] : 999999}`
