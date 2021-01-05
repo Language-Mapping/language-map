@@ -73,10 +73,8 @@ const CensusAutocomplete: FC<Types.CensusSelectProps> = (props) => {
   const { tracts, puma } = props
   const classes = useStyles()
   const mapToolsDispatch = useMapToolsDispatch()
-  const {
-    puma: pumaField,
-    tracts: tractsField,
-  } = useMapToolsState().censusActiveFields
+  const { censusActiveFields } = useMapToolsState()
+  const { puma: pumaField, tracts: tractsField } = censusActiveFields
 
   const defaultValue =
     [...tracts, ...puma].find(
@@ -88,40 +86,33 @@ const CensusAutocomplete: FC<Types.CensusSelectProps> = (props) => {
   }
 
   return (
-    <>
-      <Autocomplete
-        id="census-autocomplete"
-        classes={{ option: classes.option, listbox: classes.listbox }}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore // it actually DOES exist on currentTarget
-        onOpen={(e) => e.currentTarget.scrollIntoView()}
-        blurOnSelect="touch"
-        fullWidth
-        getOptionLabel={({ pretty }) => pretty}
-        groupBy={({ groupTitle }) => groupTitle}
-        onChange={(event, value) => handleChange(value)}
-        options={[...tracts, ...puma]}
-        renderGroup={renderGroup}
-        selectOnFocus={false}
-        size="small"
-        value={defaultValue}
-        // open // much more effective than `debug`
-        renderInput={(params) => (
-          <TextField {...params} label="Choose a language" variant="standard" />
-        )}
-      />
-      <SubtleText>
-        *Census Bureau category, component languages unclear
-      </SubtleText>
-    </>
+    <Autocomplete
+      id="census-autocomplete"
+      classes={{ option: classes.option, listbox: classes.listbox }}
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore // it actually DOES exist on currentTarget
+      onOpen={(e) => e.currentTarget.scrollIntoView()}
+      blurOnSelect="touch"
+      fullWidth
+      getOptionLabel={({ pretty }) => pretty}
+      groupBy={({ groupTitle }) => groupTitle}
+      onChange={(event, value) => handleChange(value)}
+      options={[...tracts, ...puma]}
+      renderGroup={renderGroup}
+      selectOnFocus={false}
+      size="small"
+      value={defaultValue}
+      // open // much more effective than `debug`
+      renderInput={(params) => (
+        <TextField {...params} label="Choose a language" variant="standard" />
+      )}
+    />
   )
 }
 
 export const CensusFieldSelect: FC = () => {
-  const {
-    puma: pumaFields,
-    tracts: tractsFields,
-  } = useMapToolsState().censusDropDownFields
+  const { censusDropDownFields } = useMapToolsState()
+  const { puma: pumaFields, tracts: tractsFields } = censusDropDownFields
 
   // TODO: use state directly from the hook if can find a way to make it persist
   // between route changes
@@ -139,7 +130,12 @@ export const CensusFieldSelect: FC = () => {
       explanation={<CensusIntro />}
     >
       {!ready && <p>Getting census data...</p>}
-      {ready && <CensusAutocomplete tracts={tractsFields} puma={pumaFields} />}
+      <>
+        <CensusAutocomplete tracts={tractsFields} puma={pumaFields} />
+        <SubtleText>
+          *Census Bureau category, component languages unclear
+        </SubtleText>
+      </>
     </LocationSearchContent>
   )
 }

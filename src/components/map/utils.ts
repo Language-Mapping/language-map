@@ -42,7 +42,7 @@ export const filterLayersByFeatIDs = (
   layerNames: string[],
   langFeatIDs: string[]
 ): void => {
-  if (!layerNames.length) return // FIXME: you know what
+  if (!layerNames.length || !langFeatIDs.length) return // FIXME: (???)
 
   layerNames.forEach((name) => {
     // CRED: https://gis.stackexchange.com/a/287629/5824

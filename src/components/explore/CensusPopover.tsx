@@ -12,9 +12,9 @@ import { DialogCloseBtn } from 'components/generic/modals'
 
 import * as Types from './types'
 
-export const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    popover: {
+    root: {
       maxWidth: 350,
       padding: '1rem',
     },
@@ -115,7 +115,7 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
       open={open}
       anchorEl={anchorEl}
       onClose={handleClose}
-      PaperProps={{ className: classes.popover, elevation: 12 }}
+      PaperProps={{ className: classes.root, elevation: 12 }}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       transformOrigin={{ vertical: 'center', horizontal: 'left' }}
     >
