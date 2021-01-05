@@ -12,8 +12,8 @@ import { DetailsSchema, LangLevelSchema } from 'components/context'
 import { exploreIcons } from 'components/explore/config'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
-import * as Types from './types'
 import { useAirtable } from './hooks'
+import { TonsOfFields, MidLevelExploreProps, RouteMatch } from './types'
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,6 +46,8 @@ const prepFormula = (field: keyof DetailsSchema, value?: string): string => {
     'Town',
   ]
 
+  // Neighborhood instance, e.g. /Explore/Neighborhood/Astoria should include
+  // additional neighborhoods in the query.
   if (value && field === 'Neighborhood')
     return `AND(
       {${field}} != '',
@@ -66,7 +68,7 @@ const prepFormula = (field: keyof DetailsSchema, value?: string): string => {
   return ''
 }
 
-// Mid-level fields are consistent except a couple tables need an extra field.
+// Mid-level fields are consistent except a few tables need an extra field
 const prepFields = (tableName: keyof DetailsSchema): string[] => {
   if (tableName === 'Language')
     return [
@@ -83,6 +85,7 @@ const prepFields = (tableName: keyof DetailsSchema): string[] => {
   } = {
     'World Region': [...landingFields, 'icon-color'],
     Country: [...landingFields, 'src_image'],
+    Neighborhood: [...landingFields, 'Additional Languages'],
   }
 
   if (addlFields[tableName] !== undefined) return addlFields[tableName]
@@ -124,15 +127,17 @@ const AddlLanguages: FC<{ data: LangLevelSchema[]; value?: string }> = (
   )
 }
 
-export const MidLevelExplore: FC<Types.MidLevelExploreProps> = (props) => {
-  const { field, value } = useParams() as Types.RouteMatch
+export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
+  const { field, value } = useParams() as RouteMatch
   const { tableName = field, sortByField = 'name' } = props
   const { url } = useRouteMatch()
 
   const filterByFormula = prepFormula(field, value)
   const fields = prepFields(tableName)
 
-  const { data, error, isLoading } = useAirtable(tableName, {
+  const { data, error, isLoading } = useAirtable<
+    TonsOfFields & { 'Additional Languages'?: string[] }
+  >(tableName, {
     fields,
     ...(filterByFormula && { filterByFormula }),
     sort: [{ field: sortByField }],
@@ -194,10 +199,13 @@ export const MidLevelExplore: FC<Types.MidLevelExploreProps> = (props) => {
         {primaryData.map((row) => {
           let uniqueInstances = []
 
-          if (row.languages) {
+          if (field === 'Neighborhood' && !value) {
+            uniqueInstances = [
+              ...(row.languages || []),
+              ...(row['Additional Languages'] || []),
+            ]
+          } else if (row.languages) {
             uniqueInstances = row.languages
-            // FIXME: include additional neighbs in card footers:
-            // else if (!value && field === 'Neighborhood' && row.addlNeighborhoods){
           } else {
             uniqueInstances = row['Primary Locations']
           }
