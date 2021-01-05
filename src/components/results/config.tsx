@@ -143,6 +143,12 @@ const hiddenCols = [
     ...commonColProps,
     hidden: true,
   },
+  {
+    title: 'Additional Neighborhoods',
+    field: 'Additional Neighborhoods',
+    ...commonColProps,
+    hidden: true,
+  },
 ]
 
 // NOTE: did not want to attempt to deal with any of the multi-option cols like
@@ -313,16 +319,6 @@ export const columns = [
     searchable: false,
     render: (data) => <Cells.CommStatus data={data} />,
     lookup: COMM_STATUS_LOOKUP,
-  },
-  {
-    title: <LocalColumnTitle text="Additional Neighborhoods" />,
-    field: 'Additional Neighborhoods',
-    ...commonColProps,
-    render: utils.renderNeighbColumn,
-    customSort: utils.sortNeighbs,
-    headerStyle: {
-      whiteSpace: 'nowrap',
-    },
   },
   ...hiddenCols,
 ] as Types.ColumnsConfig[]

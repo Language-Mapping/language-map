@@ -8,7 +8,7 @@ const CHECK_STRING = 'http'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    switchFormCtrlRoot: {
+    root: {
       color: theme.palette.secondary.main,
       marginLeft: 2, // shaaaaky
     },
@@ -24,13 +24,14 @@ export const VideoColumnFilter: FC<Types.FilterComponentProps> = (props) => {
   const { filterValue } = tableData
   const checked = filterValue === CHECK_STRING
 
+  // REFACTOR: useMemo maybe? This gets run for EVERY record, and it's the same
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onFilterChanged(tableData.id, e.target.checked ? CHECK_STRING : '')
   }
 
   return (
     <FormControlLabel
-      classes={{ root: classes.switchFormCtrlRoot }}
+      classes={{ root: classes.root }}
       control={
         <Checkbox
           checked={checked}

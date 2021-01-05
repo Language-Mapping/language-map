@@ -55,11 +55,11 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
       return asElement.classList?.contains(FILTER_CLASS)
     }) as HTMLElement
 
-    const newFilterVal = elemWithFilter?.innerText || rowData[field]
+    // Safari will preserve newlines w/o `trim`
+    const newFilterVal = elemWithFilter?.innerText.trim() || rowData[field]
 
-    // Show feature in map
     if (field === 'id') {
-      history.push(`${routes.details}/${rowData.id}`)
+      history.push(`${routes.details}/${rowData.id}`) // show feature in map
 
       return
     }
@@ -67,9 +67,8 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
     // Don't set filter for image-only Endonyms
     if (field === 'Endonym' && rowData['Font Image Alt']) return
 
-    // Open Details modal
     if (field === 'Description') {
-      history.push(`${routes.table}/${rowData.id}`)
+      history.push(`${routes.table}/${rowData.id}`) // open Details modal
 
       return
     }

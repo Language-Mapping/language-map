@@ -5,7 +5,7 @@ import { CountryListItemWithFlagProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    countryWithFlagRoot: {
+    root: {
       alignItems: 'center',
       display: 'grid',
       gridColumnGap: theme.spacing(1),
@@ -13,32 +13,27 @@ const useStyles = makeStyles((theme: Theme) =>
       gridTemplateRows: 'auto',
       lineHeight: 1, // proper vertical align (all good except super-long Congo)
       '& + li': {
-        marginTop: 2,
+        marginTop: 4,
       },
     },
     emojiFlag: {
       '& > img': {
         height: '100%',
-        outline: `solid 1px ${theme.palette.divider}`, // to ensure outer white shapes are seen
+        // Ensure outer white shapes are seen
+        outline: `solid 1px ${theme.palette.divider}`,
       },
     },
   })
 )
 
-// CRED: // https://github.com/hjnilsson/country-flags
-// NOTE: only the countries in the table were tested, and sometimes their
-// country code/name was edited in `config.emojis.json` accordingly. Anything
-// wrong may have to be addressed in that config, the data, the SVG icons
-// themselves, or some combination thereof.
 export const CountryListItemWithFlag: FC<CountryListItemWithFlagProps> = (
   props
 ) => {
-  const classes = useStyles()
-  const { countryWithFlagRoot, emojiFlag } = classes
+  const { root, emojiFlag } = useStyles()
   const { name, url, filterClassName } = props
 
   return (
-    <li className={`${countryWithFlagRoot} ${filterClassName}`}>
+    <li className={`${root} ${filterClassName}`}>
       <div className={emojiFlag}>
         <img alt={`${name} flag`} src={url} />
       </div>

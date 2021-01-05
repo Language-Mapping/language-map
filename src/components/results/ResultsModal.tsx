@@ -31,6 +31,7 @@ const fields: Array<Extract<keyof DetailsSchema, string>> = [
   'sizeColor',
   'Size',
   'Status',
+  'Video',
   'World Region',
 ]
 
@@ -92,6 +93,8 @@ const ResultsModal: FC = () => {
       })
     }
   }
+
+  if (error) return null
 
   return (
     <Dialog
