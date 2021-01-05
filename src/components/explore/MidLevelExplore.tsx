@@ -1,19 +1,20 @@
 import React, { FC } from 'react'
 import { useRouteMatch, useParams, Route } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
-
 import { BiMapPin } from 'react-icons/bi'
+
 import { FlagFromHook } from 'components/generic/icons-and-swatches'
 import { SwatchOnly } from 'components/legend'
 import { PanelContent } from 'components/panels/PanelContent'
 import { LoadingIndicatorPanel } from 'components/generic/modals'
-import { DetailsSchema, LangLevelSchema } from 'components/context'
+import { Explanation } from 'components/generic'
+import { LangLevelSchema } from 'components/context'
 import { exploreIcons } from 'components/explore/config'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
 import { useAirtable } from './hooks'
-import { TonsOfFields, MidLevelExploreProps, RouteMatch } from './types'
+import { prepFormula, prepFields, getUniqueInstances } from './utils'
+import { TonsWithAddl, MidLevelExploreProps, RouteMatch } from './types'
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,89 +23,10 @@ export const useStyles = makeStyles((theme: Theme) =>
       margin: 0,
       fontSize: '1rem',
     },
-    explanation: {
-      color: theme.palette.text.secondary,
-      fontSize: '0.75rem',
-      margin: '1rem 0',
-    },
   })
 )
 
-// Mid-level formulas are pretty consistent, except:
-//  1. /Explore/Landing does not need a formula
-//  2. /Explore/{anything with array field in Language}/:value must check for
-//     value existence and then a "contains" since there does not appear to be a
-//     way to filter arrays in Airtable.
-const prepFormula = (field: keyof DetailsSchema, value?: string): string => {
-  if (field === 'Language') return '' // /Explore/Language
-  if (!value) return "{languages} != ''" // e.g. /Explore/Country
-
-  const midLevelArrayFields = [
-    'Country',
-    'Macrocommunity',
-    'Neighborhood',
-    'Town',
-  ]
-
-  // Neighborhood instance, e.g. /Explore/Neighborhood/Astoria should include
-  // additional neighborhoods in the query.
-  if (value && field === 'Neighborhood')
-    return `AND(
-      {${field}} != '',
-      FIND(
-        '${value}',
-        CONCATENATE(
-          ARRAYJOIN({${field}}),
-          ARRAYJOIN({addlNeighborhoods})
-        )
-      ) != 0
-    )`
-
-  if (value && midLevelArrayFields.includes(field))
-    return `AND({${field}} != '', FIND('${value}', ARRAYJOIN({${field}})) != 0)`
-
-  if (value) return `{${field}} = '${value}'`
-
-  return ''
-}
-
-// Mid-level fields are consistent except a few tables need an extra field
-const prepFields = (tableName: keyof DetailsSchema): string[] => {
-  if (tableName === 'Language')
-    return [
-      'Endonym',
-      'name',
-      'Primary Locations',
-      'worldRegionColor',
-      'addlNeighborhoods',
-    ]
-
-  const landingFields = ['name', 'languages']
-  const addlFields: {
-    [key: string]: string[]
-  } = {
-    'World Region': [...landingFields, 'icon-color'],
-    Country: [...landingFields, 'src_image'],
-    Neighborhood: [...landingFields, 'Additional Languages'],
-  }
-
-  if (addlFields[tableName] !== undefined) return addlFields[tableName]
-
-  return landingFields
-}
-
-const Explanation: FC = (props) => {
-  const { children } = props
-  const classes = useStyles()
-
-  return (
-    <Typography component="p" className={classes.explanation} paragraph>
-      {children}
-    </Typography>
-  )
-}
-
-const AddlLanguages: FC<{ data: LangLevelSchema[]; value?: string }> = (
+export const AddlLanguages: FC<{ data: LangLevelSchema[]; value?: string }> = (
   props
 ) => {
   const { data } = props
@@ -135,9 +57,7 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
   const filterByFormula = prepFormula(field, value)
   const fields = prepFields(tableName)
 
-  const { data, error, isLoading } = useAirtable<
-    TonsOfFields & { 'Additional Languages'?: string[] }
-  >(tableName, {
+  const { data, error, isLoading } = useAirtable<TonsWithAddl>(tableName, {
     fields,
     ...(filterByFormula && { filterByFormula }),
     sort: [{ field: sortByField }],
@@ -167,6 +87,7 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
   )
   const { definition, plural } = landingData[0] || {}
 
+  let primaryData
   let Icon = null // TODO: re-componentize
 
   if (value && field === 'World Region') {
@@ -174,13 +95,9 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
   } else if (value && field === 'Country') Icon = <FlagFromHook value={value} />
   else Icon = <>{exploreIcons[field]}</>
 
-  let primaryData
-
-  if (value && field === 'Neighborhood') {
+  if (value && field === 'Neighborhood')
     primaryData = data.filter((row) => row['Primary Locations'].includes(value))
-  } else {
-    primaryData = data
-  }
+  else primaryData = data
 
   // TODO: better logic for instances, e.g. allow definition
   return (
@@ -197,18 +114,7 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
       </Route>
       <CardList>
         {primaryData.map((row) => {
-          let uniqueInstances = []
-
-          if (field === 'Neighborhood' && !value) {
-            uniqueInstances = [
-              ...(row.languages || []),
-              ...(row['Additional Languages'] || []),
-            ]
-          } else if (row.languages) {
-            uniqueInstances = row.languages
-          } else {
-            uniqueInstances = row['Primary Locations']
-          }
+          const uniqueInstances = getUniqueInstances(field, row, value)
 
           return (
             <CustomCard

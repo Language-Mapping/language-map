@@ -75,6 +75,7 @@ type SchemaTableFields = {
 }
 
 export type TonsOfFields = DetailsSchema & AtSymbFields & SchemaTableFields
+export type TonsWithAddl = TonsOfFields & { 'Additional Languages'?: string[] }
 export type AirtableError = {
   error: string // error type, e.g. UNKNOWN_FIELD_NAME
   message: string
