@@ -1,6 +1,5 @@
-import { Map as MbMap, FillPaint, Layer } from 'mapbox-gl'
+import { Map as MbMap, FillPaint, Layer, setRTLTextPlugin } from 'mapbox-gl'
 import { WebMercatorViewport } from 'react-map-gl'
-
 import * as Types from './types'
 import * as config from './config' // TODO: pass this as fn args, don't import
 
@@ -299,4 +298,19 @@ export const getBeforeID = (
   if (['', 'None'].includes(activeSymbGroupID)) return 'background'
 
   return getLangLayersIDs(layers)[0] || 'background'
+}
+
+export const rightToLeftSetup = (): void => {
+  // Jest or whatever CANNOT find this plugin. And importing it from
+  // `react-map-gl` is useless as well.
+  if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
+    // Ensure right-to-left languages (Arabic, Hebrew) are shown correctly
+    setRTLTextPlugin(
+      // latest version: https://www.npmjs.com/package/@mapbox/mapbox-gl-rtl-text
+      'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      (error): Error => error, // supposed to be an error-handling function
+      true // lazy: only load when the map first encounters Hebrew or Arabic text
+    )
+  }
 }

@@ -3,14 +3,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useState, useContext, useEffect } from 'react'
 import { useHistory, Route } from 'react-router-dom'
-import { useQueryCache } from 'react-query'
-import {
-  AttributionControl,
-  Map as MbMap, // TODO: try to lazy load the biggest dep of all. See:
-  // www.debugbear.com/blog/bundle-splitting-components-with-webpack-and-react
-  setRTLTextPlugin,
-  LngLatBounds,
-} from 'mapbox-gl'
+// TODO: try to lazy load the biggest dep of all. See:
+// www.debugbear.com/blog/bundle-splitting-components-with-webpack-and-react
+import { Map as MbMap, AttributionControl } from 'mapbox-gl'
 import MapGL, { MapLoadEvent } from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -27,31 +22,21 @@ import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
 
 import * as config from './config'
-import { handleBoundaryClick } from './events'
-import { usePopupFeatDetails, useOffset, useBreakpoint } from './hooks'
+import {
+  usePopupFeatDetails,
+  useOffset,
+  useBreakpoint,
+  useBoundaryPopup,
+  useZoomToLangFeatsExtent,
+} from './hooks'
 import { getAllLangFeatIDs, isTouchEnabled } from '../../utils'
 import * as Types from './types'
 import * as utils from './utils'
+import { flyHome } from './utils'
 
-const {
-  neighbConfig,
-  countiesConfig,
-  boundariesLayerIDs,
-  langTypeIconsConfig,
-} = config
+const { boundariesLayerIDs, langTypeIconsConfig } = config
 
-// Jest or whatever CANNOT find this plugin. And importing it from
-// `react-map-gl` is useless as well.
-if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
-  // Ensure right-to-left languages (Arabic, Hebrew) are shown correctly
-  setRTLTextPlugin(
-    // latest version: https://www.npmjs.com/package/@mapbox/mapbox-gl-rtl-text
-    'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    (error): Error => error, // supposed to be an error-handling function
-    true // lazy: only load when the map first encounters Hebrew or Arabic text
-  )
-}
+utils.rightToLeftSetup()
 
 export const Map: FC<Types.MapProps> = (props) => {
   const history = useHistory()
@@ -74,90 +59,26 @@ export const Map: FC<Types.MapProps> = (props) => {
   const [viewport, setViewport] = useState<Types.ViewportState>(
     config.initialMapState
   )
-  const [hidePopup, setHidePopup] = useState<boolean>(false)
+  const [hidePopups, setHidePopups] = useState<Types.HidePopups>({
+    boundaries: false,
+    language: false,
+  })
   const [tooltip, setTooltip] = useState<Types.PopupSettings | null>(null)
   const [
     clickedBoundary,
     setClickedBoundary,
   ] = useState<Types.BoundaryFeat | null>()
-  const cache = useQueryCache()
-  const [
-    boundaryPopup,
-    setBoundaryPopup,
-  ] = useState<Types.PopupSettings | null>(null)
+  const shouldFlyHome = useZoomToLangFeatsExtent(panelOpen, map)
+  const boundaryPopup = useBoundaryPopup(panelOpen, clickedBoundary, map)
 
   // const symbCache = cache.getQueryData([activeSymbGroupID, 'legend']) || []
   // const interactiveLayerIds = symbCache
 
-  // Handle MB Boundaries feature click
   useEffect((): void => {
-    if (!map || !clickedBoundary) return
+    if (!map) return
 
-    const boundaryData = cache.getQueryData(
-      clickedBoundary.source
-    ) as Types.BoundaryLookup[]
-
-    const boundaryPopupSettings = handleBoundaryClick(
-      map,
-      clickedBoundary,
-      { width: viewport.width as number, height: viewport.height as number },
-      boundaryData,
-      offset
-    )
-
-    if (boundaryPopupSettings) setBoundaryPopup(boundaryPopupSettings)
-  }, [clickedBoundary])
-
-  // Fly to extent of lang features on length change
-  useEffect((): void => {
-    if (!map || !langFeatures.length) return
-
-    // TODO: better check/decouple the fly-home-on-filter-reset behavior so that
-    // there are no surprise fly-to-home scenarios.
-    if (langFeatures.length === state.langFeatsLenCache) {
-      utils.flyHome(map, nuclearClear, offset)
-
-      return
-    }
-
-    const firstCoords: [number, number] = [
-      langFeatures[0].Longitude,
-      langFeatures[0].Latitude,
-    ]
-
-    // Zooming to "bounds" gets crazy if there is only one feature
-    if (langFeatures.length === 1) {
-      utils.flyToPoint(
-        map,
-        {
-          latitude: firstCoords[1],
-          longitude: firstCoords[0],
-          zoom: config.POINT_ZOOM_LEVEL,
-          pitch: 80,
-          offset,
-        },
-        null
-      )
-
-      return
-    }
-
-    const bounds = langFeatures.reduce(
-      (all, thisOne) => all.extend([thisOne.Longitude, thisOne.Latitude]),
-      new LngLatBounds(firstCoords, firstCoords)
-    )
-
-    utils.flyToBounds(
-      map,
-      {
-        height: window.innerHeight as number,
-        width: window.innerWidth as number,
-        bounds: bounds.toArray() as Types.BoundsArray,
-        offset,
-      },
-      null
-    )
-  }, [langFeatures.length])
+    flyHome(map, nuclearClear, offset)
+  }, [shouldFlyHome])
 
   // Filter lang feats in map on length change or symbology change
   useEffect((): void => {
@@ -194,12 +115,11 @@ export const Map: FC<Types.MapProps> = (props) => {
   }, [selFeatAttribs]) // LEGIT disabling of deps. Breaks otherwise.
 
   const nuclearClear = () => {
-    setHidePopup(true)
+    setHidePopups({ boundaries: true, language: true })
     setGeocodeMarker(null)
     setTooltip(null)
   }
 
-  // TODO: use `if (map.isSourceLoaded('sourceId')` if possible
   function onLoad(mapLoadEvent: MapLoadEvent) {
     // `mapObj` should === `map` but avoid naming conflict just in case:
     const { target: mapObj } = mapLoadEvent
@@ -207,7 +127,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     // Maintain viewport state sync if needed (e.g. after `flyTo`), otherwise
     // the map shifts back to previous position after panning or zooming.
     mapObj.on('moveend', function onMoveEnd(zoomEndEvent) {
-      setHidePopup(false)
+      setHidePopups({ boundaries: false, language: false })
 
       // No custom event data, regular move event
       if (zoomEndEvent.forceViewportUpdate) {
@@ -223,7 +143,7 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     // Close popup on the start of moving so no jank
     mapObj.on('movestart', function onMoveStart(zoomEndEvent) {
-      setHidePopup(true)
+      setHidePopups({ boundaries: true, language: true })
 
       if (zoomEndEvent.forceViewportUpdate) nuclearClear()
     })
@@ -241,7 +161,7 @@ export const Map: FC<Types.MapProps> = (props) => {
       const { geocodeMarker: geocodeMarkerParams } = customEventData
       // as MapTypes.CustomEventData // WHYYYY ERRORS
 
-      setHidePopup(false)
+      setHidePopups({ boundaries: false, language: false })
 
       if (geocodeMarkerParams) setGeocodeMarker(geocodeMarkerParams)
     })
@@ -350,7 +270,7 @@ export const Map: FC<Types.MapProps> = (props) => {
           }}
         />
         {geocodeMarker && <GeocodeMarker {...geocodeMarker} />}
-        {[neighbConfig, countiesConfig].map((boundaryConfig) => (
+        {[config.neighbConfig, config.countiesConfig].map((boundaryConfig) => (
           <BoundariesLayer
             key={boundaryConfig.source.id}
             {...boundaryConfig}
@@ -374,14 +294,14 @@ export const Map: FC<Types.MapProps> = (props) => {
         />
         <LangMbSrcAndLayer />
         <Route path="/details/:id">
-          {mapLoaded && !hidePopup && (
-            <LanguagePopup settings={selFeatAttribs} />
-          )}
+          {!hidePopups.language && <LanguagePopup settings={selFeatAttribs} />}
         </Route>
-        {mapLoaded && boundaryPopup?.latitude && (
+        {!hidePopups.boundaries && boundaryPopup && (
           <MapPopup
             {...boundaryPopup}
-            setVisible={() => setBoundaryPopup(null)}
+            setVisible={() =>
+              setHidePopups({ ...hidePopups, boundaries: true })
+            }
           />
         )}
         {/* Popups are annoying on mobile */}

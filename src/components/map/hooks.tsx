@@ -1,15 +1,21 @@
+import { useContext, useEffect, useState } from 'react'
+import { useQueryCache } from 'react-query'
 import { WebMercatorViewport } from 'react-map-gl'
+import { LngLatBounds } from 'mapbox-gl'
 import { useTheme } from '@material-ui/core/styles'
 
 import { panelWidths } from 'components/panels/config'
-import { LangRecordSchema } from 'components/context'
+import { GlobalContext, LangRecordSchema } from 'components/context'
 import { AtSymbFields, AtSchemaFields } from 'components/legend/types'
 import { layerSymbFields } from 'components/legend/config'
 import { useAirtable } from 'components/explore/hooks'
 import { useRouteMatch } from 'react-router-dom'
-import * as Types from './types'
 import { useWindowResize } from '../../utils'
-import { iconStyleOverride } from './config'
+import { iconStyleOverride, POINT_ZOOM_LEVEL } from './config'
+import { flyToPoint, flyToBounds } from './utils'
+import { handleBoundaryClick } from './events'
+
+import * as Types from './types'
 
 // Set offsets to account for the panel-on-map layout as it would otherwise
 // expect the map center to be the screen center. Did not find a good way to do
@@ -152,4 +158,109 @@ export const usePopupFeatDetails = (): UsePopupFeatDetailsReturn => {
   if (isLoading || error) return { isLoading, error }
 
   return { selFeatAttribs: data[0], error, isLoading }
+}
+
+// Set popup heading and lat/lng for Neighborhood or County click
+export const useBoundaryPopup: Types.UseBoundaryPopup = (
+  panelOpen,
+  clickedBoundary,
+  map
+) => {
+  const cache = useQueryCache()
+  const offset = useOffset(panelOpen)
+
+  const [
+    boundaryPopup,
+    setBoundaryPopup,
+  ] = useState<Types.PopupSettings | null>(null)
+
+  useEffect((): void => {
+    if (!map || !clickedBoundary) return
+
+    const boundaryData = cache.getQueryData(
+      clickedBoundary.source
+    ) as Types.BoundaryLookup[]
+
+    const boundaryPopupSettings = handleBoundaryClick(
+      map,
+      clickedBoundary,
+      {
+        height: window.innerHeight as number,
+        width: window.innerWidth as number,
+      },
+      boundaryData,
+      offset
+    )
+
+    if (boundaryPopupSettings) setBoundaryPopup(boundaryPopupSettings)
+    // I don't get this rule. It works fine alllll the time here.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clickedBoundary])
+
+  return boundaryPopup
+}
+
+// Fly to extent of lang features on length change
+export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
+  panelOpen,
+  map
+) => {
+  const { state } = useContext(GlobalContext)
+  const { langFeatures, langFeatsLenCache } = state
+  const offset = useOffset(panelOpen)
+  const [shouldFlyHome, setShouldFlyHome] = useState<boolean>(false)
+
+  // Fly to extent of lang features on length change
+  useEffect((): void => {
+    if (!map || !langFeatures.length) return
+
+    // TODO: better check/decouple the fly-home-on-filter-reset behavior so that
+    // there are no surprise fly-to-home scenarios.
+    if (langFeatures.length === langFeatsLenCache) {
+      setShouldFlyHome(true)
+
+      return
+    }
+
+    const firstCoords: [number, number] = [
+      langFeatures[0].Longitude,
+      langFeatures[0].Latitude,
+    ]
+
+    // Zooming to "bounds" gets crazy if there is only one feature
+    if (langFeatures.length === 1) {
+      flyToPoint(
+        map,
+        {
+          latitude: firstCoords[1],
+          longitude: firstCoords[0],
+          zoom: POINT_ZOOM_LEVEL,
+          pitch: 80,
+          offset,
+        },
+        null
+      )
+
+      return
+    }
+
+    const bounds = langFeatures.reduce(
+      (all, thisOne) => all.extend([thisOne.Longitude, thisOne.Latitude]),
+      new LngLatBounds(firstCoords, firstCoords)
+    )
+
+    flyToBounds(
+      map,
+      {
+        height: window.innerHeight as number,
+        width: window.innerWidth as number,
+        bounds: bounds.toArray() as Types.BoundsArray,
+        offset,
+      },
+      null
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [langFeatures.length])
+
+  return shouldFlyHome
 }

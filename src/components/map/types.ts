@@ -259,3 +259,19 @@ export type FlyToPointSettings = {
   pitch: number
   offset: Offset
 }
+
+export type UseBoundaryPopup = (
+  panelOpen: boolean,
+  clickedBoundary?: BoundaryFeat | null,
+  map?: Map
+) => PopupSettings | null
+
+export type UseZoomToLangFeatsExtent = (
+  panelOpen: boolean,
+  map?: Map
+) => boolean
+
+export type HidePopups = {
+  boundaries: boolean
+  language: boolean
+}
