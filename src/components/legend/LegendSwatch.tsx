@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
       gridColumnGap: '0.24em',
       justifyItems: 'center',
       color: theme.palette.text.primary,
-      marginBottom: (props: { isCircle: boolean }) =>
+      marginBottom: (props: { isCircle?: boolean }) =>
         props.isCircle ? 0 : theme.spacing(1),
     },
     legendLabel: {
@@ -21,32 +21,34 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: theme.typography.caption.fontSize,
       lineHeight: theme.typography.caption.lineHeight,
     },
+    swatchDefaults: {
+      marginRight: '0.2rem',
+    },
     imgSwatch: {
       height: 20,
       width: 20,
-      marginRight: '0.2em',
+    },
+    swatchOnly: {
+      borderRadius: '100%',
     },
   })
 )
 
 // No text, no frills. Just a circle with a color
-export const SwatchOnly: FC<Types.SwatchOnly> = (props) => {
+export const SwatchOnly: FC<Types.SwatchOnlyProps> = (props) => {
+  const classes = useStyles({})
   const { backgroundColor, size = 7 } = props
-  const adjustedSize = size * 1.5
+  const adjustedSize = Math.round(size * 1.5) // avoid squished circles
 
   return (
     <span
-      style={{
-        backgroundColor,
-        height: adjustedSize,
-        width: adjustedSize,
-        borderRadius: '100%',
-      }}
+      className={`${classes.swatchOnly} ${classes.swatchDefaults}`}
+      style={{ backgroundColor, height: adjustedSize, width: adjustedSize }}
     />
   )
 }
 
-export const LegendSwatch: FC<Types.LegendSwatchComponent> = (props) => {
+export const LegendSwatch: FC<Types.LegendSwatchProps> = (props) => {
   const {
     backgroundColor,
     icon,
@@ -78,7 +80,11 @@ export const LegendSwatch: FC<Types.LegendSwatchComponent> = (props) => {
     >
       {isCircle && <SwatchOnly {...{ size, backgroundColor }} />}
       {!isCircle && (
-        <img src={icon} alt={legendLabel} className={classes.imgSwatch} />
+        <img
+          src={icon}
+          alt={legendLabel}
+          className={`${classes.imgSwatch} ${classes.swatchDefaults}`}
+        />
       )}
       <Typography
         className={classes.legendLabel}

@@ -1,11 +1,12 @@
-import { LangRecordSchema } from 'components/context/types'
+import { DetailsSchema, LangRecordSchema } from 'components/context/types'
+import { AtSymbFields } from 'components/legend/types'
 
 // TODO: try to reuse some of these, they're pretty common in sev. components
 export type CategoryProps = {
   title: string
   uniqueInstances?: unknown[]
   url: string
-  footer?: string
+  footer?: string | React.ReactNode
   icon?: React.ReactNode
   intro?: string
 }
@@ -23,7 +24,7 @@ export type CategoryConfig = {
 
 // /Explore/:field/:value/:language
 export type RouteMatch = {
-  field: keyof LangRecordSchema
+  field: keyof DetailsSchema
   value?: string
   language?: string
 }
@@ -34,35 +35,63 @@ export type CardConfig = CategoryProps & {
 }
 
 export type SwatchOrFlagOrIcon = {
-  field: keyof LangRecordSchema
+  field: keyof DetailsSchema
   value?: string
 }
 
-export type ExploreSubViewProps = {
-  instancesCount: number
-  subtitle?: string
-  subSubtitle?: string | React.ReactNode
-  extree?: string | React.ReactNode
-}
-
-export type LangFilterArgs = RouteMatch & {
-  langFeatures: LangRecordSchema[]
-}
-
 export type CensusPopoverProps = {
-  language: string
-  tractField?: string
-  pumaField?: string
-  censusPretty?: string
+  data: DetailsSchema
 }
 
-export type StatsAndMetaProps = {
-  iso?: string
-  glotto?: string
-  speakers?: string // string if from Sheets API, number if from MB
-}
+export type StatsAndMetaProps = { data: Partial<DetailsSchema> }
 
 export type CurrentCrumbProps = {
   value: string
   basePath: string
 }
+
+export type MidLevelExploreProps = {
+  tableName?: keyof DetailsSchema
+  sortByField?: string
+}
+
+export type AirtableOptions = {
+  // fields?: Array<Extract<keyof LangRecordSchema, string>> // REFACTOR
+  fields?: string[]
+  filterByFormula?: string
+  maxRecords?: number
+  sort?: { field: string; direction?: 'asc' | 'desc' }[]
+}
+
+type SchemaTableFields = {
+  name: string
+  plural?: string
+  definition?: string
+  legendHeading?: string
+  exploreSortOrder?: number
+  routeable?: boolean
+  symbolizeable?: boolean
+  includeInTable?: boolean
+}
+
+export type TonsOfFields = DetailsSchema & AtSymbFields & SchemaTableFields
+export type TonsWithAddl = TonsOfFields & { 'Additional Languages'?: string[] }
+export type AirtableError = {
+  error: string // error type, e.g. UNKNOWN_FIELD_NAME
+  message: string
+  statusCode: number
+}
+
+// Details' current crumb fields which come back from Airtable
+export type CrumbResponse = Pick<DetailsSchema, 'Language' | 'Primary Location'>
+
+// TODO: figure it out
+// export type UseAirtable<TResult> = (
+//   tableName: string,
+//   options: AirtableOptions,
+//   reactQueryOptions?: { enabled?: boolean } // TODO: ugh
+// ) => {
+//   data: TResult[]
+//   error: AirtableError | null
+//   isLoading: boolean
+// }

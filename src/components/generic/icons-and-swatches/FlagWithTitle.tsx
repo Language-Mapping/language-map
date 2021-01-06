@@ -1,28 +1,36 @@
 import React, { FC } from 'react'
-import { getCodeByCountry } from 'components/results'
+
+import { useIcon } from 'components/explore/hooks'
 
 type FlagWithTitle = {
   countryName: string
   omitText?: boolean
 }
 
-export const FlagWithTitle: FC<FlagWithTitle> = (props) => {
-  const { countryName, omitText } = props
+export const FlagWithTitle: FC<{
+  altText?: string
+  omitText?: boolean
+  src: string
+}> = (props) => {
+  const { altText, omitText, src } = props
 
   return (
     <>
       <img
-        style={{
-          height: '0.8em',
-          marginRight: '0.25em',
-        }}
+        style={{ height: '0.8em', marginRight: '0.25em' }}
         className="country-flag"
-        alt={`${countryName} flag`}
-        src={`/img/country-flags/${getCodeByCountry(
-          countryName
-        ).toLowerCase()}.svg`}
+        alt={`${altText} flag`}
+        src={src}
       />{' '}
-      {!omitText && countryName}
+      {!omitText && altText}
     </>
   )
+}
+
+export const FlagFromHook: FC<{ value: string }> = (props) => {
+  const { value } = props
+  const iconUrl = useIcon(value)
+  if (!iconUrl) return null
+
+  return <FlagWithTitle altText={value} src={iconUrl} omitText />
 }

@@ -28,6 +28,10 @@ const useStyles = makeStyles((theme: Theme) =>
       borderBottom: `solid 1px ${theme.palette.divider}`,
       paddingBottom: '0.75rem',
     },
+    introParagraph: {
+      fontSize: '0.75rem',
+      color: theme.palette.text.secondary,
+    },
     titleAndIcon: {
       display: 'flex',
       fontSize: '2rem',
@@ -58,11 +62,19 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+export const PanelContentSimple: FC = (props) => {
+  const { children } = props
+  const panelRootClasses = usePanelRootStyles()
+
+  return <div className={panelRootClasses.root}>{children}</div>
+}
+
 // TODO: consider swipeable views for moving between panels:
 // https://react-swipeable-views.com/demos/demos/
 // TODO: git mv into Panels.tsx
 export const PanelContent: FC<Types.PanelContentProps> = (props) => {
-  const { children, title, icon, subtitle, subSubtitle, extree } = props
+  const { children, title, icon, subtitle } = props
+  const { subSubtitle, extree, introParagraph } = props
   const classes = useStyles()
   const panelRootClasses = usePanelRootStyles()
 
@@ -76,6 +88,11 @@ export const PanelContent: FC<Types.PanelContentProps> = (props) => {
         <Typography className={classes.subtitle}>{subtitle}</Typography>
       )}
       {subSubtitle && <div className={classes.subSubtitle}>{subSubtitle}</div>}
+      {introParagraph && (
+        <Typography className={classes.introParagraph}>
+          {introParagraph}
+        </Typography>
+      )}
       {extree}
     </Typography>
   )

@@ -1,79 +1,5 @@
-import { LangRecordSchema } from 'components/context/types'
-import * as Types from './types'
-
-export const getUniqueInstances = (
-  field: keyof LangRecordSchema,
-  features: LangRecordSchema[],
-  parse?: boolean,
-  searchValue?: unknown
-): string[] =>
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  features.reduce((all: string[], thisOne) => {
-    const value = thisOne[field] as string
-
-    if (!value || all.includes(value)) return all // don't need `undefined`
-
-    // YO: need to acct for things like "Turkey, Russia", not just "Turkey"
-
-    // Split out neighborhoods, countries, etc.
-    // const DEFAULT_DELIM = ', ' // TODO: you know what
-    if (parse && typeof value === 'string') {
-      // TODO: what if the value is "Wayne, NJ"? Need to deal with commas.
-      const parsed = value.split(', ').filter((indiv) => !all.includes(indiv))
-
-      if (searchValue && !parsed.includes(searchValue as string)) return all
-
-      return [...all, ...parsed]
-    }
-
-    if (searchValue && value !== (searchValue as string)) return all
-
-    return [...all, value as string | number]
-  }, [] as string[]) as string[]
-
-export const uniqueLanguages = (
-  all: string[],
-  thisOne: LangRecordSchema
-): string[] =>
-  all.includes(thisOne.Language) ? all : [...all, thisOne.Language]
-
-export const allPlacenames = (
-  all: string[],
-  thisOne: LangRecordSchema
-): string[] => {
-  if (!thisOne.Neighborhood) {
-    return all.includes(thisOne.Town) ? all : [...all, thisOne.Town]
-  }
-
-  return [...all, ...thisOne.Neighborhood.split(', ')]
-}
-
-export const filterLangsByRoute = (
-  settings: Types.LangFilterArgs
-): LangRecordSchema[] => {
-  const { value, field, langFeatures } = settings
-  let filtered: LangRecordSchema[]
-
-  // Filter out undefined values and those not matching `value` as needed
-  if (value) {
-    filtered = langFeatures.filter((feat) => {
-      const thisValue = feat[field]
-
-      if (!thisValue) return false
-      if (!thisValue.toString().split(', ').includes(value)) return false
-
-      return true
-    })
-  } else if (['Neighborhood', 'Macrocommunity'].includes(field)) {
-    // Make sure no undefined
-    filtered = langFeatures.filter((feat) => feat[field] !== '')
-  } else {
-    filtered = langFeatures
-  }
-
-  return filtered
-}
+import { DetailsSchema } from 'components/context'
+import { TonsWithAddl } from './types'
 
 // Create nice listy thing w/truncation like
 // a, b, c, d, e...
@@ -92,18 +18,6 @@ export const prettyTruncate = (list: string[], limit = 5): string[] =>
       return `, ${instance}`
     })
 
-export const sortByTitle = (
-  a: Types.CardConfig,
-  b: Types.CardConfig
-): number => {
-  let comparison = 0
-
-  if (a.title > b.title) comparison = 1
-  else if (a.title < b.title) comparison = -1
-
-  return comparison
-}
-
 export const pluralTextIfNeeded = (length: number, text = 'item'): string => {
   if (!length) return ''
   if (length === 1) return `${length} ${text}`
@@ -111,7 +25,89 @@ export const pluralTextIfNeeded = (length: number, text = 'item'): string => {
   return `${length} ${text}s`
 }
 
-// Super-repetitive icons are not useful in card lists.
-export const deservesCardIcon = (field: string, value?: string): boolean => {
-  return !value && ['Country', 'World Region'].includes(field)
+// Mid-level formulas are pretty consistent, except:
+//  1. /Explore/Landing does not need a formula
+//  2. /Explore/{anything with array field in Language}/:value must check for
+//     value existence and then a "contains" since there does not appear to be a
+//     way to filter arrays in Airtable.
+export const prepFormula = (
+  field: keyof DetailsSchema,
+  value?: string
+): string => {
+  if (field === 'Language') return '' // /Explore/Language
+  if (!value) return "{languages} != ''" // e.g. /Explore/Country
+
+  const midLevelArrayFields = [
+    'Country',
+    'Macrocommunity',
+    'Neighborhood',
+    'Town',
+  ]
+
+  // Neighborhood instance, e.g. /Explore/Neighborhood/Astoria should include
+  // additional neighborhoods in the query.
+  if (value && field === 'Neighborhood')
+    return `AND(
+      {${field}} != '',
+      FIND(
+        '${value}',
+        CONCATENATE(
+          ARRAYJOIN({${field}}),
+          ARRAYJOIN({addlNeighborhoods})
+        )
+      ) != 0
+    )`
+
+  if (value && midLevelArrayFields.includes(field))
+    return `AND({${field}} != '', FIND('${value}', ARRAYJOIN({${field}})) != 0)`
+
+  if (value) return `{${field}} = '${value}'`
+
+  return ''
+}
+
+// Mid-level fields are consistent except a few tables need an extra field
+export const prepFields = (tableName: keyof DetailsSchema): string[] => {
+  if (tableName === 'Language')
+    return [
+      'Endonym',
+      'name',
+      'Primary Locations',
+      'worldRegionColor',
+      'addlNeighborhoods',
+    ]
+
+  const landingFields = ['name', 'languages']
+  const addlFields: {
+    [key: string]: string[]
+  } = {
+    'World Region': [...landingFields, 'icon-color'],
+    Country: [...landingFields, 'src_image'],
+    Neighborhood: [...landingFields, 'Additional Languages'],
+  }
+
+  if (addlFields[tableName] !== undefined) return addlFields[tableName]
+
+  return landingFields
+}
+
+export const getUniqueInstances = (
+  field: string,
+  row: TonsWithAddl,
+  value?: string
+): string[] => {
+  let uniqueInstances = []
+
+  if (field === 'Neighborhood' && !value) {
+    uniqueInstances = [
+      ...(row.languages || []),
+      ...(row['Additional Languages'] || []),
+    ]
+  } else if (row.languages) {
+    uniqueInstances = row.languages
+  } else {
+    uniqueInstances = row['Primary Locations']
+  }
+
+  return uniqueInstances
 }

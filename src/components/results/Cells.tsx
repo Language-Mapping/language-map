@@ -10,7 +10,7 @@ import { GoCircleSlash } from 'react-icons/go'
 
 import { LegendSwatch } from 'components/legend'
 import { useSymbAndLabelState } from 'components/context/SymbAndLabelContext'
-import { LangRecordSchema } from 'components/context/types'
+import { DetailsSchema, LangRecordSchema } from 'components/context/types'
 
 type CellProps = { data: LangRecordSchema }
 
@@ -56,24 +56,18 @@ export const CommStatus: FC<CellProps> = (props) => {
 }
 
 export const CommSize: FC<{
-  data: LangRecordSchema
-  lookup: { [key: number]: string }
+  data: DetailsSchema
 }> = (props) => {
-  const symbLabelState = useSymbAndLabelState()
   const theme = useTheme()
-  const { data, lookup } = props
-  const valAsPrettyStr = lookup[data.Size]
-  const swatchColor =
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    symbLabelState.legendSymbols[valAsPrettyStr].paint['icon-color'] as string
+  const { data } = props
+  const { Size, sizeColor } = data
 
   return (
     <LegendSwatch
-      legendLabel={valAsPrettyStr}
+      legendLabel={Size}
       component="div"
       iconID="_circle"
-      backgroundColor={swatchColor || 'transparent'}
+      backgroundColor={sizeColor}
       labelStyleOverride={{
         lineHeight: 'inherit',
         marginLeft: 2,

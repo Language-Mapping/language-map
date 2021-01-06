@@ -1,5 +1,7 @@
 import { OutlinedTextFieldProps } from '@material-ui/core'
-import { WorldRegionLegend } from './types'
+
+import { DetailsSchema } from 'components/context/types'
+import { AtSymbFields } from './types'
 
 export const commonSelectProps = {
   fullWidth: true,
@@ -9,37 +11,12 @@ export const commonSelectProps = {
   SelectProps: { native: true },
 } as OutlinedTextFieldProps
 
-export const worldRegionLegend = {
-  Africa: [
-    'Eastern Africa',
-    'Middle Africa',
-    'Northern Africa',
-    'Southern Africa',
-    'Western Africa',
-  ],
-  Americas: [
-    'Caribbean',
-    'Central America',
-    'Northern America',
-    'South America',
-  ],
-  Asia: [
-    'Central Asia',
-    'Eastern Asia',
-    'Southeastern Asia',
-    'Southern Asia',
-    'Western Asia',
-  ],
-  Europe: [
-    'Eastern Europe',
-    'Northern Europe',
-    'Southern Europe',
-    'Western Europe',
-  ],
-  Oceania: [
-    'Australia and New Zealand', // maybe issues w/ampersand
-    'Melanesia',
-    'Micronesia',
-    'Polynesia',
-  ],
-} as WorldRegionLegend
+// TODO: TS
+// type Wow = keyof Partial<DetailsSchema>
+// type SymbFields = { [key in Wow]: string[] }
+
+export const layerSymbFields = {
+  'World Region': ['icon-color', 'text-color', 'text-halo-color', 'continent'],
+  Status: ['icon-color', 'icon-image', 'src_image'],
+  Size: ['icon-color', 'icon-size', 'value', 'label'],
+} as { [key in keyof Partial<DetailsSchema>]: (keyof AtSymbFields)[] }

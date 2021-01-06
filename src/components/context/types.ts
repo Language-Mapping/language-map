@@ -2,58 +2,24 @@
 // MIT License, available here:
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
 
-import { PreppedCensusLUTrow, CensusQueryID } from 'components/spatial/types'
+import { ArrayOfStringArrays } from 'components/config/types'
+import { PreppedCensusLUTrow, CensusQueryID } from 'components/local/types'
 
 export type PanelState = 'default' | 'maximized' | 'minimized'
 export type LangSchemaCol = keyof LangRecordSchema
 
 export type StoreAction =
   | { type: 'CLEAR_FILTERS'; payload: number }
-  | { type: 'SET_LANG_LAYER_FEATURES'; payload: LangRecordSchema[] }
+  | { type: 'SET_LANG_LAYER_FEATURES'; payload: InternalUse[] }
   | { type: 'SET_PANEL_STATE'; payload: PanelState }
-  | { type: 'SET_SEL_FEAT_ATTRIBS'; payload: null | LangRecordSchema }
 
 export type InitialState = {
   clearFilters: number
-  langFeatures: LangRecordSchema[]
+  langFeatures: InternalUse[]
   langFeatsLenCache: number
   panelState: PanelState
-  selFeatAttribs: null | LangRecordSchema
 }
 
-// ========================================================================== //
-//
-//    IF THIS PROJECT IS TO BE REUSED, THE CUSTOM PART BEGINS HERE AND
-//    SHOULD ULTIMATELY BE MOVED TO A NEW FILE (e.g types.custom.ts). TRY TO
-//    KEEP TRACK OF WHAT IS CUSTOM AND WHAT IS GENERIC WHENEVER POSSIBLE.
-//
-// ========================================================================== //
-
-export type WorldRegion =
-  | 'Australia and New Zealand' // maybe issues w/ampersand
-  | 'Caribbean'
-  | 'Central America'
-  | 'Central Asia'
-  | 'Eastern Africa'
-  | 'Eastern Asia'
-  | 'Eastern Europe'
-  | 'Melanesia'
-  | 'Micronesia'
-  | 'Middle Africa'
-  | 'Northern Africa'
-  | 'Northern America'
-  | 'Northern Europe'
-  | 'Polynesia'
-  | 'South America'
-  | 'Southeastern Asia'
-  | 'Southern Africa'
-  | 'Southern Asia'
-  | 'Southern Europe'
-  | 'Western Africa'
-  | 'Western Asia'
-  | 'Western Europe'
-
-// Formerly "Type"
 export type Statuses =
   | 'Historical'
   | 'Community'
@@ -62,43 +28,79 @@ export type Statuses =
   | 'Reviving'
 
 // Aka user doesn't really see them
-type InternalUse = {
-  ID: number // unique (ultimately)
+export type InternalUse = {
+  id: string // unique (ultimately)
   Latitude: number // nice convenience over geometry.coordinates
   Longitude: number // nice convenience over geometry.coordinates
 }
 
-// TODO: TS it up
-type CommunitySize = 1 | 2 | 3 | 4 | 5
-
-// TODO: consider separate file
-// In the order that should be followed in Filters, Data/Results, and Details
-export type LangRecordSchema = InternalUse & {
-  Language: string
+export type LangLevelReqd = {
+  name: string
   Endonym: string // often same as English name, may be an http link to image
-  Neighborhood: string | '' // NYC-metro only // TODO: make optional
-  Size: CommunitySize
-  Status: Statuses
-  'World Region': WorldRegion
-  Country: string
-  'Global Speaker Total'?: number // string in MB tileset b/c some blanks
-  'Font Image Alt'?: string // for images to use instead of fonts, e.g. ASL
+  countryImg: { url: string }[]
+  Country: string[]
+  worldRegionColor: string
   'Language Family': string
-  Macrocommunity?: string
-  Description: string
-  Video?: string // TODO: TS for URL?
-  Audio?: string // TODO: TS for URL?
-  Town: string
-  County: string
-  'ISO 639-3'?: string
-  Glottocode?: string
+  'World Region': string
+  'Primary Locations': string[] // Town or primary Neighborhood
+  instanceIDs: number[]
 }
 
-/**
- * MAP TOOLS CONTEXT (could not get all imports to work w/o dep cycle error)
- */
+export type LangLevelOptional = CensusFields &
+  Partial<{
+    Font: string
+    'Font Image Alt': { url: string }[] // e.g. ASL, Mongolian
+    'Global Speaker Total': number
+    addlNeighborhoods: string[] // suuuper shakes mcgee
+    Audio: string
+    descriptionID: string
+    Glottocode: string
+    Macrocommunity: string
+    Neighborhood: string[]
+    Town: string[]
+    Video: string
+    'ISO 639-3': string
+  }>
+
+type InstanceLevelReqd = InternalUse & {
+  Language: string
+  Size: 'Smallest' | 'Small' | 'Medium' | 'Large' | 'Largest'
+  Status: Statuses
+  sizeColor: string
+  'Primary Location': string // Town or primary Neighborhood convenience
+} & Omit<LangLevelReqd, 'name'>
+
+type InstanceLevelOptional = LangLevelOptional & {
+  'Additional Neighborhoods': string[]
+  Description: string
+  descriptionID: string
+  Neighborhood: string // NYC-metro only
+  Town: string
+}
+
+type CensusFields = {
+  'PUMA Field'?: string
+  'Tract Field'?: string
+  'Census Pretty'?: string
+}
+
+export type InitialMapToolsState = {
+  boundariesVisible: boolean
+  geolocActive: boolean
+  tractsField?: string
+  pumaField?: string
+  censusDropDownFields: {
+    tracts: PreppedCensusLUTrow[]
+    puma: PreppedCensusLUTrow[]
+  }
+  censusActiveFields: {
+    tracts: string
+    puma: string
+  }
+}
+
 export type MapToolsAction =
-  | { type: 'SET_LANG_CONFIG_VIA_SHEETS'; payload: LangConfig[] }
+  | { type: 'SET_LANG_CONFIG_VIA_SHEETS'; payload: ArrayOfStringArrays }
   | { type: 'SET_BOUNDARIES_VISIBLE'; payload: boolean }
   | { type: 'SET_GEOLOC_ACTIVE'; payload: boolean }
   | { type: 'CLEAR_CENSUS_FIELD' }
@@ -115,38 +117,10 @@ export type MapToolsAction =
 
 export type MapToolsDispatch = React.Dispatch<MapToolsAction>
 
-// NOTE: it's not actually ALL the cols, but most
-export type LangConfig = Omit<
-  LangRecordSchema,
-  | 'County'
-  | 'ID'
-  | 'Latitude'
-  | 'Longitude'
-  | 'Macrocommunity'
-  | 'Neighborhood'
-  | 'Size'
-  | 'Status'
-  | 'Town'
-> & {
-  'PUMA Field'?: string
-  'Tract Field'?: string
-  'Census Pretty'?: string // MATCH/INDEX convenience lookup
-  'Global Speaker Total'?: string // MB has int, Google API string
-  Font?: string
-}
+// Fields in the actual Airtable tables
+export type LangLevelSchema = LangLevelOptional & LangLevelReqd
+export type InstanceLevelSchema = InstanceLevelOptional & InstanceLevelReqd
 
-export type InitialMapToolsState = {
-  boundariesVisible: boolean
-  geolocActive: boolean
-  tractsField?: string
-  pumaField?: string
-  langConfigViaSheets: LangConfig[]
-  censusDropDownFields: {
-    tracts: PreppedCensusLUTrow[]
-    puma: PreppedCensusLUTrow[]
-  }
-  censusActiveFields: {
-    tracts: string
-    puma: string
-  }
-}
+// Dupes to avoid find-and-replace of originals
+export type LangRecordSchema = InstanceLevelSchema
+export type DetailsSchema = InstanceLevelSchema

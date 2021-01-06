@@ -1,61 +1,28 @@
-import React, { FC, useContext, useState, useEffect } from 'react'
-import { useRouteMatch, Link as RouterLink } from 'react-router-dom'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { Link, Typography } from '@material-ui/core'
+import React, { FC } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
+import { Link } from '@material-ui/core'
 
-import { GlobalContext } from 'components/context'
 import { PanelContent } from 'components/panels'
+import { LoadingIndicatorBar } from 'components/generic/modals'
+import { DetailsSchema } from 'components/context/types'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
+import { useAirtable } from './hooks'
 
-import * as Types from './types'
-import * as utils from './utils'
 import * as config from './config'
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    intro: {
-      fontSize: '0.75rem',
-      color: theme.palette.text.secondary,
-    },
-  })
-)
 
 // The top-level "/Explore" route as a landing page index to explorable fields
 export const Explore: FC<{ icon: React.ReactNode }> = (props) => {
   const { icon } = props
-  const classes = useStyles()
-  const { url } = useRouteMatch()
-  const { state } = useContext(GlobalContext)
-  const { langFeatsLenCache, langFeatures } = state
-  const [categories, setCategories] = useState<Types.CategoryProps[]>([])
-
-  // Prep categories
-  useEffect((): void => {
-    if (!langFeatsLenCache) return
-
-    const preppedCats = config.categories.map((category) => {
-      const uniqueInstances = utils.getUniqueInstances(
-        category.name,
-        langFeatures,
-        category.parse
-      )
-
-      return {
-        intro: utils.pluralTextIfNeeded(uniqueInstances.length),
-        title: category.name,
-        url: `${url}/${category.name}`,
-        icon: category.icon,
-        uniqueInstances,
-      }
-    })
-
-    setCategories(preppedCats)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [langFeatsLenCache])
+  const { data, error, isLoading } = useAirtable('Schema', {
+    filterByFormula: '{exploreSortOrder} > 0', // cheap check for Explore-ables
+    sort: [{ field: 'exploreSortOrder' }],
+  })
+  // TODO: adapt or remove if not using
+  // utils.pluralTextIfNeeded(uniqueInstances.length),
 
   const intro = (
-    <Typography className={classes.intro}>
+    <>
       For an explanation of the options below, visit the{' '}
       <Link component={RouterLink} to="/help">
         Help page
@@ -66,14 +33,26 @@ export const Explore: FC<{ icon: React.ReactNode }> = (props) => {
         Data table
       </Link>{' '}
       as well.
-    </Typography>
+    </>
   )
 
   return (
-    <PanelContent title="Explore" icon={icon} extree={intro}>
+    <PanelContent title="Explore" icon={icon} introParagraph={intro}>
+      {isLoading && <LoadingIndicatorBar omitText />}
+      {error && 'Could not load'}
       <CardList>
-        {categories.map((category) => (
-          <CustomCard key={category.title} {...category} />
+        {data.map((category) => (
+          <CustomCard
+            key={category.name}
+            icon={
+              config.exploreIcons[
+                category.name as keyof Partial<DetailsSchema>
+              ] || null
+            }
+            title={category.plural || ''} // TODO: ugh
+            url={`/Explore/${category.name}`}
+            footer={category.definition}
+          />
         ))}
       </CardList>
     </PanelContent>

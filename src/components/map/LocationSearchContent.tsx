@@ -5,11 +5,11 @@ import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 import { SubtleText } from 'components/generic'
 import * as Types from './types'
-import { useSpatialPanelStyles } from './styles'
+import { useLocalPanelStyles } from './styles'
 
 export const LocationSearchContent: FC<Types.PanelSectionProps> = (props) => {
   const { children, explanation, heading } = props
-  const classes = useSpatialPanelStyles()
+  const classes = useLocalPanelStyles()
 
   return (
     <Box className={classes.root}>

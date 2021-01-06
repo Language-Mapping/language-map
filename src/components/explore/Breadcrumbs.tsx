@@ -1,12 +1,15 @@
 import React, { FC } from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-import { CircularProgress, Link } from '@material-ui/core'
-import { useLocation, Link as RouterLink } from 'react-router-dom'
+import { Link } from '@material-ui/core'
+import {
+  useLocation,
+  Link as RouterLink,
+  Route,
+  Switch,
+} from 'react-router-dom'
 import { BiHomeAlt } from 'react-icons/bi'
 
-import { useLangFeatByKeyVal } from 'components/map/hooks'
-import { toProperCase } from '../../utils'
-import { CurrentCrumbProps } from './types'
+import { CurrentDetailCrumb } from './CurrentDetailCrumb'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,6 +36,9 @@ const useStyles = makeStyles((theme: Theme) =>
         whiteSpace: 'nowrap',
       },
     },
+    capital: {
+      textTransform: 'capitalize',
+    },
     separator: {
       color: theme.palette.text.secondary,
       marginLeft: '0.2em',
@@ -40,27 +46,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 )
-
-const CurrentCrumb: FC<CurrentCrumbProps> = (props) => {
-  const { value, basePath } = props
-  const { feature } = useLangFeatByKeyVal(value, true)
-
-  if (value === 'details' || basePath !== 'details') {
-    return <span>{toProperCase(value)}</span>
-  }
-
-  if (!feature) return <CircularProgress size={12} />
-
-  const { Language, Neighborhood, Town } = feature
-  const place = Neighborhood ? Neighborhood.split(', ')[0] : Town
-
-  return (
-    <>
-      {Language}
-      {` — ${place}`}
-    </>
-  )
-}
 
 export const Breadcrumbs: FC = () => {
   const classes = useStyles()
@@ -86,11 +71,18 @@ export const Breadcrumbs: FC = () => {
             {includeSeparator && Separator}
             {(last && (
               <span>
-                <CurrentCrumb value={value} basePath={pathnames[0]} />
+                <Switch>
+                  <Route path="/details/:id">
+                    <CurrentDetailCrumb />
+                  </Route>
+                  <Route>
+                    <span className={classes.capital}>{value}</span>
+                  </Route>
+                </Switch>
               </span>
             )) || (
-              <Link to={to} component={RouterLink}>
-                {toProperCase(value)}
+              <Link to={to} component={RouterLink} className={classes.capital}>
+                {value}
               </Link>
             )}
           </React.Fragment>

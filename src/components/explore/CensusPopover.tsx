@@ -6,14 +6,15 @@ import { FaClipboardList } from 'react-icons/fa'
 import { MdLayersClear, MdLayers } from 'react-icons/md'
 
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'
-import { CensusQueryID, CensusIntro } from 'components/spatial'
-import { ChipWithClick } from 'components/details'
+import { CensusQueryID, CensusIntro } from 'components/local'
+import { Chip } from 'components/details'
+import { DialogCloseBtn } from 'components/generic/modals'
 
 import * as Types from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    popover: {
+    root: {
       maxWidth: 350,
       padding: '1rem',
     },
@@ -41,14 +42,22 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
-  const { pumaField, tractField, censusPretty, language } = props
+  const { data } = props
   const mapToolsDispatch = useMapToolsDispatch()
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
   const classes = useStyles()
-  const censusFieldThisLang = pumaField || tractField
   const { censusActiveFields } = useMapToolsState()
+  const {
+    Language,
+    'PUMA Field': pumaField,
+    'Tract Field': tractField,
+    'Census Pretty': censusPretty,
+  } = data
+  const censusFieldThisLang = pumaField || tractField
 
   if (!censusFieldThisLang) return null
+
+  const handleClose = () => setAnchorEl(null)
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget)
@@ -64,12 +73,14 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
       censusType,
       payload: censusFieldThisLang,
     })
+
+    handleClose()
   }
 
-  const handleClose = () => setAnchorEl(null)
   const open = Boolean(anchorEl)
   const id = open ? 'census-popover' : undefined
 
+  // TODO: util for all this basic presentation stuff
   let censusType: CensusQueryID | '' = ''
   let censusLabel
 
@@ -92,7 +103,7 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
 
   const MetaPara = (
     <Typography className={classes.metaPara}>
-      Speakers of <em>{language}</em> are likely to be included within the
+      Speakers of <em>{Language}</em> are likely to be included within the
       census category of <b>{censusPretty}</b> at the ACS {vintage}{' '}
       <em>{censusLabel}</em> level.
     </Typography>
@@ -104,7 +115,7 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
       open={open}
       anchorEl={anchorEl}
       onClose={handleClose}
-      PaperProps={{ className: classes.popover, elevation: 12 }}
+      PaperProps={{ className: classes.root, elevation: 12 }}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       transformOrigin={{ vertical: 'center', horizontal: 'left' }}
     >
@@ -137,18 +148,22 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
       </div>
       <Typography
         component={RouterLink}
-        to="/spatial"
+        to="/local"
         align="center"
         className={classes.viewAllLink}
       >
         View all census language categories
       </Typography>
+      <DialogCloseBtn
+        tooltip="Close census menu"
+        onClose={() => handleClose()}
+      />
     </Popover>
   )
 
   return (
     <>
-      <ChipWithClick
+      <Chip
         icon={<FaClipboardList />}
         title="Show census options"
         text="Census"

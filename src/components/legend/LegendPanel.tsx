@@ -1,11 +1,10 @@
-import React, { FC, useState } from 'react'
-import { Link, Typography } from '@material-ui/core'
+import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { LayerSymbSelect, LayerLabelSelect, Legend } from 'components/legend'
-import { ToggleableSection } from 'components/generic'
 import { WorldRegionMap } from './WorldRegionMap'
 import * as Types from './types'
+import * as hooks from './hooks'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,43 +19,44 @@ const useStyles = makeStyles((theme: Theme) =>
         marginLeft: '1em',
       },
     },
-    legendTip: {
-      color: theme.palette.text.secondary,
-      fontSize: '0.65em',
-      marginTop: '1.75em',
+    // Looks PERFECT on all breakpoints for World Region
+    groupedLegend: {
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gridColumnGap: 4,
+      // This doesn't affect Size/Status
+      gridTemplateAreas: `
+          "reg reg"
+          "reg reg"
+          "aus aus"
+          `,
+      // Aus/NZ takes up more space
+      '& > :last-child': {
+        gridArea: 'aus',
+      },
+      [theme.breakpoints.only('sm')]: {
+        gridTemplateColumns:
+          'repeat(4, [col-start] minmax(100px, 1fr) [col-end])',
+      },
     },
   })
 )
 
-export const LegendPanel: FC<Types.LegendPanelComponent> = (props) => {
-  const { legendItems, groupName } = props
+export const LegendPanel: FC<Types.LegendPanelProps> = (props) => {
+  const { activeGroupName } = props
   const classes = useStyles()
-  const [showWorldMap, setShowWorldMap] = useState<boolean>(false)
+  const {
+    error,
+    data,
+    isLoading,
+    legendHeading,
+    routeable,
+    legendSummary,
+    sourceCredits,
+  } = hooks.useLegendConfig(activeGroupName)
 
-  const WorldMapToggle = (
-    <Link
-      href="#"
-      onClick={(e: React.MouseEvent) => {
-        e.preventDefault()
-        setShowWorldMap(!showWorldMap)
-      }}
-    >
-      {showWorldMap ? 'Hide' : 'Show'} world map
-    </Link>
-  )
-
-  const LegendTip = (
-    <Typography className={classes.legendTip}>
-      Click any world region below to see languages from that region which are
-      spoken locally. {WorldMapToggle}
-    </Typography>
-  )
-
-  const WorldMap = (
-    <ToggleableSection show={showWorldMap}>
-      <WorldRegionMap />
-    </ToggleableSection>
-  )
+  if (error)
+    return <p>Something went wrong setting up the {activeGroupName} legend.</p>
 
   return (
     <div className={classes.root}>
@@ -64,13 +64,22 @@ export const LegendPanel: FC<Types.LegendPanelComponent> = (props) => {
         <LayerSymbSelect />
         <LayerLabelSelect />
       </div>
-      {groupName === 'World Region' && (
-        <>
-          {LegendTip}
-          {WorldMap}
-        </>
+      {activeGroupName === 'World Region' && <WorldRegionMap />}
+      {isLoading && <p>Loading legend info...</p>}
+      {!isLoading && (
+        <div className={classes.groupedLegend}>
+          {data.map((item) => (
+            <Legend
+              key={item.groupName}
+              routeName={routeable ? activeGroupName : undefined}
+              groupName={legendHeading || item.groupName}
+              legendSummary={legendSummary}
+              sourceCredits={sourceCredits}
+              items={item.items}
+            />
+          ))}
+        </div>
       )}
-      <Legend legendItems={legendItems} groupName={groupName} />
     </div>
   )
 }

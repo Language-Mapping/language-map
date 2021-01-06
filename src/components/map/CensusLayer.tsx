@@ -6,14 +6,15 @@ import { useQuery } from 'react-query'
 
 import { useMapToolsState } from 'components/context'
 import { SheetsReactQueryResponse } from 'components/config/types'
-import { CensusQueryID } from 'components/spatial/types'
-import { tableEndpoints } from '../spatial/config'
+import { CensusQueryID } from 'components/local/types'
+import { reactQueryDefaults } from 'components/config'
+import { tableEndpoints } from '../local/config'
 import { sheetsToJSON } from '../../utils'
 
 import * as utils from './utils'
-import * as Types from './types'
+import { CensusLayerProps, PreppedCensusTableRow } from './types'
 
-export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
+export const CensusLayer: FC<CensusLayerProps> = (props) => {
   const { sourceLayer, config, map, beforeId } = props
   const { layers, source } = config
   const censusUnit = config.source.id as CensusQueryID
@@ -23,34 +24,28 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
   const visible = field !== undefined && field !== ''
 
   // TODO: prevent this from happening before it's actually used
-  const { data, error, isFetching } = useQuery(
+  const { data, error, isLoading } = useQuery(
     `${censusUnit}-table`,
     () => utils.asyncAwaitFetch(tableEndpoints[censusUnit]),
-    {
-      enabled: true,
-      staleTime: Infinity,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-      refetchOnWindowFocus: false,
-    }
+    reactQueryDefaults
   ) as SheetsReactQueryResponse
   const [fillPaint, setFillPaint] = useState<FillPaint>({
     'fill-color': 'transparent', // mitigates the brief lag before load
   })
   const [highLow, setHighLow] = useState<{ high: number; low?: number }>()
-  const [tableRows, setTableRows] = useState<Types.PreppedCensusTableRow[]>()
+  const [tableRows, setTableRows] = useState<PreppedCensusTableRow[]>()
 
   useEffect(() => {
-    if (isFetching || !data) return
+    if (isLoading || !data) return
 
-    const tableRowsPrepped = sheetsToJSON<Types.PreppedCensusTableRow>(
-      data.values,
-      ['GEOID']
-    )
+    /* eslint-disable array-bracket-newline */
+    const tableRowsPrepped = sheetsToJSON<PreppedCensusTableRow>(data.values, [
+      'GEOID',
+    ])
 
     setTableRows(tableRowsPrepped)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetching])
+  }, [isLoading])
 
   useEffect(() => {
     if (!map || !tableRows || !field) return
@@ -81,7 +76,7 @@ export const CensusLayer: FC<Types.CensusLayerProps> = (props) => {
     setFillPaint(utils.setInterpolatedFill(highLow.high, highLow.low))
   }, [highLow])
 
-  if (error || isFetching) return null // TODO: sentry
+  if (error || isLoading) return null // TODO: sentry
 
   const promoteIDfield = 'GEOID' // tell MB not to use default `id` as unique ID
 

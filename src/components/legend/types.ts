@@ -1,4 +1,4 @@
-import { WorldRegion, LangRecordSchema } from 'components/context/types'
+import { LangRecordSchema } from 'components/context/types'
 
 export type IconID =
   | '_tree'
@@ -8,44 +8,77 @@ export type IconID =
   | '_museum'
   | '_circle'
 
-export type LegendSwatch = {
+export type LegendSwatchBareMin = {
   legendLabel: string
   backgroundColor?: string
   iconID?: IconID
   size?: number
 }
 
-export type SwatchOnly = Pick<LegendSwatch, 'backgroundColor' | 'size'>
+export type SwatchOnlyProps = Pick<
+  LegendSwatchBareMin,
+  'backgroundColor' | 'size'
+>
 
 // Same as the regular swatch but will have SVG element if it is a symbol
-export type LegendSwatchComponent = LegendSwatch & {
+export type LegendSwatchProps = LegendSwatchBareMin & {
   icon?: string
   component?: React.ElementType
   labelStyleOverride?: React.CSSProperties
   to?: string
 }
 
-export type LegendPanelComponent = {
-  legendItems: LegendSwatch[]
-  groupName: string | keyof LangRecordSchema
+export type LegendPanelProps = {
+  activeGroupName: string | keyof LangRecordSchema
 }
 
-export type LegendGroupConfig = {
-  [key: string]: string[] | number[]
+export type AtSchemaRecord = { id: string; fields: AtSchemaFields }
+export type AtSymbRecord = { id: string; fields: AtSymbFields }
+
+export type AtSymbFields = {
+  name: string
+  continent?: string
+  languages?: string[] // not used for symbology, just mid-level Explore
+  'icon-color'?: string
+  'icon-image'?: IconID
+  'icon-size'?: number
+  'text-color'?: string
+  'text-halo-color'?: string
+  src_image?: { url: string }[]
 }
 
-export type UNgeoscheme = 'Africa' | 'Americas' | 'Asia' | 'Europe' | 'Oceania'
+export type LegendGroupConfig = AtSymbFields & { groupName: string }
 
-export type LegendComponent = {
-  legendItems: LegendSwatchComponent[]
+// Columns from Schema table, or at least a few of them
+export type AtSchemaFields = {
+  name: string
+  groupByField?: keyof AtSymbFields
+  labelByField?: keyof AtSymbFields
+  sortByField?: keyof AtSymbFields
+  legendHeading?: string
+  legendSummary?: string
+  sourceCredits?: string
+  routeable?: boolean
+}
+
+export type LegendProps = {
   groupName: string
+  items: AtSymbFields[]
+  legendSummary?: string
+  sourceCredits?: string
+  routeName?: string // may differ from "groupName" if custom heading exists
 }
 
-export type WorldRegionLegend = {
-  [key in UNgeoscheme]: WorldRegion[]
-}
+export type FinalPrep = (
+  rows: AtSymbFields[],
+  labelByField?: keyof AtSymbFields,
+  sortByField?: 'name' | keyof AtSymbFields
+) => AtSymbFields[]
 
-export type GroupedLegendProps = LegendComponent & {
-  baseRoute: string
-  groupConfig: LegendGroupConfig[]
-}
+export type UseLegendConfig = (
+  tableName: string
+) => {
+  data: LegendProps[]
+  isLoading: boolean
+  error?: unknown
+} & Omit<AtSchemaFields, 'name'>

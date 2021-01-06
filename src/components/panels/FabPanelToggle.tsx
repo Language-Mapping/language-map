@@ -43,9 +43,8 @@ export const FabPanelToggle: FC = () => {
   const { state, dispatch } = useContext(GlobalContext)
   const panelOpen = state.panelState === 'default'
   const classes = useStyles({ panelOpen })
-  // TODO: find an alternative to selFeatAttribs. This is literally the ONLY
-  // instance where it remains in global state.
-  const showBadge = !panelOpen && state.selFeatAttribs !== null
+  // TODO: restore (removed selFeatAttribs as it was the ONLY global instance)
+  // const showBadge = !panelOpen && state.selFeatAttribs !== null
 
   return (
     <Fab
@@ -64,7 +63,8 @@ export const FabPanelToggle: FC = () => {
         variant="dot"
         classes={{ dot: classes.fabBadge }}
         overlap="circle"
-        invisible={!showBadge}
+        // invisible={!showBadge} // TODO: restore
+        invisible
       >
         <FiChevronRight />
       </Badge>

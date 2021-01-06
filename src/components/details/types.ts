@@ -1,24 +1,39 @@
+import { DetailsSchema } from 'components/context'
+
+type WithLangDescrip = DetailsSchema & {
+  langDescripID?: string
+  instanceDescripID?: string
+}
+
 export type MoreLikeThisProps = {
-  region: string
-  country: string
-  language?: string
-  macro?: string
+  data: WithLangDescrip
+  isInstance?: boolean
 }
 
-export type SeeRelatedChipProps = {
-  to: string
-  name: string
-  variant?: 'subtle'
-}
-
-export type ChipWithClickProps = {
+export type ChipProps = {
   text: string
+  icon: React.ReactNode
   title?: string
-  icon?: React.ReactNode
-  handleClick: (e: React.MouseEvent<HTMLDivElement>) => void
+  to?: string
+  handleClick?: (e: React.MouseEvent<HTMLDivElement>) => void
 }
 
-export type NeighborhoodList = {
-  town: string
-  neighborhoods: string
+export type NeighborhoodListProps = MoreLikeThisProps
+export type DetailedIntroProps = MoreLikeThisProps & { shareNoun?: string }
+
+// TODO: UGH
+export type LangOrEndoIntroProps = Pick<MoreLikeThisProps, 'isInstance'> & {
+  data: WithLangDescrip & { name?: string }
 }
+
+export type UseDetails = {
+  error: unknown
+  isLoading: boolean
+  data: WithLangDescrip | null
+  notFound?: boolean
+  id: string
+}
+
+export type DetailsRecord = { id: string; fields: DetailsSchema }
+
+export type DetailsPanelProps = { routeBase?: string; id?: string }

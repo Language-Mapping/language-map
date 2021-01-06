@@ -7,8 +7,10 @@ import { AiOutlineQuestionCircle } from 'react-icons/ai'
 import { SimpleDialog } from 'components/generic/modals'
 import { paths as routes } from 'components/config/routes'
 import { DetailsPanel } from 'components/details'
-import { LangRecordSchema } from 'components/context/types'
+import { DetailsSchema } from 'components/context'
+import { MapToolsProvider } from 'components/context/MapToolsContext'
 import { MuiTableWithLangs } from './types'
+import { FILTER_CLASS } from './utils'
 import { ResultsToolbar } from './ResultsToolbar'
 
 import * as Types from './types'
@@ -21,12 +23,10 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
   const tableRef = React.useRef<MuiTableWithLangs>(null)
   const [clearBtnEnabled, setClearBtnEnabled] = useState<boolean>(false)
 
-  // TODO: some kind of `useState` to set asc/desc and sort Neighborhood
-  // properly (blanks last, regardless of direction)
-
+  // REFACTOR: get this monster into utils or events or something
   const onRowClick = (
     event: React.MouseEvent,
-    rowData: LangRecordSchema
+    rowData: DetailsSchema
   ): void => {
     if (!tableRef || !tableRef.current || !event || !rowData) return
 
@@ -47,11 +47,19 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
 
     const colIndex = tdElem.cellIndex
     const { field } = columns[colIndex]
-    const newFilterVal = rowData[field]
 
-    // Show feature in map
-    if (field === 'ID') {
-      history.push(`${routes.details}/${rowData.ID}`)
+    // Support multi-line value clicks, e.g. Country, Additional Neighborhoods
+    const elemWithFilter = path.find((elem) => {
+      const asElement = elem as HTMLElement
+
+      return asElement.classList?.contains(FILTER_CLASS)
+    }) as HTMLElement
+
+    // Safari will preserve newlines w/o `trim`
+    const newFilterVal = elemWithFilter?.innerText.trim() || rowData[field]
+
+    if (field === 'id') {
+      history.push(`${routes.details}/${rowData.id}`) // show feature in map
 
       return
     }
@@ -59,9 +67,8 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
     // Don't set filter for image-only Endonyms
     if (field === 'Endonym' && rowData['Font Image Alt']) return
 
-    // Open Details modal
     if (field === 'Description') {
-      history.push(`${routes.table}/${rowData.ID}`)
+      history.push(`${routes.table}/${rowData.id}`) // open Details modal
 
       return
     }
@@ -102,21 +109,23 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
   return (
     <>
       <Route path="/table/:id">
-        <SimpleDialog
-          open
-          lessHorizPad // Details already has it
-          onClose={() =>
-            history.push({
-              pathname: routes.table,
-              state: {
-                ...(loc.state as Types.HistoryState),
-                pathname: loc.pathname,
-              },
-            })
-          }
-        >
-          <DetailsPanel />
-        </SimpleDialog>
+        <MapToolsProvider>
+          <SimpleDialog
+            open
+            lessHorizPad // Details already has it
+            onClose={() =>
+              history.push({
+                pathname: routes.table,
+                state: {
+                  ...(loc.state as Types.HistoryState),
+                  pathname: loc.pathname,
+                },
+              })
+            }
+          >
+            <DetailsPanel routeBase="table" id="details-modal" />
+          </SimpleDialog>
+        </MapToolsProvider>
       </Route>
       <MaterialTable
         icons={config.icons}

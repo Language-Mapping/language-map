@@ -7,7 +7,6 @@ const initialState = {
   geolocActive: false,
   tractsFields: [],
   pumaFields: [],
-  langConfigViaSheets: [],
   censusDropDownFields: {
     tracts: [],
     puma: [],
@@ -30,8 +29,6 @@ function reducer(
   action: Types.MapToolsAction
 ) {
   switch (action.type) {
-    case 'SET_LANG_CONFIG_VIA_SHEETS':
-      return { ...state, langConfigViaSheets: action.payload }
     case 'SET_BOUNDARIES_VISIBLE':
       return { ...state, boundariesVisible: action.payload }
     case 'SET_GEOLOC_ACTIVE':

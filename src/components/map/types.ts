@@ -17,7 +17,11 @@ import {
 } from 'mapbox-gl'
 import * as GeoJSON from 'geojson'
 
-import { LangRecordSchema } from 'components/context/types'
+import {
+  LangRecordSchema,
+  DetailsSchema,
+  InternalUse,
+} from 'components/context'
 
 type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
 type Padding =
@@ -85,8 +89,6 @@ export type BoundaryFeat = Omit<
   'source-layer': string
 }
 
-export type LangMbSrcAndLayerProps = { symbLayers: LayerPropsPlusMeta[] }
-
 export type BoundariesLayerProps = {
   visible: boolean
   beforeId?: string
@@ -134,19 +136,19 @@ export type CensusLayerProps = {
   config: Omit<BoundaryConfig, 'lookupPath'>
   beforeId?: string
   map?: Map
-} & Pick<SpatialPanelProps, 'mapRef'>
+} & Pick<LocalPanelProps, 'mapRef'>
 
 export type MapProps = {
   mapLoaded: boolean
   setMapLoaded: React.Dispatch<boolean>
-} & SpatialPanelProps
+} & LocalPanelProps
 
 export type MapCtrlBtnsProps = {
   isPitchZero: boolean
   onMapCtrlClick: (actionID: MapControlAction) => void
 }
 
-export type SpatialPanelProps = {
+export type LocalPanelProps = {
   mapRef: React.RefObject<InteractiveMap>
   panelOpen: boolean
 }
@@ -183,7 +185,7 @@ export type CustomEventData = MapEventType & {
 }
 
 export type PrepPopupContent = (
-  selFeatAttribs: LangRecordSchema | null,
+  selFeatAttribs: DetailsSchema | null,
   popupHeading?: string | null
 ) => PopupContent | null
 
@@ -193,7 +195,7 @@ export type HandleBoundaryClick = (
   boundsConfig: BoundsConfig,
   lookup: BoundaryLookup[],
   offset?: [number, number]
-) => void
+) => PopupSettings | null
 
 export type FlyToBounds = (
   map: Map,
@@ -234,4 +236,42 @@ export type LangFeatsUnderClick = (
 export type UseLangReturn = {
   feature: LangRecordSchema | undefined
   stateReady: boolean
+}
+
+export type UseLayersConfig = {
+  data: LayerPropsPlusMeta[]
+  isLoading: boolean
+  error: unknown
+}
+
+export type MapPopupProps = PopupSettings & {
+  setVisible: () => void
+}
+
+export type SelFeatAttribs = InternalUse &
+  Pick<DetailsSchema, 'Language' | 'Endonym' | 'Font Image Alt'>
+
+export type FlyToPointSettings = {
+  longitude: number
+  latitude: number
+  zoom: number
+  disregardCurrZoom: boolean
+  pitch: number
+  offset: Offset
+}
+
+export type UseBoundaryPopup = (
+  panelOpen: boolean,
+  clickedBoundary?: BoundaryFeat | null,
+  map?: Map
+) => PopupSettings | null
+
+export type UseZoomToLangFeatsExtent = (
+  panelOpen: boolean,
+  map?: Map
+) => boolean
+
+export type HidePopups = {
+  boundaries: boolean
+  language: boolean
 }

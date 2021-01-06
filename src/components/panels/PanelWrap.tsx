@@ -2,16 +2,15 @@ import React, { FC } from 'react'
 import { Route, Switch, useRouteMatch, useLocation } from 'react-router-dom'
 import { Paper } from '@material-ui/core'
 
-import { panelsConfig } from './config'
+import { nonNavRoutesConfig } from './config'
 import { useStyles } from './styles'
 import { CloseBtn } from './PanelCloseBtn'
-import * as Types from './types'
 import { PanelTitleBar } from './PanelTitleBar'
-import { toProperCase } from '../../utils'
+import { MapPanelProps } from './types'
 
 // TODO: consider swipeable views for moving between panels:
 // https://react-swipeable-views.com/demos/demos/
-export const PanelWrap: FC<Types.MapPanelProps> = (props) => {
+export const PanelWrap: FC<MapPanelProps> = (props) => {
   const { setPanelOpen, panelOpen, openOffCanvasNav } = props
   const classes = useStyles({ panelOpen })
   const { pathname } = useLocation()
@@ -25,8 +24,13 @@ export const PanelWrap: FC<Types.MapPanelProps> = (props) => {
   if (!pageTitle) document.title = 'Languages of New York City'
   // Everything else gets the first available path segment, except for detail
   // view via Details or Table.
-  else if (!isPageWithID)
-    document.title = `${toProperCase(pageTitle)} - NYC Languages`
+  else if (!isPageWithID) {
+    // CRED: https://flaviocopes.com/how-to-uppercase-first-letter-javascript/
+    const pageTitleCapitalized =
+      pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1)
+
+    document.title = `${pageTitleCapitalized} - NYC Languages`
+  }
 
   // Need the `id` in order to find unique element for `map.setPadding`
   return (
@@ -35,11 +39,11 @@ export const PanelWrap: FC<Types.MapPanelProps> = (props) => {
         <CloseBtn onClick={() => setPanelOpen(false)} />
       </PanelTitleBar>
       <Switch>
-        {panelsConfig.map((config) => (
+        {nonNavRoutesConfig.map((config) => (
           <Route
             exact={config.exact}
             path={config.rootPath}
-            key={config.heading}
+            key={config.rootPath}
           >
             {config.component ||
               (config.renderComponent && config.renderComponent(props))}

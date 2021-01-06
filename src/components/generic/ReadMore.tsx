@@ -1,8 +1,8 @@
 import React, { FC, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Link } from '@material-ui/core'
 
-import { createMarkup } from 'utils'
 import { ToggleableSection } from 'components/generic'
 
 type ReadMoreProps = { text: string; fontSize?: string | number }
@@ -81,10 +81,9 @@ export const ReadMore: FC<ReadMoreProps> = (props) => {
   return (
     <>
       <ToggleableSection show={showDescrip} initialHeight="2.5rem">
-        <div
-          className={classes.description}
-          dangerouslySetInnerHTML={createMarkup(text)}
-        />
+        <div className={classes.description}>
+          <ReactMarkdown>{text}</ReactMarkdown>
+        </div>
       </ToggleableSection>
       {ToggleDescription}
     </>

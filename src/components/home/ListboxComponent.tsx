@@ -73,7 +73,7 @@ export const ListboxComponent = React.forwardRef<HTMLDivElement>(
             itemData={itemData}
             itemSize={(index) => getChildSize(itemData[index])}
             outerElementType={OuterElementType}
-            overscanCount={5}
+            overscanCount={10}
             ref={gridRef}
             width="100%"
           >

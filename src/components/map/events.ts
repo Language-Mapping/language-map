@@ -1,8 +1,15 @@
-import { LangRecordSchema } from 'components/context/types'
+import { DetailsSchema } from 'components/context'
+
+import { WebMercatorViewport } from 'react-map-gl'
 import * as utils from './utils'
 import * as MapTypes from './types'
 
-export const onHover: MapTypes.OnHover = (
+export const onHover = (event: MapTypes.MapEvent): void => {
+  const { target } = event
+  target.style.cursor = 'pointer'
+}
+
+export const onHoverOrig: MapTypes.OnHover = (
   event,
   setTooltip,
   map,
@@ -41,7 +48,7 @@ export const onHover: MapTypes.OnHover = (
 
   if (langsHovered.length) {
     const headingAndSubheading = utils.prepPopupContent(
-      langsHovered[0].properties as LangRecordSchema
+      langsHovered[0].properties as DetailsSchema
     )
 
     if (!headingAndSubheading) return // should also be something tho...
@@ -97,7 +104,7 @@ export const handleBoundaryClick: MapTypes.HandleBoundaryClick = (
 
   const matchingRecord = lookup.find((record) => topMostFeat.id === record.id)
 
-  if (!matchingRecord) return // ya never knowww
+  if (!matchingRecord) return null // ya never knowww
 
   // NOTE: rather than storing bounds in the lookup tables, tried
   // `boundaryFeat.geometry` instead. Sort of worked but since vector tiles only
@@ -106,17 +113,25 @@ export const handleBoundaryClick: MapTypes.HandleBoundaryClick = (
   // its full bounds other than the lookup tables. 😞
   const { bounds, name } = matchingRecord
   const { width, height } = boundsConfig
+  const boundsArray = [
+    [bounds[0], bounds[1]],
+    [bounds[2], bounds[3]],
+  ] as MapTypes.BoundsArray
 
   const settings = {
     height,
     width,
-    bounds: [
-      [bounds[0], bounds[1]],
-      [bounds[2], bounds[3]],
-    ] as MapTypes.BoundsArray,
+    bounds: boundsArray,
     padding: 50,
     offset: offset || [0, 0],
   }
 
+  const webMercViewport = new WebMercatorViewport({
+    width,
+    height,
+  }).fitBounds(boundsArray, { offset, padding: 75 })
+
   utils.flyToBounds(map, settings, { heading: name || '' })
+
+  return { heading: name || '', ...webMercViewport }
 }

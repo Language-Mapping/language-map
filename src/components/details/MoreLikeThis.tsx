@@ -1,14 +1,15 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { BiUserVoice } from 'react-icons/bi'
+import { Popover } from '@material-ui/core'
+import { BiMapPin } from 'react-icons/bi'
 import { IoIosPeople } from 'react-icons/io'
 
 import { paths as routes } from 'components/config/routes'
-import { useSymbAndLabelState } from 'components/context'
-import { getCodeByCountry } from 'components/results'
-import { LegendSwatch } from 'components/legend'
-import { SeeRelatedChip } from 'components/details'
+import { SwatchOnly } from 'components/legend'
+import { Chip, NeighborhoodList } from 'components/details'
+import { DialogCloseBtn } from 'components/generic/modals'
 
+import { useHistory } from 'react-router-dom'
 import * as Types from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -23,67 +24,119 @@ const useStyles = makeStyles((theme: Theme) =>
         marginLeft: '0.35rem',
       },
     },
+    popover: {
+      maxWidth: 350,
+      minWidth: 325,
+      padding: '1rem',
+    },
+    popoverHeading: {
+      fontSize: '1.3rem',
+      display: 'flex',
+      alignItems: 'center',
+    },
   })
 )
 
 export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
-  const { children, language, region, country, macro } = props
-  const symbLabelState = useSymbAndLabelState()
+  const { data, children, isInstance } = props
   const classes = useStyles()
-  const regionSwatchColor =
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    symbLabelState.legendSymbols[region].paint['icon-color'] as string
+  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
+  const history = useHistory()
 
-  // Careful, not using TS on the mid-route paths, e.g. "World Region"
+  const {
+    'World Region': WorldRegion,
+    Country,
+    countryImg,
+    Macrocommunity: macro,
+    worldRegionColor,
+    Town,
+    Neighborhood,
+  } = data
+
+  const primaryLoc = Town || Neighborhood
+
+  const handleClose = () => setAnchorEl(null)
+
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const open = Boolean(anchorEl)
+  const id = open ? 'neighbs-menu-popover' : undefined
+
+  const NeighbsMenu = (
+    <Popover
+      id={id}
+      open={open}
+      anchorEl={anchorEl}
+      onClose={handleClose}
+      PaperProps={{ className: classes.popover, elevation: 12 }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      transformOrigin={{ vertical: 'center', horizontal: 'left' }}
+    >
+      <NeighborhoodList data={data} isInstance={isInstance} />
+      <DialogCloseBtn
+        tooltip="Close census menu"
+        onClose={() => handleClose()}
+      />
+    </Popover>
+  )
+  const addlCount = isInstance && data['Additional Neighborhoods']?.length
+  const neighbsChipText = `${primaryLoc}${addlCount ? ` +${addlCount}` : ''}`
+  const explorePath = Town ? 'Town' : 'Neighborhood'
+
+  // TODO: use TS on all mid-route paths, e.g. "World Region"
   return (
     <div className={classes.root}>
-      {children}
-      {language && (
-        <SeeRelatedChip
-          name={language}
-          to={`${routes.grid}/Language/${language}`}
-        >
-          <BiUserVoice /> {language}
-        </SeeRelatedChip>
+      {isInstance && (
+        <>
+          {addlCount ? NeighbsMenu : null}
+          {addlCount ? (
+            <Chip
+              text={neighbsChipText}
+              icon={<BiMapPin />}
+              title="Show neighborhood or town options"
+              handleClick={handleClick}
+            />
+          ) : (
+            <Chip
+              text={neighbsChipText}
+              icon={<BiMapPin />}
+              title={`View more languages spoken in ${primaryLoc}`}
+              handleClick={() =>
+                history.push(`/Explore/${explorePath}/${primaryLoc}`)
+              }
+            />
+          )}
+        </>
       )}
-      {country &&
-        country.split(', ').map((countryName) => (
-          <SeeRelatedChip
-            key={countryName}
-            name={countryName}
-            to={`${routes.grid}/Country/${countryName}`}
-          >
+      <Chip
+        text={WorldRegion}
+        to={`${routes.explore}/World Region/${WorldRegion}`}
+        icon={<SwatchOnly backgroundColor={worldRegionColor} />}
+      />
+      {Country.map((countryName, i) => (
+        <Chip
+          key={countryName}
+          text={countryName}
+          to={`${routes.explore}/Country/${countryName}`}
+          icon={
             <img
               className="country-flag"
               alt={`${countryName} flag`}
-              src={`/img/country-flags/${getCodeByCountry(
-                countryName
-              ).toLowerCase()}.svg`}
-            />{' '}
-            {countryName}
-          </SeeRelatedChip>
-        ))}
-      <SeeRelatedChip
-        name={region}
-        to={`${routes.grid}/World Region/${region}`}
-      >
-        <LegendSwatch
-          legendLabel={region}
-          labelStyleOverride={{ fontSize: '0.7rem' }}
-          component="div"
-          iconID="_circle"
-          backgroundColor={regionSwatchColor || 'transparent'}
+              src={countryImg[i].url}
+            />
+          }
         />
-      </SeeRelatedChip>
-      {macro && (
-        <SeeRelatedChip
-          name={macro}
-          to={`${routes.grid}/Macrocommunity/${macro}`}
-        >
-          <IoIosPeople /> {macro}
-        </SeeRelatedChip>
+      ))}
+      {!isInstance && macro && (
+        <Chip
+          text={macro}
+          icon={<IoIosPeople />}
+          to={`${routes.explore}/Macrocommunity/${macro}`}
+        />
       )}
+      {children}
     </div>
   )
 }

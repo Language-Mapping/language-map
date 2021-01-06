@@ -1,94 +1,151 @@
-import React, { FC, useContext } from 'react'
-import { useRouteMatch, useParams } from 'react-router-dom'
-
-import { GlobalContext, LangRecordSchema } from 'components/context'
+import React, { FC } from 'react'
+import { useRouteMatch, useParams, Route } from 'react-router-dom'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { BiMapPin } from 'react-icons/bi'
-import { SwatchOrFlagOrIcon } from 'components/generic/icons-and-swatches'
-import { CustomCard, GlottoIsoFooter } from './CustomCard'
+
+import { FlagFromHook } from 'components/generic/icons-and-swatches'
+import { SwatchOnly } from 'components/legend'
+import { PanelContent } from 'components/panels/PanelContent'
+import { LoadingIndicatorPanel } from 'components/generic/modals'
+import { Explanation } from 'components/generic'
+import { LangLevelSchema } from 'components/context'
+import { exploreIcons } from 'components/explore/config'
+import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
-import * as Types from './types'
-import * as utils from './utils'
-import { ExploreSubView } from './ExploreSubView'
+import { useAirtable } from './hooks'
+import { prepFormula, prepFields, getUniqueInstances } from './utils'
+import { TonsWithAddl, MidLevelExploreProps, RouteMatch } from './types'
 
-export const MidLevelExplore: FC = () => {
-  // NOTE: basically using these three things to determine a LOT of decisions
-  const { field, value, language } = useParams() as Types.RouteMatch
-  const { url } = useRouteMatch()
-  const { state } = useContext(GlobalContext)
-  const { langFeatures } = state
-
-  if (!langFeatures.length) return <ExploreSubView instancesCount={0} />
-
-  let footer: string | React.ReactNode = null
-  const fieldInQuestion = value ? 'Language' : field
-  const filtered: LangRecordSchema[] = utils.filterLangsByRoute({
-    langFeatures,
-    field,
-    value,
+export const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    divider: { marginBottom: '1.5em' },
+    addlNeighbsList: {
+      margin: 0,
+      fontSize: '1rem',
+    },
   })
+)
 
-  // TODO: into './hooks'
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore // not for lack of trying
-  const uniqueInstances = filtered.reduce((all, thisOne) => {
-    const thisRecValue = thisOne[fieldInQuestion]?.toString()
-    const asArray = thisRecValue?.split(', ')
-    const superFilt =
-      asArray?.filter((mannn) => !all.find((wow) => wow.title === mannn)) || []
+export const AddlLanguages: FC<{ data: LangLevelSchema[]; value?: string }> = (
+  props
+) => {
+  const { data } = props
+  const { value } = useParams<{ value: string }>()
+  const addlLanguages = data.filter(
+    (row) => !row['Primary Locations'].includes(value)
+  )
 
-    if (language || field === 'Language') {
-      const { 'ISO 639-3': iso, Glottocode } = thisOne
-      footer = <GlottoIsoFooter iso={iso} glotto={Glottocode} />
-    }
-
-    const more = superFilt.map((thing) => ({
-      title: value ? thisOne.Language : thing,
-      intro: value || field === 'Language' ? thisOne.Endonym : '',
-      footer,
-      icon: utils.deservesCardIcon(field, value) && (
-        <SwatchOrFlagOrIcon field={value ? 'Language' : field} value={thing} />
-      ),
-    }))
-
-    return [...all, ...more]
-  }, [] as Types.CardConfig[]) as Types.CardConfig[]
-
-  const reduceFn = value ? utils.allPlacenames : utils.uniqueLanguages
-  const footerIcon = field !== 'Language' && value !== undefined && <BiMapPin />
+  if (!addlLanguages.length) return null
 
   return (
-    <ExploreSubView instancesCount={uniqueInstances.length}>
-      <CardList>
-        {uniqueInstances.sort(utils.sortByTitle).map((instance) => {
-          const friends = filtered
-            .filter((row) =>
-              // Error makes no sense, didn't even work if filters length was
-              // confirmed first.
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              row[fieldInQuestion].split(', ').includes(instance.title)
-            )
-            .reduce(reduceFn, [] as string[])
+    <>
+      <Explanation>Additional languages spoken in this community:</Explanation>
+      <ul>
+        {addlLanguages.map((row) => (
+          <li key={row.name}>{row.name}</li>
+        ))}
+      </ul>
+    </>
+  )
+}
 
-          const uniques =
-            (!value && friends) ||
-            (friends.reduce(
-              (all, thisOne) =>
-                all.includes(thisOne) ? all : [...all, thisOne],
-              [] as string[]
-            ) as string[])
+export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
+  const { field, value } = useParams() as RouteMatch
+  const { tableName = field, sortByField = 'name' } = props
+  const { url } = useRouteMatch()
+
+  const filterByFormula = prepFormula(field, value)
+  const fields = prepFields(tableName)
+
+  const { data, error, isLoading } = useAirtable<TonsWithAddl>(tableName, {
+    fields,
+    ...(filterByFormula && { filterByFormula }),
+    sort: [{ field: sortByField }],
+  })
+
+  const {
+    data: landingData,
+    isLoading: isLandingLoading,
+    error: landingError,
+  } = useAirtable('Schema', {
+    fields: ['name', 'definition', 'plural'],
+    filterByFormula: `{name} = '${tableName}'`,
+  })
+
+  if (isLoading || isLandingLoading) return <LoadingIndicatorPanel />
+  if (error || landingError) {
+    return (
+      <PanelContent>
+        Could not load {value || field}.{' '}
+        {error?.message || landingError?.message}
+      </PanelContent>
+    )
+  }
+
+  const footerIcon = (value !== undefined || tableName === 'Language') && (
+    <BiMapPin />
+  )
+  const { definition, plural } = landingData[0] || {}
+
+  let primaryData
+  let Icon = null // TODO: re-componentize
+
+  if (value && field === 'World Region') {
+    Icon = <SwatchOnly backgroundColor={data ? data[0].worldRegionColor : ''} />
+  } else if (value && field === 'Country') Icon = <FlagFromHook value={value} />
+  else Icon = <>{exploreIcons[field]}</>
+
+  if (value && field === 'Neighborhood')
+    primaryData = data.filter((row) => row['Primary Locations'].includes(value))
+  else primaryData = data
+
+  // TODO: better logic for instances, e.g. allow definition
+  return (
+    <PanelContent
+      title={value || plural}
+      icon={Icon}
+      introParagraph={!value && definition}
+    >
+      <Route path="/Explore/Neighborhood">
+        <Explanation>
+          Languages with a significant site in this community, marked by a point
+          on the map:
+        </Explanation>
+      </Route>
+      <CardList>
+        {primaryData.map((row) => {
+          const uniqueInstances = getUniqueInstances(field, row, value)
 
           return (
             <CustomCard
-              key={instance.title}
-              {...instance}
-              footerIcon={!instance.footer && footerIcon}
-              uniqueInstances={uniques}
-              url={`${url}/${instance.title}`}
+              key={row.name || row.Language}
+              title={row.name || row.Language}
+              intro={row.Endonym}
+              footerIcon={footerIcon}
+              uniqueInstances={uniqueInstances}
+              url={`${url}/${row.name || row.Language}`}
+              // TODO: use and refactor SwatchOrFlagOrIcon for icon prop
+              icon={
+                <>
+                  {row['icon-color'] && (
+                    <SwatchOnly backgroundColor={row['icon-color']} />
+                  )}
+                  {row.src_image && (
+                    <img
+                      style={{ height: '0.8em', marginRight: '0.25em' }}
+                      src={row.src_image[0].url}
+                      alt={row.name || row.Language}
+                    />
+                  )}
+                </>
+              }
             />
           )
         })}
       </CardList>
-    </ExploreSubView>
+      <Route path="/Explore/Neighborhood/:value">
+        <AddlLanguages data={data} />
+      </Route>
+    </PanelContent>
   )
 }

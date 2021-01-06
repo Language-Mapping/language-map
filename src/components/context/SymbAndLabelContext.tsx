@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 
-import { LegendSwatch } from 'components/legend/types'
+import { LegendSwatchBareMin } from 'components/legend/types'
 import { LayerPropsPlusMeta } from 'components/map/types'
 import fullLangStyle from 'components/map/config.lang-style'
 import { LangSchemaCol } from './types'
@@ -10,13 +10,13 @@ type Dispatch = React.Dispatch<Action>
 type InitialState = {
   activeLabelID: LangSchemaCol | '' | 'None'
   activeSymbGroupID: LangSchemaCol | '' | 'None'
-  legendItems: LegendSwatch[]
+  legendItems: LegendSwatchBareMin[]
   legendSymbols: LegendSymbols
 }
 
 export type Action =
   | { type: 'SET_LANG_LAYER_LABELS'; payload: LangSchemaCol | '' }
-  | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatch[] }
+  | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatchBareMin[] }
   | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: LangSchemaCol }
 
 const legendSymbols = fullLangStyle.reduce((all, thisOne) => {

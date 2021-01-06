@@ -1,7 +1,5 @@
-import { Map, FillPaint } from 'mapbox-gl'
+import { Map as MbMap, FillPaint, Layer, setRTLTextPlugin } from 'mapbox-gl'
 import { WebMercatorViewport } from 'react-map-gl'
-
-import { LangConfig } from 'components/context'
 import * as Types from './types'
 import * as config from './config' // TODO: pass this as fn args, don't import
 
@@ -10,7 +8,7 @@ import * as config from './config' // TODO: pass this as fn args, don't import
 // CRED:
 // https://github.com/mapbox/mapbox-gl-js/issues/5529#issuecomment-465403194
 export const addLangTypeIconsToMap = (
-  map: Map,
+  map: MbMap,
   iconsConfig: Types.LangIconConfig[]
 ): void => {
   if (!map) return // maybe fixes this:
@@ -39,13 +37,19 @@ export const addLangTypeIconsToMap = (
 
 // Includes
 export const filterLayersByFeatIDs = (
-  map: Map,
+  map: MbMap,
   layerNames: string[],
-  langFeatIDs: number[]
+  langFeatIDs: string[]
 ): void => {
+  if (!layerNames.length || !langFeatIDs.length) return // FIXME: (???)
+
   layerNames.forEach((name) => {
     // CRED: https://gis.stackexchange.com/a/287629/5824
-    const filterLangsByID = ['in', ['get', 'ID'], ['literal', langFeatIDs]]
+    const filterLangsByID = [
+      'in',
+      ['get', 'id'],
+      ['literal', langFeatIDs.map((id) => id.toString())],
+    ]
     const currentFilters = map.getFilter(name)
 
     let origFilter = []
@@ -147,14 +151,9 @@ export const flyToPoint: Types.FlyToPoint = (
       text: geocodeMarkerText,
     }
   }
-  const params = {
-    essential: true,
-    zoom,
-    center: [longitude, latitude] as [number, number],
-    bearing,
-    pitch,
-    offset,
-  }
+
+  const center = [longitude, latitude] as [number, number]
+  const params = { essential: true, zoom, center, bearing, pitch, offset }
 
   if (disregardCurrZoom) {
     map.flyTo(params, customEventData)
@@ -196,7 +195,9 @@ export const clearBoundaries: Types.ClearStuff = (map) => {
 // any impact, the fonts must be uploaded to the Mapbox account and their names
 // must be identical to those in the sheet.
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const prepEndoFilters = (data: LangConfig[]): any[] => {
+export const prepEndoFilters = (
+  data: { Font: string; Language: string }[]
+): any[] => {
   const filters = data
     .filter((row) => row.Font)
     .reduce((all, thisOne) => {
@@ -241,3 +242,75 @@ export const setInterpolatedFill = (
   ],
   'fill-opacity': 0.9,
 })
+
+export const flyHome = (
+  map: MbMap,
+  nuclearClear: () => void,
+  offset: Types.Offset
+): void => {
+  nuclearClear()
+
+  const settings = {
+    height: map.getContainer().clientHeight,
+    width: map.getContainer().clientWidth,
+    bounds: config.initialBounds,
+    offset,
+  }
+
+  // TODO: prevent errors on resize-while-loading
+  flyToBounds(map, settings, null)
+}
+
+export const getFlyToPointSettings = (
+  selFeatAttribs: Types.SelFeatAttribs,
+  offset: Types.Offset
+): Types.FlyToPointSettings => ({
+  // bearing: 80, // TODO: consider it as it does add a new element of fancy
+  longitude: selFeatAttribs.Longitude,
+  latitude: selFeatAttribs.Latitude,
+  zoom: config.POINT_ZOOM_LEVEL,
+  disregardCurrZoom: true,
+  pitch: 80,
+  offset,
+})
+
+// REFACTOR: just reduce it one go instead of mapping, filtering, mapping again
+export const getLangLayersIDs = (layers: Layer[]): string[] => {
+  const mapped = Object.keys(layers).map((layer) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore // TODO
+    const { source, id } = layers[layer]
+
+    return { source, id }
+  })
+
+  if (!mapped.length) return []
+
+  return mapped
+    .filter((layer) => layer.source === config.mbStyleTileConfig.langSrcID)
+    .map((layer) => layer.id)
+}
+
+export const getBeforeID = (
+  activeSymbGroupID: string,
+  layers: Layer[]
+): string => {
+  if (['', 'None'].includes(activeSymbGroupID)) return 'background'
+
+  return getLangLayersIDs(layers)[0] || 'background'
+}
+
+export const rightToLeftSetup = (): void => {
+  // Jest or whatever CANNOT find this plugin. And importing it from
+  // `react-map-gl` is useless as well.
+  if (typeof window !== undefined && typeof setRTLTextPlugin === 'function') {
+    // Ensure right-to-left languages (Arabic, Hebrew) are shown correctly
+    setRTLTextPlugin(
+      // latest version: https://www.npmjs.com/package/@mapbox/mapbox-gl-rtl-text
+      'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      (error): Error => error, // supposed to be an error-handling function
+      true // lazy: only load when the map first encounters Hebrew or Arabic text
+    )
+  }
+}

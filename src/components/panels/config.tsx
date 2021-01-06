@@ -1,11 +1,11 @@
 import React from 'react'
 import { TiThList } from 'react-icons/ti'
-import { FaBinoculars, FaSearchLocation } from 'react-icons/fa'
+import { FaBinoculars } from 'react-icons/fa'
 import { GoFile } from 'react-icons/go'
-import { BiHomeAlt } from 'react-icons/bi'
+import { BiHomeAlt, BiMapPin } from 'react-icons/bi'
 
 import { Home } from 'components/home'
-import { SpatialPanel } from 'components/spatial'
+import { LocalPanel } from 'components/local'
 import { DetailsPanel } from 'components/details'
 import { Explore, LangCardsList, MidLevelExplore } from 'components/explore'
 
@@ -15,33 +15,14 @@ import { NavItemWithBadge } from './NavItemWithBadge'
 export const MOBILE_PANEL_HEADER_HT = '3rem'
 export const panelWidths = { mid: 450, midLarge: 600 }
 
-export const panelsConfig = [
+// For the bottom bar nav panel
+export const navRoutes = [
   {
     heading: 'Home',
     icon: <BiHomeAlt />,
     component: <Home />,
     rootPath: '/',
     exact: true,
-  },
-  {
-    heading: 'Language dead-end',
-    component: <LangCardsList />,
-    rootPath: '/Explore/Language/:value',
-  },
-  {
-    heading: 'Pre-details, nested w/extra params',
-    component: <LangCardsList />,
-    rootPath: '/Explore/:field/:value/:language',
-  },
-  {
-    heading: 'Level 2 cat',
-    component: <MidLevelExplore />,
-    rootPath: '/Explore/:field/:value',
-  },
-  {
-    heading: 'Level 1 cat',
-    component: <MidLevelExplore />,
-    rootPath: '/Explore/:field',
   },
   {
     heading: 'Explore',
@@ -60,12 +41,12 @@ export const panelsConfig = [
     rootPath: '/table',
   },
   {
-    heading: 'Spatial',
-    icon: <FaSearchLocation />,
+    heading: 'Local',
+    icon: <BiMapPin />,
     component: null,
     // eslint-disable-next-line react/display-name
-    renderComponent: (props) => <SpatialPanel {...props} />,
-    rootPath: '/spatial',
+    renderComponent: (props) => <LocalPanel {...props} />,
+    rootPath: '/local',
   },
   {
     heading: 'Details',
@@ -73,4 +54,24 @@ export const panelsConfig = [
     component: <DetailsPanel />,
     rootPath: '/details',
   },
+] as MapPanel[]
+
+export const nonNavRoutesConfig = [
+  {
+    component: <LangCardsList field="Language" />, // set field explicitly
+    rootPath: '/Explore/Language/:language',
+  },
+  {
+    component: <LangCardsList />,
+    rootPath: '/Explore/:field/:value/:language',
+  },
+  {
+    component: <MidLevelExplore tableName="Language" />,
+    rootPath: '/Explore/:field/:value',
+  },
+  {
+    component: <MidLevelExplore />,
+    rootPath: '/Explore/:field',
+  },
+  ...navRoutes,
 ] as MapPanel[]

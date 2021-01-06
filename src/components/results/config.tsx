@@ -17,6 +17,7 @@ import {
 } from 'react-icons/md'
 
 import { Statuses } from 'components/context/types'
+
 import * as Types from './types'
 import * as utils from './utils'
 import * as Cells from './Cells'
@@ -42,13 +43,21 @@ export const tableExportMeta = {
     'https://docs.google.com/spreadsheets/d/1CZLDDyxNM3euikks8NJfKt3ajNXToVGbwEObSOJkbfA/edit',
 }
 
-// TODO: TS it up
-export const COMM_SIZE_COL_MAP = {
-  1: 'Smallest',
-  2: 'Small',
-  3: 'Medium',
-  4: 'Large',
-  5: 'Largest',
+// TODO: Enum??
+const SIZE_MAP = {
+  Smallest: 1,
+  Small: 2,
+  Medium: 3,
+  Large: 4,
+  Largest: 5,
+}
+
+const COMM_SIZES = {
+  Smallest: 'Smallest',
+  Small: 'Small',
+  Medium: 'Medium',
+  Large: 'Large',
+  Largest: 'Largest',
 }
 
 export const localization: Localization = {
@@ -134,6 +143,12 @@ const hiddenCols = [
     ...commonColProps,
     hidden: true,
   },
+  {
+    title: 'Additional Neighborhoods',
+    field: 'Additional Neighborhoods',
+    ...commonColProps,
+    hidden: true,
+  },
 ]
 
 // NOTE: did not want to attempt to deal with any of the multi-option cols like
@@ -170,7 +185,7 @@ const hidden = {
 export const columns = [
   {
     title: 'View in map',
-    field: 'ID',
+    field: 'id',
     ...commonColProps,
     filtering: false,
     export: false,
@@ -260,44 +275,6 @@ export const columns = [
     headerStyle: { whiteSpace: 'nowrap' },
   },
   {
-    // Average: 12, Longest: 26
-    title: <LocalColumnTitle text="Neighborhood" />,
-    field: 'Neighborhood',
-    ...commonColProps,
-    render: utils.renderNeighbColumn,
-    customSort: utils.sortNeighbs,
-  },
-  {
-    // Longest: 14
-    title: <LocalColumnTitle text="Size" />,
-    field: 'Size',
-    ...commonColProps,
-    align: 'left',
-    lookup: COMM_SIZE_COL_MAP,
-    disableClick: true,
-    customSort: (a, b) => {
-      if (a.Size === b.Size) return 0
-      if (a.Size > b.Size) return 1
-
-      return -1
-    },
-    render: (data) => <Cells.CommSize data={data} lookup={COMM_SIZE_COL_MAP} />,
-    searchable: false,
-    headerStyle: {
-      paddingRight: 25, // "Smallest" is ironically the longest
-    },
-  },
-  {
-    // Longest: 13
-    title: <LocalColumnTitle text="Status" />,
-    field: 'Status',
-    ...commonColProps,
-    disableClick: true,
-    searchable: false,
-    render: (data) => <Cells.CommStatus data={data} />,
-    lookup: COMM_STATUS_LOOKUP,
-  },
-  {
     title: 'Video',
     field: 'Video',
     ...commonColProps,
@@ -307,6 +284,41 @@ export const columns = [
     render: (data) => <Cells.VideoColumnCell data={data} />,
     searchable: false,
     disableClick: true,
+  },
+  {
+    // Average: 12, Longest: 26
+    title: <LocalColumnTitle text="Location" />,
+    field: 'Primary Location',
+    ...commonColProps,
+  },
+  {
+    // Longest: 14
+    title: <LocalColumnTitle text="Size" />,
+    field: 'Size',
+    ...commonColProps,
+    align: 'left',
+    lookup: COMM_SIZES,
+    disableClick: true,
+    customSort: (a, b) => {
+      if (SIZE_MAP[a.Size] === SIZE_MAP[b.Size]) return 0
+      if (SIZE_MAP[a.Size] > SIZE_MAP[b.Size]) return 1
+
+      return -1
+    },
+    render: (data) => <Cells.CommSize data={data} />,
+    searchable: false,
+    headerStyle: {
+      paddingRight: 25, // "Smallest" is ironically the longest
+    },
+  },
+  {
+    title: <LocalColumnTitle text="Status" />,
+    field: 'Status',
+    ...commonColProps,
+    disableClick: true,
+    searchable: false,
+    render: (data) => <Cells.CommStatus data={data} />,
+    lookup: COMM_STATUS_LOOKUP,
   },
   ...hiddenCols,
 ] as Types.ColumnsConfig[]

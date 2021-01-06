@@ -7,7 +7,7 @@ import * as config from './config'
 import * as Types from './types'
 import * as utils from './utils'
 
-type JustAnError = { error?: string }
+type UseCensusData = { error?: string; data: Types.PreppedCensusLUTrow[] }
 
 export type LUTschema = {
   original: string
@@ -16,15 +16,17 @@ export type LUTschema = {
   sort_order: string
 }
 
+// Not really a hook, more of a setter
 export const useCensusData = (
   type: Types.CensusQueryID,
-  allSet: number
-): JustAnError => {
+  existing: Types.PreppedCensusLUTrow[]
+): UseCensusData => {
   const mapToolsDispatch = useMapToolsDispatch()
   const [error, setError] = useState<string>()
+  const [data, setData] = useState<Types.PreppedCensusLUTrow[]>([])
 
   useEffect(() => {
-    if (allSet) return
+    if (existing.length) return
 
     const fetchCensusLUTData = async () => {
       try {
@@ -34,6 +36,8 @@ export const useCensusData = (
         const fields = utils
           .prepCensusFields(tableRowsPrepped, config.censusGroupHeadings[type])
           .sort(utils.sortBySort)
+
+        setData(fields)
 
         mapToolsDispatch({
           censusType: type,
@@ -47,7 +51,7 @@ export const useCensusData = (
 
     fetchCensusLUTData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allSet])
+  }, [existing])
 
-  return { error }
+  return { error, data }
 }

@@ -1,3 +1,4 @@
 export * from './CensusFieldSelect'
-export * from './SpatialPanel'
+export * from './CensusIntro'
+export * from './LocalPanel'
 export * from './types'

@@ -16,7 +16,6 @@ const initialState = {
   langFeatsLenCache: 0,
   langFeatures: [],
   panelState: 'default',
-  selFeatAttribs: null,
 } as InitialState
 
 // Good article on setting all this up:
