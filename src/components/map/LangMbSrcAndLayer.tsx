@@ -4,7 +4,7 @@ import { AnyLayout, Expression } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
 import { useSymbAndLabelState } from 'components/context'
-import { configEndpoints } from 'components/local/config'
+import { langConfigEndpoint } from 'components/local/config'
 import { reactQueryDefaults } from 'components/config'
 import { RawSheetsResponse } from 'components/config/types'
 
@@ -24,7 +24,7 @@ export const LangMbSrcAndLayer: FC = () => {
     error: fontsError,
   } = useQuery(
     'sheets-config',
-    () => asyncAwaitFetch<RawSheetsResponse>(configEndpoints.langConfig),
+    () => asyncAwaitFetch<RawSheetsResponse>(langConfigEndpoint),
     reactQueryDefaults
   )
   const { data: layersData, error: layersError } = useLayersConfig(

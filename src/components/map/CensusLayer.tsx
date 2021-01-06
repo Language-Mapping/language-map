@@ -6,7 +6,7 @@ import { useQuery } from 'react-query'
 
 import { useMapToolsState } from 'components/context'
 import { SheetsReactQueryResponse } from 'components/config/types'
-import { CensusQueryID } from 'components/local/types'
+import { CensusScope } from 'components/local/types'
 import { reactQueryDefaults } from 'components/config'
 import { tableEndpoints } from '../local/config'
 import { sheetsToJSON } from '../../utils'
@@ -17,16 +17,16 @@ import { CensusLayerProps, PreppedCensusTableRow } from './types'
 export const CensusLayer: FC<CensusLayerProps> = (props) => {
   const { sourceLayer, config, map, beforeId } = props
   const { layers, source } = config
-  const censusUnit = config.source.id as CensusQueryID
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const field = useMapToolsState().censusActiveFields[censusUnit]
-  const visible = field !== undefined && field !== ''
+  const censusScope = config.source.id as CensusScope
+  const { censusActiveField } = useMapToolsState()
+  const field = censusActiveField?.id
+  const scope = censusActiveField?.scope
+  const visible = field && censusScope === scope
 
   // TODO: prevent this from happening before it's actually used
   const { data, error, isLoading } = useQuery(
-    `${censusUnit}-table`,
-    () => utils.asyncAwaitFetch(tableEndpoints[censusUnit]),
+    `${censusScope}-table`,
+    () => utils.asyncAwaitFetch(tableEndpoints[censusScope]),
     reactQueryDefaults
   ) as SheetsReactQueryResponse
   const [fillPaint, setFillPaint] = useState<FillPaint>({
@@ -48,7 +48,7 @@ export const CensusLayer: FC<CensusLayerProps> = (props) => {
   }, [isLoading])
 
   useEffect(() => {
-    if (!map || !tableRows || !field) return
+    if (!map || !tableRows || !field || !visible) return
 
     const valuesCurrField = tableRows.map((row) => row[field])
     const means = stats.ckmeans(valuesCurrField, 5)
@@ -60,7 +60,7 @@ export const CensusLayer: FC<CensusLayerProps> = (props) => {
     setHighLow({ high: (firstItemLastClass / max) * 100 })
 
     tableRows.forEach((row) => {
-      const featConfig = { source: censusUnit, sourceLayer, id: row.GEOID }
+      const featConfig = { source: censusScope, sourceLayer, id: row.GEOID }
       const total = row[field]
 
       map.setFeatureState(featConfig, {

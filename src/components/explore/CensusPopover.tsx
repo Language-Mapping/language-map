@@ -6,7 +6,7 @@ import { FaClipboardList } from 'react-icons/fa'
 import { MdLayersClear, MdLayers } from 'react-icons/md'
 
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'
-import { CensusQueryID, CensusIntro } from 'components/local'
+import { CensusIntro } from 'components/local'
 import { Chip } from 'components/details'
 import { DialogCloseBtn } from 'components/generic/modals'
 
@@ -46,53 +46,32 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
   const mapToolsDispatch = useMapToolsDispatch()
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
   const classes = useStyles()
-  const { censusActiveFields } = useMapToolsState()
-  const {
-    Language,
-    'PUMA Field': pumaField,
-    'Tract Field': tractField,
-    'Census Pretty': censusPretty,
-  } = data
-  const censusFieldThisLang = pumaField || tractField
+  const { censusActiveField } = useMapToolsState()
+  const { Language, censusPretty, censusScope, censusField } = data
 
-  if (!censusFieldThisLang) return null
+  if (!censusField) return null
 
   const handleClose = () => setAnchorEl(null)
-
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) =>
     setAnchorEl(event.currentTarget)
-  }
 
   const handleCensusClick = (e: React.MouseEvent) => {
     e.preventDefault()
 
-    mapToolsDispatch({
-      type: 'SET_CENSUS_FIELD',
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      censusType,
-      payload: censusFieldThisLang,
-    })
+    // They should both exist, but the check above doesn't cover it
+    if (censusField && censusScope) {
+      mapToolsDispatch({
+        type: 'SET_CENSUS_FIELD',
+        payload: { id: censusField, scope: censusScope },
+      })
+    }
 
     handleClose()
   }
 
   const open = Boolean(anchorEl)
-  const id = open ? 'census-popover' : undefined
-
-  // TODO: util for all this basic presentation stuff
-  let censusType: CensusQueryID | '' = ''
-  let censusLabel
-
-  if (pumaField) {
-    censusType = 'puma'
-    censusLabel = 'PUMA'
-  } else if (tractField) {
-    censusType = 'tracts'
-    censusLabel = 'tract'
-  }
-
-  const activeField = censusType ? censusActiveFields[censusType] : ''
+  const censusLabel = censusScope === 'puma' ? 'PUMA' : 'tract'
+  const activeField = censusActiveField?.id
   const vintage = '2014-2018' // TODO: don't hardcode year!
 
   const Heading = (
@@ -111,7 +90,7 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
 
   const PopoverMenu = (
     <Popover
-      id={id}
+      id={open ? 'census-popover' : undefined}
       open={open}
       anchorEl={anchorEl}
       onClose={handleClose}
@@ -129,7 +108,7 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
           size="small"
           onClick={handleCensusClick}
           title="Set census layer language"
-          disabled={censusFieldThisLang === activeField}
+          disabled={activeField !== undefined && activeField === censusField}
           startIcon={<MdLayers />}
         >
           Show in map
@@ -139,7 +118,7 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
           color="secondary"
           size="small"
           title="Clear census layer language"
-          disabled={activeField === ''}
+          disabled={activeField === undefined}
           onClick={() => mapToolsDispatch({ type: 'CLEAR_CENSUS_FIELD' })}
           startIcon={<MdLayersClear />}
         >

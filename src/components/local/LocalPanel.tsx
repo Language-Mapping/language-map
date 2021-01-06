@@ -8,8 +8,7 @@ import {
   LocationSearchContent,
 } from 'components/map'
 import { usePanelRootStyles } from 'components/panels'
-
-import * as Types from './types'
+import { LocalPanelProps } from 'components/map/types'
 import { CensusFieldSelect } from './CensusFieldSelect'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -31,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const LocalPanel: FC<Types.LocalPanelProps> = (props) => {
+export const LocalPanel: FC<LocalPanelProps> = (props) => {
   const { mapRef } = props
   const panelRootClasses = usePanelRootStyles()
   const classes = useStyles()

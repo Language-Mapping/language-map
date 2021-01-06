@@ -3,7 +3,7 @@
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
 
 import { ArrayOfStringArrays } from 'components/config/types'
-import { PreppedCensusLUTrow, CensusQueryID } from 'components/local/types'
+import { CensusScope } from 'components/local/types'
 
 export type PanelState = 'default' | 'maximized' | 'minimized'
 export type LangSchemaCol = keyof LangRecordSchema
@@ -79,24 +79,20 @@ type InstanceLevelOptional = LangLevelOptional & {
 }
 
 type CensusFields = {
-  'PUMA Field'?: string
-  'Tract Field'?: string
-  'Census Pretty'?: string
+  censusField?: string
+  censusPretty?: string
+  censusScope?: CensusScope
+}
+
+type CensusFieldPayload = {
+  scope: CensusScope
+  id: string
 }
 
 export type InitialMapToolsState = {
   boundariesVisible: boolean
   geolocActive: boolean
-  tractsField?: string
-  pumaField?: string
-  censusDropDownFields: {
-    tracts: PreppedCensusLUTrow[]
-    puma: PreppedCensusLUTrow[]
-  }
-  censusActiveFields: {
-    tracts: string
-    puma: string
-  }
+  censusActiveField?: CensusFieldPayload
 }
 
 export type MapToolsAction =
@@ -106,13 +102,7 @@ export type MapToolsAction =
   | { type: 'CLEAR_CENSUS_FIELD' }
   | {
       type: 'SET_CENSUS_FIELD'
-      payload?: string
-      censusType: CensusQueryID
-    }
-  | {
-      type: 'SET_CENSUS_FIELDS'
-      payload: PreppedCensusLUTrow[]
-      censusType: CensusQueryID
+      payload: CensusFieldPayload
     }
 
 export type MapToolsDispatch = React.Dispatch<MapToolsAction>

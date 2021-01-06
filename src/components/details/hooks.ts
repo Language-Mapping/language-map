@@ -6,27 +6,27 @@ import { InstanceLevelSchema, LangLevelSchema } from 'components/context'
 import { UseDetails } from './types'
 
 const dataFields: Array<Extract<keyof InstanceLevelSchema, string>> = [
-  'Language',
-  'descriptionID',
-  'Town',
-  'Neighborhood',
   'Additional Neighborhoods',
+  'descriptionID',
+  'Language',
+  'Neighborhood',
+  'Town',
 ]
 
 const langFields: Array<Extract<keyof LangLevelSchema, string>> = [
+  'Audio',
+  'censusField',
+  'censusPretty',
+  'censusScope',
+  'Country',
+  'countryImg',
   'descriptionID',
   'Endonym',
-  'name',
   'Font Image Alt',
-  'Census Pretty',
-  'Tract Field',
-  'PUMA Field',
-  'Country',
+  'name',
+  'Video',
   'World Region',
   'worldRegionColor',
-  'countryImg',
-  'Video',
-  'Audio',
 ]
 
 // TODO: put the logic of isInstance in here
