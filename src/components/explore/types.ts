@@ -82,6 +82,9 @@ export type AirtableError = {
   statusCode: number
 }
 
+// Details' current crumb fields which come back from Airtable
+export type CrumbResponse = Pick<DetailsSchema, 'Language' | 'Primary Location'>
+
 // TODO: figure it out
 // export type UseAirtable<TResult> = (
 //   tableName: string,

@@ -1,12 +1,15 @@
 import React, { FC } from 'react'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-// import { CircularProgress, Link } from '@material-ui/core'
 import { Link } from '@material-ui/core'
-import { useLocation, Link as RouterLink } from 'react-router-dom'
+import {
+  useLocation,
+  Link as RouterLink,
+  Route,
+  Switch,
+} from 'react-router-dom'
 import { BiHomeAlt } from 'react-icons/bi'
 
-// import { useDetailsNew } from 'components/details/hooks' // TODO
-import { CurrentCrumbProps } from './types'
+import { CurrentDetailCrumb } from './CurrentDetailCrumb'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,32 +47,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const CurrentCrumb: FC<CurrentCrumbProps> = (props) => {
-  // TODO: new hook or at least AT w/useParams (or useroutematch?)
-  const classes = useStyles()
-  const { value, basePath } = props
-  // const { data: feature } = useDetails()
-
-  // if (value === 'details' || basePath !== 'details' || !feature) {
-  if (value === 'details' || basePath !== 'details') {
-    return <span className={classes.capital}>{value}</span>
-  }
-
-  return null
-  // // TODO:
-  // // if (!feature) return <CircularProgress size={12} />
-
-  // const { Language, Neighborhood, Town } = feature
-  // const place = Neighborhood ? Neighborhood.split(', ')[0] : Town
-
-  // return (
-  //   <>
-  //     {Language}
-  //     {` — ${place}`}
-  //   </>
-  // )
-}
-
 export const Breadcrumbs: FC = () => {
   const classes = useStyles()
   const loc = useLocation()
@@ -94,7 +71,14 @@ export const Breadcrumbs: FC = () => {
             {includeSeparator && Separator}
             {(last && (
               <span>
-                <CurrentCrumb value={value} basePath={pathnames[0]} />
+                <Switch>
+                  <Route path="/details/:id">
+                    <CurrentDetailCrumb />
+                  </Route>
+                  <Route>
+                    <span className={classes.capital}>{value}</span>
+                  </Route>
+                </Switch>
               </span>
             )) || (
               <Link to={to} component={RouterLink} className={classes.capital}>
