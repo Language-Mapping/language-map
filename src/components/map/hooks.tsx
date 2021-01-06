@@ -1,21 +1,34 @@
 import { useContext, useEffect, useState } from 'react'
-import { useQueryCache } from 'react-query'
+import { useQueryCache, useQuery } from 'react-query'
+import * as stats from 'simple-statistics'
 import { WebMercatorViewport } from 'react-map-gl'
-import { LngLatBounds } from 'mapbox-gl'
+import { FillPaint, LngLatBounds } from 'mapbox-gl'
+
 import { useTheme } from '@material-ui/core/styles'
 
 import { panelWidths } from 'components/panels/config'
-import { GlobalContext, LangRecordSchema } from 'components/context'
+import {
+  GlobalContext,
+  LangRecordSchema,
+  useMapToolsState,
+} from 'components/context'
 import { AtSymbFields, AtSchemaFields } from 'components/legend/types'
 import { layerSymbFields } from 'components/legend/config'
 import { useAirtable } from 'components/explore/hooks'
 import { useRouteMatch } from 'react-router-dom'
-import { useWindowResize } from '../../utils'
+import { SheetsReactQueryResponse } from 'components/config/types'
+import { reactQueryDefaults } from 'components/config'
+import { useWindowResize, sheetsToJSON } from '../../utils'
 import { iconStyleOverride, POINT_ZOOM_LEVEL } from './config'
 import { flyToPoint, flyToBounds } from './utils'
 import { handleBoundaryClick } from './events'
 
 import * as Types from './types'
+
+import { tableEndpoints } from '../local/config'
+
+import * as utils from './utils'
+import { PreppedCensusTableRow } from './types'
 
 // Set offsets to account for the panel-on-map layout as it would otherwise
 // expect the map center to be the screen center. Did not find a good way to do
@@ -263,4 +276,70 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
   }, [langFeatures.length])
 
   return shouldFlyHome
+}
+
+export const useCensusSymb: Types.UseCensusSymb = (
+  sourceLayer,
+  censusScope,
+  map
+) => {
+  const { censusActiveField } = useMapToolsState()
+  const field = censusActiveField?.id
+  const scope = censusActiveField?.scope
+  const visible = field !== undefined && censusScope === scope
+
+  // TODO: prevent this from happening before it's actually used
+  const { data, error, isLoading } = useQuery(
+    `${censusScope}-table`,
+    () => utils.asyncAwaitFetch(tableEndpoints[censusScope]),
+    reactQueryDefaults
+  ) as SheetsReactQueryResponse
+  const [fillPaint, setFillPaint] = useState<FillPaint>({
+    'fill-color': 'transparent', // mitigates the brief lag before load
+  })
+  const [highLow, setHighLow] = useState<{ high: number; low?: number }>()
+  const [tableRows, setTableRows] = useState<PreppedCensusTableRow[]>()
+
+  useEffect(() => {
+    if (isLoading || !data) return
+
+    /* eslint-disable array-bracket-newline */
+    const tableRowsPrepped = sheetsToJSON<PreppedCensusTableRow>(data.values, [
+      'GEOID',
+    ])
+
+    setTableRows(tableRowsPrepped)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading])
+
+  useEffect(() => {
+    if (!map || !tableRows || !field || !visible) return
+
+    const valuesCurrField = tableRows.map((row) => row[field])
+    const means = stats.ckmeans(valuesCurrField, 5)
+    const firstItemLastClass = means[4][0]
+    const max = stats.max(valuesCurrField)
+
+    // TODO: rm if not using min
+    // low: (firstItemLastClass / stats.min(valuesCurrField)) * 100,
+    setHighLow({ high: (firstItemLastClass / max) * 100 })
+
+    tableRows.forEach((row) => {
+      const featConfig = { source: censusScope, sourceLayer, id: row.GEOID }
+      const total = row[field]
+
+      map.setFeatureState(featConfig, {
+        total: (total / max) * 100,
+      } as { total: number })
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [field])
+
+  useEffect(() => {
+    if (!highLow) return
+
+    setFillPaint(utils.setInterpolatedFill(highLow.high, highLow.low))
+  }, [highLow])
+
+  return { fillPaint, visible, error, isLoading }
 }

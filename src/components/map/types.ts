@@ -9,6 +9,7 @@ import {
 } from 'react-map-gl'
 import {
   // LngLatLike, // TODO: use more often
+  FillPaint,
   MapboxGeoJSONFeature,
   MapEventType,
   Map,
@@ -22,6 +23,7 @@ import {
   DetailsSchema,
   InternalUse,
 } from 'components/context'
+import { CensusScope } from 'components/local/types'
 
 type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
 type Padding =
@@ -275,3 +277,16 @@ export type HidePopups = {
   boundaries: boolean
   language: boolean
 }
+
+export type UseCensusSymbReturn = {
+  isLoading: boolean
+  visible: boolean
+  fillPaint: FillPaint
+  error?: unknown
+}
+
+export type UseCensusSymb = (
+  sourceLayer: string,
+  censusScope: CensusScope,
+  map?: Map
+) => UseCensusSymbReturn
