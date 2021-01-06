@@ -4,7 +4,12 @@ import { WebMercatorViewport } from 'react-map-gl'
 import * as utils from './utils'
 import * as MapTypes from './types'
 
-export const onHover: MapTypes.OnHover = (
+export const onHover = (event: MapTypes.MapEvent): void => {
+  const { target } = event
+  target.style.cursor = 'pointer'
+}
+
+export const onHoverOrig: MapTypes.OnHover = (
   event,
   setTooltip,
   map,

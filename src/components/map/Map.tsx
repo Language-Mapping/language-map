@@ -30,9 +30,10 @@ import {
   useZoomToLangFeatsExtent,
 } from './hooks'
 import { getAllLangFeatIDs, isTouchEnabled } from '../../utils'
+import { onHover } from './events'
+
 import * as Types from './types'
 import * as utils from './utils'
-import { flyHome } from './utils'
 
 const { boundariesLayerIDs, langTypeIconsConfig } = config
 
@@ -77,7 +78,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   useEffect((): void => {
     if (!map) return
 
-    flyHome(map, nuclearClear, offset)
+    utils.flyHome(map, nuclearClear, offset)
   }, [shouldFlyHome])
 
   // Filter lang feats in map on length change or symbology change
@@ -259,7 +260,7 @@ export const Map: FC<Types.MapProps> = (props) => {
         /* eslint-enable operator-linebreak */
         onViewportChange={setViewport}
         onClick={(event: Types.MapEvent) => onClick(event)}
-        // onHover={onHover}
+        onHover={onHover}
         onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
       >
         <Geolocation
