@@ -5,16 +5,6 @@ import * as Types from './types'
 const initialState = {
   boundariesVisible: false,
   geolocActive: false,
-  tractsFields: [],
-  pumaFields: [],
-  censusDropDownFields: {
-    tracts: [],
-    puma: [],
-  },
-  censusActiveFields: {
-    tracts: '',
-    puma: '',
-  },
 } as Types.InitialMapToolsState
 
 const MapToolsContext = React.createContext<
@@ -36,21 +26,10 @@ function reducer(
     case 'SET_CENSUS_FIELD':
       return {
         ...state,
-        censusActiveFields: {
-          ...state.censusActiveFields,
-          [action.censusType]: action.payload,
-        },
+        censusActiveField: action.payload,
       }
     case 'CLEAR_CENSUS_FIELD':
-      return { ...state, censusActiveFields: { puma: '', tracts: '' } }
-    case 'SET_CENSUS_FIELDS':
-      return {
-        ...state,
-        censusDropDownFields: {
-          ...state.censusDropDownFields,
-          [action.censusType]: action.payload,
-        },
-      }
+      return { ...state, censusActiveField: undefined }
     default: {
       return state
     }

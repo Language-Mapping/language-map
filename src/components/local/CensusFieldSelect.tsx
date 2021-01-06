@@ -8,11 +8,12 @@ import Autocomplete, {
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'
 import { LocationSearchContent } from 'components/map'
 import { SubtleText } from 'components/generic'
-import { useCensusData } from './hooks'
+import { useCensusFields } from './hooks'
 import { CensusIntro } from './CensusIntro'
 
 import * as Types from './types'
 import { setCensusField } from './utils'
+import { censusGroupHeadings } from './config'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const GroupHeader: FC<Types.GroupHeaderProps> = (props) => {
+const CensusGroupHeader: FC<Types.GroupHeaderProps> = (props) => {
   const { title, subTitle } = props
   const classes = useStyles()
 
@@ -61,29 +62,29 @@ const GroupHeader: FC<Types.GroupHeaderProps> = (props) => {
 }
 
 const renderGroup = (params: AutocompleteRenderGroupParams) => {
-  const split = params.group.split('|||')
+  const groupConfig = censusGroupHeadings[params.group as Types.CensusScope]
+  const { title, subTitle } = groupConfig
 
   return [
-    <GroupHeader key={params.key} title={split[0]} subTitle={split[1]} />,
+    <CensusGroupHeader key={params.key} title={title} subTitle={subTitle} />,
     params.children,
   ]
 }
 
-const CensusAutocomplete: FC<Types.CensusSelectProps> = (props) => {
-  const { tracts, puma } = props
+const CensusAutocomplete: FC = (props) => {
   const classes = useStyles()
   const mapToolsDispatch = useMapToolsDispatch()
-  const { censusActiveFields } = useMapToolsState()
-  const { puma: pumaField, tracts: tractsField } = censusActiveFields
+  const { censusActiveField } = useMapToolsState()
+  const { data, isLoading, error } = useCensusFields()
 
   const defaultValue =
-    [...tracts, ...puma].find(
-      ({ original }) => original === pumaField || original === tractsField
-    ) || null
+    data.find(({ id }) => id === censusActiveField?.id) || null
 
-  const handleChange = (value: Types.PreppedCensusLUTrow | null) => {
+  const handleChange = (value: Types.UseCensusResponse | null) => {
     setCensusField(value, mapToolsDispatch)
   }
+
+  if (error) return <p>Something went wrong fetching census config.</p>
 
   return (
     <Autocomplete
@@ -94,10 +95,14 @@ const CensusAutocomplete: FC<Types.CensusSelectProps> = (props) => {
       onOpen={(e) => e.currentTarget.scrollIntoView()}
       blurOnSelect="touch"
       fullWidth
-      getOptionLabel={({ pretty }) => pretty}
-      groupBy={({ groupTitle }) => groupTitle}
+      getOptionLabel={({ pretty, complicated }) =>
+        `${pretty}${complicated ? '*' : ''}`
+      }
+      groupBy={({ scope }) => scope}
+      loading={isLoading}
+      loadingText="Getting census data..."
       onChange={(event, value) => handleChange(value)}
-      options={[...tracts, ...puma]}
+      options={data}
       renderGroup={renderGroup}
       selectOnFocus={false}
       size="small"
@@ -111,31 +116,15 @@ const CensusAutocomplete: FC<Types.CensusSelectProps> = (props) => {
 }
 
 export const CensusFieldSelect: FC = () => {
-  const { censusDropDownFields } = useMapToolsState()
-  const { puma: pumaFields, tracts: tractsFields } = censusDropDownFields
-
-  // TODO: use state directly from the hook if can find a way to make it persist
-  // between route changes
-  const { error: pumaError } = useCensusData('puma', pumaFields)
-  const { error: tractsError } = useCensusData('tracts', tractsFields)
-
-  if (tractsError || pumaError)
-    return <p>Something went wrong fetching census data.</p>
-
-  const ready = tractsFields.length !== 0 && pumaFields.length !== 0
-
   return (
     <LocationSearchContent
       heading="Census Language Data (NYC only)"
       explanation={<CensusIntro />}
     >
-      {!ready && <p>Getting census data...</p>}
-      <>
-        <CensusAutocomplete tracts={tractsFields} puma={pumaFields} />
-        <SubtleText>
-          *Census Bureau category, component languages unclear
-        </SubtleText>
-      </>
+      <CensusAutocomplete />
+      <SubtleText>
+        *Census Bureau category, component languages unclear
+      </SubtleText>
     </LocationSearchContent>
   )
 }

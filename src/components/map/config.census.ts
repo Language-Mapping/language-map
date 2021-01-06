@@ -1,19 +1,23 @@
 import * as LocalTypes from 'components/local'
 import * as Types from './types'
 
-const tractsSrcId: LocalTypes.CensusQueryID = 'tracts'
-const pumaSrcID: LocalTypes.CensusQueryID = 'puma'
+const tractsSrcId: LocalTypes.CensusScope = 'tract'
+const pumaSrcID: LocalTypes.CensusScope = 'puma'
+const minzoom = 8
+
+// Tell MB not to use default `id` as unique ID
+export const CENSUS_PROMOTE_ID_FIELD = 'GEOID'
 
 export const pumaLyrSrc = {
   source: pumaSrcID,
   'source-layer': 'NYC_PUMA2017_5yr_langHome-0tfhwp',
-  minzoom: 8,
+  minzoom,
 }
 
 export const tractsLyrSrc = {
   source: tractsSrcId,
   'source-layer': 'NYC_tract2013_17_langHome-8cd347',
-  minzoom: 8,
+  minzoom,
 }
 
 // The feature-state approach came from:

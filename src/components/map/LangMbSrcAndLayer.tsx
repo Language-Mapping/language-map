@@ -1,15 +1,10 @@
 import React, { FC, useEffect, useState } from 'react'
-import { useQuery } from 'react-query'
 import { AnyLayout, Expression } from 'mapbox-gl'
 import { Source, Layer } from 'react-map-gl'
 
 import { useSymbAndLabelState } from 'components/context'
-import { configEndpoints } from 'components/local/config'
-import { reactQueryDefaults } from 'components/config'
-import { RawSheetsResponse } from 'components/config/types'
-
-import { sheetsToJSON } from '../../utils'
-import { asyncAwaitFetch, prepEndoFilters } from './utils'
+import { useAirtable } from 'components/explore/hooks'
+import { prepEndoFilters } from './utils'
 import { useLayersConfig } from './hooks'
 
 import * as config from './config'
@@ -22,11 +17,11 @@ export const LangMbSrcAndLayer: FC = () => {
     data: fontsData,
     isLoading: isFontsLoading,
     error: fontsError,
-  } = useQuery(
-    'sheets-config',
-    () => asyncAwaitFetch<RawSheetsResponse>(configEndpoints.langConfig),
-    reactQueryDefaults
-  )
+  } = useAirtable<{ name: string; Font: string }>('Language', {
+    fields: ['name', 'Font'],
+    filterByFormula: "{Font} != ''",
+  })
+
   const { data: layersData, error: layersError } = useLayersConfig(
     activeSymbGroupID
   )
@@ -34,6 +29,7 @@ export const LangMbSrcAndLayer: FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [endoFonts, setEndoFonts] = useState<any[]>()
 
+  // TODO: hook, obviously
   const getLayout = (layout: AnyLayout): AnyLayout => {
     const bareMinimum: AnyLayout = {
       ...config.mapLabelDefaults.layout,
@@ -64,15 +60,9 @@ export const LangMbSrcAndLayer: FC = () => {
   }
 
   useEffect(() => {
-    if (isFontsLoading || !fontsData?.values) return
+    if (isFontsLoading || !fontsData.length) return
 
-    const dataAsJson = sheetsToJSON<{ Font: string; Language: string }[]>(
-      fontsData.values
-    )
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore // don't care, will be from Airtable soon
-    setEndoFonts(prepEndoFilters(dataAsJson))
+    setEndoFonts(prepEndoFilters(fontsData))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFontsLoading])
 

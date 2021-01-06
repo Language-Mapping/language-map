@@ -1,6 +1,5 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
 
 import {
   GeocoderPopout,
@@ -8,8 +7,7 @@ import {
   LocationSearchContent,
 } from 'components/map'
 import { usePanelRootStyles } from 'components/panels'
-
-import * as Types from './types'
+import { LocalPanelProps } from 'components/map/types'
 import { CensusFieldSelect } from './CensusFieldSelect'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -31,19 +29,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const LocalPanel: FC<Types.LocalPanelProps> = (props) => {
-  const { mapRef } = props
+export const LocalPanel: FC<LocalPanelProps> = (props) => {
   const panelRootClasses = usePanelRootStyles()
   const classes = useStyles()
-
-  if (!mapRef.current)
-    return (
-      <div className={`${panelRootClasses.root} ${classes.root}`}>
-        <Typography className={classes.panelMainHeading}>
-          Map loading...
-        </Typography>
-      </div>
-    )
 
   return (
     <div className={`${panelRootClasses.root} ${classes.root}`}>

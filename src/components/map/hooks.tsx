@@ -1,21 +1,30 @@
 import { useContext, useEffect, useState } from 'react'
 import { useQueryCache } from 'react-query'
+import * as stats from 'simple-statistics'
 import { WebMercatorViewport } from 'react-map-gl'
-import { LngLatBounds } from 'mapbox-gl'
+import { FillPaint, LngLatBounds } from 'mapbox-gl'
+
 import { useTheme } from '@material-ui/core/styles'
 
 import { panelWidths } from 'components/panels/config'
-import { GlobalContext, LangRecordSchema } from 'components/context'
+import {
+  GlobalContext,
+  LangRecordSchema,
+  useMapToolsState,
+} from 'components/context'
 import { AtSymbFields, AtSchemaFields } from 'components/legend/types'
 import { layerSymbFields } from 'components/legend/config'
 import { useAirtable } from 'components/explore/hooks'
-import { useRouteMatch } from 'react-router-dom'
+import { useLocation, useRouteMatch } from 'react-router-dom'
+import { AIRTABLE_CENSUS_BASE } from 'components/config'
+import { paths as routes } from 'components/config/routes'
 import { useWindowResize } from '../../utils'
 import { iconStyleOverride, POINT_ZOOM_LEVEL } from './config'
 import { flyToPoint, flyToBounds } from './utils'
 import { handleBoundaryClick } from './events'
 
 import * as Types from './types'
+import * as utils from './utils'
 
 // Set offsets to account for the panel-on-map layout as it would otherwise
 // expect the map center to be the screen center. Did not find a good way to do
@@ -263,4 +272,63 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
   }, [langFeatures.length])
 
   return shouldFlyHome
+}
+
+export const useCensusSymb: Types.UseCensusSymb = (
+  sourceLayer,
+  censusScope,
+  map
+) => {
+  const { pathname } = useLocation()
+  const { censusActiveField } = useMapToolsState()
+  const { id: field, scope } = censusActiveField || {}
+  const visible = field !== undefined && censusScope === scope
+  const queryID = scope || 'tract'
+  const pathDeservesFetch =
+    pathname.includes(routes.local) ||
+    pathname.includes(routes.details) ||
+    pathname.includes(routes.explore)
+  const { data, error, isLoading } = useAirtable<Types.CensusTableRow>(
+    queryID,
+    // Foregoing 'fields' because SLOW due to 100 records/sec Airtable limit
+    { baseID: AIRTABLE_CENSUS_BASE },
+    // TODO: some kind of prefetch. But at least this isn't on load:
+    { refetchOnMount: true, enabled: pathDeservesFetch || field !== undefined }
+  )
+
+  const [fillPaint, setFillPaint] = useState<FillPaint>({
+    'fill-color': 'transparent', // mitigates the brief lag before load
+  })
+  const [highLow, setHighLow] = useState<{ high: number; low?: number }>()
+
+  useEffect(() => {
+    if (!map || isLoading || !data.length || !field || !visible) return
+
+    const valuesCurrField = data.map((row) => row[field])
+    const means = stats.ckmeans(valuesCurrField, 5)
+    const firstItemLastClass = means[4][0]
+    const max = stats.max(valuesCurrField)
+
+    // TODO: rm if not using min
+    // low: (firstItemLastClass / stats.min(valuesCurrField)) * 100,
+    setHighLow({ high: (firstItemLastClass / max) * 100 })
+
+    data.forEach((row) => {
+      const featConfig = { source: censusScope, sourceLayer, id: row.GEOID }
+      const total = row[field]
+
+      map.setFeatureState(featConfig, {
+        total: (total / max) * 100,
+      } as { total: number })
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [field, isLoading, pathname])
+
+  useEffect(() => {
+    if (!highLow) return
+
+    setFillPaint(utils.setInterpolatedFill(highLow.high, highLow.low))
+  }, [highLow])
+
+  return { fillPaint, visible, error, isLoading }
 }
