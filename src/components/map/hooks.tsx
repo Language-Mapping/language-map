@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { useQueryCache, useQuery } from 'react-query'
+import { useQueryCache } from 'react-query'
 import * as stats from 'simple-statistics'
 import { WebMercatorViewport } from 'react-map-gl'
 import { FillPaint, LngLatBounds } from 'mapbox-gl'
@@ -15,20 +15,16 @@ import {
 import { AtSymbFields, AtSchemaFields } from 'components/legend/types'
 import { layerSymbFields } from 'components/legend/config'
 import { useAirtable } from 'components/explore/hooks'
-import { useRouteMatch } from 'react-router-dom'
-import { SheetsReactQueryResponse } from 'components/config/types'
-import { reactQueryDefaults } from 'components/config'
-import { useWindowResize, sheetsToJSON } from '../../utils'
+import { useLocation, useRouteMatch } from 'react-router-dom'
+import { AIRTABLE_CENSUS_BASE } from 'components/config'
+import { paths as routes } from 'components/config/routes'
+import { useWindowResize } from '../../utils'
 import { iconStyleOverride, POINT_ZOOM_LEVEL } from './config'
 import { flyToPoint, flyToBounds } from './utils'
 import { handleBoundaryClick } from './events'
 
 import * as Types from './types'
-
-import { tableEndpoints } from '../local/config'
-
 import * as utils from './utils'
-import { PreppedCensusTableRow } from './types'
 
 // Set offsets to account for the panel-on-map layout as it would otherwise
 // expect the map center to be the screen center. Did not find a good way to do
@@ -283,39 +279,32 @@ export const useCensusSymb: Types.UseCensusSymb = (
   censusScope,
   map
 ) => {
+  const { pathname } = useLocation()
   const { censusActiveField } = useMapToolsState()
-  const field = censusActiveField?.id
-  const scope = censusActiveField?.scope
+  const { id: field, scope } = censusActiveField || {}
   const visible = field !== undefined && censusScope === scope
+  const queryID = scope || 'tract'
+  const pathDeservesFetch =
+    pathname.includes(routes.local) ||
+    pathname.includes(routes.details) ||
+    pathname.includes(routes.explore)
+  const { data, error, isLoading } = useAirtable<Types.CensusTableRow>(
+    queryID,
+    // Foregoing 'fields' because SLOW due to 100 records/sec Airtable limit
+    { baseID: AIRTABLE_CENSUS_BASE },
+    // TODO: some kind of prefetch. But at least this isn't on load:
+    { refetchOnMount: true, enabled: pathDeservesFetch || field !== undefined }
+  )
 
-  // TODO: prevent this from happening before it's actually used
-  const { data, error, isLoading } = useQuery(
-    `${censusScope}-table`,
-    () => utils.asyncAwaitFetch(tableEndpoints[censusScope]),
-    reactQueryDefaults
-  ) as SheetsReactQueryResponse
   const [fillPaint, setFillPaint] = useState<FillPaint>({
     'fill-color': 'transparent', // mitigates the brief lag before load
   })
   const [highLow, setHighLow] = useState<{ high: number; low?: number }>()
-  const [tableRows, setTableRows] = useState<PreppedCensusTableRow[]>()
 
   useEffect(() => {
-    if (isLoading || !data) return
+    if (!map || isLoading || !data.length || !field || !visible) return
 
-    /* eslint-disable array-bracket-newline */
-    const tableRowsPrepped = sheetsToJSON<PreppedCensusTableRow>(data.values, [
-      'GEOID',
-    ])
-
-    setTableRows(tableRowsPrepped)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading])
-
-  useEffect(() => {
-    if (!map || !tableRows || !field || !visible) return
-
-    const valuesCurrField = tableRows.map((row) => row[field])
+    const valuesCurrField = data.map((row) => row[field])
     const means = stats.ckmeans(valuesCurrField, 5)
     const firstItemLastClass = means[4][0]
     const max = stats.max(valuesCurrField)
@@ -324,7 +313,7 @@ export const useCensusSymb: Types.UseCensusSymb = (
     // low: (firstItemLastClass / stats.min(valuesCurrField)) * 100,
     setHighLow({ high: (firstItemLastClass / max) * 100 })
 
-    tableRows.forEach((row) => {
+    data.forEach((row) => {
       const featConfig = { source: censusScope, sourceLayer, id: row.GEOID }
       const total = row[field]
 
@@ -333,7 +322,7 @@ export const useCensusSymb: Types.UseCensusSymb = (
       } as { total: number })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [field])
+  }, [field, isLoading, pathname])
 
   useEffect(() => {
     if (!highLow) return

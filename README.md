@@ -49,31 +49,12 @@ place search, follow these steps:
 **TODO:** document `REACT_APP_MB_SECRET` or whatever for secret scope (aka
 fetching stuff, not MB GL access).
 
-### Google Sheets API
+### Airtable
 
-This project uses Google Sheets to store the config for the dozens of languages
-whose endonyms rely on custom fonts (uploaded manually to the Mapbox account
-used above) in order to render properly as labels in the map.
+~~This project uses Google Sheets~~ **Airtable** to store much of the config and
+some data for the project.
 
-In order for the config to be accessible:
-
-1. Obtain an API key. The detailed steps will not be outlined here since they
-   are long and Google procedures may change over time, but you can find a
-   decent breakdown in [this
-   comment](https://github.com/Language-Mapping/language-map/issues/18#issuecomment-692983114)
-   and the gist is that you **need a Google API key**.
-2. Once you have obtained it, add the following to the _.env_ file described
-   above, replacing `YOUR_KEY` with the one you just created:
-   ```bash
-   REACT_APP_GOOGLE_API_KEY='YOUR_KEY'
-   ```
-3. Create a Google Sheet with two columns: `Language` and `Font`. The former
-   will contain values matching those in the `Language` column of the main
-   dataset, and the latter the full font name, such as `Noto Sans Myanmar Regular`.
-
-You should not need to publish the sheet nor set any permissions in order to use
-it since you should have full read access to it via the API. If you are getting
-any permissions errors though, that would be the first place to check.
+**TODO: update this whole section with Airtable instructions.**
 
 ### YouTube API
 

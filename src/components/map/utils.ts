@@ -191,17 +191,17 @@ export const clearBoundaries: Types.ClearStuff = (map) => {
   })
 }
 
-// Convert a Google Sheets API response into Mapbox font filters. For it to have
-// any impact, the fonts must be uploaded to the Mapbox account and their names
-// must be identical to those in the sheet.
+// Set up Mapbox font filters for languages with complex endonym characters. In
+// order for it to have any impact, the fonts must be uploaded to the Mapbox
+// account and their names must be identical to those in the sheet.
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const prepEndoFilters = (
-  data: { Font: string; Language: string }[]
+  data: { Font: string; name: string }[]
 ): any[] => {
   const filters = data
     .filter((row) => row.Font)
     .reduce((all, thisOne) => {
-      const lang = ['==', ['var', 'lang'], thisOne.Language]
+      const lang = ['==', ['var', 'lang'], thisOne.name]
       const font = ['literal', [thisOne.Font]]
 
       return [...all, lang, font]

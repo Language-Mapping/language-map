@@ -16,7 +16,7 @@ export const MOBILE_PANEL_HEADER_HT = '3rem'
 export const panelWidths = { mid: 450, midLarge: 600 }
 
 // For the bottom bar nav panel
-export const navRoutes = [
+export const navRoutes: MapPanel[] = [
   {
     heading: 'Home',
     icon: <BiHomeAlt />,
@@ -54,7 +54,7 @@ export const navRoutes = [
     component: <DetailsPanel />,
     rootPath: '/details',
   },
-] as MapPanel[]
+]
 
 export const nonNavRoutesConfig = [
   {

@@ -1,8 +1,15 @@
 import { DetailsSchema, LangRecordSchema } from 'components/context/types'
 import { AtSymbFields } from 'components/legend/types'
 
+export type ReactQueryOptions = {
+  enabled?: boolean
+  refetchOnMount?: boolean
+  refetchOnReconnect?: boolean
+  refetchOnWindowFocus?: boolean
+}
+
 // TODO: try to reuse some of these, they're pretty common in sev. components
-export type CategoryProps = {
+type CategoryProps = {
   title: string
   uniqueInstances?: unknown[]
   url: string
@@ -61,6 +68,7 @@ export type AirtableOptions = {
   filterByFormula?: string
   maxRecords?: number
   sort?: { field: string; direction?: 'asc' | 'desc' }[]
+  baseID?: string // API base identifier
 }
 
 type SchemaTableFields = {

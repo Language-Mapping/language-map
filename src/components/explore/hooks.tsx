@@ -2,10 +2,15 @@ import { useQuery } from 'react-query'
 import Airtable from 'airtable'
 
 import { AIRTABLE_BASE, reactQueryDefaults } from 'components/config'
-import { AirtableOptions, TonsOfFields, AirtableError } from './types'
+import {
+  AirtableOptions,
+  TonsOfFields,
+  AirtableError,
+  ReactQueryOptions,
+} from './types'
 
 const airtableQuery = async (tableName: string, options: AirtableOptions) => {
-  const base = new Airtable().base(AIRTABLE_BASE)
+  const base = new Airtable().base(options?.baseID || AIRTABLE_BASE)
 
   // CRED: github.com/Airtable/airtable.js/issues/69#issuecomment-414394657
   return base(tableName).select(options).all()
@@ -14,7 +19,7 @@ const airtableQuery = async (tableName: string, options: AirtableOptions) => {
 export function useAirtable<TResult = TonsOfFields>(
   tableName: string,
   options: AirtableOptions,
-  reactQueryOptions?: { enabled?: boolean } // TODO: ugh
+  reactQueryOptions?: ReactQueryOptions
 ): {
   data: TResult[]
   error: AirtableError | null

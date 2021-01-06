@@ -2,7 +2,6 @@
 // MIT License, available here:
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
 
-import { ArrayOfStringArrays } from 'components/config/types'
 import { CensusScope } from 'components/local/types'
 
 export type PanelState = 'default' | 'maximized' | 'minimized'
@@ -96,7 +95,6 @@ export type InitialMapToolsState = {
 }
 
 export type MapToolsAction =
-  | { type: 'SET_LANG_CONFIG_VIA_SHEETS'; payload: ArrayOfStringArrays }
   | { type: 'SET_BOUNDARIES_VISIBLE'; payload: boolean }
   | { type: 'SET_GEOLOC_ACTIVE'; payload: boolean }
   | { type: 'CLEAR_CENSUS_FIELD' }

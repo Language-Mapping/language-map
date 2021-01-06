@@ -129,10 +129,6 @@ export type PanelSectionProps = {
   explanation?: string | React.ReactNode
 }
 
-export type PreppedCensusTableRow = { [key: string]: number } & {
-  GEOID: string
-}
-
 export type CensusLayerProps = {
   sourceLayer: string
   config: Omit<BoundaryConfig, 'lookupPath'>
@@ -276,6 +272,10 @@ export type UseZoomToLangFeatsExtent = (
 export type HidePopups = {
   boundaries: boolean
   language: boolean
+}
+
+export type CensusTableRow = { [key: string]: number } & {
+  GEOID: string
 }
 
 export type UseCensusSymbReturn = {

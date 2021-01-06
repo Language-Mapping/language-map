@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Theme } from '@material-ui/core/styles'
 
 import { InternalUse } from 'components/context/types'
-import { ArrayOfStringArrays } from 'components/config/types'
 
 // TODO: into config since it's used in multiple places...
 const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhood and Country
@@ -101,47 +100,3 @@ export const toProperCase = (srcText: string): string =>
     /\w\S*/g,
     (txt: string) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
   )
-
-// Convert a Google Sheets API response, which is an object with a "values"
-// property that consists of an array of arrays of strings. Much easier to work
-// with as JSON, and makes the column positioning in the source sheet largely
-// irrelevant (unless it falls outside the specified range).
-export const sheetsToJSON = <ReturnType extends unknown>(
-  rows: ArrayOfStringArrays,
-  omitFromIntConversion?: string[]
-): ReturnType[] => {
-  const headings = rows[0]
-  const notTheFirstRow = rows.slice(1)
-
-  // TODO: deal w/google's built-in `data.error` (adjust TS first)
-  if (omitFromIntConversion) {
-    return notTheFirstRow.map((row) => {
-      const rowAsJS = {} as ReturnType
-
-      // TODO: spread instead of specifying Object[property] like this?
-      headings.forEach((heading, index) => {
-        /* eslint-disable operator-linebreak */
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore // TODO: don't let TS win
-        rowAsJS[heading] = omitFromIntConversion.includes(heading)
-          ? row[index]
-          : parseInt(row[index], 10)
-        /* eslint-enable operator-linebreak */
-      })
-
-      return rowAsJS
-    })
-  }
-
-  return notTheFirstRow.map((row) => {
-    const rowAsJS = {} as ReturnType
-
-    headings.forEach((heading, index) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore // UGGGHHHHH
-      rowAsJS[heading] = row[index]
-    })
-
-    return rowAsJS
-  })
-}
