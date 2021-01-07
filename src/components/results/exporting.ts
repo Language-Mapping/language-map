@@ -51,14 +51,13 @@ export const exportCsv = (
 }
 
 // CRED: https://stackoverflow.com/a/19828943/1048518
+// CRED: https://stackoverflow.com/a/36449773/1048518
 const excludeUTFtext = (input: string): string => {
-  const max = input.length
+  // eslint-disable-next-line no-control-regex
+  const nonRomanExp = /[^\u0000-\u024F\u1E00-\u1EFF\u2C60-\u2C7F\uA720-\uA7FF]/g
+  const numMatchingChars = input.match(nonRomanExp)?.length
 
-  for (let i = 0; i < max; i += 1) {
-    if (input.charCodeAt(i) > 127) return ''
-  }
-
-  return input
+  return !numMatchingChars || numMatchingChars === input.length ? input : ''
 }
 
 // TODO: if switching UI headings to Gentium Alt, use that instead of Plus here
