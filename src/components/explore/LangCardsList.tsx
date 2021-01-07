@@ -14,9 +14,12 @@ export const LangCardsList: FC<{ field?: string }> = (props) => {
   const { field, value, language } = useParams() as Types.RouteMatch
 
   let filterByFormula
-  if (explicitField) filterByFormula = `{name} = '${language}'`
+
+  // Very important that the value is wrapped in DOUBLE quotes since several
+  // languages have single quotes in their name.
+  if (explicitField) filterByFormula = `{name} = "${language}"`
   else
-    filterByFormula = `AND(FIND('${value}', ARRAYJOIN({${field}})) != 0, {name} = '${language}')`
+    filterByFormula = `AND(FIND('${value}', ARRAYJOIN({${field}})) != 0, {name} = "${language}")`
 
   const { data, error, isLoading } = useAirtable('Language', {
     filterByFormula,
