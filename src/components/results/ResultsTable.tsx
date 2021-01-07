@@ -8,7 +8,6 @@ import { SimpleDialog } from 'components/generic/modals'
 import { paths as routes } from 'components/config/routes'
 import { DetailsPanel } from 'components/details'
 import { DetailsSchema } from 'components/context'
-import { MapToolsProvider } from 'components/context/MapToolsContext'
 import { MuiTableWithLangs } from './types'
 import { FILTER_CLASS } from './utils'
 import { ResultsToolbar } from './ResultsToolbar'
@@ -109,23 +108,21 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
   return (
     <>
       <Route path="/table/:id">
-        <MapToolsProvider>
-          <SimpleDialog
-            open
-            lessHorizPad // Details already has it
-            onClose={() =>
-              history.push({
-                pathname: routes.table,
-                state: {
-                  ...(loc.state as Types.HistoryState),
-                  pathname: loc.pathname,
-                },
-              })
-            }
-          >
-            <DetailsPanel routeBase="table" id="details-modal" />
-          </SimpleDialog>
-        </MapToolsProvider>
+        <SimpleDialog
+          open
+          lessHorizPad // Details already has it
+          onClose={() =>
+            history.push({
+              pathname: routes.table,
+              state: {
+                ...(loc.state as Types.HistoryState),
+                pathname: loc.pathname,
+              },
+            })
+          }
+        >
+          <DetailsPanel routeBase="table" id="details-modal" />
+        </SimpleDialog>
       </Route>
       <MaterialTable
         icons={config.icons}

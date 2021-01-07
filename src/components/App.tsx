@@ -13,6 +13,7 @@ import { paths as routes } from 'components/config/routes'
 import { AIRTABLE_API_KEY } from 'components/config'
 import { AppWrap } from './AppWrap'
 import { wpQueryIDs } from './about/config'
+import { MapToolsProvider } from './context/MapToolsContext'
 
 // // Provide the default query function to your app with defaultConfig
 // const mainQueryCache = new QueryCache({
@@ -56,7 +57,13 @@ export const App: FC = () => {
         </>
       )}
     >
-      <AppWrap />
+      <MapToolsProvider>
+        <AppWrap />
+        {/* TODO: understand this and create legit fallback element */}
+        <Suspense fallback={<div />}>
+          <LazyTable />
+        </Suspense>
+      </MapToolsProvider>
       <ReactQueryCacheProvider queryCache={wpQueryCache}>
         {/* ERROR: null is not an object (evaluating 'window.localStorage.hideWelcome') */}
         {/* FIXME: https://sentry.io/organizations/endangered-language-alliance/issues/1953110114/?project=5313356 */}
@@ -78,10 +85,6 @@ export const App: FC = () => {
           />
         </Route>
       </ReactQueryCacheProvider>
-      {/* TODO: understand this and create legit fallback element */}
-      <Suspense fallback={<div />}>
-        <LazyTable />
-      </Suspense>
       <ReactQueryDevtools />
     </Sentry.ErrorBoundary>
   )
