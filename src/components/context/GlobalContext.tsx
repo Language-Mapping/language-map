@@ -13,6 +13,7 @@ type Context = {
 
 const initialState = {
   clearFilters: 0,
+  filterHasRun: false,
   langFeatsLenCache: 0,
   langFeatures: [],
   panelState: 'default',

@@ -6,7 +6,6 @@ import { PanelWrap } from 'components/panels'
 import { TopBar, OffCanvasNav } from 'components/nav'
 import { Map } from 'components/map'
 import { LoadingBackdrop } from 'components/generic/modals'
-import { MapToolsProvider } from 'components/context'
 import { BottomNav } from './nav/BottomNav'
 
 type StyleProps = {
@@ -69,19 +68,17 @@ export const AppWrap: FC = () => {
       {!mapLoaded && <LoadingBackdrop />}
       <TopBar />
       <main className={classes.mainWrap}>
-        <MapToolsProvider>
-          <div className={classes.mapWrap}>
-            <Map {...propsForEveryone} setMapLoaded={setMapLoaded} />
-          </div>
-          <PanelWrap
-            {...propsForEveryone}
-            setPanelOpen={setPanelOpen}
-            openOffCanvasNav={(e: React.MouseEvent) => {
-              e.preventDefault()
-              setOffCanvasNavOpen(true)
-            }}
-          />
-        </MapToolsProvider>
+        <div className={classes.mapWrap}>
+          <Map {...propsForEveryone} setMapLoaded={setMapLoaded} />
+        </div>
+        <PanelWrap
+          {...propsForEveryone}
+          setPanelOpen={setPanelOpen}
+          openOffCanvasNav={(e: React.MouseEvent) => {
+            e.preventDefault()
+            setOffCanvasNavOpen(true)
+          }}
+        />
         <BottomNav setPanelOpen={setPanelOpen} />
       </main>
       <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />

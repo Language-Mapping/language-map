@@ -61,7 +61,9 @@ export const prepFormula = (
   if (value && midLevelArrayFields.includes(field))
     return `AND({${field}} != '', FIND('${value}', ARRAYJOIN({${field}})) != 0)`
 
-  if (value) return `{${field}} = '${value}'`
+  // Very important that the value is wrapped in DOUBLE quotes since several
+  // languages have single quotes in their name.
+  if (value) return `{${field}} = "${value}"`
 
   return ''
 }

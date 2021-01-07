@@ -11,12 +11,18 @@ export type StoreAction =
   | { type: 'CLEAR_FILTERS'; payload: number }
   | { type: 'SET_LANG_LAYER_FEATURES'; payload: InternalUse[] }
   | { type: 'SET_PANEL_STATE'; payload: PanelState }
+  | { type: 'SET_FILTER_HAS_RUN' }
 
 export type InitialState = {
   clearFilters: number
+  // Have filters been set for language features. This is used as an attempt to
+  // prevent the map from re-rendering on the first load, triggered by the
+  // length change of langFeatures.
+  filterHasRun: boolean
   langFeatures: InternalUse[]
-  langFeatsLenCache: number
   panelState: PanelState
+  // Handy for future reference without caching all the features
+  langFeatsLenCache: number
 }
 
 export type Statuses =

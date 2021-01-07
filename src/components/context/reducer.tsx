@@ -14,13 +14,17 @@ export const reducer = (
       return {
         ...state,
         langFeatures: action.payload,
-        // Handy for future reference without caching all the features
         langFeatsLenCache: state.langFeatsLenCache || action.payload.length,
       }
     case 'SET_PANEL_STATE':
       return {
         ...state,
         panelState: action.payload,
+      }
+    case 'SET_FILTER_HAS_RUN':
+      return {
+        ...state,
+        filterHasRun: true,
       }
     default:
       return state

@@ -126,6 +126,9 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
       payload: whittleLangFeats(currentData),
     })
 
+    // Let the map know it's okay to re-render (as opposed to on first load)
+    dispatch({ type: 'SET_FILTER_HAS_RUN' })
+
     const gangsAllHere = state.langFeatsLenCache === currentData.length
 
     dispatch({ type: 'CLEAR_FILTERS', payload: gangsAllHere ? 0 : 1 })

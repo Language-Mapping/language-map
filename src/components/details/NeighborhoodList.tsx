@@ -8,9 +8,8 @@ import { CustomCard, CardList } from 'components/explore'
 import { Explanation } from 'components/generic'
 import * as Types from './types'
 
-export const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {},
     divider: { marginBottom: '1.5em' },
     addlNeighbsList: {
       margin: 0,
@@ -87,7 +86,7 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
   )
 
   return (
-    <Typography className={classes.root}>
+    <>
       <Typography
         variant="h5"
         component="h3"
@@ -119,6 +118,6 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
         })}
       </CardList>
       {gahhhh.length ? More : null}
-    </Typography>
+    </>
   )
 }

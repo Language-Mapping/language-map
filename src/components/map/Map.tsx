@@ -49,7 +49,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   const { boundariesVisible } = contexts.useMapToolsState()
   const offset = useOffset(panelOpen)
   const breakpoint = useBreakpoint()
-  const { langFeatures } = state
+  const { langFeatures, filterHasRun } = state
   const { activeSymbGroupID } = symbLabelState
   const [beforeId, setBeforeId] = useState<string>('background')
 
@@ -83,7 +83,7 @@ export const Map: FC<Types.MapProps> = (props) => {
 
   // Filter lang feats in map on length change or symbology change
   useEffect((): void => {
-    if (!map || !mapLoaded) return
+    if (!map || !mapLoaded || !filterHasRun) return
 
     const getLangLayersIDs = utils.getLangLayersIDs(map.getStyle().layers || [])
 
@@ -92,7 +92,7 @@ export const Map: FC<Types.MapProps> = (props) => {
       getLangLayersIDs,
       getAllLangFeatIDs(langFeatures)
     )
-  }, [langFeatures.length, beforeId])
+  }, [langFeatures.length, beforeId, filterHasRun])
 
   // (Re)load symbol icons. Must be done on load and whenever `baselayer` is
   // changed, otherwise the images no longer exist.
@@ -122,6 +122,8 @@ export const Map: FC<Types.MapProps> = (props) => {
   }
 
   function onLoad(mapLoadEvent: MapLoadEvent) {
+    setMapLoaded(true)
+
     // `mapObj` should === `map` but avoid naming conflict just in case:
     const { target: mapObj } = mapLoadEvent
 
@@ -171,8 +173,6 @@ export const Map: FC<Types.MapProps> = (props) => {
       new AttributionControl({ compact: false }), // Give MB well-deserved cred
       'bottom-right'
     )
-
-    setMapLoaded(true)
 
     if (selFeatAttribs) {
       const settings = utils.getFlyToPointSettings(selFeatAttribs, offset)
