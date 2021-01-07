@@ -12,15 +12,28 @@ const getColumns = (columnList: ColumnList) =>
 
 const getData = (columns: ColumnList, initialData: LangRecordSchema[]) =>
   initialData.map((rowData) =>
-    columns.map((columnDef) => {
-      const { field } = columnDef
+    columns.map(({ field }) => {
       const value = rowData[field] as number | string
 
-      if (field === 'Global Speaker Total') return value.toLocaleString()
+      if (field === 'Global Speaker Total')
+        return value ? value.toLocaleString() : ''
+      if (field === 'Endonym') return excludeUTFtext(value as string)
 
-      return value
+      return Array.isArray(value) ? value.join(',\n') : value
     })
   )
+
+// Columns with React components inside them (e.g. "Local" indicator) are
+// objects, all others are strings. "Primary Location" needs manual adjustment.
+const getColumnTitle = (
+  title: string | React.ReactElement,
+  field: string
+): string => {
+  if (field === 'Primary Location') return 'Location'
+  if (typeof title === 'string') return title
+
+  return field
+}
 
 export const exportCsv = (
   columnList: ColumnList,
@@ -32,17 +45,20 @@ export const exportCsv = (
 
   builder
     .setDelimeter(',')
-    .setColumns(
-      columns.map((columnDef) => {
-        const { title, field } = columnDef
-
-        // Columns with React components inside them (e.g. "Local" indicator)
-        // are objects, all others are strings.
-        return typeof title === 'string' ? title : field
-      })
-    )
+    .setColumns(columns.map(({ title, field }) => getColumnTitle(title, field)))
     .addRows(data)
     .exportFile()
+}
+
+// CRED: https://stackoverflow.com/a/19828943/1048518
+const excludeUTFtext = (input: string): string => {
+  const max = input.length
+
+  for (let i = 0; i < max; i += 1) {
+    if (input.charCodeAt(i) > 127) return ''
+  }
+
+  return input
 }
 
 // TODO: if switching UI headings to Gentium Alt, use that instead of Plus here
@@ -78,36 +94,28 @@ export const exportPdf = (
       // Use `columns` instead of `head` to get more control over the columns,
       // and more importantly to be able to define the keys used by
       // `columnStyles` rather than relying on the default (index).
-      columns: columns.map((columnDef) => {
-        const { title, field } = columnDef
-
-        return {
-          dataKey: field,
-          // Columns with React components inside them (e.g. "Local" indicator)
-          // are objects, all others are strings.
-          // TODO: ^^^ create method to reuse this same logic for CSV columns
-          header: typeof title === 'string' ? title : field,
-        }
-      }),
+      columns: columns.map(({ title, field }) => ({
+        dataKey: field,
+        header: getColumnTitle(title, field),
+      })),
       margin: { horizontal: titleFontSize },
       rowPageBreak: 'avoid',
       startY: titleY + titleFontSize,
       theme: 'striped', // should be default already
-      // Document-wide styles
-      styles: {
-        font: 'GentiumPlus-Regular',
-      },
+      styles: { font: 'GentiumPlus-Regular' }, // document-wide styles
       columnStyles: {
-        'World Region': { cellWidth: 65 }, // "Southeastern" won't wrap
-        Neighborhood: { cellWidth: 100 }, // fits column heading
+        'World Region': { cellWidth: 75 }, // column title won't wrap
         Size: { cellWidth: 50 },
         Status: { cellWidth: 75 }, // "Community" fits
-        'Global Speaker Total': { halign: 'right' },
+        Country: { cellWidth: 100 }, // "Central African Republic" fits
+        Language: { cellWidth: 100 }, // lots of wrapping values
+        'Global Speaker Total': { halign: 'right', cellWidth: 65 }, // China!
       },
       headStyles: {
         fillColor: '#409685',
         fontSize: 11,
         valign: 'middle',
+        halign: 'left',
       },
       // Runs on each page, e.g. to show page numbers in footer
       didDrawPage(currentPageData) {
