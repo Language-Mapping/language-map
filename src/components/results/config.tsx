@@ -39,8 +39,7 @@ const COMM_STATUS_LOOKUP = {
 export const tableExportMeta = {
   pageTitle: 'Languages of New York City',
   filename: 'nyc-language-data',
-  fullDatasetURL:
-    'https://docs.google.com/spreadsheets/d/1CZLDDyxNM3euikks8NJfKt3ajNXToVGbwEObSOJkbfA/edit',
+  fullDatasetURL: 'https://airtable.com/shrqQo5FJHvhKtffs',
 }
 
 // TODO: Enum??
@@ -298,7 +297,6 @@ export const columns = [
     ...commonColProps,
     align: 'left',
     lookup: COMM_SIZES,
-    disableClick: true,
     customSort: (a, b) => {
       if (SIZE_MAP[a.Size] === SIZE_MAP[b.Size]) return 0
       if (SIZE_MAP[a.Size] > SIZE_MAP[b.Size]) return 1
@@ -315,7 +313,6 @@ export const columns = [
     title: <LocalColumnTitle text="Status" />,
     field: 'Status',
     ...commonColProps,
-    disableClick: true,
     searchable: false,
     render: (data) => <Cells.CommStatus data={data} />,
     lookup: COMM_STATUS_LOOKUP,
