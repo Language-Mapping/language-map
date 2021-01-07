@@ -73,14 +73,19 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
     }
 
     const newlyFiltered = columns.map(
-      (column: Types.ColumnWithTableData, i) => ({
-        ...column,
-        tableData: {
-          ...column.tableData,
-          filterValue:
-            colIndex === i ? newFilterVal : column.tableData.filterValue,
-        },
-      })
+      (column: Types.ColumnWithTableData, i) => {
+        let filterValue
+
+        if (colIndex !== i) filterValue = column.tableData.filterValue
+        // Lookup filter types have array values
+        else if (column.lookup) filterValue = [newFilterVal]
+        else filterValue = newFilterVal
+
+        return {
+          ...column,
+          tableData: { ...column.tableData, filterValue },
+        }
+      }
     )
 
     columns.forEach((col: Types.ColumnWithTableData, i: number) => {
