@@ -47,16 +47,6 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
     const colIndex = tdElem.cellIndex
     const { field } = columns[colIndex]
 
-    // Support multi-line value clicks, e.g. Country, Additional Neighborhoods
-    const elemWithFilter = path.find((elem) => {
-      const asElement = elem as HTMLElement
-
-      return asElement.classList?.contains(FILTER_CLASS)
-    }) as HTMLElement
-
-    // Safari will preserve newlines w/o `trim`
-    const newFilterVal = elemWithFilter?.innerText.trim() || rowData[field]
-
     if (field === 'id') {
       history.push(`${routes.details}/${rowData.id}`) // show feature in map
 
@@ -71,6 +61,22 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
 
       return
     }
+
+    // Support multi-line value clicks, e.g. Country, Additional Neighborhoods
+    const elemWithFilter = path.find((elem) => {
+      const asElement = elem as HTMLElement
+
+      return asElement.classList?.contains(FILTER_CLASS)
+    }) as HTMLElement
+
+    // Clicking a country flag cell above or below the content results in no
+    // element match, but we can't use the row value because it's an array and
+    // the table is expecting a string, and we can't convert it to string
+    // because then there won't be a match if there is a newline. 😠
+    if (!elemWithFilter && Array.isArray(rowData[field])) return
+
+    // Safari will preserve newlines w/o `trim`
+    const newFilterVal = elemWithFilter?.innerText.trim() || rowData[field]
 
     const newlyFiltered = columns.map(
       (column: Types.ColumnWithTableData, i) => {
