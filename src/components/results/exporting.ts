@@ -143,8 +143,8 @@ export const exportPdf = (
     doc.setFontSize(10)
     doc.setTextColor('#2196f3')
     doc.textWithLink(
-      'View full source dataset in spreadsheet format',
-      pageWidth / 2 - 95, // so fragile
+      'View full source dataset (includes non-Roman characters)',
+      pageWidth / 2 - 120, // so fragile
       titleY + 15,
       {
         url: config.tableExportMeta.fullDatasetURL,
