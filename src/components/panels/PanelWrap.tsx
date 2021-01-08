@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import { Route, Switch, useRouteMatch, useLocation } from 'react-router-dom'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
@@ -72,6 +72,12 @@ export const PanelWrap: FC<MapPanelProps> = (props) => {
 
     document.title = `${pageTitleCapitalized} - NYC Languages`
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    document?.activeElement?.blur() // CRED: stackoverflow.com/a/2568972/1048518
+  }, [loc])
 
   // Need the `id` in order to find unique element for `map.setPadding`
   return (
