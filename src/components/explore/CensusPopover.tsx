@@ -57,8 +57,8 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) =>
     setAnchorEl(event.currentTarget)
 
-  const handleCensusClick = (e: React.MouseEvent) => {
-    e.preventDefault()
+  const handleCensusClick = () => {
+    handleClose()
 
     // They should both exist, but the check above doesn't cover it
     if (censusField && censusScope) {
@@ -69,8 +69,6 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
 
       history.push(routes.local)
     }
-
-    handleClose()
   }
 
   const open = Boolean(anchorEl)
