@@ -27,3 +27,7 @@ export type PanelContentProps = {
 }
 
 export type PanelTitleBarProps = Pick<MapPanelProps, 'openOffCanvasNav'>
+
+export type PanelWrapStylesProps = {
+  panelOpen: boolean
+}

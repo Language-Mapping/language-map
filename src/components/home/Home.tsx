@@ -4,8 +4,7 @@ import { Typography } from '@material-ui/core'
 import { GoSearch } from 'react-icons/go'
 
 import { LegendPanel } from 'components/legend'
-import { usePanelRootStyles } from 'components/panels'
-import { useSymbAndLabelState } from 'components/context/SymbAndLabelContext'
+import { PanelContentSimple } from 'components/panels'
 import { SearchByOmnibox } from './SearchByOmnibox'
 import { FiltersWarning } from './FiltersWarning'
 
@@ -14,45 +13,32 @@ const useStyles = makeStyles((theme: Theme) =>
     panelMainHeading: {
       alignItems: 'center',
       display: 'flex',
-      fontSize: '1.5em',
+      fontSize: '1.5rem',
       '& > svg': {
         fill: theme.palette.text.secondary,
-        fontSize: '0.75em',
-        marginRight: '0.25em',
+        fontSize: '0.75rem',
+        marginRight: '0.25rem',
       },
     },
   })
 )
 
 export const Home: FC = () => {
-  const symbLabelState = useSymbAndLabelState()
   const classes = useStyles()
-  const panelRootClasses = usePanelRootStyles()
-  const elemID = 'filters-panel'
-  const { activeSymbGroupID } = symbLabelState
 
   return (
-    <>
-      {/* TODO: confirm this is actually working. Seemed to break Details. */}
-      {/* TODO: wire this back up here and anywhere else that needs it */}
-      {/* ...and rm all places that don't */}
-      {/*
-      {state.panelState === 'default' && <ScrollToTopOnMount elemID={elemID} />}
-      */}
-      <div className={panelRootClasses.root}>
-        <Typography
-          className={classes.panelMainHeading}
-          variant="h4"
-          component="h2"
-          id={elemID}
-        >
-          <GoSearch />
-          Search language communities
-        </Typography>
-        <SearchByOmnibox />
-        <FiltersWarning />
-        <LegendPanel activeGroupName={activeSymbGroupID} />
-      </div>
-    </>
+    <PanelContentSimple>
+      <Typography
+        className={classes.panelMainHeading}
+        variant="h4"
+        component="h2"
+      >
+        <GoSearch />
+        Search language communities
+      </Typography>
+      <SearchByOmnibox />
+      <FiltersWarning />
+      <LegendPanel />
+    </PanelContentSimple>
   )
 }

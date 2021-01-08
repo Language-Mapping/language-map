@@ -4,15 +4,15 @@ import { Typography, Box } from '@material-ui/core'
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 import { SubtleText } from 'components/generic'
-import * as Types from './types'
+import { PanelSectionProps } from './types'
 import { useLocalPanelStyles } from './styles'
 
-export const LocationSearchContent: FC<Types.PanelSectionProps> = (props) => {
+export const LocationSearchContent: FC<PanelSectionProps> = (props) => {
   const { children, explanation, heading } = props
-  const classes = useLocalPanelStyles()
+  const { root } = useLocalPanelStyles()
 
   return (
-    <Box className={classes.root}>
+    <Box className={root}>
       {heading && (
         <Typography variant="h5" component="h3">
           {heading}

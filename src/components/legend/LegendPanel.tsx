@@ -2,9 +2,9 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { LayerSymbSelect, LayerLabelSelect, Legend } from 'components/legend'
+import { useSymbAndLabelState } from 'components/context'
 import { WorldRegionMap } from './WorldRegionMap'
-import * as Types from './types'
-import * as hooks from './hooks'
+import { useLegendConfig } from './hooks'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -42,8 +42,8 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const LegendPanel: FC<Types.LegendPanelProps> = (props) => {
-  const { activeGroupName } = props
+export const LegendPanel: FC = () => {
+  const { activeSymbGroupID } = useSymbAndLabelState()
   const classes = useStyles()
   const {
     error,
@@ -53,10 +53,12 @@ export const LegendPanel: FC<Types.LegendPanelProps> = (props) => {
     routeable,
     legendSummary,
     sourceCredits,
-  } = hooks.useLegendConfig(activeGroupName)
+  } = useLegendConfig(activeSymbGroupID)
 
   if (error)
-    return <p>Something went wrong setting up the {activeGroupName} legend.</p>
+    return (
+      <p>Something went wrong setting up the {activeSymbGroupID} legend.</p>
+    )
 
   return (
     <div className={classes.root}>
@@ -64,14 +66,14 @@ export const LegendPanel: FC<Types.LegendPanelProps> = (props) => {
         <LayerSymbSelect />
         <LayerLabelSelect />
       </div>
-      {activeGroupName === 'World Region' && <WorldRegionMap />}
+      {activeSymbGroupID === 'World Region' && <WorldRegionMap />}
       {isLoading && <p>Loading legend info...</p>}
       {!isLoading && (
         <div className={classes.groupedLegend}>
           {data.map((item) => (
             <Legend
               key={item.groupName}
-              routeName={routeable ? activeGroupName : undefined}
+              routeName={routeable ? activeSymbGroupID : undefined}
               groupName={legendHeading || item.groupName}
               legendSummary={legendSummary}
               sourceCredits={sourceCredits}

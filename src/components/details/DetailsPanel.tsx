@@ -4,7 +4,7 @@ import { Typography } from '@material-ui/core'
 
 import { RecordDescription } from 'components/results'
 import { DetailedIntro } from 'components/details'
-import { usePanelRootStyles } from 'components/panels/PanelContent'
+import { PanelContentSimple } from 'components/panels/PanelContent'
 import { LoadingIndicatorPanel } from 'components/generic/modals'
 import { NoFeatSel } from './NoFeatSel'
 import { useDetails } from './hooks'
@@ -26,8 +26,6 @@ const DetailsWrap: FC = () => {
 
   return (
     <>
-      {/* TODO: something that works */}
-      {/* {state.panelState === 'default' && ( <ScrollToTopOnMount elemID={elemID} trigger={loc.pathname} /> )} */}
       <DetailedIntro data={data} isInstance />
       {/* There should always be a description, but checking just in case */}
       {descripID && (
@@ -45,11 +43,10 @@ const DetailsWrap: FC = () => {
 }
 
 export const DetailsPanel: FC<DetailsPanelProps> = (props) => {
-  const { routeBase = 'details', id } = props
-  const panelRootClasses = usePanelRootStyles()
+  const { routeBase = 'details' } = props
 
   return (
-    <div className={panelRootClasses.root} id={id || routeBase}>
+    <PanelContentSimple>
       <Switch>
         <Route path={`/${routeBase}/:id`}>
           <DetailsWrap />
@@ -58,6 +55,6 @@ export const DetailsPanel: FC<DetailsPanelProps> = (props) => {
           <NoFeatSel />
         </Route>
       </Switch>
-    </div>
+    </PanelContentSimple>
   )
 }

@@ -5,10 +5,8 @@ import { BottomNavigation, BottomNavigationAction } from '@material-ui/core'
 
 import { RouteLocation } from 'components/config/types'
 import { navRoutes, panelWidths } from '../panels/config'
-
-type BottomNav = {
-  setPanelOpen: React.Dispatch<boolean>
-}
+import { BOTTOM_NAV_HEIGHT_MOBILE } from './config'
+import { BottomNavProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.down('sm')]: {
         boxShadow: '0px -5px 5px 0px rgba(0,0,0,0.1)',
         borderRadius: 0,
-        height: 48, // TODO: store as var somewhere
+        height: BOTTOM_NAV_HEIGHT_MOBILE,
       },
       [theme.breakpoints.up('md')]: {
         left: 24,
@@ -81,7 +79,7 @@ const initialSubRoutes = {
   Explore: '/Explore',
 } as { [key: string]: RouteLocation }
 
-export const BottomNav: FC<BottomNav> = (props) => {
+export const BottomNav: FC<BottomNavProps> = (props) => {
   const { setPanelOpen } = props
   const classes = useStyles()
   const loc = useLocation()

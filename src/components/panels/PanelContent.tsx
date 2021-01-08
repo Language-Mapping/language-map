@@ -3,24 +3,22 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
 import { FiltersWarning } from 'components/home/FiltersWarning'
-import * as Types from './types'
+import { PanelContentProps } from './types'
+import { MOBILE_PANEL_HEADER_HT } from './config'
 
 export const usePanelRootStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      bottom: 0,
+      overflowX: 'hidden',
       overflowY: 'auto',
-      padding: '1.25rem 0.75rem',
+      padding: '1.25rem 0.8rem',
+      position: 'absolute',
+      top: MOBILE_PANEL_HEADER_HT,
+      width: '100%',
       [theme.breakpoints.up('sm')]: {
-        padding: '1.75em 1.35em',
+        padding: '1.75rem 1.35rem',
       },
-    },
-  })
-)
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      overflowY: 'auto',
     },
     introWrap: {
       marginBottom: '1rem',
@@ -46,6 +44,10 @@ const useStyles = makeStyles((theme: Theme) =>
         marginRight: '0.5rem',
       },
     },
+    // FIXME: long lines like "Central African Republic" (flex/wrap weird)
+    // titleText: {
+    // flex: 0, // makes super long words not create too much empty space
+    // },
     // e.g. Endonym
     subtitle: {
       fontSize: '1.25rem',
@@ -64,19 +66,17 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const PanelContentSimple: FC = (props) => {
   const { children } = props
-  const panelRootClasses = usePanelRootStyles()
+  const { root } = usePanelRootStyles()
 
-  return <div className={panelRootClasses.root}>{children}</div>
+  return <div className={root}>{children}</div>
 }
 
-// TODO: consider swipeable views for moving between panels:
+// WISHLIST: consider swipeable views for moving between panels:
 // https://react-swipeable-views.com/demos/demos/
-// TODO: git mv into Panels.tsx
-export const PanelContent: FC<Types.PanelContentProps> = (props) => {
+export const PanelContent: FC<PanelContentProps> = (props) => {
   const { children, title, icon, subtitle } = props
   const { subSubtitle, extree, introParagraph } = props
-  const classes = useStyles()
-  const panelRootClasses = usePanelRootStyles()
+  const classes = usePanelRootStyles()
 
   const Intro = (
     <Typography className={classes.introWrap} component="header">
@@ -99,7 +99,7 @@ export const PanelContent: FC<Types.PanelContentProps> = (props) => {
 
   // TODO: ??? `id` in order to find unique element for `map.setPadding` ???
   return (
-    <div className={`${panelRootClasses.root} ${classes.root}`}>
+    <div className={classes.root}>
       {Intro}
       <FiltersWarning />
       <div>{children}</div>

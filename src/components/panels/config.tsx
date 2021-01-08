@@ -9,13 +9,14 @@ import { LocalPanel } from 'components/local'
 import { DetailsPanel } from 'components/details'
 import { Explore, LangCardsList, MidLevelExplore } from 'components/explore'
 
+import { LocalPanelProps } from 'components/map/types'
 import { MapPanel } from 'components/panels/types'
 import { NavItemWithBadge } from './NavItemWithBadge'
 
-export const MOBILE_PANEL_HEADER_HT = '3rem'
+export const MOBILE_PANEL_HEADER_HT = '2rem'
 export const panelWidths = { mid: 450, midLarge: 600 }
 
-// For the bottom bar nav panel
+// Bottom bar nav panel
 export const navRoutes: MapPanel[] = [
   {
     heading: 'Home',
@@ -45,7 +46,9 @@ export const navRoutes: MapPanel[] = [
     icon: <BiMapPin />,
     component: null,
     // eslint-disable-next-line react/display-name
-    renderComponent: (props) => <LocalPanel {...props} />,
+    renderComponent: (props: LocalPanelProps): React.ReactNode => (
+      <LocalPanel {...props} />
+    ),
     rootPath: '/local',
   },
   {

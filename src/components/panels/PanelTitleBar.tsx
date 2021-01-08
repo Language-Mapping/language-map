@@ -6,22 +6,25 @@ import { GoInfo } from 'react-icons/go'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { Breadcrumbs } from 'components/explore'
-import * as Types from './types'
+import { PanelTitleBarProps } from './types'
+import { MOBILE_PANEL_HEADER_HT } from './config'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       alignItems: 'center',
       backgroundColor: theme.palette.primary.dark,
+      borderTopLeftRadius: 4, // same as bottom left/right in nav bar
+      borderTopRightRadius: 4, // same as bottom left/right in nav bar
       boxShadow: '0 2px 7px hsla(0, 0%, 0%, 0.25)',
       display: 'flex',
       fontSize: '0.8rem',
-      flexShrink: 0,
+      height: MOBILE_PANEL_HEADER_HT,
       justifyContent: 'space-between',
       padding: '0.5em',
-      position: 'sticky',
+      position: 'absolute',
       top: 0,
-      zIndex: 1,
+      width: '100%',
       '& a': {
         whiteSpace: 'nowrap',
         color: 'hsla(0, 100%, 100%, 0.85)',
@@ -47,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const PanelTitleBar: FC<Types.PanelTitleBarProps> = (props) => {
+export const PanelTitleBar: FC<PanelTitleBarProps> = (props) => {
   const { children, openOffCanvasNav } = props
   const classes = useStyles()
 
@@ -61,7 +64,7 @@ export const PanelTitleBar: FC<Types.PanelTitleBarProps> = (props) => {
         <Link component={RouterLink} to="/help">
           <AiOutlineQuestionCircle />
         </Link>
-        {/* TODO: add maximize btn on mobile */}
+        {/* WISHLIST: add maximize btn on mobile */}
         {children}
       </div>
     </div>

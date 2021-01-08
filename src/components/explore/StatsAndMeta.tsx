@@ -6,12 +6,12 @@ import { StatsAndMetaProps } from 'components/explore/types'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'inline-flex',
+      display: 'flex',
       flexWrap: 'wrap',
       fontSize: '0.75rem',
       justifyContent: 'center',
       listStyle: 'none',
-      margin: 0,
+      margin: '0.5rem 0',
       padding: 0,
       '& > :not(:last-child)': {
         borderRight: `solid 1px ${theme.palette.text.secondary}`,

@@ -11,23 +11,22 @@ import { SimplePopover } from 'components/generic'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
 import { useLocalPanelStyles } from './styles'
+import { useOffset } from './hooks'
+import { flyToBounds, flyToPoint } from './utils'
+import { LocalPanelProps, GeocodeResult, BoundsArray } from './types'
 
-import * as hooks from './hooks'
-import * as utils from './utils'
-import * as Types from './types'
-
-export const GeocoderPopout: FC<Types.LocalPanelProps> = (props) => {
+export const GeocoderPopout: FC<LocalPanelProps> = (props) => {
   const { mapRef, panelOpen } = props
   const classes = useLocalPanelStyles()
   const { smallerText, switchFormCtrlRoot } = classes
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
   const { width, height } = useWindowResize()
-  const offset = hooks.useOffset(panelOpen)
+  const offset = useOffset(panelOpen)
   const { boundariesVisible } = useMapToolsState()
   const mapToolsDispatch = useMapToolsDispatch()
 
   // TODO: most def different file
-  const handleGeocodeResult = ({ result }: Types.GeocodeResult) => {
+  const handleGeocodeResult = ({ result }: GeocodeResult) => {
     if (!mapRef.current) return
 
     const map: Map = mapRef.current.getMap()
@@ -41,12 +40,12 @@ export const GeocoderPopout: FC<Types.LocalPanelProps> = (props) => {
         bounds: [
           [bbox[0], bbox[1]],
           [bbox[2], bbox[3]],
-        ] as Types.BoundsArray,
+        ] as BoundsArray,
         padding: 25,
         offset,
       }
 
-      utils.flyToBounds(map, settings, null)
+      flyToBounds(map, settings, null)
     } else {
       const settings = {
         latitude: center[1],
@@ -56,7 +55,7 @@ export const GeocoderPopout: FC<Types.LocalPanelProps> = (props) => {
         offset,
       }
 
-      utils.flyToPoint(map, settings, null, text)
+      flyToPoint(map, settings, null, text)
     }
   }
 
@@ -83,13 +82,13 @@ export const GeocoderPopout: FC<Types.LocalPanelProps> = (props) => {
 
   return (
     <>
-      <div ref={geocoderContainerRef} />
+      <div ref={geocoderContainerRef} style={{ margin: '0.75rem 0' }} />
       <FormControlLabel
         // Prevent off-canvas from closing (but we want that to happen for all
         // the other elements in the off-canvas).
         onClick={(event) => event.stopPropagation()}
         classes={{ label: smallerText, root: switchFormCtrlRoot }}
-        style={{ marginTop: '0.5em' }}
+        style={{ marginTop: '0.5rem' }}
         control={
           <Switch
             checked={boundariesVisible}
