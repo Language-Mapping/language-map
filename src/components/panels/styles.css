@@ -1,3 +1,5 @@
+/* CRED: for a lot of the <CSSTransition> stuff */
+/* coursework.vschool.io/react-transitions-with-react-transition-group/ */
 .fade-enter {
   opacity: 0;
   position: absolute;
@@ -7,9 +9,6 @@
   opacity: 1;
   transition: all 350ms linear 350ms;
 }
-
-/* TODO: rm once confirmed everything's cool */
-/* .fade-exit { opacity: 1; } */
 
 .fade-exit.fade-exit-active {
   transform: translateY(20px);

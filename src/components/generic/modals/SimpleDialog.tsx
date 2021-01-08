@@ -31,7 +31,9 @@ const useStyles = makeStyles((theme: Theme) =>
 // TODO: don't make close go back in history, or some other smooth way:
 // https://stackoverflow.com/questions/47409586
 export const SimpleDialog: FC<DialogProps & StyleProps> = (props) => {
-  const { onClose, children, lessHorizPad } = props
+  // CRED: https://dev.to/darksmile92/js-use-spread-to-exclude-properties-1km9
+  const { lessHorizPad, ...propsCopy } = { ...props } // avoid DevTools warning
+  const { onClose, children } = props
   const classes = useStyles({ lessHorizPad })
   const theme = useTheme()
   const lilGuy = useMediaQuery(theme.breakpoints.only('xs'))
@@ -43,7 +45,7 @@ export const SimpleDialog: FC<DialogProps & StyleProps> = (props) => {
       maxWidth="md"
       fullScreen={lilGuy}
       TransitionComponent={SlideUp}
-      {...props}
+      {...propsCopy}
     >
       <DialogCloseBtn onClose={onClose} />
       <DialogContent className={classes.dialogContent}>

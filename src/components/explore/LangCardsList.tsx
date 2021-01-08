@@ -5,13 +5,12 @@ import { DetailedIntro, NeighborhoodList } from 'components/details'
 import { LoadingIndicatorPanel } from 'components/generic/modals'
 import { PanelContentSimple } from 'components/panels'
 import { useAirtable } from './hooks'
-
-import * as Types from './types'
+import { RouteMatch } from './types'
 
 // aka pre-Details, aka Language Profile
 export const LangCardsList: FC<{ field?: string }> = (props) => {
   const { field: explicitField } = props
-  const { field, value, language } = useParams() as Types.RouteMatch
+  const { field, value, language } = useParams<RouteMatch>()
 
   let filterByFormula
 

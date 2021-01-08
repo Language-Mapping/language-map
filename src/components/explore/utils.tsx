@@ -1,4 +1,4 @@
-import { DetailsSchema } from 'components/context'
+import { RouteableTableNames } from 'components/context'
 import { TonsWithAddl } from './types'
 
 // Create nice listy thing w/truncation like
@@ -31,7 +31,7 @@ export const pluralTextIfNeeded = (length: number, text = 'item'): string => {
 //     value existence and then a "contains" since there does not appear to be a
 //     way to filter arrays in Airtable.
 export const prepFormula = (
-  field: keyof DetailsSchema,
+  field: RouteableTableNames,
   value?: string
 ): string => {
   if (field === 'Language') return '' // /Explore/Language
@@ -44,37 +44,38 @@ export const prepFormula = (
     'Town',
   ]
 
+  if (!value) return ''
+
   // Neighborhood instance, e.g. /Explore/Neighborhood/Astoria should include
   // additional neighborhoods in the query.
-  if (value && field === 'Neighborhood')
+  if (field === 'Neighborhood')
     return `AND(
-      {${field}} != '',
+      {Neighborhood} != '',
       FIND(
         '${value}',
-        CONCATENATE(
-          ARRAYJOIN({${field}}),
-          ARRAYJOIN({addlNeighborhoods})
-        )
+        CONCATENATE( ARRAYJOIN({Neighborhood}), ARRAYJOIN({addlNeighborhoods}) )
       ) != 0
     )`
 
-  if (value && midLevelArrayFields.includes(field))
+  if (midLevelArrayFields.includes(field))
     return `AND({${field}} != '', FIND('${value}', ARRAYJOIN({${field}})) != 0)`
 
   // Very important that the value is wrapped in DOUBLE quotes since several
   // languages have single quotes in their name.
-  if (value) return `{${field}} = "${value}"`
-
-  return ''
+  return `{${field}} = "${value}"`
 }
 
 // Mid-level fields are consistent except a few tables need an extra field
-export const prepFields = (tableName: keyof DetailsSchema): string[] => {
+export const prepFields = (
+  tableName: RouteableTableNames,
+  includeNeighborhood?: boolean // gross extra step for Airtable FIND issue
+): string[] => {
   if (tableName === 'Language')
     return [
       'Endonym',
       'name',
       'Primary Locations',
+      ...(includeNeighborhood ? ['Neighborhood'] : []),
       'worldRegionColor',
       'addlNeighborhoods',
     ]

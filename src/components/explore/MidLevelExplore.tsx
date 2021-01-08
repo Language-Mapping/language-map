@@ -36,9 +36,14 @@ export const AddlLanguages: FC<{ data: LangLevelSchema[]; value?: string }> = (
   props
 ) => {
   const { data } = props
-  const { value } = useParams<{ value: string }>()
+  const { value } = useParams<{ field: string; value: string }>()
+
   const addlLanguages = data.filter(
-    (row) => !row['Primary Locations'].includes(value)
+    (row) =>
+      // Gross extra step for Airtable FIND issue, which returns in ARRAYJOIN
+      // things like "East Elmhurst" in an "Elmhurst" query:
+      row.addlNeighborhoods?.includes(value) &&
+      !row['Primary Locations'].includes(value)
   )
 
   if (!addlLanguages.length) return null
@@ -60,12 +65,11 @@ export const AddlLanguages: FC<{ data: LangLevelSchema[]; value?: string }> = (
 }
 
 export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
-  const { field, value } = useParams() as RouteMatch
+  const { field, value } = useParams<RouteMatch>()
   const { tableName = field, sortByField = 'name' } = props
   const { url } = useRouteMatch()
-
   const filterByFormula = prepFormula(field, value)
-  const fields = prepFields(tableName)
+  const fields = prepFields(tableName, field === 'Neighborhood')
 
   const { data, error, isLoading } = useAirtable<TonsWithAddl>(tableName, {
     fields,
