@@ -1,5 +1,3 @@
-import { LangRecordSchema } from 'components/context/types'
-
 export type IconID =
   | '_tree'
   | '_book'
@@ -26,10 +24,6 @@ export type LegendSwatchProps = LegendSwatchBareMin & {
   component?: React.ElementType
   labelStyleOverride?: React.CSSProperties
   to?: string
-}
-
-export type LegendPanelProps = {
-  activeGroupName: string | keyof LangRecordSchema
 }
 
 export type AtSchemaRecord = { id: string; fields: AtSchemaFields }

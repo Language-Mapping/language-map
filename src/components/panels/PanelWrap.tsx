@@ -1,19 +1,60 @@
 import React, { FC } from 'react'
 import { Route, Switch, useRouteMatch, useLocation } from 'react-router-dom'
+import { TransitionGroup, CSSTransition } from 'react-transition-group'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Paper } from '@material-ui/core'
 
+import { panelWidths } from 'components/panels/config'
 import { nonNavRoutesConfig } from './config'
-import { useStyles } from './styles'
 import { CloseBtn } from './PanelCloseBtn'
 import { PanelTitleBar } from './PanelTitleBar'
-import { MapPanelProps } from './types'
+import { MapPanelProps, PanelWrapStylesProps } from './types'
 
-// TODO: consider swipeable views for moving between panels:
+import './styles.css'
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      borderBottomLeftRadius: 0, // override paper
+      borderBottomRightRadius: 0, // override paper
+      bottom: 48, // default is set directly in MUI to 56
+      boxShadow: '0 -2px 7px hsla(0, 0%, 0%, 0.25)',
+      left: 0,
+      opacity: (props: PanelWrapStylesProps) => (props.panelOpen ? 1 : 0),
+      position: 'absolute',
+      right: 0,
+      top: '45%',
+      transition: '300ms ease all',
+      transform: (props: PanelWrapStylesProps) =>
+        `translateY(${props.panelOpen ? 0 : '100%'})`,
+      [theme.breakpoints.up('sm')]: {
+        left: 8,
+        right: 8,
+      },
+      [theme.breakpoints.up('md')]: {
+        top: 24,
+        left: 24,
+        bottom: 92, // 36 + 56 (aka BottomNav `bottom` + `height`)
+        width: panelWidths.mid,
+      },
+      [theme.breakpoints.up('xl')]: {
+        width: panelWidths.midLarge,
+      },
+      '& .MuiInputLabel-formControl': {
+        color: theme.palette.text.secondary,
+        fontSize: '1rem',
+      },
+    },
+  })
+)
+
+// WISHLIST: consider swipeable views for moving between panels:
 // https://react-swipeable-views.com/demos/demos/
 export const PanelWrap: FC<MapPanelProps> = (props) => {
   const { setPanelOpen, panelOpen, openOffCanvasNav } = props
   const classes = useStyles({ panelOpen })
-  const { pathname } = useLocation()
+  const loc = useLocation()
+  const { pathname } = loc
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // TODO: 😞
   const isPageWithID = useRouteMatch(['/details/:id', '/table/:id'])?.params.id
@@ -38,18 +79,22 @@ export const PanelWrap: FC<MapPanelProps> = (props) => {
       <PanelTitleBar openOffCanvasNav={openOffCanvasNav}>
         <CloseBtn onClick={() => setPanelOpen(false)} />
       </PanelTitleBar>
-      <Switch>
-        {nonNavRoutesConfig.map((config) => (
-          <Route
-            exact={config.exact}
-            path={config.rootPath}
-            key={config.rootPath}
-          >
-            {config.component ||
-              (config.renderComponent && config.renderComponent(props))}
-          </Route>
-        ))}
-      </Switch>
+      <TransitionGroup>
+        <CSSTransition key={loc.key} classNames="fade" timeout={950} appear>
+          <Switch location={loc}>
+            {nonNavRoutesConfig.map((config) => (
+              <Route
+                exact={config.exact}
+                path={config.rootPath}
+                key={config.rootPath}
+              >
+                {config.component ||
+                  (config.renderComponent && config.renderComponent(props))}
+              </Route>
+            ))}
+          </Switch>
+        </CSSTransition>
+      </TransitionGroup>
     </Paper>
   )
 }

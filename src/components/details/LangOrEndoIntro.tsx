@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     heading: {
       textShadow: '1px 1px 3px hsla(0, 0%, 0%, 0.45)',
-      // TODO: cool if you can make this work: position: 'sticky', top: '3rem',
+      // WISHLIST: cool if you can do it: position: 'sticky', top: '3rem',
       fontSize: (props: StyleProps) => (props.tooLong ? '2rem' : '2.4rem'),
       [theme.breakpoints.up('sm')]: {
         // Safari and/or Firefox seem to need smaller font than Chrome
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     subHeading: {
       fontSize: '1.25rem',
       lineHeight: 1.25,
-      display: 'block',
+      display: 'inline-block',
       color: theme.palette.primary.light,
     },
   })

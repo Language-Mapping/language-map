@@ -58,18 +58,18 @@ export const useStyles = makeStyles((theme: Theme) =>
 export const useLocalPanelStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      marginBottom: '1.25rem',
       '& > * + *': {
-        marginTop: '0.25em',
+        marginTop: '0.25rem',
       },
       '& .mapboxgl-ctrl-geocoder': {
         maxWidth: '100%',
         width: 'auto',
       },
       '& .mapboxgl-ctrl-geocoder--input': {
-        padding: '0.25em 2em',
+        padding: '0.15rem 1rem 0.15rem 2.25rem', // huge horiz padding for icon
       },
     },
-    // Toggle switches
     switchFormCtrlRoot: {
       marginLeft: 0,
     },

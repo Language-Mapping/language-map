@@ -7,6 +7,7 @@ import { TopBar, OffCanvasNav } from 'components/nav'
 import { Map } from 'components/map'
 import { LoadingBackdrop } from 'components/generic/modals'
 import { BottomNav } from './nav/BottomNav'
+import { BOTTOM_NAV_HEIGHT_MOBILE } from './nav/config'
 
 type StyleProps = {
   panelOpen: boolean
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     mapWrap: {
       position: 'fixed',
-      bottom: 56,
+      bottom: BOTTOM_NAV_HEIGHT_MOBILE,
       left: 0,
       right: 0,
       top: 0,

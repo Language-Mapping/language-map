@@ -6,7 +6,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       color: theme.palette.text.secondary,
-      fontSize: '0.7em',
+      fontSize: '0.7rem',
+      marginBottom: '0.5rem',
     },
   })
 )
