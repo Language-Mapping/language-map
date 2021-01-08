@@ -129,13 +129,16 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
           }
         />
       ))}
-      {!isInstance && macro && (
-        <Chip
-          text={macro}
-          icon={<IoIosPeople />}
-          to={`${routes.explore}/Macrocommunity/${macro}`}
-        />
-      )}
+      {!isInstance &&
+        macro &&
+        macro.map((macroName, i) => (
+          <Chip
+            key={macroName}
+            text={macroName}
+            to={`${routes.explore}/Macrocommunity/${macroName}`}
+            icon={<IoIosPeople />}
+          />
+        ))}
       {children}
     </div>
   )

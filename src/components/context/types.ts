@@ -60,7 +60,7 @@ export type LangLevelOptional = CensusFields &
     Audio: string
     descriptionID: string
     Glottocode: string
-    Macrocommunity: string
+    Macrocommunity: string[]
     Neighborhood: string[]
     Town: string[]
     Video: string
