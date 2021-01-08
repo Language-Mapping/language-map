@@ -9,7 +9,7 @@ import { useMapToolsDispatch, useMapToolsState } from 'components/context'
 import { CensusIntro } from 'components/local'
 import { Chip } from 'components/details'
 import { DialogCloseBtn } from 'components/generic/modals'
-import { paths as routes } from 'components/config/routes'
+import { routes } from 'components/config/api'
 
 import * as Types from './types'
 

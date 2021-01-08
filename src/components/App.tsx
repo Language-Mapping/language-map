@@ -9,7 +9,7 @@ import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { AboutPageView, WelcomeDialog } from 'components/about'
 import { wpQueryCache } from 'components/about/utils'
-import { paths as routes } from 'components/config/routes'
+import { routes } from 'components/config/api'
 import { AIRTABLE_API_KEY } from 'components/config'
 import { AppWrap } from './AppWrap'
 import { wpQueryIDs } from './about/config'

@@ -5,7 +5,7 @@ import MaterialTable from 'material-table'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { SimpleDialog } from 'components/generic/modals'
-import { paths as routes } from 'components/config/routes'
+import { routes } from 'components/config/api'
 import { DetailsPanel } from 'components/details'
 import { DetailsSchema } from 'components/context'
 import { MuiTableWithLangs } from './types'

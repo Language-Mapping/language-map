@@ -3,7 +3,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { Button } from '@material-ui/core'
 import { FaRandom } from 'react-icons/fa'
 
-import { paths as routes } from 'components/config/routes'
+import { routes } from 'components/config/api'
 import { GlobalContext } from 'components/context'
 
 export const RandomLinkBtn: FC = () => {
