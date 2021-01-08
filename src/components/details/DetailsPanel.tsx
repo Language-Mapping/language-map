@@ -43,10 +43,10 @@ const DetailsWrap: FC = () => {
 }
 
 export const DetailsPanel: FC<DetailsPanelProps> = (props) => {
-  const { routeBase = 'details' } = props
+  const { routeBase = 'details', staticPos } = props
 
   return (
-    <PanelContentSimple>
+    <PanelContentSimple staticPos={staticPos}>
       <Switch>
         <Route path={`/${routeBase}/:id`}>
           <DetailsWrap />

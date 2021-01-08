@@ -36,4 +36,9 @@ export type UseDetails = {
 
 export type DetailsRecord = { id: string; fields: DetailsSchema }
 
-export type DetailsPanelProps = { routeBase?: string; id?: string }
+export type DetailsPanelProps = {
+  routeBase?: string
+  id?: string
+  // Override absolute position of PanelContent, e.g. for in-table Details modal
+  staticPos?: boolean
+}

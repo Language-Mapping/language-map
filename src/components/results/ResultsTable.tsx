@@ -132,7 +132,7 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
             })
           }
         >
-          <DetailsPanel routeBase="table" id="details-modal" />
+          <DetailsPanel routeBase="table" id="details-modal" staticPos />
         </SimpleDialog>
       </Route>
       <MaterialTable

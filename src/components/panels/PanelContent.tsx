@@ -64,11 +64,17 @@ export const usePanelRootStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const PanelContentSimple: FC = (props) => {
-  const { children } = props
+export const PanelContentSimple: FC<{ staticPos?: boolean }> = (props) => {
+  const { children, staticPos } = props
   const { root } = usePanelRootStyles()
+  const staticStyle: React.CSSProperties = { position: 'static' }
+  const style = staticPos ? staticStyle : undefined
 
-  return <div className={root}>{children}</div>
+  return (
+    <div className={root} style={style}>
+      {children}
+    </div>
+  )
 }
 
 // WISHLIST: consider swipeable views for moving between panels:
