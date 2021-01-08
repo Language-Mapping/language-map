@@ -14,11 +14,11 @@ export const LangCardsList: FC<{ field?: string }> = (props) => {
 
   let filterByFormula
 
-  // Very important that the value is wrapped in DOUBLE quotes since several
-  // languages have single quotes in their name.
+  // Very important that things are wrapped in DOUBLE quotes since some values
+  // contain single quotes.
   if (explicitField) filterByFormula = `{name} = "${language}"`
   else
-    filterByFormula = `AND(FIND('${value}', ARRAYJOIN({${field}})) != 0, {name} = "${language}")`
+    filterByFormula = `AND(FIND("${value}", ARRAYJOIN({${field}})) != 0, {name} = "${language}")`
 
   const { data, error, isLoading } = useAirtable('Language', {
     filterByFormula,

@@ -83,7 +83,7 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
     error: landingError,
   } = useAirtable('Schema', {
     fields: ['name', 'definition', 'plural'],
-    filterByFormula: `{name} = '${tableName}'`,
+    filterByFormula: `{name} = "${tableName}"`,
   })
 
   if (isLoading || isLandingLoading) return <LoadingIndicatorPanel />

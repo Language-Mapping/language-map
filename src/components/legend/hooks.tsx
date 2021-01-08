@@ -11,7 +11,7 @@ export const useLegendConfig: Types.UseLegendConfig = (tableName) => {
     isLoading: isSymbLoading,
     error: symbError,
   } = useAirtable<Types.AtSchemaFields>('Schema', {
-    filterByFormula: `{name} = '${tableName}'`,
+    filterByFormula: `{name} = "${tableName}"`,
     maxRecords: 1,
   })
 
