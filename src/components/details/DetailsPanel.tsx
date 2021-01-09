@@ -36,7 +36,15 @@ export const DetailsPanel: FC = () => {
 
 // Responsible for hitting the hook and passing data
 const DetailsWrap: FC = () => {
-  const { isLoading, error, data, id, notFound } = useDetails()
+  const {
+    isLoading,
+    error,
+    instanceDescripID,
+    langDescripID,
+    data,
+    id,
+    notFound,
+  } = useDetails()
 
   if (isLoading) return <LoadingIndicatorPanel />
   if (error) return <DetailsError />
@@ -45,7 +53,7 @@ const DetailsWrap: FC = () => {
 
   return (
     <PanelContentSimple>
-      <Details data={data} />
+      <Details {...{ instanceDescripID, langDescripID, data }} />
     </PanelContentSimple>
   )
 }
@@ -63,7 +71,7 @@ export const Details: FC<DetailsProps> = (props) => {
 
   return (
     <>
-      <DetailedIntro data={data} isInstance />
+      <DetailedIntro data={data} langDescripID={langDescripID} isInstance />
       {/* There should always be a description, but checking just in case */}
       {descripID && (
         <Typography variant="body2" component="div" align="left">
