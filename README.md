@@ -154,7 +154,6 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 ## Software Credits
 
 - Anything in _package.json_
-- [Country flags](https://github.com/hjnilsson/country-flags)
 
 ## Data
 
