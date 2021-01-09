@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { DetailedIntro, NeighborhoodList } from 'components/details'
 import { LoadingIndicatorPanel } from 'components/generic/modals'
 import { PanelContentSimple } from 'components/panels'
+import { FullOnEverything } from 'components/details/types'
 import { useAirtable } from './hooks'
 import { RouteMatch } from './types'
 
@@ -20,7 +21,9 @@ export const LangCardsList: FC<{ field?: string }> = (props) => {
   else
     filterByFormula = `AND(FIND("${value}", ARRAYJOIN({${field}})) != 0, {name} = "${language}")`
 
-  const { data, error, isLoading } = useAirtable('Language', {
+  // FIXME: this query definitely does NOT get all the fields from
+  // `FullOnEverything`, just gave up on TSing it
+  const { data, error, isLoading } = useAirtable<FullOnEverything>('Language', {
     filterByFormula,
   })
 

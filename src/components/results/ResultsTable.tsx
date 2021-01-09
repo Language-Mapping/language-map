@@ -5,7 +5,7 @@ import MaterialTable from 'material-table'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { routes } from 'components/config/api'
-import { DetailsSchema } from 'components/context'
+import { InstanceLevelSchema } from 'components/context'
 import { DetailsModal } from './DetailsModal'
 import { FILTER_CLASS } from './utils'
 import { ResultsToolbar } from './ResultsToolbar'
@@ -26,7 +26,7 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
   // REFACTOR: get this monster into utils or events or something
   const onRowClick = (
     event: React.MouseEvent,
-    rowData: DetailsSchema
+    rowData: InstanceLevelSchema
   ): void => {
     if (!tableRef || !tableRef.current || !event || !rowData) return
 

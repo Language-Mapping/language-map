@@ -34,7 +34,7 @@ export const useDetails = (paramsField = 'id'): UseDetails => {
   const params = useParams() as { [key: string]: string }
   const param = params[paramsField]
 
-  const { data, isLoading, error } = useAirtable('Data', {
+  const { data, isLoading, error } = useAirtable<InstanceLevelSchema>('Data', {
     fields: dataFields,
     filterByFormula: `{id} = ${param}`,
     maxRecords: 1,
@@ -46,7 +46,7 @@ export const useDetails = (paramsField = 'id'): UseDetails => {
     data: langData,
     isLoading: isLangLoading,
     error: langError,
-  } = useAirtable(
+  } = useAirtable<LangLevelSchema>(
     'Language',
     {
       fields: langFields,
@@ -63,8 +63,6 @@ export const useDetails = (paramsField = 'id'): UseDetails => {
     theData = {
       ...langLevel,
       ...instanceLevel,
-      instanceDescripID: instanceLevel?.descriptionID,
-      langDescripID: langLevel?.descriptionID,
       Neighborhood: instanceLevel?.Neighborhood,
       Town: instanceLevel?.Town,
     }
@@ -76,5 +74,7 @@ export const useDetails = (paramsField = 'id'): UseDetails => {
     data: theData,
     isLoading: isLoading || isLangLoading,
     notFound: instanceLevel === undefined,
+    instanceDescripID: instanceLevel?.descriptionID,
+    langDescripID: langLevel?.descriptionID,
   }
 }

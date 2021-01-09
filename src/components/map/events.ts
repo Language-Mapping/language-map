@@ -1,4 +1,4 @@
-import { DetailsSchema } from 'components/context'
+import { InstanceLevelSchema } from 'components/context'
 
 import { WebMercatorViewport } from 'react-map-gl'
 import * as utils from './utils'
@@ -48,7 +48,7 @@ export const onHoverOrig: MapTypes.OnHover = (
 
   if (langsHovered.length) {
     const headingAndSubheading = utils.prepPopupContent(
-      langsHovered[0].properties as DetailsSchema
+      langsHovered[0].properties as InstanceLevelSchema
     )
 
     if (!headingAndSubheading) return // should also be something tho...

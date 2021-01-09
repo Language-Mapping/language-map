@@ -1,7 +1,11 @@
-import { DetailsSchema } from 'components/context'
+import { InstanceLevelSchema, LangLevelSchema } from 'components/context'
+
+// FIXME: the usage of this is not accurate and is overkill for some components
+// which only need a handful of props, but it covers the TS base in a pinch
+export type FullOnEverything = LangLevelSchema & InstanceLevelSchema
 
 export type MoreLikeThisProps = {
-  data: WithLangDescrip
+  data: FullOnEverything
   isInstance?: boolean
 }
 
@@ -13,24 +17,31 @@ export type ChipProps = {
   handleClick?: (e: React.MouseEvent<HTMLDivElement>) => void
 }
 
-export type NeighborhoodListProps = MoreLikeThisProps
-export type DetailedIntroProps = MoreLikeThisProps & { shareNoun?: string }
+export type NeighborhoodListProps = MoreLikeThisProps & {
+  data: FullOnEverything
+}
 
-// Part of useDetails Hook return values with lang/instance descrip IDs
-export type WithLangDescrip = DetailsSchema & {
+export type DetailedIntroProps = Pick<MoreLikeThisProps, 'isInstance'> & {
+  data: FullOnEverything
   langDescripID?: string
-  instanceDescripID?: string
+  shareNoun?: string
 }
 
-// TODO: UGH
-export type LangOrEndoIntroProps = Pick<MoreLikeThisProps, 'isInstance'> & {
-  data: WithLangDescrip & { name?: string }
+export type DetailsProps = Pick<MoreLikeThisProps, 'isInstance'> & {
+  data: FullOnEverything | null
+  instanceDescripID?: string
+  langDescripID?: string
+  shareNoun?: string
 }
+
+export type LangOrEndoIntroProps = DetailedIntroProps & { name?: string }
 
 export type UseDetails = {
   error: unknown
   isLoading: boolean
-  data: WithLangDescrip | null
+  data: FullOnEverything | null
   notFound?: boolean
   id: string
+  instanceDescripID?: string
+  langDescripID?: string
 }

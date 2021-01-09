@@ -45,9 +45,9 @@ export const useIcon = (
   tableName = 'Country',
   imgField = 'src_image'
 ): string => {
-  // TODO: handle errors
-  // const { data, isLoading, error } = useAirtable(tableName, {
-  const { data, isLoading } = useAirtable(tableName, {
+  const { data, isLoading, error } = useAirtable<{
+    src_image: { url: string }[]
+  }>(tableName, {
     fields: [imgField],
     filterByFormula: `{name} = "${value}"`,
   })
@@ -55,7 +55,7 @@ export const useIcon = (
   // TODO: deal w/TS
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  if (isLoading || !data || !data[0] || !data[0][imgField]) return ''
+  if (isLoading || error || !data || !data[0] || !data[0][imgField]) return ''
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore

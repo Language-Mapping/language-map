@@ -1,6 +1,6 @@
 import {
-  DetailsSchema,
-  LangRecordSchema,
+  InstanceLevelSchema,
+  LangLevelSchema,
   RouteableTableNames,
 } from 'components/context/types'
 import { AtSymbFields } from 'components/legend/types'
@@ -27,7 +27,7 @@ export type CustomCardProps = CategoryProps & {
 }
 
 export type CategoryConfig = {
-  name: keyof LangRecordSchema
+  name: keyof InstanceLevelSchema
   definition?: string
   icon?: React.ReactNode
   parse?: boolean
@@ -52,10 +52,11 @@ export type SwatchOrFlagOrIcon = {
 }
 
 export type CensusPopoverProps = {
-  data: DetailsSchema
+  data: Pick<LangLevelSchema, 'censusPretty' | 'censusScope' | 'censusField'> &
+    Pick<InstanceLevelSchema, 'Language'>
 }
 
-export type StatsAndMetaProps = { data: Partial<DetailsSchema> }
+export type StatsAndMetaProps = { data: Partial<LangLevelSchema> }
 
 export type CurrentCrumbProps = {
   value: string
@@ -68,7 +69,7 @@ export type MidLevelExploreProps = {
 }
 
 export type AirtableOptions = {
-  // fields?: Array<Extract<keyof LangRecordSchema, string>> // REFACTOR
+  // fields?: Array<Extract<keyof InstanceLevelSchema, string>> // REFACTOR
   fields?: string[]
   filterByFormula?: string
   maxRecords?: number
@@ -87,7 +88,9 @@ type SchemaTableFields = {
   includeInTable?: boolean
 }
 
-export type TonsOfFields = DetailsSchema & AtSymbFields & SchemaTableFields
+export type TonsOfFields = InstanceLevelSchema &
+  AtSymbFields &
+  SchemaTableFields
 export type TonsWithAddl = TonsOfFields & { 'Additional Languages'?: string[] }
 export type AirtableError = {
   error: string // error type, e.g. UNKNOWN_FIELD_NAME
@@ -96,7 +99,10 @@ export type AirtableError = {
 }
 
 // Details' current crumb fields which come back from Airtable
-export type CrumbResponse = Pick<DetailsSchema, 'Language' | 'Primary Location'>
+export type CrumbResponse = Pick<
+  InstanceLevelSchema,
+  'Language' | 'Primary Location'
+>
 
 export type ExploreIcon = {
   [key in RouteableTableNames]: React.ReactNode

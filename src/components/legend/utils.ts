@@ -1,36 +1,4 @@
-import { LayerPropsPlusMeta } from 'components/map/types'
-import { Action as SymbLabelAction } from 'components/context/SymbAndLabelContext'
-import * as Types from './types'
-import { mapLabelDefaults } from '../map/config.points' // just need defaults
-
-const createMapLegend = (
-  layers: LayerPropsPlusMeta[]
-): Types.LegendSwatchBareMin[] => {
-  return layers.map((layer) => {
-    const { id, layout, paint } = layer
-    const settings = { legendLabel: id } as Types.LegendSwatchBareMin
-    const size = layout['icon-size'] ? (layout['icon-size'] as number) * 20 : 5
-    const backgroundColor = (paint['icon-color'] as string) || 'transparent'
-    const iconID =
-      (layout['icon-image'] as Types.IconID) ||
-      mapLabelDefaults.layout['icon-image']
-
-    return { ...settings, size, backgroundColor, iconID }
-  })
-}
-
-export const initLegend = (
-  dispatch: React.Dispatch<SymbLabelAction>,
-  activeSymbGroupID: string,
-  symbLayers: LayerPropsPlusMeta[]
-): void => {
-  const layersInActiveGroup = symbLayers.filter(
-    ({ group }) => group === activeSymbGroupID
-  )
-  const legend = createMapLegend(layersInActiveGroup)
-
-  dispatch({ type: 'SET_LANG_LAYER_LEGEND', payload: legend })
-}
+import { FinalPrep, AtSymbFields, AtSchemaFields, LegendProps } from './types'
 
 type Compare<T> = (a: T, b: T) => number // TODO: defeat
 
@@ -45,11 +13,7 @@ export const sortArrOfObjects = <T>(key: keyof T): Compare<T> => {
   }
 }
 
-const finalPrep: Types.FinalPrep = (
-  rows,
-  labelByField,
-  sortByField = 'name'
-) => {
+const finalPrep: FinalPrep = (rows, labelByField, sortByField = 'name') => {
   let labeled
 
   rows.sort(sortArrOfObjects(sortByField))
@@ -58,20 +22,20 @@ const finalPrep: Types.FinalPrep = (
     labeled = rows.map((row) => ({
       ...row,
       name: row[labelByField],
-    })) as Types.AtSymbFields[]
+    })) as AtSymbFields[]
   else labeled = rows
 
   return labeled
 }
 
 export const prepAirtableResponse = (
-  rows: Types.AtSymbFields[],
+  rows: AtSymbFields[],
   tableName: string,
-  config?: Types.AtSchemaFields
-): Types.LegendProps[] => {
+  config?: AtSchemaFields
+): LegendProps[] => {
   if (!config) return []
 
-  // Fragile: the field to sort on must be included in config.layerSymbFields
+  // FRAGILE: the field to sort on must be included in config.layerSymbFields
   const { groupByField, labelByField, sortByField } = config
 
   if (!groupByField)
@@ -88,7 +52,7 @@ export const prepAirtableResponse = (
     const items = existing ? [...existing.items, thisOne] : [thisOne]
 
     return { ...all, [groupName]: { groupName, items } }
-  }, {} as { [key: string]: Types.LegendProps })
+  }, {} as { [key: string]: LegendProps })
 
   return Object.keys(prepped)
     .sort() // assumes intent is alphbetical sorting

@@ -7,7 +7,6 @@
     "titleBar.activeForeground": "#ffffff"
   },
   "search.exclude": {
-    "public/img/country-flags": true,
     "public/fonts": true
   }
 }

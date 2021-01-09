@@ -19,9 +19,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 // The intro section of pre-Details and Details views
 export const DetailedIntro: FC<DetailedIntroProps> = (props) => {
-  const { data, shareNoun, isInstance } = props
+  const { data, shareNoun, isInstance, langDescripID } = props
   const classes = useStyles()
-  const { langDescripID } = data
 
   return (
     <header className={classes.root}>

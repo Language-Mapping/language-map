@@ -1,9 +1,9 @@
-import { DetailsSchema } from 'components/context'
+import { FullOnEverything } from 'components/details/types'
 
 type MediaKey = 'Video' | 'Audio' | 'share' | 'clear' | 'view'
 
 export type MediaProps = {
-  data: DetailsSchema
+  data: FullOnEverything // NOT ACCURATE
   clear?: string // not needed whatsoever, just going through the TS motions?
   share?: string
   view?: string // not needed whatsoever, just going through the TS motions?

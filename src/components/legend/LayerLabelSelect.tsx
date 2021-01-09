@@ -5,7 +5,7 @@ import {
   useSymbAndLabelState,
   useLabelAndSymbDispatch,
 } from 'components/context/SymbAndLabelContext'
-import { LangRecordSchema, LangSchemaCol } from 'components/context/types'
+import { InstanceLevelSchema, LangSchemaCol } from 'components/context/types'
 import { commonSelectProps } from './config'
 
 export const LayerLabelSelect: FC = () => {
@@ -16,7 +16,7 @@ export const LayerLabelSelect: FC = () => {
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     symbLabelDispatch({
       type: 'SET_LANG_LAYER_LABELS',
-      payload: event.target.value as keyof LangRecordSchema,
+      payload: event.target.value as keyof InstanceLevelSchema,
     })
   }
 

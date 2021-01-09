@@ -8,7 +8,7 @@ import { PanelContentSimple } from 'components/panels/PanelContent'
 import { LoadingIndicatorPanel } from 'components/generic/modals'
 import { routes } from 'components/config/api'
 import { NoFeatSel } from './NoFeatSel'
-import { WithLangDescrip } from './types'
+import { DetailsProps } from './types'
 import { useDetails } from './hooks'
 
 export const DetailsError: FC = () => {
@@ -51,10 +51,12 @@ const DetailsWrap: FC = () => {
 }
 
 // Used in /details/:id and /table/:id
-export const Details: FC<{ data: WithLangDescrip | null }> = ({ data }) => {
+export const Details: FC<DetailsProps> = (props) => {
+  const { instanceDescripID, langDescripID, data } = props
+
   if (!data) return null
 
-  const { instanceDescripID, langDescripID, Language } = data
+  const { Language } = data
   const descripID = instanceDescripID || langDescripID
 
   document.title = `${Language} - NYC Languages`
