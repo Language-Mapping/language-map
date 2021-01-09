@@ -9,10 +9,8 @@ import { MdCheck } from 'react-icons/md'
 import { GoCircleSlash } from 'react-icons/go'
 
 import { LegendSwatch } from 'components/legend'
-import { useSymbAndLabelState } from 'components/context/SymbAndLabelContext'
-import { DetailsSchema, LangRecordSchema } from 'components/context/types'
-
-type CellProps = { data: LangRecordSchema }
+import { InstanceLevelSchema } from 'components/context/types'
+import { CellProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -56,7 +54,7 @@ export const CommStatus: FC<CellProps> = (props) => {
 }
 
 export const CommSize: FC<{
-  data: DetailsSchema
+  data: InstanceLevelSchema
 }> = (props) => {
   const theme = useTheme()
   const { data } = props
@@ -80,20 +78,13 @@ export const CommSize: FC<{
 
 export const WorldRegion: FC<CellProps> = (props) => {
   const { data } = props
-  const { 'World Region': WorldReej } = data
-  const symbLabelState = useSymbAndLabelState()
-
-  const regionSwatchColor =
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    symbLabelState.legendSymbols[WorldReej].paint['icon-color'] as string
 
   return (
     <LegendSwatch
-      legendLabel={WorldReej}
+      legendLabel={data['World Region']}
       component="div"
       iconID="_circle"
-      backgroundColor={regionSwatchColor || 'transparent'}
+      backgroundColor={data.worldRegionColor}
       labelStyleOverride={{
         lineHeight: 'inherit',
         marginLeft: 2,

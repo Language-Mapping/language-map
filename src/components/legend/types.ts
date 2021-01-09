@@ -1,17 +1,15 @@
-export type IconID =
-  | '_tree'
-  | '_book'
-  | '_users'
-  | '_home'
-  | '_museum'
-  | '_circle'
+type IconID = '_tree' | '_book' | '_users' | '_home' | '_museum' | '_circle'
 
-export type LegendSwatchBareMin = {
+type LegendSwatchBareMin = {
   legendLabel: string
   backgroundColor?: string
   iconID?: IconID
   size?: number
 }
+
+export type LangTypeIconsConfig = { icon: string; id: IconID }
+export type AtSchemaRecord = { id: string; fields: AtSchemaFields }
+export type AtSymbRecord = { id: string; fields: AtSymbFields }
 
 export type SwatchOnlyProps = Pick<
   LegendSwatchBareMin,
@@ -26,9 +24,6 @@ export type LegendSwatchProps = LegendSwatchBareMin & {
   to?: string
 }
 
-export type AtSchemaRecord = { id: string; fields: AtSchemaFields }
-export type AtSymbRecord = { id: string; fields: AtSymbFields }
-
 export type AtSymbFields = {
   name: string
   continent?: string
@@ -40,8 +35,6 @@ export type AtSymbFields = {
   'text-halo-color'?: string
   src_image?: { url: string }[]
 }
-
-export type LegendGroupConfig = AtSymbFields & { groupName: string }
 
 // Columns from Schema table, or at least a few of them
 export type AtSchemaFields = {

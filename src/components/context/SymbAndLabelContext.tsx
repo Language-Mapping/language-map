@@ -1,35 +1,20 @@
 import React, { FC } from 'react'
 
-import { LegendSwatchBareMin } from 'components/legend/types'
-import { LayerPropsPlusMeta } from 'components/map/types'
-import fullLangStyle from 'components/map/config.lang-style'
 import { LangSchemaCol } from './types'
 
-type LegendSymbols = { [key: string]: Partial<LayerPropsPlusMeta> }
 type Dispatch = React.Dispatch<Action>
 type InitialState = {
   activeLabelID: LangSchemaCol | '' | 'None'
   activeSymbGroupID: LangSchemaCol | '' | 'None'
-  legendItems: LegendSwatchBareMin[]
-  legendSymbols: LegendSymbols
 }
 
 export type Action =
   | { type: 'SET_LANG_LAYER_LABELS'; payload: LangSchemaCol | '' }
-  | { type: 'SET_LANG_LAYER_LEGEND'; payload: LegendSwatchBareMin[] }
   | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: LangSchemaCol }
-
-const legendSymbols = fullLangStyle.reduce((all, thisOne) => {
-  const { paint, type, layout } = thisOne
-
-  return { ...all, [thisOne.id as string]: { paint, type, layout } }
-}, {})
 
 const initialState = {
   activeLabelID: '',
   activeSymbGroupID: 'World Region',
-  legendItems: [],
-  legendSymbols,
 } as InitialState
 
 const SymbAndLabelContext = React.createContext<InitialState | undefined>(
@@ -45,11 +30,6 @@ function reducer(state: InitialState, action: Action) {
       return {
         ...state,
         activeLabelID: action.payload,
-      }
-    case 'SET_LANG_LAYER_LEGEND':
-      return {
-        ...state,
-        legendItems: action.payload,
       }
     case 'SET_LANG_LAYER_SYMBOLOGY':
       return {
@@ -75,7 +55,6 @@ export const SymbAndLabelProvider: FC = (props) => {
   )
 }
 
-// USAGE: `const symbLabelState = useSymbAndLabelState()`
 function useSymbAndLabelState(): InitialState {
   const context = React.useContext(SymbAndLabelContext)
 
@@ -87,7 +66,6 @@ function useSymbAndLabelState(): InitialState {
   return context
 }
 
-// USAGE: `const symbLabelDispatch = useLabelAndSymbDispatch()`
 function useLabelAndSymbDispatch(): Dispatch {
   const context = React.useContext(SymbLabelDispatchContext)
 
