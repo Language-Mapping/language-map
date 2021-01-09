@@ -4,18 +4,19 @@ import { Route, useHistory, useLocation } from 'react-router-dom'
 import MaterialTable from 'material-table'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
-import { SimpleDialog } from 'components/generic/modals'
 import { routes } from 'components/config/api'
-import { DetailsPanel } from 'components/details'
 import { DetailsSchema } from 'components/context'
-import { MuiTableWithLangs } from './types'
+import { DetailsModal } from './DetailsModal'
 import { FILTER_CLASS } from './utils'
 import { ResultsToolbar } from './ResultsToolbar'
+import { icons, options, columns as columnConfig, localization } from './config'
+import {
+  ResultsTableProps,
+  ColumnWithTableData,
+  MuiTableWithLangs,
+} from './types'
 
-import * as Types from './types'
-import * as config from './config'
-
-export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
+export const ResultsTable: FC<ResultsTableProps> = (props) => {
   const { data: tableData } = props
   const history = useHistory()
   const loc = useLocation()
@@ -78,23 +79,21 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
     // Safari will preserve newlines w/o `trim`
     const newFilterVal = elemWithFilter?.innerText.trim() || rowData[field]
 
-    const newlyFiltered = columns.map(
-      (column: Types.ColumnWithTableData, i) => {
-        let filterValue
+    const newlyFiltered = columns.map((column: ColumnWithTableData, i) => {
+      let filterValue
 
-        if (colIndex !== i) filterValue = column.tableData.filterValue
-        // Lookup filter types have array values
-        else if (column.lookup) filterValue = [newFilterVal]
-        else filterValue = newFilterVal
+      if (colIndex !== i) filterValue = column.tableData.filterValue
+      // Lookup filter types have array values
+      else if (column.lookup) filterValue = [newFilterVal]
+      else filterValue = newFilterVal
 
-        return {
-          ...column,
-          tableData: { ...column.tableData, filterValue },
-        }
+      return {
+        ...column,
+        tableData: { ...column.tableData, filterValue },
       }
-    )
+    })
 
-    columns.forEach((col: Types.ColumnWithTableData, i: number) => {
+    columns.forEach((col: ColumnWithTableData, i: number) => {
       dataManager.changeFilterValue(i, newlyFiltered[i].tableData.filterValue)
     })
 
@@ -119,27 +118,13 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
   return (
     <>
       <Route path="/table/:id">
-        <SimpleDialog
-          open
-          lessHorizPad // Details already has it
-          onClose={() =>
-            history.push({
-              pathname: routes.table,
-              state: {
-                ...(loc.state as Types.HistoryState),
-                pathname: loc.pathname,
-              },
-            })
-          }
-        >
-          <DetailsPanel routeBase="table" id="details-modal" staticPos />
-        </SimpleDialog>
+        <DetailsModal />
       </Route>
       <MaterialTable
-        icons={config.icons}
+        icons={icons}
         tableRef={tableRef}
         options={{
-          ...config.options,
+          ...options,
           exportCsv: (defs, data) => {
             import('./exporting' /* webpackChunkName: "exporting" */)
               .then(({ exportCsv }) => exportCsv(defs, data))
@@ -161,8 +146,8 @@ export const ResultsTable: FC<Types.ResultsTableProps> = (props) => {
               })
           },
         }}
-        columns={config.columns}
-        localization={config.localization}
+        columns={columnConfig}
+        localization={localization}
         data={tableData}
         onChangeRowsPerPage={() => scrollToTop()}
         onChangePage={() => scrollToTop()}
