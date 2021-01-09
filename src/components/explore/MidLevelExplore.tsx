@@ -50,7 +50,9 @@ export const AddlLanguages: FC<{ data: LangLevelSchema[]; value?: string }> = (
 
   return (
     <>
-      <Explanation>Additional languages spoken in this community:</Explanation>
+      <Explanation>
+        Additional languages spoken in this neighborhood:
+      </Explanation>
       <ul>
         {addlLanguages.map((row) => (
           <li key={row.name}>
