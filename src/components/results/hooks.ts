@@ -7,6 +7,6 @@ export const useDescription = (
 ): UseDescription =>
   useAirtable<DescripResponse>(descripTable, {
     fields: ['Description'],
-    filterByFormula: `{id} = '${descriptionID}'`,
+    filterByFormula: `{id} = "${descriptionID}"`,
     maxRecords: 1,
   })

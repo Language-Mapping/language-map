@@ -6,7 +6,7 @@ import { TextField } from '@material-ui/core'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { MdClose } from 'react-icons/md'
 
-import { paths as routes } from 'components/config/routes'
+import { routes } from 'components/config/api'
 import { useAirtable } from 'components/explore/hooks'
 import { LangLevelReqd } from 'components/context/types'
 import { sortArrOfObjects } from 'components/legend/utils'

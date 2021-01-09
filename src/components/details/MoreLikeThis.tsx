@@ -4,7 +4,7 @@ import { Popover } from '@material-ui/core'
 import { BiMapPin } from 'react-icons/bi'
 import { IoIosPeople } from 'react-icons/io'
 
-import { paths as routes } from 'components/config/routes'
+import { routes } from 'components/config/api'
 import { SwatchOnly } from 'components/legend'
 import { Chip, NeighborhoodList } from 'components/details'
 import { DialogCloseBtn } from 'components/generic/modals'
@@ -129,13 +129,16 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
           }
         />
       ))}
-      {!isInstance && macro && (
-        <Chip
-          text={macro}
-          icon={<IoIosPeople />}
-          to={`${routes.explore}/Macrocommunity/${macro}`}
-        />
-      )}
+      {!isInstance &&
+        macro &&
+        macro.map((macroName, i) => (
+          <Chip
+            key={macroName}
+            text={macroName}
+            to={`${routes.explore}/Macrocommunity/${macroName}`}
+            icon={<IoIosPeople />}
+          />
+        ))}
       {children}
     </div>
   )

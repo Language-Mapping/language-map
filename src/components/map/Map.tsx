@@ -10,7 +10,7 @@ import MapGL, { MapLoadEvent } from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import { paths as routes } from 'components/config/routes'
+import { routes } from 'components/config/api'
 import * as contexts from 'components/context'
 
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'

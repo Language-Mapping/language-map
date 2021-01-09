@@ -5,6 +5,22 @@ import { LangRecordSchema } from 'components/context/types'
 import * as config from './config'
 import { ColumnList } from './types'
 
+// CRED: https://stackoverflow.com/a/9039885/1048518
+function iOS(): boolean {
+  return (
+    [
+      'iPad Simulator',
+      'iPhone Simulator',
+      'iPod Simulator',
+      'iPad',
+      'iPhone',
+      'iPod',
+    ].includes(navigator.platform) ||
+    // iPad on iOS 13 detection
+    (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
+  )
+}
+
 const getColumns = (columnList: ColumnList) =>
   columnList.filter(
     (columnDef) => !columnDef.hidden && columnDef.export !== false
@@ -151,17 +167,21 @@ export const exportPdf = (
       }
     )
 
-    // Create table layout automatically-ish via plugin
-    autoTable(doc, content)
+    autoTable(doc, content) // create table layout automatically-ish via plugin
 
     // Footer: replace the expression used the per-page loop of jspdf-autotable
     // NOTE: total page number plugin only available in jspdf v1.0+
     doc.putTotalPages(totalPagesExp)
+    doc.setProperties({ title: 'Languages of NYC' })
 
-    // Open PDF in new tab, albeit with random hash suffix and "blob" prefix,
-    // but this was better than opening in current tab.
-    const blob = doc.output('blob')
-    window.open(URL.createObjectURL(blob))
+    if (iOS()) doc.save('nyc-languages.pdf')
+    else {
+      // Open PDF in new tab, albeit with random hash suffix and "blob" prefix,
+      // but this was better than opening in current tab. Used to work on iOS
+      // Safari, but no longer 🤔
+      const blob = doc.output('blob')
+      window.open(URL.createObjectURL(blob))
+    }
 
     // Great thread on why it's not possible to have your 🍰 and eat it too:
     // https://stackoverflow.com/questions/41947735/custom-name-for-blob-url

@@ -13,7 +13,7 @@ import { GoInfo } from 'react-icons/go'
 import { MdChat } from 'react-icons/md'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
-import { paths as routes } from 'components/config/routes'
+import { routes } from 'components/config/api'
 import { Settings } from './Settings'
 
 type NavProps = {

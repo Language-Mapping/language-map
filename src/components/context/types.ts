@@ -60,7 +60,7 @@ export type LangLevelOptional = CensusFields &
     Audio: string
     descriptionID: string
     Glottocode: string
-    Macrocommunity: string
+    Macrocommunity: string[]
     Neighborhood: string[]
     Town: string[]
     Video: string
@@ -118,3 +118,14 @@ export type InstanceLevelSchema = InstanceLevelOptional & InstanceLevelReqd
 // Dupes to avoid find-and-replace of originals
 export type LangRecordSchema = InstanceLevelSchema
 export type DetailsSchema = InstanceLevelSchema
+
+// Corresponds with top-level "/Explore" route starting points. Used as a route
+// parameter in Airtable queries in nested views, e.g. /Explore/Country/Egypt.
+export type RouteableTableNames =
+  | 'Country'
+  | 'Language'
+  | 'Macrocommunity'
+  | 'Neighborhood'
+  | 'Town'
+  | 'Language Family'
+  | 'World Region'

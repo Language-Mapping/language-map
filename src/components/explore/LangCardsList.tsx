@@ -5,21 +5,20 @@ import { DetailedIntro, NeighborhoodList } from 'components/details'
 import { LoadingIndicatorPanel } from 'components/generic/modals'
 import { PanelContentSimple } from 'components/panels'
 import { useAirtable } from './hooks'
-
-import * as Types from './types'
+import { RouteMatch } from './types'
 
 // aka pre-Details, aka Language Profile
 export const LangCardsList: FC<{ field?: string }> = (props) => {
   const { field: explicitField } = props
-  const { field, value, language } = useParams() as Types.RouteMatch
+  const { field, value, language } = useParams<RouteMatch>()
 
   let filterByFormula
 
-  // Very important that the value is wrapped in DOUBLE quotes since several
-  // languages have single quotes in their name.
+  // Very important that things are wrapped in DOUBLE quotes since some values
+  // contain single quotes.
   if (explicitField) filterByFormula = `{name} = "${language}"`
   else
-    filterByFormula = `AND(FIND('${value}', ARRAYJOIN({${field}})) != 0, {name} = "${language}")`
+    filterByFormula = `AND(FIND("${value}", ARRAYJOIN({${field}})) != 0, {name} = "${language}")`
 
   const { data, error, isLoading } = useAirtable('Language', {
     filterByFormula,

@@ -2,7 +2,7 @@ import React, { FC, useContext } from 'react'
 import { Link as RouteLink } from 'react-router-dom'
 import { Typography } from '@material-ui/core'
 
-import { paths as routes } from 'components/config/routes'
+import { routes } from 'components/config/api'
 import { GlobalContext } from 'components/context'
 import { ReactComponent as Logo } from '../../img/logo.svg'
 import { PAGE_HEADER_ID } from './config'

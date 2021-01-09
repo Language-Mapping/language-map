@@ -1,4 +1,8 @@
-import { DetailsSchema, LangRecordSchema } from 'components/context/types'
+import {
+  DetailsSchema,
+  LangRecordSchema,
+  RouteableTableNames,
+} from 'components/context/types'
 import { AtSymbFields } from 'components/legend/types'
 
 export type ReactQueryOptions = {
@@ -29,9 +33,10 @@ export type CategoryConfig = {
   parse?: boolean
 }
 
+// TODO: rename to `tableName` or something, since "field" no longer applies
 // /Explore/:field/:value/:language
 export type RouteMatch = {
-  field: keyof DetailsSchema
+  field: RouteableTableNames
   value?: string
   language?: string
 }
@@ -42,7 +47,7 @@ export type CardConfig = CategoryProps & {
 }
 
 export type SwatchOrFlagOrIcon = {
-  field: keyof DetailsSchema
+  field: RouteableTableNames // TODO: de-fragilize
   value?: string
 }
 
@@ -58,7 +63,7 @@ export type CurrentCrumbProps = {
 }
 
 export type MidLevelExploreProps = {
-  tableName?: keyof DetailsSchema
+  tableName?: RouteableTableNames
   sortByField?: string
 }
 
@@ -92,6 +97,14 @@ export type AirtableError = {
 
 // Details' current crumb fields which come back from Airtable
 export type CrumbResponse = Pick<DetailsSchema, 'Language' | 'Primary Location'>
+
+export type ExploreIcon = {
+  [key in RouteableTableNames]: React.ReactNode
+}
+
+export type AirtableSchemaQuery = SchemaTableFields & {
+  name: RouteableTableNames
+}
 
 // TODO: figure it out
 // export type UseAirtable<TResult> = (

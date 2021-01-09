@@ -49,7 +49,7 @@ export const useIcon = (
   // const { data, isLoading, error } = useAirtable(tableName, {
   const { data, isLoading } = useAirtable(tableName, {
     fields: [imgField],
-    filterByFormula: `{name} = '${value}'`,
+    filterByFormula: `{name} = "${value}"`,
   })
 
   // TODO: deal w/TS

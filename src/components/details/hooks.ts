@@ -50,7 +50,7 @@ export const useDetails = (paramsField = 'id'): UseDetails => {
     'Language',
     {
       fields: langFields,
-      filterByFormula: `{name} = '${instanceLevel?.Language}'`,
+      filterByFormula: `{name} = "${instanceLevel?.Language}"`,
       maxRecords: 1,
     },
     { ...reactQueryDefaults, enabled: !!instanceLevel }

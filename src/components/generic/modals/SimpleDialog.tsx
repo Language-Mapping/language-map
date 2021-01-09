@@ -15,24 +15,19 @@ import {
 import { DialogCloseBtn } from './DialogCloseBtn'
 import { SlideUp } from './SlideUp'
 
-type StyleProps = {
-  lessHorizPad?: boolean // e.g. for /table/:id "details" view
-}
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     dialogContent: {
-      padding: (props: StyleProps) =>
-        `${theme.spacing(4)}px${props.lessHorizPad ? ' 0.5em' : ''}`,
+      padding: theme.spacing(3),
     },
   })
 )
 
 // TODO: don't make close go back in history, or some other smooth way:
 // https://stackoverflow.com/questions/47409586
-export const SimpleDialog: FC<DialogProps & StyleProps> = (props) => {
-  const { onClose, children, lessHorizPad } = props
-  const classes = useStyles({ lessHorizPad })
+export const SimpleDialog: FC<DialogProps> = (props) => {
+  const { onClose, children } = props
+  const classes = useStyles()
   const theme = useTheme()
   const lilGuy = useMediaQuery(theme.breakpoints.only('xs'))
 

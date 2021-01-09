@@ -8,7 +8,7 @@ import { FaMap } from 'react-icons/fa'
 import { RiFilterOffFill } from 'react-icons/ri'
 
 import { GlobalContext } from 'components/context'
-import { paths as routes } from 'components/config/routes'
+import { routes } from 'components/config/api'
 import { ResultsTitle } from './ResultsTitle'
 
 import * as Types from './types'

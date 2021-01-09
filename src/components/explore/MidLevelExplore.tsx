@@ -1,5 +1,10 @@
 import React, { FC } from 'react'
-import { useRouteMatch, useParams, Route } from 'react-router-dom'
+import {
+  useRouteMatch,
+  useParams,
+  Route,
+  Link as RouterLink,
+} from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { BiMapPin } from 'react-icons/bi'
 
@@ -10,6 +15,7 @@ import { LoadingIndicatorPanel } from 'components/generic/modals'
 import { Explanation } from 'components/generic'
 import { LangLevelSchema } from 'components/context'
 import { exploreIcons } from 'components/explore/config'
+import { routes } from 'components/config/api'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
 import { useAirtable } from './hooks'
@@ -30,19 +36,30 @@ export const AddlLanguages: FC<{ data: LangLevelSchema[]; value?: string }> = (
   props
 ) => {
   const { data } = props
-  const { value } = useParams<{ value: string }>()
+  const { value } = useParams<{ field: string; value: string }>()
+
   const addlLanguages = data.filter(
-    (row) => !row['Primary Locations'].includes(value)
+    (row) =>
+      // Gross extra step for Airtable FIND issue, which returns in ARRAYJOIN
+      // things like "East Elmhurst" in an "Elmhurst" query:
+      row.addlNeighborhoods?.includes(value) &&
+      !row['Primary Locations'].includes(value)
   )
 
   if (!addlLanguages.length) return null
 
   return (
     <>
-      <Explanation>Additional languages spoken in this community:</Explanation>
+      <Explanation>
+        Additional languages spoken in this neighborhood:
+      </Explanation>
       <ul>
         {addlLanguages.map((row) => (
-          <li key={row.name}>{row.name}</li>
+          <li key={row.name}>
+            <RouterLink to={`${routes.explore}/Language/${row.name}`}>
+              {row.name}
+            </RouterLink>
+          </li>
         ))}
       </ul>
     </>
@@ -50,12 +67,11 @@ export const AddlLanguages: FC<{ data: LangLevelSchema[]; value?: string }> = (
 }
 
 export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
-  const { field, value } = useParams() as RouteMatch
+  const { field, value } = useParams<RouteMatch>()
   const { tableName = field, sortByField = 'name' } = props
   const { url } = useRouteMatch()
-
   const filterByFormula = prepFormula(field, value)
-  const fields = prepFields(tableName)
+  const fields = prepFields(tableName, field === 'Neighborhood')
 
   const { data, error, isLoading } = useAirtable<TonsWithAddl>(tableName, {
     fields,
@@ -69,7 +85,7 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
     error: landingError,
   } = useAirtable('Schema', {
     fields: ['name', 'definition', 'plural'],
-    filterByFormula: `{name} = '${tableName}'`,
+    filterByFormula: `{name} = "${tableName}"`,
   })
 
   if (isLoading || isLandingLoading) return <LoadingIndicatorPanel />

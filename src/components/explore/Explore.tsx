@@ -4,20 +4,22 @@ import { Link } from '@material-ui/core'
 
 import { PanelContent } from 'components/panels'
 import { LoadingIndicatorBar } from 'components/generic/modals'
-import { DetailsSchema } from 'components/context/types'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
 import { useAirtable } from './hooks'
-
-import * as config from './config'
+import { AirtableSchemaQuery } from './types'
+import { exploreIcons } from './config'
 
 // The top-level "/Explore" route as a landing page index to explorable fields
 export const Explore: FC<{ icon: React.ReactNode }> = (props) => {
   const { icon } = props
-  const { data, error, isLoading } = useAirtable('Schema', {
-    filterByFormula: '{exploreSortOrder} > 0', // cheap check for Explore-ables
-    sort: [{ field: 'exploreSortOrder' }],
-  })
+  const { data, error, isLoading } = useAirtable<AirtableSchemaQuery>(
+    'Schema',
+    {
+      filterByFormula: '{exploreSortOrder} > 0', // cheap check for Explore-ables
+      sort: [{ field: 'exploreSortOrder' }],
+    }
+  )
   // TODO: adapt or remove if not using
   // utils.pluralTextIfNeeded(uniqueInstances.length),
 
@@ -41,17 +43,13 @@ export const Explore: FC<{ icon: React.ReactNode }> = (props) => {
       {isLoading && <LoadingIndicatorBar omitText />}
       {error && 'Could not load'}
       <CardList>
-        {data.map((category) => (
+        {data.map(({ name, plural, definition }) => (
           <CustomCard
-            key={category.name}
-            icon={
-              config.exploreIcons[
-                category.name as keyof Partial<DetailsSchema>
-              ] || null
-            }
-            title={category.plural || ''} // TODO: ugh
-            url={`/Explore/${category.name}`}
-            footer={category.definition}
+            key={name}
+            icon={exploreIcons[name] || null}
+            title={plural || ''} // TODO: ugh
+            url={`/Explore/${name}`}
+            footer={definition}
           />
         ))}
       </CardList>

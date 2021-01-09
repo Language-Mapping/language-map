@@ -4,7 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
 import { EndoImageWrap } from 'components/details'
-import { paths as routes } from 'components/config/routes'
+import { routes } from 'components/config/api'
 import { LangOrEndoIntroProps } from './types'
 
 // Shaky but makes long endos like Church Slavonic's fit

@@ -36,13 +36,17 @@ export type ColumnsConfig = Column<LangRecordSchema> & {
   field: keyof LangRecordSchema
 }
 
-// TODO: rm if not using...
-export type HistoryState = null | {
+type HistoryState = null | {
   selFeatID?: number
   // TODO: scroll tops:
   // scrollTops?: {
   //   [key in RouteLocation]?: string
   // }
+}
+
+export type UseLocation = {
+  state: HistoryState
+  pathname: string
 }
 
 // `dataManager` prop definitely exists but is not evidently part of the TS
