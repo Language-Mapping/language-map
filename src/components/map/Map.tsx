@@ -297,12 +297,13 @@ export const Map: FC<Types.MapProps> = (props) => {
         <Route path="/details/:id">
           {!hidePopups.language && <LanguagePopup settings={selFeatAttribs} />}
         </Route>
-        {!hidePopups.boundaries && boundaryPopup && (
+        {!hidePopups.boundaries && boundaryPopup && clickedBoundary && (
           <MapPopup
             {...boundaryPopup}
-            setVisible={() =>
+            setVisible={() => {
+              setClickedBoundary(null)
               setHidePopups({ ...hidePopups, boundaries: true })
-            }
+            }}
           />
         )}
         {/* Popups are annoying on mobile */}

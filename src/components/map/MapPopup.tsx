@@ -58,7 +58,6 @@ export const MapPopup: FC<MapPopupProps> = (props) => {
       tipSize={10}
       longitude={longitude}
       latitude={latitude}
-      closeOnClick
       className={mapPopupRoot}
       onClose={() => setVisible()}
     >
