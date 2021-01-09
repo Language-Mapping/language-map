@@ -37,7 +37,8 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         '& .mapboxgl-ctrl-bottom-right, .mapboxgl-ctrl-bottom-left': {
           transition: 'bottom 300ms ease',
-          bottom: (props: StyleProps) => (props.panelOpen ? '51' : 0),
+          bottom: (props: StyleProps) =>
+            props.panelOpen ? 'calc(50% + 0.45rem)' : 0,
         },
       },
     },
