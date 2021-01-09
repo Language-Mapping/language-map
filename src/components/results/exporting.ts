@@ -1,7 +1,7 @@
 import { CsvBuilder } from 'filefy'
 import jsPDF from 'jspdf'
 import autoTable, { RowInput, UserOptions } from 'jspdf-autotable'
-import { LangRecordSchema } from 'components/context/types'
+import { InstanceLevelSchema } from 'components/context/types'
 import * as config from './config'
 import { ColumnList } from './types'
 
@@ -26,7 +26,7 @@ const getColumns = (columnList: ColumnList) =>
     (columnDef) => !columnDef.hidden && columnDef.export !== false
   )
 
-const getData = (columns: ColumnList, initialData: LangRecordSchema[]) =>
+const getData = (columns: ColumnList, initialData: InstanceLevelSchema[]) =>
   initialData.map((rowData) =>
     columns.map(({ field }) => {
       const value = rowData[field] as number | string
@@ -53,7 +53,7 @@ const getColumnTitle = (
 
 export const exportCsv = (
   columnList: ColumnList,
-  initialData: LangRecordSchema[]
+  initialData: InstanceLevelSchema[]
 ): void => {
   const columns = getColumns(columnList)
   const data = getData(columns, initialData)
@@ -79,7 +79,7 @@ const excludeUTFtext = (input: string): string => {
 // TODO: if switching UI headings to Gentium Alt, use that instead of Plus here
 export const exportPdf = (
   columnList: ColumnList,
-  initialData: LangRecordSchema[]
+  initialData: InstanceLevelSchema[]
 ): void => {
   // NOTE: if additional fonts are to be added, use this converter to encode:
   // https://rawgit.com/MrRio/jsPDF/master/fontconverter/fontconverter.html

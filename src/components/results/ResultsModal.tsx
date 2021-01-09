@@ -3,7 +3,7 @@ import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { Dialog } from '@material-ui/core'
 
 import { DialogCloseBtn, SlideUp } from 'components/generic/modals'
-import { DetailsSchema, GlobalContext } from 'components/context'
+import { InstanceLevelSchema, GlobalContext } from 'components/context'
 import { useAirtable } from 'components/explore/hooks'
 import { routes } from 'components/config/api'
 import { useStyles } from './styles'
@@ -12,7 +12,7 @@ import { LocWithState } from '../config/types'
 import { whittleLangFeats } from './utils'
 
 // CRED: https://stackoverflow.com/a/51808262/1048518
-const fields: Array<Extract<keyof DetailsSchema, string>> = [
+const fields: Array<Extract<keyof InstanceLevelSchema, string>> = [
   'Additional Neighborhoods',
   'countryImg',
   'Country',
@@ -48,7 +48,7 @@ const ResultsModal: FC = () => {
   } = useLocation() as LocWithState
 
   const [lastLoc, setLastLoc] = useState()
-  const { data, isLoading, error } = useAirtable('Data', {
+  const { data, isLoading, error } = useAirtable<InstanceLevelSchema>('Data', {
     fields,
   })
 

@@ -18,11 +18,7 @@ import {
 } from 'mapbox-gl'
 import * as GeoJSON from 'geojson'
 
-import {
-  LangRecordSchema,
-  DetailsSchema,
-  InternalUse,
-} from 'components/context'
+import { InstanceLevelSchema, InternalUse } from 'components/context'
 import { CensusScope } from 'components/local/types'
 
 type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
@@ -59,7 +55,7 @@ export type BoundariesInternalSrcID = 'neighborhoods' | 'counties'
 
 export type LayerPropsPlusMeta = Omit<LayerProps, 'paint' | 'layout' | 'id'> & {
   id: string
-  group: keyof LangRecordSchema
+  group: keyof InstanceLevelSchema
   layout: SymbolLayout
   paint: SymbolPaint
 }
@@ -74,7 +70,7 @@ export type LangFeature = {
   id: number
   geometry: GeoJSON.Geometry
   layer: LayerPropsPlusMeta
-  properties: LangRecordSchema
+  properties: InstanceLevelSchema
   source: string
   sourceLayer: string
   type: 'Feature' | 'hmmmmmm'
@@ -183,7 +179,7 @@ export type CustomEventData = MapEventType & {
 }
 
 export type PrepPopupContent = (
-  selFeatAttribs: DetailsSchema | null,
+  selFeatAttribs: InstanceLevelSchema | null,
   popupHeading?: string | null
 ) => PopupContent | null
 
@@ -232,7 +228,7 @@ export type LangFeatsUnderClick = (
 ) => MapboxGeoJSONFeature[]
 
 export type UseLangReturn = {
-  feature: LangRecordSchema | undefined
+  feature: InstanceLevelSchema | undefined
   stateReady: boolean
 }
 
@@ -247,7 +243,7 @@ export type MapPopupProps = PopupSettings & {
 }
 
 export type SelFeatAttribs = InternalUse &
-  Pick<DetailsSchema, 'Language' | 'Endonym' | 'Font Image Alt'>
+  Pick<InstanceLevelSchema, 'Language' | 'Endonym' | 'Font Image Alt'>
 
 export type FlyToPointSettings = {
   longitude: number

@@ -3,14 +3,14 @@ import { IconButton } from '@material-ui/core'
 import { GoFile } from 'react-icons/go'
 import { FaMapMarkedAlt } from 'react-icons/fa'
 
-import { DetailsSchema, InternalUse } from 'components/context/types'
+import { InstanceLevelSchema, InternalUse } from 'components/context/types'
 import { CountryListItemWithFlag } from './CountryListItemWithFlag'
 import { EndoImageModal } from './EndoImageModal'
 
 export const FILTER_CLASS = 'for-filter'
 
 export function renderCountryColumn(
-  data: DetailsSchema
+  data: InstanceLevelSchema
 ): string | React.ReactNode {
   return (
     <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
@@ -27,7 +27,7 @@ export function renderCountryColumn(
 }
 
 export function renderEndoColumn(
-  data: DetailsSchema
+  data: InstanceLevelSchema
 ): string | React.ReactNode {
   if (!data['Font Image Alt']) {
     return data.Endonym
@@ -57,7 +57,7 @@ export function renderIDcolumn(): string | React.ReactNode {
   )
 }
 
-export const whittleLangFeats = (data: DetailsSchema[]): InternalUse[] =>
+export const whittleLangFeats = (data: InstanceLevelSchema[]): InternalUse[] =>
   data.map((row) => {
     const { id, Latitude, Longitude } = row
 

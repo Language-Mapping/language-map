@@ -9,7 +9,7 @@ import { useTheme } from '@material-ui/core/styles'
 import { panelWidths } from 'components/panels/config'
 import {
   GlobalContext,
-  LangRecordSchema,
+  InstanceLevelSchema,
   useMapToolsState,
 } from 'components/context'
 import { AtSymbFields, AtSchemaFields } from 'components/legend/types'
@@ -80,7 +80,7 @@ export const useInitialViewport: Types.GetWebMercViewport = (params) => {
 }
 
 export const useLayersConfig = (
-  tableName: keyof LangRecordSchema | '' | 'None'
+  tableName: keyof InstanceLevelSchema | '' | 'None'
 ): Types.UseLayersConfig => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -103,7 +103,7 @@ export const useLayersConfig = (
 
 const createLayerStyles = (
   rows: AtSymbFields[],
-  group: keyof LangRecordSchema | '' | 'None'
+  group: keyof InstanceLevelSchema | '' | 'None'
 ): Types.LayerPropsPlusMeta[] => {
   if (!group || group === 'None') return []
 
@@ -145,7 +145,7 @@ export type UsePopupFeatDetailsReturn = {
 
 export const usePopupFeatDetails = (): UsePopupFeatDetailsReturn => {
   const match = useRouteMatch<{ id: string }>({ path: '/details/:id' })
-  const fields: Array<Extract<keyof LangRecordSchema, string>> = [
+  const fields: Array<Extract<keyof InstanceLevelSchema, string>> = [
     'Language',
     'Endonym',
     'Latitude',

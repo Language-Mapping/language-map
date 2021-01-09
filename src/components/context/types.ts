@@ -5,7 +5,7 @@
 import { CensusScope } from 'components/local/types'
 
 export type PanelState = 'default' | 'maximized' | 'minimized'
-export type LangSchemaCol = keyof LangRecordSchema
+export type LangSchemaCol = keyof InstanceLevelSchema
 
 export type StoreAction =
   | { type: 'CLEAR_FILTERS'; payload: number }
@@ -114,10 +114,6 @@ export type MapToolsDispatch = React.Dispatch<MapToolsAction>
 // Fields in the actual Airtable tables
 export type LangLevelSchema = LangLevelOptional & LangLevelReqd
 export type InstanceLevelSchema = InstanceLevelOptional & InstanceLevelReqd
-
-// Dupes to avoid find-and-replace of originals
-export type LangRecordSchema = InstanceLevelSchema
-export type DetailsSchema = InstanceLevelSchema
 
 // Corresponds with top-level "/Explore" route starting points. Used as a route
 // parameter in Airtable queries in nested views, e.g. /Explore/Country/Egypt.
