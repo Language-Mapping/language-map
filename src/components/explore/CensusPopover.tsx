@@ -49,7 +49,7 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
   const classes = useStyles()
   const { censusActiveField } = useMapToolsState()
-  const { Language, censusPretty, censusScope, censusField } = data
+  const { censusPretty, censusScope, censusField, name } = data
 
   if (!censusField) return null
 
@@ -84,8 +84,8 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
 
   const MetaPara = (
     <Typography className={classes.metaPara}>
-      Speakers of <em>{Language}</em> are likely to be included within the
-      census category of <b>{censusPretty}</b> at the ACS {vintage}{' '}
+      Speakers of <em>{name}</em> are likely to be included within the census
+      category of <b>{censusPretty}</b> at the ACS {vintage}{' '}
       <em>{censusLabel}</em> level.
     </Typography>
   )
