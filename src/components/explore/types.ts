@@ -52,7 +52,10 @@ export type SwatchOrFlagOrIcon = {
 }
 
 export type CensusPopoverProps = {
-  data: Pick<LangLevelSchema, 'censusPretty' | 'censusScope' | 'censusField'> &
+  data: Pick<
+    LangLevelSchema,
+    'censusPretty' | 'censusScope' | 'censusField' | 'name'
+  > &
     Pick<InstanceLevelSchema, 'Language'>
 }
 
