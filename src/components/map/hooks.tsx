@@ -85,12 +85,18 @@ export const useLayersConfig = (
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const moreFields = layerSymbFields[tableName] || []
-  const { data, isLoading, error } = useAirtable<AtSchemaFields>(tableName, {
-    // WOW: field order really matters in regards to react-query. If this is the
-    // same as the one being used by legend config, it doesn't load properly on
-    // page load
-    fields: ['name', ...moreFields],
-  })
+  const { data, isLoading, error } = useAirtable<AtSchemaFields>(
+    tableName,
+    {
+      // WOW: field order really matters in regards to react-query. If this is
+      // the same as the one being used by legend config, it doesn't load
+      // properly on page load
+      fields: ['name', ...moreFields],
+    },
+    {
+      enabled: tableName !== 'None', // GROSS but prevents crash
+    }
+  )
 
   let prepped: Types.LayerPropsPlusMeta[] = []
 
