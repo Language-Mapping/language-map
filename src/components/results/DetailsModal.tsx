@@ -10,7 +10,13 @@ import { UseLocation } from './types'
 export const DetailsModal: FC = () => {
   const history = useHistory()
   const loc = useLocation<UseLocation>()
-  const { isLoading, error, data } = useDetails()
+  const {
+    isLoading,
+    error,
+    data,
+    instanceDescripID,
+    langDescripID,
+  } = useDetails()
 
   if (isLoading || error || !data) return null
 
@@ -24,7 +30,7 @@ export const DetailsModal: FC = () => {
         })
       }
     >
-      <Details data={data} />
+      <Details {...{ instanceDescripID, langDescripID, data }} />
     </SimpleDialog>
   )
 }
