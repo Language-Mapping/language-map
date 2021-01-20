@@ -71,7 +71,7 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
   const { tableName = field, sortByField = 'name' } = props
   const { url } = useRouteMatch()
   const filterByFormula = prepFormula(field, value)
-  const fields = prepFields(tableName, field === 'Neighborhood')
+  const fields = prepFields(tableName, field)
 
   const { data, error, isLoading } = useAirtable<TonsWithAddl>(tableName, {
     fields,
@@ -113,6 +113,10 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
 
   if (value && field === 'Neighborhood')
     primaryData = data.filter((row) => row['Primary Locations'].includes(value))
+  // Gross extra steps for Airtable FIND issue, which returns in ARRAYJOIN
+  // things like "Dominican Republic" in a "Dominica" query:
+  else if (value && Array.isArray(data[0][field]))
+    primaryData = data.filter((row) => row[field]?.includes(value))
   else primaryData = data
 
   // TODO: better logic for instances, e.g. allow definition
