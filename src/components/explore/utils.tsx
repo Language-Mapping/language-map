@@ -60,14 +60,20 @@ export const prepFormula = (
 // Mid-level fields are consistent except a few tables need an extra field
 export const prepFields = (
   tableName: RouteableTableNames,
-  includeNeighborhood?: boolean // gross extra step for Airtable FIND issue
+  field: RouteableTableNames // gross extra step for Airtable FIND issue
 ): string[] => {
+  const arrayFields: RouteableTableNames[] = [
+    'Country',
+    'Macrocommunity',
+    'Neighborhood',
+  ]
+
   if (tableName === 'Language')
     return [
       'Endonym',
       'name',
       'Primary Locations',
-      ...(includeNeighborhood ? ['Neighborhood'] : []),
+      ...(arrayFields.includes(field) ? [field] : []),
       'worldRegionColor',
       'addlNeighborhoods',
     ]
