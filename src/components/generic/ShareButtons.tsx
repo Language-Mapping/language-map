@@ -27,7 +27,7 @@ type ShareBtnProps = {
 
 // TODO: set these in a way that can be recycled via ENV (or similar) within
 // manifest.json and/or index.html. Maybe some way to put it in package.json?
-const DEFAULT_URL = 'https://map.languagemapping.org/'
+const DEFAULT_URL = 'https://languagemap.nyc/'
 const DEFAULT_TITLE = 'Languages of New York City Map'
 const DEFAULT_SUMMARY =
   'An interactive map of language diversity in New York City, one of the world’s most linguistically diverse metropolitan areas.'

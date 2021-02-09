@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://map.languagemapping.org/" target="_blank" title="Project website">
+  <a href="https://languagemap.nyc/" target="_blank" title="Project website">
     <img alt="logo" src="src/img/logo.svg" width="320" />
   </a>
 </p>
