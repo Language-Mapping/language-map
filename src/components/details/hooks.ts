@@ -23,6 +23,7 @@ const langFields: Array<Extract<keyof LangLevelSchema, string>> = [
   'descriptionID',
   'Endonym',
   'Font Image Alt',
+  'Macrocommunity',
   'name',
   'Video',
   'World Region',

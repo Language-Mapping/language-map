@@ -129,8 +129,7 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
           }
         />
       ))}
-      {!isInstance &&
-        macro &&
+      {macro &&
         macro.map((macroName, i) => (
           <Chip
             key={macroName}
