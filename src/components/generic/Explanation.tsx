@@ -7,17 +7,17 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       color: theme.palette.text.secondary,
       fontSize: '0.75rem',
-      margin: '0.75rem 0 1rem',
+      marginTop: '0.75rem',
     },
   })
 )
 
-export const Explanation: FC = (props) => {
-  const { children } = props
+export const Explanation: FC<{ component?: 'div' | 'p' }> = (props) => {
+  const { children, component = 'p' } = props
   const classes = useStyles()
 
   return (
-    <Typography component="p" className={classes.root} paragraph>
+    <Typography component={component} className={classes.root} paragraph>
       {children}
     </Typography>
   )

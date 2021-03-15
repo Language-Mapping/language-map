@@ -28,7 +28,7 @@ export const RandomLinkBtn: FC = () => {
       startIcon={<FaRandom />}
       to={`${routes.details}/${randoIndex}`}
     >
-      Try one at random
+      Show me a community
     </Button>
   )
 }
