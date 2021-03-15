@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     legendLabel: {
       justifySelf: 'flex-start',
-      fontSize: theme.typography.caption.fontSize,
+      fontSize: '0.75rem',
       lineHeight: theme.typography.caption.lineHeight,
     },
     swatchDefaults: {

@@ -19,6 +19,7 @@ export type SwatchOnlyProps = Pick<
 // Same as the regular swatch but will have SVG element if it is a symbol
 export type LegendSwatchProps = LegendSwatchBareMin & {
   icon?: string
+  // definition?: string // TODO: do it right (no dual-purpose Airtable columns)
   component?: React.ElementType
   labelStyleOverride?: React.CSSProperties
   to?: string
