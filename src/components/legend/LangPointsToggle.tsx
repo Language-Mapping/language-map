@@ -4,7 +4,6 @@ import { FormControlLabel, Switch } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { useLabelAndSymbDispatch } from 'components/context/SymbAndLabelContext'
-import { SimplePopover } from 'components/generic'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -31,20 +30,6 @@ export const LangPointsToggle: FC<{ checked: boolean }> = (props) => {
     symbLabelDispatch({ type: 'TOGGLE_LANG_POINTS' })
   }
 
-  const ControlLabel = (
-    <div className={classes.controlLabel}>
-      Hide language points and icons
-      <SimplePopover
-        text={
-          <>
-            Turn this on to hide the language points symbols or icons. This can
-            be useful if you only want to see their labels.
-          </>
-        }
-      />
-    </div>
-  )
-
   return (
     <FormControlLabel
       classes={{ label: smallerText, root }}
@@ -56,7 +41,7 @@ export const LangPointsToggle: FC<{ checked: boolean }> = (props) => {
           size="small"
         />
       }
-      label={ControlLabel}
+      label="Hide points and icons"
     />
   )
 }
