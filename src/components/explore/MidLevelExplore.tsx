@@ -139,8 +139,8 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
           return (
             <CustomCard
               key={row.name || row.Language}
-              title={row.name || row.Language}
-              intro={row.Endonym}
+              intro={row.name || row.Language}
+              title={row.Endonym}
               footerIcon={footerIcon}
               uniqueInstances={uniqueInstances}
               url={`${url}/${row.name || row.Language}`}
