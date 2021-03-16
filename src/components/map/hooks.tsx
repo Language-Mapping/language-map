@@ -80,68 +80,53 @@ export const useInitialViewport: Types.GetWebMercViewport = (params) => {
 }
 
 export const useLayersConfig = (
-  tableName: keyof InstanceLevelSchema | '' | 'None'
+  tableName: keyof InstanceLevelSchema
 ): Types.UseLayersConfig => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const moreFields = layerSymbFields[tableName] || []
-  const { data, isLoading, error } = useAirtable<AtSchemaFields>(
-    tableName,
-    {
-      // WOW: field order really matters in regards to react-query. If this is
-      // the same as the one being used by legend config, it doesn't load
-      // properly on page load
-      fields: ['name', ...moreFields],
-    },
-    {
-      enabled: tableName !== 'None', // GROSS but prevents crash
-    }
-  )
+  const { data, isLoading, error } = useAirtable<AtSchemaFields>(tableName, {
+    // WOW: field order really matters in regards to react-query. If this is
+    // the same as the one being used by legend config, it doesn't load
+    // properly on page load
+    fields: ['name', ...moreFields],
+  })
 
   let prepped: Types.LayerPropsPlusMeta[] = []
 
-  if (tableName && tableName !== 'None' && data.length) {
-    prepped = createLayerStyles(data, tableName)
-  }
+  if (data.length) prepped = createLayerStyles(data, tableName)
 
   return { error, data: prepped, isLoading }
 }
 
 const createLayerStyles = (
   rows: AtSymbFields[],
-  group: keyof InstanceLevelSchema | '' | 'None'
-): Types.LayerPropsPlusMeta[] => {
-  if (!group || group === 'None') return []
-
-  return rows.map((settings) => {
-    const { name: id } = settings
-
-    // CRED: fo' spread: https://bit.ly/37nzMRT
-    return {
-      id,
-      type: 'symbol', // not being used at time of writing, just satisfy TS
-      group, // aka Airtable table name, and possibly query ID
-      filter: ['match', ['get', group], [id], true, false],
-      layout: {
-        // Making an assumption that image-based icons will look better with the
-        // slightly-larger, placement-ignorant style
-        ...(settings['icon-image'] && {
-          'icon-image': settings['icon-image'],
-          ...iconStyleOverride,
-        }),
-        ...(!settings['icon-image'] &&
-          settings['icon-size'] && { 'icon-size': settings['icon-size'] }),
-      },
-      paint: {
-        ...(settings['icon-color'] && { 'icon-color': settings['icon-color'] }),
-        ...(settings['text-color'] && { 'text-color': settings['text-color'] }),
-        ...(settings['text-halo-color'] && {
-          'text-halo-color': settings['text-halo-color'],
-        }),
-      },
-    }
-  })
-}
+  group: keyof InstanceLevelSchema
+): Types.LayerPropsPlusMeta[] =>
+  // CRED: fo' spread: https://bit.ly/37nzMRT
+  rows.map((settings) => ({
+    id: settings.name,
+    type: 'symbol', // not being used at time of writing, just satisfy TS
+    group, // aka Airtable table name, and possibly query ID
+    filter: ['match', ['get', group], [settings.name], true, false],
+    layout: {
+      // Making an assumption that image-based icons will look better with the
+      // slightly-larger, placement-ignorant style
+      ...(settings['icon-image'] && {
+        'icon-image': settings['icon-image'],
+        ...iconStyleOverride,
+      }),
+      ...(!settings['icon-image'] &&
+        settings['icon-size'] && { 'icon-size': settings['icon-size'] }),
+    },
+    paint: {
+      ...(settings['icon-color'] && { 'icon-color': settings['icon-color'] }),
+      ...(settings['text-color'] && { 'text-color': settings['text-color'] }),
+      ...(settings['text-halo-color'] && {
+        'text-halo-color': settings['text-halo-color'],
+      }),
+    },
+  }))
 
 export type UsePopupFeatDetailsReturn = {
   selFeatAttribs?: Types.SelFeatAttribs

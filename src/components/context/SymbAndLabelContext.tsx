@@ -5,7 +5,7 @@ import { LangSchemaCol } from './types'
 type Dispatch = React.Dispatch<Action>
 type InitialState = {
   activeLabelID: LangSchemaCol | '' | 'None'
-  activeSymbGroupID: LangSchemaCol | '' | 'None'
+  activeSymbGroupID: LangSchemaCol
   hideLangPoints: boolean
 }
 

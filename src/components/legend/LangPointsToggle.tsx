@@ -28,19 +28,17 @@ export const LangPointsToggle: FC<{ checked: boolean }> = (props) => {
   const symbLabelDispatch = useLabelAndSymbDispatch()
 
   const handleBoundariesToggle = () => {
-    symbLabelDispatch({
-      type: 'TOGGLE_LANG_POINTS',
-    })
+    symbLabelDispatch({ type: 'TOGGLE_LANG_POINTS' })
   }
 
   const ControlLabel = (
     <div className={classes.controlLabel}>
-      Hide language point symbols
+      Hide language points and icons
       <SimplePopover
         text={
           <>
-            Turn this on to hide the language points or symbols, which can be
-            useful if you only want to see their labels.
+            Turn this on to hide the language points symbols or icons. This can
+            be useful if you only want to see their labels.
           </>
         }
       />
@@ -50,7 +48,6 @@ export const LangPointsToggle: FC<{ checked: boolean }> = (props) => {
   return (
     <FormControlLabel
       classes={{ label: smallerText, root }}
-      style={{ marginTop: '0.5rem' }}
       control={
         <Switch
           checked={checked}
