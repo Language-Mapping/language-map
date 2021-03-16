@@ -12,12 +12,21 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const Explanation: FC<{ component?: 'div' | 'p' }> = (props) => {
-  const { children, component = 'p' } = props
+type ExplanationProps = {
+  component?: 'div' | 'p'
+  className?: string
+}
+
+export const Explanation: FC<ExplanationProps> = (props) => {
+  const { children, component = 'p', className = '' } = props
   const classes = useStyles()
 
   return (
-    <Typography component={component} className={classes.root} paragraph>
+    <Typography
+      component={component}
+      className={`${classes.root} ${className}`}
+      paragraph
+    >
       {children}
     </Typography>
   )
