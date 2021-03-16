@@ -72,7 +72,6 @@ export const LegendPanel: FC = () => {
         <LayerLabelSelect />
       </div>
       <LangPointsToggle checked={hideLangPoints} />
-      {activeSymbGroupID === 'World Region' && <WorldRegionMap />}
       {isLoading && <p>Loading legend info...</p>}
       {!isLoading && (
         <div className={classes.groupedLegend}>
@@ -88,6 +87,7 @@ export const LegendPanel: FC = () => {
           ))}
         </div>
       )}
+      {activeSymbGroupID === 'World Region' && <WorldRegionMap />}
     </div>
   )
 }
