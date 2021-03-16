@@ -291,15 +291,6 @@ export const getLangLayersIDs = (layers: Layer[]): string[] => {
     .map((layer) => layer.id)
 }
 
-export const getBeforeID = (
-  activeSymbGroupID: string,
-  layers: Layer[]
-): string => {
-  if (['', 'None'].includes(activeSymbGroupID)) return 'background'
-
-  return getLangLayersIDs(layers)[0] || 'background'
-}
-
 export const rightToLeftSetup = (): void => {
   // Jest or whatever CANNOT find this plugin. And importing it from
   // `react-map-gl` is useless as well.

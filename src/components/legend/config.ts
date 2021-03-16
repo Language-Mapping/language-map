@@ -17,6 +17,6 @@ export const commonSelectProps = {
 
 export const layerSymbFields = {
   'World Region': ['icon-color', 'text-color', 'text-halo-color', 'continent'],
-  Status: ['icon-color', 'icon-image', 'src_image'],
+  Status: ['icon-color', 'icon-image', 'src_image', 'label'],
   Size: ['icon-color', 'icon-size', 'value', 'label'],
 } as { [key in keyof Partial<InstanceLevelSchema>]: (keyof AtSymbFields)[] }

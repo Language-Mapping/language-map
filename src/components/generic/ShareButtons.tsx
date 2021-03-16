@@ -53,7 +53,7 @@ export const ShareButtons: FC<ShareBtnProps> = (props) => {
       alignItems="center"
     >
       <Grid item>
-        <FacebookShareButton url={url} quote={summary}>
+        <FacebookShareButton url={url} quote={`${title}\n\n${summary}`}>
           <FacebookIcon {...sharedProps} />
         </FacebookShareButton>
       </Grid>

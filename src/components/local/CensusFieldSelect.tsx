@@ -109,7 +109,11 @@ const CensusAutocomplete: FC = (props) => {
       value={defaultValue}
       // open // much more effective than `debug`
       renderInput={(params) => (
-        <TextField {...params} label="Choose a language" variant="standard" />
+        <TextField
+          {...params}
+          label="Choose a language or enter text"
+          variant="standard"
+        />
       )}
     />
   )

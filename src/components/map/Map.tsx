@@ -45,12 +45,13 @@ export const Map: FC<Types.MapProps> = (props) => {
   const map: MbMap | undefined = mapRef.current?.getMap()
   const { selFeatAttribs } = usePopupFeatDetails()
   const { state } = useContext(contexts.GlobalContext)
-  const symbLabelState = contexts.useSymbAndLabelState()
   const { boundariesVisible } = contexts.useMapToolsState()
   const offset = useOffset(panelOpen)
   const breakpoint = useBreakpoint()
   const { langFeatures, filterHasRun } = state
-  const { activeSymbGroupID } = symbLabelState
+  // TODO: rm if not needed for hover/popup stuff
+  // const symbLabelState = contexts.useSymbAndLabelState()
+  // const { activeSymbGroupID } = symbLabelState
   const [beforeId, setBeforeId] = useState<string>('background')
 
   const [
@@ -72,6 +73,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   const shouldFlyHome = useZoomToLangFeatsExtent(panelOpen, map)
   const boundaryPopup = useBoundaryPopup(panelOpen, clickedBoundary, map)
 
+  // TODO: rm if not needed for hover/popup stuff
   // const symbCache = cache.getQueryData([activeSymbGroupID, 'legend']) || []
   // const interactiveLayerIds = symbCache
 
@@ -155,7 +157,7 @@ export const Map: FC<Types.MapProps> = (props) => {
       if (!e.isSourceLoaded) return
 
       const layers = e.style._layers
-      const before = utils.getBeforeID(activeSymbGroupID, layers)
+      const before = utils.getLangLayersIDs(layers)[0] || 'background'
 
       setBeforeId(before)
     })

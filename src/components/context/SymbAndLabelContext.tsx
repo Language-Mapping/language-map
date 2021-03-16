@@ -5,16 +5,19 @@ import { LangSchemaCol } from './types'
 type Dispatch = React.Dispatch<Action>
 type InitialState = {
   activeLabelID: LangSchemaCol | '' | 'None'
-  activeSymbGroupID: LangSchemaCol | '' | 'None'
+  activeSymbGroupID: LangSchemaCol
+  hideLangPoints: boolean
 }
 
 export type Action =
+  | { type: 'TOGGLE_LANG_POINTS' }
   | { type: 'SET_LANG_LAYER_LABELS'; payload: LangSchemaCol | '' }
   | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: LangSchemaCol }
 
 const initialState = {
   activeLabelID: '',
   activeSymbGroupID: 'World Region',
+  hideLangPoints: false,
 } as InitialState
 
 const SymbAndLabelContext = React.createContext<InitialState | undefined>(
@@ -26,6 +29,11 @@ const SymbLabelDispatchContext = React.createContext<Dispatch | undefined>(
 
 function reducer(state: InitialState, action: Action) {
   switch (action.type) {
+    case 'TOGGLE_LANG_POINTS':
+      return {
+        ...state,
+        hideLangPoints: !state.hideLangPoints,
+      }
     case 'SET_LANG_LAYER_LABELS':
       return {
         ...state,

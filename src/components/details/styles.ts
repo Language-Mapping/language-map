@@ -34,5 +34,8 @@ export const useStyles = makeStyles((theme: Theme) =>
       marginBottom: '1em',
       fontSize: theme.typography.caption.fontSize,
     },
+    panelHeading: {
+      fontSize: '1.5rem',
+    },
   })
 )

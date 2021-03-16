@@ -1,7 +1,12 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import { LayerSymbSelect, LayerLabelSelect, Legend } from 'components/legend'
+import {
+  LayerSymbSelect,
+  LayerLabelSelect,
+  Legend,
+  LangPointsToggle,
+} from 'components/legend'
 import { useSymbAndLabelState } from 'components/context'
 import { WorldRegionMap } from './WorldRegionMap'
 import { useLegendConfig } from './hooks'
@@ -43,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const LegendPanel: FC = () => {
-  const { activeSymbGroupID } = useSymbAndLabelState()
+  const { activeSymbGroupID, hideLangPoints } = useSymbAndLabelState()
   const classes = useStyles()
   const {
     error,
@@ -66,6 +71,7 @@ export const LegendPanel: FC = () => {
         <LayerSymbSelect />
         <LayerLabelSelect />
       </div>
+      <LangPointsToggle checked={hideLangPoints} />
       {activeSymbGroupID === 'World Region' && <WorldRegionMap />}
       {isLoading && <p>Loading legend info...</p>}
       {!isLoading && (

@@ -126,10 +126,10 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
       icon={Icon}
       introParagraph={!value && definition}
     >
-      <Route path="/Explore/Neighborhood">
+      <Route path="/Explore/Neighborhood/:language" exact>
         <Explanation>
-          Languages with a significant site in this community, marked by a point
-          on the map:
+          Languages with a significant site in this neighborhood, marked by a
+          point on the map:
         </Explanation>
       </Route>
       <CardList>

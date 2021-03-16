@@ -12,7 +12,7 @@ import * as Types from './types'
 
 export const LangMbSrcAndLayer: FC = () => {
   const symbLabelState = useSymbAndLabelState()
-  const { activeLabelID, activeSymbGroupID } = symbLabelState
+  const { activeLabelID, activeSymbGroupID, hideLangPoints } = symbLabelState
   const {
     data: fontsData,
     isLoading: isFontsLoading,
@@ -78,7 +78,6 @@ export const LangMbSrcAndLayer: FC = () => {
       url={`mapbox://${config.mbStyleTileConfig.tilesetId}`}
       id={config.mbStyleTileConfig.langSrcID}
     >
-      {/* @ts-ignore */}
       {layersData.map((layer: Types.LayerPropsPlusMeta) => {
         let { paint, layout } = layer
 
@@ -88,6 +87,8 @@ export const LangMbSrcAndLayer: FC = () => {
         if (activeLabelID && activeLabelID !== 'None') {
           paint = { ...config.mapLabelDefaults.paint, ...paint }
         }
+
+        if (hideLangPoints) layout = { ...layout, 'icon-size': 0 }
 
         return (
           <Layer

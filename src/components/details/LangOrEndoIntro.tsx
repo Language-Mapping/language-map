@@ -24,14 +24,13 @@ const useStyles = makeStyles((theme: Theme) =>
     subHeading: {
       fontSize: '1.25rem',
       lineHeight: 1.25,
-      display: 'inline-block',
+      display: 'block',
       color: theme.palette.primary.light,
     },
   })
 )
 
 // Mongolian, ASL, etc. have URLs to images
-// TODO: make this more generic and consistent to be reused with /Explore's
 export const LangOrEndoIntro: FC<LangOrEndoIntroProps> = (props) => {
   const CHAR_CUTOFF = 17
   const { data } = props
@@ -51,7 +50,7 @@ export const LangOrEndoIntro: FC<LangOrEndoIntroProps> = (props) => {
           {Endonym}
         </Typography>
       )}
-      {language !== Endonym && (
+      {(altImage || language !== Endonym) && (
         <Typography
           variant="h6"
           component={RouterLink}

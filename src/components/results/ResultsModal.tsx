@@ -33,6 +33,7 @@ const fields: Array<Extract<keyof InstanceLevelSchema, string>> = [
   'Status',
   'Video',
   'World Region',
+  'worldRegionColor',
 ]
 
 const ResultsModal: FC = () => {
