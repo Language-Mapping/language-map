@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Paper } from '@material-ui/core'
 
 import {
   LayerSymbSelect,
@@ -8,25 +9,31 @@ import {
   LangPointsToggle,
 } from 'components/legend'
 import { useSymbAndLabelState } from 'components/context'
+import { PanelHeading } from 'components/panels'
 import { WorldRegionMap } from './WorldRegionMap'
 import { useLegendConfig } from './hooks'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      marginTop: '1em',
+      margin: '1rem 0',
+      padding: '1rem 0.75rem',
+    },
+    panelHeading: {
+      fontSize: '1.25rem',
     },
     legendCtrls: {
       alignItems: 'center',
       display: 'flex',
-      margin: '0.25em 0 0.75em',
+      margin: '1rem 0 0.5rem',
       '& > * + *': {
-        marginLeft: '1em',
+        marginLeft: '1rem',
       },
     },
     // Looks PERFECT on all breakpoints for World Region
     groupedLegend: {
       display: 'grid',
+      marginTop: '0.75rem',
       gridTemplateColumns: '1fr 1fr',
       gridColumnGap: 4,
       // This doesn't affect Size/Status
@@ -66,7 +73,11 @@ export const LegendPanel: FC = () => {
     )
 
   return (
-    <div className={classes.root}>
+    <Paper className={classes.root} elevation={5}>
+      <PanelHeading
+        text="Map display options & legend"
+        className={classes.panelHeading}
+      />
       <div className={classes.legendCtrls}>
         <LayerSymbSelect />
         <LayerLabelSelect />
@@ -88,6 +99,6 @@ export const LegendPanel: FC = () => {
         </div>
       )}
       {activeSymbGroupID === 'World Region' && <WorldRegionMap />}
-    </div>
+    </Paper>
   )
 }

@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     list: {
       listStyleType: 'none',
-      marginBottom: '0.75rem',
+      marginBottom: '0.5rem',
       marginTop: 0,
       paddingLeft: 0,
     },

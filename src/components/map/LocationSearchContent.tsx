@@ -3,7 +3,7 @@ import { Typography, Box } from '@material-ui/core'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
-import { SubtleText } from 'components/generic'
+import { Explanation } from 'components/generic'
 import { PanelSectionProps } from './types'
 import { useLocalPanelStyles } from './styles'
 
@@ -18,7 +18,7 @@ export const LocationSearchContent: FC<PanelSectionProps> = (props) => {
           {heading}
         </Typography>
       )}
-      <SubtleText>{explanation}</SubtleText>
+      <Explanation>{explanation}</Explanation>
       {children}
     </Box>
   )
