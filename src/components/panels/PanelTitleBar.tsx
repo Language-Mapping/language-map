@@ -26,8 +26,10 @@ const useStyles = makeStyles((theme: Theme) =>
       top: 0,
       width: '100%',
       '& a': {
+        color: theme.palette.text.primary,
+        textDecoration: 'underline',
+        textDecorationColor: theme.palette.text.secondary,
         whiteSpace: 'nowrap',
-        color: 'hsla(0, 100%, 100%, 0.85)',
       },
       '& svg': {
         fontSize: '1.25rem',
