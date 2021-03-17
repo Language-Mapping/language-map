@@ -8,9 +8,12 @@ import { navRoutes, panelWidths } from '../panels/config'
 import { BOTTOM_NAV_HEIGHT_MOBILE } from './config'
 import { BottomNavProps } from './types'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
+const useStyles = makeStyles((theme: Theme) => {
+  const gradientBackground = `radial-gradient(ellipse at top, ${theme.palette.primary.light}, transparent),
+radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`
+
+  return createStyles({
+    bottomNavRoot: {
       backgroundColor: theme.palette.primary.dark,
       borderBottomLeftRadius: 4,
       borderBottomRightRadius: 4,
@@ -36,42 +39,53 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     // TODO: clip-path notch instead of boring rounded corners
-    bottomNavAction: {
-      borderBottomColor: 'transparent',
-      borderBottomStyle: 'solid',
-      borderBottomWidth: 0,
-      color: theme.palette.text.secondary,
+    root: {
       minWidth: 'auto', // 80 = too-large default,
+      // Probably NOT light/dark theme interchangeable:
       outline: `solid 1px hsla(168, 41%, 19%, 0.15)`,
       transition: 'all 300ms ease',
-      [theme.breakpoints.down('sm')]: {
-        padding: '0 !important',
+      '&:hover': {
+        [theme.breakpoints.up('sm')]: {
+          background: theme.palette.primary.main,
+        },
       },
       '& svg': {
         transition: '300ms ease all',
-        fontSize: '1.4em',
+        fontSize: '1.25rem',
+      },
+      // Quite a fight, may be a bug with MUI, which adds "selected" classes to
+      // both the root and child elements. More below in "label" class too.
+      '& .Mui-selected': {
+        background: 'none',
+        fontSize: 'inherit',
+      },
+      // This one is legit (it's the root element).
+      '&.Mui-selected': {
+        color: theme.palette.text.primary,
       },
     },
-    bottomNavIconOnly: {
-      paddingTop: 24,
-    },
-    bottomNavLabel: {
+    wrapper: {
+      fontSize: theme.typography.button.fontSize,
       [theme.breakpoints.down('sm')]: {
-        display: 'none',
+        fontSize: '0.75rem',
       },
     },
-    bottomNavSelected: {
-      color: theme.palette.text.primary,
-      borderBottomWidth: 4,
-      borderBottomColor: theme.palette.primary.main,
-      fontSize: '0.85em',
+    label: {
+      '& .Mui-selected': {
+        fontSize: 'inherit', // from the wrapper class
+      },
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '0.75rem',
+      },
+    },
+    selected: {
+      background: gradientBackground,
       '& svg': {
         fill: theme.palette.text.primary,
-        fontSize: '1.2em',
       },
     },
   })
-)
+})
 
 // Home, table, help do not have sub-routes
 const initialSubRoutes = {
@@ -81,10 +95,13 @@ const initialSubRoutes = {
 
 export const BottomNav: FC<BottomNavProps> = (props) => {
   const { setPanelOpen } = props
-  const classes = useStyles()
   const loc = useLocation()
+  const classes = useStyles()
+  const { root, selected, label, wrapper } = classes
+
   const currPathSansSlash = loc.pathname.split('/')[1]
   const handleChange = () => setPanelOpen(true)
+
   const [subRoutePath, setSubRoutePath] = useState(
     initialSubRoutes as { [key: string]: string }
   )
@@ -109,7 +126,7 @@ export const BottomNav: FC<BottomNavProps> = (props) => {
       component="nav"
       value={`${loc.pathname.split('/')[1]}` || '/'}
       onChange={handleChange}
-      className={classes.root}
+      className={classes.bottomNavRoot}
     >
       {navRoutes.map((config) => {
         const subRouteStateKey = config.rootPath.split('/')[1] || '/'
@@ -122,11 +139,8 @@ export const BottomNav: FC<BottomNavProps> = (props) => {
             icon={config.icon}
             value={subRouteStateKey}
             to={subRoutePath[subRouteStateKey] || config.rootPath}
-            classes={{
-              selected: classes.bottomNavSelected,
-              root: classes.bottomNavAction,
-              label: classes.bottomNavLabel,
-            }}
+            showLabel
+            classes={{ root, selected, label, wrapper }}
           />
         )
       })}
