@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     groupHeader: {
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: theme.palette.secondary.main,
       borderTopLeftRadius: 4,
       borderTopRightRadius: 4,
       boxShadow: '0 2px 7px hsla(0, 0%, 0%, 0.15)',

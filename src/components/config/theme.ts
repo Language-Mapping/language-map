@@ -61,15 +61,35 @@ const customTheme = createMuiTheme({
   palette: {
     type: 'dark',
     primary: {
-      light: '#66ab9d',
-      main: '#409685',
-      dark: '#2c695d',
+      // TODO: rm when dialed in
+      // OLD
+      // light: '#66ab9d',
+      // main: '#409685',
+      // dark: '#2c695d',
+      // NEW
+      light: '#62aca0',
+      main: '#379587',
+      dark: '#286a61',
       contrastText: '#fff',
     },
     secondary: {
-      light: '#ab6673',
-      main: '#964051',
-      dark: '#692c38',
+      // TODO: rm when dialed in
+      // light: '#2f86c1',
+      // main: '#016aa3',
+      // dark: '#014971',
+      // light: '#6386b0',
+      // main: '#325b93',
+      // dark: '#2e456b',
+      // light: '#20c5e0',
+      // main: '#139fb4',
+      // dark: '#0d7d8c',
+      // OPTION 3
+      light: '#55a9c1',
+      main: '#207d96',
+      dark: '#2d6777',
+      // light: '#56abc2',
+      // main: '#207d96',
+      // dark: '#2d6676',
       contrastText: '#fff',
     },
   },
@@ -100,6 +120,14 @@ customTheme.overrides = {
   MuiButton: {
     root: {
       textTransform: 'none',
+    },
+    textSecondary: {
+      color: customTheme.palette.secondary.light,
+    },
+  },
+  MuiLink: {
+    root: {
+      color: customTheme.palette.secondary.light,
     },
   },
 }

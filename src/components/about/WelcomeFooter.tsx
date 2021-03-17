@@ -95,9 +95,8 @@ export const WelcomeFooter: FC<WelcomeFooterProps> = (props) => {
       />
       <Button
         onClick={handleClose}
-        color="primary"
+        color="secondary"
         variant="contained"
-        size="large"
         className={continueBtn}
       >
         Continue

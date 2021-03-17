@@ -33,7 +33,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& .MuiInputAdornment-root': { color: theme.palette.text.hint },
       [`& ${headCell}`]: {
         backgroundColor: 'inherit',
-        color: theme.palette.primary.light,
+        color: theme.palette.secondary.light,
         lineHeight: 1.2,
       },
       // Default cushion of non-dense table cell is 16px
@@ -57,7 +57,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       // All icons in and out of table. Icons inherit color and size from it.
       // ...otherwise it overrides the `disabled` Action buttons
       '& table .MuiIconButton-root:not([disabled]), .MuiToolbar-root .MuiIconButton-root:not([disabled])': {
-        color: theme.palette.primary.light,
+        color: theme.palette.secondary.light,
       },
       '& .MuiTableSortLabel-icon': {
         flexShrink: 0, // prevents tiny arrows on columns w/wrapped headings

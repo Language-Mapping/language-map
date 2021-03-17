@@ -14,8 +14,8 @@ body {
 }
 
 a {
-  /* Same as theme.palette.info.main but this avoids need for `withStyles` */
-  color: hsl(207deg 90% 54%);
+  /* Same as theme.palette.secondary.light but avoids need for `withStyles` */
+  color: #55a9c1;
   text-decoration: none;
 }
 

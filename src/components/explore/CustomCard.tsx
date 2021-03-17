@@ -22,12 +22,12 @@ const useStyles = makeStyles((theme: Theme) =>
         marginBottom: '0.25em',
       },
       '&:hover': {
-        borderColor: theme.palette.primary.dark,
-        background: `radial-gradient(ellipse at top, ${theme.palette.primary.light}, transparent),
-        radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`,
+        borderColor: theme.palette.secondary.dark,
+        background: `radial-gradient(ellipse at top, ${theme.palette.secondary.light}, transparent),
+        radial-gradient(ellipse at bottom, ${theme.palette.secondary.dark}, transparent)`,
       },
       '&:hover .accent-bar': {
-        backgroundColor: theme.palette.primary.light,
+        backgroundColor: theme.palette.secondary.light,
         transform: 'scaleX(1), translateX(-100%)',
       },
     },

@@ -26,7 +26,7 @@ const MediaListItem: FC<MediaListItemProps> = (props) => {
     <li>
       <Button
         size="small"
-        color="primary"
+        color="secondary"
         className={classes.mediaLink}
         disabled={disabled}
         title={disabled ? '' : title}
