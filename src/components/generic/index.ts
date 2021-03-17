@@ -1,3 +1,4 @@
+export * from './FancyHorizRule'
 export * from './Explanation'
 export * from './ReadMore'
 export * from './ScrollToTopOnMount'
