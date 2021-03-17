@@ -84,7 +84,7 @@ export const ShareButtons: FC<ShareBtnProps> = (props) => {
       </Grid>
       <Grid item>
         <EmailShareButton url={url} subject={title} body={summary}>
-          <EmailIcon {...sharedProps} />
+          <EmailIcon {...sharedProps} bgStyle={{ fill: '#ce865a' }} />
         </EmailShareButton>
       </Grid>
     </Grid>
