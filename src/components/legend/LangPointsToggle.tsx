@@ -9,6 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       marginLeft: 0,
+      marginBottom: '0.25rem',
     },
     controlLabel: {
       display: 'flex',
@@ -20,6 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+// TODO: abstract and reuse for labels
 export const LangPointsToggle: FC<{ checked: boolean }> = (props) => {
   const { checked } = props
   const classes = useStyles()
@@ -41,7 +43,7 @@ export const LangPointsToggle: FC<{ checked: boolean }> = (props) => {
           size="small"
         />
       }
-      label="Hide points and icons"
+      label="Hide symbols"
     />
   )
 }

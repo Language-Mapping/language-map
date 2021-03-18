@@ -19,6 +19,9 @@ import { PreppedAutocompleteGroup } from './types'
 // ...to make sure it fits on iPhone?
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      marginBottom: '1.25rem',
+    },
     paper: {
       // Stands out against panels behind it
       backgroundColor: theme.palette.background.default,

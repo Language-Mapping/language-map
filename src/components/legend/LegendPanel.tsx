@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Paper } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 
 import {
   LayerSymbSelect,
@@ -9,7 +9,6 @@ import {
   LangPointsToggle,
 } from 'components/legend'
 import { useSymbAndLabelState } from 'components/context'
-import { PanelHeading } from 'components/panels'
 import { WorldRegionMap } from './WorldRegionMap'
 import { useLegendConfig } from './hooks'
 
@@ -19,13 +18,16 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: '1rem 0',
       padding: '1rem 0.75rem',
     },
-    panelHeading: {
-      fontSize: '1.25rem',
+    panelSectionHeading: {
+      color: theme.palette.text.secondary,
+      fontSize: '1rem',
+      marginBottom: '0.5rem',
+      textTransform: 'uppercase',
     },
     legendCtrls: {
       alignItems: 'center',
       display: 'flex',
-      margin: '1rem 0 0.5rem',
+      marginBottom: '0.5rem',
       '& > * + *': {
         marginLeft: '1rem',
       },
@@ -54,6 +56,17 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+const PanelSectionHeading: FC = (props) => {
+  const { children } = props
+  const classes = useStyles()
+
+  return (
+    <Typography className={classes.panelSectionHeading} component="h3">
+      {children}
+    </Typography>
+  )
+}
+
 export const LegendPanel: FC = () => {
   const { activeSymbGroupID, hideLangPoints } = useSymbAndLabelState()
   const classes = useStyles()
@@ -73,11 +86,8 @@ export const LegendPanel: FC = () => {
     )
 
   return (
-    <Paper className={classes.root} elevation={5}>
-      <PanelHeading
-        text="Map display options & legend"
-        className={classes.panelHeading}
-      />
+    <>
+      <PanelSectionHeading>Map display options & legend</PanelSectionHeading>
       <div className={classes.legendCtrls}>
         <LayerSymbSelect />
         <LayerLabelSelect />
@@ -99,6 +109,6 @@ export const LegendPanel: FC = () => {
         </div>
       )}
       {activeSymbGroupID === 'World Region' && <WorldRegionMap />}
-    </Paper>
+    </>
   )
 }

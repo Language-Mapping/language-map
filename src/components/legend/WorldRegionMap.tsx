@@ -9,6 +9,12 @@ const WORLD_MAP_IMG_SRC =
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      marginTop: 0,
+      '& p': {
+        marginTop: 0,
+      },
+    },
     worldMap: {
       maxWidth: '100%',
       marginTop: theme.spacing(1),
@@ -32,7 +38,7 @@ export const WorldRegionMap: FC = () => {
     </Link>
   )
 
-  const LegendTip = (
+  const WorldMapTip = (
     <p>
       Click any world region above to see languages from that region which are
       spoken locally. {WorldMapToggle}
@@ -40,8 +46,8 @@ export const WorldRegionMap: FC = () => {
   )
 
   return (
-    <Explanation component="div">
-      {LegendTip}
+    <Explanation component="div" className={classes.root}>
+      {WorldMapTip}
       <ToggleableSection show={showWorldMap}>
         This map was based on the{' '}
         <a

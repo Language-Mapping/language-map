@@ -4,26 +4,32 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
 import { LegendSwatch } from 'components/legend'
+import { Explanation, SubtleText } from 'components/generic'
 import * as Types from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      marginBottom: '0.25rem',
+    },
     list: {
       listStyleType: 'none',
-      marginBottom: '0.5rem',
+      marginBottom: '0.75rem',
       marginTop: 0,
       paddingLeft: 0,
     },
-    subtle: {
-      fontSize: '0.65rem',
-      whiteSpace: 'pre-line',
+    heading: {
       color: theme.palette.text.secondary,
+      fontSize: '0.85rem',
+      marginBottom: '0.25rem',
+      textTransform: 'uppercase',
     },
-    intro: {
-      margin: '0 0 0.75rem',
+    legendSummary: {
+      whiteSpace: 'pre-line',
+      marginBottom: '1rem',
     },
     sourceCredits: {
-      margin: '0.5rem 0 0.75rem',
+      marginTop: '0.75rem',
     },
   })
 )
@@ -33,17 +39,14 @@ export const Legend: FC<Types.LegendProps> = (props) => {
   const classes = useStyles()
 
   return (
-    <div>
-      <Typography component="h4" variant="overline">
+    <div className={classes.root}>
+      <Typography component="h4" className={classes.heading}>
         {groupName}
       </Typography>
       {legendSummary && (
-        <Typography
-          component="p"
-          className={`${classes.subtle} ${classes.intro}`}
-        >
+        <Explanation className={classes.legendSummary}>
           {legendSummary}
-        </Typography>
+        </Explanation>
       )}
       <ul className={classes.list}>
         {items.map((item) => {
@@ -64,12 +67,9 @@ export const Legend: FC<Types.LegendProps> = (props) => {
         })}
       </ul>
       {sourceCredits && (
-        <Typography
-          component="p"
-          className={`${classes.subtle} ${classes.sourceCredits}`}
-        >
+        <SubtleText className={classes.sourceCredits}>
           <b>Sources:</b> {sourceCredits}
-        </Typography>
+        </SubtleText>
       )}
     </div>
   )

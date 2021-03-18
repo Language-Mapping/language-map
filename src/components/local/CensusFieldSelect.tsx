@@ -17,6 +17,9 @@ import { censusGroupHeadings } from './config'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      marginBottom: '0.25rem',
+    },
     paper: {
       // Stands out against panels behind it
       backgroundColor: theme.palette.background.default,
@@ -97,6 +100,7 @@ const CensusAutocomplete: FC = (props) => {
         option: classes.option,
         listbox: classes.listbox,
         paper: classes.paper,
+        root: classes.root,
       }}
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore // it actually DOES exist on currentTarget
