@@ -22,7 +22,7 @@ import * as Types from './types'
 import * as utils from './utils'
 import * as Cells from './Cells'
 
-import { VideoColumnFilter } from './VideoColumnFilter'
+import { MediaColumnFilter } from './MediaColumnFilter'
 import { LocalColumnTitle } from './LocalColumnTitle'
 
 const COMM_STATUS_LOOKUP = {
@@ -278,9 +278,20 @@ export const columns = [
     field: 'Video',
     ...commonColProps,
     export: false,
-    filterComponent: VideoColumnFilter,
+    filterComponent: MediaColumnFilter,
     headerStyle: { whiteSpace: 'nowrap' },
-    render: (data) => <Cells.VideoColumnCell data={data} />,
+    render: (data) => <Cells.MediaColumnCell data={data} columnName="Video" />,
+    searchable: false,
+    disableClick: true,
+  },
+  {
+    title: 'Audio',
+    field: 'Audio',
+    ...commonColProps,
+    export: false,
+    filterComponent: MediaColumnFilter,
+    headerStyle: { whiteSpace: 'nowrap' },
+    render: (data) => <Cells.MediaColumnCell data={data} columnName="Audio" />,
     searchable: false,
     disableClick: true,
   },

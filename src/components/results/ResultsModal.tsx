@@ -14,6 +14,7 @@ import { whittleLangFeats } from './utils'
 // CRED: https://stackoverflow.com/a/51808262/1048518
 const fields: Array<Extract<keyof InstanceLevelSchema, string>> = [
   'Additional Neighborhoods',
+  'Audio',
   'countryImg',
   'Country',
   'Description',
