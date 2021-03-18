@@ -1,4 +1,8 @@
-import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles'
+import {
+  createMuiTheme,
+  responsiveFontSizes,
+  fade,
+} from '@material-ui/core/styles'
 
 // Always have a hard time finding the Typography variant docs for some reason:
 // https://material-ui.com/components/typography/#component
@@ -110,6 +114,12 @@ customTheme.overrides = {
     root: {
       fontSize: customTheme.typography.body2.fontSize, // default inputs: huge
     },
+    underline: {
+      // Bottom line of focused input boxes, including table column filters
+      '&.Mui-focused:after': {
+        borderBottomColor: customTheme.palette.secondary.main,
+      },
+    },
   },
   MuiDialog: {
     // Outside boundary of all dialogs
@@ -123,6 +133,12 @@ customTheme.overrides = {
     },
     textSecondary: {
       color: customTheme.palette.secondary.light,
+    },
+    // Outlined secondary buttons use the default of `palette.secondary.main`,
+    // which is too hard to see against dark paper backgrounds
+    outlinedSecondary: {
+      color: customTheme.palette.secondary.light,
+      border: `1px solid ${fade(customTheme.palette.secondary.light, 0.5)}`,
     },
   },
   MuiLink: {
