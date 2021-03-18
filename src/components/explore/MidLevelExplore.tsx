@@ -5,7 +5,6 @@ import {
   Route,
   Link as RouterLink,
 } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { BiMapPin } from 'react-icons/bi'
 
 import { FlagFromHook } from 'components/generic/icons-and-swatches'
@@ -21,16 +20,6 @@ import { CardList } from './CardList'
 import { useAirtable } from './hooks'
 import { prepFormula, prepFields, getUniqueInstances } from './utils'
 import { TonsWithAddl, MidLevelExploreProps, RouteMatch } from './types'
-
-export const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    divider: { marginBottom: '1.5em' },
-    addlNeighbsList: {
-      margin: 0,
-      fontSize: '1rem',
-    },
-  })
-)
 
 export const AddlLanguages: FC<{ data: LangLevelSchema[]; value?: string }> = (
   props
@@ -135,15 +124,16 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
       <CardList>
         {primaryData.map((row) => {
           const uniqueInstances = getUniqueInstances(field, row, value)
+          const nameOrLang = row.name || row.Language
 
           return (
             <CustomCard
-              key={row.name || row.Language}
-              intro={row.name || row.Language}
-              title={row.Endonym}
+              key={nameOrLang}
+              intro={value || field === 'Language' ? nameOrLang : ''}
+              title={tableName === 'Language' ? row.Endonym : nameOrLang}
               footerIcon={footerIcon}
               uniqueInstances={uniqueInstances}
-              url={`${url}/${row.name || row.Language}`}
+              url={`${url}/${nameOrLang}`}
               // TODO: use and refactor SwatchOrFlagOrIcon for icon prop
               icon={
                 <>
@@ -154,7 +144,7 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
                     <img
                       style={{ height: '0.8em', marginRight: '0.25em' }}
                       src={row.src_image[0].url}
-                      alt={row.name || row.Language}
+                      alt={nameOrLang}
                     />
                   )}
                 </>
