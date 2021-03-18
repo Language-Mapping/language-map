@@ -10,6 +10,7 @@ import { CensusIntro } from 'components/local'
 import { Chip } from 'components/details'
 import { DialogCloseBtn } from 'components/generic/modals'
 import { routes } from 'components/config/api'
+import { Explanation, SubtleText } from 'components/generic'
 
 import * as Types from './types'
 
@@ -27,12 +28,13 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'grid',
       gridTemplateColumns: 'auto auto',
       gridColumnGap: '0.5rem',
+      marginTop: '0.75rem',
     },
     metaPara: {
-      fontSize: '0.75rem',
-      margin: '0 0 0.75rem',
+      marginTop: '0.75rem',
       paddingTop: '1rem',
       borderTop: `dashed 1px ${theme.palette.divider}`,
+      color: theme.palette.text.primary,
     },
     viewAllLink: {
       display: 'block',
@@ -83,11 +85,11 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
   )
 
   const MetaPara = (
-    <Typography className={classes.metaPara}>
+    <Explanation className={classes.metaPara}>
       Speakers of <em>{name}</em> are likely to be included within the census
       category of <b>{censusPretty}</b> at the ACS {vintage}{' '}
       <em>{censusLabel}</em> level.
-    </Typography>
+    </Explanation>
   )
 
   const PopoverMenu = (
@@ -101,7 +103,9 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
       transformOrigin={{ vertical: 'center', horizontal: 'left' }}
     >
       {Heading}
-      <CensusIntro subtle />
+      <SubtleText>
+        <CensusIntro subtle />
+      </SubtleText>
       {MetaPara}
       <div className={classes.buttonGroup}>
         <Button

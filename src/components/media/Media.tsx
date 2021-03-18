@@ -1,8 +1,9 @@
 import React, { FC, useState } from 'react'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { Button, Typography } from '@material-ui/core'
-import { FiVideo, FiShare, FiMinusSquare } from 'react-icons/fi'
+import { FiVideo, FiShare } from 'react-icons/fi'
 import { AiOutlineSound } from 'react-icons/ai'
+import { IoIosCloseCircleOutline } from 'react-icons/io'
 import { FaMapMarkedAlt } from 'react-icons/fa'
 
 import { ShareButtons } from 'components/generic'
@@ -12,7 +13,7 @@ import { useStyles } from './styles'
 import { MediaModal } from './MediaModal'
 
 const MediaListItem: FC<MediaListItemProps> = (props) => {
-  const { label, icon, handleClick, disabled } = props
+  const { label, icon, handleClick, disabled, variant = 'text' } = props
   const classes = useStyles({})
   let title = ''
 
@@ -26,7 +27,8 @@ const MediaListItem: FC<MediaListItemProps> = (props) => {
     <li>
       <Button
         size="small"
-        color="primary"
+        color="secondary"
+        variant={variant}
         className={classes.mediaLink}
         disabled={disabled}
         title={disabled ? '' : title}
@@ -57,11 +59,28 @@ export const Media: FC<MediaProps> = (props) => {
         <MediaModal url={mediaUrl} closeModal={() => setMediaUrl('')} />
       )}
       <ul className={classes.root}>
+        <MediaListItem
+          disabled={!Video}
+          icon={<FiVideo />}
+          label="Video"
+          type="Video"
+          variant="outlined"
+          handleClick={() => setMediaUrl(Video)}
+        />
+        <MediaListItem
+          disabled={!Audio}
+          icon={<AiOutlineSound />}
+          label="Audio"
+          type="Audio"
+          variant="outlined"
+          handleClick={() => setMediaUrl(Audio)}
+        />
+        {/* TODO: use Switch + Route for this, e.g. /table/:id */}
         {!omitClear &&
           ((!isTable && (
             <MediaListItem
-              label="Clear selection"
-              icon={<FiMinusSquare />}
+              label="De-select"
+              icon={<IoIosCloseCircleOutline />}
               type="clear"
               handleClick={() => history.push('/details' as RouteLocation)}
             />
@@ -75,20 +94,6 @@ export const Media: FC<MediaProps> = (props) => {
               }
             />
           ))}
-        <MediaListItem
-          disabled={!Video}
-          icon={<FiVideo />}
-          label="Video"
-          type="Video"
-          handleClick={() => setMediaUrl(Video)}
-        />
-        <MediaListItem
-          disabled={!Audio}
-          icon={<AiOutlineSound />}
-          label="Audio"
-          type="Audio"
-          handleClick={() => setMediaUrl(Audio)}
-        />
         <MediaListItem
           {...{ label: 'Share', icon: <FiShare />, type: 'share' }}
           handleClick={() => setShowShareBtns(!showShareBtns)}

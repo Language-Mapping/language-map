@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
       gridRowGap: '0.75em',
       gridColumnGap: '0.5em',
       gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
-      marginBottom: '1.25rem',
+      margin: '1rem 0',
     },
   })
 )

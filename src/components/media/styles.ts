@@ -7,15 +7,18 @@ export const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       listStyle: 'none',
-      margin: 0,
+      margin: '0.75rem 0 0.25rem',
       padding: 0,
+      '& li + li': {
+        marginLeft: '0.5rem',
+      },
     },
     mediaLink: {
       alignItems: 'center',
       display: 'flex',
-      fontSize: '0.8rem',
+      fontSize: '0.85rem',
       '& svg': {
-        marginRight: '0.5em',
+        marginRight: '0.25rem',
       },
     },
     modalRoot: {
@@ -32,8 +35,8 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
     dialogContent: {
-      marginTop: '1em',
-      marginBottom: '1em',
+      marginTop: '1rem',
+      marginBottom: '1rem',
       [theme.breakpoints.down('sm')]: {
         padding: 0,
       },
@@ -61,7 +64,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     shareBtnHeading: {
       fontSize: '0.75rem',
-      marginBottom: '0.5em',
+      marginBottom: '0.5rem',
     },
   })
 )

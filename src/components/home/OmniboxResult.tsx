@@ -17,13 +17,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     resultHeading: {
       alignItems: 'center',
-      color: theme.palette.primary.main,
+      color: theme.palette.secondary.main,
       display: 'flex',
       fontSize: '1em',
       lineHeight: 1,
       marginTop: 4,
       '& svg': {
-        color: theme.palette.primary.light,
+        color: theme.palette.secondary.main,
         flexShrink: 0, // otherwise squished next to super-long headings
         marginRight: 3,
       },

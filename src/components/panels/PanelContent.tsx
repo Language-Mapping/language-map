@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
 import { FiltersWarning } from 'components/home/FiltersWarning'
+import { Explanation } from 'components/generic'
 import { PanelContentProps } from './types'
 import { MOBILE_PANEL_HEADER_HT } from './config'
 
@@ -25,10 +26,6 @@ export const usePanelRootStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       borderBottom: `solid 1px ${theme.palette.divider}`,
       paddingBottom: '0.75rem',
-    },
-    introParagraph: {
-      fontSize: '0.75rem',
-      color: theme.palette.text.secondary,
     },
     titleAndIcon: {
       display: 'flex',
@@ -88,11 +85,7 @@ export const PanelContent: FC<PanelContentProps> = (props) => {
         <Typography className={classes.subtitle}>{subtitle}</Typography>
       )}
       {subSubtitle && <div className={classes.subSubtitle}>{subSubtitle}</div>}
-      {introParagraph && (
-        <Typography className={classes.introParagraph}>
-          {introParagraph}
-        </Typography>
-      )}
+      {introParagraph && <Explanation>{introParagraph}</Explanation>}
       {extree}
     </Typography>
   )

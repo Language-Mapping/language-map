@@ -1,20 +1,17 @@
 import React, { FC, useContext } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography, Link } from '@material-ui/core'
+import { Link } from '@material-ui/core'
 
 import { GlobalContext } from 'components/context'
+import { Explanation } from 'components/generic'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
+    inner: {
       alignItems: 'baseline',
-      color: theme.palette.text.secondary,
       display: 'flex',
-      fontSize: '0.65em',
       fontStyle: 'italic',
-      lineHeight: 1.2,
-      marginBottom: '0.5em',
     },
     badgeDot: {
       backgroundColor: theme.palette.warning.light,
@@ -58,12 +55,12 @@ export const FiltersWarning: FC = () => {
   )
 
   return (
-    <Typography className={classes.root} component="div">
+    <Explanation component="div" className={classes.inner}>
       {BadgeDot}
-      <p>
+      <div>
         Current filters have been applied and may affect results. You can{' '}
         {ClearFilters} or {TableLink} them if needed.
-      </p>
-    </Typography>
+      </div>
+    </Explanation>
   )
 }

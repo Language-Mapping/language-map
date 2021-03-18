@@ -75,7 +75,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     localIndicator: {
       display: 'flex',
       alignItems: 'center',
-      '& svg': { color: theme.palette.primary.main, marginRight: 4 },
+      '& svg': { color: theme.palette.secondary.light, marginRight: 4 },
     },
     localCommLegend: {
       color: theme.palette.text.secondary,

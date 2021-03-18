@@ -6,18 +6,18 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       color: theme.palette.text.secondary,
-      fontSize: '0.7rem',
+      fontSize: '0.65rem',
       marginBottom: '0.5rem',
     },
   })
 )
 
-export const SubtleText: FC = (props) => {
-  const { children } = props
+export const SubtleText: FC<{ className?: string }> = (props) => {
+  const { children, className = '' } = props
   const classes = useStyles()
 
   return (
-    <Typography component="div" className={classes.root}>
+    <Typography component="div" className={`${classes.root} ${className}`}>
       {children}
     </Typography>
   )

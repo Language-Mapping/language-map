@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '1.25rem',
       lineHeight: 1.25,
       display: 'block',
-      color: theme.palette.primary.light,
+      color: theme.palette.secondary.light,
     },
   })
 )

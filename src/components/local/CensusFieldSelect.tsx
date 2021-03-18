@@ -17,6 +17,13 @@ import { censusGroupHeadings } from './config'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      marginBottom: '0.25rem',
+    },
+    paper: {
+      // Stands out against panels behind it
+      backgroundColor: theme.palette.background.default,
+    },
     listbox: {
       paddingTop: 0,
       [theme.breakpoints.down('sm')]: {
@@ -24,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     groupHeader: {
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: theme.palette.secondary.main,
       borderTopLeftRadius: 4,
       borderTopRightRadius: 4,
       boxShadow: '0 2px 7px hsla(0, 0%, 0%, 0.15)',
@@ -89,7 +96,12 @@ const CensusAutocomplete: FC = (props) => {
   return (
     <Autocomplete
       id="census-autocomplete"
-      classes={{ option: classes.option, listbox: classes.listbox }}
+      classes={{
+        option: classes.option,
+        listbox: classes.listbox,
+        paper: classes.paper,
+        root: classes.root,
+      }}
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore // it actually DOES exist on currentTarget
       onOpen={(e) => e.currentTarget.scrollIntoView()}

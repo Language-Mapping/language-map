@@ -22,7 +22,7 @@ export const RandomLinkBtn: FC = () => {
   return (
     <Button
       variant="contained"
-      color="primary"
+      color="secondary"
       component={RouterLink}
       size="small"
       startIcon={<FaRandom />}

@@ -1,4 +1,8 @@
-import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles'
+import {
+  createMuiTheme,
+  responsiveFontSizes,
+  fade,
+} from '@material-ui/core/styles'
 
 // Always have a hard time finding the Typography variant docs for some reason:
 // https://material-ui.com/components/typography/#component
@@ -61,15 +65,35 @@ const customTheme = createMuiTheme({
   palette: {
     type: 'dark',
     primary: {
-      light: '#66ab9d',
-      main: '#409685',
-      dark: '#2c695d',
+      // TODO: rm when dialed in
+      // OLD
+      // light: '#66ab9d',
+      // main: '#409685',
+      // dark: '#2c695d',
+      // NEW
+      light: '#62aca0',
+      main: '#379587',
+      dark: '#286a61',
       contrastText: '#fff',
     },
     secondary: {
-      light: '#ab6673',
-      main: '#964051',
-      dark: '#692c38',
+      // TODO: rm when dialed in
+      // light: '#2f86c1',
+      // main: '#016aa3',
+      // dark: '#014971',
+      // light: '#6386b0',
+      // main: '#325b93',
+      // dark: '#2e456b',
+      // light: '#20c5e0',
+      // main: '#139fb4',
+      // dark: '#0d7d8c',
+      // OPTION 3
+      light: '#55a9c1',
+      main: '#207d96',
+      dark: '#2d6777',
+      // light: '#56abc2',
+      // main: '#207d96',
+      // dark: '#2d6676',
       contrastText: '#fff',
     },
   },
@@ -90,6 +114,12 @@ customTheme.overrides = {
     root: {
       fontSize: customTheme.typography.body2.fontSize, // default inputs: huge
     },
+    underline: {
+      // Bottom line of focused input boxes, including table column filters
+      '&.Mui-focused:after': {
+        borderBottomColor: customTheme.palette.secondary.main,
+      },
+    },
   },
   MuiDialog: {
     // Outside boundary of all dialogs
@@ -100,6 +130,20 @@ customTheme.overrides = {
   MuiButton: {
     root: {
       textTransform: 'none',
+    },
+    textSecondary: {
+      color: customTheme.palette.secondary.light,
+    },
+    // Outlined secondary buttons use the default of `palette.secondary.main`,
+    // which is too hard to see against dark paper backgrounds
+    outlinedSecondary: {
+      color: customTheme.palette.secondary.light,
+      border: `1px solid ${fade(customTheme.palette.secondary.light, 0.5)}`,
+    },
+  },
+  MuiLink: {
+    root: {
+      color: customTheme.palette.secondary.light,
     },
   },
 }

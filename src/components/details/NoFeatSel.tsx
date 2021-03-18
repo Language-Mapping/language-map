@@ -1,22 +1,18 @@
 import React, { FC } from 'react'
-import { Typography } from '@material-ui/core'
 import { Link as RouterLink } from 'react-router-dom'
 
 import { PanelContentSimple } from 'components/panels/PanelContent'
 import { routes } from 'components/config/api'
 import { Explanation } from 'components/generic'
-import { useStyles } from './styles'
+import { PanelHeading } from 'components/panels'
 import { RandomLinkBtn } from './RandomLinkBtn'
 
 export const NoFeatSel: FC<{ reason?: string }> = (props) => {
   const { reason = 'No community selected' } = props
-  const classes = useStyles()
 
   return (
     <PanelContentSimple>
-      <Typography className={classes.panelHeading} variant="h4" component="h2">
-        {reason}
-      </Typography>
+      <PanelHeading text={reason} />
       <Explanation component="div">
         <p>Please select a community using one of the following options:</p>
         <ul>

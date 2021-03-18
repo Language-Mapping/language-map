@@ -11,7 +11,6 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       fontFamily: theme.typography.h1.fontFamily,
-      marginTop: '1.5rem',
       whiteSpace: 'pre-line',
     },
     firstLetter: {

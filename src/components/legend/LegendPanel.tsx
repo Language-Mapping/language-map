@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Typography } from '@material-ui/core'
 
 import {
   LayerSymbSelect,
@@ -14,19 +15,27 @@ import { useLegendConfig } from './hooks'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      marginTop: '1em',
+      margin: '1rem 0',
+      padding: '1rem 0.75rem',
+    },
+    panelSectionHeading: {
+      color: theme.palette.text.secondary,
+      fontSize: '1rem',
+      marginBottom: '0.5rem',
+      textTransform: 'uppercase',
     },
     legendCtrls: {
       alignItems: 'center',
       display: 'flex',
-      margin: '0.25em 0 0.75em',
+      marginBottom: '0.5rem',
       '& > * + *': {
-        marginLeft: '1em',
+        marginLeft: '1rem',
       },
     },
     // Looks PERFECT on all breakpoints for World Region
     groupedLegend: {
       display: 'grid',
+      marginTop: '0.75rem',
       gridTemplateColumns: '1fr 1fr',
       gridColumnGap: 4,
       // This doesn't affect Size/Status
@@ -47,6 +56,17 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+const PanelSectionHeading: FC = (props) => {
+  const { children } = props
+  const classes = useStyles()
+
+  return (
+    <Typography className={classes.panelSectionHeading} component="h3">
+      {children}
+    </Typography>
+  )
+}
+
 export const LegendPanel: FC = () => {
   const { activeSymbGroupID, hideLangPoints } = useSymbAndLabelState()
   const classes = useStyles()
@@ -66,13 +86,13 @@ export const LegendPanel: FC = () => {
     )
 
   return (
-    <div className={classes.root}>
+    <>
+      <PanelSectionHeading>Map display options & legend</PanelSectionHeading>
       <div className={classes.legendCtrls}>
         <LayerSymbSelect />
         <LayerLabelSelect />
       </div>
       <LangPointsToggle checked={hideLangPoints} />
-      {activeSymbGroupID === 'World Region' && <WorldRegionMap />}
       {isLoading && <p>Loading legend info...</p>}
       {!isLoading && (
         <div className={classes.groupedLegend}>
@@ -88,6 +108,7 @@ export const LegendPanel: FC = () => {
           ))}
         </div>
       )}
-    </div>
+      {activeSymbGroupID === 'World Region' && <WorldRegionMap />}
+    </>
   )
 }
