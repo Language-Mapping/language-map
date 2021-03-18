@@ -5,15 +5,14 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       alignItems: 'center',
-      color: theme.palette.action.disabled,
+      color: theme.palette.divider,
       display: 'grid',
       gridTemplateColumns: '1fr 1.25rem 1fr',
       justifyContent: 'center',
     },
     // CRED: (ish) https://css-tricks.com/examples/hrs/
     line: {
-      borderTop: 'double medium',
-      height: 1,
+      borderTop: 'solid 1px',
     },
     symbol: {
       fontSize: '1.25rem',
