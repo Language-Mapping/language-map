@@ -6,12 +6,10 @@ import Autocomplete, {
 } from '@material-ui/lab/Autocomplete'
 
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'
-import { LocationSearchContent } from 'components/map'
 import { SubtleText } from 'components/generic'
-import { useCensusFields } from './hooks'
-import { CensusIntro } from './CensusIntro'
 
 import * as Types from './types'
+import { useCensusFields } from './hooks'
 import { setCensusField } from './utils'
 import { censusGroupHeadings } from './config'
 
@@ -133,14 +131,11 @@ const CensusAutocomplete: FC = (props) => {
 
 export const CensusFieldSelect: FC = () => {
   return (
-    <LocationSearchContent
-      heading="Census Language Data (NYC only)"
-      explanation={<CensusIntro />}
-    >
+    <>
       <CensusAutocomplete />
       <SubtleText>
         *Census Bureau category, component languages unclear
       </SubtleText>
-    </LocationSearchContent>
+    </>
   )
 }

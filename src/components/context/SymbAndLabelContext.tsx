@@ -4,20 +4,23 @@ import { LangSchemaCol } from './types'
 
 type Dispatch = React.Dispatch<Action>
 type InitialState = {
-  activeLabelID: LangSchemaCol | '' | 'None'
+  activeLabelID: LangSchemaCol
   activeSymbGroupID: LangSchemaCol
   hideLangPoints: boolean
+  hideLangLabels: boolean
 }
 
 export type Action =
-  | { type: 'TOGGLE_LANG_POINTS' }
-  | { type: 'SET_LANG_LAYER_LABELS'; payload: LangSchemaCol | '' }
+  | { type: 'TOGGLE_LANG_LABELS'; payload?: boolean }
+  | { type: 'TOGGLE_LANG_POINTS'; payload?: boolean }
+  | { type: 'SET_LANG_LAYER_LABELS'; payload: LangSchemaCol }
   | { type: 'SET_LANG_LAYER_SYMBOLOGY'; payload: LangSchemaCol }
 
 const initialState = {
-  activeLabelID: '',
+  activeLabelID: 'Language',
   activeSymbGroupID: 'World Region',
   hideLangPoints: false,
+  hideLangLabels: true,
 } as InitialState
 
 const SymbAndLabelContext = React.createContext<InitialState | undefined>(
@@ -32,7 +35,18 @@ function reducer(state: InitialState, action: Action) {
     case 'TOGGLE_LANG_POINTS':
       return {
         ...state,
-        hideLangPoints: !state.hideLangPoints,
+        hideLangPoints:
+          // `undefined` if from individual checkboxes (as opposed to "all",
+          // e.g. from Census panel)
+          action.payload === undefined ? !state.hideLangPoints : action.payload,
+      }
+    case 'TOGGLE_LANG_LABELS':
+      return {
+        ...state,
+        hideLangLabels:
+          // `undefined` if from individual checkboxes (as opposed to "all",
+          // e.g. from Census panel)
+          action.payload === undefined ? !state.hideLangLabels : action.payload,
       }
     case 'SET_LANG_LAYER_LABELS':
       return {

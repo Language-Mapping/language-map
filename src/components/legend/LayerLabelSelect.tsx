@@ -28,7 +28,6 @@ export const LayerLabelSelect: FC = () => {
       onChange={handleChange}
       inputProps={{ name: 'label', id: 'lang-label-TextField' }}
     >
-      <option value="None">No labels</option>
       {labelFields.map((label: string) => (
         <option key={label} value={label}>
           {label}
