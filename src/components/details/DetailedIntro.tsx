@@ -6,7 +6,6 @@ import { Media } from 'components/media'
 import { MoreLikeThis } from 'components/details'
 import { CensusPopover } from 'components/explore/CensusPopover'
 import { StatsAndMeta } from 'components/explore/StatsAndMeta'
-import { FancyHorizRule } from 'components/generic'
 import { LangProfileDescrip } from 'components/explore'
 import { routes } from 'components/config/api'
 import { LangOrEndoIntro } from './LangOrEndoIntro'
@@ -17,6 +16,9 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       textAlign: 'center',
+      paddingBottom: '0.75rem',
+      marginBottom: '1rem',
+      borderBottom: `solid 1px ${theme.palette.divider}`,
     },
   })
 )
@@ -42,7 +44,6 @@ export const DetailedIntro: FC<DetailedIntroProps> = (props) => {
           />
         )}
       </Route>
-      <FancyHorizRule />
     </header>
   )
 }

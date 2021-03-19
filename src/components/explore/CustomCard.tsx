@@ -93,7 +93,7 @@ export const GlottoIsoFooter: FC<GlottoIsoFooterProps> = (props) => {
 }
 
 export const CustomCard: FC<Types.CustomCardProps> = (props) => {
-  const { title, url, uniqueInstances, intro, icon, footer, footerIcon } = props
+  const { title, url, uniqueInstances, intro, icon, footer } = props
   const classes = useStyles()
 
   return (
@@ -126,7 +126,6 @@ export const CustomCard: FC<Types.CustomCardProps> = (props) => {
         variant="caption"
         className={classes.footer}
       >
-        {footerIcon}
         {footer ||
           (uniqueInstances !== undefined &&
             utils.prettyTruncate(uniqueInstances as string[]))}

@@ -11,10 +11,8 @@ export const LangProfileDescrip: FC<{ langProfileDescripID: string }> = (
   const { data, error, isLoading } = useAirtable<{ Description: string }>(
     // TODO: TS-ify the names of all tables
     'Language Profiles',
-    {
-      // TODO: TS-ify the field names for all tables
-      filterByFormula: `{id} = '${langProfileDescripID}'`,
-    }
+    // TODO: TS-ify the field names for all tables
+    { filterByFormula: `{id} = '${langProfileDescripID}'` }
   )
 
   if (isLoading || error || !data.length) return null

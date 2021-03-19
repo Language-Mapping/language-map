@@ -5,7 +5,6 @@ import {
   Route,
   Link as RouterLink,
 } from 'react-router-dom'
-import { BiMapPin } from 'react-icons/bi'
 
 import { FlagFromHook } from 'components/generic/icons-and-swatches'
 import { SwatchOnly } from 'components/legend'
@@ -87,9 +86,6 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
     )
   }
 
-  const footerIcon = (value !== undefined || tableName === 'Language') && (
-    <BiMapPin />
-  )
   const { definition, plural } = landingData[0] || {}
 
   let primaryData
@@ -131,7 +127,6 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
               key={nameOrLang}
               intro={value || field === 'Language' ? nameOrLang : ''}
               title={tableName === 'Language' ? row.Endonym : nameOrLang}
-              footerIcon={footerIcon}
               uniqueInstances={uniqueInstances}
               url={`${url}/${nameOrLang}`}
               // TODO: use and refactor SwatchOrFlagOrIcon for icon prop
