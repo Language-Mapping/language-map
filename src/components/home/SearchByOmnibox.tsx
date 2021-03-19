@@ -36,9 +36,9 @@ const useStyles = makeStyles((theme: Theme) =>
         borderBottom: `1px solid ${theme.palette.text.hint}`,
         color: theme.palette.text.primary,
         fontFamily: theme.typography.h1.fontFamily,
-        fontSize: '1.1rem',
-        paddingLeft: 12,
+        fontSize: '1.25rem',
         fontWeight: theme.typography.h1.fontWeight,
+        paddingLeft: 12,
       },
     },
     // The <li> items. Not sure why it works via classes and `groupUl` doesn't.
