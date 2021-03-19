@@ -53,6 +53,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   // const symbLabelState = contexts.useSymbAndLabelState()
   // const { activeSymbGroupID } = symbLabelState
   const [beforeId, setBeforeId] = useState<string>('background')
+  const [isMapTilted, setIsMapTilted] = useState<boolean>(false)
 
   const [
     geocodeMarker,
@@ -70,12 +71,31 @@ export const Map: FC<Types.MapProps> = (props) => {
     clickedBoundary,
     setClickedBoundary,
   ] = useState<Types.BoundaryFeat | null>()
-  const shouldFlyHome = useZoomToLangFeatsExtent(panelOpen, map)
+  const shouldFlyHome = useZoomToLangFeatsExtent(panelOpen, isMapTilted, map) // TODO: mobile
   const boundaryPopup = useBoundaryPopup(panelOpen, clickedBoundary, map)
 
   // TODO: rm if not needed for hover/popup stuff
   // const symbCache = cache.getQueryData([activeSymbGroupID, 'legend']) || []
   // const interactiveLayerIds = symbCache
+
+  useEffect((): void => {
+    if (!map) return
+
+    if (isMapTilted) map.setPitch(80, { forceViewportUpdate: true })
+    else map.setPitch(0, { forceViewportUpdate: true })
+
+    if (breakpoint !== 'mobile' || !panelOpen) return
+
+    // Pitch reset in 50/50 page layout on smaller screens needs extra love:
+    setTimeout(() => {
+      const yOffset = isMapTilted ? -0.1 : 0.1
+
+      // TODO: smooth this out for 3D
+      map.panBy([0, yOffset * offset[1]], undefined, {
+        forceViewportUpdate: true,
+      })
+    }, 5)
+  }, [isMapTilted])
 
   useEffect((): void => {
     if (!map) return
@@ -111,7 +131,11 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     nuclearClear()
 
-    const settings = utils.getFlyToPointSettings(selFeatAttribs, offset)
+    const settings = utils.getFlyToPointSettings(
+      selFeatAttribs,
+      offset,
+      isMapTilted
+    )
 
     utils.flyToPoint(map, settings, null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -177,7 +201,11 @@ export const Map: FC<Types.MapProps> = (props) => {
     )
 
     if (selFeatAttribs) {
-      const settings = utils.getFlyToPointSettings(selFeatAttribs, offset)
+      const settings = utils.getFlyToPointSettings(
+        selFeatAttribs,
+        offset,
+        isMapTilted
+      )
 
       utils.flyToPoint(mapObj, settings, null)
     } else {
@@ -226,16 +254,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     if (actionID === 'home') {
       utils.flyHome(map, nuclearClear, offset)
     } else if (actionID === 'reset-pitch') {
-      setViewport({ ...viewport, pitch: 0 })
-
-      // Pitch reset in 50/50 page layout on smaller screens needs extra love:
-      if (panelOpen && breakpoint === 'mobile') {
-        setTimeout(() => {
-          map.panBy([0, 2 * offset[1] + 50], undefined, {
-            forceViewportUpdate: true,
-          })
-        }, 5)
-      }
+      setIsMapTilted(!isMapTilted)
     } else if (actionID === 'in') {
       map.zoomIn({ offset }, { forceViewportUpdate: true })
     } else if (actionID === 'out') {
@@ -314,7 +333,7 @@ export const Map: FC<Types.MapProps> = (props) => {
         )}
       </MapGL>
       <MapCtrlBtns
-        isPitchZero={viewport.pitch === 0}
+        isMapTilted={isMapTilted}
         onMapCtrlClick={(actionID: Types.MapControlAction) => {
           onMapCtrlClick(actionID)
         }}

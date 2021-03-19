@@ -203,6 +203,7 @@ export const useBoundaryPopup: Types.UseBoundaryPopup = (
 // Fly to extent of lang features on length change
 export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
   panelOpen,
+  isMapTilted,
   map
 ) => {
   const { state } = useContext(GlobalContext)
@@ -235,7 +236,7 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
           latitude: firstCoords[1],
           longitude: firstCoords[0],
           zoom: POINT_ZOOM_LEVEL,
-          pitch: 80,
+          pitch: isMapTilted ? 80 : 0,
           offset,
         },
         null
