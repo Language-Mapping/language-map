@@ -19,6 +19,7 @@ export type Action =
 const initialState = {
   activeLabelID: 'Language',
   activeSymbGroupID: 'World Region',
+  autoZoomCensus: true,
   hideLangPoints: false,
   hideLangLabels: true,
 } as InitialState
@@ -49,15 +50,9 @@ function reducer(state: InitialState, action: Action) {
           action.payload === undefined ? !state.hideLangLabels : action.payload,
       }
     case 'SET_LANG_LAYER_LABELS':
-      return {
-        ...state,
-        activeLabelID: action.payload,
-      }
+      return { ...state, activeLabelID: action.payload }
     case 'SET_LANG_LAYER_SYMBOLOGY':
-      return {
-        ...state,
-        activeSymbGroupID: action.payload,
-      }
+      return { ...state, activeSymbGroupID: action.payload }
     default: {
       return state
     }

@@ -45,7 +45,11 @@ export const Map: FC<Types.MapProps> = (props) => {
   const map: MbMap | undefined = mapRef.current?.getMap()
   const { selFeatAttribs } = usePopupFeatDetails()
   const { state } = useContext(contexts.GlobalContext)
-  const { boundariesVisible } = contexts.useMapToolsState()
+  const {
+    boundariesVisible,
+    autoZoomCensus,
+    censusActiveField,
+  } = contexts.useMapToolsState()
   const offset = useOffset(panelOpen)
   const breakpoint = useBreakpoint()
   const { langFeatures, filterHasRun } = state
@@ -71,7 +75,9 @@ export const Map: FC<Types.MapProps> = (props) => {
     clickedBoundary,
     setClickedBoundary,
   ] = useState<Types.BoundaryFeat | null>()
-  const shouldFlyHome = useZoomToLangFeatsExtent(panelOpen, isMapTilted, map) // TODO: mobile
+
+  // TODO: mobile:
+  const shouldFlyHome = useZoomToLangFeatsExtent(panelOpen, isMapTilted, map)
   const boundaryPopup = useBoundaryPopup(panelOpen, clickedBoundary, map)
 
   // TODO: rm if not needed for hover/popup stuff
@@ -102,6 +108,14 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     utils.flyHome(map, nuclearClear, offset)
   }, [shouldFlyHome])
+
+  // Auto-zoom to initial extent on Census language change
+  useEffect((): void => {
+    // Don't zoom on clearing Census dropdown, aka no language field selected
+    if (!map || !autoZoomCensus || !censusActiveField) return
+
+    utils.flyHome(map, nuclearClear, offset)
+  }, [censusActiveField])
 
   // Filter lang feats in map on length change or symbology change
   useEffect((): void => {

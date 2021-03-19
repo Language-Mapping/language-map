@@ -10,6 +10,7 @@ import { LocalPanelProps } from 'components/map/types'
 import { AllLangDataToggle } from 'components/legend'
 import { CensusFieldSelect } from './CensusFieldSelect'
 import { CensusIntro } from './CensusIntro'
+import { CensusAutoZoomToggle } from './CensusAutoZoomToggle'
 
 export const LocalPanel: FC<LocalPanelProps> = (props) => {
   return (
@@ -20,6 +21,7 @@ export const LocalPanel: FC<LocalPanelProps> = (props) => {
       >
         <CensusFieldSelect />
         <AllLangDataToggle />
+        <CensusAutoZoomToggle />
       </LocationSearchContent>
       <LocationSearchContent
         heading="Location tools"

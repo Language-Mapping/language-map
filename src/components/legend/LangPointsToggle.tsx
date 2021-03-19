@@ -102,7 +102,7 @@ export const AllLangDataToggle: FC = () => {
 
   return (
     <CustomFormControl
-      label="Hide ELA symbols and points"
+      label="Hide ELA symbols and labels"
       switchControl={
         <Switch
           checked={hideLangLabels && hideLangPoints}

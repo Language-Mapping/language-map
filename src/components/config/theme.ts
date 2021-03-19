@@ -65,35 +65,15 @@ const customTheme = createMuiTheme({
   palette: {
     type: 'dark',
     primary: {
-      // TODO: rm when dialed in
-      // OLD
-      // light: '#66ab9d',
-      // main: '#409685',
-      // dark: '#2c695d',
-      // NEW
       light: '#62aca0',
       main: '#379587',
       dark: '#286a61',
       contrastText: '#fff',
     },
     secondary: {
-      // TODO: rm when dialed in
-      // light: '#2f86c1',
-      // main: '#016aa3',
-      // dark: '#014971',
-      // light: '#6386b0',
-      // main: '#325b93',
-      // dark: '#2e456b',
-      // light: '#20c5e0',
-      // main: '#139fb4',
-      // dark: '#0d7d8c',
-      // OPTION 3
       light: '#55a9c1',
       main: '#207d96',
       dark: '#2d6777',
-      // light: '#56abc2',
-      // main: '#207d96',
-      // dark: '#2d6676',
       contrastText: '#fff',
     },
   },
@@ -110,6 +90,15 @@ const customTheme = createMuiTheme({
 
 // Global overrides of MUI components that need to be re-styled often
 customTheme.overrides = {
+  MuiFormHelperText: {
+    root: {
+      fontSize: '0.65rem',
+    },
+    contained: {
+      marginLeft: '0.75rem',
+      marginRight: 0,
+    },
+  },
   MuiInput: {
     root: {
       fontSize: customTheme.typography.body2.fontSize, // default inputs: huge
@@ -119,6 +108,11 @@ customTheme.overrides = {
       '&.Mui-focused:after': {
         borderBottomColor: customTheme.palette.secondary.main,
       },
+    },
+  },
+  MuiInputAdornment: {
+    root: {
+      color: customTheme.palette.text.secondary,
     },
   },
   MuiDialog: {
@@ -144,6 +138,13 @@ customTheme.overrides = {
   MuiLink: {
     root: {
       color: customTheme.palette.secondary.light,
+    },
+  },
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  MuiAutocomplete: {
+    root: {
+      marginBottom: '1rem',
     },
   },
 }

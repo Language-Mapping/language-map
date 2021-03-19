@@ -6,7 +6,6 @@ import Autocomplete, {
 } from '@material-ui/lab/Autocomplete'
 
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'
-import { SubtleText } from 'components/generic'
 
 import * as Types from './types'
 import { useCensusFields } from './hooks'
@@ -15,9 +14,6 @@ import { censusGroupHeadings } from './config'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      marginBottom: '0.25rem',
-    },
     paper: {
       // Stands out against panels behind it
       backgroundColor: theme.palette.background.default,
@@ -76,7 +72,7 @@ const renderGroup = (params: AutocompleteRenderGroupParams) => {
   ]
 }
 
-const CensusAutocomplete: FC = (props) => {
+export const CensusFieldSelect: FC = (props) => {
   const classes = useStyles()
   const mapToolsDispatch = useMapToolsDispatch()
   const { censusActiveField } = useMapToolsState()
@@ -98,7 +94,6 @@ const CensusAutocomplete: FC = (props) => {
         option: classes.option,
         listbox: classes.listbox,
         paper: classes.paper,
-        root: classes.root,
       }}
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore // it actually DOES exist on currentTarget
@@ -121,21 +116,16 @@ const CensusAutocomplete: FC = (props) => {
       renderInput={(params) => (
         <TextField
           {...params}
-          label="Choose a language or enter text"
-          variant="standard"
+          placeholder="Choose a language or enter text"
+          margin="dense"
+          variant="outlined"
+          helperText="*Census Bureau category, component languages unclear"
+          InputLabelProps={{ disableAnimation: true, shrink: true }}
+          FormHelperTextProps={{
+            variant: 'outlined',
+          }}
         />
       )}
     />
-  )
-}
-
-export const CensusFieldSelect: FC = () => {
-  return (
-    <>
-      <CensusAutocomplete />
-      <SubtleText>
-        *Census Bureau category, component languages unclear
-      </SubtleText>
-    </>
   )
 }
