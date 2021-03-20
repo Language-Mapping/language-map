@@ -2,7 +2,6 @@ import React, { FC } from 'react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import { SpeedDial, SpeedDialAction } from '@material-ui/lab'
 import { MdYoutubeSearchedFor } from 'react-icons/md'
-import { TiCompass } from 'react-icons/ti'
 import { FaSearchPlus, FaSearchMinus } from 'react-icons/fa'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
@@ -11,7 +10,7 @@ import { MapCtrlBtnsProps, CtrlBtnConfig } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    mapCtrlsRoot: {
+    root: {
       position: 'fixed',
       top: -8,
       right: 6,
@@ -59,44 +58,42 @@ const ctrlBtnsConfig = [
   },
   {
     id: 'reset-pitch',
-    icon: <TiCompass />,
-    name: 'Reset pitch',
-    disabledOnProp: 'isPitchZero',
+    icon: <b>3D</b>,
+    name: 'Toggle 2D/3D',
   },
 ] as CtrlBtnConfig[]
 
 export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
-  const { onMapCtrlClick } = props
+  const { onMapCtrlClick, isMapTilted } = props
   const classes = useStyles()
 
   return (
-    <>
-      <SpeedDial
-        ariaLabel="Map control buttons"
-        className={classes.mapCtrlsRoot}
-        hidden
-        open
-        direction="down"
-      >
-        {ctrlBtnsConfig.map((action) => (
+    <SpeedDial
+      ariaLabel="Map control buttons"
+      className={classes.root}
+      hidden
+      open
+      direction="down"
+    >
+      {ctrlBtnsConfig.map((action) => {
+        let { icon } = action
+
+        if (action.id === 'reset-pitch') icon = isMapTilted ? <b>2D</b> : icon
+
+        return (
           <SpeedDialAction
             className={classes.speedDialAction}
             key={action.name}
-            icon={action.icon}
+            icon={icon}
             tooltipTitle={action.name}
-            FabProps={{
-              size: 'small',
-              disabled:
-                action.disabledOnProp !== undefined &&
-                props[action.disabledOnProp] === true,
-            }}
+            FabProps={{ size: 'small' }}
             onClick={(e) => {
               e.stopPropagation() // prevent closing the menu
               onMapCtrlClick(action.id)
             }}
           />
-        ))}
-      </SpeedDial>
-    </>
+        )
+      })}
+    </SpeedDial>
   )
 }

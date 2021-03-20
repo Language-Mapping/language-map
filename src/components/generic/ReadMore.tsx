@@ -50,7 +50,8 @@ const useStyles = makeStyles((theme: Theme) =>
     description: {
       textAlign: 'left',
       fontSize: (props: ReadMoreStyles) => props.fontSize,
-      marginBottom: '0.25rem',
+      marginBottom: '0.75rem',
+      lineHeight: 1.75,
     },
   })
 )

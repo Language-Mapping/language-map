@@ -138,7 +138,7 @@ export type MapProps = {
 } & LocalPanelProps
 
 export type MapCtrlBtnsProps = {
-  isPitchZero: boolean
+  isMapTilted: boolean
   onMapCtrlClick: (actionID: MapControlAction) => void
 }
 
@@ -152,7 +152,6 @@ export type CtrlBtnConfig = {
   icon: React.ReactNode
   name: string
   customFn?: boolean
-  disabledOnProp?: keyof MapCtrlBtnsProps
 }
 
 export type BoundsConfig = {
@@ -262,6 +261,7 @@ export type UseBoundaryPopup = (
 
 export type UseZoomToLangFeatsExtent = (
   panelOpen: boolean,
+  isMapTilted: boolean,
   map?: Map
 ) => boolean
 

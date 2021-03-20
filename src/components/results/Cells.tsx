@@ -10,7 +10,7 @@ import { GoCircleSlash } from 'react-icons/go'
 
 import { LegendSwatch } from 'components/legend'
 import { InstanceLevelSchema } from 'components/context/types'
-import { CellProps } from './types'
+import { CellProps, MediaColumnCellProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,14 +20,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const VideoColumnCell: FC<CellProps> = (props) => {
+export const MediaColumnCell: FC<MediaColumnCellProps> = (props) => {
   const classes = useStyles()
-  const { data } = props
-  const { Video: video } = data
+  const { data, columnName } = props
 
   return (
     <div className={classes.disabled} style={{ paddingLeft: 16 }}>
-      {video ? <MdCheck /> : <GoCircleSlash />}
+      {data[columnName] ? <MdCheck /> : <GoCircleSlash />}
     </div>
   )
 }

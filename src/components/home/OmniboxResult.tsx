@@ -1,7 +1,6 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Box } from '@material-ui/core'
-import { FaStreetView } from 'react-icons/fa'
 
 import { PreppedAutocompleteGroup } from './types'
 
@@ -16,17 +15,10 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.8rem',
     },
     resultHeading: {
-      alignItems: 'center',
-      color: theme.palette.secondary.main,
-      display: 'flex',
+      color: theme.palette.secondary.light,
       fontSize: '1em',
       lineHeight: 1,
       marginTop: 4,
-      '& svg': {
-        color: theme.palette.secondary.main,
-        flexShrink: 0, // otherwise squished next to super-long headings
-        marginRight: 3,
-      },
     },
     // The footer
     details: {
@@ -72,7 +64,6 @@ export const OmniboxResult: FC<{ data: PreppedAutocompleteGroup }> = (
   return (
     <Box className={resultRoot}>
       <Typography component="h4" className={resultHeading}>
-        <FaStreetView />
         {data.location}
       </Typography>
       <Box component="footer" className={details}>

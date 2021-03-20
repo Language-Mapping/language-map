@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 import { VariableSizeList } from 'react-window'
 import { AutocompleteRenderGroupParams } from '@material-ui/lab/Autocomplete'
 import ListSubheader from '@material-ui/core/ListSubheader'
@@ -24,8 +25,12 @@ export function useResetCache(
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const renderGroup = (params: AutocompleteRenderGroupParams) => {
   return [
-    <ListSubheader key={params.key} component="div">
-      {params.group}
+    // Could NOT get it to style properly if setting component to anything but
+    // "div" and could not make it stay sticky either. Frustration station.
+    <ListSubheader key={params.group} component="div">
+      <RouterLink to={`/Explore/Language/${params.group}`}>
+        {params.group}
+      </RouterLink>
     </ListSubheader>,
     params.children,
   ]

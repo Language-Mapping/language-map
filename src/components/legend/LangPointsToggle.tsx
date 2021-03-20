@@ -3,7 +3,15 @@ import React, { FC } from 'react'
 import { FormControlLabel, Switch } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import { useLabelAndSymbDispatch } from 'components/context/SymbAndLabelContext'
+import {
+  useLabelAndSymbDispatch,
+  useSymbAndLabelState,
+} from 'components/context/SymbAndLabelContext'
+
+type CustomFormControlProps = {
+  label: string
+  switchControl: React.ReactElement
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -21,29 +29,88 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-// TODO: abstract and reuse for labels
-export const LangPointsToggle: FC<{ checked: boolean }> = (props) => {
-  const { checked } = props
+export const CustomFormControl: FC<CustomFormControlProps> = (props) => {
+  const { label, switchControl } = props
   const classes = useStyles()
   const { smallerText, root } = classes
-  const symbLabelDispatch = useLabelAndSymbDispatch()
-
-  const handleBoundariesToggle = () => {
-    symbLabelDispatch({ type: 'TOGGLE_LANG_POINTS' })
-  }
 
   return (
     <FormControlLabel
       classes={{ label: smallerText, root }}
-      control={
+      label={label}
+      control={switchControl}
+    />
+  )
+}
+
+export const LangPointsToggle: FC = (props) => {
+  const { hideLangPoints } = useSymbAndLabelState()
+  const symbLabelDispatch = useLabelAndSymbDispatch()
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    symbLabelDispatch({ type: 'TOGGLE_LANG_POINTS' })
+  }
+
+  return (
+    <CustomFormControl
+      label="Hide symbols"
+      switchControl={
         <Switch
-          checked={checked}
-          onChange={handleBoundariesToggle}
+          checked={hideLangPoints}
+          onChange={handleChange}
           name="toggle-lang-points"
           size="small"
         />
       }
-      label="Hide symbols"
+    />
+  )
+}
+
+export const LangLabelsToggle: FC = (props) => {
+  const { hideLangLabels } = useSymbAndLabelState()
+  const symbLabelDispatch = useLabelAndSymbDispatch()
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    symbLabelDispatch({ type: 'TOGGLE_LANG_LABELS' })
+  }
+
+  return (
+    <CustomFormControl
+      label="Hide labels"
+      switchControl={
+        <Switch
+          checked={hideLangLabels}
+          onChange={handleChange}
+          name="toggle-lang-points"
+          size="small"
+        />
+      }
+    />
+  )
+}
+
+export const AllLangDataToggle: FC = () => {
+  const { hideLangLabels, hideLangPoints } = useSymbAndLabelState()
+  const symbLabelDispatch = useLabelAndSymbDispatch()
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const payload = event.target.checked
+
+    symbLabelDispatch({ type: 'TOGGLE_LANG_POINTS', payload })
+    symbLabelDispatch({ type: 'TOGGLE_LANG_LABELS', payload })
+  }
+
+  return (
+    <CustomFormControl
+      label="Hide ELA symbols and labels"
+      switchControl={
+        <Switch
+          checked={hideLangLabels && hideLangPoints}
+          onChange={handleChange}
+          name="toggle-lang-points"
+          size="small"
+        />
+      }
     />
   )
 }

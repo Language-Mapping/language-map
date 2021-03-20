@@ -13,17 +13,13 @@ export type ReactQueryOptions = {
 }
 
 // TODO: try to reuse some of these, they're pretty common in sev. components
-type CategoryProps = {
+export type CustomCardProps = {
   title: string
   uniqueInstances?: unknown[]
   url: string
   footer?: string | React.ReactNode
   icon?: React.ReactNode
   intro?: string
-}
-
-export type CustomCardProps = CategoryProps & {
-  footerIcon?: React.ReactNode
 }
 
 export type CategoryConfig = {
@@ -41,7 +37,7 @@ export type RouteMatch = {
   language?: string
 }
 
-export type CardConfig = CategoryProps & {
+export type CardConfig = CustomCardProps & {
   footer: string
   to: string
 }

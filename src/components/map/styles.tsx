@@ -58,7 +58,7 @@ export const useStyles = makeStyles((theme: Theme) =>
 export const useLocalPanelStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      marginBottom: '1.25rem',
+      marginBottom: '1rem',
       '& .mapboxgl-ctrl-geocoder': {
         maxWidth: '100%',
         width: 'auto',

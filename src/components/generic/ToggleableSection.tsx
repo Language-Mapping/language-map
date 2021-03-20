@@ -25,6 +25,9 @@ const useStyles = makeStyles(() =>
   })
 )
 
+// TODO: consider ellipsizing with `line-clamp`:
+// https://css-tricks.com/multiline-truncated-text-with-show-more-button/
+// https://css-tricks.com/almanac/properties/l/line-clamp/
 export const ToggleableSection: FC<ToggleableProps> = (props) => {
   const { children, show, initialHeight = 0 } = props
   const classes = useStyles({ show, initialHeight })

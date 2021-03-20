@@ -11,6 +11,7 @@ import {
 import { useSymbAndLabelState } from 'components/context'
 import { WorldRegionMap } from './WorldRegionMap'
 import { useLegendConfig } from './hooks'
+import { LangLabelsToggle } from './LangPointsToggle'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -25,8 +26,8 @@ const useStyles = makeStyles((theme: Theme) =>
       textTransform: 'uppercase',
     },
     legendCtrls: {
-      alignItems: 'center',
-      display: 'flex',
+      gridTemplateColumns: '1fr 1fr',
+      display: 'grid',
       marginBottom: '0.5rem',
       '& > * + *': {
         marginLeft: '1rem',
@@ -68,7 +69,7 @@ const PanelSectionHeading: FC = (props) => {
 }
 
 export const LegendPanel: FC = () => {
-  const { activeSymbGroupID, hideLangPoints } = useSymbAndLabelState()
+  const { activeSymbGroupID } = useSymbAndLabelState()
   const classes = useStyles()
   const {
     error,
@@ -92,7 +93,10 @@ export const LegendPanel: FC = () => {
         <LayerSymbSelect />
         <LayerLabelSelect />
       </div>
-      <LangPointsToggle checked={hideLangPoints} />
+      <div className={classes.legendCtrls}>
+        <LangPointsToggle />
+        <LangLabelsToggle />
+      </div>
       {isLoading && <p>Loading legend info...</p>}
       {!isLoading && (
         <div className={classes.groupedLegend}>

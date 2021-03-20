@@ -17,10 +17,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 // CRED: (partial anyway):
 // https://github.com/mbrn/material-table/issues/671#issuecomment-651743451
-export const VideoColumnFilter: FC<Types.FilterComponentProps> = (props) => {
+export const MediaColumnFilter: FC<Types.FilterComponentProps> = (props) => {
   const classes = useStyles()
   const { columnDef, onFilterChanged } = props
-  const { tableData } = columnDef
+  const { tableData, field } = columnDef
   const { filterValue } = tableData
   const checked = filterValue === CHECK_STRING
 
@@ -36,7 +36,7 @@ export const VideoColumnFilter: FC<Types.FilterComponentProps> = (props) => {
         <Checkbox
           checked={checked}
           onChange={handleChange}
-          name="set-video-filter"
+          name={`set-${field?.replaceAll(' ', '-')}-filter`}
           size="small"
         />
       }

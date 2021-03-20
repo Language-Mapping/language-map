@@ -12,7 +12,12 @@ import * as Types from './types'
 
 export const LangMbSrcAndLayer: FC = () => {
   const symbLabelState = useSymbAndLabelState()
-  const { activeLabelID, activeSymbGroupID, hideLangPoints } = symbLabelState
+  const {
+    activeLabelID,
+    activeSymbGroupID,
+    hideLangPoints,
+    hideLangLabels,
+  } = symbLabelState
   const {
     data: fontsData,
     isLoading: isFontsLoading,
@@ -36,7 +41,7 @@ export const LangMbSrcAndLayer: FC = () => {
       ...layout,
     }
 
-    if (!activeLabelID || activeLabelID === 'None' || !endoFonts) {
+    if (hideLangLabels || !endoFonts) {
       return { ...bareMinimum, 'text-field': '' }
     }
 
@@ -83,11 +88,11 @@ export const LangMbSrcAndLayer: FC = () => {
 
         layout = getLayout(layout)
 
-        // TODO: marker for selected feature
-        if (activeLabelID && activeLabelID !== 'None') {
+        if (hideLangLabels) {
           paint = { ...config.mapLabelDefaults.paint, ...paint }
         }
 
+        // TODO: marker for selected feature
         if (hideLangPoints) layout = { ...layout, 'icon-size': 0 }
 
         return (

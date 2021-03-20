@@ -92,4 +92,10 @@ export type RecordDescriptionProps = {
   descriptionID: string
 }
 
-export type CellProps = { data: InstanceLevelSchema }
+export type CellProps = {
+  data: InstanceLevelSchema
+}
+
+export type MediaColumnCellProps = CellProps & {
+  columnName: keyof InstanceLevelSchema
+}

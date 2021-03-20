@@ -110,6 +110,7 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
           let url // TODO: de-shabbify, wire up w/Town
           const footer = <CardFooter text={loc} />
 
+          // TODO: use Routes, dude
           if (!isInstance)
             url = `/details/${instanceIDs ? instanceIDs[i] : 999999}`
           else url = `/Explore/${locRouteName}/${loc}`

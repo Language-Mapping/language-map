@@ -59,6 +59,8 @@ export type LangLevelOptional = CensusFields &
     addlNeighborhoods: string[] // suuuper shakes mcgee
     Audio: string
     descriptionID: string
+    // Used in "Language Profile" (aka Pre-Details), not Details
+    langProfileDescripID: string
     Glottocode: string
     Macrocommunity: string[]
     Neighborhood: string[]
@@ -95,19 +97,18 @@ type CensusFieldPayload = {
 }
 
 export type InitialMapToolsState = {
+  autoZoomCensus: boolean
   boundariesVisible: boolean
   geolocActive: boolean
   censusActiveField?: CensusFieldPayload
 }
 
 export type MapToolsAction =
-  | { type: 'SET_BOUNDARIES_VISIBLE'; payload: boolean }
-  | { type: 'SET_GEOLOC_ACTIVE'; payload: boolean }
   | { type: 'CLEAR_CENSUS_FIELD' }
-  | {
-      type: 'SET_CENSUS_FIELD'
-      payload: CensusFieldPayload
-    }
+  | { type: 'SET_BOUNDARIES_VISIBLE'; payload: boolean }
+  | { type: 'SET_CENSUS_FIELD'; payload: CensusFieldPayload }
+  | { type: 'SET_GEOLOC_ACTIVE'; payload: boolean }
+  | { type: 'TOGGLE_CENSUS_AUTO_ZOOM' }
 
 export type MapToolsDispatch = React.Dispatch<MapToolsAction>
 

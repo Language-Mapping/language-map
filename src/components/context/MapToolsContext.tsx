@@ -3,6 +3,7 @@ import React, { FC } from 'react'
 import * as Types from './types'
 
 const initialState = {
+  autoZoomCensus: true,
   boundariesVisible: false,
   geolocActive: false,
 } as Types.InitialMapToolsState
@@ -19,6 +20,8 @@ function reducer(
   action: Types.MapToolsAction
 ) {
   switch (action.type) {
+    case 'TOGGLE_CENSUS_AUTO_ZOOM':
+      return { ...state, autoZoomCensus: !state.autoZoomCensus }
     case 'SET_BOUNDARIES_VISIBLE':
       return { ...state, boundariesVisible: action.payload }
     case 'SET_GEOLOC_ACTIVE':

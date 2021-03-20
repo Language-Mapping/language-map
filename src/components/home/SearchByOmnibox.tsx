@@ -2,9 +2,10 @@ import React, { FC } from 'react'
 import { useHistory } from 'react-router-dom'
 import matchSorter from 'match-sorter'
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import { TextField } from '@material-ui/core'
+import { TextField, InputAdornment } from '@material-ui/core'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { MdClose } from 'react-icons/md'
+import { GoSearch } from 'react-icons/go'
 
 import { routes } from 'components/config/api'
 import { useAirtable } from 'components/explore/hooks'
@@ -19,9 +20,6 @@ import { PreppedAutocompleteGroup } from './types'
 // ...to make sure it fits on iPhone?
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      marginBottom: '1.25rem',
-    },
     paper: {
       // Stands out against panels behind it
       backgroundColor: theme.palette.background.default,
@@ -36,9 +34,9 @@ const useStyles = makeStyles((theme: Theme) =>
         borderBottom: `1px solid ${theme.palette.text.hint}`,
         color: theme.palette.text.primary,
         fontFamily: theme.typography.h1.fontFamily,
-        fontSize: '1.1rem',
-        paddingLeft: 12,
+        fontSize: '1.25rem',
         fontWeight: theme.typography.h1.fontWeight,
+        paddingLeft: 12,
       },
     },
     // The <li> items. Not sure why it works via classes and `groupUl` doesn't.
@@ -47,9 +45,12 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       paddingLeft: 12,
     },
-    inputRoot: {
-      // Decrease placeholder font size but prevent unwanted iOS zoom on focus
-      '& input:not(:focus)': { fontSize: '0.8em' },
+    input: {
+      // Make text more opaque than the 0.5 default
+      // CRED: https://stackoverflow.com/a/48545561/1048518
+      '&::placeholder': {
+        opacity: 0.85,
+      },
     },
   })
 )
@@ -113,13 +114,26 @@ export const SearchByOmnibox: FC = (props) => {
           React.HTMLAttributes<HTMLElement>
         >
       }
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          placeholder="Language, endonym, Glottocode, or ISO 639-3"
-          InputLabelProps={{ disableAnimation: true, shrink: true }}
-        />
-      )}
+      renderInput={(params) => {
+        // eslint-disable-next-line no-param-reassign
+        params.InputProps.startAdornment = (
+          <>
+            <InputAdornment position="start">
+              <GoSearch />
+            </InputAdornment>
+            {params.InputProps.startAdornment}
+          </>
+        )
+
+        return (
+          <TextField
+            {...params}
+            variant="outlined"
+            placeholder="Search language communities"
+            helperText="Enter a language, endonym, Glottocode, or ISO 639-3"
+          />
+        )
+      }}
     />
   )
 }
