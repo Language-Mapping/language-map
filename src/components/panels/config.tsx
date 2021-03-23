@@ -1,8 +1,8 @@
 import React from 'react'
 import { TiThList } from 'react-icons/ti'
-import { FaBinoculars } from 'react-icons/fa'
+import { FaBinoculars, FaClipboard } from 'react-icons/fa'
 import { GoFile } from 'react-icons/go'
-import { BiHomeAlt, BiMapPin } from 'react-icons/bi'
+import { BiHomeAlt } from 'react-icons/bi'
 
 import { Home } from 'components/home'
 import { LocalPanel } from 'components/local'
@@ -42,14 +42,14 @@ export const navRoutes: MapPanel[] = [
     rootPath: '/table',
   },
   {
-    heading: 'Local',
-    icon: <BiMapPin />,
+    heading: 'Census',
+    icon: <FaClipboard />,
     component: null,
     // eslint-disable-next-line react/display-name
     renderComponent: (props: LocalPanelProps): React.ReactNode => (
       <LocalPanel {...props} />
     ),
-    rootPath: '/local',
+    rootPath: '/Census',
   },
   {
     heading: 'Details',

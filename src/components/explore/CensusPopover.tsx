@@ -133,7 +133,7 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
       </div>
       <Typography
         component={RouterLink}
-        to="/local"
+        to="/Census"
         align="center"
         className={classes.viewAllLink}
       >

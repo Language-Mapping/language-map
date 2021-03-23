@@ -1,5 +1,6 @@
-export * from './FancyHorizRule'
 export * from './Explanation'
+export * from './FancyHorizRule'
+export * from './HideOnScroll'
 export * from './ReadMore'
 export * from './ScrollToTopOnMount'
 export * from './ShareButtons'

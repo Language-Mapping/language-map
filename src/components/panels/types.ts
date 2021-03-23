@@ -26,7 +26,9 @@ export type PanelContentProps = {
   extree?: string | React.ReactNode // catch-all stuff for intro bottom
 }
 
-export type PanelTitleBarProps = Pick<MapPanelProps, 'openOffCanvasNav'>
+export type PanelTitleBarProps = {
+  setPanelOpen: React.Dispatch<boolean>
+}
 
 export type PanelWrapStylesProps = {
   panelOpen: boolean

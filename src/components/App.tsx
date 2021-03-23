@@ -2,7 +2,7 @@ import React, { FC, Suspense } from 'react'
 import * as Sentry from '@sentry/react'
 import { Route } from 'react-router-dom'
 import { ReactQueryCacheProvider } from 'react-query'
-import { ReactQueryDevtools } from 'react-query-devtools'
+// import { ReactQueryDevtools } from 'react-query-devtools'
 import Airtable from 'airtable'
 import { GoInfo } from 'react-icons/go'
 import { AiOutlineQuestionCircle } from 'react-icons/ai'
@@ -85,7 +85,7 @@ export const App: FC = () => {
           />
         </Route>
       </ReactQueryCacheProvider>
-      <ReactQueryDevtools />
+      {/* <ReactQueryDevtools /> */}
     </Sentry.ErrorBoundary>
   )
 }

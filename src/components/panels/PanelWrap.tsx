@@ -6,7 +6,6 @@ import { Paper } from '@material-ui/core'
 
 import { panelWidths } from 'components/panels/config'
 import { nonNavRoutesConfig } from './config'
-import { CloseBtn } from './PanelCloseBtn'
 import { PanelTitleBar } from './PanelTitleBar'
 import { MapPanelProps, PanelWrapStylesProps } from './types'
 
@@ -51,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
 // WISHLIST: consider swipeable views for moving between panels:
 // https://react-swipeable-views.com/demos/demos/
 export const PanelWrap: FC<MapPanelProps> = (props) => {
-  const { setPanelOpen, panelOpen, openOffCanvasNav } = props
+  const { setPanelOpen, panelOpen } = props
   const classes = useStyles({ panelOpen })
   const loc = useLocation()
   const { pathname } = loc
@@ -82,9 +81,8 @@ export const PanelWrap: FC<MapPanelProps> = (props) => {
   // Need the `id` in order to find unique element for `map.setPadding`
   return (
     <Paper id="map-panels-wrap" className={classes.root} elevation={8}>
-      <PanelTitleBar openOffCanvasNav={openOffCanvasNav}>
-        <CloseBtn onClick={() => setPanelOpen(false)} />
-      </PanelTitleBar>
+      <PanelTitleBar setPanelOpen={setPanelOpen} />
+      <div id="back-to-top-anchor" />
       <TransitionGroup>
         <CSSTransition key={loc.key} classNames="fade" timeout={950} appear>
           <Switch location={loc}>

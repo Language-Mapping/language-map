@@ -18,7 +18,7 @@ export const routes = {
   about: '/about',
   help: '/help',
   table: '/table',
-  local: '/local',
+  local: '/Census',
   explore: '/Explore',
 } as {
   [key: string]: RouteLocation

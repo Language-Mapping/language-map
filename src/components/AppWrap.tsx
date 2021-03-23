@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const AppWrap: FC = () => {
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
-  const [panelOpen, setPanelOpen] = useState<boolean>(true)
+  const [panelOpen, setPanelOpen] = useState<boolean>(true) // TODO: global?
   const classes = useStyles({ panelOpen })
   const [offCanvasNavOpen, setOffCanvasNavOpen] = useState<boolean>(false)
 
