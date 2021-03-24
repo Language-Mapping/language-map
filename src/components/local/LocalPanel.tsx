@@ -1,35 +1,21 @@
 import React, { FC } from 'react'
 
-import {
-  GeocoderPopout,
-  GeolocToggle,
-  LocationSearchContent,
-} from 'components/map'
-import { PanelContentSimple } from 'components/panels'
-import { LocalPanelProps } from 'components/map/types'
+import { LocationSearchContent } from 'components/map'
 import { AllLangDataToggle } from 'components/legend'
 import { CensusFieldSelect } from './CensusFieldSelect'
 import { CensusIntro } from './CensusIntro'
 import { CensusAutoZoomToggle } from './CensusAutoZoomToggle'
 
-export const LocalPanel: FC<LocalPanelProps> = (props) => {
+// TODO: rename all instances of "Local" to "Census"
+export const LocalPanel: FC = () => {
   return (
-    <PanelContentSimple>
-      <LocationSearchContent
-        heading="Census Language Data (NYC only)"
-        explanation={<CensusIntro />}
-      >
-        <CensusFieldSelect />
-        <AllLangDataToggle />
-        <CensusAutoZoomToggle />
-      </LocationSearchContent>
-      <LocationSearchContent
-        heading="Location tools"
-        explanation="Enter an address, municipality, neighborhood, postal code, landmark, or other point of interest within the New York City metro area."
-      >
-        <GeocoderPopout {...props} />
-        <GeolocToggle />
-      </LocationSearchContent>
-    </PanelContentSimple>
+    <LocationSearchContent
+      heading="Census Language Data (NYC only)"
+      explanation={<CensusIntro />}
+    >
+      <CensusFieldSelect />
+      <AllLangDataToggle />
+      <CensusAutoZoomToggle />
+    </LocationSearchContent>
   )
 }

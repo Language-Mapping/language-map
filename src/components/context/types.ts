@@ -4,13 +4,11 @@
 
 import { CensusScope } from 'components/local/types'
 
-export type PanelState = 'default' | 'maximized' | 'minimized'
 export type LangSchemaCol = keyof InstanceLevelSchema
 
 export type StoreAction =
   | { type: 'CLEAR_FILTERS'; payload: number }
   | { type: 'SET_LANG_LAYER_FEATURES'; payload: InternalUse[] }
-  | { type: 'SET_PANEL_STATE'; payload: PanelState }
   | { type: 'SET_FILTER_HAS_RUN' }
 
 export type InitialState = {
@@ -20,7 +18,6 @@ export type InitialState = {
   // length change of langFeatures.
   filterHasRun: boolean
   langFeatures: InternalUse[]
-  panelState: PanelState
   // Handy for future reference without caching all the features
   langFeatsLenCache: number
 }

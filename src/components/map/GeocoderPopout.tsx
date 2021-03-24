@@ -8,16 +8,18 @@ import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 import { useMapToolsState, useMapToolsDispatch } from 'components/context'
 import { SimplePopover } from 'components/generic'
+import { usePanelState } from 'components/panels'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
 import { useLocalPanelStyles } from './styles'
 import { useOffset } from './hooks'
 import { flyToBounds, flyToPoint } from './utils'
-import { LocalPanelProps, GeocodeResult, BoundsArray } from './types'
+import { GeocodeResult, BoundsArray, GeocoderPopoutProps } from './types'
 
-export const GeocoderPopout: FC<LocalPanelProps> = (props) => {
-  const { mapRef, panelOpen } = props
+export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
+  const { mapRef } = props
   const classes = useLocalPanelStyles()
+  const { panelOpen } = usePanelState()
   const { smallerText, switchFormCtrlRoot } = classes
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
   const { width, height } = useWindowResize()

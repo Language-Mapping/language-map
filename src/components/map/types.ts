@@ -112,6 +112,8 @@ export type GetWebMercCenter = (params: {
   padding?: Padding
 }) => [number, number]
 
+export type GeocoderPopoutProps = Pick<MapProps, 'mapRef'>
+
 export type GeocodeResult = {
   result: {
     center: [number, number]
@@ -130,21 +132,17 @@ export type CensusLayerProps = {
   config: Omit<BoundaryConfig, 'lookupPath'>
   beforeId?: string
   map?: Map
-} & Pick<LocalPanelProps, 'mapRef'>
+}
 
 export type MapProps = {
   mapLoaded: boolean
   setMapLoaded: React.Dispatch<boolean>
-} & LocalPanelProps
+  mapRef: React.RefObject<InteractiveMap>
+}
 
 export type MapCtrlBtnsProps = {
   isMapTilted: boolean
   onMapCtrlClick: (actionID: MapControlAction) => void
-}
-
-export type LocalPanelProps = {
-  mapRef: React.RefObject<InteractiveMap>
-  panelOpen: boolean
 }
 
 export type CtrlBtnConfig = {

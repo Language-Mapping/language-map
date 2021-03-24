@@ -12,6 +12,16 @@ export type ReactQueryOptions = {
   refetchOnWindowFocus?: boolean
 }
 
+// TODO: detangle this mess like a professional web developer, reuse existing
+export type BasicExploreIntroProps = {
+  extree?: string | React.ReactNode // catch-all stuff for intro bottom
+  icon?: React.ReactNode
+  introParagraph?: string | React.ReactNode
+  subSubtitle?: string | React.ReactNode
+  subtitle?: string | React.ReactNode
+  title?: string
+}
+
 // TODO: try to reuse some of these, they're pretty common in sev. components
 export type CustomCardProps = {
   title: string

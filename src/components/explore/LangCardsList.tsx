@@ -2,8 +2,7 @@ import React, { FC } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { DetailedIntro, NeighborhoodList } from 'components/details'
-import { LoadingIndicatorPanel } from 'components/generic/modals'
-import { PanelContentSimple } from 'components/panels'
+import { LoadingIndicatorBar } from 'components/generic/modals'
 import { FullOnEverything } from 'components/details/types'
 import { useAirtable } from './hooks'
 import { RouteMatch } from './types'
@@ -27,17 +26,16 @@ export const LangCardsList: FC<{ field?: string }> = (props) => {
     filterByFormula,
   })
 
-  if (isLoading) return <LoadingIndicatorPanel />
-  if (error) return <PanelContentSimple>{error?.message}</PanelContentSimple>
-  if (!data.length)
-    return <PanelContentSimple>No match found.</PanelContentSimple>
+  if (isLoading) return <LoadingIndicatorBar />
+  if (error) return <>{error?.message}</>
+  if (!data.length) return <>No match found.</>
 
   const thisLangConfig = data[0] || {}
 
   return (
-    <PanelContentSimple>
+    <>
       <DetailedIntro data={thisLangConfig} />
       <NeighborhoodList data={thisLangConfig} />
-    </PanelContentSimple>
+    </>
   )
 }

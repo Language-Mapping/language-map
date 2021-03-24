@@ -1,13 +1,20 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { useLocation, Route, Switch } from 'react-router-dom'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-import { AppBar, IconButton, Toolbar, Typography } from '@material-ui/core'
-import { GoGear, GoSearch } from 'react-icons/go'
+import {
+  AppBar,
+  IconButton,
+  Toolbar,
+  Typography,
+  Popover,
+} from '@material-ui/core'
+
+import { GoSearch } from 'react-icons/go'
 import { MdClose } from 'react-icons/md'
 import { BiHomeAlt } from 'react-icons/bi'
 
 import { HideOnScroll } from 'components/generic'
-import { PanelTitleBarProps } from './types'
+import { usePanelDispatch } from 'components/panels'
 import { navRoutes } from './config'
 import { SplitCrumbs } from './SplitCrumbs'
 
@@ -45,6 +52,16 @@ const useStyles = makeStyles((theme: Theme) =>
         marginLeft: 8,
       },
     },
+    popoverRoot: {
+      // minWidth: 300,
+      // maxWidth: 350,
+      // padding: '1rem',
+      minWidth: 350,
+      [theme.breakpoints.down('sm')]: {
+        maxWidth: '100%',
+        // width: '100%',
+      },
+    },
   })
 )
 
@@ -78,59 +95,91 @@ const PanelTitle: FC<PanelTitleProps> = (props) => {
   )
 }
 
-export const PanelTitleBar: FC<PanelTitleBarProps> = (props) => {
-  const { setPanelOpen } = props
+export const PanelTitleBar: FC = (props) => {
+  const { children } = props
   const classes = useStyles()
   const { pathname } = useLocation()
   const panelHeading = pathname.split('/')[1] || 'Languages of NYC'
+  const panelDispatch = usePanelDispatch()
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+
+  const open = Boolean(anchorEl)
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
 
   const ToggleSearchPanelBtn = (
-    <IconButton size="small" aria-label="toggle search panel" color="inherit">
+    <IconButton
+      size="small"
+      aria-label="toggle search panel"
+      color="inherit"
+      onClick={handleClick}
+    >
       <GoSearch />
     </IconButton>
+  )
+
+  const SearchTabsPopover = (
+    <Popover
+      id={open ? 'search-tabs-popover' : undefined}
+      open={open}
+      anchorEl={anchorEl}
+      onClose={handleClose}
+      PaperProps={{ className: classes.popoverRoot, elevation: 20 }}
+      // anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      // transformOrigin={{ vertical: 'center', horizontal: 'left' }}
+    >
+      {children}
+    </Popover>
   )
 
   const RightSideBtns = (
     <div className={classes.rightSideBtns}>
       <Switch>
+        {/* Hide on home */}
         <Route path="/" exact />
         <Route>{ToggleSearchPanelBtn}</Route>
       </Switch>
       <IconButton
         size="small"
-        aria-label="map settings and options"
-        color="inherit"
-      >
-        <GoGear />
-      </IconButton>
-      <IconButton
-        size="small"
         aria-label="panel close"
         color="inherit"
-        onClick={() => setPanelOpen(false)}
+        onClick={() =>
+          panelDispatch({ type: 'TOGGLE_MAIN_PANEL', payload: false })
+        }
       >
         <MdClose />
       </IconButton>
+      {SearchTabsPopover}
     </div>
   )
 
   // WISHLIST: add maximize btn on mobile
   return (
-    <HideOnScroll {...props}>
-      <AppBar position="sticky">
-        <Toolbar variant="dense" className={classes.toolbar}>
-          {/* Top-level non-Home get Home link */}
-          <Switch>
-            <Route path={['/:anything', '/']} exact>
-              <PanelTitle text={panelHeading} />
-            </Route>
-            <Route>
-              <SplitCrumbs />
-            </Route>
-          </Switch>
-          {RightSideBtns}
-        </Toolbar>
-      </AppBar>
-    </HideOnScroll>
+    <>
+      <HideOnScroll {...props}>
+        <AppBar>
+          <Toolbar variant="dense" className={classes.toolbar}>
+            {/* Top-level non-Home get Home link */}
+            <Switch>
+              <Route path={['/:anything', '/']} exact>
+                <PanelTitle text={panelHeading} />
+              </Route>
+              <Route>
+                <SplitCrumbs />
+              </Route>
+            </Switch>
+            {RightSideBtns}
+          </Toolbar>
+        </AppBar>
+      </HideOnScroll>
+      {/* <Toolbar className={classes.toolbar} variant="dense" /> */}
+      {/* <Toolbar variant="dense" /> */}
+    </>
   )
 }

@@ -8,8 +8,8 @@ import {
 
 import { FlagFromHook } from 'components/generic/icons-and-swatches'
 import { SwatchOnly } from 'components/legend'
-import { PanelContent } from 'components/panels/PanelContent'
-import { LoadingIndicatorPanel } from 'components/generic/modals'
+import { BasicExploreIntro } from 'components/panels'
+import { LoadingIndicatorBar } from 'components/generic/modals'
 import { Explanation } from 'components/generic'
 import { LangLevelSchema } from 'components/context'
 import { exploreIcons } from 'components/explore/config'
@@ -76,13 +76,13 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
     filterByFormula: `{name} = "${tableName}"`,
   })
 
-  if (isLoading || isLandingLoading) return <LoadingIndicatorPanel />
+  if (isLoading || isLandingLoading) return <LoadingIndicatorBar />
   if (error || landingError) {
     return (
-      <PanelContent>
+      <>
         Could not load {value || field}.{' '}
         {error?.message || landingError?.message}
-      </PanelContent>
+      </>
     )
   }
 
@@ -106,11 +106,12 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
 
   // TODO: better logic for instances, e.g. allow definition
   return (
-    <PanelContent
-      title={value || plural}
-      icon={Icon}
-      introParagraph={!value && definition}
-    >
+    <>
+      <BasicExploreIntro
+        title={value || plural}
+        icon={Icon}
+        introParagraph={!value && definition}
+      />
       <Route path="/Explore/Neighborhood/:language" exact>
         <Explanation>
           Languages with a significant site in this neighborhood, marked by a
@@ -151,6 +152,6 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
       <Route path="/Explore/Neighborhood/:value">
         <AddlLanguages data={data} />
       </Route>
-    </PanelContent>
+    </>
   )
 }

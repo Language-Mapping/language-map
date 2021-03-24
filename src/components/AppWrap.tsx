@@ -2,16 +2,12 @@ import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { InteractiveMap } from 'react-map-gl'
 
-import { PanelWrap } from 'components/panels'
+import { PanelWrap, usePanelState } from 'components/panels'
 import { TopBar, OffCanvasNav } from 'components/nav'
 import { Map } from 'components/map'
 import { LoadingBackdrop } from 'components/generic/modals'
 import { BottomNav } from './nav/BottomNav'
 import { BOTTOM_NAV_HEIGHT_MOBILE } from './nav/config'
-
-type StyleProps = {
-  panelOpen: boolean
-}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -37,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         '& .mapboxgl-ctrl-bottom-right, .mapboxgl-ctrl-bottom-left': {
           transition: 'bottom 300ms ease',
-          bottom: (props: StyleProps) =>
+          bottom: (props: { panelOpen: boolean }) =>
             props.panelOpen ? 'calc(50% + 0.45rem)' : 0,
         },
       },
@@ -58,12 +54,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const AppWrap: FC = () => {
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
-  const [panelOpen, setPanelOpen] = useState<boolean>(true) // TODO: global?
+  const { panelOpen } = usePanelState()
   const classes = useStyles({ panelOpen })
   const [offCanvasNavOpen, setOffCanvasNavOpen] = useState<boolean>(false)
-
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
-  const propsForEveryone = { panelOpen, mapRef, mapLoaded }
 
   return (
     <>
@@ -71,17 +65,20 @@ export const AppWrap: FC = () => {
       <TopBar />
       <main className={classes.mainWrap}>
         <div className={classes.mapWrap}>
-          <Map {...propsForEveryone} setMapLoaded={setMapLoaded} />
+          <Map
+            mapRef={mapRef}
+            mapLoaded={mapLoaded}
+            setMapLoaded={setMapLoaded}
+          />
         </div>
         <PanelWrap
-          {...propsForEveryone}
-          setPanelOpen={setPanelOpen}
+          mapRef={mapRef}
           openOffCanvasNav={(e: React.MouseEvent) => {
             e.preventDefault()
             setOffCanvasNavOpen(true)
           }}
         />
-        <BottomNav setPanelOpen={setPanelOpen} />
+        <BottomNav />
       </main>
       <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />
     </>

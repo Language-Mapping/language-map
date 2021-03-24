@@ -4,10 +4,14 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Paper } from '@material-ui/core'
 
-import { panelWidths } from 'components/panels/config'
-import { nonNavRoutesConfig } from './config'
+import { SearchTabs, usePanelState } from 'components/panels'
+import {
+  panelWidths,
+  nonNavRoutesConfig,
+  MOBILE_PANEL_HEADER_HT,
+} from './config'
 import { PanelTitleBar } from './PanelTitleBar'
-import { MapPanelProps, PanelWrapStylesProps } from './types'
+import { PanelWrapProps } from './types'
 
 import './styles.css'
 
@@ -19,12 +23,12 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: 48, // default is set directly in MUI to 56
       boxShadow: '0 -2px 7px hsla(0, 0%, 0%, 0.25)',
       left: 0,
-      opacity: (props: PanelWrapStylesProps) => (props.panelOpen ? 1 : 0),
+      opacity: (props: { panelOpen: boolean }) => (props.panelOpen ? 1 : 0),
       position: 'absolute',
       right: 0,
       top: '45%',
       transition: '300ms ease all',
-      transform: (props: PanelWrapStylesProps) =>
+      transform: (props: { panelOpen: boolean }) =>
         `translateY(${props.panelOpen ? 0 : '100%'})`,
       [theme.breakpoints.up('sm')]: {
         left: 8,
@@ -44,13 +48,28 @@ const useStyles = makeStyles((theme: Theme) =>
         fontSize: '1rem',
       },
     },
+    panelContentRoot: {
+      bottom: 0,
+      overflowX: 'hidden',
+      overflowY: 'auto',
+      position: 'absolute',
+      top: MOBILE_PANEL_HEADER_HT,
+      width: '100%',
+    },
+    innerPanel: {
+      padding: '0.75rem 0.75rem 0',
+      [theme.breakpoints.up('sm')]: {
+        padding: '1.5rem 1.25rem',
+      },
+    },
   })
 )
 
 // WISHLIST: consider swipeable views for moving between panels:
 // https://react-swipeable-views.com/demos/demos/
-export const PanelWrap: FC<MapPanelProps> = (props) => {
-  const { setPanelOpen, panelOpen } = props
+export const PanelWrap: FC<PanelWrapProps> = (props) => {
+  const { mapRef } = props
+  const { panelOpen } = usePanelState()
   const classes = useStyles({ panelOpen })
   const loc = useLocation()
   const { pathname } = loc
@@ -60,8 +79,9 @@ export const PanelWrap: FC<MapPanelProps> = (props) => {
   const asArray = pathname.split('/')
   const pageTitle = asArray[4] || asArray[3] || asArray[2] || asArray[1]
 
-  // Home gets default title
+  // TODO: set this for reuse somewhere if needed
   if (!pageTitle) document.title = 'Languages of New York City'
+  // just Home
   // Everything else gets the first available path segment, except for detail
   // view via Details or Table.
   else if (!isPageWithID) {
@@ -72,6 +92,7 @@ export const PanelWrap: FC<MapPanelProps> = (props) => {
     document.title = `${pageTitleCapitalized} - NYC Languages`
   }
 
+  // TODO: make this actually work on mobile, and confirm on desktop
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -81,22 +102,30 @@ export const PanelWrap: FC<MapPanelProps> = (props) => {
   // Need the `id` in order to find unique element for `map.setPadding`
   return (
     <Paper id="map-panels-wrap" className={classes.root} elevation={8}>
-      <PanelTitleBar setPanelOpen={setPanelOpen} />
       <div id="back-to-top-anchor" />
+      <PanelTitleBar>
+        <SearchTabs mapRef={mapRef} />
+      </PanelTitleBar>
       <TransitionGroup>
         <CSSTransition key={loc.key} classNames="fade" timeout={950} appear>
-          <Switch location={loc}>
-            {nonNavRoutesConfig.map((config) => (
-              <Route
-                exact={config.exact}
-                path={config.rootPath}
-                key={config.rootPath}
-              >
-                {config.component ||
-                  (config.renderComponent && config.renderComponent(props))}
-              </Route>
-            ))}
-          </Switch>
+          <div className={classes.panelContentRoot}>
+            <Route path="/" exact>
+              <SearchTabs mapRef={mapRef} />
+            </Route>
+            <div className={classes.innerPanel}>
+              <Switch location={loc}>
+                {nonNavRoutesConfig.map((config) => (
+                  <Route
+                    exact={config.exact}
+                    path={config.rootPath}
+                    key={config.rootPath}
+                  >
+                    {config.component}
+                  </Route>
+                ))}
+              </Switch>
+            </div>
+          </div>
         </CSSTransition>
       </TransitionGroup>
     </Paper>

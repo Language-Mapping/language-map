@@ -11,6 +11,7 @@ import { AboutPageView, WelcomeDialog } from 'components/about'
 import { wpQueryCache } from 'components/about/utils'
 import { routes } from 'components/config/api'
 import { AIRTABLE_API_KEY } from 'components/config'
+import { PanelContextProvider } from 'components/panels'
 import { AppWrap } from './AppWrap'
 import { wpQueryIDs } from './about/config'
 import { MapToolsProvider } from './context/MapToolsContext'
@@ -58,7 +59,9 @@ export const App: FC = () => {
       )}
     >
       <MapToolsProvider>
-        <AppWrap />
+        <PanelContextProvider>
+          <AppWrap />
+        </PanelContextProvider>
         {/* TODO: understand this and create legit fallback element */}
         <Suspense fallback={<div />}>
           <LazyTable />

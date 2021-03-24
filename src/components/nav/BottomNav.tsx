@@ -4,9 +4,9 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { BottomNavigation, BottomNavigationAction } from '@material-ui/core'
 
 import { RouteLocation } from 'components/config/types'
+import { usePanelDispatch } from 'components/panels'
 import { navRoutes, panelWidths } from '../panels/config'
 import { BOTTOM_NAV_HEIGHT_MOBILE } from './config'
-import { BottomNavProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) => {
   const gradientBackground = `radial-gradient(ellipse at top, ${theme.palette.primary.light}, transparent),
@@ -93,14 +93,15 @@ const initialSubRoutes = {
   Explore: '/Explore',
 } as { [key: string]: RouteLocation }
 
-export const BottomNav: FC<BottomNavProps> = (props) => {
-  const { setPanelOpen } = props
+export const BottomNav: FC = (props) => {
   const loc = useLocation()
   const classes = useStyles()
   const { root, selected, label, wrapper } = classes
+  const panelDispatch = usePanelDispatch()
 
   const currPathSansSlash = loc.pathname.split('/')[1]
-  const handleChange = () => setPanelOpen(true)
+  const handleChange = () =>
+    panelDispatch({ type: 'TOGGLE_MAIN_PANEL', payload: true })
 
   const [subRoutePath, setSubRoutePath] = useState(
     initialSubRoutes as { [key: string]: string }

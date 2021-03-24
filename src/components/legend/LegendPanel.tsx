@@ -88,7 +88,6 @@ export const LegendPanel: FC = () => {
 
   return (
     <>
-      <PanelSectionHeading>Map display options & legend</PanelSectionHeading>
       <div className={classes.legendCtrls}>
         <LayerSymbSelect />
         <LayerLabelSelect />
@@ -99,18 +98,21 @@ export const LegendPanel: FC = () => {
       </div>
       {isLoading && <p>Loading legend info...</p>}
       {!isLoading && (
-        <div className={classes.groupedLegend}>
-          {data.map((item) => (
-            <Legend
-              key={item.groupName}
-              routeName={routeable ? activeSymbGroupID : undefined}
-              groupName={legendHeading || item.groupName}
-              legendSummary={legendSummary}
-              sourceCredits={sourceCredits}
-              items={item.items}
-            />
-          ))}
-        </div>
+        <>
+          <PanelSectionHeading>Legend</PanelSectionHeading>
+          <div className={classes.groupedLegend}>
+            {data.map((item) => (
+              <Legend
+                key={item.groupName}
+                routeName={routeable ? activeSymbGroupID : undefined}
+                groupName={legendHeading || item.groupName}
+                legendSummary={legendSummary}
+                sourceCredits={sourceCredits}
+                items={item.items}
+              />
+            ))}
+          </div>
+        </>
       )}
       {activeSymbGroupID === 'World Region' && <WorldRegionMap />}
     </>

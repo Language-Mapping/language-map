@@ -1,7 +1,6 @@
 import React, { FC } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 
-import { PanelContentSimple } from 'components/panels/PanelContent'
 import { routes } from 'components/config/api'
 import { Explanation } from 'components/generic'
 import { PanelHeading } from 'components/panels'
@@ -11,7 +10,7 @@ export const NoFeatSel: FC<{ reason?: string }> = (props) => {
   const { reason = 'No community selected' } = props
 
   return (
-    <PanelContentSimple>
+    <>
       <PanelHeading text={reason} />
       <Explanation component="div">
         <p>Please select a community using one of the following options:</p>
@@ -35,6 +34,6 @@ export const NoFeatSel: FC<{ reason?: string }> = (props) => {
       >
         <RandomLinkBtn />
       </div>
-    </PanelContentSimple>
+    </>
   )
 }

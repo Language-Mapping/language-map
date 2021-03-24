@@ -4,16 +4,15 @@ import { FaBinoculars, FaClipboard } from 'react-icons/fa'
 import { GoFile } from 'react-icons/go'
 import { BiHomeAlt } from 'react-icons/bi'
 
-import { Home } from 'components/home'
 import { LocalPanel } from 'components/local'
 import { DetailsPanel } from 'components/details'
 import { Explore, LangCardsList, MidLevelExplore } from 'components/explore'
 
-import { LocalPanelProps } from 'components/map/types'
 import { MapPanel } from 'components/panels/types'
+import { LegendPanel } from 'components/legend'
 import { NavItemWithBadge } from './NavItemWithBadge'
 
-export const MOBILE_PANEL_HEADER_HT = '2rem'
+export const MOBILE_PANEL_HEADER_HT = 48 // .MuiToolbar-dense default min-height
 export const panelWidths = { mid: 450, midLarge: 600 }
 
 // Bottom bar nav panel
@@ -21,14 +20,14 @@ export const navRoutes: MapPanel[] = [
   {
     heading: 'Home',
     icon: <BiHomeAlt />,
-    component: <Home />,
+    component: <LegendPanel />,
     rootPath: '/',
     exact: true,
   },
   {
     heading: 'Explore',
     icon: <FaBinoculars />,
-    component: <Explore icon={<FaBinoculars />} />,
+    component: <Explore />,
     rootPath: '/Explore',
   },
   {
@@ -44,11 +43,7 @@ export const navRoutes: MapPanel[] = [
   {
     heading: 'Census',
     icon: <FaClipboard />,
-    component: null,
-    // eslint-disable-next-line react/display-name
-    renderComponent: (props: LocalPanelProps): React.ReactNode => (
-      <LocalPanel {...props} />
-    ),
+    component: <LocalPanel />,
     rootPath: '/Census',
   },
   {
@@ -76,5 +71,7 @@ export const nonNavRoutesConfig = [
     component: <MidLevelExplore />,
     rootPath: '/Explore/:field',
   },
+  // TODO: fix the world:
+  // { component: <NoFeatSel />, rootPath: '/details' },
   ...navRoutes,
 ] as MapPanel[]

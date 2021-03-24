@@ -16,11 +16,6 @@ export const reducer = (
         langFeatures: action.payload,
         langFeatsLenCache: state.langFeatsLenCache || action.payload.length,
       }
-    case 'SET_PANEL_STATE':
-      return {
-        ...state,
-        panelState: action.payload,
-      }
     case 'SET_FILTER_HAS_RUN':
       return {
         ...state,
