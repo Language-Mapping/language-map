@@ -16,10 +16,6 @@ import { AiOutlineQuestionCircle } from 'react-icons/ai'
 import { routes } from 'components/config/api'
 import { Settings } from './Settings'
 
-type NavProps = {
-  openFeedbackModal: () => void
-}
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     listLink: {
@@ -44,8 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const Nav: FC<NavProps> = (props) => {
-  const { openFeedbackModal } = props
+export const Nav: FC = () => {
   const classes = useStyles()
   const { listLink, listItemIcon, smallerText } = classes
 
@@ -73,12 +68,9 @@ export const Nav: FC<NavProps> = (props) => {
           <ListItem button>
             <Link
               underline="none"
-              href="#"
+              component={RouterLink}
+              to={routes.feedback}
               className={listLink}
-              onClick={(e: React.MouseEvent) => {
-                e.preventDefault()
-                openFeedbackModal()
-              }}
             >
               <ListItemIcon className={listItemIcon}>
                 <MdChat />

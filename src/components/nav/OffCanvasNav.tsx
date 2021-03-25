@@ -77,7 +77,7 @@ export const OffCanvasNav: FC<OffCanvasNavProps> = (props) => {
           onClick={closeIt}
           className={classes.offCanvasNavList}
         >
-          <Nav openFeedbackModal={() => setFeedbackModalOpen(true)} />
+          <Nav />
         </div>
       </Drawer>
     </>

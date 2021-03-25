@@ -131,8 +131,8 @@ export const PanelTitleBar: FC = (props) => {
       anchorEl={anchorEl}
       onClose={handleClose}
       PaperProps={{ className: classes.popoverRoot, elevation: 20 }}
-      // anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      // transformOrigin={{ vertical: 'center', horizontal: 'left' }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      transformOrigin={{ vertical: 'center', horizontal: 'left' }}
     >
       {children}
     </Popover>

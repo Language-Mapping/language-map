@@ -1,18 +1,9 @@
 import React, { FC } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useQuery } from 'react-query'
-import { useTheme } from '@material-ui/core/styles'
-import {
-  useMediaQuery,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Typography,
-} from '@material-ui/core'
-import { MdClose } from 'react-icons/md'
+import { Dialog, Typography } from '@material-ui/core'
 
-import { SlideUp, LoadingBackdrop } from 'components/generic/modals'
+import { LoadingBackdrop } from 'components/generic/modals'
 import * as Types from './types'
 import { useStyles } from './styles'
 import { createMarkup } from '../../utils'
@@ -26,10 +17,7 @@ export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
   const {
     pathname: currPathname,
     state: locState,
-    hash,
   } = useLocation() as LocWithState
-  const theme = useTheme()
-  const lilGuy = useMediaQuery(theme.breakpoints.only('xs'))
   const { data, isFetching, error } = useQuery(queryKey, () =>
     defaultQueryFn<Types.WpApiPageResponse>(queryKey)
   )
@@ -58,16 +46,6 @@ export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
     else history.goBack()
   }
 
-  // Scroll id'd element into view // CRED: (partial anyway):
-  // github.com/ReactTraining/react-router/issues/394#issuecomment-128148470
-  const handleEntered = () => {
-    const targetElemID = hash?.split('#').slice(-1)[0]
-
-    if (!targetElemID) return
-
-    document.querySelector(`#${targetElemID}`)?.scrollIntoView()
-  }
-
   // TODO: wire up Sentry; aria; TS for error (`error.message` is a string)
   if (error) {
     return (
@@ -83,31 +61,17 @@ export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
   // TODO: use `keepMounted` for About for SEO purposes?
   // TODO: consider SimpleDialog for some or all of these
   return (
-    <Dialog
-      open
-      fullScreen={lilGuy}
-      onClose={handleClose}
-      onEntered={handleEntered}
-      aria-labelledby={`${queryKey}-dialog-title`}
-      aria-describedby={`${queryKey}-dialog-description`}
-      TransitionComponent={SlideUp}
-      maxWidth="md"
-    >
-      <DialogTitle id={`${queryKey}-dialog-title`} disableTypography>
-        <Typography variant="h3" component="h2" className={classes.dialogTitle}>
-          {icon}
-          {title}
-        </Typography>
-      </DialogTitle>
-      <IconButton onClick={handleClose} className={classes.closeBtn}>
-        <MdClose />
-      </IconButton>
-      <DialogContent dividers className={classes.dialogContent}>
+    <>
+      <Typography variant="h3" component="h2" className={classes.dialogTitle}>
+        {icon}
+        {title}
+      </Typography>
+      <div className={classes.dialogContent}>
         <div
           dangerouslySetInnerHTML={createMarkup(data?.content.rendered || '')}
           id={`${queryKey}-dialog-description`}
         />
-      </DialogContent>
-    </Dialog>
+      </div>
+    </>
   )
 }

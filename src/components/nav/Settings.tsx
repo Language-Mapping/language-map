@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Box, FormControlLabel, Switch, Typography } from '@material-ui/core'
+import { FormControlLabel, Switch, Typography } from '@material-ui/core'
 import { FiShare } from 'react-icons/fi'
 import { GoGear } from 'react-icons/go'
 
@@ -12,9 +12,6 @@ type SettingsProps = {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    settingsRoot: {
-      padding: theme.spacing(2),
-    },
     settingsHeading: {
       alignItems: 'center',
       display: 'flex',
@@ -34,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const Settings: FC<SettingsProps> = (props) => {
   const { smallerTextClass } = props
   const classes = useStyles()
-  const { switchFormCtrlRoot, settingsRoot, settingsHeading } = classes
+  const { switchFormCtrlRoot, settingsHeading } = classes
 
   // TODO: consider using`localStorage.getItem('hideWelcome')`
   const [showWelcomeChecked, setShowWelcomeChecked] = useState(
@@ -56,7 +53,7 @@ export const Settings: FC<SettingsProps> = (props) => {
   }
 
   return (
-    <Box className={settingsRoot}>
+    <>
       <Typography component="h3" className={settingsHeading}>
         <FiShare /> Share
       </Typography>
@@ -83,6 +80,6 @@ export const Settings: FC<SettingsProps> = (props) => {
         }
         label="Show welcome screen on startup"
       />
-    </Box>
+    </>
   )
 }

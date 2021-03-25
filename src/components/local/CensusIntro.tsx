@@ -17,7 +17,7 @@ export const CensusIntro: FC<CensusIntroProps> = (props) => {
     <>
       {`${baseCensusText} `}
       {!subtle && extendedCensusText}{' '}
-      <RouterLink to="/about#census">More info</RouterLink>
+      <RouterLink to="/Info/About#census">More info</RouterLink>
     </>
   )
 }

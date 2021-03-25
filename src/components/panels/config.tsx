@@ -1,15 +1,15 @@
 import React from 'react'
 import { TiThList } from 'react-icons/ti'
 import { FaBinoculars, FaClipboard } from 'react-icons/fa'
-import { GoFile } from 'react-icons/go'
+import { GoInfo } from 'react-icons/go'
 import { BiHomeAlt } from 'react-icons/bi'
 
 import { LocalPanel } from 'components/local'
-import { DetailsPanel } from 'components/details'
 import { Explore, LangCardsList, MidLevelExplore } from 'components/explore'
 
 import { MapPanel } from 'components/panels/types'
 import { LegendPanel } from 'components/legend'
+import { InfoPanel } from 'components/about/InfoPanel'
 import { NavItemWithBadge } from './NavItemWithBadge'
 
 export const MOBILE_PANEL_HEADER_HT = 48 // .MuiToolbar-dense default min-height
@@ -46,11 +46,17 @@ export const navRoutes: MapPanel[] = [
     component: <LocalPanel />,
     rootPath: '/Census',
   },
+  // {
+  //   heading: 'Details',
+  //   icon: <GoFile />,
+  //   component: <DetailsPanel />,
+  //   rootPath: '/details',
+  // },
   {
-    heading: 'Details',
-    icon: <GoFile />,
-    component: <DetailsPanel />,
-    rootPath: '/details',
+    heading: 'Info',
+    icon: <GoInfo />,
+    component: <InfoPanel />,
+    rootPath: '/Info',
   },
 ]
 

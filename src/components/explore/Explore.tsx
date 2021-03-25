@@ -25,7 +25,7 @@ export const Explore: FC = () => {
   const intro = (
     <>
       For an explanation of the options below, visit the{' '}
-      <Link component={RouterLink} to="/help">
+      <Link component={RouterLink} to="/Info/Help">
         Help page
       </Link>{' '}
       for definitions and additional info. You can also view and filter all

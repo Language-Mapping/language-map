@@ -185,7 +185,7 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
             onClick: () =>
               // Avoid an infinite cycle of table-help-table backness
               history.push({
-                pathname: '/help',
+                pathname: '/Info/Help',
                 state: { from: loc.pathname }, // TODO: spread ...loc.state ??
               }),
           },

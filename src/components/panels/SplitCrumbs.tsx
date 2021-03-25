@@ -53,7 +53,7 @@ export const SplitCrumbs: FC = () => {
     <ButtonGroup
       size="small"
       variant="contained"
-      color="secondary"
+      color="primary"
       ref={anchorRef}
       aria-label="split button"
     >
