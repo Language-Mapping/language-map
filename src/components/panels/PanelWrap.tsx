@@ -5,6 +5,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Paper } from '@material-ui/core'
 
 import { SearchTabs, usePanelState } from 'components/panels'
+import { BackToTopBtn } from 'components/generic'
 import {
   panelWidths,
   nonNavRoutesConfig,
@@ -128,6 +129,7 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
           </div>
         </CSSTransition>
       </TransitionGroup>
+      <BackToTopBtn />
     </Paper>
   )
 }

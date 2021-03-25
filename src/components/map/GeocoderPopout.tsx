@@ -75,7 +75,7 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
         text={
           <>
             Neighborhoods are shown within NYC's five boroughs, and counties for
-            the surrounding areas. <em>Source: Mapbox Boundaries</em>
+            the surrounding areas. <em>Source: NYC Census 2020 map</em>
           </>
         }
       />
@@ -84,7 +84,10 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
 
   return (
     <>
-      <div ref={geocoderContainerRef} style={{ margin: '0.75rem 0' }} />
+      <div
+        ref={geocoderContainerRef}
+        style={{ margin: '0.75rem 0', width: '100%' }}
+      />
       <FormControlLabel
         // Prevent off-canvas from closing (but we want that to happen for all
         // the other elements in the off-canvas).
@@ -107,7 +110,7 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
         mapboxApiAccessToken={MAPBOX_TOKEN}
         mapRef={mapRef}
         onResult={handleGeocodeResult}
-        placeholder="e.g. Staten Island, Astoria, Yankee Stadium"
+        placeholder="Try Bronx, Astoria, Yankee Stadium"
         proximity={NYC_LAT_LONG}
         types="address,poi,postcode,locality,place,neighborhood"
         bbox={[-77.5, 38.4, -70.7, 42.89]}

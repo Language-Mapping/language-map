@@ -134,8 +134,8 @@ export const SearchByOmnibox: FC = (props) => {
           <TextField
             {...params}
             variant="outlined"
-            placeholder="Search language communities"
-            helperText="Enter a language, endonym, Glottocode, or ISO 639-3"
+            color="secondary"
+            placeholder="Try Mixtec, 台山话, hait1244, loy"
           />
         )
       }}

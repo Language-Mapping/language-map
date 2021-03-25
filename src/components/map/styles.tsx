@@ -62,6 +62,10 @@ export const useLocalPanelStyles = makeStyles((theme: Theme) =>
       '& .mapboxgl-ctrl-geocoder': {
         maxWidth: '100%',
         width: 'auto',
+        fontSize: '1rem',
+      },
+      '& .mapboxgl-ctrl-geocoder--icon-search': {
+        fontSize: '1rem',
       },
       '& .mapboxgl-ctrl-geocoder--input': {
         padding: '0.15rem 1rem 0.15rem 2.25rem', // huge horiz padding for icon

@@ -1,3 +1,4 @@
+export * from './BackToTopBtn'
 export * from './Explanation'
 export * from './FancyHorizRule'
 export * from './HideOnScroll'

@@ -17,3 +17,8 @@ export type PanelWrapProps = Pick<MapProps, 'mapRef'> & {
 export type SearchTabsProps = {
   mapRef: React.RefObject<InteractiveMap>
 }
+
+export type TabPanelProps = {
+  index: number
+  value: number
+}
