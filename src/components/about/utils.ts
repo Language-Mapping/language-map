@@ -12,7 +12,9 @@ export const wpQueryCache = new QueryCache({
     queries: {
       queryFn: defaultQueryFn,
       refetchOnMount: false,
-      cacheTime: 1800000, // 1000 * 60 * 30, // ms * sec * min. Default: 5 min.
+      refetchOnWindowFocus: false,
+      // 1000 * 60 * 30, // ms * sec * min. Default: 5 min.
+      cacheTime: 600000, // 600000 = 10 minutes
     },
   },
 })

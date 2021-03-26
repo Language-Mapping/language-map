@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core'
 import { GoInfo } from 'react-icons/go'
 import { MdChat } from 'react-icons/md'
-import { AiOutlineQuestionCircle } from 'react-icons/ai'
+import { AiOutlineQuestionCircle, AiFillFilePdf } from 'react-icons/ai'
 
 import { routes } from 'components/config/api'
 import { Settings } from './Settings'
@@ -37,18 +37,21 @@ const useStyles = makeStyles((theme: Theme) =>
     smallerText: {
       fontSize: '0.8rem',
     },
+    divider: {
+      margin: '1rem 0',
+    },
   })
 )
 
 export const Nav: FC = () => {
   const classes = useStyles()
-  const { listLink, listItemIcon, smallerText } = classes
+  const { listLink, listItemIcon, smallerText, divider } = classes
 
   return (
     <>
       <nav>
         <List>
-          <ListItem button>
+          <ListItem button dense disableGutters>
             <Link
               underline="none"
               component={RouterLink}
@@ -65,7 +68,7 @@ export const Nav: FC = () => {
               />
             </Link>
           </ListItem>
-          <ListItem button>
+          <ListItem button dense disableGutters>
             <Link
               underline="none"
               component={RouterLink}
@@ -82,7 +85,7 @@ export const Nav: FC = () => {
               />
             </Link>
           </ListItem>
-          <ListItem button>
+          <ListItem button dense disableGutters>
             <Link
               underline="none"
               component={RouterLink}
@@ -99,8 +102,25 @@ export const Nav: FC = () => {
               />
             </Link>
           </ListItem>
+          <ListItem button dense disableGutters>
+            <Link
+              underline="none"
+              href="https://languagemapping.org/wp-content/uploads/2021/03/Help-Video-Script.pdf"
+              target="_blank"
+              className={listLink}
+            >
+              <ListItemIcon className={listItemIcon}>
+                <AiFillFilePdf />
+              </ListItemIcon>
+              <ListItemText
+                classes={{ secondary: smallerText }}
+                primary="User Manual"
+                secondary="View or download a PDF with detailed instructions (opens in a new tab)"
+              />
+            </Link>
+          </ListItem>
         </List>
-        <Divider />
+        <Divider className={divider} />
       </nav>
       <Settings smallerTextClass={smallerText} />
     </>

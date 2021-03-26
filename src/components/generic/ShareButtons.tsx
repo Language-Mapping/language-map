@@ -41,7 +41,7 @@ export const ShareButtons: FC<ShareBtnProps> = (props) => {
     summary = DEFAULT_SUMMARY,
     title = DEFAULT_TITLE,
     url = DEFAULT_URL,
-    spacing = 1,
+    spacing = 2,
   } = props
 
   return (

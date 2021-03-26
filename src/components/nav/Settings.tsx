@@ -15,8 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
     settingsHeading: {
       alignItems: 'center',
       display: 'flex',
-      marginTop: '.75rem',
-      marginBottom: '0.5rem',
+      margin: '1rem 0',
       '& > svg': {
         marginRight: 4,
         color: theme.palette.text.secondary,
@@ -55,7 +54,7 @@ export const Settings: FC<SettingsProps> = (props) => {
   return (
     <>
       <Typography component="h3" className={settingsHeading}>
-        <FiShare /> Share
+        <FiShare /> Share this project
       </Typography>
       <ShareButtons />
       <Typography component="h3" className={settingsHeading}>
