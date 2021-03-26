@@ -9,11 +9,8 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@material-ui/core'
-import { GoInfo } from 'react-icons/go'
-import { MdChat } from 'react-icons/md'
-import { AiOutlineQuestionCircle, AiFillFilePdf } from 'react-icons/ai'
 
-import { routes } from 'components/config/api'
+import { routes, icons } from 'components/config'
 import { Settings } from './Settings'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -25,13 +22,13 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: '100%',
       '& svg': {
-        width: 30,
-        height: 30,
+        width: '1.5rem',
+        height: '1.5rem',
       },
     },
     listItemIcon: {
       color: theme.palette.text.secondary,
-      marginRight: theme.spacing(1),
+      marginRight: '0.75rem',
       minWidth: 'auto', // override default
     },
     smallerText: {
@@ -59,7 +56,7 @@ export const Nav: FC = () => {
               className={listLink}
             >
               <ListItemIcon className={listItemIcon}>
-                <GoInfo />
+                {icons.About}
               </ListItemIcon>
               <ListItemText
                 classes={{ secondary: smallerText }}
@@ -76,7 +73,7 @@ export const Nav: FC = () => {
               className={listLink}
             >
               <ListItemIcon className={listItemIcon}>
-                <MdChat />
+                {icons.Feedback}
               </ListItemIcon>
               <ListItemText
                 classes={{ secondary: smallerText }}
@@ -92,9 +89,7 @@ export const Nav: FC = () => {
               to={routes.help}
               className={listLink}
             >
-              <ListItemIcon className={listItemIcon}>
-                <AiOutlineQuestionCircle />
-              </ListItemIcon>
+              <ListItemIcon className={listItemIcon}>{icons.Help}</ListItemIcon>
               <ListItemText
                 classes={{ secondary: smallerText }}
                 primary="Help"
@@ -110,7 +105,7 @@ export const Nav: FC = () => {
               className={listLink}
             >
               <ListItemIcon className={listItemIcon}>
-                <AiFillFilePdf />
+                {icons.UserManual}
               </ListItemIcon>
               <ListItemText
                 classes={{ secondary: smallerText }}

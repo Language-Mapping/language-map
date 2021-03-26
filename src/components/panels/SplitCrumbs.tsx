@@ -1,8 +1,9 @@
+// TODO: rename file and component to "BackBtn"
 import React, { FC } from 'react'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { IconButton, Popover, Tooltip } from '@material-ui/core'
-import { TiThList } from 'react-icons/ti'
+import { AiOutlineUnorderedList } from 'react-icons/ai'
 import { BsArrow90DegUp } from 'react-icons/bs'
 
 import { TimelineCrumbs } from './TimelineCrumbs'
@@ -14,15 +15,9 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: 200,
       overflowY: 'auto',
     },
-    leftSideBtns: {
-      '& > * + *': {
-        marginLeft: 4,
-      },
-    },
   })
 )
 
-// TODO: rename these ridic functions and files for crying out loud
 // TODO: use legit aria stuff
 export const SplitCrumbs: FC = () => {
   const classes = useStyles()
@@ -47,8 +42,8 @@ export const SplitCrumbs: FC = () => {
   const id = open ? 'show-explore-nav' : undefined
 
   return (
-    <div>
-      <div className={classes.leftSideBtns}>
+    <>
+      <div>
         <Tooltip title="Up one level">
           <IconButton
             size="small"
@@ -67,7 +62,7 @@ export const SplitCrumbs: FC = () => {
             aria-haspopup="menu"
             onClick={handleClick}
           >
-            <TiThList />
+            <AiOutlineUnorderedList />
           </IconButton>
         </Tooltip>
       </div>
@@ -84,6 +79,6 @@ export const SplitCrumbs: FC = () => {
         <TimelineCrumbs pathChunks={notHome} />
         {/* TODO: UGGGGHHHH ^^^^^ */}
       </Popover>
-    </div>
+    </>
   )
 }
