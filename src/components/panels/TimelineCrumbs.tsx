@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, Route, Switch } from 'react-router-dom'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import {
   Timeline,
@@ -73,7 +73,17 @@ export const TimelineCrumbs: FC<TimelineCrumbsProps> = (props) => {
             </TimelineSeparator>
             <TimelineContent>
               {firstOne ? (
-                <b>{chunk}</b>
+                <b>
+                  <Switch>
+                    <Route path="/Explore/Language/:language/:instanceID" exact>
+                      Community details
+                    </Route>
+                    <Route path="/Explore/Language/none">
+                      No community selected
+                    </Route>
+                    <Route>{chunk}</Route>
+                  </Switch>
+                </b>
               ) : (
                 <RouterLink to={to}>{chunk}</RouterLink>
               )}

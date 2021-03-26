@@ -76,7 +76,12 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
   const { pathname } = loc
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // TODO: 😞
-  const isPageWithID = useRouteMatch(['/details/:id', '/table/:id'])?.params.id
+  const isPageWithID = useRouteMatch<{ params: { id: number } }>([
+    '/Explore/Language/:langName/:id',
+    '/table/:id',
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore // TODO: 😞
+  ])?.params.id
   const asArray = pathname.split('/')
   const pageTitle = asArray[4] || asArray[3] || asArray[2] || asArray[1]
 

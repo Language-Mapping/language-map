@@ -1,4 +1,5 @@
 import React, { FC, useState } from 'react'
+import { Route, useHistory } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Popover } from '@material-ui/core'
 import { BiMapPin } from 'react-icons/bi'
@@ -9,7 +10,6 @@ import { SwatchOnly } from 'components/legend'
 import { Chip, NeighborhoodList } from 'components/details'
 import { DialogCloseBtn } from 'components/generic/modals'
 
-import { useHistory } from 'react-router-dom'
 import * as Types from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -64,52 +64,56 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
   const open = Boolean(anchorEl)
   const id = open ? 'neighbs-menu-popover' : undefined
 
-  const NeighbsMenu = (
-    <Popover
-      id={id}
-      open={open}
-      anchorEl={anchorEl}
-      onClose={handleClose}
-      PaperProps={{ className: classes.popover, elevation: 12 }}
-      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      transformOrigin={{ vertical: 'center', horizontal: 'left' }}
-    >
-      <NeighborhoodList data={data} isInstance={isInstance} />
-      <DialogCloseBtn
-        tooltip="Close census menu"
-        onClose={() => handleClose()}
-      />
-    </Popover>
-  )
+  let LocationChip
   const addlCount = isInstance && data['Additional Neighborhoods']?.length
   const neighbsChipText = `${primaryLoc}${addlCount ? ` +${addlCount}` : ''}`
   const explorePath = Town ? 'Town' : 'Neighborhood'
 
+  if (addlCount) {
+    LocationChip = (
+      <>
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          PaperProps={{ className: classes.popover, elevation: 12 }}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          transformOrigin={{ vertical: 'center', horizontal: 'left' }}
+        >
+          <NeighborhoodList data={data} isInstance={isInstance} />
+          <DialogCloseBtn
+            tooltip="Close census menu"
+            onClose={() => handleClose()}
+          />
+        </Popover>
+        <Chip
+          text={neighbsChipText}
+          icon={<BiMapPin />}
+          title="Show neighborhood or town options"
+          handleClick={handleClick}
+        />
+      </>
+    )
+  } else {
+    LocationChip = (
+      <Chip
+        text={neighbsChipText}
+        icon={<BiMapPin />}
+        title={`View more languages spoken in ${primaryLoc}`}
+        handleClick={() =>
+          history.push(`/Explore/${explorePath}/${primaryLoc}`)
+        }
+      />
+    )
+  }
+
   // TODO: use TS on all mid-route paths, e.g. "World Region"
   return (
     <div className={classes.root}>
-      {isInstance && (
-        <>
-          {addlCount ? NeighbsMenu : null}
-          {addlCount ? (
-            <Chip
-              text={neighbsChipText}
-              icon={<BiMapPin />}
-              title="Show neighborhood or town options"
-              handleClick={handleClick}
-            />
-          ) : (
-            <Chip
-              text={neighbsChipText}
-              icon={<BiMapPin />}
-              title={`View more languages spoken in ${primaryLoc}`}
-              handleClick={() =>
-                history.push(`/Explore/${explorePath}/${primaryLoc}`)
-              }
-            />
-          )}
-        </>
-      )}
+      <Route path="/Explore/Language/:language/:id" exact>
+        {LocationChip}
+      </Route>
       <Chip
         text={WorldRegion}
         to={`${routes.explore}/World Region/${WorldRegion}`}

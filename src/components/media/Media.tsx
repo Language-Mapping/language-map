@@ -7,7 +7,6 @@ import { IoIosCloseCircleOutline } from 'react-icons/io'
 import { FaMapMarkedAlt } from 'react-icons/fa'
 
 import { ShareButtons } from 'components/generic'
-import { RouteLocation } from 'components/config/types'
 import { MediaListItemProps, MediaProps } from './types'
 import { useStyles } from './styles'
 import { MediaModal } from './MediaModal'
@@ -82,7 +81,7 @@ export const Media: FC<MediaProps> = (props) => {
               label="De-select"
               icon={<IoIosCloseCircleOutline />}
               type="clear"
-              handleClick={() => history.push('/details' as RouteLocation)}
+              handleClick={() => history.push('/Explore/Language/none')}
             />
           )) || (
             <MediaListItem
@@ -90,7 +89,9 @@ export const Media: FC<MediaProps> = (props) => {
               icon={<FaMapMarkedAlt />}
               type="view"
               handleClick={() =>
-                history.push(`/details/${isTable?.params?.id}`)
+                history.push(
+                  `/Explore/Language/${data.Language}/${isTable?.params?.id}`
+                )
               }
             />
           ))}

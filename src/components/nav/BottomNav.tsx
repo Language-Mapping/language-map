@@ -87,9 +87,10 @@ radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`
   })
 })
 
-// Home, table, help do not have sub-routes
+// Home and table do not have sub-routes // GROSS
 const initialSubRoutes = {
-  details: '/details',
+  Census: '/Census',
+  Info: '/Info',
   Explore: '/Explore',
 } as { [key: string]: RouteLocation }
 

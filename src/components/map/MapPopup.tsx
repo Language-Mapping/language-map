@@ -92,7 +92,7 @@ export const LanguagePopup: FC<Ffff> = ({ settings }) => {
     <MapPopup
       longitude={Longitude}
       latitude={Latitude}
-      setVisible={() => history.push('/details')}
+      setVisible={() => history.push('/Explore/Language/none')}
       heading={Endonym}
       subheading={Language}
     />

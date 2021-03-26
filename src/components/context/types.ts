@@ -6,9 +6,14 @@ import { CensusScope } from 'components/local/types'
 
 export type LangSchemaCol = keyof InstanceLevelSchema
 
+// Literally only adding Language so that the "No community selected" has a
+// Language to work with. Previously we only needed `id` so that `/details/:id`
+// was all it took. But now with nested /Explore/Language/Something/:id...
+export type InternalWithLang = InternalUse & { Language: string }
+
 export type StoreAction =
   | { type: 'CLEAR_FILTERS'; payload: number }
-  | { type: 'SET_LANG_LAYER_FEATURES'; payload: InternalUse[] }
+  | { type: 'SET_LANG_LAYER_FEATURES'; payload: InternalWithLang[] }
   | { type: 'SET_FILTER_HAS_RUN' }
 
 export type InitialState = {
@@ -17,7 +22,7 @@ export type InitialState = {
   // prevent the map from re-rendering on the first load, triggered by the
   // length change of langFeatures.
   filterHasRun: boolean
-  langFeatures: InternalUse[]
+  langFeatures: InternalWithLang[]
   // Handy for future reference without caching all the features
   langFeatsLenCache: number
 }

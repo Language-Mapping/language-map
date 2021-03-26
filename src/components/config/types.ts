@@ -1,7 +1,6 @@
 export type RouteLocation =
   | '/'
   | '/Census'
-  | '/details'
   | '/Explore'
   | '/Explore/:field'
   | '/Explore/:field/:value'

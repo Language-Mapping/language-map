@@ -7,7 +7,6 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { MdClose } from 'react-icons/md'
 import { GoSearch } from 'react-icons/go'
 
-import { routes } from 'components/config/api'
 import { useAirtable } from 'components/explore/hooks'
 import { LangLevelReqd } from 'components/context/types'
 import { sortArrOfObjects } from 'components/legend/utils'
@@ -106,7 +105,7 @@ export const SearchByOmnibox: FC = (props) => {
       popupIcon={null}
       onChange={(event, value) => {
         // Can't just do <RouterLink>, otherwise keyboard selection no-go...
-        if (value) history.push(`${routes.details}/${value.id}`)
+        if (value) history.push(`/Explore/Language/${value.name}/${value.id}`)
       }}
       filterOptions={(opts, { inputValue }) => {
         return matchSorter(opts, inputValue, {

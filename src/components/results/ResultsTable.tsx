@@ -48,8 +48,9 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
     const colIndex = tdElem.cellIndex
     const { field } = columns[colIndex]
 
+    // Show feature in map
     if (field === 'id') {
-      history.push(`${routes.details}/${rowData.id}`) // show feature in map
+      history.push(`/Explore/Language/${rowData.Language}/${rowData.id}`)
 
       return
     }

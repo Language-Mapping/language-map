@@ -5,7 +5,6 @@ import { Typography } from '@material-ui/core'
 import { RecordDescription } from 'components/results'
 import { DetailedIntro } from 'components/details'
 import { LoadingIndicatorBar } from 'components/generic/modals'
-import { routes } from 'components/config/api'
 import { NoFeatSel } from './NoFeatSel'
 import { DetailsProps } from './types'
 import { useDetails } from './hooks'
@@ -14,7 +13,7 @@ import { useDetails } from './hooks'
 export const DetailsPanel: FC = () => {
   return (
     <Switch>
-      <Route path={`${routes.details}/:id`}>
+      <Route path="/Explore/Language/:something/:id">
         <DetailsWrap />
       </Route>
       {/* Don't need path, assumes parent will be in a Route already */}
@@ -45,7 +44,7 @@ const DetailsWrap: FC = () => {
   return <Details {...{ instanceDescripID, langDescripID, data }} />
 }
 
-// Used in /details/:id and /table/:id
+// Used in /Explore/Language/:language/:id and /table/:id
 export const Details: FC<DetailsProps> = (props) => {
   const { instanceDescripID, langDescripID, data } = props
 

@@ -10,7 +10,6 @@ import MapGL, { MapLoadEvent } from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import { routes } from 'components/config/api'
 import * as contexts from 'components/context'
 
 import { usePanelState } from 'components/panels'
@@ -240,13 +239,15 @@ export const Map: FC<Types.MapProps> = (props) => {
     nuclearClear() // can't rely on history
 
     if (topLangFeat) {
-      history.push(`${routes.details}/${topLangFeat.properties?.id}`)
+      history.push(
+        `/Explore/Language/${topLangFeat.properties?.Language}/${topLangFeat.properties?.id}`
+      )
 
       return // prevent boundary click underneath
     }
 
     if (!boundariesVisible) {
-      history.push('/details')
+      history.push('/Explore/Language/none')
 
       return
     }
@@ -256,7 +257,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     }) as Types.BoundaryFeat[]
 
     if (!boundariesClicked.length) {
-      history.push('/details')
+      history.push('/Explore/Language/none')
 
       return
     }
@@ -329,7 +330,7 @@ export const Map: FC<Types.MapProps> = (props) => {
           sourceLayer={config.tractsLyrSrc['source-layer']}
         />
         <LangMbSrcAndLayer />
-        <Route path="/details/:id">
+        <Route path={`/Explore/Language/${selFeatAttribs?.Language}/:id`}>
           {!hidePopups.language && <LanguagePopup settings={selFeatAttribs} />}
         </Route>
         {!hidePopups.boundaries && boundaryPopup && clickedBoundary && (

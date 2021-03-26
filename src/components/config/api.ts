@@ -15,7 +15,6 @@ export const reactQueryDefaults = {
 export const routes = {
   home: '/',
   about: '/Info/About',
-  details: '/details',
   explore: '/Explore',
   feedback: '/Info/Feedback',
   help: '/Info/Help',

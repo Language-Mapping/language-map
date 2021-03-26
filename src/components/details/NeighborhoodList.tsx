@@ -39,7 +39,9 @@ const useStyles = makeStyles((theme: Theme) =>
 const CardFooter: FC<{ text?: string }> = ({ text }) => {
   return (
     <Switch>
-      <Route path="/details">View more languages spoken in {text}</Route>
+      <Route path="/Explore/Language/:language/:id" exact>
+        View more languages spoken in {text}
+      </Route>
       <Route>View details and show in map</Route>
     </Switch>
   )
@@ -51,16 +53,16 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
   const {
     addlNeighborhoods,
     Neighborhood,
-    'Primary Locations': primaryLocs,
+    'Primary Locations': primaryLocs = [],
     Town,
     instanceIDs = [],
+    name,
   } = data || {}
   const locName = Neighborhood || Town
-  const primaries = (isInstance ? [locName] : primaryLocs) || []
   const locRouteName = Town ? 'Town' : 'Neighborhood'
   let additional
 
-  if (isInstance) additional = data['Additional Neighborhoods']
+  if (isInstance) additional = data['Additional Neighborhoods'] || []
   else additional = addlNeighborhoods
   const gahhhh = additional || []
 
@@ -74,13 +76,32 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
         Additional neighborhoods (NYC only)
       </Typography>
       <ul className={classes.addlNeighbsList}>
-        {gahhhh.map((place) => (
-          <li key={place}>
-            <Link component={RouterLink} to={`/Explore/Neighborhood/${place}`}>
-              {place}
-            </Link>
-          </li>
-        ))}
+        <Switch>
+          <Route path="/Explore/Language/:language/:id" exact>
+            {(data['Additional Neighborhoods'] || []).map((place) => (
+              <li key={place}>
+                <Link
+                  component={RouterLink}
+                  to={`/Explore/Neighborhood/${place}`}
+                >
+                  {place}
+                </Link>
+              </li>
+            ))}
+          </Route>
+          <Route>
+            {addlNeighborhoods?.map((place) => (
+              <li key={place}>
+                <Link
+                  component={RouterLink}
+                  to={`/Explore/Neighborhood/${place}`}
+                >
+                  {place}
+                </Link>
+              </li>
+            ))}
+          </Route>
+        </Switch>
       </ul>
     </>
   )
@@ -96,7 +117,7 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
       </Typography>
       <Explanation>
         <Switch>
-          <Route path="/details">
+          <Route path="/Explore/Language/:language/:id" exact>
             NYC neighborhood or metro region town for this community:
           </Route>
           <Route>
@@ -106,17 +127,31 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
         </Switch>
       </Explanation>
       <CardList>
-        {primaries.map((loc, i) => {
-          let url // TODO: de-shabbify, wire up w/Town
-          const footer = <CardFooter text={loc} />
+        <Switch>
+          <Route path="/Explore/Language/:language/:id" exact>
+            <CustomCard
+              title={locName}
+              url={`/Explore/${locRouteName}/${locName}`}
+              footer={<CardFooter text={locName} />}
+            />
+          </Route>
+          <Route>
+            {primaryLocs.map((loc, i) => {
+              const url = `/Explore/Language/${name}/${
+                instanceIDs.length ? instanceIDs[i] : 999999
+              }`
 
-          // TODO: use Routes, dude
-          if (!isInstance)
-            url = `/details/${instanceIDs ? instanceIDs[i] : 999999}`
-          else url = `/Explore/${locRouteName}/${loc}`
-
-          return <CustomCard key={loc} title={loc} url={url} footer={footer} />
-        })}
+              return (
+                <CustomCard
+                  key={loc}
+                  title={loc}
+                  url={url}
+                  footer={<CardFooter text={loc} />}
+                />
+              )
+            })}
+          </Route>
+        </Switch>
       </CardList>
       {gahhhh.length ? More : null}
     </>

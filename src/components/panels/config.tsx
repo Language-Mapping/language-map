@@ -8,6 +8,7 @@ import { Explore, LangCardsList, MidLevelExplore } from 'components/explore'
 
 import { MapPanel } from 'components/panels/types'
 import { LegendPanel } from 'components/legend'
+import { DetailsPanel, NoFeatSel } from 'components/details'
 import { InfoPanel } from 'components/about/InfoPanel'
 import { NavItemWithBadge } from './NavItemWithBadge'
 
@@ -45,12 +46,6 @@ export const navRoutes: MapPanel[] = [
     component: <LocalPanel />,
     rootPath: '/Census',
   },
-  // {
-  //   heading: 'Details',
-  //   icon: <GoFile />,
-  //   component: <DetailsPanel />,
-  //   rootPath: '/details',
-  // },
   {
     heading: 'Info',
     icon: <GoInfo />,
@@ -60,6 +55,15 @@ export const navRoutes: MapPanel[] = [
 ]
 
 export const nonNavRoutesConfig = [
+  {
+    component: <NoFeatSel />,
+    rootPath: '/Explore/Language/none', // reserved
+  },
+  {
+    component: <DetailsPanel />,
+    rootPath: '/Explore/Language/:language/:id',
+    exact: true,
+  },
   {
     component: <LangCardsList field="Language" />, // set field explicitly
     rootPath: '/Explore/Language/:language',
@@ -76,7 +80,5 @@ export const nonNavRoutesConfig = [
     component: <MidLevelExplore />,
     rootPath: '/Explore/:field',
   },
-  // TODO: fix the world:
-  // { component: <NoFeatSel />, rootPath: '/details' },
   ...navRoutes,
 ] as MapPanel[]
