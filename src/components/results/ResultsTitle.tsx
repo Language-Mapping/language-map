@@ -3,7 +3,7 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
-import { TiThList } from 'react-icons/ti'
+import { FaTable } from 'react-icons/fa'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,7 +29,7 @@ export const ResultsTitle: FC = () => {
 
   return (
     <Typography variant="h4" className={classes.tableTitleRoot}>
-      <TiThList className={classes.titleIcon} />
+      <FaTable className={classes.titleIcon} />
       Data
     </Typography>
   )

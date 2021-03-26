@@ -21,14 +21,18 @@ type TimelineCrumbsProps = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      padding: '0 0.5rem 0 0',
+      marginBottom: 0,
       '& .MuiTimelineItem-missingOppositeContent:before': {
         flex: 'none',
+        padding: '0.5rem',
       },
-      // TODO: rm when done:
-      // '& .MuiTimelineContent-root': { alignSelf: 'center' },
     },
     timelineItem: {
       minHeight: 60,
+    },
+    wideEmptyIcon: {
+      padding: 12,
     },
   })
 )
@@ -50,6 +54,7 @@ export const TimelineCrumbs: FC<TimelineCrumbsProps> = (props) => {
           })?.icon ||
           null
         const to = `/${pathChunks.slice(0, pathChunks.length - i).join('/')}`
+        const emptyIconClass = panelIcon ? '' : classes.wideEmptyIcon
 
         return (
           <TimelineItem
@@ -60,6 +65,7 @@ export const TimelineCrumbs: FC<TimelineCrumbsProps> = (props) => {
               <TimelineDot
                 color="secondary"
                 variant={firstOne ? 'outlined' : 'default'}
+                className={emptyIconClass}
               >
                 {panelIcon}
               </TimelineDot>

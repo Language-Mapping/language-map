@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
 // https://react-swipeable-views.com/demos/demos/
 export const PanelWrap: FC<PanelWrapProps> = (props) => {
   const { mapRef } = props
-  const { panelOpen } = usePanelState()
+  const { panelOpen, searchTabsOpen } = usePanelState()
   const classes = useStyles({ panelOpen })
   const loc = useLocation()
   const { pathname } = loc
@@ -104,15 +104,19 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
   return (
     <Paper id="map-panels-wrap" className={classes.root} elevation={8}>
       <div id="back-to-top-anchor" />
-      <PanelTitleBar>
-        <SearchTabs mapRef={mapRef} />
-      </PanelTitleBar>
+      <PanelTitleBar />
       <TransitionGroup>
         <CSSTransition key={loc.key} classNames="fade" timeout={950} appear>
           <div className={classes.panelContentRoot}>
-            <Route path="/" exact>
-              <SearchTabs mapRef={mapRef} />
-            </Route>
+            <Switch>
+              {/* Always show Search tabs on Home */}
+              <Route path="/" exact>
+                <SearchTabs mapRef={mapRef} />
+              </Route>
+              <Route path="/Explore">
+                {searchTabsOpen && <SearchTabs mapRef={mapRef} />}
+              </Route>
+            </Switch>
             <div className={classes.innerPanel}>
               <Switch location={loc}>
                 {nonNavRoutesConfig.map((config) => (

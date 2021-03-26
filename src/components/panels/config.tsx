@@ -1,6 +1,5 @@
 import React from 'react'
-import { TiThList } from 'react-icons/ti'
-import { FaBinoculars, FaClipboard } from 'react-icons/fa'
+import { FaTable, FaBinoculars, FaClipboard } from 'react-icons/fa'
 import { GoInfo } from 'react-icons/go'
 import { BiHomeAlt } from 'react-icons/bi'
 
@@ -34,7 +33,7 @@ export const navRoutes: MapPanel[] = [
     heading: 'Data',
     icon: (
       <NavItemWithBadge>
-        <TiThList />
+        <FaTable />
       </NavItemWithBadge>
     ),
     component: null,

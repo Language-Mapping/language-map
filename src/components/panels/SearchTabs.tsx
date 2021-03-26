@@ -24,6 +24,13 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: '0.75rem',
       },
     },
+    tabsRoot: {
+      minHeight: 42,
+    },
+    tabRoot: {
+      fontSize: '0.85rem',
+      minHeight: 42,
+    },
     wrapper: {
       color: theme.palette.secondary.light,
     },
@@ -77,7 +84,7 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
   }
 
   const TabAppBar = (
-    <AppBar position="static" color="default">
+    <AppBar position="static" color="transparent">
       <Tabs
         value={value}
         onChange={handleChange}
@@ -85,14 +92,23 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
         textColor="secondary"
         variant="fullWidth"
         aria-label="search panel"
+        classes={{ root: classes.tabsRoot }}
       >
         <Tab
-          classes={{ selected: classes.selected, wrapper: classes.wrapper }}
+          classes={{
+            selected: classes.selected,
+            wrapper: classes.wrapper,
+            root: classes.tabRoot,
+          }}
           label="Search languages"
           {...a11yProps(0)}
         />
         <Tab
-          classes={{ selected: classes.selected, wrapper: classes.wrapper }}
+          classes={{
+            selected: classes.selected,
+            wrapper: classes.wrapper,
+            root: classes.tabRoot,
+          }}
           label="Search locations"
           {...a11yProps(1)}
         />
