@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 
-import { LocationSearchContent } from 'components/map'
 import { AllLangDataToggle } from 'components/legend'
+import { Explanation } from 'components/generic'
 import { CensusFieldSelect } from './CensusFieldSelect'
 import { CensusIntro } from './CensusIntro'
 import { CensusAutoZoomToggle } from './CensusAutoZoomToggle'
@@ -9,13 +9,13 @@ import { CensusAutoZoomToggle } from './CensusAutoZoomToggle'
 // TODO: rename all instances of "Local" to "Census"
 export const LocalPanel: FC = () => {
   return (
-    <LocationSearchContent
-      heading="Census Language Data (NYC only)"
-      explanation={<CensusIntro />}
-    >
+    <>
+      <Explanation>
+        <CensusIntro />
+      </Explanation>
       <CensusFieldSelect />
       <AllLangDataToggle />
       <CensusAutoZoomToggle />
-    </LocationSearchContent>
+    </>
   )
 }
