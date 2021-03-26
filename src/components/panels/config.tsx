@@ -1,11 +1,8 @@
 import React from 'react'
-import { FaTable, FaBinoculars, FaClipboard } from 'react-icons/fa'
-import { GoInfo } from 'react-icons/go'
-import { BiHomeAlt } from 'react-icons/bi'
 
+import { icons } from 'components/config'
 import { LocalPanel } from 'components/local'
 import { Explore, LangCardsList, MidLevelExplore } from 'components/explore'
-
 import { MapPanel } from 'components/panels/types'
 import { LegendPanel } from 'components/legend'
 import { DetailsPanel, NoFeatSel } from 'components/details'
@@ -19,36 +16,32 @@ export const panelWidths = { mid: 450, midLarge: 600 }
 export const navRoutes: MapPanel[] = [
   {
     heading: 'Home',
-    icon: <BiHomeAlt />,
+    icon: icons.Home,
     component: <LegendPanel />,
     rootPath: '/',
     exact: true,
   },
   {
     heading: 'Explore',
-    icon: <FaBinoculars />,
+    icon: icons.Explore,
     component: <Explore />,
     rootPath: '/Explore',
   },
   {
     heading: 'Data',
-    icon: (
-      <NavItemWithBadge>
-        <FaTable />
-      </NavItemWithBadge>
-    ),
+    icon: <NavItemWithBadge>{icons.Data}</NavItemWithBadge>,
     component: null,
     rootPath: '/table',
   },
   {
     heading: 'Census',
-    icon: <FaClipboard />,
+    icon: icons.Census,
     component: <LocalPanel />,
     rootPath: '/Census',
   },
   {
     heading: 'Info',
-    icon: <GoInfo />,
+    icon: icons.Info,
     component: <InfoPanel />,
     rootPath: '/Info',
   },

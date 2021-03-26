@@ -1,5 +1,10 @@
 import React, { FC, useEffect } from 'react'
-import { useLocation, Route, Switch } from 'react-router-dom'
+import {
+  useLocation,
+  Route,
+  Switch,
+  Link as RouterLink,
+} from 'react-router-dom'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import {
   AppBar,
@@ -8,47 +13,55 @@ import {
   Typography,
   Tooltip,
 } from '@material-ui/core'
-
 import { GoSearch } from 'react-icons/go'
 import { MdClose } from 'react-icons/md'
-import { BiHomeAlt } from 'react-icons/bi'
 
 import { HideOnScroll } from 'components/generic'
 import { usePanelDispatch } from 'components/panels'
-import { navRoutes } from './config'
+import { icons } from 'components/config'
 import { SplitCrumbs } from './SplitCrumbs'
+
+const topCornersRadius = 4 // same as bottom left/right in nav bar
+const borderTopLeftRadius = topCornersRadius
+const borderTopRightRadius = topCornersRadius
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    // TODO: rm when done
-    // root: {
-    //   boxShadow: '0 2px 7px hsla(0, 0%, 0%, 0.25)',
-    //   height: MOBILE_PANEL_HEADER_HT,
-    //   position: 'absolute',
-    //   top: 0,
-    //   width: '100%',
+    root: {
+      borderTopLeftRadius,
+      borderTopRightRadius,
+      // TODO: rm when done
+      //   boxShadow: '0 2px 7px hsla(0, 0%, 0%, 0.25)',
+      //   height: MOBILE_PANEL_HEADER_HT,
+      //   position: 'absolute',
+      //   top: 0,
+      //   width: '100%',
+    },
     colorDefault: {
       backgroundColor: 'transparent',
     },
     toolbar: {
       backgroundColor: theme.palette.primary.dark,
-      padding: '0 0.75rem',
+      borderTopLeftRadius,
+      borderTopRightRadius,
+      padding: '0 0.5rem',
       justifyContent: 'space-between',
-      borderTopLeftRadius: 4, // same as bottom left/right in nav bar
-      borderTopRightRadius: 4, // same as bottom left/right in nav bar
     },
-    panelTitle: {
+    panelTitleAndIcon: {
       display: 'flex',
       alignItems: 'center',
-      fontSize: '0.85rem',
+      '& > svg': {
+        color: theme.palette.text.hint,
+        marginRight: 4,
+        fontSize: '1.25rem',
+      },
     },
-    panelHeadingIcon: {
-      color: theme.palette.text.secondary,
-      marginRight: 4,
+    panelTitleText: {
+      fontSize: '1.5rem',
     },
     rightSideBtns: {
       '& > * + *': {
-        marginLeft: 8,
+        marginLeft: 4,
       },
     },
   })
@@ -56,28 +69,22 @@ const useStyles = makeStyles((theme: Theme) =>
 
 type PanelTitleProps = {
   text: string
+  icon?: React.ReactNode
 }
 
 const PanelTitle: FC<PanelTitleProps> = (props) => {
-  const { text } = props
+  const { text, icon } = props
   const classes = useStyles()
   // TODO: make sure there are icons for all top-level views
-  const panelIcon = navRoutes.find(({ heading }) => heading === text)?.icon || (
-    <BiHomeAlt />
-  )
 
   return (
-    <div className={classes.panelTitle}>
-      <IconButton
-        size="small"
-        edge="start"
-        aria-label="current panel icon"
-        color="inherit"
-        className={classes.panelHeadingIcon}
+    <div className={classes.panelTitleAndIcon}>
+      {icon}
+      <Typography
+        variant="h6"
+        component="h2"
+        className={classes.panelTitleText}
       >
-        {panelIcon}
-      </IconButton>
-      <Typography variant="h6" component="h2">
         {text}
       </Typography>
     </div>
@@ -98,22 +105,20 @@ export const PanelTitleBar: FC = (props) => {
     panelDispatch({ type: 'TOGGLE_SEARCH_TABS', payload: false })
   }, [panelDispatch, pathname])
 
-  const ToggleSearchPanelBtn = (
-    <Tooltip title="Toggle search menu">
-      <IconButton
-        size="small"
-        aria-label="toggle search menu"
-        color="inherit"
-        onClick={handleClick}
-      >
-        <GoSearch />
-      </IconButton>
-    </Tooltip>
-  )
-
   const RightSideBtns = (
     <div className={classes.rightSideBtns}>
-      <Route path="/Explore">{ToggleSearchPanelBtn}</Route>
+      <Route path="/Explore">
+        <Tooltip title="Toggle search menu">
+          <IconButton
+            size="small"
+            aria-label="toggle search menu"
+            color="inherit"
+            onClick={handleClick}
+          >
+            <GoSearch />
+          </IconButton>
+        </Tooltip>
+      </Route>
       <Tooltip title="Close panel">
         <IconButton
           size="small"
@@ -133,11 +138,27 @@ export const PanelTitleBar: FC = (props) => {
   // WISHLIST: MAKE AUTO-HIDE WORK 😞
   return (
     <HideOnScroll {...props}>
-      <AppBar>
+      <AppBar className={classes.root}>
         <Toolbar variant="dense" className={classes.toolbar}>
           <Switch>
-            <Route path={['/:anything', '/']} exact>
+            <Route path="/" exact>
+              {/* Flex spacer */}
+              <div />
               <PanelTitle text={panelHeading} />
+            </Route>
+            <Route path="/:anything" exact>
+              <Tooltip title="Go to Home panel">
+                <IconButton
+                  size="small"
+                  aria-label="go home"
+                  color="inherit"
+                  to="/"
+                  component={RouterLink}
+                >
+                  {icons.Home}
+                </IconButton>
+              </Tooltip>
+              <PanelTitle text={panelHeading} icon={icons[panelHeading]} />
             </Route>
             <Route>
               <SplitCrumbs />

@@ -4,11 +4,11 @@ import { Link } from '@material-ui/core'
 
 import { BasicExploreIntro } from 'components/explore'
 import { LoadingIndicatorBar } from 'components/generic/modals'
+import { icons } from 'components/config'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
 import { useAirtable } from './hooks'
 import { AirtableSchemaQuery } from './types'
-import { exploreIcons } from './config'
 
 // The top-level "/Explore" route as a landing page index to explorable fields
 export const Explore: FC = () => {
@@ -46,7 +46,7 @@ export const Explore: FC = () => {
         {data.map(({ name, plural, definition }) => (
           <CustomCard
             key={name}
-            icon={exploreIcons[name] || null}
+            icon={icons[name] || null}
             title={plural || ''} // TODO: ugh
             url={`/Explore/${name}`}
             footer={definition}

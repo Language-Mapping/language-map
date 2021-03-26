@@ -11,8 +11,7 @@ import {
 } from '@material-ui/lab'
 
 import { RouteableTableNames } from 'components/context/types'
-import { exploreIcons } from 'components/explore'
-import { navRoutes } from './config'
+import { icons } from 'components/config'
 
 type TimelineCrumbsProps = {
   pathChunks: [string | RouteableTableNames]
@@ -48,11 +47,7 @@ export const TimelineCrumbs: FC<TimelineCrumbsProps> = (props) => {
         const panelIcon =
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          exploreIcons[chunk] || // TODO: UGGGGHHHH
-          navRoutes.find(({ heading }) => {
-            return heading === chunk
-          })?.icon ||
-          null
+          icons[chunk]
         const to = `/${pathChunks.slice(0, pathChunks.length - i).join('/')}`
         const emptyIconClass = panelIcon ? '' : classes.wideEmptyIcon
 
@@ -91,14 +86,10 @@ export const TimelineCrumbs: FC<TimelineCrumbsProps> = (props) => {
           </TimelineItem>
         )
       })}
+      {/* Always link to Home at bottom of timeline */}
       <TimelineItem classes={{ root: classes.timelineItem }}>
         <TimelineSeparator>
-          <TimelineDot color="secondary">
-            {/* TODO: some kind of legit system for icons */}
-            {navRoutes.find(({ heading }) => {
-              return heading === 'Home'
-            })?.icon || null}
-          </TimelineDot>
+          <TimelineDot color="secondary">{icons.Home}</TimelineDot>
         </TimelineSeparator>
         <TimelineContent>
           <RouterLink to="/">Home</RouterLink>

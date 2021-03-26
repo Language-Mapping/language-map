@@ -7,5 +7,4 @@ export * from './LangCardsList'
 export * from './LangProfileDescrip'
 export * from './MidLevelExplore'
 
-export * from './config'
 export * from './types'

@@ -12,7 +12,7 @@ import { BasicExploreIntro } from 'components/panels'
 import { LoadingIndicatorBar } from 'components/generic/modals'
 import { Explanation } from 'components/generic'
 import { LangLevelSchema } from 'components/context'
-import { exploreIcons } from 'components/explore/config'
+import { icons } from 'components/config'
 import { routes } from 'components/config/api'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
@@ -94,7 +94,7 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
   if (value && field === 'World Region') {
     Icon = <SwatchOnly backgroundColor={data ? data[0].worldRegionColor : ''} />
   } else if (value && field === 'Country') Icon = <FlagFromHook value={value} />
-  else Icon = <>{exploreIcons[field]}</>
+  else Icon = <>{icons[field]}</>
 
   if (value && field === 'Neighborhood')
     primaryData = data.filter((row) => row['Primary Locations'].includes(value))

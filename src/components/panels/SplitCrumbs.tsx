@@ -2,7 +2,8 @@ import React, { FC } from 'react'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { IconButton, Popover, Tooltip } from '@material-ui/core'
-import { TiArrowBack, TiThList } from 'react-icons/ti'
+import { TiThList } from 'react-icons/ti'
+import { BsArrow90DegUp } from 'react-icons/bs'
 
 import { TimelineCrumbs } from './TimelineCrumbs'
 
@@ -55,7 +56,7 @@ export const SplitCrumbs: FC = () => {
             component={RouterLink}
             aria-label="up"
           >
-            <TiArrowBack />
+            <BsArrow90DegUp />
           </IconButton>
         </Tooltip>
         <Tooltip title="Explore nav menu">
