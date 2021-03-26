@@ -134,7 +134,7 @@ export const SearchByOmnibox: FC = (props) => {
             {...params}
             variant="outlined"
             color="secondary"
-            placeholder="Try Mixtec, 台山话, hait1244, loy"
+            placeholder="Try Mixtec, 台山话, Thai, hait1244, loy"
           />
         )
       }}
