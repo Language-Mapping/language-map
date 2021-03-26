@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { DetailedIntro, NeighborhoodList } from 'components/details'
 import { LoadingIndicatorBar } from 'components/generic/modals'
 import { FullOnEverything } from 'components/details/types'
+import { FeedbackToggle } from 'components/about'
 import { useAirtable } from './hooks'
 import { RouteMatch } from './types'
 
@@ -36,6 +37,7 @@ export const LangCardsList: FC<{ field?: string }> = (props) => {
     <>
       <DetailedIntro data={thisLangConfig} />
       <NeighborhoodList data={thisLangConfig} />
+      <FeedbackToggle />
     </>
   )
 }

@@ -5,6 +5,7 @@ import { Typography } from '@material-ui/core'
 import { RecordDescription } from 'components/results'
 import { DetailedIntro } from 'components/details'
 import { LoadingIndicatorBar } from 'components/generic/modals'
+import { FeedbackToggle } from 'components/about'
 import { NoFeatSel } from './NoFeatSel'
 import { DetailsProps } from './types'
 import { useDetails } from './hooks'
@@ -69,6 +70,7 @@ export const Details: FC<DetailsProps> = (props) => {
           />
         </Typography>
       )}
+      <FeedbackToggle language={Language} />
     </>
   )
 }
