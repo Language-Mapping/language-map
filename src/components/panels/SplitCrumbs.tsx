@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     leftSideBtns: {
       '& > * + *': {
-        marginLeft: 8,
+        marginLeft: 4,
       },
     },
   })

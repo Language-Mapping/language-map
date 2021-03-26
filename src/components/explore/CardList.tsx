@@ -7,10 +7,13 @@ const useStyles = makeStyles((theme: Theme) =>
     // www.smashingmagazine.com/2017/09/css-grid-gotchas-stumbling-blocks/
     root: {
       display: 'grid',
-      gridRowGap: '0.75em',
+      gridRowGap: '0.75rem',
       gridColumnGap: '0.5em',
       gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
       margin: '1rem 0',
+      [theme.breakpoints.up('sm')]: {
+        gridColumnGap: '0.75rem',
+      },
     },
   })
 )

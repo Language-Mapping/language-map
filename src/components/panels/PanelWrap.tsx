@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
     innerPanel: {
       padding: '0.75rem 0.75rem 0',
       [theme.breakpoints.up('sm')]: {
-        padding: '1.5rem 1.25rem',
+        padding: '1rem 1.25rem',
       },
     },
   })

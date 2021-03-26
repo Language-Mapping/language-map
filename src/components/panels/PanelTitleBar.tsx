@@ -91,10 +91,28 @@ const PanelTitle: FC<PanelTitleProps> = (props) => {
   )
 }
 
+const LinkToHomeBtn: FC = (props) => {
+  return (
+    <Tooltip title="Go to Home panel">
+      <IconButton
+        size="small"
+        aria-label="go home"
+        color="inherit"
+        to="/"
+        component={RouterLink}
+      >
+        {icons.Home}
+      </IconButton>
+    </Tooltip>
+  )
+}
+
 export const PanelTitleBar: FC = (props) => {
   const classes = useStyles()
   const { pathname } = useLocation()
-  const panelHeading = pathname.split('/')[1] || 'Languages of NYC'
+  // Lil' gross, but use Level2 route name first, otherwise Level1
+  const panelHeading =
+    pathname.split('/')[2] || pathname.split('/')[1] || 'Languages of NYC'
   const panelDispatch = usePanelDispatch()
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -141,27 +159,32 @@ export const PanelTitleBar: FC = (props) => {
       <AppBar className={classes.root}>
         <Toolbar variant="dense" className={classes.toolbar}>
           <Switch>
+            <Route path={['/', '/:level1']} exact />
+            <Route>
+              <SplitCrumbs />
+            </Route>
+          </Switch>
+          <Switch>
             <Route path="/" exact>
               {/* Flex spacer */}
               <div />
               <PanelTitle text={panelHeading} />
             </Route>
-            <Route path="/:anything" exact>
-              <Tooltip title="Go to Home panel">
-                <IconButton
-                  size="small"
-                  aria-label="go home"
-                  color="inherit"
-                  to="/"
-                  component={RouterLink}
-                >
-                  {icons.Home}
-                </IconButton>
-              </Tooltip>
+            <Route path="/:level1/:level2" exact>
               <PanelTitle text={panelHeading} icon={icons[panelHeading]} />
             </Route>
-            <Route>
-              <SplitCrumbs />
+            <Route path="/Census" exact>
+              {/* Census just needs panel heading override */}
+              <LinkToHomeBtn />
+              <PanelTitle
+                text="Census Language Data"
+                icon={icons[panelHeading]}
+              />
+            </Route>
+            <Route path="/:level1" exact>
+              {/* Home btn on /TopLevelRoutes looks balanced on left */}
+              <LinkToHomeBtn />
+              <PanelTitle text={panelHeading} icon={icons[panelHeading]} />
             </Route>
           </Switch>
           {RightSideBtns}

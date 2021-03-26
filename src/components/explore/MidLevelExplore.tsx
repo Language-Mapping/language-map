@@ -107,11 +107,16 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
   // TODO: better logic for instances, e.g. allow definition
   return (
     <>
-      <BasicExploreIntro
-        title={value || plural}
-        icon={Icon}
-        introParagraph={!value && definition}
-      />
+      <Route path="/Explore/:level1" exact>
+        <BasicExploreIntro introParagraph={!value && definition} />
+      </Route>
+      <Route path="/Explore/:level1/:level2" exact>
+        <BasicExploreIntro
+          title={value || plural}
+          icon={Icon}
+          introParagraph={!value && definition}
+        />
+      </Route>
       <Route path="/Explore/Neighborhood/:language" exact>
         <Explanation>
           Languages with a significant site in this neighborhood, marked by a

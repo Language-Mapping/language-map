@@ -9,8 +9,7 @@ import { BasicExploreIntroProps } from './types'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      marginBottom: '1rem',
-      textAlign: 'center',
+      marginBottom: '1.5rem',
       borderBottom: `solid 1px ${theme.palette.divider}`,
       paddingBottom: '0.75rem',
     },
@@ -21,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       textShadow: '1px 1px 3px hsla(0, 0%, 0%, 0.45)',
       justifyContent: 'center',
+      textAlign: 'center',
       '& svg': {
         color: theme.palette.text.secondary,
       },
