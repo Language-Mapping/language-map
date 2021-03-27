@@ -19,9 +19,19 @@ import { PreppedAutocompleteGroup } from './types'
 // ...to make sure it fits on iPhone?
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    // NOTE: there are also overrides in style.css (giant mess)
     root: {
+      // The search box itself
+      '& .MuiInputBase-root': {
+        backgroundColor: '#fff',
+      },
+      // Search icon on left side
+      '& .MuiInputAdornment-root': {
+        color: theme.palette.grey[500],
+      },
+      marginBottom: '0.5rem',
       [theme.breakpoints.down('sm')]: {
-        marginBottom: 0,
+        marginBottom: '0.25rem',
       },
     },
     paper: {
@@ -50,6 +60,8 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: 12,
     },
     input: {
+      color: theme.palette.grey[700],
+      fontSize: '1rem',
       // Make text more opaque than the 0.5 default
       // CRED: https://stackoverflow.com/a/48545561/1048518
       '&::placeholder': {

@@ -19,9 +19,25 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     tabPanel: {
       padding: '1rem 1.25rem 0',
-      borderBottom: 'solid 1px #dcdcdc5c',
       [theme.breakpoints.down('sm')]: {
-        padding: '0.75rem',
+        padding: '0.75rem 0.75rem 0',
+      },
+      '& .mapboxgl-ctrl-geocoder': {
+        maxWidth: 'unset',
+        width: '100%',
+        fontSize: '1rem',
+      },
+      '& .mapboxgl-ctrl-geocoder--icon-search': {
+        fontSize: '1rem',
+        top: 8,
+        left: 6,
+      },
+      '& .mapboxgl-ctrl-geocoder--icon': {
+        fill: theme.palette.grey[500],
+      },
+      '& .mapboxgl-ctrl-geocoder--input': {
+        padding: '0.15rem 1rem 0.15rem 2.25rem', // huge horiz padding for icon
+        height: 40, // roughly same as omnibox
       },
     },
     tabsRoot: {
@@ -31,11 +47,11 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.85rem',
       minHeight: 42,
     },
-    wrapper: {
-      color: theme.palette.secondary.light,
-    },
     selected: {
-      color: theme.palette.secondary.light,
+      '&.search-tab': {
+        color: theme.palette.text.primary,
+        borderColor: theme.palette.secondary.light,
+      },
     },
     textColorSecondary: {
       color: theme.palette.text.secondary,
@@ -95,20 +111,14 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
         classes={{ root: classes.tabsRoot }}
       >
         <Tab
-          classes={{
-            selected: classes.selected,
-            wrapper: classes.wrapper,
-            root: classes.tabRoot,
-          }}
+          className="search-tab"
+          classes={{ selected: classes.selected, root: classes.tabRoot }}
           label="Search languages"
           {...a11yProps(0)}
         />
         <Tab
-          classes={{
-            selected: classes.selected,
-            wrapper: classes.wrapper,
-            root: classes.tabRoot,
-          }}
+          className="search-tab"
+          classes={{ selected: classes.selected, root: classes.tabRoot }}
           label="Search locations"
           {...a11yProps(1)}
         />

@@ -84,16 +84,12 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
 
   return (
     <>
-      <div
-        ref={geocoderContainerRef}
-        style={{ margin: '0.75rem 0', width: '100%' }}
-      />
+      <div ref={geocoderContainerRef} />
       <FormControlLabel
         // Prevent off-canvas from closing (but we want that to happen for all
         // the other elements in the off-canvas).
         onClick={(event) => event.stopPropagation()}
         classes={{ label: smallerText, root: switchFormCtrlRoot }}
-        style={{ marginTop: '0.5rem' }}
         control={
           <Switch
             checked={boundariesVisible}

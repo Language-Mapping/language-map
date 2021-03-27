@@ -5,7 +5,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Paper } from '@material-ui/core'
 
 import { SearchTabs, usePanelState } from 'components/panels'
-import { BackToTopBtn } from 'components/generic'
+import { BackToTopBtn, ToggleableSection } from 'components/generic'
 import {
   panelWidths,
   nonNavRoutesConfig,
@@ -119,7 +119,9 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
                 <SearchTabs mapRef={mapRef} />
               </Route>
               <Route path="/Explore">
-                {searchTabsOpen && <SearchTabs mapRef={mapRef} />}
+                <ToggleableSection show={searchTabsOpen}>
+                  <SearchTabs mapRef={mapRef} />
+                </ToggleableSection>
               </Route>
             </Switch>
             <div className={classes.innerPanel}>

@@ -59,3 +59,9 @@ a {
 .MuiPopover-root[role='presentation'] .MuiCheckbox-root {
   padding: 0.25em 0.25em;
 }
+
+/* Autocomplete padding when there's an icon and a clear btn */
+.MuiAutocomplete-hasPopupIcon.MuiAutocomplete-hasClearIcon
+  .MuiInputBase-root.MuiAutocomplete-inputRoot[class*='MuiOutlinedInput-root'] {
+  padding-right: 40px;
+}

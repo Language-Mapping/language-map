@@ -57,22 +57,9 @@ export const useStyles = makeStyles((theme: Theme) =>
 
 export const useLocalPanelStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      marginBottom: '1rem',
-      '& .mapboxgl-ctrl-geocoder': {
-        maxWidth: '100%',
-        width: 'auto',
-        fontSize: '1rem',
-      },
-      '& .mapboxgl-ctrl-geocoder--icon-search': {
-        fontSize: '1rem',
-      },
-      '& .mapboxgl-ctrl-geocoder--input': {
-        padding: '0.15rem 1rem 0.15rem 2.25rem', // huge horiz padding for icon
-      },
-    },
     switchFormCtrlRoot: {
       marginLeft: 0,
+      marginTop: '0.5rem',
     },
     controlLabel: {
       display: 'flex',
