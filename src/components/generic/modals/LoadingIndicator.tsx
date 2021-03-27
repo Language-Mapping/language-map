@@ -1,7 +1,6 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, CircularProgress, LinearProgress } from '@material-ui/core'
-import { PanelContentSimple } from 'components/panels'
 
 type LoadingProps = {
   omitText?: boolean
@@ -61,13 +60,5 @@ export const LoadingIndicatorBar: FC<LoadingProps> = (props) => {
       {!omitText && <LoadingText />}
       <LinearProgress classes={{ root: classes.bar }} />
     </div>
-  )
-}
-
-export const LoadingIndicatorPanel: FC<LoadingProps> = (props) => {
-  return (
-    <PanelContentSimple>
-      <LoadingIndicatorBar />
-    </PanelContentSimple>
   )
 }

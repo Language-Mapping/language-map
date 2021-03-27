@@ -8,16 +8,18 @@ import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 import { useMapToolsState, useMapToolsDispatch } from 'components/context'
 import { SimplePopover } from 'components/generic'
+import { usePanelState } from 'components/panels'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
 import { useLocalPanelStyles } from './styles'
 import { useOffset } from './hooks'
 import { flyToBounds, flyToPoint } from './utils'
-import { LocalPanelProps, GeocodeResult, BoundsArray } from './types'
+import { GeocodeResult, BoundsArray, GeocoderPopoutProps } from './types'
 
-export const GeocoderPopout: FC<LocalPanelProps> = (props) => {
-  const { mapRef, panelOpen } = props
+export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
+  const { mapRef } = props
   const classes = useLocalPanelStyles()
+  const { panelOpen } = usePanelState()
   const { smallerText, switchFormCtrlRoot } = classes
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
   const { width, height } = useWindowResize()
@@ -73,7 +75,7 @@ export const GeocoderPopout: FC<LocalPanelProps> = (props) => {
         text={
           <>
             Neighborhoods are shown within NYC's five boroughs, and counties for
-            the surrounding areas. <em>Source: Mapbox Boundaries</em>
+            the surrounding areas. <em>Source: NYC Census 2020 map</em>
           </>
         }
       />
@@ -82,13 +84,12 @@ export const GeocoderPopout: FC<LocalPanelProps> = (props) => {
 
   return (
     <>
-      <div ref={geocoderContainerRef} style={{ margin: '0.75rem 0' }} />
+      <div ref={geocoderContainerRef} />
       <FormControlLabel
         // Prevent off-canvas from closing (but we want that to happen for all
         // the other elements in the off-canvas).
         onClick={(event) => event.stopPropagation()}
         classes={{ label: smallerText, root: switchFormCtrlRoot }}
-        style={{ marginTop: '0.5rem' }}
         control={
           <Switch
             checked={boundariesVisible}
@@ -105,7 +106,7 @@ export const GeocoderPopout: FC<LocalPanelProps> = (props) => {
         mapboxApiAccessToken={MAPBOX_TOKEN}
         mapRef={mapRef}
         onResult={handleGeocodeResult}
-        placeholder="e.g. Staten Island, Astoria, Yankee Stadium"
+        placeholder="Try Bronx, Astoria, Yankee Stadium"
         proximity={NYC_LAT_LONG}
         types="address,poi,postcode,locality,place,neighborhood"
         bbox={[-77.5, 38.4, -70.7, 42.89]}

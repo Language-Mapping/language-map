@@ -16,7 +16,6 @@ const initialState = {
   filterHasRun: false,
   langFeatsLenCache: 0,
   langFeatures: [],
-  panelState: 'default',
 } as InitialState
 
 // Good article on setting all this up:

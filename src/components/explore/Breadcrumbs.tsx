@@ -72,7 +72,7 @@ export const Breadcrumbs: FC = () => {
             {(last && (
               <span>
                 <Switch>
-                  <Route path="/details/:id">
+                  <Route path="/Explore/Language/:language/:id" exact>
                     <CurrentDetailCrumb />
                   </Route>
                   <Route>

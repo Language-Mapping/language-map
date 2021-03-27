@@ -9,16 +9,9 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@material-ui/core'
-import { GoInfo } from 'react-icons/go'
-import { MdChat } from 'react-icons/md'
-import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
-import { routes } from 'components/config/api'
+import { routes, icons } from 'components/config'
 import { Settings } from './Settings'
-
-type NavProps = {
-  openFeedbackModal: () => void
-}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,31 +22,33 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       height: '100%',
       '& svg': {
-        width: 30,
-        height: 30,
+        width: '1.5rem',
+        height: '1.5rem',
       },
     },
     listItemIcon: {
       color: theme.palette.text.secondary,
-      marginRight: theme.spacing(1),
+      marginRight: '0.75rem',
       minWidth: 'auto', // override default
     },
     smallerText: {
       fontSize: '0.8rem',
     },
+    divider: {
+      margin: '1rem 0',
+    },
   })
 )
 
-export const Nav: FC<NavProps> = (props) => {
-  const { openFeedbackModal } = props
+export const Nav: FC = () => {
   const classes = useStyles()
-  const { listLink, listItemIcon, smallerText } = classes
+  const { listLink, listItemIcon, smallerText, divider } = classes
 
   return (
     <>
       <nav>
         <List>
-          <ListItem button>
+          <ListItem button dense disableGutters>
             <Link
               underline="none"
               component={RouterLink}
@@ -61,7 +56,7 @@ export const Nav: FC<NavProps> = (props) => {
               className={listLink}
             >
               <ListItemIcon className={listItemIcon}>
-                <GoInfo />
+                {icons.About}
               </ListItemIcon>
               <ListItemText
                 classes={{ secondary: smallerText }}
@@ -70,18 +65,15 @@ export const Nav: FC<NavProps> = (props) => {
               />
             </Link>
           </ListItem>
-          <ListItem button>
+          <ListItem button dense disableGutters>
             <Link
               underline="none"
-              href="#"
+              component={RouterLink}
+              to={routes.feedback}
               className={listLink}
-              onClick={(e: React.MouseEvent) => {
-                e.preventDefault()
-                openFeedbackModal()
-              }}
             >
               <ListItemIcon className={listItemIcon}>
-                <MdChat />
+                {icons.Feedback}
               </ListItemIcon>
               <ListItemText
                 classes={{ secondary: smallerText }}
@@ -90,16 +82,14 @@ export const Nav: FC<NavProps> = (props) => {
               />
             </Link>
           </ListItem>
-          <ListItem button>
+          <ListItem button dense disableGutters>
             <Link
               underline="none"
               component={RouterLink}
               to={routes.help}
               className={listLink}
             >
-              <ListItemIcon className={listItemIcon}>
-                <AiOutlineQuestionCircle />
-              </ListItemIcon>
+              <ListItemIcon className={listItemIcon}>{icons.Help}</ListItemIcon>
               <ListItemText
                 classes={{ secondary: smallerText }}
                 primary="Help"
@@ -107,8 +97,25 @@ export const Nav: FC<NavProps> = (props) => {
               />
             </Link>
           </ListItem>
+          <ListItem button dense disableGutters>
+            <Link
+              underline="none"
+              href="https://languagemapping.org/wp-content/uploads/2021/03/Help-Video-Script.pdf"
+              target="_blank"
+              className={listLink}
+            >
+              <ListItemIcon className={listItemIcon}>
+                {icons.UserManual}
+              </ListItemIcon>
+              <ListItemText
+                classes={{ secondary: smallerText }}
+                primary="User Manual"
+                secondary="View or download a PDF with detailed instructions (opens in a new tab)"
+              />
+            </Link>
+          </ListItem>
         </List>
-        <Divider />
+        <Divider className={divider} />
       </nav>
       <Settings smallerTextClass={smallerText} />
     </>

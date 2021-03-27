@@ -10,7 +10,7 @@ const earlyAccessPath = 'https://fonts.googleapis.com/earlyaccess/'
 export const fontFamilies = [
   'Noto Sans Myanmar',
   'Noto Sans Sinhala',
-  'Noto Sans Sylhoti Nagri',
+  'Noto Sans Syloti Nagri',
   'Noto Sans Coptic',
   'Noto Sans Tifinagh',
   'Noto Sans Vai',

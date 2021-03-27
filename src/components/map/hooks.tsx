@@ -135,7 +135,9 @@ export type UsePopupFeatDetailsReturn = {
 }
 
 export const usePopupFeatDetails = (): UsePopupFeatDetailsReturn => {
-  const match = useRouteMatch<{ id: string }>({ path: '/details/:id' })
+  const match = useRouteMatch<{ id: string }>({
+    path: '/Explore/Language/:language/:id',
+  })
   const fields: Array<Extract<keyof InstanceLevelSchema, string>> = [
     'Language',
     'Endonym',
@@ -276,10 +278,13 @@ export const useCensusSymb: Types.UseCensusSymb = (
   const { id: field, scope } = censusActiveField || {}
   const visible = field !== undefined && censusScope === scope
   const queryID = scope || 'tract'
+
+  // DUUUDE useRouteMatch
   const pathDeservesFetch =
     pathname.includes(routes.local) ||
-    pathname.includes(routes.details) ||
+    pathname.includes('/Explore/Language/') || // TODO: super-confirm it works
     pathname.includes(routes.explore)
+
   const { data, error, isLoading } = useAirtable<Types.CensusTableRow>(
     queryID,
     // Foregoing 'fields' because SLOW due to 100 records/sec Airtable limit

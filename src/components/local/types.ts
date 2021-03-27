@@ -7,10 +7,6 @@ export type GroupHeaderProps = {
   subTitle: string
 }
 
-export type CensusIntroProps = {
-  subtle?: boolean
-}
-
 export type UseCensusResponse = {
   id: string
   pretty: string

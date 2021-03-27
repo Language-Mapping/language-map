@@ -16,6 +16,5 @@ export type WpQueryKeys = 'about' | 'help' | 'welcome'
 
 export type AboutPageProps = {
   queryKey: number
-  icon?: React.ReactNode
   title?: string
 }

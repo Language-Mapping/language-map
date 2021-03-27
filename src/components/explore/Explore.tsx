@@ -2,17 +2,16 @@ import React, { FC } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { Link } from '@material-ui/core'
 
-import { PanelContent } from 'components/panels'
+import { BasicExploreIntro } from 'components/explore'
 import { LoadingIndicatorBar } from 'components/generic/modals'
+import { icons } from 'components/config'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
 import { useAirtable } from './hooks'
 import { AirtableSchemaQuery } from './types'
-import { exploreIcons } from './config'
 
 // The top-level "/Explore" route as a landing page index to explorable fields
-export const Explore: FC<{ icon: React.ReactNode }> = (props) => {
-  const { icon } = props
+export const Explore: FC = () => {
   const { data, error, isLoading } = useAirtable<AirtableSchemaQuery>(
     'Schema',
     {
@@ -26,7 +25,7 @@ export const Explore: FC<{ icon: React.ReactNode }> = (props) => {
   const intro = (
     <>
       For an explanation of the options below, visit the{' '}
-      <Link component={RouterLink} to="/help">
+      <Link component={RouterLink} to="/Info/Help">
         Help page
       </Link>{' '}
       for definitions and additional info. You can also view and filter all
@@ -39,20 +38,21 @@ export const Explore: FC<{ icon: React.ReactNode }> = (props) => {
   )
 
   return (
-    <PanelContent title="Explore" icon={icon} introParagraph={intro}>
+    <>
+      <BasicExploreIntro introParagraph={intro} />
       {isLoading && <LoadingIndicatorBar omitText />}
       {error && 'Could not load'}
       <CardList>
         {data.map(({ name, plural, definition }) => (
           <CustomCard
             key={name}
-            icon={exploreIcons[name] || null}
+            icon={icons[name] || null}
             title={plural || ''} // TODO: ugh
             url={`/Explore/${name}`}
             footer={definition}
           />
         ))}
       </CardList>
-    </PanelContent>
+    </>
   )
 }

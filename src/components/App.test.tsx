@@ -17,7 +17,7 @@ import { PAGE_HEADER_ID } from 'components/nav/config'
 // Hoist helper functions (but not vars) to reuse between test cases
 const renderApp = () => (
   <ProvidersWrap>
-    <MemoryRouter initialEntries={['/about']}>
+    <MemoryRouter initialEntries={['/Info/About']}>
       <App />
     </MemoryRouter>
   </ProvidersWrap>
@@ -33,7 +33,7 @@ describe('Testing routes', () => {
     const aboutPageBackdrop = screen.getByTestId('about-page-backdrop')
     const homeTitleLink = screen.getByTestId(PAGE_HEADER_ID)
 
-    // Starting from /about page should have a backdrop, at least in tests.
+    // Starting from /About page should have a backdrop, at least in tests.
     // Couldn't figure out how to get the useEffect fetch to show the WP output,
     // but that was kinda shaky approach anyway since the title is not
     // guaranteed. Probably a better approach out there...

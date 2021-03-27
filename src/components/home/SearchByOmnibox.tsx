@@ -7,7 +7,6 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import { MdClose } from 'react-icons/md'
 import { GoSearch } from 'react-icons/go'
 
-import { routes } from 'components/config/api'
 import { useAirtable } from 'components/explore/hooks'
 import { LangLevelReqd } from 'components/context/types'
 import { sortArrOfObjects } from 'components/legend/utils'
@@ -20,6 +19,21 @@ import { PreppedAutocompleteGroup } from './types'
 // ...to make sure it fits on iPhone?
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    // NOTE: there are also overrides in style.css (giant mess)
+    root: {
+      // The search box itself
+      '& .MuiInputBase-root': {
+        backgroundColor: '#fff',
+      },
+      // Search icon on left side
+      '& .MuiInputAdornment-root': {
+        color: theme.palette.grey[500],
+      },
+      marginBottom: '0.5rem',
+      [theme.breakpoints.down('sm')]: {
+        marginBottom: '0.25rem',
+      },
+    },
     paper: {
       // Stands out against panels behind it
       backgroundColor: theme.palette.background.default,
@@ -46,6 +60,8 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingLeft: 12,
     },
     input: {
+      color: theme.palette.grey[700],
+      fontSize: '1rem',
       // Make text more opaque than the 0.5 default
       // CRED: https://stackoverflow.com/a/48545561/1048518
       '&::placeholder': {
@@ -101,7 +117,7 @@ export const SearchByOmnibox: FC = (props) => {
       popupIcon={null}
       onChange={(event, value) => {
         // Can't just do <RouterLink>, otherwise keyboard selection no-go...
-        if (value) history.push(`${routes.details}/${value.id}`)
+        if (value) history.push(`/Explore/Language/${value.name}/${value.id}`)
       }}
       filterOptions={(opts, { inputValue }) => {
         return matchSorter(opts, inputValue, {
@@ -129,8 +145,8 @@ export const SearchByOmnibox: FC = (props) => {
           <TextField
             {...params}
             variant="outlined"
-            placeholder="Search language communities"
-            helperText="Enter a language, endonym, Glottocode, or ISO 639-3"
+            color="secondary"
+            placeholder="Try Mixtec, 台山话, Thai, hait1244, loy"
           />
         )
       }}

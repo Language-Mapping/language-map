@@ -10,9 +10,9 @@ import MapGL, { MapLoadEvent } from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import { routes } from 'components/config/api'
 import * as contexts from 'components/context'
 
+import { usePanelState } from 'components/panels'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { Geolocation } from './Geolocation'
 import { LanguagePopup, MapPopup } from './MapPopup'
@@ -41,9 +41,10 @@ utils.rightToLeftSetup()
 
 export const Map: FC<Types.MapProps> = (props) => {
   const history = useHistory()
-  const { mapLoaded, mapRef, panelOpen, setMapLoaded } = props
+  const { mapLoaded, mapRef, setMapLoaded } = props
   const map: MbMap | undefined = mapRef.current?.getMap()
   const { selFeatAttribs } = usePopupFeatDetails()
+  const { panelOpen } = usePanelState()
   const { state } = useContext(contexts.GlobalContext)
   const {
     boundariesVisible,
@@ -238,13 +239,15 @@ export const Map: FC<Types.MapProps> = (props) => {
     nuclearClear() // can't rely on history
 
     if (topLangFeat) {
-      history.push(`${routes.details}/${topLangFeat.properties?.id}`)
+      history.push(
+        `/Explore/Language/${topLangFeat.properties?.Language}/${topLangFeat.properties?.id}`
+      )
 
       return // prevent boundary click underneath
     }
 
     if (!boundariesVisible) {
-      history.push('/details')
+      history.push('/Explore/Language/none')
 
       return
     }
@@ -254,7 +257,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     }) as Types.BoundaryFeat[]
 
     if (!boundariesClicked.length) {
-      history.push('/details')
+      history.push('/Explore/Language/none')
 
       return
     }
@@ -316,20 +319,18 @@ export const Map: FC<Types.MapProps> = (props) => {
         ))}
         <CensusLayer
           map={map}
-          mapRef={mapRef}
           config={config.pumaConfig}
           beforeId={beforeId}
           sourceLayer={config.pumaLyrSrc['source-layer']}
         />
         <CensusLayer
           map={map}
-          mapRef={mapRef}
           config={config.tractsConfig}
           beforeId={beforeId}
           sourceLayer={config.tractsLyrSrc['source-layer']}
         />
         <LangMbSrcAndLayer />
-        <Route path="/details/:id">
+        <Route path={`/Explore/Language/${selFeatAttribs?.Language}/:id`}>
           {!hidePopups.language && <LanguagePopup settings={selFeatAttribs} />}
         </Route>
         {!hidePopups.boundaries && boundaryPopup && clickedBoundary && (

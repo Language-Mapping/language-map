@@ -1,3 +1,4 @@
+export * from './BasicExploreIntro'
 export * from './Breadcrumbs'
 export * from './CardList'
 export * from './CustomCard'
@@ -6,5 +7,4 @@ export * from './LangCardsList'
 export * from './LangProfileDescrip'
 export * from './MidLevelExplore'
 
-export * from './config'
 export * from './types'

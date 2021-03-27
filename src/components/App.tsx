@@ -1,18 +1,11 @@
 import React, { FC, Suspense } from 'react'
 import * as Sentry from '@sentry/react'
-import { Route } from 'react-router-dom'
-import { ReactQueryCacheProvider } from 'react-query'
-import { ReactQueryDevtools } from 'react-query-devtools'
+// import { ReactQueryDevtools } from 'react-query-devtools'
 import Airtable from 'airtable'
-import { GoInfo } from 'react-icons/go'
-import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
-import { AboutPageView, WelcomeDialog } from 'components/about'
-import { wpQueryCache } from 'components/about/utils'
-import { routes } from 'components/config/api'
 import { AIRTABLE_API_KEY } from 'components/config'
+import { PanelContextProvider } from 'components/panels'
 import { AppWrap } from './AppWrap'
-import { wpQueryIDs } from './about/config'
 import { MapToolsProvider } from './context/MapToolsContext'
 
 // // Provide the default query function to your app with defaultConfig
@@ -58,34 +51,15 @@ export const App: FC = () => {
       )}
     >
       <MapToolsProvider>
-        <AppWrap />
+        <PanelContextProvider>
+          <AppWrap />
+        </PanelContextProvider>
         {/* TODO: understand this and create legit fallback element */}
         <Suspense fallback={<div />}>
           <LazyTable />
         </Suspense>
       </MapToolsProvider>
-      <ReactQueryCacheProvider queryCache={wpQueryCache}>
-        {/* ERROR: null is not an object (evaluating 'window.localStorage.hideWelcome') */}
-        {/* FIXME: https://sentry.io/organizations/endangered-language-alliance/issues/1953110114/?project=5313356 */}
-        {!window.localStorage.hideWelcome && (
-          <WelcomeDialog queryKey={wpQueryIDs.welcome} />
-        )}
-        <Route path={routes.about}>
-          <AboutPageView
-            title="About"
-            icon={<GoInfo />}
-            queryKey={wpQueryIDs.about}
-          />
-        </Route>
-        <Route path={routes.help}>
-          <AboutPageView
-            title="Help"
-            icon={<AiOutlineQuestionCircle />}
-            queryKey={wpQueryIDs.help}
-          />
-        </Route>
-      </ReactQueryCacheProvider>
-      <ReactQueryDevtools />
+      {/* <ReactQueryDevtools /> */}
     </Sentry.ErrorBoundary>
   )
 }

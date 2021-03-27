@@ -8,11 +8,11 @@ import {
 
 import { FlagFromHook } from 'components/generic/icons-and-swatches'
 import { SwatchOnly } from 'components/legend'
-import { PanelContent } from 'components/panels/PanelContent'
-import { LoadingIndicatorPanel } from 'components/generic/modals'
+import { BasicExploreIntro } from 'components/panels'
+import { LoadingIndicatorBar } from 'components/generic/modals'
 import { Explanation } from 'components/generic'
 import { LangLevelSchema } from 'components/context'
-import { exploreIcons } from 'components/explore/config'
+import { icons } from 'components/config'
 import { routes } from 'components/config/api'
 import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
@@ -76,13 +76,13 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
     filterByFormula: `{name} = "${tableName}"`,
   })
 
-  if (isLoading || isLandingLoading) return <LoadingIndicatorPanel />
+  if (isLoading || isLandingLoading) return <LoadingIndicatorBar />
   if (error || landingError) {
     return (
-      <PanelContent>
+      <>
         Could not load {value || field}.{' '}
         {error?.message || landingError?.message}
-      </PanelContent>
+      </>
     )
   }
 
@@ -94,7 +94,7 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
   if (value && field === 'World Region') {
     Icon = <SwatchOnly backgroundColor={data ? data[0].worldRegionColor : ''} />
   } else if (value && field === 'Country') Icon = <FlagFromHook value={value} />
-  else Icon = <>{exploreIcons[field]}</>
+  else Icon = <>{icons[field]}</>
 
   if (value && field === 'Neighborhood')
     primaryData = data.filter((row) => row['Primary Locations'].includes(value))
@@ -106,11 +106,17 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
 
   // TODO: better logic for instances, e.g. allow definition
   return (
-    <PanelContent
-      title={value || plural}
-      icon={Icon}
-      introParagraph={!value && definition}
-    >
+    <>
+      <Route path="/Explore/:level1" exact>
+        <BasicExploreIntro introParagraph={!value && definition} />
+      </Route>
+      <Route path="/Explore/:level1/:level2" exact>
+        <BasicExploreIntro
+          title={value || plural}
+          icon={Icon}
+          introParagraph={!value && definition}
+        />
+      </Route>
       <Route path="/Explore/Neighborhood/:language" exact>
         <Explanation>
           Languages with a significant site in this neighborhood, marked by a
@@ -151,6 +157,6 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
       <Route path="/Explore/Neighborhood/:value">
         <AddlLanguages data={data} />
       </Route>
-    </PanelContent>
+    </>
   )
 }

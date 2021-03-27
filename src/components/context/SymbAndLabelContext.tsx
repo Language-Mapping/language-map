@@ -76,7 +76,7 @@ function useSymbAndLabelState(): InitialState {
   const context = React.useContext(SymbAndLabelContext)
 
   if (context === undefined) {
-    throw new Error('useCountState must be used within a CountProvider')
+    throw new Error('useSymbAndLabelState must be used within a CountProvider')
   }
 
   // TODO: destructure the return
@@ -87,7 +87,9 @@ function useLabelAndSymbDispatch(): Dispatch {
   const context = React.useContext(SymbLabelDispatchContext)
 
   if (context === undefined) {
-    throw new Error('useCountDispatch must be used within a CountProvider')
+    throw new Error(
+      'useLabelAndSymbDispatch must be used within a CountProvider'
+    )
   }
 
   return context

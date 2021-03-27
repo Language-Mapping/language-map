@@ -1,74 +1,195 @@
-import React, { FC } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
+import React, { FC, useEffect } from 'react'
+import {
+  useLocation,
+  Route,
+  Switch,
+  Link as RouterLink,
+} from 'react-router-dom'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-import { Link } from '@material-ui/core'
-import { GoInfo } from 'react-icons/go'
-import { AiOutlineQuestionCircle } from 'react-icons/ai'
+import {
+  AppBar,
+  IconButton,
+  Toolbar,
+  Typography,
+  Tooltip,
+} from '@material-ui/core'
+import { GoSearch } from 'react-icons/go'
+import { MdClose } from 'react-icons/md'
 
-import { Breadcrumbs } from 'components/explore'
-import { PanelTitleBarProps } from './types'
-import { MOBILE_PANEL_HEADER_HT } from './config'
+import { HideOnScroll } from 'components/generic'
+import { usePanelDispatch } from 'components/panels'
+import { icons } from 'components/config'
+import { SplitCrumbs } from './SplitCrumbs'
+
+const topCornersRadius = 4 // same as bottom left/right in nav bar
+const borderTopLeftRadius = topCornersRadius
+const borderTopRightRadius = topCornersRadius
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      alignItems: 'center',
+      borderTopLeftRadius,
+      borderTopRightRadius,
+      // TODO: rm when done
+      //   boxShadow: '0 2px 7px hsla(0, 0%, 0%, 0.25)',
+      //   height: MOBILE_PANEL_HEADER_HT,
+      //   position: 'absolute',
+      //   top: 0,
+      //   width: '100%',
+    },
+    colorDefault: {
+      backgroundColor: 'transparent',
+    },
+    toolbar: {
       backgroundColor: theme.palette.primary.dark,
-      borderTopLeftRadius: 4, // same as bottom left/right in nav bar
-      borderTopRightRadius: 4, // same as bottom left/right in nav bar
-      boxShadow: '0 2px 7px hsla(0, 0%, 0%, 0.25)',
-      display: 'flex',
-      fontSize: '0.8rem',
-      height: MOBILE_PANEL_HEADER_HT,
+      borderTopLeftRadius,
+      borderTopRightRadius,
+      padding: '0 0.5rem',
       justifyContent: 'space-between',
-      padding: '0.5em',
-      position: 'absolute',
-      top: 0,
-      width: '100%',
-      '& a': {
-        color: theme.palette.text.primary,
-        textDecoration: 'underline',
-        textDecorationColor: theme.palette.text.secondary,
-        whiteSpace: 'nowrap',
-      },
-      '& svg': {
+    },
+    panelTitleAndIcon: {
+      display: 'flex',
+      alignItems: 'center',
+      '& > svg': {
+        color: theme.palette.text.hint,
+        marginRight: 4,
         fontSize: '1.25rem',
       },
     },
-    btnsContainer: {
-      alignItems: 'center',
-      backgroundColor: 'transparent',
-      boxShadow: '-15px 0px 7px 0px hsla(168, 41%, 29%, 0.5)',
-      display: 'flex',
-      color: theme.palette.text.primary,
-      position: 'relative',
-      '& > a': {
-        display: 'flex',
-      },
+    panelTitleText: {
+      fontSize: '1.5rem',
+    },
+    rightSideBtns: {
       '& > * + *': {
-        marginLeft: '0.45em',
+        marginLeft: 4,
       },
     },
   })
 )
 
-export const PanelTitleBar: FC<PanelTitleBarProps> = (props) => {
-  const { children, openOffCanvasNav } = props
+type PanelTitleProps = {
+  text: string
+  icon?: React.ReactNode
+}
+
+const PanelTitle: FC<PanelTitleProps> = (props) => {
+  const { text, icon } = props
   const classes = useStyles()
+  // TODO: make sure there are icons for all top-level views
 
   return (
-    <div className={classes.root}>
-      <Breadcrumbs />
-      <div className={classes.btnsContainer}>
-        <Link href="#" onClick={openOffCanvasNav} title="About & Info">
-          <GoInfo />
-        </Link>
-        <Link component={RouterLink} to="/help">
-          <AiOutlineQuestionCircle />
-        </Link>
-        {/* WISHLIST: add maximize btn on mobile */}
-        {children}
-      </div>
+    <div className={classes.panelTitleAndIcon}>
+      {icon}
+      <Typography
+        variant="h6"
+        component="h2"
+        className={classes.panelTitleText}
+      >
+        {text}
+      </Typography>
     </div>
+  )
+}
+
+const LinkToHomeBtn: FC = (props) => {
+  return (
+    <Tooltip title="Go to Home panel">
+      <IconButton
+        size="small"
+        aria-label="go home"
+        color="inherit"
+        to="/"
+        component={RouterLink}
+      >
+        {icons.Home}
+      </IconButton>
+    </Tooltip>
+  )
+}
+
+export const PanelTitleBar: FC = (props) => {
+  const classes = useStyles()
+  const { pathname } = useLocation()
+  // Lil' gross, but use Level2 route name first, otherwise Level1
+  const panelHeading =
+    pathname.split('/')[2] || pathname.split('/')[1] || 'Languages of NYC'
+  const panelDispatch = usePanelDispatch()
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    panelDispatch({ type: 'TOGGLE_SEARCH_TABS' })
+  }
+
+  useEffect(() => {
+    panelDispatch({ type: 'TOGGLE_SEARCH_TABS', payload: false })
+  }, [panelDispatch, pathname])
+
+  const RightSideBtns = (
+    <div className={classes.rightSideBtns}>
+      <Route path="/Explore">
+        <Tooltip title="Toggle search menu">
+          <IconButton
+            size="small"
+            aria-label="toggle search menu"
+            color="inherit"
+            onClick={handleClick}
+          >
+            <GoSearch />
+          </IconButton>
+        </Tooltip>
+      </Route>
+      <Tooltip title="Close panel">
+        <IconButton
+          size="small"
+          aria-label="panel close"
+          color="inherit"
+          onClick={() =>
+            panelDispatch({ type: 'TOGGLE_MAIN_PANEL', payload: false })
+          }
+        >
+          <MdClose />
+        </IconButton>
+      </Tooltip>
+    </div>
+  )
+
+  // WISHLIST: add maximize btn on mobile
+  // WISHLIST: MAKE AUTO-HIDE WORK 😞
+  return (
+    <HideOnScroll {...props}>
+      <AppBar className={classes.root}>
+        <Toolbar variant="dense" className={classes.toolbar}>
+          <Switch>
+            <Route path={['/', '/:level1']} exact />
+            <Route>
+              <SplitCrumbs />
+            </Route>
+          </Switch>
+          <Switch>
+            <Route path="/" exact>
+              {/* Flex spacer */}
+              <div />
+              <PanelTitle text={panelHeading} />
+            </Route>
+            <Route path="/:level1/:level2" exact>
+              <PanelTitle text={panelHeading} icon={icons[panelHeading]} />
+            </Route>
+            <Route path="/Census" exact>
+              {/* Census just needs panel heading override */}
+              <LinkToHomeBtn />
+              <PanelTitle
+                text="Census Language Data"
+                icon={icons[panelHeading]}
+              />
+            </Route>
+            <Route path="/:level1" exact>
+              {/* Home btn on /TopLevelRoutes looks balanced on left */}
+              <LinkToHomeBtn />
+              <PanelTitle text={panelHeading} icon={icons[panelHeading]} />
+            </Route>
+          </Switch>
+          {RightSideBtns}
+        </Toolbar>
+      </AppBar>
+    </HideOnScroll>
   )
 }

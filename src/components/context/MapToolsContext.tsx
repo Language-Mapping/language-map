@@ -56,7 +56,7 @@ function useMapToolsState(): Types.InitialMapToolsState {
   const context = React.useContext(MapToolsContext)
 
   if (context === undefined) {
-    throw new Error('useCountState must be used within a CountProvider')
+    throw new Error('useMapToolsState must be used within a CountProvider')
   }
 
   return context
@@ -66,7 +66,7 @@ function useMapToolsDispatch(): Types.MapToolsDispatch {
   const context = React.useContext(MapToolsDispatchContext)
 
   if (context === undefined) {
-    throw new Error('useCountDispatch must be used within a CountProvider')
+    throw new Error('useMapToolsDispatch must be used within a CountProvider')
   }
 
   return context

@@ -1,5 +1,6 @@
-export * from './FabPanelToggle'
 export * from './PanelCloseBtn' // TODO: rename to plural
-export * from './PanelContent'
+export * from './PanelContext'
 export * from './PanelHeading'
+export * from '../explore/BasicExploreIntro'
 export * from './PanelWrap'
+export * from './SearchTabs'

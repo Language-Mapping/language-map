@@ -1,16 +1,16 @@
-import React, { FC, useContext } from 'react'
+import React, { FC } from 'react'
 import { Link as RouteLink } from 'react-router-dom'
 import { Typography } from '@material-ui/core'
 
 import { routes } from 'components/config/api'
-import { GlobalContext } from 'components/context'
+import { usePanelState } from 'components/panels'
 import { ReactComponent as Logo } from '../../img/logo.svg'
 import { PAGE_HEADER_ID } from './config'
 import { useStyles } from './styles'
 
 export const TopBar: FC = () => {
-  const { state } = useContext(GlobalContext)
-  const classes = useStyles({ panelOpen: state.panelState === 'default' })
+  const { panelOpen } = usePanelState()
+  const classes = useStyles({ panelOpen })
   const { spacerDesktop, spacerLeft, title, topBarRoot, logo } = classes
 
   // TODO: account for panel being open on desktop. If it isn't, slide left.

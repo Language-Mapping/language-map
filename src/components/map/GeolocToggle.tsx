@@ -29,10 +29,7 @@ export const GeolocToggle: FC = () => {
   return (
     <FormControlLabel
       // onClick={(event) => event.stopPropagation()} // TODO: something
-      classes={{
-        label: classes.smallerText,
-        root: classes.switchFormCtrlRoot,
-      }}
+      classes={{ label: classes.smallerText, root: classes.switchFormCtrlRoot }}
       control={
         <Switch
           checked={geolocActive}

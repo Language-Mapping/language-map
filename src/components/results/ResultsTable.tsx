@@ -48,8 +48,9 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
     const colIndex = tdElem.cellIndex
     const { field } = columns[colIndex]
 
+    // Show feature in map
     if (field === 'id') {
-      history.push(`${routes.details}/${rowData.id}`) // show feature in map
+      history.push(`/Explore/Language/${rowData.Language}/${rowData.id}`)
 
       return
     }
@@ -185,7 +186,7 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
             onClick: () =>
               // Avoid an infinite cycle of table-help-table backness
               history.push({
-                pathname: '/help',
+                pathname: '/Info/Help',
                 state: { from: loc.pathname }, // TODO: spread ...loc.state ??
               }),
           },

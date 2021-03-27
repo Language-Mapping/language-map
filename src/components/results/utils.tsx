@@ -3,7 +3,7 @@ import { IconButton } from '@material-ui/core'
 import { GoFile } from 'react-icons/go'
 import { FaMapMarkedAlt } from 'react-icons/fa'
 
-import { InstanceLevelSchema, InternalUse } from 'components/context/types'
+import { InstanceLevelSchema, InternalWithLang } from 'components/context/types'
 import { CountryListItemWithFlag } from './CountryListItemWithFlag'
 import { EndoImageModal } from './EndoImageModal'
 
@@ -57,9 +57,12 @@ export function renderIDcolumn(): string | React.ReactNode {
   )
 }
 
-export const whittleLangFeats = (data: InstanceLevelSchema[]): InternalUse[] =>
+export const whittleLangFeats = (
+  data: InstanceLevelSchema[]
+): InternalWithLang[] =>
   data.map((row) => {
-    const { id, Latitude, Longitude } = row
+    const { id, Latitude, Longitude, Language } = row
 
-    return { id, Latitude, Longitude }
+    // Language needed for "No community selected" due to new routes setup
+    return { id, Latitude, Longitude, Language }
   })

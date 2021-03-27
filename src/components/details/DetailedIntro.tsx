@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Route } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 
 import { Media } from 'components/media'
 import { MoreLikeThis } from 'components/details'
@@ -31,7 +31,12 @@ export const DetailedIntro: FC<DetailedIntroProps> = (props) => {
   return (
     <header className={classes.root}>
       <LangOrEndoIntro data={data} />
-      {!isInstance && <StatsAndMeta data={data} />}
+      <Switch>
+        <Route path="/Explore/Language/:language/:id" exact />
+        <Route>
+          <StatsAndMeta data={data} />
+        </Route>
+      </Switch>
       <MoreLikeThis data={data} isInstance={isInstance}>
         <CensusPopover data={data} />
       </MoreLikeThis>

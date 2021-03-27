@@ -98,13 +98,13 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
       open={open}
       anchorEl={anchorEl}
       onClose={handleClose}
-      PaperProps={{ className: classes.root, elevation: 12 }}
+      PaperProps={{ className: classes.root, elevation: 24 }}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       transformOrigin={{ vertical: 'center', horizontal: 'left' }}
     >
       {Heading}
       <SubtleText>
-        <CensusIntro subtle />
+        <CensusIntro />
       </SubtleText>
       {MetaPara}
       <div className={classes.buttonGroup}>
@@ -133,7 +133,7 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
       </div>
       <Typography
         component={RouterLink}
-        to="/local"
+        to="/Census"
         align="center"
         className={classes.viewAllLink}
       >

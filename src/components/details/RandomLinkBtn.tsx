@@ -3,21 +3,26 @@ import { Link as RouterLink } from 'react-router-dom'
 import { Button } from '@material-ui/core'
 import { FaRandom } from 'react-icons/fa'
 
-import { routes } from 'components/config/api'
 import { GlobalContext } from 'components/context'
 
 export const RandomLinkBtn: FC = () => {
   const { state } = useContext(GlobalContext)
-  const { langFeatures } = state
+  const { langFeatures, langFeatsLenCache } = state
 
-  let randoIndex
+  let randoFeatID
+  let btnText
+  let randoLang
 
   if (langFeatures.length) {
     const randoFeatIndex = Math.floor(Math.random() * (langFeatures.length - 1))
-    randoIndex = langFeatures[randoFeatIndex].id
-  } else {
-    randoIndex = Math.floor(Math.random() * 1000) // shaky, no guarantee 😱
+
+    randoFeatID = langFeatures[randoFeatIndex].id
+    randoLang = langFeatures[randoFeatIndex].Language
   }
+
+  if (!langFeatsLenCache) btnText = 'Loading languages...'
+  else if (!langFeatures.length) btnText = 'No communities available'
+  else btnText = 'Show me a community'
 
   return (
     <Button
@@ -25,10 +30,11 @@ export const RandomLinkBtn: FC = () => {
       color="secondary"
       component={RouterLink}
       size="small"
+      disabled={!langFeatsLenCache || !langFeatures.length}
       startIcon={<FaRandom />}
-      to={`${routes.details}/${randoIndex}`}
+      to={randoLang ? `/Explore/Language/${randoLang}/${randoFeatID}` : '/'}
     >
-      Show me a community
+      {btnText}
     </Button>
   )
 }

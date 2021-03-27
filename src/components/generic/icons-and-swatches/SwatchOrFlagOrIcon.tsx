@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 
 import { SwatchOnly } from 'components/legend'
 import * as Types from 'components/explore/types'
-import { exploreIcons } from 'components/explore/config'
+import { icons } from 'components/config'
 
 import { FlagWithTitle } from './FlagWithTitle'
 
@@ -19,5 +19,5 @@ export const SwatchOrFlagOrIconNew: FC<
   if (field === 'Country' && src)
     return <FlagWithTitle omitText altText={value} src={src} />
 
-  return <>{exploreIcons[field]}</>
+  return <>{icons[field]}</>
 }

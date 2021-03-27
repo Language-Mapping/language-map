@@ -1,65 +1,62 @@
 import React from 'react'
-import { TiThList } from 'react-icons/ti'
-import { FaBinoculars } from 'react-icons/fa'
-import { GoFile } from 'react-icons/go'
-import { BiHomeAlt, BiMapPin } from 'react-icons/bi'
 
-import { Home } from 'components/home'
+import { icons } from 'components/config'
 import { LocalPanel } from 'components/local'
-import { DetailsPanel } from 'components/details'
 import { Explore, LangCardsList, MidLevelExplore } from 'components/explore'
-
-import { LocalPanelProps } from 'components/map/types'
 import { MapPanel } from 'components/panels/types'
+import { LegendPanel } from 'components/legend'
+import { DetailsPanel, NoFeatSel } from 'components/details'
+import { InfoPanel } from 'components/about/InfoPanel'
 import { NavItemWithBadge } from './NavItemWithBadge'
 
-export const MOBILE_PANEL_HEADER_HT = '2rem'
+export const MOBILE_PANEL_HEADER_HT = 48 // .MuiToolbar-dense default min-height
 export const panelWidths = { mid: 450, midLarge: 600 }
 
 // Bottom bar nav panel
 export const navRoutes: MapPanel[] = [
   {
     heading: 'Home',
-    icon: <BiHomeAlt />,
-    component: <Home />,
+    icon: icons.Home,
+    component: <LegendPanel />,
     rootPath: '/',
     exact: true,
   },
   {
     heading: 'Explore',
-    icon: <FaBinoculars />,
-    component: <Explore icon={<FaBinoculars />} />,
+    icon: icons.Explore,
+    component: <Explore />,
     rootPath: '/Explore',
   },
   {
     heading: 'Data',
-    icon: (
-      <NavItemWithBadge>
-        <TiThList />
-      </NavItemWithBadge>
-    ),
+    icon: <NavItemWithBadge>{icons.Data}</NavItemWithBadge>,
     component: null,
     rootPath: '/table',
   },
   {
-    heading: 'Local',
-    icon: <BiMapPin />,
-    component: null,
-    // eslint-disable-next-line react/display-name
-    renderComponent: (props: LocalPanelProps): React.ReactNode => (
-      <LocalPanel {...props} />
-    ),
-    rootPath: '/local',
+    heading: 'Census',
+    icon: icons.Census,
+    component: <LocalPanel />,
+    rootPath: '/Census',
   },
   {
-    heading: 'Details',
-    icon: <GoFile />,
-    component: <DetailsPanel />,
-    rootPath: '/details',
+    heading: 'Info',
+    icon: icons.Info,
+    component: <InfoPanel />,
+    rootPath: '/Info',
   },
 ]
 
 export const nonNavRoutesConfig = [
+  {
+    component: <NoFeatSel />,
+    rootPath: '/Explore/Language/none', // reserved
+  },
+  {
+    component: <DetailsPanel />,
+    rootPath: '/Explore/Language/:language/:id',
+    exact: true,
+  },
   {
     component: <LangCardsList field="Language" />, // set field explicitly
     rootPath: '/Explore/Language/:language',
