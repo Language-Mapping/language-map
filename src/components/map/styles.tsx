@@ -59,7 +59,6 @@ export const useLocalPanelStyles = makeStyles((theme: Theme) =>
   createStyles({
     switchFormCtrlRoot: {
       marginLeft: 0,
-      marginTop: '0.5rem',
     },
     controlLabel: {
       display: 'flex',

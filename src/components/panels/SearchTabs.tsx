@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
         maxWidth: 'unset',
         width: '100%',
         fontSize: '1rem',
+        marginBottom: '0.5rem',
       },
       '& .mapboxgl-ctrl-geocoder--icon-search': {
         fontSize: '1rem',
