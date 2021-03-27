@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useQuery } from 'react-query'
-import { Dialog, Typography } from '@material-ui/core'
+import { Dialog } from '@material-ui/core'
 
 import { LoadingBackdrop } from 'components/generic/modals'
 import * as Types from './types'
@@ -11,7 +11,7 @@ import { LocWithState } from '../config/types'
 import { defaultQueryFn } from './utils'
 
 export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
-  const { queryKey, icon, title } = props
+  const { queryKey, title } = props
   const classes = useStyles()
   const history = useHistory()
   const {
@@ -61,17 +61,11 @@ export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
   // TODO: use `keepMounted` for About for SEO purposes?
   // TODO: consider SimpleDialog for some or all of these
   return (
-    <>
-      <Typography variant="h3" component="h2" className={classes.dialogTitle}>
-        {icon}
-        {title}
-      </Typography>
-      <div className={classes.dialogContent}>
-        <div
-          dangerouslySetInnerHTML={createMarkup(data?.content.rendered || '')}
-          id={`${queryKey}-dialog-description`}
-        />
-      </div>
-    </>
+    <div className={classes.dialogContent}>
+      <div
+        dangerouslySetInnerHTML={createMarkup(data?.content.rendered || '')}
+        id={`${queryKey}-dialog-description`}
+      />
+    </div>
   )
 }

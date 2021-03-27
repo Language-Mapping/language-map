@@ -1,9 +1,6 @@
 import React, { FC } from 'react'
 import { Route } from 'react-router-dom'
 import { ReactQueryCacheProvider } from 'react-query'
-// import { ReactQueryDevtools } from 'react-query-devtools'
-import { GoInfo } from 'react-icons/go'
-import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { AboutPageView, WelcomeDialog, FeedbackForm } from 'components/about'
 import { wpQueryCache } from 'components/about/utils'
@@ -21,18 +18,10 @@ export const InfoPanel: FC = () => {
           <WelcomeDialog queryKey={wpQueryIDs.welcome} />
         )}
         <Route path={routes.about}>
-          <AboutPageView
-            title="About"
-            icon={<GoInfo />}
-            queryKey={wpQueryIDs.about}
-          />
+          <AboutPageView title="About" queryKey={wpQueryIDs.about} />
         </Route>
         <Route path={routes.help}>
-          <AboutPageView
-            title="Help"
-            icon={<AiOutlineQuestionCircle />}
-            queryKey={wpQueryIDs.help}
-          />
+          <AboutPageView title="Help" queryKey={wpQueryIDs.help} />
         </Route>
         <Route path={routes.feedback}>
           <FeedbackForm />
