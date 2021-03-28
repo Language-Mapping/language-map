@@ -6,6 +6,7 @@ import Autocomplete, {
 } from '@material-ui/lab/Autocomplete'
 
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'
+import { UItextFromAirtable, useUItext } from 'components/generic'
 
 import * as Types from './types'
 import { useCensusFields } from './hooks'
@@ -77,6 +78,7 @@ export const CensusFieldSelect: FC = (props) => {
   const mapToolsDispatch = useMapToolsDispatch()
   const { censusActiveField } = useMapToolsState()
   const { data, isLoading, error } = useCensusFields()
+  const { text: placeholderText } = useUItext('census-search-placeholder')
 
   const defaultValue =
     data.find(({ id }) => id === censusActiveField?.id) || null
@@ -116,10 +118,10 @@ export const CensusFieldSelect: FC = (props) => {
       renderInput={(params) => (
         <TextField
           {...params}
-          placeholder="Choose a language or enter text"
+          placeholder={placeholderText}
           margin="dense"
           variant="outlined"
-          helperText="*Census Bureau category, component languages unclear"
+          helperText={<UItextFromAirtable id="census-search-helper" />}
           InputLabelProps={{ disableAnimation: true, shrink: true }}
           FormHelperTextProps={{
             variant: 'outlined',
