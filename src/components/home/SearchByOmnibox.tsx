@@ -10,6 +10,7 @@ import { GoSearch } from 'react-icons/go'
 import { useAirtable } from 'components/explore/hooks'
 import { LangLevelReqd } from 'components/context/types'
 import { sortArrOfObjects } from 'components/legend/utils'
+import { useUItext } from 'components/generic'
 import { OmniboxResult } from './OmniboxResult'
 import { ListboxComponent } from './ListboxComponent'
 import { renderGroup, prepAutocompleteGroups } from './utils'
@@ -89,6 +90,7 @@ export const SearchByOmnibox: FC = (props) => {
   })
   const classes = useStyles()
   const history = useHistory()
+  const { text: placeholderText } = useUItext('omni-placeholder')
 
   if (error) return <div>Something went wrong fetching search data.</div>
 
@@ -146,7 +148,7 @@ export const SearchByOmnibox: FC = (props) => {
             {...params}
             variant="outlined"
             color="secondary"
-            placeholder="Try Mixtec, 台山话, Thai, hait1244, loy"
+            placeholder={placeholderText}
           />
         )
       }}

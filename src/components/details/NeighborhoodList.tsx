@@ -5,7 +5,7 @@ import { Typography, Link } from '@material-ui/core'
 import { BiMapPin } from 'react-icons/bi'
 
 import { CustomCard, CardList } from 'components/explore'
-import { Explanation } from 'components/generic'
+import { Explanation, UItextFromAirtable } from 'components/generic'
 import * as Types from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -118,11 +118,10 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
       <Explanation>
         <Switch>
           <Route path="/Explore/Language/:language/:id" exact>
-            NYC neighborhood or metro region town for this community:
+            <UItextFromAirtable id="details-neighb-loc-list" />
           </Route>
           <Route>
-            NYC neighborhoods or towns in the metro region where the language
-            community has a significant site, marked by a point on the map:
+            <UItextFromAirtable id="lang-profile-loc-list" />
           </Route>
         </Switch>
       </Explanation>

@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core'
 
 import { routes, icons } from 'components/config'
+import { UItextFromAirtable } from 'components/generic'
 import { Settings } from './Settings'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -61,7 +62,7 @@ export const Nav: FC = () => {
               <ListItemText
                 classes={{ secondary: smallerText }}
                 primary="About"
-                secondary="Project background, credits, data sources, and legal info"
+                secondary={<UItextFromAirtable id="info-link--about" />}
               />
             </Link>
           </ListItem>
@@ -78,7 +79,9 @@ export const Nav: FC = () => {
               <ListItemText
                 classes={{ secondary: smallerText }}
                 primary="Contact & Feedback"
-                secondary="Suggest corrections, report bugs, request new features, and more"
+                secondary={
+                  <UItextFromAirtable id="info-link--contact-feedback" />
+                }
               />
             </Link>
           </ListItem>
@@ -93,7 +96,7 @@ export const Nav: FC = () => {
               <ListItemText
                 classes={{ secondary: smallerText }}
                 primary="Help"
-                secondary="Usage instructions and a glossary of terms used in this application"
+                secondary={<UItextFromAirtable id="info-link--help" />}
               />
             </Link>
           </ListItem>
@@ -110,7 +113,7 @@ export const Nav: FC = () => {
               <ListItemText
                 classes={{ secondary: smallerText }}
                 primary="User Manual"
-                secondary="View or download a PDF with detailed instructions (opens in a new tab)"
+                secondary={<UItextFromAirtable id="info-link--user-manual" />}
               />
             </Link>
           </ListItem>
