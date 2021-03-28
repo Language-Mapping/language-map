@@ -7,7 +7,7 @@ import { FormControlLabel, Switch } from '@material-ui/core'
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 import { useMapToolsState, useMapToolsDispatch } from 'components/context'
-import { SimplePopover } from 'components/generic'
+import { SimplePopover, useUItext } from 'components/generic'
 import { usePanelState } from 'components/panels'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
@@ -26,6 +26,7 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
   const offset = useOffset(panelOpen)
   const { boundariesVisible } = useMapToolsState()
   const mapToolsDispatch = useMapToolsDispatch()
+  const { text: placeholderText } = useUItext('loc-search-placeholder')
 
   // TODO: most def different file
   const handleGeocodeResult = ({ result }: GeocodeResult) => {
@@ -106,7 +107,7 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
         mapboxApiAccessToken={MAPBOX_TOKEN}
         mapRef={mapRef}
         onResult={handleGeocodeResult}
-        placeholder="Try Bronx, Astoria, Yankee Stadium"
+        placeholder={placeholderText}
         proximity={NYC_LAT_LONG}
         types="address,poi,postcode,locality,place,neighborhood"
         bbox={[-77.5, 38.4, -70.7, 42.89]}

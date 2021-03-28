@@ -3,7 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Button } from '@material-ui/core'
 
 import { FeedbackModal } from 'components/about'
-import { Explanation } from 'components/generic'
+import { Explanation, UItextFromAirtable } from 'components/generic'
 import { icons } from 'components/config'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -25,8 +25,7 @@ export const FeedbackToggle: FC<{ language?: string }> = (props) => {
     <div className={classes.root}>
       {language ? (
         <Explanation>
-          Note that <i>{language}</i> may be spoken throughout the New York area
-          — this is just one significant location.
+          <UItextFromAirtable id="feedback-details-text" />
         </Explanation>
       ) : null}
       <div
