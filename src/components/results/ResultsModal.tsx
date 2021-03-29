@@ -52,6 +52,7 @@ const ResultsModal: FC = () => {
   const [lastLoc, setLastLoc] = useState()
   const { data, isLoading, error } = useAirtable<InstanceLevelSchema>('Data', {
     fields,
+    maxRecords: window?.location.hostname === 'lampel-2.local' ? 1 : 20000,
   })
 
   // CRED:

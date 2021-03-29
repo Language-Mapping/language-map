@@ -91,11 +91,13 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
   let primaryData
   let Icon = null // TODO: re-componentize
 
+  // TODO: use routes instead. Goodness.
   if (value && field === 'World Region') {
     Icon = <SwatchOnly backgroundColor={data ? data[0].worldRegionColor : ''} />
   } else if (value && field === 'Country') Icon = <FlagFromHook value={value} />
   else Icon = <>{icons[field]}</>
 
+  // TODO: use routes instead. Goodness.
   if (value && field === 'Neighborhood')
     primaryData = data.filter((row) => row['Primary Locations'].includes(value))
   // Gross extra steps for Airtable FIND issue, which returns in ARRAYJOIN

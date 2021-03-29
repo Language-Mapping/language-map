@@ -9,6 +9,8 @@ export const NYC_LAT_LONG = { latitude: 40.7128, longitude: -74.006 }
 export const initialMapState = { ...NYC_LAT_LONG, zoom: 8.5 }
 export const POINT_ZOOM_LEVEL = 14.5 // clicked point or single-result filter
 
+const isLocalDev = window?.location.hostname === 'lampel-2.local'
+
 export const mbStyleTileConfig = {
   layerId: 'mb-data', // TODO: a dev/deploy-only instance!
   langSrcID: 'languages-src', // arbitrary, set in code, never changes
@@ -21,6 +23,8 @@ export const mbStyleTileConfig = {
   },
 }
 
+const { light, blank } = mbStyleTileConfig.customStyles
+
 export const mapProps: InitialMapProps = {
   attributionControl: false,
   className: 'mb-language-map',
@@ -28,7 +32,7 @@ export const mapProps: InitialMapProps = {
   height: '100%',
   mapboxApiAccessToken: MAPBOX_TOKEN,
   mapOptions: { logoPosition: 'bottom-left' },
-  mapStyle: mbStyleTileConfig.customStyles.light,
+  mapStyle: isLocalDev ? blank : light, // TODO: default to blank in dev
   maxZoom: 18, // 18 is kinda misleading w/the dispersed points, but looks good
   width: '100%',
 }

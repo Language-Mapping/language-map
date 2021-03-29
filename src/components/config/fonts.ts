@@ -1,12 +1,9 @@
-// Google-hosted CDN for early-access fonts (NKo only one not found):
-// https://fonts.google.com/earlyaccess
-const earlyAccessPath = 'https://fonts.googleapis.com/earlyaccess/'
-
-// CAREFUL: the lists below are maintained in two files:
+// CAREFUL: the list below is maintained in two files:
 // 1) index.html
 // 2) fonts.ts
 // ...because we can't do an `import` in index.html.
 
+// TODO: if deploy or at least local, don't load any of these
 export const fontFamilies = [
   'Noto Sans Myanmar',
   'Noto Sans Sinhala',
@@ -20,19 +17,4 @@ export const fontFamilies = [
   'Noto Sans Thaana',
   'Noto Sans Buginese',
   'Noto Sans Ol Chiki',
-]
-
-export const fontUrls = [
-  `${earlyAccessPath}notosansmyanmar.css`,
-  `${earlyAccessPath}notosanssinhala.css`,
-  `${earlyAccessPath}notosanssylotinagri.css`,
-  `${earlyAccessPath}notosanscoptic.css`,
-  `${earlyAccessPath}notosanstifinagh.css`,
-  `${earlyAccessPath}notosansvai.css`,
-  `${earlyAccessPath}notosanslimbu.css`,
-  `${earlyAccessPath}notosanssyriacestrangela.css`,
-  `${earlyAccessPath}notosansmeeteimayek.css`,
-  `${earlyAccessPath}notosansthaana.css`,
-  `${earlyAccessPath}notosansbuginese.css`,
-  `${earlyAccessPath}notosansolchiki.css`,
 ]

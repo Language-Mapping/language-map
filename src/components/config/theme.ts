@@ -12,7 +12,8 @@ import {
 
 import { fontFamilies } from './fonts'
 
-const customEndoFonts = fontFamilies.join(',')
+const isLocalDev = window?.location.hostname === 'lampel-2.local'
+const customEndoFonts = isLocalDev ? '' : fontFamilies.join(',')
 
 // This stack should handle the majority of missing glyphs, which are all
 // represented by these endonyms:

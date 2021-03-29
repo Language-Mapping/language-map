@@ -3,9 +3,6 @@ import { Theme } from '@material-ui/core/styles'
 
 import { InternalUse } from 'components/context/types'
 
-// TODO: into config since it's used in multiple places...
-const DEFAULT_DELIM = ', ' // e.g. for multi-value Neighborhood and Country
-
 // CRED: github.com/mbrn/material-table/issues/709#issuecomment-566097441
 // TODO: put into hooks file and/or folder along with any others
 export function useWindowResize(): { width: number; height: number } {
@@ -42,22 +39,6 @@ export function correctDropboxURL(url: string): string {
   return url
     .replace(badDropboxHost, goodDropboxHost)
     .replace(badDropboxSuffix, goodDropboxSuffix)
-}
-
-// e.g. convert "Woodside, Queens" into "Woodside (+1 more)"
-export function prettyTruncateList(
-  text: string,
-  delimiter: string = DEFAULT_DELIM
-): string {
-  const asArray = text.split(delimiter)
-  const firstItem = asArray[0]
-
-  // Single-items do not make sense to have (+0)...
-  if (asArray.length === 1) {
-    return firstItem
-  }
-
-  return `${firstItem} (+${asArray.length - 1} more)`
 }
 
 // CRED: for `theme.transitions.create` example:
