@@ -4,7 +4,7 @@ import * as Types from './types'
 
 const initialState = {
   autoZoomCensus: true,
-  boundariesVisible: false,
+  showNeighbs: false,
   geolocActive: false,
 } as Types.InitialMapToolsState
 
@@ -22,8 +22,12 @@ function reducer(
   switch (action.type) {
     case 'TOGGLE_CENSUS_AUTO_ZOOM':
       return { ...state, autoZoomCensus: !state.autoZoomCensus }
-    case 'SET_BOUNDARIES_VISIBLE':
-      return { ...state, boundariesVisible: action.payload }
+    case 'TOGGLE_NEIGHBORHOODS_LAYER':
+      return {
+        ...state,
+        showNeighbs:
+          action.payload === undefined ? !state.showNeighbs : action.payload,
+      }
     case 'SET_GEOLOC_ACTIVE':
       return { ...state, geolocActive: action.payload }
     case 'SET_CENSUS_FIELD':

@@ -17,7 +17,6 @@ import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { Geolocation } from './Geolocation'
 import { LanguagePopup, MapPopup } from './MapPopup'
 import { MapCtrlBtns } from './MapCtrlBtns'
-import { BoundariesLayer } from './BoundariesLayer'
 import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
 import { NeighborhoodsLayer } from './NeighborhoodsLayer'
@@ -36,7 +35,7 @@ import { onHover } from './events'
 import * as Types from './types'
 import * as utils from './utils'
 
-const { boundariesLayerIDs, langTypeIconsConfig } = config
+const { langTypeIconsConfig } = config
 
 utils.rightToLeftSetup()
 
@@ -48,9 +47,9 @@ export const Map: FC<Types.MapProps> = (props) => {
   const { panelOpen } = usePanelState()
   const { state } = useContext(contexts.GlobalContext)
   const {
-    boundariesVisible,
     autoZoomCensus,
     censusActiveField,
+    showNeighbs,
   } = contexts.useMapToolsState()
   const offset = useOffset(panelOpen)
   const breakpoint = useBreakpoint()
@@ -247,14 +246,15 @@ export const Map: FC<Types.MapProps> = (props) => {
       return // prevent boundary click underneath
     }
 
-    if (!boundariesVisible) {
+    // TODO: restore, remove or refactor. Better to just check for what's under?
+    if (!showNeighbs) {
       history.push('/Explore/Language/none')
 
       return
     }
 
     const boundariesClicked = map.queryRenderedFeatures(event.point, {
-      layers: boundariesLayerIDs,
+      layers: ['neighborhoods-poly'], // TODO: make it work for all
     }) as Types.BoundaryFeat[]
 
     if (!boundariesClicked.length) {
@@ -310,14 +310,6 @@ export const Map: FC<Types.MapProps> = (props) => {
           }}
         />
         {geocodeMarker && <GeocodeMarker {...geocodeMarker} />}
-        {[config.neighbConfig, config.countiesConfig].map((boundaryConfig) => (
-          <BoundariesLayer
-            key={boundaryConfig.source.id}
-            {...boundaryConfig}
-            visible={boundariesVisible}
-            {...{ beforeId, map, clickedBoundary }}
-          />
-        ))}
         <NeighborhoodsLayer />
         <CensusLayer
           map={map}

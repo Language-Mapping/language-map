@@ -1,6 +1,8 @@
 import React, { FC } from 'react'
 import { Source, Layer } from 'react-map-gl'
 
+import { useMapToolsState } from 'components/context'
+
 const minZoom = 8
 const sourceID = 'neighborhoods-new'
 const sourceLayer = 'neighborhoods'
@@ -20,9 +22,11 @@ const paint = {
 
 export const NeighborhoodsLayer: FC = () => {
   // const { beforeId, visible } = props
+  const { showNeighbs } = useMapToolsState()
 
   // elalliance.ckmundquc1k5328ppob5a9wok-1kglp
   // if (!visible) return null
+  if (!showNeighbs) return null
 
   return (
     <Source id={sourceID} url={url} type="vector">
@@ -33,18 +37,19 @@ export const NeighborhoodsLayer: FC = () => {
           'background-opacity': 0,
         }}
       />
-      {/* ...then use its id as the 'beforeId' for other layers. Boom. */}
-      <Layer
-        // beforeId={beforeId}
-        id="neighborhoods-poly"
-        minzoom={minZoom}
-        source-layer={sourceLayer}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        paint={paint}
-        type="fill"
-      />
-      {/* <Layer beforeId={beforeId} {...layer} layout={{ ...layer.layout }} /> */}
+      {showNeighbs ? (
+        <Layer
+          id="neighborhoods-poly"
+          minzoom={minZoom}
+          source-layer={sourceLayer}
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          paint={paint}
+          type="fill"
+        />
+      ) : (
+        <></>
+      )}
     </Source>
   )
 }

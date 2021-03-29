@@ -100,16 +100,16 @@ type CensusFieldPayload = {
 
 export type InitialMapToolsState = {
   autoZoomCensus: boolean
-  boundariesVisible: boolean
+  showNeighbs: boolean
   geolocActive: boolean
   censusActiveField?: CensusFieldPayload
 }
 
 export type MapToolsAction =
   | { type: 'CLEAR_CENSUS_FIELD' }
-  | { type: 'SET_BOUNDARIES_VISIBLE'; payload: boolean }
   | { type: 'SET_CENSUS_FIELD'; payload: CensusFieldPayload }
   | { type: 'SET_GEOLOC_ACTIVE'; payload: boolean }
+  | { type: 'TOGGLE_NEIGHBORHOODS_LAYER'; payload?: boolean }
   | { type: 'TOGGLE_CENSUS_AUTO_ZOOM' }
 
 export type MapToolsDispatch = React.Dispatch<MapToolsAction>
