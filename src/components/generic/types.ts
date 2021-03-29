@@ -3,6 +3,7 @@ export type UItextTableID =
   | 'census-popout-intro'
   | 'census-search-helper'
   | 'census-search-placeholder'
+  | 'census-vintage'
   | 'details-neighb-loc-list'
   | 'feedback-details-text'
   | 'info-link--about'

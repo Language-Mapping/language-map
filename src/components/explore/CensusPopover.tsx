@@ -10,7 +10,7 @@ import { CensusIntro } from 'components/local'
 import { Chip } from 'components/details'
 import { DialogCloseBtn } from 'components/generic/modals'
 import { routes } from 'components/config/api'
-import { Explanation, SubtleText } from 'components/generic'
+import { Explanation, SubtleText, UItextFromAirtable } from 'components/generic'
 
 import * as Types from './types'
 
@@ -76,7 +76,6 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
   const open = Boolean(anchorEl)
   const censusLabel = censusScope === 'puma' ? 'PUMA' : 'tract'
   const activeField = censusActiveField?.id
-  const vintage = '2014-2018' // TODO: don't hardcode year!
 
   const Heading = (
     <Typography variant="h6" className={classes.popoverHeading}>
@@ -87,8 +86,8 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
   const MetaPara = (
     <Explanation className={classes.metaPara}>
       Speakers of <em>{name}</em> are likely to be included within the census
-      category of <b>{censusPretty}</b> at the ACS {vintage}{' '}
-      <em>{censusLabel}</em> level.
+      category of <b>{censusPretty}</b> at the ACS{' '}
+      <UItextFromAirtable id="census-vintage" /> <em>{censusLabel}</em> level.
     </Explanation>
   )
 
