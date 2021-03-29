@@ -1,8 +1,8 @@
 import React, { FC } from 'react'
-import ReactMarkdown from 'react-markdown'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
+import { MarkdownWithRouteLinks } from 'components/generic'
 import { isAlpha } from '../../utils'
 import { RecordDescriptionProps } from './types'
 import { useDescription } from './hooks'
@@ -60,9 +60,11 @@ export const RecordDescription: FC<RecordDescriptionProps> = (props) => {
   return (
     <Typography className={classes.root} component="div">
       {firstCharAlpha && <FancyFirstLetter text={firstChar} />}
-      <ReactMarkdown className={classes.body}>
-        {firstCharAlpha ? Description.slice(1) : Description}
-      </ReactMarkdown>
+      <div className={classes.body}>
+        <MarkdownWithRouteLinks
+          text={firstCharAlpha ? Description.slice(1) : Description}
+        />
+      </div>
     </Typography>
   )
 }
