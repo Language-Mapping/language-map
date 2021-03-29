@@ -1,8 +1,6 @@
 // TODO: break out file into config.{census,neighborhoods,counties}.ts
 import * as Types from './types'
 
-// `symbol-sort-order` useful maybe:
-// https://stackoverflow.com/a/59103558/1048518
 const neighbPaint = {
   'fill-color': 'orange',
   'fill-opacity': [
@@ -15,8 +13,6 @@ const neighbPaint = {
   ],
 }
 
-// TODO: if the missing "Sheepshead Bay" polygon is added to Boundaries by MB,
-// then the lookup table for this layer will need to be updated.
 const neighbSrcID: Types.BoundariesInternalSrcID = 'neighborhoods'
 const neighbLyrSrc = {
   source: neighbSrcID,

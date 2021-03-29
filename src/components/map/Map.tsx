@@ -20,6 +20,7 @@ import { MapCtrlBtns } from './MapCtrlBtns'
 import { BoundariesLayer } from './BoundariesLayer'
 import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
+import { NeighborhoodsLayer } from './NeighborhoodsLayer'
 
 import * as config from './config'
 import {
@@ -317,6 +318,7 @@ export const Map: FC<Types.MapProps> = (props) => {
             {...{ beforeId, map, clickedBoundary }}
           />
         ))}
+        <NeighborhoodsLayer />
         <CensusLayer
           map={map}
           config={config.pumaConfig}
