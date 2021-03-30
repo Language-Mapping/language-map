@@ -33,6 +33,7 @@ export const mapProps: InitialMapProps = {
   mapboxApiAccessToken: MAPBOX_TOKEN,
   mapOptions: { logoPosition: 'bottom-left' },
   mapStyle: isLocalDev ? blank : light, // TODO: default to blank in dev
+  // mapStyle: light, // TODO: default to blank in dev
   maxZoom: 18, // 18 is kinda misleading w/the dispersed points, but looks good
   width: '100%',
 }

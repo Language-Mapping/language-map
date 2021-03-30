@@ -1,10 +1,12 @@
 import React, { FC } from 'react'
+import { Route, useParams, Switch } from 'react-router-dom'
 import { Popup } from 'react-map-gl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
-import { useHistory } from 'react-router-dom'
-import { MapPopupProps } from './types'
+import { InstanceLevelSchema } from 'components/context'
+import { useAirtable } from 'components/explore/hooks'
+import { MapPopupProps, SetShowPopupsProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,11 +49,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const MapPopup: FC<MapPopupProps> = (props) => {
   const classes = useStyles()
-  const { longitude, latitude, setVisible, heading, subheading } = props
+  const { longitude, latitude, setShowPopups, heading, subheading } = props
   const { mapPopupRoot, popupHeading, subHeading } = classes
-
-  // NOTE: the longest non-url language or endonym so far is:
-  // Cameroonian Pidgin English
 
   return (
     <Popup
@@ -59,7 +58,9 @@ export const MapPopup: FC<MapPopupProps> = (props) => {
       longitude={longitude}
       latitude={latitude}
       className={mapPopupRoot}
-      onClose={() => setVisible()}
+      onClose={() => {
+        setShowPopups(false)
+      }}
     >
       <header>
         <Typography variant="h6" component="h3" className={popupHeading}>
@@ -71,30 +72,88 @@ export const MapPopup: FC<MapPopupProps> = (props) => {
   )
 }
 
-type Ugh = {
-  Language: string
-  Endonym: string
-  Latitude: number
-  Longitude: number
-}
+const LanguagePopup: FC<SetShowPopupsProps> = (props) => {
+  const { setShowPopups } = props
+  const { id } = useParams<{ id: string }>()
 
-type Ffff = {
-  settings?: Ugh
-}
+  const { data, isLoading, error } = useAirtable<InstanceLevelSchema>('Data', {
+    fields: ['Language', 'Endonym', 'Latitude', 'Longitude'],
+    filterByFormula: `{id} = ${id}`,
+    maxRecords: 1,
+  })
 
-export const LanguagePopup: FC<Ffff> = ({ settings }) => {
-  const history = useHistory()
-  if (!settings) return null
+  if (isLoading || error || !data.length) return <></>
 
-  const { Language, Endonym, Latitude, Longitude } = settings
+  const { Language, Endonym, Latitude, Longitude } = data[0]
 
   return (
     <MapPopup
       longitude={Longitude}
       latitude={Latitude}
-      setVisible={() => history.push('/Explore/Language/none')}
+      setShowPopups={setShowPopups}
       heading={Endonym}
       subheading={Language}
     />
+  )
+}
+
+export type NeighborhoodTableSchema = {
+  name: string
+  County: string // or NYC borough
+  x_max: number
+  x_min: number
+  y_min: number
+  y_max: number
+}
+
+const NeighborhoodPopup: FC<SetShowPopupsProps> = (props) => {
+  const { setShowPopups } = props
+  const { name } = useParams<{ name: string }>()
+
+  const { data, isLoading, error } = useAirtable<NeighborhoodTableSchema>(
+    'Neighborhood',
+    {
+      fields: ['name', 'County', 'x_max', 'x_min', 'y_min', 'y_max'],
+      filterByFormula: `{name} = "${name}"`,
+      maxRecords: 1,
+    }
+  )
+
+  if (isLoading || error || !data.length) return <></>
+
+  const {
+    County: county, // or borough
+    x_max: xMax,
+    x_min: xMin,
+    y_min: yMin,
+    y_max: yMax,
+  } = data[0]
+
+  const latitude = (yMax - yMin) / 2 + yMin
+  const longitude = (xMin - xMax) / 2 + xMax
+
+  return (
+    <MapPopup
+      longitude={longitude}
+      latitude={latitude}
+      setShowPopups={setShowPopups}
+      heading={name}
+      subheading={county}
+    />
+  )
+}
+
+export const MapPopups: FC<SetShowPopupsProps> = (props) => {
+  const { setShowPopups } = props
+
+  return (
+    <Switch>
+      <Route path="/Explore/Language/:language/:id" exact>
+        <LanguagePopup setShowPopups={setShowPopups} />
+      </Route>
+      <Route path="/Explore/Neighborhood/:name" exact>
+        <NeighborhoodPopup setShowPopups={setShowPopups} />
+      </Route>
+    </Switch>
   )
 }

@@ -2,7 +2,7 @@
 // TOO annoying. I'll take the risk, esp. since it has not seemed problematic:
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useState, useContext, useEffect } from 'react'
-import { useHistory, Route } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 // TODO: try to lazy load the biggest dep of all. See:
 // www.debugbear.com/blog/bundle-splitting-components-with-webpack-and-react
 import { Map as MbMap, AttributionControl } from 'mapbox-gl'
@@ -10,12 +10,11 @@ import MapGL, { MapLoadEvent } from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import * as contexts from 'components/context'
-
+import { GlobalContext, useMapToolsState } from 'components/context'
 import { usePanelState } from 'components/panels'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { Geolocation } from './Geolocation'
-import { LanguagePopup, MapPopup } from './MapPopup'
+import { MapPopups } from './MapPopup'
 import { MapCtrlBtns } from './MapCtrlBtns'
 import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
@@ -26,10 +25,11 @@ import {
   usePopupFeatDetails,
   useOffset,
   useBreakpoint,
-  useBoundaryPopup,
   useZoomToLangFeatsExtent,
 } from './hooks'
-import { getAllLangFeatIDs, isTouchEnabled } from '../../utils'
+// TODO: restore:
+// import { getAllLangFeatIDs, isTouchEnabled } from '../../utils'
+import { getAllLangFeatIDs } from '../../utils'
 import { onHover } from './events'
 
 import * as Types from './types'
@@ -42,21 +42,15 @@ utils.rightToLeftSetup()
 export const Map: FC<Types.MapProps> = (props) => {
   const history = useHistory()
   const { mapLoaded, mapRef, setMapLoaded } = props
+  const { pathname } = useLocation()
   const map: MbMap | undefined = mapRef.current?.getMap()
   const { selFeatAttribs } = usePopupFeatDetails()
   const { panelOpen } = usePanelState()
-  const { state } = useContext(contexts.GlobalContext)
-  const {
-    autoZoomCensus,
-    censusActiveField,
-    showNeighbs,
-  } = contexts.useMapToolsState()
+  const { state } = useContext(GlobalContext)
+  const { autoZoomCensus, censusActiveField, showNeighbs } = useMapToolsState()
   const offset = useOffset(panelOpen)
   const breakpoint = useBreakpoint()
   const { langFeatures, filterHasRun } = state
-  // TODO: rm if not needed for hover/popup stuff
-  // const symbLabelState = contexts.useSymbAndLabelState()
-  // const { activeSymbGroupID } = symbLabelState
   const [beforeId, setBeforeId] = useState<string>('background')
   const [isMapTilted, setIsMapTilted] = useState<boolean>(false)
 
@@ -67,22 +61,14 @@ export const Map: FC<Types.MapProps> = (props) => {
   const [viewport, setViewport] = useState<Types.ViewportState>(
     config.initialMapState
   )
-  const [hidePopups, setHidePopups] = useState<Types.HidePopups>({
-    boundaries: false,
-    language: false,
-  })
-  const [tooltip, setTooltip] = useState<Types.PopupSettings | null>(null)
-  const [
-    clickedBoundary,
-    setClickedBoundary,
-  ] = useState<Types.BoundaryFeat | null>()
+  const [showPopups, setShowPopups] = useState<boolean>(true)
+  const [mapIsMoving, setMapIsMoving] = useState<boolean>(true)
+  // const [tooltip, setTooltip] = useState<Types.PopupSettings | null>(null)
 
   // TODO: mobile:
   const shouldFlyHome = useZoomToLangFeatsExtent(panelOpen, isMapTilted, map)
-  const boundaryPopup = useBoundaryPopup(panelOpen, clickedBoundary, map)
 
   // TODO: rm if not needed for hover/popup stuff
-  // const symbCache = cache.getQueryData([activeSymbGroupID, 'legend']) || []
   // const interactiveLayerIds = symbCache
 
   useEffect((): void => {
@@ -103,6 +89,10 @@ export const Map: FC<Types.MapProps> = (props) => {
       })
     }, 5)
   }, [isMapTilted])
+
+  useEffect(() => {
+    setShowPopups(true) // reset it on route change just in case X was clicked
+  }, [pathname])
 
   useEffect((): void => {
     if (!map) return
@@ -156,10 +146,22 @@ export const Map: FC<Types.MapProps> = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selFeatAttribs]) // LEGIT disabling of deps. Breaks otherwise.
 
+  useEffect(() => {
+    if (!map || !mapLoaded || !map.getLayer('neighborhoods-poly')) return
+
+    const sourceID = 'neighborhoods-new'
+    const sourceLayer = 'neighborhoods'
+
+    map.removeFeatureState({
+      sourceLayer,
+      source: sourceID,
+    })
+  }, [map, mapLoaded, pathname])
+
   const nuclearClear = () => {
-    setHidePopups({ boundaries: true, language: true })
+    // setShowPopups(false)
     setGeocodeMarker(null)
-    setTooltip(null)
+    // setTooltip(null) // TODO: restore
   }
 
   function onLoad(mapLoadEvent: MapLoadEvent) {
@@ -171,7 +173,8 @@ export const Map: FC<Types.MapProps> = (props) => {
     // Maintain viewport state sync if needed (e.g. after `flyTo`), otherwise
     // the map shifts back to previous position after panning or zooming.
     mapObj.on('moveend', function onMoveEnd(zoomEndEvent) {
-      setHidePopups({ boundaries: false, language: false })
+      // setShowPopups(true)
+      setMapIsMoving(false)
 
       // No custom event data, regular move event
       if (zoomEndEvent.forceViewportUpdate) {
@@ -187,7 +190,8 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     // Close popup on the start of moving so no jank
     mapObj.on('movestart', function onMoveStart(zoomEndEvent) {
-      setHidePopups({ boundaries: true, language: true })
+      // setShowPopups(false)
+      setMapIsMoving(true)
 
       if (zoomEndEvent.forceViewportUpdate) nuclearClear()
     })
@@ -205,7 +209,7 @@ export const Map: FC<Types.MapProps> = (props) => {
       const { geocodeMarker: geocodeMarkerParams } = customEventData
       // as MapTypes.CustomEventData // WHYYYY ERRORS
 
-      setHidePopups({ boundaries: false, language: false })
+      setMapIsMoving(false)
 
       if (geocodeMarkerParams) setGeocodeMarker(geocodeMarkerParams)
     })
@@ -256,14 +260,16 @@ export const Map: FC<Types.MapProps> = (props) => {
     const boundariesClicked = map.queryRenderedFeatures(event.point, {
       layers: ['neighborhoods-poly'], // TODO: make it work for all
     }) as Types.BoundaryFeat[]
-
+    // debugger
     if (!boundariesClicked.length) {
       history.push('/Explore/Language/none')
 
       return
     }
 
-    setClickedBoundary(boundariesClicked[0])
+    history.push(
+      `/Explore/Neighborhood/${boundariesClicked[0].properties?.name}`
+    )
   }
 
   function onMapCtrlClick(actionID: Types.MapControlAction) {
@@ -310,7 +316,7 @@ export const Map: FC<Types.MapProps> = (props) => {
           }}
         />
         {geocodeMarker && <GeocodeMarker {...geocodeMarker} />}
-        <NeighborhoodsLayer />
+        {mapLoaded && <NeighborhoodsLayer map={map} />}
         <CensusLayer
           map={map}
           config={config.pumaConfig}
@@ -324,22 +330,14 @@ export const Map: FC<Types.MapProps> = (props) => {
           sourceLayer={config.tractsLyrSrc['source-layer']}
         />
         <LangMbSrcAndLayer />
-        <Route path={`/Explore/Language/${selFeatAttribs?.Language}/:id`}>
-          {!hidePopups.language && <LanguagePopup settings={selFeatAttribs} />}
-        </Route>
-        {!hidePopups.boundaries && boundaryPopup && clickedBoundary && (
-          <MapPopup
-            {...boundaryPopup}
-            setVisible={() => {
-              setClickedBoundary(null)
-              setHidePopups({ ...hidePopups, boundaries: true })
-            }}
-          />
+        {showPopups && !mapIsMoving && (
+          <MapPopups setShowPopups={setShowPopups} />
         )}
         {/* Popups are annoying on mobile */}
-        {!isTouchEnabled() && tooltip && (
+        {/* TODO: RESTORE */}
+        {/* {!isTouchEnabled() && tooltip && (
           <MapPopup {...tooltip} setVisible={() => setTooltip(null)} />
-        )}
+        )} */}
       </MapGL>
       <MapCtrlBtns
         isMapTilted={isMapTilted}

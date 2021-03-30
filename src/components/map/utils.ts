@@ -96,22 +96,16 @@ export const prepPopupContent: Types.PrepPopupContent = (
 
 export const flyToBounds: Types.FlyToBounds = (
   map,
-  { height, width, bounds, offset },
-  popupContent
+  { height, width, bounds, offset }
 ) => {
-  let popupSettings = null
-
   const webMercViewport = new WebMercatorViewport({
     width,
     height,
   }).fitBounds(bounds, { offset, padding: 75 })
   const { latitude, longitude, zoom } = webMercViewport
 
-  if (popupContent) popupSettings = { latitude, longitude, ...popupContent }
-
   map.flyTo({ essential: true, zoom, center: [longitude, latitude], offset }, {
     forceViewportUpdate: true,
-    popupSettings,
   } as Types.CustomEventData)
 }
 
@@ -178,10 +172,11 @@ export const langFeatsUnderClick: Types.LangFeatsUnderClick = (
   )
 }
 
-export const clearBoundaries: Types.ClearStuff = (map) => {
+// TODO: restore or remove
+export const clearSelPolyFeats: Types.ClearStuff = (map) => {
   map.removeFeatureState({
-    source: config.neighSrcId,
-    sourceLayer: config.neighPolyID,
+    source: 'neighborhoods-new',
+    sourceLayer: 'neighborhoods',
   })
   // }, 'hover') // NOTE: could not get this to work properly anywhere
 
@@ -258,7 +253,7 @@ export const flyHome = (
   }
 
   // TODO: prevent errors on resize-while-loading
-  flyToBounds(map, settings, null)
+  flyToBounds(map, settings)
 }
 
 export const getFlyToPointSettings = (

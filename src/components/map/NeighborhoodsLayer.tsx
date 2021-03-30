@@ -1,7 +1,9 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
+import { useRouteMatch } from 'react-router-dom'
 import { Source, Layer } from 'react-map-gl'
 
 import { useMapToolsState } from 'components/context'
+import { NeighborhoodsLayerProps } from './types'
 
 const minZoom = 8
 const sourceID = 'neighborhoods-new'
@@ -20,16 +22,40 @@ const paint = {
   ],
 }
 
-export const NeighborhoodsLayer: FC = () => {
-  // const { beforeId, visible } = props
+export const NeighborhoodsLayer: FC<NeighborhoodsLayerProps> = (props) => {
+  const { map } = props
   const { showNeighbs } = useMapToolsState()
+  const match = useRouteMatch<{ neighborhood: string }>({
+    path: '/Explore/Neighborhood/:neighborhood',
+  })
+  const neighborhood = match?.params.neighborhood
+
+  useEffect(() => {
+    if (!map || !neighborhood) return
+
+    map.setFeatureState(
+      {
+        sourceLayer,
+        source: sourceID,
+        id: neighborhood,
+      },
+      { selected: true }
+    )
+  }, [map, match, neighborhood])
 
   // elalliance.ckmundquc1k5328ppob5a9wok-1kglp
   // if (!visible) return null
-  if (!showNeighbs) return null
+  // if (!showNeighbs) return null
 
   return (
-    <Source id={sourceID} url={url} type="vector">
+    <Source
+      id={sourceID}
+      url={url}
+      type="vector"
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore // promoteId is just not anywhere in the source...
+      promoteId="name"
+    >
       <Layer
         id="neighbs-placeholder"
         type="background"

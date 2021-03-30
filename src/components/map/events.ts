@@ -1,5 +1,6 @@
 import { InstanceLevelSchema } from 'components/context'
 
+import { MapboxGeoJSONFeature } from 'mapbox-gl'
 import { WebMercatorViewport } from 'react-map-gl'
 import * as utils from './utils'
 import * as MapTypes from './types'
@@ -16,6 +17,7 @@ export const onHoverOrig: MapTypes.OnHover = (
   interactiveLayerIds
 ) => {
   const { point, target } = event
+  const { boundaries } = interactiveLayerIds
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // not showing up even though it's typed... 🤔
@@ -24,7 +26,7 @@ export const onHoverOrig: MapTypes.OnHover = (
   // Close tooltip and clear stuff no matter what
   setTooltip(null)
 
-  if (interactiveLayerIds.boundaries.length) utils.clearBoundaries(map)
+  if (boundaries.length) utils.clearSelPolyFeats(map)
 
   const langsHovered = utils.langFeatsUnderClick(
     event.point,
@@ -32,13 +34,10 @@ export const onHoverOrig: MapTypes.OnHover = (
     interactiveLayerIds
   )
 
-  /* eslint-disable operator-linebreak */
-  const boundariesHovered = interactiveLayerIds.boundaries.length
-    ? map.queryRenderedFeatures(point, {
-        layers: interactiveLayerIds.boundaries,
-      })
-    : []
-  /* eslint-enable operator-linebreak */
+  let boundariesHovered: MapboxGeoJSONFeature[] = []
+
+  if (boundaries.length)
+    boundariesHovered = map.queryRenderedFeatures(point, { layers: boundaries })
 
   if (langsHovered.length || boundariesHovered.length) {
     target.style.cursor = 'pointer'
@@ -80,42 +79,29 @@ export const onHoverOrig: MapTypes.OnHover = (
   }
 }
 
-export const handleBoundaryClick: MapTypes.HandleBoundaryClick = (
+export const flyToClickedPolygon: MapTypes.HandleBoundaryClick = (
   map,
   topMostFeat,
   boundsConfig,
-  lookup,
   offset
 ) => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore // TODO: defeat
-  const sourceLayer = topMostFeat.layer['source-layer']
-
-  utils.clearBoundaries(map)
-
-  map.setFeatureState(
-    {
-      sourceLayer,
-      source: topMostFeat.source,
-      id: topMostFeat.id,
-    },
-    { selected: true }
-  )
-
-  const matchingRecord = lookup.find((record) => topMostFeat.id === record.id)
-
-  if (!matchingRecord) return null // ya never knowww
+  utils.clearSelPolyFeats(map)
 
   // NOTE: rather than storing bounds in the lookup tables, tried
   // `boundaryFeat.geometry` instead. Sort of worked but since vector tiles only
   // render what's needed, there's no guarantee the whole feature's bbox will be
   // available in the current view. And there doesn't seem to be a way to get
   // its full bounds other than the lookup tables. 😞
-  const { bounds, name } = matchingRecord
+  const {
+    x_max: xMax,
+    x_min: xMin,
+    y_min: yMin,
+    y_max: yMax,
+  } = topMostFeat.properties
   const { width, height } = boundsConfig
   const boundsArray = [
-    [bounds[0], bounds[1]],
-    [bounds[2], bounds[3]],
+    [xMin, yMin],
+    [xMax, yMax],
   ] as MapTypes.BoundsArray
 
   const settings = {
@@ -131,7 +117,7 @@ export const handleBoundaryClick: MapTypes.HandleBoundaryClick = (
     height,
   }).fitBounds(boundsArray, { offset, padding: 75 })
 
-  utils.flyToBounds(map, settings, { heading: name || '' })
+  utils.flyToBounds(map, settings)
 
-  return { heading: name || '', ...webMercViewport }
+  return { ...webMercViewport }
 }

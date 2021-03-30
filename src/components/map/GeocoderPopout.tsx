@@ -48,7 +48,7 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
         offset,
       }
 
-      flyToBounds(map, settings, null)
+      flyToBounds(map, settings)
     } else {
       const settings = {
         latitude: center[1],

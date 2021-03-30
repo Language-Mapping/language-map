@@ -82,7 +82,13 @@ export type BoundaryFeat = Omit<
   'properties' | 'geometry' | 'source'
 > & {
   geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon
-  properties: { Name: string; ID: number }
+  properties: {
+    name: string
+    x_max: number
+    x_min: number
+    y_min: number
+    y_max: number
+  }
   source: BoundariesInternalSrcID
   'source-layer': string
 }
@@ -131,6 +137,10 @@ export type CensusLayerProps = {
   sourceLayer: string
   config: Omit<BoundaryConfig, 'lookupPath'>
   beforeId?: string
+  map?: Map
+}
+
+export type NeighborhoodsLayerProps = {
   map?: Map
 }
 
@@ -184,17 +194,15 @@ export type HandleBoundaryClick = (
   map: Map,
   topMostFeat: BoundaryFeat,
   boundsConfig: BoundsConfig,
-  lookup: BoundaryLookup[],
   offset?: [number, number]
-) => PopupSettings | null
+) => LongLat | null
 
 export type FlyToBounds = (
   map: Map,
   settings: BoundsConfig & {
     bounds: BoundsArray
     offset: [number, number]
-  },
-  popupContent: PopupContent | null
+  }
 ) => void
 
 export type FlyToPoint = (
@@ -235,9 +243,9 @@ export type UseLayersConfig = {
   error: unknown
 }
 
-export type MapPopupProps = PopupSettings & {
-  setVisible: () => void
-}
+// Not a component, but shared by several
+export type SetShowPopupsProps = { setShowPopups: React.Dispatch<boolean> }
+export type MapPopupProps = PopupSettings & SetShowPopupsProps
 
 export type SelFeatAttribs = InternalUse &
   Pick<InstanceLevelSchema, 'Language' | 'Endonym' | 'Font Image Alt'>
@@ -251,11 +259,11 @@ export type FlyToPointSettings = {
   offset: Offset
 }
 
-export type UseBoundaryPopup = (
+export type UsePolygonCenter = (
   panelOpen: boolean,
   clickedBoundary?: BoundaryFeat | null,
   map?: Map
-) => PopupSettings | null
+) => LongLat | null
 
 export type UseZoomToLangFeatsExtent = (
   panelOpen: boolean,
@@ -284,3 +292,9 @@ export type UseCensusSymb = (
   censusScope: CensusScope,
   map?: Map
 ) => UseCensusSymbReturn
+
+export type UsePopupFeatDetailsReturn = {
+  selFeatAttribs?: SelFeatAttribs
+  error: unknown
+  isLoading: boolean
+}

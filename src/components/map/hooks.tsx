@@ -1,10 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
-import { useQueryCache } from 'react-query'
-import * as stats from 'simple-statistics'
 import { WebMercatorViewport } from 'react-map-gl'
 import { FillPaint, LngLatBounds } from 'mapbox-gl'
-
 import { useTheme } from '@material-ui/core/styles'
+import * as stats from 'simple-statistics'
 
 import { panelWidths } from 'components/panels/config'
 import {
@@ -21,7 +19,7 @@ import { routes } from 'components/config/api'
 import { useWindowResize } from '../../utils'
 import { iconStyleOverride, POINT_ZOOM_LEVEL } from './config'
 import { flyToPoint, flyToBounds } from './utils'
-import { handleBoundaryClick } from './events'
+import { flyToClickedPolygon } from './events'
 
 import * as Types from './types'
 import * as utils from './utils'
@@ -128,16 +126,11 @@ const createLayerStyles = (
     },
   }))
 
-export type UsePopupFeatDetailsReturn = {
-  selFeatAttribs?: Types.SelFeatAttribs
-  error: unknown
-  isLoading: boolean
-}
-
-export const usePopupFeatDetails = (): UsePopupFeatDetailsReturn => {
+export const usePopupFeatDetails = (): Types.UsePopupFeatDetailsReturn => {
   const match = useRouteMatch<{ id: string }>({
     path: '/Explore/Language/:language/:id',
   })
+
   const fields: Array<Extract<keyof InstanceLevelSchema, string>> = [
     'Language',
     'Endonym',
@@ -163,34 +156,24 @@ export const usePopupFeatDetails = (): UsePopupFeatDetailsReturn => {
 }
 
 // Set popup heading and lat/lng for Neighborhood or County click
-export const useBoundaryPopup: Types.UseBoundaryPopup = (
+export const usePolygonCenter: Types.UsePolygonCenter = (
   panelOpen,
   clickedBoundary,
   map
 ) => {
-  const cache = useQueryCache()
   const offset = useOffset(panelOpen)
-
-  const [
-    boundaryPopup,
-    setBoundaryPopup,
-  ] = useState<Types.PopupSettings | null>(null)
+  const [boundaryPopup, setBoundaryPopup] = useState<Types.LongLat | null>(null)
 
   useEffect((): void => {
     if (!map || !clickedBoundary) return
 
-    const boundaryData = cache.getQueryData(
-      clickedBoundary.source
-    ) as Types.BoundaryLookup[]
-
-    const boundaryPopupSettings = handleBoundaryClick(
+    const boundaryPopupSettings = flyToClickedPolygon(
       map,
       clickedBoundary,
       {
         height: window.innerHeight as number,
         width: window.innerWidth as number,
       },
-      boundaryData,
       offset
     )
 
@@ -252,16 +235,12 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
       new LngLatBounds(firstCoords, firstCoords)
     )
 
-    flyToBounds(
-      map,
-      {
-        height: window.innerHeight as number,
-        width: window.innerWidth as number,
-        bounds: bounds.toArray() as Types.BoundsArray,
-        offset,
-      },
-      null
-    )
+    flyToBounds(map, {
+      height: window.innerHeight as number,
+      width: window.innerWidth as number,
+      bounds: bounds.toArray() as Types.BoundsArray,
+      offset,
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [langFeatures.length])
 
