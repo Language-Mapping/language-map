@@ -27,6 +27,7 @@ export const NeighborhoodsLayer: FC<NeighborhoodsLayerProps> = (props) => {
   const { showNeighbs } = useMapToolsState()
   const match = useRouteMatch<{ neighborhood: string }>({
     path: '/Explore/Neighborhood/:neighborhood',
+    exact: true,
   })
   const neighborhood = match?.params.neighborhood
 

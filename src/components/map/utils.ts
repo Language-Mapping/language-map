@@ -1,5 +1,6 @@
 import { Map as MbMap, FillPaint, Layer, setRTLTextPlugin } from 'mapbox-gl'
 import { WebMercatorViewport } from 'react-map-gl'
+
 import * as Types from './types'
 import * as config from './config' // TODO: pass this as fn args, don't import
 
@@ -112,7 +113,6 @@ export const flyToBounds: Types.FlyToBounds = (
 export const flyToPoint: Types.FlyToPoint = (
   map,
   settings,
-  popupContent,
   geocodeMarkerText
 ) => {
   const {
@@ -125,17 +125,14 @@ export const flyToPoint: Types.FlyToPoint = (
     zoom: targetZoom,
   } = settings
   let zoom = targetZoom
-  let popupSettings = null
 
   const currentZoom = map.getZoom()
 
   // Only zoom to the default if current zoom is higher than that
   if (disregardCurrZoom && currentZoom > targetZoom) zoom = currentZoom
-  if (popupContent) popupSettings = { latitude, longitude, ...popupContent }
 
   const customEventData = {
     forceViewportUpdate: true,
-    popupSettings,
   } as Types.CustomEventData
 
   if (geocodeMarkerText) {
@@ -180,10 +177,11 @@ export const clearSelPolyFeats: Types.ClearStuff = (map) => {
   })
   // }, 'hover') // NOTE: could not get this to work properly anywhere
 
-  map.removeFeatureState({
-    source: config.countiesSrcId,
-    sourceLayer: config.countiesPolyID,
-  })
+  // TODO: make super generic
+  // map.removeFeatureState({
+  //   source: config.countiesSrcId,
+  //   sourceLayer: config.countiesPolyID,
+  // })
 }
 
 // Set up Mapbox font filters for languages with complex endonym characters. In
@@ -300,4 +298,25 @@ export const rightToLeftSetup = (): void => {
       true // lazy: only load when the map first encounters Hebrew or Arabic text
     )
   }
+}
+
+export const getPolyWebMercView: Types.GetPolyWebMercView = (
+  boundsArray,
+  offset
+) => {
+  // NOTE: rather than storing bounds in the lookup tables, tried
+  // `boundaryFeat.geometry` instead. Sort of worked but since vector tiles only
+  // render what's needed, there's no guarantee the whole feature's bbox will be
+  // available in the current view. And there doesn't seem to be a way to get
+  // its full bounds other than the lookup tables. 😞
+
+  const height = window.innerHeight
+  const width = window.innerWidth
+
+  const webMercViewport = new WebMercatorViewport({
+    width,
+    height,
+  }).fitBounds(boundsArray, { offset, padding: 75 })
+
+  return { ...webMercViewport }
 }

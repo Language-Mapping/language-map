@@ -16,10 +16,10 @@ import { useAirtable } from 'components/explore/hooks'
 import { useLocation, useRouteMatch } from 'react-router-dom'
 import { AIRTABLE_CENSUS_BASE } from 'components/config'
 import { routes } from 'components/config/api'
+import { usePanelState } from 'components/panels'
 import { useWindowResize } from '../../utils'
 import { iconStyleOverride, POINT_ZOOM_LEVEL } from './config'
 import { flyToPoint, flyToBounds } from './utils'
-import { flyToClickedPolygon } from './events'
 
 import * as Types from './types'
 import * as utils from './utils'
@@ -155,42 +155,40 @@ export const usePopupFeatDetails = (): Types.UsePopupFeatDetailsReturn => {
   return { selFeatAttribs: data[0], error, isLoading }
 }
 
-// Set popup heading and lat/lng for Neighborhood or County click
-export const usePolygonCenter: Types.UsePolygonCenter = (
-  panelOpen,
-  clickedBoundary,
-  map
-) => {
-  const offset = useOffset(panelOpen)
-  const [boundaryPopup, setBoundaryPopup] = useState<Types.LongLat | null>(null)
+export const usePolygonWebMerc = (): Types.BoundsArray | undefined => {
+  const match = useRouteMatch<{ name: string }>({
+    path: '/Explore/Neighborhood/:name',
+    exact: true,
+  })
 
-  useEffect((): void => {
-    if (!map || !clickedBoundary) return
+  const { data, isLoading, error } = useAirtable<Types.NeighborhoodTableSchema>(
+    'Neighborhood',
+    {
+      fields: ['x_max', 'x_min', 'y_min', 'y_max'],
+      filterByFormula: `{name} = "${match?.params.name}"`,
+      maxRecords: 1,
+    },
+    {
+      enabled: match?.params?.name !== undefined,
+    }
+  )
 
-    const boundaryPopupSettings = flyToClickedPolygon(
-      map,
-      clickedBoundary,
-      {
-        height: window.innerHeight as number,
-        width: window.innerWidth as number,
-      },
-      offset
-    )
+  if (isLoading || error || !data.length) return undefined
 
-    if (boundaryPopupSettings) setBoundaryPopup(boundaryPopupSettings)
-    // I don't get this rule. It works fine alllll the time here.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clickedBoundary])
+  const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = data[0]
 
-  return boundaryPopup
+  return [
+    [xMin, yMin],
+    [xMax, yMax],
+  ]
 }
 
 // Fly to extent of lang features on length change
 export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
-  panelOpen,
   isMapTilted,
   map
 ) => {
+  const { panelOpen } = usePanelState()
   const { state } = useContext(GlobalContext)
   const { langFeatures, langFeatsLenCache } = state
   const offset = useOffset(panelOpen)
@@ -215,17 +213,13 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
 
     // Zooming to "bounds" gets crazy if there is only one feature
     if (langFeatures.length === 1) {
-      flyToPoint(
-        map,
-        {
-          latitude: firstCoords[1],
-          longitude: firstCoords[0],
-          zoom: POINT_ZOOM_LEVEL,
-          pitch: isMapTilted ? 80 : 0,
-          offset,
-        },
-        null
-      )
+      flyToPoint(map, {
+        latitude: firstCoords[1],
+        longitude: firstCoords[0],
+        zoom: POINT_ZOOM_LEVEL,
+        pitch: isMapTilted ? 80 : 0,
+        offset,
+      })
 
       return
     }

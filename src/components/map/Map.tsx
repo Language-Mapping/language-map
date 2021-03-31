@@ -26,6 +26,7 @@ import {
   useOffset,
   useBreakpoint,
   useZoomToLangFeatsExtent,
+  usePolygonWebMerc,
 } from './hooks'
 // TODO: restore:
 // import { getAllLangFeatIDs, isTouchEnabled } from '../../utils'
@@ -40,38 +41,61 @@ const { langTypeIconsConfig } = config
 utils.rightToLeftSetup()
 
 export const Map: FC<Types.MapProps> = (props) => {
-  const history = useHistory()
   const { mapLoaded, mapRef, setMapLoaded } = props
-  const { pathname } = useLocation()
-  const map: MbMap | undefined = mapRef.current?.getMap()
-  const { selFeatAttribs } = usePopupFeatDetails()
-  const { panelOpen } = usePanelState()
-  const { state } = useContext(GlobalContext)
+  const loc = useLocation()
+
   const { autoZoomCensus, censusActiveField, showNeighbs } = useMapToolsState()
-  const offset = useOffset(panelOpen)
-  const breakpoint = useBreakpoint()
+  const { panelOpen } = usePanelState()
+  const { pathname } = loc
+  const { selFeatAttribs } = usePopupFeatDetails()
+  const { state } = useContext(GlobalContext)
   const { langFeatures, filterHasRun } = state
+
+  const breakpoint = useBreakpoint()
+  const history = useHistory()
+  const map: MbMap | undefined = mapRef.current?.getMap()
+  const offset = useOffset(panelOpen)
+  const polygonWebMerc = usePolygonWebMerc()
+
   const [beforeId, setBeforeId] = useState<string>('background')
   const [isMapTilted, setIsMapTilted] = useState<boolean>(false)
+  const [mapIsMoving, setMapIsMoving] = useState<boolean>(false)
+  const [showPopups, setShowPopups] = useState<boolean>(true)
 
   const [
     geocodeMarker,
     setGeocodeMarker,
-  ] = useState<Types.GeocodeMarker | null>()
+  ] = useState<Types.GeocodeMarkerProps | null>()
   const [viewport, setViewport] = useState<Types.ViewportState>(
     config.initialMapState
   )
-  const [showPopups, setShowPopups] = useState<boolean>(true)
-  const [mapIsMoving, setMapIsMoving] = useState<boolean>(true)
+
+  // TODO: use <Marker> instead of <Popup> if possible to clear text easily
   // const [tooltip, setTooltip] = useState<Types.PopupSettings | null>(null)
 
   // TODO: mobile:
-  const shouldFlyHome = useZoomToLangFeatsExtent(panelOpen, isMapTilted, map)
+  const shouldFlyHome = useZoomToLangFeatsExtent(isMapTilted, map)
 
   // TODO: rm if not needed for hover/popup stuff
   // const interactiveLayerIds = symbCache
 
-  useEffect((): void => {
+  useEffect(() => {
+    if (!map || !polygonWebMerc) return
+
+    utils.clearSelPolyFeats(map) // TODO: remove if not needed
+
+    const webMercViewport = utils.getPolyWebMercView(polygonWebMerc, offset)
+    const { zoom, longitude, latitude } = webMercViewport
+
+    map.flyTo(
+      { essential: true, zoom, center: [longitude, latitude], offset },
+      {
+        forceViewportUpdate: true,
+      } as Types.CustomEventData
+    )
+  }, [loc])
+
+  useEffect(() => {
     if (!map) return
 
     if (isMapTilted) map.setPitch(80, { forceViewportUpdate: true })
@@ -92,6 +116,7 @@ export const Map: FC<Types.MapProps> = (props) => {
 
   useEffect(() => {
     setShowPopups(true) // reset it on route change just in case X was clicked
+    setGeocodeMarker(null) // TODO: confirm this approach. Same as current tho
   }, [pathname])
 
   useEffect((): void => {
@@ -142,7 +167,7 @@ export const Map: FC<Types.MapProps> = (props) => {
       isMapTilted
     )
 
-    utils.flyToPoint(map, settings, null)
+    utils.flyToPoint(map, settings)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selFeatAttribs]) // LEGIT disabling of deps. Breaks otherwise.
 
@@ -158,10 +183,11 @@ export const Map: FC<Types.MapProps> = (props) => {
     })
   }, [map, mapLoaded, pathname])
 
+  // TODO: rm or restore this whole thing or parts
   const nuclearClear = () => {
     // setShowPopups(false)
-    setGeocodeMarker(null)
-    // setTooltip(null) // TODO: restore
+    // setGeocodeMarker(null)
+    // setTooltip(null)
   }
 
   function onLoad(mapLoadEvent: MapLoadEvent) {
@@ -174,6 +200,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     // the map shifts back to previous position after panning or zooming.
     mapObj.on('moveend', function onMoveEnd(zoomEndEvent) {
       // setShowPopups(true)
+
       setMapIsMoving(false)
 
       // No custom event data, regular move event
@@ -189,11 +216,12 @@ export const Map: FC<Types.MapProps> = (props) => {
     })
 
     // Close popup on the start of moving so no jank
+    // TODO: rm/restore commented
     mapObj.on('movestart', function onMoveStart(zoomEndEvent) {
       // setShowPopups(false)
       setMapIsMoving(true)
 
-      if (zoomEndEvent.forceViewportUpdate) nuclearClear()
+      // if (zoomEndEvent.forceViewportUpdate) nuclearClear()
     })
 
     mapObj.on('sourcedata', function onStyleData(e) {
@@ -226,7 +254,7 @@ export const Map: FC<Types.MapProps> = (props) => {
         isMapTilted
       )
 
-      utils.flyToPoint(mapObj, settings, null)
+      utils.flyToPoint(mapObj, settings)
     } else {
       utils.flyHome(mapObj, nuclearClear, offset)
     }
@@ -315,7 +343,8 @@ export const Map: FC<Types.MapProps> = (props) => {
             setViewport({ ...mapViewport, zoom: config.POINT_ZOOM_LEVEL })
           }}
         />
-        {geocodeMarker && <GeocodeMarker {...geocodeMarker} />}
+        {/* TODO: hide label on clear */}
+        {geocodeMarker && !mapIsMoving && <GeocodeMarker {...geocodeMarker} />}
         {mapLoaded && <NeighborhoodsLayer map={map} />}
         <CensusLayer
           map={map}

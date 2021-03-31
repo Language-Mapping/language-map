@@ -6,7 +6,7 @@ import { Typography } from '@material-ui/core'
 
 import { InstanceLevelSchema } from 'components/context'
 import { useAirtable } from 'components/explore/hooks'
-import { MapPopupProps, SetShowPopupsProps } from './types'
+import { MapPopupProps, MapPopupsProps, NeighborhoodTableSchema } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -72,7 +72,7 @@ export const MapPopup: FC<MapPopupProps> = (props) => {
   )
 }
 
-const LanguagePopup: FC<SetShowPopupsProps> = (props) => {
+const LanguagePopup: FC<Pick<MapPopupsProps, 'setShowPopups'>> = (props) => {
   const { setShowPopups } = props
   const { id } = useParams<{ id: string }>()
 
@@ -97,16 +97,7 @@ const LanguagePopup: FC<SetShowPopupsProps> = (props) => {
   )
 }
 
-export type NeighborhoodTableSchema = {
-  name: string
-  County: string // or NYC borough
-  x_max: number
-  x_min: number
-  y_min: number
-  y_max: number
-}
-
-const NeighborhoodPopup: FC<SetShowPopupsProps> = (props) => {
+const NeighborhoodPopup: FC<MapPopupsProps> = (props) => {
   const { setShowPopups } = props
   const { name } = useParams<{ name: string }>()
 
@@ -143,7 +134,7 @@ const NeighborhoodPopup: FC<SetShowPopupsProps> = (props) => {
   )
 }
 
-export const MapPopups: FC<SetShowPopupsProps> = (props) => {
+export const MapPopups: FC<MapPopupsProps> = (props) => {
   const { setShowPopups } = props
 
   return (

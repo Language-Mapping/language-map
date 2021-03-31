@@ -58,7 +58,7 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
         offset,
       }
 
-      flyToPoint(map, settings, null, text)
+      flyToPoint(map, settings, text)
     }
   }
 

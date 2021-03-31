@@ -31,7 +31,7 @@ type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
 }
 
 export type BoundsArray = [[number, number], [number, number]]
-export type GeocodeMarker = LongLat & { text: string }
+export type GeocodeMarkerProps = LongLat & { text: string }
 export type InitialMapProps = InteractiveMapProps
 export type LangIconConfig = { icon: string; id: string }
 export type LayerBasics = { 'source-layer': string; id: string }
@@ -180,9 +180,8 @@ export type BoundaryLookup = {
 }
 
 export type CustomEventData = MapEventType & {
-  popupSettings: PopupSettings | null
   forceViewportUpdate?: boolean | true
-  geocodeMarker?: GeocodeMarker
+  geocodeMarker?: GeocodeMarkerProps
 }
 
 export type PrepPopupContent = (
@@ -190,12 +189,10 @@ export type PrepPopupContent = (
   popupHeading?: string | null
 ) => PopupContent | null
 
-export type HandleBoundaryClick = (
-  map: Map,
-  topMostFeat: BoundaryFeat,
-  boundsConfig: BoundsConfig,
+export type GetPolyWebMercView = (
+  boundsArray: BoundsArray,
   offset?: [number, number]
-) => LongLat | null
+) => LongLatAndZoom
 
 export type FlyToBounds = (
   map: Map,
@@ -213,7 +210,6 @@ export type FlyToPoint = (
     pitch?: number
     offset: [number, number]
   },
-  popupContent: PopupContent | null,
   geocodeMarkerText?: string
 ) => void
 
@@ -244,8 +240,12 @@ export type UseLayersConfig = {
 }
 
 // Not a component, but shared by several
-export type SetShowPopupsProps = { setShowPopups: React.Dispatch<boolean> }
-export type MapPopupProps = PopupSettings & SetShowPopupsProps
+export type MapPopupsProps = {
+  setShowPopups: React.Dispatch<boolean>
+}
+
+export type MapPopupProps = PopupSettings &
+  Pick<MapPopupsProps, 'setShowPopups'>
 
 export type SelFeatAttribs = InternalUse &
   Pick<InstanceLevelSchema, 'Language' | 'Endonym' | 'Font Image Alt'>
@@ -266,7 +266,6 @@ export type UsePolygonCenter = (
 ) => LongLat | null
 
 export type UseZoomToLangFeatsExtent = (
-  panelOpen: boolean,
   isMapTilted: boolean,
   map?: Map
 ) => boolean
@@ -297,4 +296,13 @@ export type UsePopupFeatDetailsReturn = {
   selFeatAttribs?: SelFeatAttribs
   error: unknown
   isLoading: boolean
+}
+
+export type NeighborhoodTableSchema = {
+  name: string
+  County: string // or NYC borough
+  x_max: number
+  x_min: number
+  y_min: number
+  y_max: number
 }

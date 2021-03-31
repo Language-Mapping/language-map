@@ -1,7 +1,6 @@
 import { InstanceLevelSchema } from 'components/context'
 
 import { MapboxGeoJSONFeature } from 'mapbox-gl'
-import { WebMercatorViewport } from 'react-map-gl'
 import * as utils from './utils'
 import * as MapTypes from './types'
 
@@ -77,47 +76,4 @@ export const onHoverOrig: MapTypes.OnHover = (
       { hover: true }
     )
   }
-}
-
-export const flyToClickedPolygon: MapTypes.HandleBoundaryClick = (
-  map,
-  topMostFeat,
-  boundsConfig,
-  offset
-) => {
-  utils.clearSelPolyFeats(map)
-
-  // NOTE: rather than storing bounds in the lookup tables, tried
-  // `boundaryFeat.geometry` instead. Sort of worked but since vector tiles only
-  // render what's needed, there's no guarantee the whole feature's bbox will be
-  // available in the current view. And there doesn't seem to be a way to get
-  // its full bounds other than the lookup tables. 😞
-  const {
-    x_max: xMax,
-    x_min: xMin,
-    y_min: yMin,
-    y_max: yMax,
-  } = topMostFeat.properties
-  const { width, height } = boundsConfig
-  const boundsArray = [
-    [xMin, yMin],
-    [xMax, yMax],
-  ] as MapTypes.BoundsArray
-
-  const settings = {
-    height,
-    width,
-    bounds: boundsArray,
-    padding: 50,
-    offset: offset || [0, 0],
-  }
-
-  const webMercViewport = new WebMercatorViewport({
-    width,
-    height,
-  }).fitBounds(boundsArray, { offset, padding: 75 })
-
-  utils.flyToBounds(map, settings)
-
-  return { ...webMercViewport }
 }
