@@ -14,13 +14,14 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: '0.75rem',
     },
     titleAndIcon: {
+      alignItems: 'center',
       display: 'flex',
       fontSize: '2rem',
-      lineHeight: 1.25,
-      alignItems: 'center',
-      textShadow: '1px 1px 3px hsla(0, 0%, 0%, 0.45)',
       justifyContent: 'center',
+      lineHeight: 1.25,
+      marginBottom: '0.5rem',
       textAlign: 'center',
+      textShadow: '1px 1px 3px hsla(0, 0%, 0%, 0.45)',
       '& svg': {
         color: theme.palette.text.secondary,
       },
@@ -34,10 +35,11 @@ const useStyles = makeStyles((theme: Theme) =>
     // },
     // e.g. Endonym
     subtitle: {
-      fontSize: '1.25rem',
-      marginTop: 0,
-      lineHeight: 1,
       color: theme.palette.text.secondary,
+      fontSize: '1.25rem',
+      lineHeight: 1,
+      marginTop: 0,
+      textAlign: 'center',
     },
     // e.g. glotto/iso/global speakers
     subSubtitle: {

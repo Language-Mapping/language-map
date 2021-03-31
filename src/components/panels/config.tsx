@@ -7,6 +7,8 @@ import {
   LangCardsList,
   MidLevelExplore,
   ExploreLanding,
+  NeighborhoodsLanding,
+  NeighborhoodsInstance,
 } from 'components/explore'
 import { MapPanel } from 'components/panels/types'
 import { LegendPanel } from 'components/legend'
@@ -65,6 +67,16 @@ export const nonNavRoutesConfig = [
   {
     component: <LangCardsList field="Language" />, // set field explicitly
     rootPath: '/Explore/Language/:language',
+  },
+  {
+    component: <NeighborhoodsLanding />,
+    rootPath: '/Explore/Neighborhood',
+    exact: true,
+  },
+  {
+    component: <NeighborhoodsInstance />,
+    rootPath: '/Explore/Neighborhood/:value',
+    exact: true,
   },
   {
     component: <LangCardsList />,

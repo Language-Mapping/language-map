@@ -44,7 +44,7 @@ export const ExploreLanding: FC<MidLevelExploreProps> = (props) => {
   return (
     <>
       <BasicExploreIntro introParagraph={landingData[0]?.definition} />
-      <CardList data={instanceData} tableName={tableName} />
+      <CardList data={instanceData} />
     </>
   )
 }

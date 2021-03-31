@@ -33,10 +33,8 @@ export const CardListWrap: FC = (props) => {
 
 // TODO: https://react-window.now.sh/#/examples/list/fixed-size
 // Simple grid wrapper designed for Card children
-export const CardList: FC<{ data: TonsWithAddl[]; tableName: string }> = (
-  props
-) => {
-  const { data, tableName } = props
+export const CardList: FC<{ data: TonsWithAddl[] }> = (props) => {
+  const { data } = props
   const classes = useStyles()
   const { field, value } = useParams<RouteMatch & { value: string }>()
   const { url } = useRouteMatch()
@@ -50,8 +48,8 @@ export const CardList: FC<{ data: TonsWithAddl[]; tableName: string }> = (
         return (
           <CustomCard
             key={nameOrLang}
-            intro={value}
-            title={tableName === 'Language' ? row.Endonym : nameOrLang}
+            intro={nameOrLang}
+            title={row.Endonym}
             uniqueInstances={uniqueInstances}
             url={`${url}/${nameOrLang}`}
             // TODO: use and refactor SwatchOrFlagOrIcon for icon prop

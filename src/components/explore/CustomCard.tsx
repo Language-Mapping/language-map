@@ -58,6 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.secondary,
       display: 'inline-flex',
       fontSize: '0.5em',
+
       '& svg': {
         marginRight: '0.25em',
         fontSize: '1.25em',
@@ -126,9 +127,18 @@ export const CustomCard: FC<Types.CustomCardProps> = (props) => {
         variant="caption"
         className={classes.footer}
       >
-        {footer ||
-          (uniqueInstances !== undefined &&
-            utils.prettyTruncate(uniqueInstances as string[]))}
+        <footer
+          style={{
+            display: '-webkit-box',
+            overflow: 'hidden',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: 3,
+          }}
+        >
+          {footer ||
+            (uniqueInstances !== undefined &&
+              utils.prettyTruncate(uniqueInstances as string[]))}
+        </footer>
       </Typography>
     </Card>
   )

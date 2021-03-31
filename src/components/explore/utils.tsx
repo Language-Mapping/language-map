@@ -84,7 +84,7 @@ export const prepFields = (
   } = {
     'World Region': [...landingFields, 'icon-color'],
     Country: [...landingFields, 'src_image'],
-    Neighborhood: [...landingFields, 'Additional Languages'],
+    Neighborhood: [...landingFields, 'Additional Languages', 'County'],
   }
 
   if (addlFields[tableName] !== undefined) return addlFields[tableName]

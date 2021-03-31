@@ -7,5 +7,7 @@ export * from './ExploreLanding'
 export * from './LangCardsList'
 export * from './LangProfileDescrip'
 export * from './MidLevelExplore'
+export * from './NeighborhoodsInstance'
+export * from './NeighborhoodsLanding'
 
 export * from './types'
