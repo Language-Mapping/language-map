@@ -31,7 +31,7 @@ type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
 }
 
 export type BoundsArray = [[number, number], [number, number]]
-export type GeocodeMarker = LongLat & { text: string }
+export type GeocodeMarkerProps = LongLat & { text: string }
 export type InitialMapProps = InteractiveMapProps
 export type LangIconConfig = { icon: string; id: string }
 export type LayerBasics = { 'source-layer': string; id: string }
@@ -82,7 +82,13 @@ export type BoundaryFeat = Omit<
   'properties' | 'geometry' | 'source'
 > & {
   geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon
-  properties: { Name: string; ID: number }
+  properties: {
+    name: string
+    x_max: number
+    x_min: number
+    y_min: number
+    y_max: number
+  }
   source: BoundariesInternalSrcID
   'source-layer': string
 }
@@ -134,6 +140,12 @@ export type CensusLayerProps = {
   map?: Map
 }
 
+export type NeighborhoodsLayerProps = {
+  mapLoaded: boolean
+  beforeId?: string
+  map?: Map
+}
+
 export type MapProps = {
   mapLoaded: boolean
   setMapLoaded: React.Dispatch<boolean>
@@ -170,9 +182,8 @@ export type BoundaryLookup = {
 }
 
 export type CustomEventData = MapEventType & {
-  popupSettings: PopupSettings | null
   forceViewportUpdate?: boolean | true
-  geocodeMarker?: GeocodeMarker
+  geocodeMarker?: GeocodeMarkerProps
 }
 
 export type PrepPopupContent = (
@@ -180,21 +191,17 @@ export type PrepPopupContent = (
   popupHeading?: string | null
 ) => PopupContent | null
 
-export type HandleBoundaryClick = (
-  map: Map,
-  topMostFeat: BoundaryFeat,
-  boundsConfig: BoundsConfig,
-  lookup: BoundaryLookup[],
+export type GetPolyWebMercView = (
+  boundsArray: BoundsArray,
   offset?: [number, number]
-) => PopupSettings | null
+) => LongLatAndZoom
 
 export type FlyToBounds = (
   map: Map,
   settings: BoundsConfig & {
     bounds: BoundsArray
     offset: [number, number]
-  },
-  popupContent: PopupContent | null
+  }
 ) => void
 
 export type FlyToPoint = (
@@ -205,7 +212,6 @@ export type FlyToPoint = (
     pitch?: number
     offset: [number, number]
   },
-  popupContent: PopupContent | null,
   geocodeMarkerText?: string
 ) => void
 
@@ -235,12 +241,15 @@ export type UseLayersConfig = {
   error: unknown
 }
 
-export type MapPopupProps = PopupSettings & {
-  setVisible: () => void
+// Not a component, but shared by several
+export type MapPopupsProps = {
+  setShowPopups: React.Dispatch<boolean>
 }
 
-export type SelFeatAttribs = InternalUse &
-  Pick<InstanceLevelSchema, 'Language' | 'Endonym' | 'Font Image Alt'>
+export type MapPopupProps = PopupSettings &
+  Pick<MapPopupsProps, 'setShowPopups'>
+
+export type SelFeatAttribs = InternalUse
 
 export type FlyToPointSettings = {
   longitude: number
@@ -251,14 +260,13 @@ export type FlyToPointSettings = {
   offset: Offset
 }
 
-export type UseBoundaryPopup = (
+export type UsePolygonCenter = (
   panelOpen: boolean,
   clickedBoundary?: BoundaryFeat | null,
   map?: Map
-) => PopupSettings | null
+) => LongLat | null
 
 export type UseZoomToLangFeatsExtent = (
-  panelOpen: boolean,
   isMapTilted: boolean,
   map?: Map
 ) => boolean
@@ -284,3 +292,24 @@ export type UseCensusSymb = (
   censusScope: CensusScope,
   map?: Map
 ) => UseCensusSymbReturn
+
+export type UseSelLangPointCoordsReturn = {
+  lat: number | null
+  lon: number | null
+}
+
+export type UsePolygonWebMerc = {
+  x_max: number | null
+  x_min: number | null
+  y_min: number | null
+  y_max: number | null
+}
+
+export type NeighborhoodTableSchema = {
+  name: string
+  County: string // or NYC borough
+  x_max: number
+  x_min: number
+  y_min: number
+  y_max: number
+}

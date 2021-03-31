@@ -24,7 +24,7 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
   const { width, height } = useWindowResize()
   const offset = useOffset(panelOpen)
-  const { boundariesVisible } = useMapToolsState()
+  const { showNeighbs } = useMapToolsState()
   const mapToolsDispatch = useMapToolsDispatch()
   const { text: placeholderText } = useUItext('loc-search-placeholder')
 
@@ -48,7 +48,7 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
         offset,
       }
 
-      flyToBounds(map, settings, null)
+      flyToBounds(map, settings)
     } else {
       const settings = {
         latitude: center[1],
@@ -58,25 +58,25 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
         offset,
       }
 
-      flyToPoint(map, settings, null, text)
+      flyToPoint(map, settings, text)
     }
   }
 
-  const handleBoundariesToggle = () => {
+  const handleNeighborhoodsToggle = () => {
     mapToolsDispatch({
-      type: 'SET_BOUNDARIES_VISIBLE',
-      payload: !boundariesVisible,
+      type: 'TOGGLE_NEIGHBORHOODS_LAYER',
     })
   }
 
   const ControlLabel = (
     <div className={classes.controlLabel}>
-      Show neighborhoods and counties
+      Show neighborhoods
       <SimplePopover
         text={
           <>
-            Neighborhoods are shown within NYC's five boroughs, and counties for
-            the surrounding areas. <em>Source: NYC Census 2020 map</em>
+            Neighborhoods are shown within NYC's five boroughs, and counties
+            (coming soon) for the surrounding areas.{' '}
+            <em>Source: NYC Census 2020 map</em>
           </>
         }
       />
@@ -93,8 +93,8 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
         classes={{ label: smallerText, root: switchFormCtrlRoot }}
         control={
           <Switch
-            checked={boundariesVisible}
-            onChange={handleBoundariesToggle}
+            checked={showNeighbs}
+            onChange={handleNeighborhoodsToggle}
             name="show-welcome-switch"
             size="small"
           />

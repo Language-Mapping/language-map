@@ -1,10 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
-import { useQueryCache } from 'react-query'
-import * as stats from 'simple-statistics'
 import { WebMercatorViewport } from 'react-map-gl'
 import { FillPaint, LngLatBounds } from 'mapbox-gl'
-
 import { useTheme } from '@material-ui/core/styles'
+import * as stats from 'simple-statistics'
 
 import { panelWidths } from 'components/panels/config'
 import {
@@ -18,10 +16,10 @@ import { useAirtable } from 'components/explore/hooks'
 import { useLocation, useRouteMatch } from 'react-router-dom'
 import { AIRTABLE_CENSUS_BASE } from 'components/config'
 import { routes } from 'components/config/api'
+import { usePanelState } from 'components/panels'
 import { useWindowResize } from '../../utils'
 import { iconStyleOverride, POINT_ZOOM_LEVEL } from './config'
 import { flyToPoint, flyToBounds } from './utils'
-import { handleBoundaryClick } from './events'
 
 import * as Types from './types'
 import * as utils from './utils'
@@ -128,86 +126,65 @@ const createLayerStyles = (
     },
   }))
 
-export type UsePopupFeatDetailsReturn = {
-  selFeatAttribs?: Types.SelFeatAttribs
-  error: unknown
-  isLoading: boolean
-}
-
-export const usePopupFeatDetails = (): UsePopupFeatDetailsReturn => {
+export const useSelLangPointCoords = (): Types.UseSelLangPointCoordsReturn => {
   const match = useRouteMatch<{ id: string }>({
     path: '/Explore/Language/:language/:id',
+    exact: true,
   })
-  const fields: Array<Extract<keyof InstanceLevelSchema, string>> = [
-    'Language',
-    'Endonym',
-    'Latitude',
-    'Longitude',
-    'id',
-    'Font Image Alt',
-  ]
 
   const { data, error, isLoading } = useAirtable<Types.SelFeatAttribs>(
     'Data',
     {
-      fields,
+      fields: ['Latitude', 'Longitude'],
       filterByFormula: `{id} = ${match?.params.id}`,
       maxRecords: 1,
     },
     { enabled: !!match }
   )
 
-  if (isLoading || error) return { isLoading, error }
+  if (isLoading || error) return { lat: null, lon: null }
 
-  return { selFeatAttribs: data[0], error, isLoading }
+  return {
+    lat: data[0]?.Latitude || null,
+    lon: data[0]?.Longitude || null,
+  }
 }
 
-// Set popup heading and lat/lng for Neighborhood or County click
-export const useBoundaryPopup: Types.UseBoundaryPopup = (
-  panelOpen,
-  clickedBoundary,
-  map
-) => {
-  const cache = useQueryCache()
-  const offset = useOffset(panelOpen)
+export const usePolygonWebMerc = (): Types.UsePolygonWebMerc => {
+  const match = useRouteMatch<{ name: string }>({
+    path: '/Explore/Neighborhood/:name',
+    exact: true,
+  })
 
-  const [
-    boundaryPopup,
-    setBoundaryPopup,
-  ] = useState<Types.PopupSettings | null>(null)
+  const { data, isLoading, error } = useAirtable<Types.NeighborhoodTableSchema>(
+    'Neighborhood',
+    {
+      fields: ['x_max', 'x_min', 'y_min', 'y_max'],
+      filterByFormula: `{name} = "${match?.params.name}"`,
+      maxRecords: 1,
+    },
+    { enabled: !!match }
+  )
 
-  useEffect((): void => {
-    if (!map || !clickedBoundary) return
+  if (isLoading || error || !data.length)
+    return { x_max: null, x_min: null, y_min: null, y_max: null }
 
-    const boundaryData = cache.getQueryData(
-      clickedBoundary.source
-    ) as Types.BoundaryLookup[]
+  // const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = data[0]
 
-    const boundaryPopupSettings = handleBoundaryClick(
-      map,
-      clickedBoundary,
-      {
-        height: window.innerHeight as number,
-        width: window.innerWidth as number,
-      },
-      boundaryData,
-      offset
-    )
-
-    if (boundaryPopupSettings) setBoundaryPopup(boundaryPopupSettings)
-    // I don't get this rule. It works fine alllll the time here.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clickedBoundary])
-
-  return boundaryPopup
+  return {
+    x_max: data[0].x_max,
+    x_min: data[0].x_min,
+    y_min: data[0].y_min,
+    y_max: data[0].y_max,
+  }
 }
 
 // Fly to extent of lang features on length change
 export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
-  panelOpen,
   isMapTilted,
   map
 ) => {
+  const { panelOpen } = usePanelState()
   const { state } = useContext(GlobalContext)
   const { langFeatures, langFeatsLenCache } = state
   const offset = useOffset(panelOpen)
@@ -232,17 +209,13 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
 
     // Zooming to "bounds" gets crazy if there is only one feature
     if (langFeatures.length === 1) {
-      flyToPoint(
-        map,
-        {
-          latitude: firstCoords[1],
-          longitude: firstCoords[0],
-          zoom: POINT_ZOOM_LEVEL,
-          pitch: isMapTilted ? 80 : 0,
-          offset,
-        },
-        null
-      )
+      flyToPoint(map, {
+        latitude: firstCoords[1],
+        longitude: firstCoords[0],
+        zoom: POINT_ZOOM_LEVEL,
+        pitch: isMapTilted ? 80 : 0,
+        offset,
+      })
 
       return
     }
@@ -252,16 +225,12 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
       new LngLatBounds(firstCoords, firstCoords)
     )
 
-    flyToBounds(
-      map,
-      {
-        height: window.innerHeight as number,
-        width: window.innerWidth as number,
-        bounds: bounds.toArray() as Types.BoundsArray,
-        offset,
-      },
-      null
-    )
+    flyToBounds(map, {
+      height: window.innerHeight as number,
+      width: window.innerWidth as number,
+      bounds: bounds.toArray() as Types.BoundsArray,
+      offset,
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [langFeatures.length])
 

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const GeocodeMarker: FC<MapTypes.GeocodeMarker> = (props) => {
+export const GeocodeMarker: FC<MapTypes.GeocodeMarkerProps> = (props) => {
   const { latitude, longitude, text } = props
   const classes = useStyles()
 
