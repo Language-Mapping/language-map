@@ -22,7 +22,7 @@ import { NeighborhoodsLayer } from './NeighborhoodsLayer'
 
 import * as config from './config'
 import {
-  usePopupFeatDetails,
+  useSelLangPointCoords,
   useOffset,
   useBreakpoint,
   useZoomToLangFeatsExtent,
@@ -47,7 +47,8 @@ export const Map: FC<Types.MapProps> = (props) => {
   const { autoZoomCensus, censusActiveField, showNeighbs } = useMapToolsState()
   const { panelOpen } = usePanelState()
   const { pathname } = loc
-  const { selFeatAttribs } = usePopupFeatDetails()
+  const selLangPointCoords = useSelLangPointCoords()
+  const selPolyBounds = usePolygonWebMerc()
   const { state } = useContext(GlobalContext)
   const { langFeatures, filterHasRun } = state
 
@@ -55,7 +56,6 @@ export const Map: FC<Types.MapProps> = (props) => {
   const history = useHistory()
   const map: MbMap | undefined = mapRef.current?.getMap()
   const offset = useOffset(panelOpen)
-  const polygonWebMerc = usePolygonWebMerc()
 
   const [beforeId, setBeforeId] = useState<string>('background')
   const [isMapTilted, setIsMapTilted] = useState<boolean>(false)
@@ -76,24 +76,8 @@ export const Map: FC<Types.MapProps> = (props) => {
   // TODO: mobile:
   const shouldFlyHome = useZoomToLangFeatsExtent(isMapTilted, map)
 
-  // TODO: rm if not needed for hover/popup stuff
-  // const interactiveLayerIds = symbCache
-
-  useEffect(() => {
-    if (!map || !polygonWebMerc) return
-
-    utils.clearSelPolyFeats(map) // TODO: remove if not needed
-
-    const webMercViewport = utils.getPolyWebMercView(polygonWebMerc, offset)
-    const { zoom, longitude, latitude } = webMercViewport
-
-    map.flyTo(
-      { essential: true, zoom, center: [longitude, latitude], offset },
-      {
-        forceViewportUpdate: true,
-      } as Types.CustomEventData
-    )
-  }, [loc])
+  // // TODO: rm if not needed for hover/popup stuff
+  // // const interactiveLayerIds = symbCache
 
   useEffect(() => {
     if (!map) return
@@ -114,19 +98,20 @@ export const Map: FC<Types.MapProps> = (props) => {
     }, 5)
   }, [isMapTilted])
 
+  // Reset popup visibility and clear geocode marker
   useEffect(() => {
     setShowPopups(true) // reset it on route change just in case X was clicked
     setGeocodeMarker(null) // TODO: confirm this approach. Same as current tho
   }, [pathname])
 
-  useEffect((): void => {
+  useEffect(() => {
     if (!map) return
 
     utils.flyHome(map, nuclearClear, offset)
   }, [shouldFlyHome])
 
   // Auto-zoom to initial extent on Census language change
-  useEffect((): void => {
+  useEffect(() => {
     // Don't zoom on clearing Census dropdown, aka no language field selected
     if (!map || !autoZoomCensus || !censusActiveField) return
 
@@ -134,7 +119,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   }, [censusActiveField])
 
   // Filter lang feats in map on length change or symbology change
-  useEffect((): void => {
+  useEffect(() => {
     if (!map || !mapLoaded || !filterHasRun) return
 
     const getLangLayersIDs = utils.getLangLayersIDs(map.getStyle().layers || [])
@@ -148,7 +133,7 @@ export const Map: FC<Types.MapProps> = (props) => {
 
   // (Re)load symbol icons. Must be done on load and whenever `baselayer` is
   // changed, otherwise the images no longer exist.
-  useEffect((): void => {
+  useEffect(() => {
     if (!mapRef.current) return
 
     utils.addLangTypeIconsToMap(mapRef.current.getMap(), langTypeIconsConfig)
@@ -156,21 +141,62 @@ export const Map: FC<Types.MapProps> = (props) => {
   /* eslint-enable react-hooks/exhaustive-deps */
 
   // Do selected feature stuff on sel feat change or map load
-  useEffect((): void => {
-    if (!map || !mapLoaded || !selFeatAttribs) return
+  useEffect(() => {
+    if (
+      !map ||
+      !mapLoaded ||
+      selLangPointCoords.lat === null ||
+      selLangPointCoords.lon === null
+    )
+      return
 
     nuclearClear()
 
     const settings = utils.getFlyToPointSettings(
-      selFeatAttribs,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      { ...selLangPointCoords },
       offset,
       isMapTilted
     )
 
     utils.flyToPoint(map, settings)
+    // LEGIT disabling of deps. Breaks otherwise.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selFeatAttribs]) // LEGIT disabling of deps. Breaks otherwise.
+  }, [selLangPointCoords.lat, selLangPointCoords.lon])
 
+  useEffect(() => {
+    // if (!map || !mapLoaded || !selPolyBounds || mapIsMoving) return
+    const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = selPolyBounds
+    if (!map || !mapLoaded || !xMax || !xMin || !yMin || !yMax) return
+
+    // nuclearClear() // TODO: figure out when neededdddd
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const boundsArray = [
+      [xMin, yMin],
+      [xMax, yMax],
+    ] as Types.BoundsArray
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const webMercViewport = utils.getPolyWebMercView(boundsArray, offset)
+    // const { zoom, longitude, latitude } = webMercViewport
+    utils.flyToPoint(map, { ...webMercViewport, offset })
+
+    // LEGIT. selPolyBounds as a dep will break the world.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    mapLoaded,
+    selPolyBounds.x_max,
+    selPolyBounds.x_min,
+    selPolyBounds.y_min,
+    selPolyBounds.y_max,
+    map,
+  ])
+
+  // Clear neighborhoods selected state
   useEffect(() => {
     if (!map || !mapLoaded || !map.getLayer('neighborhoods-poly')) return
 
@@ -200,10 +226,10 @@ export const Map: FC<Types.MapProps> = (props) => {
     // the map shifts back to previous position after panning or zooming.
     mapObj.on('moveend', function onMoveEnd(zoomEndEvent) {
       // setShowPopups(true)
-
       setMapIsMoving(false)
 
       // No custom event data, regular move event
+      // if (zoomEndEvent.forceViewportUpdate && mapLoaded) {
       if (zoomEndEvent.forceViewportUpdate) {
         setViewport({
           ...viewport, // spreading just in case bearing or pitch are added
@@ -220,7 +246,6 @@ export const Map: FC<Types.MapProps> = (props) => {
     mapObj.on('movestart', function onMoveStart(zoomEndEvent) {
       // setShowPopups(false)
       setMapIsMoving(true)
-
       // if (zoomEndEvent.forceViewportUpdate) nuclearClear()
     })
 
@@ -247,9 +272,11 @@ export const Map: FC<Types.MapProps> = (props) => {
       'bottom-right'
     )
 
-    if (selFeatAttribs) {
+    if (selLangPointCoords.lat !== null && selLangPointCoords.lon !== null) {
       const settings = utils.getFlyToPointSettings(
-        selFeatAttribs,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        selLangPointCoords,
         offset,
         isMapTilted
       )
@@ -268,7 +295,7 @@ export const Map: FC<Types.MapProps> = (props) => {
       lang: utils.getLangLayersIDs(map.getStyle().layers || []),
     })[0]
 
-    nuclearClear() // can't rely on history
+    // nuclearClear() // can't rely on history
 
     if (topLangFeat) {
       history.push(
@@ -285,18 +312,18 @@ export const Map: FC<Types.MapProps> = (props) => {
       return
     }
 
-    const boundariesClicked = map.queryRenderedFeatures(event.point, {
+    const neighborhoodClicked = map.queryRenderedFeatures(event.point, {
       layers: ['neighborhoods-poly'], // TODO: make it work for all
     }) as Types.BoundaryFeat[]
     // debugger
-    if (!boundariesClicked.length) {
+    if (!neighborhoodClicked.length) {
       history.push('/Explore/Language/none')
 
       return
     }
 
     history.push(
-      `/Explore/Neighborhood/${boundariesClicked[0].properties?.name}`
+      `/Explore/Neighborhood/${neighborhoodClicked[0].properties?.name}`
     )
   }
 
@@ -345,7 +372,11 @@ export const Map: FC<Types.MapProps> = (props) => {
         />
         {/* TODO: hide label on clear */}
         {geocodeMarker && !mapIsMoving && <GeocodeMarker {...geocodeMarker} />}
-        {mapLoaded && <NeighborhoodsLayer map={map} />}
+        <NeighborhoodsLayer
+          map={map}
+          beforeId={beforeId}
+          mapLoaded={mapLoaded}
+        />
         <CensusLayer
           map={map}
           config={config.pumaConfig}
@@ -359,9 +390,10 @@ export const Map: FC<Types.MapProps> = (props) => {
           sourceLayer={config.tractsLyrSrc['source-layer']}
         />
         <LangMbSrcAndLayer />
-        {showPopups && !mapIsMoving && (
+        {mapLoaded && showPopups && !mapIsMoving && (
           <MapPopups setShowPopups={setShowPopups} />
         )}
+        {/* {showPopups && <MapPopups setShowPopups={setShowPopups} />} */}
         {/* Popups are annoying on mobile */}
         {/* TODO: RESTORE */}
         {/* {!isTouchEnabled() && tooltip && (

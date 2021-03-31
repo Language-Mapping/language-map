@@ -126,36 +126,31 @@ const createLayerStyles = (
     },
   }))
 
-export const usePopupFeatDetails = (): Types.UsePopupFeatDetailsReturn => {
+export const useSelLangPointCoords = (): Types.UseSelLangPointCoordsReturn => {
   const match = useRouteMatch<{ id: string }>({
     path: '/Explore/Language/:language/:id',
+    exact: true,
   })
-
-  const fields: Array<Extract<keyof InstanceLevelSchema, string>> = [
-    'Language',
-    'Endonym',
-    'Latitude',
-    'Longitude',
-    'id',
-    'Font Image Alt',
-  ]
 
   const { data, error, isLoading } = useAirtable<Types.SelFeatAttribs>(
     'Data',
     {
-      fields,
+      fields: ['Latitude', 'Longitude'],
       filterByFormula: `{id} = ${match?.params.id}`,
       maxRecords: 1,
     },
     { enabled: !!match }
   )
 
-  if (isLoading || error) return { isLoading, error }
+  if (isLoading || error) return { lat: null, lon: null }
 
-  return { selFeatAttribs: data[0], error, isLoading }
+  return {
+    lat: data[0]?.Latitude || null,
+    lon: data[0]?.Longitude || null,
+  }
 }
 
-export const usePolygonWebMerc = (): Types.BoundsArray | undefined => {
+export const usePolygonWebMerc = (): Types.UsePolygonWebMerc => {
   const match = useRouteMatch<{ name: string }>({
     path: '/Explore/Neighborhood/:name',
     exact: true,
@@ -168,19 +163,20 @@ export const usePolygonWebMerc = (): Types.BoundsArray | undefined => {
       filterByFormula: `{name} = "${match?.params.name}"`,
       maxRecords: 1,
     },
-    {
-      enabled: match?.params?.name !== undefined,
-    }
+    { enabled: !!match }
   )
 
-  if (isLoading || error || !data.length) return undefined
+  if (isLoading || error || !data.length)
+    return { x_max: null, x_min: null, y_min: null, y_max: null }
 
-  const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = data[0]
+  // const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = data[0]
 
-  return [
-    [xMin, yMin],
-    [xMax, yMax],
-  ]
+  return {
+    x_max: data[0].x_max,
+    x_min: data[0].x_min,
+    y_min: data[0].y_min,
+    y_max: data[0].y_max,
+  }
 }
 
 // Fly to extent of lang features on length change

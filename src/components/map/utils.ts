@@ -255,13 +255,13 @@ export const flyHome = (
 }
 
 export const getFlyToPointSettings = (
-  selFeatAttribs: Types.SelFeatAttribs,
+  coords: { lat: number; lon: number },
   offset: Types.Offset,
   isMapTilted: boolean
 ): Types.FlyToPointSettings => ({
   // bearing: 80, // TODO: consider it as it does add a new element of fancy
-  longitude: selFeatAttribs.Longitude,
-  latitude: selFeatAttribs.Latitude,
+  longitude: coords.lon,
+  latitude: coords.lat,
   zoom: config.POINT_ZOOM_LEVEL,
   disregardCurrZoom: true,
   pitch: isMapTilted ? 80 : 0,

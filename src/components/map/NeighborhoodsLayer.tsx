@@ -23,7 +23,7 @@ const paint = {
 }
 
 export const NeighborhoodsLayer: FC<NeighborhoodsLayerProps> = (props) => {
-  const { map } = props
+  const { map, beforeId, mapLoaded } = props
   const { showNeighbs } = useMapToolsState()
   const match = useRouteMatch<{ neighborhood: string }>({
     path: '/Explore/Neighborhood/:neighborhood',
@@ -32,21 +32,25 @@ export const NeighborhoodsLayer: FC<NeighborhoodsLayerProps> = (props) => {
   const neighborhood = match?.params.neighborhood
 
   useEffect(() => {
-    if (!map || !neighborhood) return
+    if (!map || !mapLoaded) return
 
-    map.setFeatureState(
-      {
-        sourceLayer,
-        source: sourceID,
-        id: neighborhood,
-      },
-      { selected: true }
-    )
-  }, [map, match, neighborhood])
-
-  // elalliance.ckmundquc1k5328ppob5a9wok-1kglp
-  // if (!visible) return null
-  // if (!showNeighbs) return null
+    if (neighborhood) {
+      map.setFeatureState(
+        {
+          sourceLayer,
+          source: sourceID,
+          id: neighborhood,
+        },
+        { selected: true }
+      )
+    } else {
+      map.removeFeatureState({
+        source: 'neighborhoods-new',
+        sourceLayer: 'neighborhoods',
+      })
+    }
+    // Definitely need `mapLoaded`
+  }, [map, mapLoaded, match, neighborhood])
 
   return (
     <Source
@@ -64,19 +68,28 @@ export const NeighborhoodsLayer: FC<NeighborhoodsLayerProps> = (props) => {
           'background-opacity': 0,
         }}
       />
-      {showNeighbs ? (
-        <Layer
-          id="neighborhoods-poly"
-          minzoom={minZoom}
-          source-layer={sourceLayer}
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          paint={paint}
-          type="fill"
-        />
-      ) : (
-        <></>
-      )}
+      <Layer
+        id="neighborhoods-poly"
+        source={sourceID}
+        minzoom={minZoom}
+        source-layer={sourceLayer}
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        paint={paint}
+        type="fill"
+        beforeId={beforeId}
+        layout={{ visibility: showNeighbs ? 'visible' : 'none' }}
+      />
+      <Layer
+        id="neighborhoods-line"
+        source={sourceID}
+        minzoom={minZoom}
+        source-layer={sourceLayer}
+        paint={{ 'line-color': 'orange', 'line-opacity': 0.4 }}
+        type="line"
+        beforeId={beforeId}
+        layout={{ visibility: showNeighbs ? 'visible' : 'none' }}
+      />
     </Source>
   )
 }

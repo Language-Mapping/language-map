@@ -141,6 +141,8 @@ export type CensusLayerProps = {
 }
 
 export type NeighborhoodsLayerProps = {
+  mapLoaded: boolean
+  beforeId?: string
   map?: Map
 }
 
@@ -247,8 +249,7 @@ export type MapPopupsProps = {
 export type MapPopupProps = PopupSettings &
   Pick<MapPopupsProps, 'setShowPopups'>
 
-export type SelFeatAttribs = InternalUse &
-  Pick<InstanceLevelSchema, 'Language' | 'Endonym' | 'Font Image Alt'>
+export type SelFeatAttribs = InternalUse
 
 export type FlyToPointSettings = {
   longitude: number
@@ -292,10 +293,16 @@ export type UseCensusSymb = (
   map?: Map
 ) => UseCensusSymbReturn
 
-export type UsePopupFeatDetailsReturn = {
-  selFeatAttribs?: SelFeatAttribs
-  error: unknown
-  isLoading: boolean
+export type UseSelLangPointCoordsReturn = {
+  lat: number | null
+  lon: number | null
+}
+
+export type UsePolygonWebMerc = {
+  x_max: number | null
+  x_min: number | null
+  y_min: number | null
+  y_max: number | null
 }
 
 export type NeighborhoodTableSchema = {

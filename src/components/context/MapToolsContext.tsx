@@ -5,7 +5,7 @@ import * as Types from './types'
 const initialState = {
   autoZoomCensus: true,
   geolocActive: false,
-  showNeighbs: true, // TODO: set back
+  showNeighbs: false,
 } as Types.InitialMapToolsState
 
 const MapToolsContext = React.createContext<
