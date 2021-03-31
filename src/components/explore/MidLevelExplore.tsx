@@ -55,7 +55,7 @@ export const AddlLanguages: FC<{ data: LangLevelSchema[]; value?: string }> = (
 }
 
 export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
-  const { field, value } = useParams<RouteMatch>()
+  const { field, value } = useParams<RouteMatch & { value: string }>()
   const { tableName = field, sortByField = 'name' } = props
   const { url } = useRouteMatch()
   const filterByFormula = prepFormula(field, value)
@@ -80,47 +80,41 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
   if (error || landingError) {
     return (
       <>
-        Could not load {value || field}.{' '}
-        {error?.message || landingError?.message}
+        Could not load {value}. {error?.message || landingError?.message}
       </>
     )
   }
 
-  const { definition, plural } = landingData[0] || {}
+  const { definition } = landingData[0] || {}
 
   let primaryData
   let Icon = null // TODO: re-componentize
 
-  // TODO: use routes instead. Goodness.
-  if (value && field === 'World Region') {
+  if (field === 'World Region') {
     Icon = <SwatchOnly backgroundColor={data ? data[0].worldRegionColor : ''} />
-  } else if (value && field === 'Country') Icon = <FlagFromHook value={value} />
+  } else if (field === 'Country') Icon = <FlagFromHook value={value} />
   else Icon = <>{icons[field]}</>
 
-  // TODO: use routes instead. Goodness.
-  if (value && field === 'Neighborhood')
+  if (field === 'Neighborhood')
     primaryData = data.filter((row) => row['Primary Locations'].includes(value))
   // Gross extra steps for Airtable FIND issue, which returns in ARRAYJOIN
   // things like "Dominican Republic" in a "Dominica" query:
-  else if (value && Array.isArray(data[0][field]))
+  else if (Array.isArray(data[0][field]))
     primaryData = data.filter((row) => row[field]?.includes(value))
   else primaryData = data
 
-  // TODO: better logic for instances, e.g. allow definition
   return (
     <>
-      <Route path="/Explore/:level1" exact>
-        <BasicExploreIntro introParagraph={!value && definition} />
-      </Route>
       <Route path="/Explore/:level1/:level2" exact>
         <BasicExploreIntro
-          title={value || plural}
+          title={value}
           icon={Icon}
           introParagraph={!value && definition}
         />
       </Route>
       <Route path="/Explore/Neighborhood/:language" exact>
         <Explanation>
+          {/* TODO: from AT */}
           Languages with a significant site in this neighborhood, marked by a
           point on the map:
         </Explanation>
@@ -133,7 +127,7 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
           return (
             <CustomCard
               key={nameOrLang}
-              intro={value || field === 'Language' ? nameOrLang : ''}
+              intro={value}
               title={tableName === 'Language' ? row.Endonym : nameOrLang}
               uniqueInstances={uniqueInstances}
               url={`${url}/${nameOrLang}`}

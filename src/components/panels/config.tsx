@@ -2,7 +2,12 @@ import React from 'react'
 
 import { icons } from 'components/config'
 import { LocalPanel } from 'components/local'
-import { Explore, LangCardsList, MidLevelExplore } from 'components/explore'
+import {
+  Explore,
+  LangCardsList,
+  MidLevelExplore,
+  ExploreLanding,
+} from 'components/explore'
 import { MapPanel } from 'components/panels/types'
 import { LegendPanel } from 'components/legend'
 import { DetailsPanel, NoFeatSel } from 'components/details'
@@ -70,7 +75,7 @@ export const nonNavRoutesConfig = [
     rootPath: '/Explore/:field/:value',
   },
   {
-    component: <MidLevelExplore />,
+    component: <ExploreLanding />,
     rootPath: '/Explore/:field',
   },
   ...navRoutes,

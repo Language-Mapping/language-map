@@ -17,7 +17,7 @@ const airtableQuery = async (tableName: string, options: AirtableOptions) => {
 }
 
 export function useAirtable<TResult = TonsOfFields>(
-  tableName: string, // TODO: only allow actual table names!
+  tableName: string, // TODO: TS all the tables
   options: AirtableOptions,
   reactQueryOptions?: ReactQueryOptions
 ): {
