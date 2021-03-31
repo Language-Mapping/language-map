@@ -1,10 +1,5 @@
 import React, { FC } from 'react'
-import {
-  useRouteMatch,
-  useParams,
-  Route,
-  Link as RouterLink,
-} from 'react-router-dom'
+import { useParams, Route, Link as RouterLink } from 'react-router-dom'
 
 import { FlagFromHook } from 'components/generic/icons-and-swatches'
 import { SwatchOnly } from 'components/legend'
@@ -14,10 +9,9 @@ import { Explanation } from 'components/generic'
 import { LangLevelSchema } from 'components/context'
 import { icons } from 'components/config'
 import { routes } from 'components/config/api'
-import { CustomCard } from './CustomCard'
 import { CardList } from './CardList'
 import { useAirtable } from './hooks'
-import { prepFormula, prepFields, getUniqueInstances } from './utils'
+import { prepFormula, prepFields } from './utils'
 import { TonsWithAddl, MidLevelExploreProps, RouteMatch } from './types'
 
 export const AddlLanguages: FC<{ data: LangLevelSchema[]; value?: string }> = (
@@ -57,7 +51,6 @@ export const AddlLanguages: FC<{ data: LangLevelSchema[]; value?: string }> = (
 export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
   const { field, value } = useParams<RouteMatch & { value: string }>()
   const { tableName = field, sortByField = 'name' } = props
-  const { url } = useRouteMatch()
   const filterByFormula = prepFormula(field, value)
   const fields = prepFields(tableName, field)
 
@@ -119,37 +112,7 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
           point on the map:
         </Explanation>
       </Route>
-      <CardList>
-        {primaryData.map((row) => {
-          const uniqueInstances = getUniqueInstances(field, row, value)
-          const nameOrLang = row.name || row.Language
-
-          return (
-            <CustomCard
-              key={nameOrLang}
-              intro={value}
-              title={tableName === 'Language' ? row.Endonym : nameOrLang}
-              uniqueInstances={uniqueInstances}
-              url={`${url}/${nameOrLang}`}
-              // TODO: use and refactor SwatchOrFlagOrIcon for icon prop
-              icon={
-                <>
-                  {row['icon-color'] && (
-                    <SwatchOnly backgroundColor={row['icon-color']} />
-                  )}
-                  {row.src_image && (
-                    <img
-                      style={{ height: '0.8em', marginRight: '0.25em' }}
-                      src={row.src_image[0].url}
-                      alt={nameOrLang}
-                    />
-                  )}
-                </>
-              }
-            />
-          )
-        })}
-      </CardList>
+      <CardList data={primaryData} tableName={tableName} />
       <Route path="/Explore/Neighborhood/:value">
         <AddlLanguages data={data} />
       </Route>

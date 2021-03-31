@@ -4,7 +4,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Link } from '@material-ui/core'
 import { BiMapPin } from 'react-icons/bi'
 
-import { CustomCard, CardList } from 'components/explore'
+import { CustomCard, CardListWrap } from 'components/explore'
 import { Explanation, UItextFromAirtable } from 'components/generic'
 import * as Types from './types'
 
@@ -125,7 +125,7 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
           </Route>
         </Switch>
       </Explanation>
-      <CardList>
+      <CardListWrap>
         <Switch>
           <Route path="/Explore/Language/:language/:id" exact>
             <CustomCard
@@ -151,7 +151,7 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
             })}
           </Route>
         </Switch>
-      </CardList>
+      </CardListWrap>
       {gahhhh.length ? More : null}
     </>
   )
