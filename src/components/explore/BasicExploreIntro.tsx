@@ -43,9 +43,10 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     // e.g. glotto/iso/global speakers
     subSubtitle: {
-      fontSize: '0.65rem',
       margin: '0.5rem 0 0.25rem',
       color: theme.palette.text.secondary,
+      display: 'flex',
+      justifyContent: 'center',
     },
   })
 )

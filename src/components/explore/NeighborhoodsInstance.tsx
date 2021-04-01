@@ -10,6 +10,7 @@ import { useAirtable } from './hooks'
 import { TonsWithAddl, MidLevelExploreProps } from './types'
 import { AddlLanguages } from './AddlLanguages'
 import { CustomCard } from './CustomCard'
+import { LayerToggle } from './LayerToggle'
 
 export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
   const { value } = useParams<{ field: string; value: string }>()
@@ -62,6 +63,7 @@ export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
         icon={icons.Neighborhood}
         introParagraph={firstRecord?.summary}
         subtitle={firstRecord?.County}
+        subSubtitle={<LayerToggle />}
       />
       {firstRecord?.languages ? (
         <Explanation>
