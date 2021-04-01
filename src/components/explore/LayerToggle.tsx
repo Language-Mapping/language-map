@@ -22,8 +22,8 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     // wowww overkill, but it fits...
     hideOnMobile: {
+      whiteSpace: 'pre',
       [theme.breakpoints.down('sm')]: {
-        whiteSpace: 'pre',
         display: 'none',
       },
     },
