@@ -24,9 +24,8 @@ import * as config from './config'
 import {
   useSelLangPointCoords,
   useOffset,
-  useBreakpoint,
   useZoomToLangFeatsExtent,
-  usePolygonWebMerc,
+  useBreakpoint,
 } from './hooks'
 // TODO: restore:
 // import { getAllLangFeatIDs, isTouchEnabled } from '../../utils'
@@ -45,17 +44,16 @@ export const Map: FC<Types.MapProps> = (props) => {
   const loc = useLocation()
 
   const { autoZoomCensus, censusActiveField, showNeighbs } = useMapToolsState()
-  const { panelOpen } = usePanelState()
   const { pathname } = loc
   const selLangPointCoords = useSelLangPointCoords()
-  const selPolyBounds = usePolygonWebMerc()
   const { state } = useContext(GlobalContext)
   const { langFeatures, filterHasRun } = state
 
-  const breakpoint = useBreakpoint()
   const history = useHistory()
   const map: MbMap | undefined = mapRef.current?.getMap()
-  const offset = useOffset(panelOpen)
+  const offset = useOffset()
+  const breakpoint = useBreakpoint()
+  const { panelOpen } = usePanelState()
 
   const [beforeId, setBeforeId] = useState<string>('background')
   const [isMapTilted, setIsMapTilted] = useState<boolean>(false)
@@ -162,33 +160,6 @@ export const Map: FC<Types.MapProps> = (props) => {
     // LEGIT disabling of deps. Breaks otherwise.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selLangPointCoords.lat, selLangPointCoords.lon])
-
-  useEffect(() => {
-    const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = selPolyBounds
-    if (!map || !mapLoaded || !xMax || !xMin || !yMin || !yMax) return
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const boundsArray = [
-      [xMin, yMin],
-      [xMax, yMax],
-    ] as Types.BoundsArray
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const webMercViewport = utils.getPolyWebMercView(boundsArray, offset)
-    utils.flyToPoint(map, { ...webMercViewport, offset })
-
-    // LEGIT. selPolyBounds as a dep will break the world.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    mapLoaded,
-    selPolyBounds.x_max,
-    selPolyBounds.x_min,
-    selPolyBounds.y_min,
-    selPolyBounds.y_max,
-    map,
-  ])
 
   function onLoad(mapLoadEvent: MapLoadEvent) {
     setMapLoaded(true)

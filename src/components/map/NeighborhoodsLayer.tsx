@@ -3,7 +3,9 @@ import { useRouteMatch } from 'react-router-dom'
 import { Source, Layer } from 'react-map-gl'
 
 import { useMapToolsState } from 'components/context'
-import { NeighborhoodsLayerProps } from './types'
+import { NeighborhoodsLayerProps, BoundsArray } from './types'
+import { usePolygonWebMerc, useOffset } from './hooks'
+import { getPolyWebMercView, flyToPoint } from './utils'
 
 const minZoom = 8
 const sourceID = 'neighborhoods-new'
@@ -30,9 +32,14 @@ export const NeighborhoodsLayer: FC<NeighborhoodsLayerProps> = (props) => {
     exact: true,
   })
   const neighborhood = match?.params.neighborhood
+  const selPolyBounds = usePolygonWebMerc()
+  const offset = useOffset()
 
+  // Clear/set selected feature state
   useEffect(() => {
     if (!map || !mapLoaded || !map.getLayer('neighborhoods-poly')) return
+
+    map.removeFeatureState({ source: sourceID, sourceLayer }) // clear each time
 
     if (neighborhood) {
       map.setFeatureState(
@@ -43,14 +50,38 @@ export const NeighborhoodsLayer: FC<NeighborhoodsLayerProps> = (props) => {
         },
         { selected: true }
       )
-    } else {
-      map.removeFeatureState({
-        source: 'neighborhoods-new',
-        sourceLayer: 'neighborhoods',
-      })
     }
     // Definitely need `mapLoaded`
-  }, [map, mapLoaded, match, neighborhood])
+  }, [map, mapLoaded, match, neighborhood, showNeighbs])
+
+  // Zoom to selected feature extent
+  useEffect(() => {
+    const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = selPolyBounds
+    if (!map || !mapLoaded || !xMax || !xMin || !yMin || !yMax) return
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const boundsArray = [
+      [xMin, yMin],
+      [xMax, yMax],
+    ] as BoundsArray
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const webMercViewport = getPolyWebMercView(boundsArray, offset)
+
+    flyToPoint(map, { ...webMercViewport, offset })
+
+    // LEGIT. selPolyBounds as a dep will break the world.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    mapLoaded,
+    selPolyBounds.x_max,
+    selPolyBounds.x_min,
+    selPolyBounds.y_min,
+    selPolyBounds.y_max,
+    map,
+  ])
 
   return (
     <Source

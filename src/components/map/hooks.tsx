@@ -29,7 +29,8 @@ import * as utils from './utils'
 // this on init, so instead it gets used dynamically on each zoom-to-stuff
 // scenario. The values are pretty approximate and somewhat fragile as they were
 // determined through much trial and error.
-export function useOffset(panelOpen: boolean): Types.Offset {
+export function useOffset(): Types.Offset {
+  const { panelOpen } = usePanelState()
   const { width, height } = useWindowResize()
   const breakpoint = useBreakpoint()
   const bottomBarHeight = 48
@@ -184,10 +185,9 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
   isMapTilted,
   map
 ) => {
-  const { panelOpen } = usePanelState()
   const { state } = useContext(GlobalContext)
   const { langFeatures, langFeatsLenCache } = state
-  const offset = useOffset(panelOpen)
+  const offset = useOffset()
   const [shouldFlyHome, setShouldFlyHome] = useState<boolean>(false)
 
   // Fly to extent of lang features on length change
