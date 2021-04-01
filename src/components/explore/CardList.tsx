@@ -48,8 +48,8 @@ export const CardList: FC<{ data: TonsWithAddl[] }> = (props) => {
         return (
           <CustomCard
             key={nameOrLang}
-            intro={nameOrLang}
-            title={row.Endonym}
+            intro={field === 'Language' ? nameOrLang : ''}
+            title={row.Endonym || row.name}
             uniqueInstances={uniqueInstances}
             url={`${url}/${nameOrLang}`}
             // TODO: use and refactor SwatchOrFlagOrIcon for icon prop
