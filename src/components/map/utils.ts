@@ -236,13 +236,7 @@ export const setInterpolatedFill = (
   'fill-opacity': 0.9,
 })
 
-export const flyHome = (
-  map: MbMap,
-  nuclearClear: () => void,
-  offset: Types.Offset
-): void => {
-  nuclearClear()
-
+export const flyHome = (map: MbMap, offset: Types.Offset): void => {
   const settings = {
     height: map.getContainer().clientHeight,
     width: map.getContainer().clientWidth,

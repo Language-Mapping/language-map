@@ -32,7 +32,7 @@ export const NeighborhoodsLayer: FC<NeighborhoodsLayerProps> = (props) => {
   const neighborhood = match?.params.neighborhood
 
   useEffect(() => {
-    if (!map || !mapLoaded) return
+    if (!map || !mapLoaded || !map.getLayer('neighborhoods-poly')) return
 
     if (neighborhood) {
       map.setFeatureState(
