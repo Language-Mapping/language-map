@@ -39,14 +39,12 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '1.25rem',
       lineHeight: 1,
       marginTop: 0,
+      marginBottom: '0.75rem',
       textAlign: 'center',
     },
     // e.g. glotto/iso/global speakers
     subSubtitle: {
-      margin: '0.5rem 0 0.25rem',
       color: theme.palette.text.secondary,
-      display: 'flex',
-      justifyContent: 'center',
     },
   })
 )
@@ -59,14 +57,16 @@ export const BasicExploreIntro: FC<BasicExploreIntroProps> = (props) => {
   return (
     <>
       <Typography className={classes.root} component="header">
-        <Typography
-          component="h2"
-          variant="h4"
-          className={classes.titleAndIcon}
-        >
-          {icon}
-          {title}
-        </Typography>
+        {title && (
+          <Typography
+            component="h2"
+            variant="h4"
+            className={classes.titleAndIcon}
+          >
+            {icon}
+            {title}
+          </Typography>
+        )}
         {subtitle && (
           <Typography className={classes.subtitle}>{subtitle}</Typography>
         )}

@@ -13,13 +13,14 @@ export const reactQueryDefaults = {
 }
 
 export const routes = {
-  home: '/',
   about: '/Info/About',
   explore: '/Explore',
   feedback: '/Info/Feedback',
   help: '/Info/Help',
+  home: '/',
   info: '/Info',
   local: '/Census',
+  neighborhood: '/Explore/Neighborhood',
   table: '/table',
 } as {
   [key: string]: RouteLocation

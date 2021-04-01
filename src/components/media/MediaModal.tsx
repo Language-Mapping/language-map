@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import * as Sentry from '@sentry/react'
 import { useQuery, QueryCache, ReactQueryCacheProvider } from 'react-query'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
   Container,
   Button,
@@ -9,32 +10,47 @@ import {
 } from '@material-ui/core'
 
 import { SimpleDialog } from 'components/generic/modals'
-import { MediaModalProps } from './types'
-import { useStyles } from './styles'
+import { MediaModalProps, ModalContentProps, APIresponse } from './types'
 import * as utils from './utils'
 
-// TODO: all into types.ts
-type ModalContentProps = { url: string }
-
-// Same for playlists and individual videos
-type YouTubeAPIresponse = {
-  items: { snippet: { title: string; description: string } }[]
-}
-
-type InternetArchiveAPIresponse = {
-  result: {
-    title: string
-    description: string
-  }
-}
-
-type APIdataResponse = YouTubeAPIresponse | InternetArchiveAPIresponse
-
-type APIresponse = {
-  isLoading: boolean
-  error: Error
-  data: APIdataResponse
-}
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      textAlign: 'center',
+      // Cheap way to override `DialogContent`
+      '& .MuiDialogContent-root': {
+        justifyContent: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        [theme.breakpoints.only('xs')]: {
+          paddingLeft: 0,
+          paddingRight: 0,
+        },
+      },
+    },
+    dialogContent: {
+      marginTop: '1rem',
+      marginBottom: '1rem',
+      [theme.breakpoints.down('sm')]: {
+        padding: 0,
+      },
+    },
+    // CRED: this is almost a standard based on search results
+    videoContainer: {
+      height: 0,
+      paddingBottom: '56.25%',
+      paddingTop: 25,
+      position: 'relative',
+      '& iframe, object, embed': {
+        height: '100%',
+        left: 0,
+        position: 'absolute',
+        top: 0,
+        width: '100%',
+      },
+    },
+  })
+)
 
 const queryCache = new QueryCache()
 
@@ -54,7 +70,7 @@ const MediaErrorMsg: FC<{ url: string }> = (props) => {
 const MediaModalContent: FC<ModalContentProps> = (props) => {
   const { url } = props
   const apiURL = utils.createAPIurl(url)
-  const classes = useStyles({})
+  const classes = useStyles()
   const mediaType = utils.getMediaTypeViaURL(url)
 
   const { isLoading, error, data } = useQuery(url, () =>
@@ -141,14 +157,14 @@ const MediaModalContent: FC<ModalContentProps> = (props) => {
 
 export const MediaModal: FC<MediaModalProps> = (props) => {
   const { url, closeModal } = props
-  const classes = useStyles({})
+  const classes = useStyles()
 
   return (
     <SimpleDialog
       fullScreen
       maxWidth="xl"
       open
-      className={classes.modalRoot}
+      className={classes.root}
       onClose={() => closeModal()}
     >
       <ReactQueryCacheProvider queryCache={queryCache}>

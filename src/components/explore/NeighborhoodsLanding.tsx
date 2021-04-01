@@ -8,6 +8,7 @@ import { prepFormula, prepFields, getUniqueInstances } from './utils'
 import { CardListWrap } from './CardList'
 import { TonsWithAddl } from './types'
 import { CustomCard } from './CustomCard'
+import { LayerToggle } from './LayerToggle'
 
 export const NeighborhoodsLanding: FC = (props) => {
   const tableName = 'Neighborhood'
@@ -43,7 +44,10 @@ export const NeighborhoodsLanding: FC = (props) => {
 
   return (
     <>
-      <BasicExploreIntro introParagraph={landingData[0]?.definition} />
+      <BasicExploreIntro
+        introParagraph={landingData[0]?.definition}
+        extree={<LayerToggle layerID="neighborhoods" />}
+      />
       <CardListWrap>
         {instanceData.map((row) => {
           const uniqueInstances = getUniqueInstances('Neighborhood', row)

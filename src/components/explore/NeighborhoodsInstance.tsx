@@ -1,9 +1,17 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { useParams, useRouteMatch } from 'react-router-dom'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Button } from '@material-ui/core'
+import { FiShare } from 'react-icons/fi'
 
 import { BasicExploreIntro } from 'components/panels'
 import { LoadingIndicatorBar } from 'components/generic/modals'
-import { Explanation, UItextFromAirtable } from 'components/generic'
+import {
+  Explanation,
+  UItextFromAirtable,
+  ShareButtons,
+  ShareButtonsWrap,
+} from 'components/generic'
 import { icons } from 'components/config'
 import { CardListWrap } from './CardList'
 import { useAirtable } from './hooks'
@@ -11,11 +19,42 @@ import { TonsWithAddl, MidLevelExploreProps } from './types'
 import { AddlLanguages } from './AddlLanguages'
 import { CustomCard } from './CustomCard'
 import { LayerToggle } from './LayerToggle'
+import { ClearSelectionBtn } from './ClearSelectionBtn'
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    buttonWrap: {
+      display: 'grid',
+      justifyContent: 'center',
+      gridTemplateColumns: '1fr auto auto',
+      gridColumnGap: '0.25rem',
+      // UGHHH
+      '& .MuiButton-startIcon': {
+        marginRight: 4,
+      },
+      '& .MuiButton-textSizeSmall': {
+        fontSize: '0.85rem',
+        [theme.breakpoints.down('sm')]: {
+          minWidth: 'auto',
+        },
+      },
+    },
+    // wowww overkill, but it fits...
+    hideOnMobile: {
+      whiteSpace: 'pre',
+      [theme.breakpoints.down('sm')]: {
+        display: 'none',
+      },
+    },
+  })
+)
 
 export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
   const { value } = useParams<{ field: string; value: string }>()
   const { url } = useRouteMatch()
+  const classes = useStyles()
   const field = 'Neighborhood'
+  const [showShareBtns, setShowShareBtns] = useState<boolean>(false)
   const { tableName = field, sortByField = 'name' } = props
   const fields = [
     'Additional Languages',
@@ -26,6 +65,7 @@ export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
     'name',
     'summary',
   ]
+  const shareSrcAndTitle = `${value} - Languages of New York City Map`
 
   const { data, error, isLoading } = useAirtable<
     TonsWithAddl & {
@@ -56,6 +96,33 @@ export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
     'Additional Languages': addlLanguages,
   } = firstRecord
 
+  const Extree = (
+    <>
+      <div className={classes.buttonWrap}>
+        <LayerToggle layerID="neighborhoods" />
+        <ClearSelectionBtn />
+        <Button
+          size="small"
+          color="secondary"
+          title="Share this neighborhood"
+          startIcon={<FiShare />}
+          onClick={() => setShowShareBtns(!showShareBtns)}
+        >
+          <span className={classes.hideOnMobile}>Share</span>
+        </Button>
+      </div>
+      <ShareButtonsWrap shareText="neighborhood" showShareBtns={showShareBtns}>
+        <ShareButtons
+          spacing={2}
+          source={shareSrcAndTitle}
+          summary={firstRecord?.summary}
+          title={shareSrcAndTitle}
+          url={window.location.href}
+        />
+      </ShareButtonsWrap>
+    </>
+  )
+
   return (
     <>
       <BasicExploreIntro
@@ -63,7 +130,7 @@ export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
         icon={icons.Neighborhood}
         introParagraph={firstRecord?.summary}
         subtitle={firstRecord?.County}
-        subSubtitle={<LayerToggle />}
+        extree={Extree}
       />
       {firstRecord?.languages ? (
         <Explanation>
