@@ -78,8 +78,8 @@
   </body>
   <script>
     const earlyAccessPath = 'https://fonts.googleapis.com/earlyaccess/'
-    
-    // CAREFUL: the list below is maintained in two files:
+
+    // CAREFUL: the lists below are maintained in two files:
     // 1) index.html
     // 2) fonts.ts
     // ...because we can't do an `import` in index.html.
@@ -125,9 +125,6 @@
     // module, but this is an async attempt to load these extra fonts after the
     // two base ones (Noto Sans and Gentium have already loaded).
     ;(function (d) {
-      // If local, don't load any of these
-      if (window?.location.hostname === 'lampel-2.local') return null
-
       const wf = d.createElement('script')
       const $scriptElem = d.scripts[0]
 

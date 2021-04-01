@@ -29,3 +29,5 @@ export type LinkRenderer = {
   href: string
   node: { children: { value: string }[] }
 }
+
+export type MarkdownRootElemType = 'p' | 'span' | 'div'

@@ -25,11 +25,29 @@ export type MediaListItemProps = {
   handleClick: () => void
 }
 
-export type StyleProps = {
-  showShareBtns?: boolean
-}
-
 export type MediaModalProps = {
   url: string
   closeModal: () => void
+}
+
+export type ModalContentProps = { url: string }
+
+// Same for playlists and individual videos
+type YouTubeAPIresponse = {
+  items: { snippet: { title: string; description: string } }[]
+}
+
+type InternetArchiveAPIresponse = {
+  result: {
+    title: string
+    description: string
+  }
+}
+
+type APIdataResponse = YouTubeAPIresponse | InternetArchiveAPIresponse
+
+export type APIresponse = {
+  isLoading: boolean
+  error: Error
+  data: APIdataResponse
 }

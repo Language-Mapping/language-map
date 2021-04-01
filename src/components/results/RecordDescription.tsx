@@ -62,6 +62,7 @@ export const RecordDescription: FC<RecordDescriptionProps> = (props) => {
       {firstCharAlpha && <FancyFirstLetter text={firstChar} />}
       <div className={classes.body}>
         <MarkdownWithRouteLinks
+          rootElemType="p"
           text={firstCharAlpha ? Description.slice(1) : Description}
         />
       </div>

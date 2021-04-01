@@ -1,15 +1,38 @@
 import React, { FC, useState } from 'react'
 import { useHistory, useRouteMatch } from 'react-router-dom'
-import { Button, Typography } from '@material-ui/core'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Button } from '@material-ui/core'
 import { FiVideo, FiShare } from 'react-icons/fi'
 import { AiOutlineSound } from 'react-icons/ai'
 import { IoIosCloseCircleOutline } from 'react-icons/io'
 import { FaMapMarkedAlt } from 'react-icons/fa'
 
-import { ShareButtons } from 'components/generic'
+import { ShareButtons, ShareButtonsWrap } from 'components/generic'
 import { MediaListItemProps, MediaProps } from './types'
-import { useStyles } from './styles'
 import { MediaModal } from './MediaModal'
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      display: 'flex',
+      justifyContent: 'center',
+      listStyle: 'none',
+      margin: '0 0 0.5rem',
+      padding: 0,
+      '& li + li': {
+        marginLeft: '0.5rem',
+      },
+    },
+    mediaLink: {
+      alignItems: 'center',
+      display: 'flex',
+      fontSize: '0.85rem',
+      '& svg': {
+        marginRight: '0.25rem',
+      },
+    },
+  })
+)
 
 const MediaListItem: FC<MediaListItemProps> = (props) => {
   const { label, icon, handleClick, disabled, variant = 'text' } = props
@@ -47,8 +70,10 @@ export const Media: FC<MediaProps> = (props) => {
   const isTable: { params: { id: string } } | null = useRouteMatch('/table/:id')
   const [showShareBtns, setShowShareBtns] = useState<boolean>(false)
   const classes = useStyles({ showShareBtns })
-  const { Language, Video, Audio, Description } = data
-  const shareSrcAndTitle = `${Language} - Languages of New York City Map`
+  const { Language, Video, Audio, Description, name } = data
+  const shareSrcAndTitle = `${
+    Language || name
+  } - Languages of New York City Map`
   // archive.org `embed` format:
   // 'https://archive.org/embed/ela_kabardian_comparative?playlist=1'
 
@@ -90,7 +115,7 @@ export const Media: FC<MediaProps> = (props) => {
               type="view"
               handleClick={() =>
                 history.push(
-                  `/Explore/Language/${data.Language}/${isTable?.params?.id}`
+                  `/Explore/Language/${Language || name}/${isTable?.params?.id}`
                 )
               }
             />
@@ -100,20 +125,23 @@ export const Media: FC<MediaProps> = (props) => {
           handleClick={() => setShowShareBtns(!showShareBtns)}
         />
       </ul>
-      {showShareBtns && (
-        <div className={classes.shareBtns}>
-          <Typography className={classes.shareBtnHeading}>
-            Share this <em>{Language}</em> {shareNoun}:
-          </Typography>
-          <ShareButtons
-            spacing={2}
-            source={shareSrcAndTitle}
-            summary={Description} // CAREFUL, this will be lang Descrip!
-            title={shareSrcAndTitle}
-            url={window.location.href}
-          />
-        </div>
-      )}
+
+      <ShareButtonsWrap
+        showShareBtns={showShareBtns}
+        shareText={
+          <>
+            <em>{Language || name}</em> {shareNoun}
+          </>
+        }
+      >
+        <ShareButtons
+          spacing={2}
+          source={shareSrcAndTitle}
+          summary={Description} // CAREFUL, this will be lang Descrip!
+          title={shareSrcAndTitle}
+          url={window.location.href}
+        />
+      </ShareButtonsWrap>
     </>
   )
 }

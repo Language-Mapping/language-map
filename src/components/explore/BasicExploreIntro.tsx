@@ -14,13 +14,14 @@ const useStyles = makeStyles((theme: Theme) =>
       paddingBottom: '0.75rem',
     },
     titleAndIcon: {
+      alignItems: 'center',
       display: 'flex',
       fontSize: '2rem',
-      lineHeight: 1.25,
-      alignItems: 'center',
-      textShadow: '1px 1px 3px hsla(0, 0%, 0%, 0.45)',
       justifyContent: 'center',
+      lineHeight: 1.25,
+      marginBottom: '0.5rem',
       textAlign: 'center',
+      textShadow: '1px 1px 3px hsla(0, 0%, 0%, 0.45)',
       '& svg': {
         color: theme.palette.text.secondary,
       },
@@ -34,15 +35,15 @@ const useStyles = makeStyles((theme: Theme) =>
     // },
     // e.g. Endonym
     subtitle: {
-      fontSize: '1.25rem',
-      marginTop: 0,
-      lineHeight: 1,
       color: theme.palette.text.secondary,
+      fontSize: '1.25rem',
+      lineHeight: 1,
+      marginTop: 0,
+      marginBottom: '0.75rem',
+      textAlign: 'center',
     },
     // e.g. glotto/iso/global speakers
     subSubtitle: {
-      fontSize: '0.65rem',
-      margin: '0.5rem 0 0.25rem',
       color: theme.palette.text.secondary,
     },
   })
@@ -56,14 +57,16 @@ export const BasicExploreIntro: FC<BasicExploreIntroProps> = (props) => {
   return (
     <>
       <Typography className={classes.root} component="header">
-        <Typography
-          component="h2"
-          variant="h4"
-          className={classes.titleAndIcon}
-        >
-          {icon}
-          {title}
-        </Typography>
+        {title && (
+          <Typography
+            component="h2"
+            variant="h4"
+            className={classes.titleAndIcon}
+          >
+            {icon}
+            {title}
+          </Typography>
+        )}
         {subtitle && (
           <Typography className={classes.subtitle}>{subtitle}</Typography>
         )}

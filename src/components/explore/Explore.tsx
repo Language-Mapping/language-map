@@ -5,8 +5,8 @@ import { Link } from '@material-ui/core'
 import { BasicExploreIntro } from 'components/explore'
 import { LoadingIndicatorBar } from 'components/generic/modals'
 import { icons } from 'components/config'
+import { CardListWrap } from './CardList'
 import { CustomCard } from './CustomCard'
-import { CardList } from './CardList'
 import { useAirtable } from './hooks'
 import { AirtableSchemaQuery } from './types'
 
@@ -42,7 +42,7 @@ export const Explore: FC = () => {
       <BasicExploreIntro introParagraph={intro} />
       {isLoading && <LoadingIndicatorBar omitText />}
       {error && 'Could not load'}
-      <CardList>
+      <CardListWrap>
         {data.map(({ name, plural, definition }) => (
           <CustomCard
             key={name}
@@ -64,7 +64,7 @@ export const Explore: FC = () => {
             }
           />
         ))}
-      </CardList>
+      </CardListWrap>
     </>
   )
 }

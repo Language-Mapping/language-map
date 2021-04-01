@@ -6,6 +6,7 @@ const initialState = {
   autoZoomCensus: true,
   geolocActive: false,
   showNeighbs: false,
+  showCounties: false,
 } as Types.InitialMapToolsState
 
 const MapToolsContext = React.createContext<
@@ -27,6 +28,12 @@ function reducer(
         ...state,
         showNeighbs:
           action.payload === undefined ? !state.showNeighbs : action.payload,
+      }
+    case 'TOGGLE_COUNTIES_LAYER':
+      return {
+        ...state,
+        showCounties:
+          action.payload === undefined ? !state.showCounties : action.payload,
       }
     case 'SET_GEOLOC_ACTIVE':
       return { ...state, geolocActive: action.payload }
