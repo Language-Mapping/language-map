@@ -94,7 +94,7 @@ export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
   const {
     'data-descrips': dataDescrips,
     'Additional Languages': addlLanguages,
-  } = firstRecord
+  } = firstRecord || {}
 
   const Extree = (
     <>

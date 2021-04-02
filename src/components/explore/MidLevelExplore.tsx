@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Route } from 'react-router-dom'
 
 import { FlagFromHook } from 'components/generic/icons-and-swatches'
 import { SwatchOnly } from 'components/legend'
@@ -10,6 +10,7 @@ import { CardList } from './CardList'
 import { useAirtable } from './hooks'
 import { prepFormula, prepFields } from './utils'
 import { TonsWithAddl, MidLevelExploreProps, RouteMatch } from './types'
+import { LayerToggle } from './LayerToggle'
 
 export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
   const { field, value } = useParams<RouteMatch & { value: string }>()
@@ -48,7 +49,15 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
 
   return (
     <>
-      <BasicExploreIntro title={value} icon={Icon} />
+      <BasicExploreIntro
+        title={value}
+        icon={Icon}
+        extree={
+          <Route path="/Explore/County">
+            <LayerToggle layerID="counties" />
+          </Route>
+        }
+      />
       <CardList data={primaryData} />
     </>
   )

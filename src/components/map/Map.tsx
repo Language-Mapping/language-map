@@ -18,7 +18,7 @@ import { MapPopups } from './MapPopup'
 import { MapCtrlBtns } from './MapCtrlBtns'
 import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
-import { NeighborhoodsLayer } from './NeighborhoodsLayer'
+import { PolygonLayer } from './NeighborhoodsLayer'
 
 import * as config from './config'
 import {
@@ -43,7 +43,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   const { mapLoaded, mapRef, setMapLoaded } = props
   const loc = useLocation()
 
-  const { autoZoomCensus, censusActiveField, showNeighbs } = useMapToolsState()
+  const { autoZoomCensus, censusActiveField } = useMapToolsState()
   const { pathname } = loc
   const selLangPointCoords = useSelLangPointCoords()
   const { state } = useContext(GlobalContext)
@@ -68,14 +68,8 @@ export const Map: FC<Types.MapProps> = (props) => {
     config.initialMapState
   )
 
-  // TODO: use <Marker> instead of <Popup> if possible to clear text easily
-  // const [tooltip, setTooltip] = useState<Types.PopupSettings | null>(null)
-
   // TODO: mobile:
   const shouldFlyHome = useZoomToLangFeatsExtent(isMapTilted, map)
-
-  // // TODO: rm if not needed for hover/popup stuff
-  // // const interactiveLayerIds = symbCache
 
   useEffect(() => {
     if (!map) return
@@ -228,39 +222,53 @@ export const Map: FC<Types.MapProps> = (props) => {
   function onClick(event: Types.MapEvent): void {
     if (!map || !mapLoaded) return
 
-    const topLangFeat = utils.langFeatsUnderClick(event.point, map, {
-      // CRED: https://stackoverflow.com/a/42984268/1048518
-      lang: utils.getLangLayersIDs(map.getStyle().layers || []),
-    })[0]
+    // CRED: https://stackoverflow.com/a/42984268/1048518
+    const topLangFeat = utils.queryRenderedPoints(
+      event.point,
+      map,
+      utils.getLangLayersIDs(map.getStyle().layers || [])
+    )[0]
 
     if (topLangFeat) {
       history.push(
         `/Explore/Language/${topLangFeat.properties?.Language}/${topLangFeat.properties?.id}`
       )
 
-      return // prevent boundary click underneath
+      return // no need to check for anything else
     }
 
-    // TODO: restore, remove or refactor. Better to just check for what's under?
-    if (!showNeighbs) {
-      history.push('/Explore/Language/none')
-
-      return
-    }
-
-    const neighborhoodClicked = map.queryRenderedFeatures(event.point, {
-      layers: ['neighborhoods-poly'], // TODO: make it work for all
+    const clickedPolygons = map.queryRenderedFeatures(event.point, {
+      // TODO: de-fragilize the world
+      layers: [
+        'neighborhoods-poly',
+        'counties-poly',
+        'tract-poly',
+        'puma-poly',
+      ],
     }) as Types.BoundaryFeat[]
 
-    if (!neighborhoodClicked.length) {
-      history.push('/Explore/Language/none')
+    let targetRoute = ''
+
+    if (clickedPolygons.length) {
+      const topPoly = clickedPolygons[0]
+      const { properties, source } = topPoly
+      const uniqueID = properties.name || properties.GEOID
+
+      if (source === 'neighborhoods') {
+        targetRoute = `/Explore/Neighborhood/${uniqueID}`
+      } else if (source === 'counties') {
+        targetRoute = `/Explore/County/${uniqueID}`
+      } else if (censusActiveField) {
+        const { id, scope } = censusActiveField
+        targetRoute = `/Census/${scope}/${id}/${uniqueID}`
+      }
+
+      history.push(targetRoute)
 
       return
     }
 
-    history.push(
-      `/Explore/Neighborhood/${neighborhoodClicked[0].properties?.name}`
-    )
+    history.push(targetRoute || '/Explore/Language/none') // "No community selected"
   }
 
   function onMapCtrlClick(actionID: Types.MapControlAction) {
@@ -308,10 +316,17 @@ export const Map: FC<Types.MapProps> = (props) => {
         />
         {/* TODO: hide label on clear */}
         {geocodeMarker && !mapIsMoving && <GeocodeMarker {...geocodeMarker} />}
-        <NeighborhoodsLayer
+        <PolygonLayer
           map={map}
           beforeId={beforeId}
           mapLoaded={mapLoaded}
+          configKey="neighborhoods"
+        />
+        <PolygonLayer
+          map={map}
+          beforeId={beforeId}
+          mapLoaded={mapLoaded}
+          configKey="counties"
         />
         <CensusLayer
           map={map}
@@ -321,9 +336,9 @@ export const Map: FC<Types.MapProps> = (props) => {
         />
         <CensusLayer
           map={map}
-          config={config.tractsConfig}
+          config={config.tractConfig}
           beforeId={beforeId}
-          sourceLayer={config.tractsLyrSrc['source-layer']}
+          sourceLayer={config.tractLyrSrc['source-layer']}
         />
         <LangMbSrcAndLayer />
         {mapLoaded && showPopups && !mapIsMoving && (

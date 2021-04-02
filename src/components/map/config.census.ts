@@ -1,7 +1,7 @@
 import * as LocalTypes from 'components/local'
 import * as Types from './types'
 
-const tractsSrcId: LocalTypes.CensusScope = 'tract'
+const tractSrcId: LocalTypes.CensusScope = 'tract'
 const pumaSrcID: LocalTypes.CensusScope = 'puma'
 const minzoom = 8
 
@@ -10,13 +10,13 @@ export const CENSUS_PROMOTE_ID_FIELD = 'GEOID'
 
 export const pumaLyrSrc = {
   source: pumaSrcID,
-  'source-layer': 'NYC_PUMA2017_5yr_langHome-0tfhwp',
+  'source-layer': pumaSrcID,
   minzoom,
 }
 
-export const tractsLyrSrc = {
-  source: tractsSrcId,
-  'source-layer': 'NYC_tract2013_17_langHome-8cd347',
+export const tractLyrSrc = {
+  source: tractSrcId,
+  'source-layer': tractSrcId,
   minzoom,
 }
 
@@ -48,16 +48,22 @@ const censusLine = {
   paint: { 'line-color': '#c2c2c2', 'line-opacity': 0.2 },
 }
 
-export const tractsConfig = {
-  source: { id: tractsSrcId, url: 'mapbox://elalliance.5dh31p39' },
+export const tractConfig = {
+  source: {
+    id: tractSrcId,
+    url: 'mapbox://elalliance.ckmz05zuf04p421nltfeih779-91sof',
+  },
   layers: [
-    { id: 'tracts-poly', ...tractsLyrSrc, ...censusFill },
-    { id: 'tracts-line', ...tractsLyrSrc, ...censusLine },
+    { id: 'tract-poly', ...tractLyrSrc, ...censusFill },
+    { id: 'tract-line', ...tractLyrSrc, ...censusLine },
   ],
 } as Omit<Types.BoundaryConfig, 'lookupPath'>
 
 export const pumaConfig = {
-  source: { id: pumaSrcID, url: 'mapbox://elalliance.5tfrskw8' },
+  source: {
+    id: pumaSrcID,
+    url: 'mapbox://elalliance.ckmyzhyit0n4b21mxt9rdkeiy-7w6dn',
+  },
   layers: [
     { id: 'puma-poly', ...pumaLyrSrc, ...censusFill },
     { id: 'puma-line', ...pumaLyrSrc, ...censusLine },

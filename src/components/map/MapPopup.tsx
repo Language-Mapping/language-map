@@ -6,7 +6,12 @@ import { Typography } from '@material-ui/core'
 
 import { InstanceLevelSchema } from 'components/context'
 import { useAirtable } from 'components/explore/hooks'
-import { MapPopupProps, MapPopupsProps, NeighborhoodTableSchema } from './types'
+import {
+  MapPopupProps,
+  MapPopupsProps,
+  NeighborhoodTableSchema,
+  PolygonPopupProps,
+} from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,12 +43,6 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: theme.typography.caption.fontSize,
       fontStyle: 'italic',
     },
-    // FROM TOOLTIP // TODO: rm if not using, otherwise incorporate
-    // mapTooltipRoot: {
-    //   textAlign: 'center',
-    //   '& .mapboxgl-popup-content': { padding: 6 },
-    // },
-    // subheading: { display: 'block', fontStyle: 'italic', fontSize: 12 },
   })
 )
 
@@ -97,28 +96,29 @@ const LanguagePopup: FC<Pick<MapPopupsProps, 'setShowPopups'>> = (props) => {
   )
 }
 
-const NeighborhoodPopup: FC<MapPopupsProps> = (props) => {
-  const { setShowPopups } = props
+const PolygonPopup: FC<PolygonPopupProps> = (props) => {
+  const {
+    setShowPopups,
+    tableName,
+    baseID,
+    subHeadingField,
+    addlFields = [],
+  } = props
   const { name } = useParams<{ name: string }>()
 
   const { data, isLoading, error } = useAirtable<NeighborhoodTableSchema>(
-    'Neighborhood',
+    tableName,
     {
-      fields: ['name', 'County', 'x_max', 'x_min', 'y_min', 'y_max'],
+      fields: ['name', 'x_max', 'x_min', 'y_min', 'y_max', ...addlFields],
       filterByFormula: `{name} = "${name}"`,
       maxRecords: 1,
+      ...(baseID && { baseID }),
     }
   )
 
   if (isLoading || error || !data.length) return <></>
 
-  const {
-    County: county, // or borough
-    x_max: xMax,
-    x_min: xMin,
-    y_min: yMin,
-    y_max: yMax,
-  } = data[0]
+  const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = data[0]
 
   const latitude = (yMax - yMin) / 2 + yMin
   const longitude = (xMin - xMax) / 2 + xMax
@@ -129,7 +129,9 @@ const NeighborhoodPopup: FC<MapPopupsProps> = (props) => {
       latitude={latitude}
       setShowPopups={setShowPopups}
       heading={name}
-      subheading={county}
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      subheading={data[0][subHeadingField]}
     />
   )
 }
@@ -143,7 +145,12 @@ export const MapPopups: FC<MapPopupsProps> = (props) => {
         <LanguagePopup setShowPopups={setShowPopups} />
       </Route>
       <Route path="/Explore/Neighborhood/:name" exact>
-        <NeighborhoodPopup setShowPopups={setShowPopups} />
+        <PolygonPopup
+          setShowPopups={setShowPopups}
+          tableName="Neighborhood"
+          subHeadingField="County"
+          addlFields={['County']}
+        />
       </Route>
     </Switch>
   )

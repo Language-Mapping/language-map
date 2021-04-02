@@ -151,14 +151,19 @@ export const useSelLangPointCoords = (): Types.UseSelLangPointCoordsReturn => {
   }
 }
 
-export const usePolygonWebMerc = (): Types.UsePolygonWebMerc => {
+export const usePolygonWebMerc: Types.UsePolygonWebMerc = (
+  routePath,
+  tableName
+) => {
   const match = useRouteMatch<{ name: string }>({
-    path: '/Explore/Neighborhood/:name',
+    path: routePath,
     exact: true,
   })
 
-  const { data, isLoading, error } = useAirtable<Types.NeighborhoodTableSchema>(
-    'Neighborhood',
+  const { data, isLoading, error } = useAirtable<
+    Types.NeighborhoodTableSchema | Types.CountyTableSchema
+  >(
+    tableName,
     {
       fields: ['x_max', 'x_min', 'y_min', 'y_max'],
       filterByFormula: `{name} = "${match?.params.name}"`,
@@ -169,8 +174,6 @@ export const usePolygonWebMerc = (): Types.UsePolygonWebMerc => {
 
   if (isLoading || error || !data.length)
     return { x_max: null, x_min: null, y_min: null, y_max: null }
-
-  // const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = data[0]
 
   return {
     x_max: data[0].x_max,

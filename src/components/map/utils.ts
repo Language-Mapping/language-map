@@ -153,7 +153,7 @@ export const flyToPoint: Types.FlyToPoint = (
   }
 }
 
-export const langFeatsUnderClick: Types.LangFeatsUnderClick = (
+export const queryRenderedPoints: Types.LangFeatsUnderClick = (
   point,
   map,
   interactiveLayerIds
@@ -164,24 +164,9 @@ export const langFeatsUnderClick: Types.LangFeatsUnderClick = (
       [point[0] + 5, point[1] + 5],
     ],
     {
-      layers: interactiveLayerIds.lang,
+      layers: interactiveLayerIds,
     }
   )
-}
-
-// TODO: restore or remove
-export const clearSelPolyFeats: Types.ClearStuff = (map) => {
-  map.removeFeatureState({
-    source: 'neighborhoods-new',
-    sourceLayer: 'neighborhoods',
-  })
-  // }, 'hover') // NOTE: could not get this to work properly anywhere
-
-  // TODO: make super generic
-  // map.removeFeatureState({
-  //   source: config.countiesSrcId,
-  //   sourceLayer: config.countiesPolyID,
-  // })
 }
 
 // Set up Mapbox font filters for languages with complex endonym characters. In

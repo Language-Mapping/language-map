@@ -96,6 +96,7 @@ type CensusFields = {
 type CensusFieldPayload = {
   scope: CensusScope
   id: string
+  pretty?: string
 }
 
 export type InitialMapToolsState = {
