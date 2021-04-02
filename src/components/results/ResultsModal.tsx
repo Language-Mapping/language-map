@@ -16,8 +16,8 @@ const fields: Array<Extract<keyof InstanceLevelSchema, string>> = [
   'Additional Neighborhoods',
   'Audio',
   'countryImg',
+  'County',
   'Country',
-  'Description',
   'Endonym',
   'Global Speaker Total',
   'Glottocode',
@@ -51,7 +51,8 @@ const ResultsModal: FC = () => {
   const [lastLoc, setLastLoc] = useState()
   const { data, isLoading, error } = useAirtable<InstanceLevelSchema>('Data', {
     fields,
-    maxRecords: window?.location.hostname === 'lampel-2.local' ? 1 : 20000,
+    // Save a little bandwidth on local dev
+    maxRecords: window?.location.hostname === 'lampel-2.local' ? 100 : 20000,
   })
 
   // CRED:
