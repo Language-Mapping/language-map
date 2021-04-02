@@ -38,6 +38,7 @@ export const CardList: FC<{ data: TonsWithAddl[] }> = (props) => {
   const classes = useStyles()
   const { field, value } = useParams<RouteMatch & { value: string }>()
   const { url } = useRouteMatch()
+  const useLangAsIntro = value || field === 'Language'
 
   return (
     <div className={classes.root}>
@@ -48,7 +49,7 @@ export const CardList: FC<{ data: TonsWithAddl[] }> = (props) => {
         return (
           <CustomCard
             key={nameOrLang}
-            intro={field === 'Language' ? nameOrLang : ''}
+            intro={useLangAsIntro ? nameOrLang : ''}
             title={row.Endonym || row.name}
             uniqueInstances={uniqueInstances}
             url={`${url}/${nameOrLang}`}
