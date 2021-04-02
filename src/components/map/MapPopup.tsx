@@ -151,14 +151,14 @@ const CensusPopup: FC<MapPopupsProps> = (props) => {
 
   if (isLoading || error || !data.length) return <></>
 
-  const firstResult = data[0]
-  const { latitude, longitude } = getCenterOfBounds(firstResult)
-  const heading = `${firstResult[field]} speakers`
+  const firstRow = data[0]
+  const { latitude, longitude } = getCenterOfBounds(firstRow)
+  const heading = firstRow[field] ? firstRow[field].toLocaleString() : 'No'
 
   const Content = (
     <>
       of <i>{censusActiveField?.pretty || field}</i> in{' '}
-      {`${firstResult.Neighborhood || 'this census tract'}`}
+      {`${firstRow.Neighborhood || 'this census tract'}`}
     </>
   )
 
@@ -167,7 +167,7 @@ const CensusPopup: FC<MapPopupsProps> = (props) => {
       longitude={longitude}
       latitude={latitude}
       setShowPopups={setShowPopups}
-      heading={heading}
+      heading={`${heading} speakers`}
       content={Content}
     />
   )

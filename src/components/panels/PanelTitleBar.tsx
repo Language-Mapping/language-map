@@ -19,6 +19,7 @@ import { MdClose } from 'react-icons/md'
 import { HideOnScroll } from 'components/generic'
 import { usePanelDispatch } from 'components/panels'
 import { icons } from 'components/config'
+import { routes } from 'components/config/api'
 import { SplitCrumbs } from './SplitCrumbs'
 
 const topCornersRadius = 4 // same as bottom left/right in nav bar
@@ -159,6 +160,8 @@ export const PanelTitleBar: FC = (props) => {
       <AppBar className={classes.root}>
         <Toolbar variant="dense" className={classes.toolbar}>
           <Switch>
+            {/* Census can just have home btn */}
+            <Route path={routes.local} />
             <Route path={['/', '/:level1']} exact />
             <Route>
               <SplitCrumbs />
@@ -173,7 +176,7 @@ export const PanelTitleBar: FC = (props) => {
             <Route path="/:level1/:level2" exact>
               <PanelTitle text={panelHeading} icon={icons[panelHeading]} />
             </Route>
-            <Route path="/Census" exact>
+            <Route path="/Census">
               {/* Census just needs panel heading override */}
               <LinkToHomeBtn />
               <PanelTitle

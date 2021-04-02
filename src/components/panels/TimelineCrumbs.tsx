@@ -39,60 +39,53 @@ const useStyles = makeStyles((theme: Theme) =>
 export const TimelineCrumbs: FC<TimelineCrumbsProps> = (props) => {
   const classes = useStyles()
   const { pathChunks } = props
-  // 3 levels deep worth of routing looks ridiculous, esp. if no views for each:
-  const exclude = ['Census'].includes(pathChunks[0])
 
   return (
     <Timeline className={classes.root}>
-      {[...(exclude ? [pathChunks[0]] : pathChunks)]
-        .reverse()
-        .map((chunk, i) => {
-          const firstOne = i === 0
-          const panelIcon =
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            icons[chunk]
-          const to = `/${pathChunks.slice(0, pathChunks.length - i).join('/')}`
-          const emptyIconClass = panelIcon ? '' : classes.wideEmptyIcon
+      {pathChunks.reverse().map((chunk, i) => {
+        const firstOne = i === 0
+        const panelIcon =
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          icons[chunk]
+        const to = `/${pathChunks.slice(0, pathChunks.length - i).join('/')}`
+        const emptyIconClass = panelIcon ? '' : classes.wideEmptyIcon
 
-          return (
-            <TimelineItem
-              key={chunk as string}
-              classes={{ root: classes.timelineItem }}
-            >
-              <TimelineSeparator>
-                <TimelineDot
-                  color="secondary"
-                  variant={firstOne ? 'outlined' : 'default'}
-                  className={emptyIconClass}
-                >
-                  {panelIcon}
-                </TimelineDot>
-                <TimelineConnector />
-              </TimelineSeparator>
-              <TimelineContent>
-                {firstOne ? (
-                  <b>
-                    <Switch>
-                      <Route
-                        path="/Explore/Language/:language/:instanceID"
-                        exact
-                      >
-                        Community details
-                      </Route>
-                      <Route path="/Explore/Language/none">
-                        No community selected
-                      </Route>
-                      <Route>{chunk}</Route>
-                    </Switch>
-                  </b>
-                ) : (
-                  <RouterLink to={to}>{chunk}</RouterLink>
-                )}
-              </TimelineContent>
-            </TimelineItem>
-          )
-        })}
+        return (
+          <TimelineItem
+            key={chunk as string}
+            classes={{ root: classes.timelineItem }}
+          >
+            <TimelineSeparator>
+              <TimelineDot
+                color="secondary"
+                variant={firstOne ? 'outlined' : 'default'}
+                className={emptyIconClass}
+              >
+                {panelIcon}
+              </TimelineDot>
+              <TimelineConnector />
+            </TimelineSeparator>
+            <TimelineContent>
+              {firstOne ? (
+                <b>
+                  <Switch>
+                    <Route path="/Explore/Language/:language/:instanceID" exact>
+                      Community details
+                    </Route>
+                    <Route path="/Explore/Language/none">
+                      No community selected
+                    </Route>
+                    <Route>{chunk}</Route>
+                  </Switch>
+                </b>
+              ) : (
+                <RouterLink to={to}>{chunk}</RouterLink>
+              )}
+            </TimelineContent>
+          </TimelineItem>
+        )
+      })}
       {/* Always link to Home at bottom of timeline */}
       <TimelineItem classes={{ root: classes.timelineItem }}>
         <TimelineSeparator>

@@ -20,7 +20,12 @@ import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
 import { PolygonLayer } from './NeighborhoodsLayer'
 
-import * as config from './config'
+import {
+  initialMapState,
+  mapProps,
+  POINT_ZOOM_LEVEL,
+  langTypeIconsConfig,
+} from './config'
 import {
   useSelLangPointCoords,
   useOffset,
@@ -34,8 +39,6 @@ import { onHover } from './events'
 
 import * as Types from './types'
 import * as utils from './utils'
-
-const { langTypeIconsConfig } = config
 
 utils.rightToLeftSetup()
 
@@ -64,9 +67,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     geocodeMarker,
     setGeocodeMarker,
   ] = useState<Types.GeocodeMarkerProps | null>()
-  const [viewport, setViewport] = useState<Types.ViewportState>(
-    config.initialMapState
-  )
+  const [viewport, setViewport] = useState<Types.ViewportState>(initialMapState)
 
   // TODO: mobile:
   const shouldFlyHome = useZoomToLangFeatsExtent(isMapTilted, map)
@@ -249,6 +250,7 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     let targetRoute = ''
 
+    // TODO: tighten up routes w/TS, and move most of this function into utils
     if (clickedPolygons.length) {
       const topPoly = clickedPolygons[0]
       const { properties, source } = topPoly
@@ -289,7 +291,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     <>
       <MapGL
         {...viewport}
-        {...config.mapProps}
+        {...mapProps}
         ref={mapRef}
         /* eslint-disable operator-linebreak */
         // interactiveLayerIds={
@@ -311,7 +313,7 @@ export const Map: FC<Types.MapProps> = (props) => {
           onViewportChange={(mapViewport: Types.ViewportState) => {
             // CRED:
             // github.com/visgl/react-map-gl/issues/887#issuecomment-531580394
-            setViewport({ ...mapViewport, zoom: config.POINT_ZOOM_LEVEL })
+            setViewport({ ...mapViewport, zoom: POINT_ZOOM_LEVEL })
           }}
         />
         {/* TODO: hide label on clear */}
@@ -330,15 +332,15 @@ export const Map: FC<Types.MapProps> = (props) => {
         />
         <CensusLayer
           map={map}
-          config={config.pumaConfig}
+          configKey="puma"
           beforeId={beforeId}
-          sourceLayer={config.pumaLyrSrc['source-layer']}
+          mapLoaded={mapLoaded}
         />
         <CensusLayer
           map={map}
-          config={config.tractConfig}
+          configKey="tract"
           beforeId={beforeId}
-          sourceLayer={config.tractLyrSrc['source-layer']}
+          mapLoaded={mapLoaded}
         />
         <LangMbSrcAndLayer />
         {mapLoaded && showPopups && !mapIsMoving && (

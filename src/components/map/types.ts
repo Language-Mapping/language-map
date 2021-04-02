@@ -128,8 +128,8 @@ export type PanelSectionProps = {
 }
 
 export type CensusLayerProps = {
-  sourceLayer: string
-  config: Omit<BoundaryConfig, 'lookupPath'>
+  mapLoaded: boolean
+  configKey: string
   beforeId?: string
   map?: Map
 }
@@ -306,3 +306,10 @@ export type NeighborhoodTableSchema = BoundsColumns & {
 export type CountyTableSchema = BoundsColumns & {
   name: string
 }
+
+export type UseZoomToBounds = (
+  routePath: string,
+  tableName: string,
+  mapLoaded: boolean,
+  map?: Map
+) => void

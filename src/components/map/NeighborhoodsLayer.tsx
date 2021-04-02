@@ -3,9 +3,8 @@ import { useRouteMatch } from 'react-router-dom'
 import { Source, Layer } from 'react-map-gl'
 
 import { useMapToolsState } from 'components/context'
-import { PolygonLayerProps, BoundsArray } from './types'
-import { usePolygonWebMerc, useOffset } from './hooks'
-import { getPolyWebMercView, flyToPoint } from './utils'
+import { PolygonLayerProps } from './types'
+import { useZoomToBounds } from './hooks'
 
 const polygonsConfigNew = {
   neighborhoods: {
@@ -71,9 +70,8 @@ export const PolygonLayer: FC<PolygonLayerProps> = (props) => {
     exact: true,
   })
   const valueParam = match?.params.name
-  const selPolyBounds = usePolygonWebMerc(routePath, tableName)
-  const offset = useOffset()
-  const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = selPolyBounds
+
+  useZoomToBounds(routePath, tableName, mapLoaded, map)
 
   // Clear/set selected feature state
   useEffect(() => {
@@ -94,27 +92,6 @@ export const PolygonLayer: FC<PolygonLayerProps> = (props) => {
     // Definitely need `mapLoaded`
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, mapLoaded, match, valueParam, visible])
-
-  // Zoom to selected feature extent
-  useEffect(() => {
-    if (!map || !mapLoaded || !xMax || !xMin || !yMin || !yMax) return
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const boundsArray = [
-      [xMin, yMin],
-      [xMax, yMax],
-    ] as BoundsArray
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const webMercViewport = getPolyWebMercView(boundsArray, offset)
-
-    flyToPoint(map, { ...webMercViewport, offset })
-
-    // LEGIT. selPolyBounds as a dep will break the world.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapLoaded, xMax, xMin, yMin, yMax, map])
 
   return (
     <Source
