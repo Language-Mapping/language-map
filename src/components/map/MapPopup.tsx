@@ -102,15 +102,16 @@ const PolygonPopup: FC<PolygonPopupProps> = (props) => {
     tableName,
     baseID,
     subHeadingField,
+    uniqueIDfield = 'name',
     addlFields = [],
   } = props
-  const { name } = useParams<{ name: string }>()
+  const { id } = useParams<{ id: string }>()
 
   const { data, isLoading, error } = useAirtable<NeighborhoodTableSchema>(
     tableName,
     {
-      fields: ['name', 'x_max', 'x_min', 'y_min', 'y_max', ...addlFields],
-      filterByFormula: `{name} = "${name}"`,
+      fields: ['x_max', 'x_min', 'y_min', 'y_max', ...addlFields],
+      filterByFormula: `{${uniqueIDfield}} = "${id}"`,
       maxRecords: 1,
       ...(baseID && { baseID }),
     }
@@ -128,10 +129,12 @@ const PolygonPopup: FC<PolygonPopupProps> = (props) => {
       longitude={longitude}
       latitude={latitude}
       setShowPopups={setShowPopups}
-      heading={name}
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      /* eslint-disable @typescript-eslint/ban-ts-comment */
+      // @ts-ignore
+      heading={data[0][uniqueIDfield]}
       // @ts-ignore
       subheading={data[0][subHeadingField]}
+      /* eslint-enable @typescript-eslint/ban-ts-comment */
     />
   )
 }
@@ -144,12 +147,19 @@ export const MapPopups: FC<MapPopupsProps> = (props) => {
       <Route path="/Explore/Language/:language/:id" exact>
         <LanguagePopup setShowPopups={setShowPopups} />
       </Route>
-      <Route path="/Explore/Neighborhood/:name" exact>
+      <Route path="/Explore/Neighborhood/:id" exact>
         <PolygonPopup
           setShowPopups={setShowPopups}
           tableName="Neighborhood"
           subHeadingField="County"
-          addlFields={['County']}
+          addlFields={['County', 'name']}
+        />
+      </Route>
+      <Route path="/Explore/County/:id" exact>
+        <PolygonPopup
+          setShowPopups={setShowPopups}
+          tableName="County"
+          addlFields={['name']}
         />
       </Route>
     </Switch>

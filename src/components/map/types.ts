@@ -240,6 +240,7 @@ export type MapPopupsProps = {
 
 export type PolygonPopupProps = MapPopupsProps & {
   tableName: 'Neighborhood' | 'County' | 'puma' | 'tract'
+  uniqueIDfield?: 'name' | 'GEOID'
   baseID?: string
   subHeadingField?: string
   addlFields?: string[]

@@ -7,8 +7,6 @@ import { PolygonLayerProps, BoundsArray } from './types'
 import { usePolygonWebMerc, useOffset } from './hooks'
 import { getPolyWebMercView, flyToPoint } from './utils'
 
-const minZoom = 8
-
 const polygonsConfigNew = {
   neighborhoods: {
     linePaint: { 'line-color': 'orange', 'line-opacity': 0.4 },
@@ -133,7 +131,6 @@ export const PolygonLayer: FC<PolygonLayerProps> = (props) => {
       <Layer
         id={`${sourceID}-poly`}
         source={sourceID}
-        minzoom={minZoom}
         source-layer={sourceLayer}
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -145,7 +142,6 @@ export const PolygonLayer: FC<PolygonLayerProps> = (props) => {
       <Layer
         id={`${sourceID}-line`}
         source={sourceID}
-        minzoom={minZoom}
         source-layer={sourceLayer}
         paint={linePaint}
         type="line"
