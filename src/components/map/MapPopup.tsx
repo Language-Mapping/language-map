@@ -4,14 +4,17 @@ import { Popup } from 'react-map-gl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
-import { InstanceLevelSchema } from 'components/context'
+import { InstanceLevelSchema, useMapToolsState } from 'components/context'
 import { useAirtable } from 'components/explore/hooks'
+import { AIRTABLE_CENSUS_BASE } from 'components/config'
 import {
+  CensusTableRow,
   MapPopupProps,
   MapPopupsProps,
   NeighborhoodTableSchema,
   PolygonPopupProps,
 } from './types'
+import { getCenterOfBounds } from './utils'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,17 +42,18 @@ const useStyles = makeStyles((theme: Theme) =>
     popupHeading: {
       lineHeight: 1.2,
     },
-    subHeading: {
+    popupContent: {
       fontSize: theme.typography.caption.fontSize,
-      fontStyle: 'italic',
+      // fontStyle: 'italic',
     },
   })
 )
 
+// The actual <Popup> component
 export const MapPopup: FC<MapPopupProps> = (props) => {
   const classes = useStyles()
-  const { longitude, latitude, setShowPopups, heading, subheading } = props
-  const { mapPopupRoot, popupHeading, subHeading } = classes
+  const { longitude, latitude, setShowPopups, heading, content } = props
+  const { mapPopupRoot, popupHeading, popupContent } = classes
 
   return (
     <Popup
@@ -65,7 +69,7 @@ export const MapPopup: FC<MapPopupProps> = (props) => {
         <Typography variant="h6" component="h3" className={popupHeading}>
           {heading}
         </Typography>
-        {subheading && <small className={subHeading}>{subheading}</small>}
+        {content && <small className={popupContent}>{content}</small>}
       </header>
     </Popup>
   )
@@ -91,50 +95,80 @@ const LanguagePopup: FC<Pick<MapPopupsProps, 'setShowPopups'>> = (props) => {
       latitude={Latitude}
       setShowPopups={setShowPopups}
       heading={Endonym}
-      subheading={Language}
+      content={Language}
     />
   )
 }
 
 const PolygonPopup: FC<PolygonPopupProps> = (props) => {
-  const {
-    setShowPopups,
-    tableName,
-    baseID,
-    subHeadingField,
-    uniqueIDfield = 'name',
-    addlFields = [],
-  } = props
+  const { setShowPopups, tableName, addlFields = [] } = props
   const { id } = useParams<{ id: string }>()
 
   const { data, isLoading, error } = useAirtable<NeighborhoodTableSchema>(
     tableName,
     {
-      fields: ['x_max', 'x_min', 'y_min', 'y_max', ...addlFields],
-      filterByFormula: `{${uniqueIDfield}} = "${id}"`,
+      fields: ['name', 'x_max', 'x_min', 'y_min', 'y_max', ...addlFields],
+      filterByFormula: `{name} = "${id}"`,
       maxRecords: 1,
-      ...(baseID && { baseID }),
     }
   )
 
   if (isLoading || error || !data.length) return <></>
 
-  const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = data[0]
-
-  const latitude = (yMax - yMin) / 2 + yMin
-  const longitude = (xMin - xMax) / 2 + xMax
+  const firstResult = data[0]
+  const { latitude, longitude } = getCenterOfBounds(data[0])
 
   return (
     <MapPopup
       longitude={longitude}
       latitude={latitude}
       setShowPopups={setShowPopups}
-      /* eslint-disable @typescript-eslint/ban-ts-comment */
-      // @ts-ignore
-      heading={data[0][uniqueIDfield]}
-      // @ts-ignore
-      subheading={data[0][subHeadingField]}
-      /* eslint-enable @typescript-eslint/ban-ts-comment */
+      heading={firstResult.name}
+      content={firstResult.County || ''}
+    />
+  )
+}
+
+const CensusPopup: FC<MapPopupsProps> = (props) => {
+  const { setShowPopups } = props
+  const { field, id, table } = useParams<{
+    id: string
+    field: string
+    table: 'puma' | 'tract' // TODO: tighten up everywhere
+  }>()
+  const addlFields = table === 'puma' ? ['Neighborhood'] : []
+  const { censusActiveField } = useMapToolsState()
+
+  const { data, isLoading, error } = useAirtable<CensusTableRow>(table, {
+    fields: ['GEOID', ...addlFields, 'x_max', 'x_min', 'y_min', 'y_max', field],
+    filterByFormula: `{GEOID} = "${id}"`,
+    maxRecords: 1,
+    baseID: AIRTABLE_CENSUS_BASE,
+  })
+
+  if (isLoading || error || !data.length) return <></>
+
+  const firstResult = data[0]
+  const { latitude, longitude } = getCenterOfBounds(firstResult)
+  let content = ''
+
+  const heading = `${firstResult[field]} ${
+    censusActiveField?.pretty || field
+  } speakers`
+
+  if (table === 'puma') {
+    content = `in ${firstResult.Neighborhood}`
+  } else if (table === 'tract') {
+    content = 'in this census tract'
+  }
+
+  return (
+    <MapPopup
+      longitude={longitude}
+      latitude={latitude}
+      setShowPopups={setShowPopups}
+      heading={heading}
+      content={content}
     />
   )
 }
@@ -151,7 +185,6 @@ export const MapPopups: FC<MapPopupsProps> = (props) => {
         <PolygonPopup
           setShowPopups={setShowPopups}
           tableName="Neighborhood"
-          subHeadingField="County"
           addlFields={['County', 'name']}
         />
       </Route>
@@ -161,6 +194,9 @@ export const MapPopups: FC<MapPopupsProps> = (props) => {
           tableName="County"
           addlFields={['name']}
         />
+      </Route>
+      <Route path="/Census/:table/:field/:id" exact>
+        <CensusPopup setShowPopups={setShowPopups} />
       </Route>
     </Switch>
   )

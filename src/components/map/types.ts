@@ -44,7 +44,7 @@ export type MapControlAction =
   | 'info'
   | 'loc-search'
   | 'reset-pitch'
-export type PopupContent = { heading: string; subheading?: string }
+export type PopupContent = { heading: string; content?: string }
 export type PopupSettings = PopupContent & LongLat
 export type UseStyleProps = { panelOpen: boolean }
 export type ViewportState = Partial<ViewportProps> & ViewState
@@ -239,10 +239,7 @@ export type MapPopupsProps = {
 }
 
 export type PolygonPopupProps = MapPopupsProps & {
-  tableName: 'Neighborhood' | 'County' | 'puma' | 'tract'
-  uniqueIDfield?: 'name' | 'GEOID'
-  baseID?: string
-  subHeadingField?: string
+  tableName: 'Neighborhood' | 'County'
   addlFields?: string[]
 }
 
@@ -272,7 +269,8 @@ export type HidePopups = {
 
 export type CensusTableRow = { [key: string]: number } & {
   GEOID: string
-}
+  Neighborhood?: string // puma-only (curated column, not part of orig dataset)
+} & BoundsColumns
 
 export type UseCensusSymbReturn = {
   isLoading: boolean

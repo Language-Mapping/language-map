@@ -299,3 +299,15 @@ export const getPolyWebMercView: Types.GetPolyWebMercView = (
 
   return { ...webMercViewport }
 }
+
+// Get the center of a rectangle, e.g. a polygon w/o dedicated centroid columns
+export const getCenterOfBounds = (
+  cornerCoords: Types.BoundsColumns
+): Types.LongLat => {
+  const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = cornerCoords
+
+  const latitude = (yMax - yMin) / 2 + yMin
+  const longitude = (xMin - xMax) / 2 + xMax
+
+  return { latitude, longitude }
+}
