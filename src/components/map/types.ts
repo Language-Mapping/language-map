@@ -44,13 +44,12 @@ export type MapControlAction =
   | 'info'
   | 'loc-search'
   | 'reset-pitch'
-export type PopupContent = { heading: string; content?: string }
+export type PopupContent = { heading: string; content?: React.ReactNode }
 export type PopupSettings = PopupContent & LongLat
 export type UseStyleProps = { panelOpen: boolean }
 export type ViewportState = Partial<ViewportProps> & ViewState
 export type Breakpoint = 'mobile' | 'desktop' | 'huge'
 export type Offset = [number, number] // [x, y]
-export type BoundariesInternalSrcID = 'neighborhoods' | 'counties'
 
 export type LayerPropsPlusMeta = Omit<LayerProps, 'paint' | 'layout' | 'id'> & {
   id: string
@@ -89,14 +88,9 @@ export type BoundaryFeat = Omit<
     y_min: number
     y_max: number
   }
-  source: BoundariesInternalSrcID
+  source: 'neighborhoods' | 'counties'
   'source-layer': string
 }
-
-export type BoundariesLayerProps = {
-  visible: boolean
-  beforeId?: string
-} & BoundaryConfig
 
 export type MapEvent = Omit<PointerEvent, 'features'> & {
   features: LangFeature[] | BoundaryFeat[]
@@ -261,11 +255,6 @@ export type UseZoomToLangFeatsExtent = (
   isMapTilted: boolean,
   map?: Map
 ) => boolean
-
-export type HidePopups = {
-  boundaries: boolean
-  language: boolean
-}
 
 export type CensusTableRow = { [key: string]: number } & {
   GEOID: string

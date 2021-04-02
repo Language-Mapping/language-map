@@ -99,7 +99,7 @@ export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
   const Extree = (
     <>
       <div className={classes.buttonWrap}>
-        <LayerToggle layerID="neighborhoods" />
+        <LayerToggle layerID="neighborhoods" excludeWrap />
         <ClearSelectionBtn />
         <Button
           size="small"

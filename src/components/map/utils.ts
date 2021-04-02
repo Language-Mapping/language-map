@@ -76,10 +76,6 @@ export const filterLayersByFeatIDs = (
   })
 }
 
-export const asyncAwaitFetch = async <T extends unknown>(
-  path: string
-): Promise<T> => (await fetch(path)).json()
-
 export const prepPopupContent: Types.PrepPopupContent = (
   selFeatAttribs,
   popupHeading

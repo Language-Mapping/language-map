@@ -1,6 +1,7 @@
 export * from './BasicExploreIntro'
 export * from './Breadcrumbs'
 export * from './CardList'
+export * from './CountiesLanding'
 export * from './CustomCard'
 export * from './Explore'
 export * from './ExploreLanding'

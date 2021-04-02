@@ -50,6 +50,9 @@ const polygonsConfigNew = {
   },
 }
 
+// Handy remnant from Boundaries layers:
+// filter={['in', ['id'], ['literal', recordIDs]]}
+
 export const PolygonLayer: FC<PolygonLayerProps> = (props) => {
   const { map, beforeId, mapLoaded, configKey } = props
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment

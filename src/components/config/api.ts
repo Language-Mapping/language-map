@@ -29,6 +29,9 @@ export const routes = {
   home: '/',
   neighborhood: '/Explore/Neighborhood',
   table: '/table',
+  none: '/Explore/Language/none',
+  details: '/Explore/Language/:value/:id',
+  countiesBase: '/Explore/County',
   ...censusRoutes,
   ...infoRoutes,
 } as {

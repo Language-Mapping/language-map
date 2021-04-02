@@ -40,11 +40,14 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     popupHeading: {
+      color: theme.palette.text.primary,
       lineHeight: 1.2,
+      marginBottom: '0.25rem',
     },
     popupContent: {
-      fontSize: theme.typography.caption.fontSize,
-      // fontStyle: 'italic',
+      color: theme.palette.text.secondary,
+      fontSize: '0.75rem',
+      margin: 0,
     },
   })
 )
@@ -69,7 +72,7 @@ export const MapPopup: FC<MapPopupProps> = (props) => {
         <Typography variant="h6" component="h3" className={popupHeading}>
           {heading}
         </Typography>
-        {content && <small className={popupContent}>{content}</small>}
+        {content ? <p className={popupContent}>{content}</p> : null}
       </header>
     </Popup>
   )
@@ -150,17 +153,14 @@ const CensusPopup: FC<MapPopupsProps> = (props) => {
 
   const firstResult = data[0]
   const { latitude, longitude } = getCenterOfBounds(firstResult)
-  let content = ''
+  const heading = `${firstResult[field]} speakers`
 
-  const heading = `${firstResult[field]} ${
-    censusActiveField?.pretty || field
-  } speakers`
-
-  if (table === 'puma') {
-    content = `in ${firstResult.Neighborhood}`
-  } else if (table === 'tract') {
-    content = 'in this census tract'
-  }
+  const Content = (
+    <>
+      of <i>{censusActiveField?.pretty || field}</i> in{' '}
+      {`${firstResult.Neighborhood || 'this census tract'}`}
+    </>
+  )
 
   return (
     <MapPopup
@@ -168,7 +168,7 @@ const CensusPopup: FC<MapPopupsProps> = (props) => {
       latitude={latitude}
       setShowPopups={setShowPopups}
       heading={heading}
-      content={content}
+      content={Content}
     />
   )
 }

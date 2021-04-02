@@ -6,19 +6,21 @@ import { useMapToolsState, useMapToolsDispatch } from 'components/context'
 
 type LayerToggleProps = {
   layerID: 'counties' | 'neighborhoods'
+  text?: string
+  excludeWrap?: boolean // e.g. if it's inline w/share btns
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     switchFormCtrlRoot: {
-      marginLeft: 0,
+      margin: 0,
     },
     controlLabel: {
       display: 'flex',
       alignItems: 'center',
     },
     smallerText: {
-      fontSize: '0.8rem',
+      fontSize: '0.75rem',
     },
     // wowww overkill, but it fits...
     hideOnMobile: {
@@ -27,13 +29,17 @@ const useStyles = makeStyles((theme: Theme) =>
         display: 'none',
       },
     },
+    wrap: {
+      display: 'flex',
+      justifyContent: 'center',
+    },
   })
 )
 
 // TODO: make generic for Counties, etc. These are dynamic:
 // showNeighbs, TOGGLE_NEIGHBORHOODS_LAYER
 export const LayerToggle: FC<LayerToggleProps> = (props) => {
-  const { layerID } = props
+  const { layerID, text, excludeWrap } = props
   const classes = useStyles()
   const { smallerText, switchFormCtrlRoot } = classes
   const mapToolsState = useMapToolsState()
@@ -54,11 +60,12 @@ export const LayerToggle: FC<LayerToggleProps> = (props) => {
 
   const ControlLabel = (
     <div className={classes.controlLabel}>
-      Show {layerID} <span className={classes.hideOnMobile}> in map</span>
+      Show {text || layerID}{' '}
+      <span className={classes.hideOnMobile}> in map</span>
     </div>
   )
 
-  return (
+  const TheToggle = (
     <FormControlLabel
       classes={{ label: smallerText, root: switchFormCtrlRoot }}
       control={
@@ -72,4 +79,8 @@ export const LayerToggle: FC<LayerToggleProps> = (props) => {
       label={ControlLabel}
     />
   )
+
+  if (excludeWrap) return TheToggle
+
+  return <div className={classes.wrap}>{TheToggle}</div>
 }
