@@ -6,7 +6,6 @@ import { LoadingIndicatorBar } from 'components/generic/modals'
 import { useAirtable } from './hooks'
 import { CardListWrap } from './CardList'
 import { CustomCard } from './CustomCard'
-import { LayerToggle } from './LayerToggle'
 
 export const CountiesLanding: FC = (props) => {
   const tableName = 'County'
@@ -41,10 +40,7 @@ export const CountiesLanding: FC = (props) => {
 
   return (
     <>
-      <BasicExploreIntro
-        introParagraph={landingData[0]?.definition}
-        extree={<LayerToggle layerID="counties" />}
-      />
+      <BasicExploreIntro introParagraph={landingData[0]?.definition} />
       <CardListWrap>
         {instanceData.map((row) => {
           const { name } = row
