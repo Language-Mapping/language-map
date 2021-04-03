@@ -3,8 +3,8 @@ import { NavLink, useLocation } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { BottomNavigation, BottomNavigationAction } from '@material-ui/core'
 
-import { RouteLocation } from 'components/config/types'
-import { usePanelDispatch } from 'components/panels'
+import { usePanelState, usePanelDispatch } from 'components/panels'
+import { routes } from 'components/config/api'
 import { navRoutes, panelWidths } from '../panels/config'
 import { BOTTOM_NAV_HEIGHT_MOBILE } from './config'
 
@@ -87,51 +87,75 @@ radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`
   })
 })
 
-// Home and table do not have sub-routes // GROSS
+// TODO: make this work dynamically, simply by checking if there's more than one
+// slash in the pathname, then setting this state if so.
 const initialSubRoutes = {
-  Census: '/Census',
-  Info: '/Info',
-  Explore: '/Explore',
-} as { [key: string]: RouteLocation }
+  Info: routes.info,
+  Explore: routes.explore,
+}
 
 export const BottomNav: FC = (props) => {
-  const loc = useLocation()
+  const { pathname } = useLocation()
   const classes = useStyles()
   const { root, selected, label, wrapper } = classes
   const panelDispatch = usePanelDispatch()
-
-  const currPathSansSlash = loc.pathname.split('/')[1]
-  const handleChange = () =>
-    panelDispatch({ type: 'TOGGLE_MAIN_PANEL', payload: true })
-
+  const { panelOpen } = usePanelState()
   const [subRoutePath, setSubRoutePath] = useState(
     initialSubRoutes as { [key: string]: string }
   )
 
+  const currPathSansSlash = pathname.split('/')[1]
+  const current = currPathSansSlash || '/'
+
+  const handleChange = (newValue: string): void => {
+    if (!panelOpen) {
+      panelDispatch({ type: 'TOGGLE_MAIN_PANEL', payload: true })
+
+      return
+    }
+
+    if (newValue === pathname) {
+      panelDispatch({ type: 'TOGGLE_MAIN_PANEL', payload: false })
+
+      return
+    }
+
+    const correspRoute = subRoutePath[currPathSansSlash]
+
+    if (correspRoute) {
+      setSubRoutePath({ ...subRoutePath, [currPathSansSlash]: pathname })
+    }
+  }
+
+  // Route changes should only affect their corresponding item
   useEffect(() => {
     const correspRoute = subRoutePath[currPathSansSlash]
 
     if (!correspRoute) return
 
-    // TODO: if no change and not top-level, go to top level
-    // TODO: if top level already, close panel
-    // Route changes should only affect their corresponding item
-    setSubRoutePath({
-      ...subRoutePath,
-      [currPathSansSlash]: loc.pathname,
-    })
+    if (pathname.includes(correspRoute) || correspRoute.includes(pathname)) {
+      setSubRoutePath({
+        ...subRoutePath,
+        [currPathSansSlash]: `/${currPathSansSlash}`,
+      })
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loc.pathname])
+  }, [pathname])
 
   return (
     <BottomNavigation
-      component="nav"
-      value={`${loc.pathname.split('/')[1]}` || '/'}
-      onChange={handleChange}
+      value={current}
+      // component="nav" // TODO: restore w/o errors
+      onChange={(event, newValue) => {
+        handleChange(newValue)
+      }}
       className={classes.bottomNavRoot}
     >
       {navRoutes.map((config) => {
-        const subRouteStateKey = config.rootPath.split('/')[1] || '/'
+        const { rootPath } = config
+        const subRouteStateKey = rootPath.split('/')[1] || '/'
+        const to = subRoutePath[subRouteStateKey] || rootPath
 
         return (
           <BottomNavigationAction
@@ -139,8 +163,8 @@ export const BottomNav: FC = (props) => {
             component={NavLink}
             label={config.heading}
             icon={config.icon}
-            value={subRouteStateKey}
-            to={subRoutePath[subRouteStateKey] || config.rootPath}
+            value={rootPath}
+            to={to}
             showLabel
             classes={{ root, selected, label, wrapper }}
           />
