@@ -36,7 +36,7 @@ function reducer(
           action.payload === undefined ? !state.showCounties : action.payload,
       }
     case 'SET_GEOLOC_ACTIVE':
-      return { ...state, geolocActive: action.payload }
+      return { ...state, geolocActive: !state.geolocActive }
     case 'SET_CENSUS_FIELD':
       return {
         ...state,

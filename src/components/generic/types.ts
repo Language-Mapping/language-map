@@ -12,6 +12,10 @@ export type UItextTableID =
   | 'info-link--user-manual'
   | 'lang-profile-loc-list'
   | 'loc-search-placeholder'
+  | 'map-menu-baselayers'
+  | 'map-menu-counties'
+  | 'map-menu-geoloc'
+  | 'map-menu-neighbs'
   | 'neighb-loc-list'
   | 'omni-placeholder'
 
@@ -31,3 +35,11 @@ export type LinkRenderer = {
 }
 
 export type MarkdownRootElemType = 'p' | 'span' | 'div'
+
+export type ToggleWithHelperProps<TChange = React.Dispatch<unknown>> = {
+  label: string
+  name: string
+  handleChange: TChange
+  checked?: boolean
+  helperText?: React.ReactNode
+}

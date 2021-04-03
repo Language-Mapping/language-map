@@ -111,7 +111,7 @@ export type InitialMapToolsState = {
 export type MapToolsAction =
   | { type: 'CLEAR_CENSUS_FIELD' }
   | { type: 'SET_CENSUS_FIELD'; payload: CensusFieldPayload }
-  | { type: 'SET_GEOLOC_ACTIVE'; payload: boolean }
+  | { type: 'SET_GEOLOC_ACTIVE' }
   | { type: 'TOGGLE_NEIGHBORHOODS_LAYER'; payload?: boolean }
   | { type: 'TOGGLE_COUNTIES_LAYER'; payload?: boolean }
   | { type: 'TOGGLE_CENSUS_AUTO_ZOOM' }

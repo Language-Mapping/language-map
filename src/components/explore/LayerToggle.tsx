@@ -50,7 +50,7 @@ export const LayerToggle: FC<LayerToggleProps> = (props) => {
   if (layerID === 'counties') checked = mapToolsState.showCounties
   else if (layerID === 'neighborhoods') checked = mapToolsState.showNeighbs
 
-  const handleNeighborhoodsToggle = () => {
+  const handleToggle = () => {
     let dispatchType = 'TOGGLE_NEIGHBORHOODS_LAYER'
     if (layerID === 'counties') dispatchType = 'TOGGLE_COUNTIES_LAYER'
 
@@ -72,7 +72,7 @@ export const LayerToggle: FC<LayerToggleProps> = (props) => {
       control={
         <Switch
           checked={checked}
-          onChange={handleNeighborhoodsToggle}
+          onChange={handleToggle}
           name="show-neighbs-switch"
           size="small"
         />
