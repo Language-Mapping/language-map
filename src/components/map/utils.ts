@@ -76,10 +76,6 @@ export const filterLayersByFeatIDs = (
   })
 }
 
-export const asyncAwaitFetch = async <T extends unknown>(
-  path: string
-): Promise<T> => (await fetch(path)).json()
-
 export const prepPopupContent: Types.PrepPopupContent = (
   selFeatAttribs,
   popupHeading
@@ -153,7 +149,7 @@ export const flyToPoint: Types.FlyToPoint = (
   }
 }
 
-export const langFeatsUnderClick: Types.LangFeatsUnderClick = (
+export const queryRenderedPoints: Types.LangFeatsUnderClick = (
   point,
   map,
   interactiveLayerIds
@@ -164,24 +160,9 @@ export const langFeatsUnderClick: Types.LangFeatsUnderClick = (
       [point[0] + 5, point[1] + 5],
     ],
     {
-      layers: interactiveLayerIds.lang,
+      layers: interactiveLayerIds,
     }
   )
-}
-
-// TODO: restore or remove
-export const clearSelPolyFeats: Types.ClearStuff = (map) => {
-  map.removeFeatureState({
-    source: 'neighborhoods-new',
-    sourceLayer: 'neighborhoods',
-  })
-  // }, 'hover') // NOTE: could not get this to work properly anywhere
-
-  // TODO: make super generic
-  // map.removeFeatureState({
-  //   source: config.countiesSrcId,
-  //   sourceLayer: config.countiesPolyID,
-  // })
 }
 
 // Set up Mapbox font filters for languages with complex endonym characters. In
@@ -236,13 +217,7 @@ export const setInterpolatedFill = (
   'fill-opacity': 0.9,
 })
 
-export const flyHome = (
-  map: MbMap,
-  nuclearClear: () => void,
-  offset: Types.Offset
-): void => {
-  nuclearClear()
-
+export const flyHome = (map: MbMap, offset: Types.Offset): void => {
   const settings = {
     height: map.getContainer().clientHeight,
     width: map.getContainer().clientWidth,
@@ -319,4 +294,16 @@ export const getPolyWebMercView: Types.GetPolyWebMercView = (
   }).fitBounds(boundsArray, { offset, padding: 75 })
 
   return { ...webMercViewport }
+}
+
+// Get the center of a rectangle, e.g. a polygon w/o dedicated centroid columns
+export const getCenterOfBounds = (
+  cornerCoords: Types.BoundsColumns
+): Types.LongLat => {
+  const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = cornerCoords
+
+  const latitude = (yMax - yMin) / 2 + yMin
+  const longitude = (xMin - xMax) / 2 + xMax
+
+  return { latitude, longitude }
 }

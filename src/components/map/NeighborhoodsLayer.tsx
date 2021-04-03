@@ -3,54 +3,95 @@ import { useRouteMatch } from 'react-router-dom'
 import { Source, Layer } from 'react-map-gl'
 
 import { useMapToolsState } from 'components/context'
-import { NeighborhoodsLayerProps } from './types'
+import { PolygonLayerProps } from './types'
+import { useZoomToBounds } from './hooks'
 
-const minZoom = 8
-const sourceID = 'neighborhoods-new'
-const sourceLayer = 'neighborhoods'
-const url = 'mapbox://elalliance.ckmundquc1k5328ppob5a9wok-1kglp'
-
-const paint = {
-  'fill-color': 'orange',
-  'fill-opacity': [
-    'case',
-    ['boolean', ['feature-state', 'selected'], false],
-    0.44,
-    ['boolean', ['feature-state', 'hover'], false],
-    0.29,
-    0.14,
-  ],
+const polygonsConfigNew = {
+  neighborhoods: {
+    linePaint: { 'line-color': 'orange', 'line-opacity': 0.4 },
+    routePath: '/Explore/Neighborhood/:name',
+    sourceID: 'neighborhoods',
+    sourceLayer: 'neighborhoods',
+    tableName: 'Neighborhood',
+    url: 'mapbox://elalliance.ckmundquc1k5328ppob5a9wok-1kglp',
+    visContextKey: 'showNeighbs',
+    fillPaint: {
+      'fill-color': 'orange',
+      'fill-opacity': [
+        'case',
+        ['boolean', ['feature-state', 'selected'], false],
+        0.44,
+        ['boolean', ['feature-state', 'hover'], false],
+        0.29,
+        0.14,
+      ],
+    },
+  },
+  counties: {
+    linePaint: { 'line-color': '#9ebbd7', 'line-opacity': 0.4 },
+    routePath: '/Explore/County/:name',
+    sourceID: 'counties',
+    sourceLayer: 'counties',
+    tableName: 'County',
+    url: 'mapbox://elalliance.ckmyz29pm0zzq22nax87m0kxb-7j7uy',
+    visContextKey: 'showCounties',
+    fillPaint: {
+      'fill-color': 'hsl(193, 63%, 32%)',
+      'fill-opacity': [
+        'case',
+        ['boolean', ['feature-state', 'selected'], false],
+        0.44,
+        ['boolean', ['feature-state', 'hover'], false],
+        0.29,
+        0.14,
+      ],
+    },
+  },
 }
 
-export const NeighborhoodsLayer: FC<NeighborhoodsLayerProps> = (props) => {
-  const { map, beforeId, mapLoaded } = props
-  const { showNeighbs } = useMapToolsState()
-  const match = useRouteMatch<{ neighborhood: string }>({
-    path: '/Explore/Neighborhood/:neighborhood',
+// Handy remnant from Boundaries layers:
+// filter={['in', ['id'], ['literal', recordIDs]]}
+
+export const PolygonLayer: FC<PolygonLayerProps> = (props) => {
+  const { map, beforeId, mapLoaded, configKey } = props
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore // TODO: come on
+  const layerConfig = polygonsConfigNew[configKey]
+  const { sourceID, sourceLayer, routePath, visContextKey } = layerConfig
+  const { tableName, url, fillPaint, linePaint } = layerConfig
+  const polyLayerID = `${sourceID}-poly` // TODO: de-fragilize
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const visible = useMapToolsState()[visContextKey]
+  const match = useRouteMatch<{ name: string }>({
+    path: routePath,
+    // TODO: show at next level, e.g. /Explore/Neighborhood/Astoria/Something
     exact: true,
   })
-  const neighborhood = match?.params.neighborhood
+  const valueParam = match?.params.name
 
+  useZoomToBounds(routePath, tableName, mapLoaded, map)
+
+  // Clear/set selected feature state
   useEffect(() => {
-    if (!map || !mapLoaded) return
+    if (!map || !mapLoaded || !map.getLayer(polyLayerID)) return
 
-    if (neighborhood) {
+    map.removeFeatureState({ source: sourceID, sourceLayer }) // clear each time
+
+    if (valueParam) {
       map.setFeatureState(
         {
           sourceLayer,
           source: sourceID,
-          id: neighborhood,
+          id: valueParam,
         },
         { selected: true }
       )
-    } else {
-      map.removeFeatureState({
-        source: 'neighborhoods-new',
-        sourceLayer: 'neighborhoods',
-      })
     }
     // Definitely need `mapLoaded`
-  }, [map, mapLoaded, match, neighborhood])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, mapLoaded, match, valueParam, visible])
 
   return (
     <Source
@@ -62,33 +103,30 @@ export const NeighborhoodsLayer: FC<NeighborhoodsLayerProps> = (props) => {
       promoteId="name"
     >
       <Layer
-        id="neighbs-placeholder"
+        // TODO: rm if layer order is never important
+        id={`${sourceID}-placeholder`}
         type="background"
-        paint={{
-          'background-opacity': 0,
-        }}
+        paint={{ 'background-opacity': 0 }}
       />
       <Layer
-        id="neighborhoods-poly"
+        id={`${sourceID}-poly`}
         source={sourceID}
-        minzoom={minZoom}
         source-layer={sourceLayer}
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        paint={paint}
+        paint={fillPaint}
         type="fill"
         beforeId={beforeId}
-        layout={{ visibility: showNeighbs ? 'visible' : 'none' }}
+        layout={{ visibility: visible ? 'visible' : 'none' }}
       />
       <Layer
-        id="neighborhoods-line"
+        id={`${sourceID}-line`}
         source={sourceID}
-        minzoom={minZoom}
         source-layer={sourceLayer}
-        paint={{ 'line-color': 'orange', 'line-opacity': 0.4 }}
+        paint={linePaint}
         type="line"
         beforeId={beforeId}
-        layout={{ visibility: showNeighbs ? 'visible' : 'none' }}
+        layout={{ visibility: visible ? 'visible' : 'none' }}
       />
     </Source>
   )

@@ -94,12 +94,12 @@ export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
   const {
     'data-descrips': dataDescrips,
     'Additional Languages': addlLanguages,
-  } = firstRecord
+  } = firstRecord || {}
 
   const Extree = (
     <>
       <div className={classes.buttonWrap}>
-        <LayerToggle layerID="neighborhoods" />
+        <LayerToggle layerID="neighborhoods" excludeWrap />
         <ClearSelectionBtn />
         <Button
           size="small"

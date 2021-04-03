@@ -16,8 +16,8 @@ const fields: Array<Extract<keyof InstanceLevelSchema, string>> = [
   'Additional Neighborhoods',
   'Audio',
   'countryImg',
+  'County',
   'Country',
-  'Description',
   'Endonym',
   'Global Speaker Total',
   'Glottocode',
@@ -44,29 +44,30 @@ const ResultsModal: FC = () => {
   const history = useHistory()
   const loc = useLocation()
   const match = useRouteMatch('/table')
-  const {
-    pathname: currPathname,
-    state: locState,
-  } = useLocation() as LocWithState
+  const { pathname: currPathname, state: locState } = useLocation<
+    LocWithState
+  >() as LocWithState
 
   const [lastLoc, setLastLoc] = useState()
   const { data, isLoading, error } = useAirtable<InstanceLevelSchema>('Data', {
     fields,
-    maxRecords: window?.location.hostname === 'lampel-2.local' ? 1 : 20000,
+    // Save a little bandwidth on local dev
+    maxRecords: window?.location.hostname === 'lampel-2.local' ? 100 : 20000,
   })
 
   // CRED:
   // help.mouseflow.com/en/articles/4310818-tracking-url-changes-with-react
   useEffect(() => {
     if (
-      !loc.pathname.includes(routes.table) &&
+      !currPathname.includes(routes.table) &&
       locState?.from !== routes.help
     ) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore // TODO: take some time, fix it
       setLastLoc(loc)
     }
-  }, [loc, locState])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currPathname, locState])
 
   useEffect(() => {
     if (isLoading || !data.length) return

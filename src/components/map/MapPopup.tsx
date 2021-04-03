@@ -4,9 +4,17 @@ import { Popup } from 'react-map-gl'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
-import { InstanceLevelSchema } from 'components/context'
+import { InstanceLevelSchema, useMapToolsState } from 'components/context'
 import { useAirtable } from 'components/explore/hooks'
-import { MapPopupProps, MapPopupsProps, NeighborhoodTableSchema } from './types'
+import { AIRTABLE_CENSUS_BASE } from 'components/config'
+import {
+  CensusTableRow,
+  MapPopupProps,
+  MapPopupsProps,
+  NeighborhoodTableSchema,
+  PolygonPopupProps,
+} from './types'
+import { getCenterOfBounds } from './utils'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,25 +40,23 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     popupHeading: {
+      color: theme.palette.text.primary,
       lineHeight: 1.2,
+      marginBottom: '0.25rem',
     },
-    subHeading: {
-      fontSize: theme.typography.caption.fontSize,
-      fontStyle: 'italic',
+    popupContent: {
+      color: theme.palette.text.secondary,
+      fontSize: '0.75rem',
+      margin: 0,
     },
-    // FROM TOOLTIP // TODO: rm if not using, otherwise incorporate
-    // mapTooltipRoot: {
-    //   textAlign: 'center',
-    //   '& .mapboxgl-popup-content': { padding: 6 },
-    // },
-    // subheading: { display: 'block', fontStyle: 'italic', fontSize: 12 },
   })
 )
 
+// The actual <Popup> component
 export const MapPopup: FC<MapPopupProps> = (props) => {
   const classes = useStyles()
-  const { longitude, latitude, setShowPopups, heading, subheading } = props
-  const { mapPopupRoot, popupHeading, subHeading } = classes
+  const { longitude, latitude, setShowPopups, heading, content } = props
+  const { mapPopupRoot, popupHeading, popupContent } = classes
 
   return (
     <Popup
@@ -66,7 +72,7 @@ export const MapPopup: FC<MapPopupProps> = (props) => {
         <Typography variant="h6" component="h3" className={popupHeading}>
           {heading}
         </Typography>
-        {subheading && <small className={subHeading}>{subheading}</small>}
+        {content ? <p className={popupContent}>{content}</p> : null}
       </header>
     </Popup>
   )
@@ -92,44 +98,77 @@ const LanguagePopup: FC<Pick<MapPopupsProps, 'setShowPopups'>> = (props) => {
       latitude={Latitude}
       setShowPopups={setShowPopups}
       heading={Endonym}
-      subheading={Language}
+      content={Language}
     />
   )
 }
 
-const NeighborhoodPopup: FC<MapPopupsProps> = (props) => {
-  const { setShowPopups } = props
-  const { name } = useParams<{ name: string }>()
+const PolygonPopup: FC<PolygonPopupProps> = (props) => {
+  const { setShowPopups, tableName, addlFields = [] } = props
+  const { id } = useParams<{ id: string }>()
 
   const { data, isLoading, error } = useAirtable<NeighborhoodTableSchema>(
-    'Neighborhood',
+    tableName,
     {
-      fields: ['name', 'County', 'x_max', 'x_min', 'y_min', 'y_max'],
-      filterByFormula: `{name} = "${name}"`,
+      fields: ['name', 'x_max', 'x_min', 'y_min', 'y_max', ...addlFields],
+      filterByFormula: `{name} = "${id}"`,
       maxRecords: 1,
     }
   )
 
   if (isLoading || error || !data.length) return <></>
 
-  const {
-    County: county, // or borough
-    x_max: xMax,
-    x_min: xMin,
-    y_min: yMin,
-    y_max: yMax,
-  } = data[0]
-
-  const latitude = (yMax - yMin) / 2 + yMin
-  const longitude = (xMin - xMax) / 2 + xMax
+  const firstResult = data[0]
+  const { latitude, longitude } = getCenterOfBounds(data[0])
 
   return (
     <MapPopup
       longitude={longitude}
       latitude={latitude}
       setShowPopups={setShowPopups}
-      heading={name}
-      subheading={county}
+      heading={firstResult.name}
+      content={firstResult.County || ''}
+    />
+  )
+}
+
+const CensusPopup: FC<MapPopupsProps> = (props) => {
+  const { setShowPopups } = props
+  const { field, id, table } = useParams<{
+    id: string
+    field: string
+    table: 'puma' | 'tract' // TODO: tighten up everywhere
+  }>()
+  const addlFields = table === 'puma' ? ['Neighborhood'] : []
+  const { censusActiveField } = useMapToolsState()
+
+  const { data, isLoading, error } = useAirtable<CensusTableRow>(table, {
+    fields: ['GEOID', ...addlFields, 'x_max', 'x_min', 'y_min', 'y_max', field],
+    filterByFormula: `{GEOID} = "${id}"`,
+    maxRecords: 1,
+    baseID: AIRTABLE_CENSUS_BASE,
+  })
+
+  if (isLoading || error || !data.length) return <></>
+
+  const firstRow = data[0]
+  const { latitude, longitude } = getCenterOfBounds(firstRow)
+  const heading = firstRow[field] ? firstRow[field].toLocaleString() : 'No'
+
+  const Content = (
+    <>
+      of <i>{censusActiveField?.pretty || field}</i> in{' '}
+      {`${firstRow.Neighborhood || 'this census tract'}`}
+    </>
+  )
+
+  return (
+    <MapPopup
+      longitude={longitude}
+      latitude={latitude}
+      setShowPopups={setShowPopups}
+      heading={`${heading} speakers`}
+      content={Content}
     />
   )
 }
@@ -142,8 +181,22 @@ export const MapPopups: FC<MapPopupsProps> = (props) => {
       <Route path="/Explore/Language/:language/:id" exact>
         <LanguagePopup setShowPopups={setShowPopups} />
       </Route>
-      <Route path="/Explore/Neighborhood/:name" exact>
-        <NeighborhoodPopup setShowPopups={setShowPopups} />
+      <Route path="/Explore/Neighborhood/:id" exact>
+        <PolygonPopup
+          setShowPopups={setShowPopups}
+          tableName="Neighborhood"
+          addlFields={['County', 'name']}
+        />
+      </Route>
+      <Route path="/Explore/County/:id" exact>
+        <PolygonPopup
+          setShowPopups={setShowPopups}
+          tableName="County"
+          addlFields={['name']}
+        />
+      </Route>
+      <Route path="/Census/:table/:field/:id" exact>
+        <CensusPopup setShowPopups={setShowPopups} />
       </Route>
     </Switch>
   )

@@ -5,6 +5,7 @@ import { BsTable, BsPersonLinesFill } from 'react-icons/bs'
 import { BiHomeAlt, BiUserVoice, BiGlobe, BiMapPin } from 'react-icons/bi'
 
 import { MdChat } from 'react-icons/md'
+import { RiGovernmentLine } from 'react-icons/ri'
 import { AiOutlineQuestionCircle, AiFillFilePdf } from 'react-icons/ai'
 
 import { GiFamilyTree } from 'react-icons/gi'
@@ -14,6 +15,7 @@ export const icons = {
   About: <BsPersonLinesFill />,
   Census: <FaClipboard />,
   Country: <GoGlobe />,
+  County: <RiGovernmentLine />,
   Data: <BsTable />,
   Explore: <FaBinoculars />,
   Feedback: <MdChat />,

@@ -33,16 +33,16 @@ export const pluralTextIfNeeded = (length: number, text = 'item'): string => {
 // Very important that things are wrapped in DOUBLE quotes since some values
 // contain single quotes.
 export const prepFormula = (
-  field: RouteableTableNames,
+  tableName: RouteableTableNames,
   value?: string
 ): string => {
-  if (field === 'Language') return '' // /Explore/Language
+  if (tableName === 'Language') return '' // /Explore/Language
   if (!value) return "{languages} != ''" // e.g. /Explore/Country
   if (!value) return ''
 
   // Neighborhood instance, e.g. /Explore/Neighborhood/Astoria should include
   // additional neighborhoods in the query.
-  if (field === 'Neighborhood')
+  if (tableName === 'Neighborhood')
     return `AND(
       {Neighborhood} != '',
       FIND(
@@ -51,10 +51,11 @@ export const prepFormula = (
       ) != 0
     )`
 
-  if (['Country', 'Macrocommunity', 'Town'].includes(field))
-    return `AND({${field}} != '', FIND("${value}", ARRAYJOIN({${field}})) != 0)`
+  // My goodness. So fragile. If it weren't for debugger, certain headache!
+  if (['Country', 'Macrocommunity', 'Town', 'County'].includes(tableName))
+    return `AND({${tableName}} != '', FIND("${value}", ARRAYJOIN({${tableName}})) != 0)`
 
-  return `{${field}} = "${value}"`
+  return `{${tableName}} = "${value}"`
 }
 
 // Mid-level fields are consistent except a few tables need an extra field

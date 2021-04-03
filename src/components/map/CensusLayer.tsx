@@ -1,39 +1,61 @@
 import React, { FC } from 'react'
 import { Source, Layer } from 'react-map-gl'
 
-import { CensusScope } from 'components/local/types'
 import { CensusLayerProps } from './types'
-import { useCensusSymb } from './hooks'
-import { CENSUS_PROMOTE_ID_FIELD } from './config'
+import { useCensusSymb, useZoomToBounds } from './hooks'
+import { CENSUS_PROMOTE_ID_FIELD, censusLayersConfig } from './config'
 
 export const CensusLayer: FC<CensusLayerProps> = (props) => {
-  const { sourceLayer, config, map, beforeId } = props
-  const { layers, source } = config
-  const censusScope = config.source.id as CensusScope
+  const { map, beforeId, configKey, mapLoaded } = props
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore // TODO: come on
+  const layerConfig = censusLayersConfig[configKey]
+  const { sourceID, sourceLayer, routePath } = layerConfig
+  const { tableName, url, linePaint } = layerConfig
+
   const { fillPaint, visible, error, isLoading } = useCensusSymb(
     sourceLayer,
-    censusScope,
+    sourceID,
     map
   )
+
+  useZoomToBounds(routePath, tableName, mapLoaded, map)
 
   if (error || isLoading) return null // TODO: sentry
 
   return (
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    <Source {...source} type="vector" promoteId={CENSUS_PROMOTE_ID_FIELD}>
-      {layers.map((layer) => (
-        <Layer
-          key={layer.id}
-          beforeId={beforeId}
-          {...layer}
-          paint={layer.type === 'line' ? layer.paint : fillPaint}
-          layout={{
-            ...layer.layout,
-            visibility: visible ? 'visible' : 'none',
-          }}
-        />
-      ))}
+    <Source
+      id={sourceID}
+      url={url}
+      type="vector"
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      promoteId={CENSUS_PROMOTE_ID_FIELD}
+    >
+      <Layer
+        // TODO: rm if layer order is never important
+        id={`${sourceID}-placeholder`}
+        type="background"
+        paint={{ 'background-opacity': 0 }}
+      />
+      <Layer
+        beforeId={beforeId}
+        id={`${sourceID}-poly`}
+        source={sourceID}
+        source-layer={sourceLayer}
+        type="fill"
+        paint={fillPaint}
+        layout={{ visibility: visible ? 'visible' : 'none' }}
+      />
+      <Layer
+        beforeId={beforeId}
+        id={`${sourceID}-line`}
+        source={sourceID}
+        source-layer={sourceLayer}
+        type="line"
+        paint={linePaint}
+        layout={{ visibility: visible ? 'visible' : 'none' }}
+      />
     </Source>
   )
 }

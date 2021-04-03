@@ -12,16 +12,28 @@ export const reactQueryDefaults = {
   refetchOnWindowFocus: false,
 }
 
-export const routes = {
+const censusRoutes = {
+  local: '/Census',
+  censusDetail: '/Census/:table/:field/:id',
+}
+
+const infoRoutes = {
   about: '/Info/About',
-  explore: '/Explore',
   feedback: '/Info/Feedback',
   help: '/Info/Help',
-  home: '/',
   info: '/Info',
-  local: '/Census',
+}
+
+export const routes = {
+  explore: '/Explore',
+  home: '/',
   neighborhood: '/Explore/Neighborhood',
   table: '/table',
+  none: '/Explore/Language/none',
+  details: '/Explore/Language/:value/:id',
+  countiesBase: '/Explore/County',
+  ...censusRoutes,
+  ...infoRoutes,
 } as {
   [key: string]: RouteLocation
 }

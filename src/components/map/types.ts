@@ -21,7 +21,6 @@ import * as GeoJSON from 'geojson'
 import { InstanceLevelSchema, InternalUse } from 'components/context'
 import { CensusScope } from 'components/local/types'
 
-type InteractiveLayerIds = { lang: string[]; boundaries: string[] }
 type Padding =
   | number
   | { top: number; bottom: number; left: number; right: number }
@@ -45,13 +44,12 @@ export type MapControlAction =
   | 'info'
   | 'loc-search'
   | 'reset-pitch'
-export type PopupContent = { heading: string; subheading?: string }
+export type PopupContent = { heading: string; content?: React.ReactNode }
 export type PopupSettings = PopupContent & LongLat
 export type UseStyleProps = { panelOpen: boolean }
 export type ViewportState = Partial<ViewportProps> & ViewState
 export type Breakpoint = 'mobile' | 'desktop' | 'huge'
 export type Offset = [number, number] // [x, y]
-export type BoundariesInternalSrcID = 'neighborhoods' | 'counties'
 
 export type LayerPropsPlusMeta = Omit<LayerProps, 'paint' | 'layout' | 'id'> & {
   id: string
@@ -83,20 +81,16 @@ export type BoundaryFeat = Omit<
 > & {
   geometry: GeoJSON.Polygon | GeoJSON.MultiPolygon
   properties: {
-    name: string
+    name?: string
+    GEOID?: string
     x_max: number
     x_min: number
     y_min: number
     y_max: number
   }
-  source: BoundariesInternalSrcID
+  source: 'neighborhoods' | 'counties'
   'source-layer': string
 }
-
-export type BoundariesLayerProps = {
-  visible: boolean
-  beforeId?: string
-} & BoundaryConfig
 
 export type MapEvent = Omit<PointerEvent, 'features'> & {
   features: LangFeature[] | BoundaryFeat[]
@@ -134,14 +128,15 @@ export type PanelSectionProps = {
 }
 
 export type CensusLayerProps = {
-  sourceLayer: string
-  config: Omit<BoundaryConfig, 'lookupPath'>
+  mapLoaded: boolean
+  configKey: string
   beforeId?: string
   map?: Map
 }
 
-export type NeighborhoodsLayerProps = {
+export type PolygonLayerProps = {
   mapLoaded: boolean
+  configKey: string
   beforeId?: string
   map?: Map
 }
@@ -215,19 +210,10 @@ export type FlyToPoint = (
   geocodeMarkerText?: string
 ) => void
 
-export type OnHover = (
-  event: MapEvent,
-  setTooltip: React.Dispatch<PopupSettings | null>, // same as popup now
-  map: Map,
-  interactiveLayerIds: InteractiveLayerIds
-) => void
-
-export type ClearStuff = (map: Map) => void
-
 export type LangFeatsUnderClick = (
   point: [number, number],
   map: Map,
-  interactiveLayerIds: Omit<InteractiveLayerIds, 'boundaries'>
+  interactiveLayerIds: string[]
 ) => MapboxGeoJSONFeature[]
 
 export type UseLangReturn = {
@@ -246,6 +232,11 @@ export type MapPopupsProps = {
   setShowPopups: React.Dispatch<boolean>
 }
 
+export type PolygonPopupProps = MapPopupsProps & {
+  tableName: 'Neighborhood' | 'County'
+  addlFields?: string[]
+}
+
 export type MapPopupProps = PopupSettings &
   Pick<MapPopupsProps, 'setShowPopups'>
 
@@ -260,25 +251,15 @@ export type FlyToPointSettings = {
   offset: Offset
 }
 
-export type UsePolygonCenter = (
-  panelOpen: boolean,
-  clickedBoundary?: BoundaryFeat | null,
-  map?: Map
-) => LongLat | null
-
 export type UseZoomToLangFeatsExtent = (
   isMapTilted: boolean,
   map?: Map
 ) => boolean
 
-export type HidePopups = {
-  boundaries: boolean
-  language: boolean
-}
-
 export type CensusTableRow = { [key: string]: number } & {
   GEOID: string
-}
+  Neighborhood?: string // puma-only (curated column, not part of orig dataset)
+} & BoundsColumns
 
 export type UseCensusSymbReturn = {
   isLoading: boolean
@@ -298,18 +279,37 @@ export type UseSelLangPointCoordsReturn = {
   lon: number | null
 }
 
-export type UsePolygonWebMerc = {
+type UsePolygonWebMercReturn = {
   x_max: number | null
   x_min: number | null
   y_min: number | null
   y_max: number | null
 }
 
-export type NeighborhoodTableSchema = {
-  name: string
-  County: string // or NYC borough
+export type UsePolygonWebMerc = (
+  routePath: string,
+  tableName: string
+) => UsePolygonWebMercReturn
+
+export type BoundsColumns = {
   x_max: number
   x_min: number
   y_min: number
   y_max: number
 }
+
+export type NeighborhoodTableSchema = BoundsColumns & {
+  name: string
+  County: string // or NYC borough
+}
+
+export type CountyTableSchema = BoundsColumns & {
+  name: string
+}
+
+export type UseZoomToBounds = (
+  routePath: string,
+  tableName: string,
+  mapLoaded: boolean,
+  map?: Map
+) => void

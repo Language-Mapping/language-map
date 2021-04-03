@@ -29,7 +29,8 @@ import * as utils from './utils'
 // this on init, so instead it gets used dynamically on each zoom-to-stuff
 // scenario. The values are pretty approximate and somewhat fragile as they were
 // determined through much trial and error.
-export function useOffset(panelOpen: boolean): Types.Offset {
+export function useOffset(): Types.Offset {
+  const { panelOpen } = usePanelState()
   const { width, height } = useWindowResize()
   const breakpoint = useBreakpoint()
   const bottomBarHeight = 48
@@ -150,26 +151,33 @@ export const useSelLangPointCoords = (): Types.UseSelLangPointCoordsReturn => {
   }
 }
 
-export const usePolygonWebMerc = (): Types.UsePolygonWebMerc => {
-  const match = useRouteMatch<{ name: string }>({
-    path: '/Explore/Neighborhood/:name',
+export const usePolygonWebMerc: Types.UsePolygonWebMerc = (
+  routePath,
+  tableName
+) => {
+  const match = useRouteMatch<{ name?: string; id?: string }>({
+    path: routePath,
     exact: true,
   })
+  const isCensus = ['puma', 'tract'].includes(tableName)
+  const filterField = isCensus ? 'GEOID' : 'name'
+  const filterValue = match?.params.name || match?.params.id
 
-  const { data, isLoading, error } = useAirtable<Types.NeighborhoodTableSchema>(
-    'Neighborhood',
+  const { data, isLoading, error } = useAirtable<
+    Types.NeighborhoodTableSchema | Types.CountyTableSchema
+  >(
+    tableName,
     {
       fields: ['x_max', 'x_min', 'y_min', 'y_max'],
-      filterByFormula: `{name} = "${match?.params.name}"`,
+      filterByFormula: `{${filterField}} = "${filterValue}"`,
       maxRecords: 1,
+      ...(isCensus && { baseID: AIRTABLE_CENSUS_BASE }),
     },
     { enabled: !!match }
   )
 
   if (isLoading || error || !data.length)
     return { x_max: null, x_min: null, y_min: null, y_max: null }
-
-  // const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = data[0]
 
   return {
     x_max: data[0].x_max,
@@ -184,10 +192,9 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
   isMapTilted,
   map
 ) => {
-  const { panelOpen } = usePanelState()
   const { state } = useContext(GlobalContext)
   const { langFeatures, langFeatsLenCache } = state
-  const offset = useOffset(panelOpen)
+  const offset = useOffset()
   const [shouldFlyHome, setShouldFlyHome] = useState<boolean>(false)
 
   // Fly to extent of lang features on length change
@@ -297,4 +304,33 @@ export const useCensusSymb: Types.UseCensusSymb = (
   }, [highLow])
 
   return { fillPaint, visible, error, isLoading }
+}
+
+export const useZoomToBounds: Types.UseZoomToBounds = (
+  routePath,
+  tableName,
+  mapLoaded,
+  map
+) => {
+  const selPolyBounds = usePolygonWebMerc(routePath, tableName)
+  const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = selPolyBounds
+  const offset = useOffset()
+
+  // Zoom to selected feature extent
+  useEffect(() => {
+    if (!map || !mapLoaded || !xMax || !xMin || !yMin || !yMax) return
+
+    const boundsArray = [
+      [xMin, yMin],
+      [xMax, yMax],
+    ] as Types.BoundsArray
+
+    const webMercViewport = utils.getPolyWebMercView(boundsArray, offset)
+    const zoom = Math.min(webMercViewport.zoom, 13) // tracts are too small
+
+    flyToPoint(map, { ...webMercViewport, offset, zoom })
+
+    // LEGIT. selPolyBounds as a dep will break the world.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapLoaded, xMax, xMin, yMin, yMax, map])
 }

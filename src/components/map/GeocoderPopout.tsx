@@ -6,7 +6,6 @@ import Geocoder from 'react-map-gl-geocoder'
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 import { useUItext } from 'components/generic'
-import { usePanelState } from 'components/panels'
 import { MAPBOX_TOKEN, NYC_LAT_LONG } from './config'
 import { useWindowResize } from '../../utils'
 import { useOffset } from './hooks'
@@ -15,10 +14,9 @@ import { GeocodeResult, BoundsArray, GeocoderPopoutProps } from './types'
 
 export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
   const { mapRef } = props
-  const { panelOpen } = usePanelState()
   const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
   const { width, height } = useWindowResize()
-  const offset = useOffset(panelOpen)
+  const offset = useOffset()
   const { text: placeholderText } = useUItext('loc-search-placeholder')
 
   // TODO: most def different file

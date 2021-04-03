@@ -173,8 +173,8 @@ const secondColStyle = {
   boxShadow: '5px 0px 8px 0px rgba(0,0,0,0.08)',
 }
 
-// "View in map" and "Description" can't use `hidden`, but without a title they
-// shown up as blanks in the column toggle/reorder menu. Handy workaround.
+// "View in map" and details modal can't use `hidden`, but without a title they
+// show up as blanks in the column toggle/reorder menu. Handy workaround.
 const hidden = {
   color: 'transparent',
   fontSize: 0,
@@ -194,13 +194,15 @@ export const columns = [
     filterCellStyle: firstColStyle,
   },
   {
-    title: 'Description',
-    field: 'Description',
+    // It's not actully county, just a sneaky way to allow county/borough search
+    // AND a "view details modal" icon. Two birds, one stone.
+    title: 'County',
+    field: 'County',
     ...commonColProps,
     sorting: false,
     filtering: false,
     export: false,
-    render: utils.renderDescripCol, // still adds the full value to DOM 😱
+    render: utils.renderDescripCol,
     cellStyle: secondColStyle,
     headerStyle: { ...firstColStyle, ...hidden },
     filterCellStyle: secondColStyle,

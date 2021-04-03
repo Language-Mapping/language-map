@@ -72,6 +72,7 @@ export type LangLevelOptional = CensusFields &
   }>
 
 type InstanceLevelReqd = InternalUse & {
+  County: string
   Language: string
   Size: 'Smallest' | 'Small' | 'Medium' | 'Large' | 'Largest'
   Status: Statuses
@@ -96,6 +97,7 @@ type CensusFields = {
 type CensusFieldPayload = {
   scope: CensusScope
   id: string
+  pretty?: string
 }
 
 export type InitialMapToolsState = {
@@ -123,6 +125,7 @@ export type InstanceLevelSchema = InstanceLevelOptional & InstanceLevelReqd
 // Corresponds with top-level "/Explore" route starting points. Used as a route
 // parameter in Airtable queries in nested views, e.g. /Explore/Country/Egypt.
 export type RouteableTableNames =
+  | 'County'
   | 'Country'
   | 'Language'
   | 'Macrocommunity'

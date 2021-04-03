@@ -2,7 +2,6 @@ import { InitialMapProps, BoundsArray } from './types'
 
 export * from './config.census'
 export * from './config.points'
-export * from './config.polygons'
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MB_TOKEN
 export const NYC_LAT_LONG = { latitude: 40.7128, longitude: -74.006 }

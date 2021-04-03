@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+import { useHistory } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { TextField, Typography, ListSubheader } from '@material-ui/core'
 import Autocomplete, {
@@ -8,6 +9,7 @@ import Autocomplete, {
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'
 import { UItextFromAirtable, useUItext } from 'components/generic'
 
+import { routes } from 'components/config/api'
 import * as Types from './types'
 import { useCensusFields } from './hooks'
 import { setCensusField } from './utils'
@@ -79,12 +81,15 @@ export const CensusFieldSelect: FC = (props) => {
   const { censusActiveField } = useMapToolsState()
   const { data, isLoading, error } = useCensusFields()
   const { text: placeholderText } = useUItext('census-search-placeholder')
+  const history = useHistory()
 
   const defaultValue =
     data.find(({ id }) => id === censusActiveField?.id) || null
 
   const handleChange = (value: Types.UseCensusResponse | null) => {
     setCensusField(value, mapToolsDispatch)
+    // TODO: UGHHHH don't transition/animate panels on stuff like this!
+    history.push(routes.local) // clears any census popups
   }
 
   if (error) return <p>Something went wrong fetching census config.</p>

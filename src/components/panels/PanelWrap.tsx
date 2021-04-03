@@ -103,7 +103,7 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     document?.activeElement?.blur() // CRED: stackoverflow.com/a/2568972/1048518
-  }, [loc])
+  }, [loc.pathname])
 
   // Need the `id` in order to find unique element for `map.setPadding`
   return (
