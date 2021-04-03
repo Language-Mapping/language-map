@@ -42,7 +42,7 @@ export const TimelineCrumbs: FC<TimelineCrumbsProps> = (props) => {
 
   return (
     <Timeline className={classes.root}>
-      {pathChunks.reverse().map((chunk, i) => {
+      {[...pathChunks].reverse().map((chunk, i) => {
         const firstOne = i === 0
         const panelIcon =
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
