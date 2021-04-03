@@ -3,6 +3,7 @@
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
 
 import { CensusScope } from 'components/local/types'
+import { BaseLayer } from 'components/map/types'
 
 export type LangSchemaCol = keyof InstanceLevelSchema
 
@@ -105,12 +106,14 @@ export type InitialMapToolsState = {
   showNeighbs: boolean
   showCounties: boolean
   geolocActive: boolean
+  baseLayer: BaseLayer
   censusActiveField?: CensusFieldPayload
 }
 
 export type MapToolsAction =
   | { type: 'CLEAR_CENSUS_FIELD' }
   | { type: 'SET_CENSUS_FIELD'; payload: CensusFieldPayload }
+  | { type: 'SET_BASELAYER'; payload: BaseLayer }
   | { type: 'SET_GEOLOC_ACTIVE' }
   | { type: 'TOGGLE_NEIGHBORHOODS_LAYER'; payload?: boolean }
   | { type: 'TOGGLE_COUNTIES_LAYER'; payload?: boolean }

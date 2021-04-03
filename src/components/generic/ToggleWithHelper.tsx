@@ -3,18 +3,15 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { FormControlLabel, Switch } from '@material-ui/core'
 
 import { ToggleWithHelperProps } from './types'
+import { SubtleText } from './SubtleText'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    switchFormCtrlRoot: {
+    root: {
       margin: '0 0 0.5rem',
     },
     label: {
       fontSize: '0.85rem',
-    },
-    helper: {
-      fontSize: '0.65rem',
-      color: theme.palette.text.secondary,
     },
   })
 )
@@ -26,13 +23,13 @@ export const ToggleWithHelper: FC<ToggleWithHelperProps> = (props) => {
   const ControlLabel = (
     <div>
       <div className={classes.label}>{label}</div>
-      {helperText && <div className={classes.helper}>{helperText}</div>}
+      {helperText && <SubtleText>{helperText}</SubtleText>}
     </div>
   )
 
   return (
     <FormControlLabel
-      classes={{ root: classes.switchFormCtrlRoot }}
+      classes={{ root: classes.root }}
       control={
         <Switch
           checked={checked}

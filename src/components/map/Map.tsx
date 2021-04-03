@@ -12,6 +12,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 
 import { GlobalContext, useMapToolsState } from 'components/context'
 import { usePanelState } from 'components/panels'
+import { onHover } from './events'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { Geolocation } from './Geolocation'
 import { MapPopups } from './MapPopup'
@@ -19,26 +20,15 @@ import { MapCtrlBtns } from './MapCtrlBtns'
 import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
 import { PolygonLayer } from './NeighborhoodsLayer'
-
-import {
-  initialMapState,
-  mapProps,
-  POINT_ZOOM_LEVEL,
-  langTypeIconsConfig,
-} from './config'
-import {
-  useSelLangPointCoords,
-  useOffset,
-  useZoomToLangFeatsExtent,
-  useBreakpoint,
-} from './hooks'
-// TODO: restore:
-// import { getAllLangFeatIDs, isTouchEnabled } from '../../utils'
 import { getAllLangFeatIDs } from '../../utils'
-import { onHover } from './events'
+// import { isTouchEnabled } from '../../utils' // TODO: restore
 
 import * as Types from './types'
 import * as utils from './utils'
+import * as hooks from './hooks'
+import * as config from './config'
+
+const { mbStyleTileConfig, langTypeIconsConfig, initialMapState } = config
 
 utils.rightToLeftSetup()
 
@@ -46,31 +36,32 @@ export const Map: FC<Types.MapProps> = (props) => {
   const { mapLoaded, mapRef, setMapLoaded } = props
   const loc = useLocation()
 
-  const { autoZoomCensus, censusActiveField } = useMapToolsState()
+  const { autoZoomCensus, censusActiveField, baseLayer } = useMapToolsState()
   const { pathname } = loc
-  const selLangPointCoords = useSelLangPointCoords()
+  const selLangPointCoords = hooks.useSelLangPointCoords()
   const { state } = useContext(GlobalContext)
   const { langFeatures, filterHasRun } = state
 
   const history = useHistory()
   const map: MbMap | undefined = mapRef.current?.getMap()
-  const offset = useOffset()
-  const breakpoint = useBreakpoint()
+  const offset = hooks.useOffset()
+  const breakpoint = hooks.useBreakpoint()
   const { panelOpen } = usePanelState()
 
   const [beforeId, setBeforeId] = useState<string>('background')
   const [isMapTilted, setIsMapTilted] = useState<boolean>(false)
   const [mapIsMoving, setMapIsMoving] = useState<boolean>(false)
   const [showPopups, setShowPopups] = useState<boolean>(true)
+  const [viewport, setViewport] = useState<Types.ViewportState>(initialMapState)
+  const [mapStyle, setMapStyle] = useState(mbStyleTileConfig.customStyles.light)
 
   const [
     geocodeMarker,
     setGeocodeMarker,
   ] = useState<Types.GeocodeMarkerProps | null>()
-  const [viewport, setViewport] = useState<Types.ViewportState>(initialMapState)
 
   // TODO: mobile:
-  const shouldFlyHome = useZoomToLangFeatsExtent(isMapTilted, map)
+  const shouldFlyHome = hooks.useZoomToLangFeatsExtent(isMapTilted, map)
 
   useEffect(() => {
     if (!map) return
@@ -98,17 +89,24 @@ export const Map: FC<Types.MapProps> = (props) => {
   }, [pathname])
 
   useEffect(() => {
-    if (!map) return
-
-    utils.flyHome(map, offset)
+    if (map) utils.flyHome(map, offset)
   }, [shouldFlyHome])
+
+  // Load symbol icons on load. Must be done on load and whenever `baselayer` is
+  // changed, but this is handled nicely thanks to MB's `styleimagemissing`.
+  useEffect(() => {
+    if (map) utils.addLangTypeIconsToMap(map, langTypeIconsConfig)
+  }, [map, mapLoaded])
+
+  // Set baselayer
+  useEffect(() => {
+    if (map) setMapStyle(mbStyleTileConfig.customStyles[baseLayer])
+  }, [baseLayer])
 
   // Auto-zoom to initial extent on Census language change
   useEffect(() => {
     // Don't zoom on clearing Census dropdown, aka no language field selected
-    if (!map || !autoZoomCensus || !censusActiveField) return
-
-    utils.flyHome(map, offset)
+    if (map && autoZoomCensus && censusActiveField) utils.flyHome(map, offset)
   }, [censusActiveField])
 
   // Filter lang feats in map on length change or symbology change
@@ -123,15 +121,6 @@ export const Map: FC<Types.MapProps> = (props) => {
       getAllLangFeatIDs(langFeatures)
     )
   }, [langFeatures.length, beforeId, filterHasRun])
-
-  // (Re)load symbol icons. Must be done on load and whenever `baselayer` is
-  // changed, otherwise the images no longer exist.
-  useEffect(() => {
-    if (!mapRef.current) return
-
-    utils.addLangTypeIconsToMap(mapRef.current.getMap(), langTypeIconsConfig)
-  }, []) // add `baselayer` as dep if using more than just light BG
-  /* eslint-enable react-hooks/exhaustive-deps */
 
   // Do selected feature stuff on sel feat change or map load
   useEffect(() => {
@@ -183,6 +172,11 @@ export const Map: FC<Types.MapProps> = (props) => {
       setMapIsMoving(true) // closes popup on the start of moving so no jank
     })
 
+    // Very noisy console otherwise, on every basemap/style change.
+    mapObj.on('styleimagemissing', function onStyleImageMissing() {
+      utils.addLangTypeIconsToMap(mapObj, langTypeIconsConfig)
+    })
+
     mapObj.on('sourcedata', function onStyleData(e) {
       if (!e.isSourceLoaded) return
 
@@ -201,7 +195,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     })
 
     mapObj.addControl(
-      new AttributionControl({ compact: false }), // Give MB well-deserved cred
+      new AttributionControl({ compact: false }), // give MB well-deserved cred
       'bottom-right'
     )
 
@@ -270,7 +264,7 @@ export const Map: FC<Types.MapProps> = (props) => {
       return
     }
 
-    history.push(targetRoute || '/Explore/Language/none') // "No community selected"
+    history.push(targetRoute || '/Explore/Language/none') // no feat. selected
   }
 
   function onMapCtrlClick(actionID: Types.MapControlAction) {
@@ -291,7 +285,8 @@ export const Map: FC<Types.MapProps> = (props) => {
     <>
       <MapGL
         {...viewport}
-        {...mapProps}
+        {...config.mapProps}
+        mapStyle={mapStyle}
         ref={mapRef}
         /* eslint-disable operator-linebreak */
         // interactiveLayerIds={
@@ -313,7 +308,7 @@ export const Map: FC<Types.MapProps> = (props) => {
           onViewportChange={(mapViewport: Types.ViewportState) => {
             // CRED:
             // github.com/visgl/react-map-gl/issues/887#issuecomment-531580394
-            setViewport({ ...mapViewport, zoom: POINT_ZOOM_LEVEL })
+            setViewport({ ...mapViewport, zoom: config.POINT_ZOOM_LEVEL })
           }}
         />
         {/* TODO: hide label on clear */}

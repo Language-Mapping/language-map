@@ -19,6 +19,8 @@ Sentry.init({
   // TODO: is it really needed or just better practice to use `process`? What if
   // `window.location` was used instead?
   environment: process.env.REACT_APP_SENTRY_ENVIRONMENT,
+  // Ignore MB errors on baselayer change
+  ignoreErrors: [/^Error: Layer with id.* does not exist on this map\.$/],
 })
 
 WebFont.load({

@@ -5,6 +5,7 @@ import { Popover, Typography } from '@material-ui/core'
 import { DialogCloseBtn } from 'components/generic/modals'
 import { useMapToolsState, useMapToolsDispatch } from 'components/context'
 import { ToggleWithHelper, useUItext } from 'components/generic'
+import { BaseLayerToggles } from './BaseLayerToggles'
 
 type MapOptionsMenuProps = {
   anchorEl: HTMLDivElement | null
@@ -14,7 +15,7 @@ type MapOptionsMenuProps = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
-      maxWidth: 325,
+      maxWidth: 350,
       padding: '0.75rem',
     },
     popoverHeading: {
@@ -28,16 +29,14 @@ type UseHelperTextReturn = {
   neighbsHelp: string
   countiesHelp: string
   geolocHelp: string
-  baseHelp: string
 }
 
 const useHelperText = (): UseHelperTextReturn => {
   const { text: neighbsHelp } = useUItext('map-menu-neighbs')
   const { text: countiesHelp } = useUItext('map-menu-counties')
   const { text: geolocHelp } = useUItext('map-menu-geoloc')
-  const { text: baseHelp } = useUItext('map-menu-baselayers')
 
-  return { neighbsHelp, countiesHelp, geolocHelp, baseHelp }
+  return { neighbsHelp, countiesHelp, geolocHelp }
 }
 
 export const MapOptionsMenu: FC<MapOptionsMenuProps> = (props) => {
@@ -45,8 +44,6 @@ export const MapOptionsMenu: FC<MapOptionsMenuProps> = (props) => {
   const classes = useStyles()
   const { showCounties, showNeighbs, geolocActive } = useMapToolsState()
   const mapToolsDispatch = useMapToolsDispatch()
-  // TODO: fun!
-  // const { neighbsHelp, countiesHelp, geolocHelp, baseHelp } = useHelperText()
   const { neighbsHelp, countiesHelp, geolocHelp } = useHelperText()
 
   const open = Boolean(anchorEl)
@@ -71,7 +68,7 @@ export const MapOptionsMenu: FC<MapOptionsMenuProps> = (props) => {
       open={open}
       anchorEl={anchorEl}
       onClose={handleClose}
-      PaperProps={{ className: classes.paper, elevation: 12 }}
+      PaperProps={{ className: classes.paper, elevation: 24 }}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       transformOrigin={{ vertical: 'center', horizontal: 'left' }}
     >
@@ -103,6 +100,7 @@ export const MapOptionsMenu: FC<MapOptionsMenuProps> = (props) => {
         name="toggle-geolocation"
         helperText={geolocHelp}
       />
+      <BaseLayerToggles />
       <DialogCloseBtn tooltip="Close map menu" onClose={() => handleClose()} />
     </Popover>
   )
