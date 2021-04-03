@@ -8,6 +8,7 @@ type LayerToggleProps = {
   layerID: 'counties' | 'neighborhoods'
   text?: string
   excludeWrap?: boolean // e.g. if it's inline w/share btns
+  terse?: boolean
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
 // TODO: make generic for Counties, etc. These are dynamic:
 // showNeighbs, TOGGLE_NEIGHBORHOODS_LAYER
 export const LayerToggle: FC<LayerToggleProps> = (props) => {
-  const { layerID, text, excludeWrap } = props
+  const { layerID, text, excludeWrap, terse } = props
   const classes = useStyles()
   const { smallerText, switchFormCtrlRoot } = classes
   const mapToolsState = useMapToolsState()
@@ -61,7 +62,7 @@ export const LayerToggle: FC<LayerToggleProps> = (props) => {
   const ControlLabel = (
     <div className={classes.controlLabel}>
       Show {text || layerID}{' '}
-      <span className={classes.hideOnMobile}> in map</span>
+      {!terse && <span className={classes.hideOnMobile}> in map</span>}
     </div>
   )
 

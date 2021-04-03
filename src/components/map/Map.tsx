@@ -322,13 +322,13 @@ export const Map: FC<Types.MapProps> = (props) => {
           map={map}
           beforeId={beforeId}
           mapLoaded={mapLoaded}
-          configKey="neighborhoods"
+          configKey="counties"
         />
         <PolygonLayer
           map={map}
           beforeId={beforeId}
           mapLoaded={mapLoaded}
-          configKey="counties"
+          configKey="neighborhoods"
         />
         <CensusLayer
           map={map}

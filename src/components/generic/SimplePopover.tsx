@@ -11,8 +11,11 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: 300,
     },
     typography: {
-      fontSize: '0.75em',
-      padding: theme.spacing(2),
+      fontSize: '0.75rem',
+      padding: '1rem',
+    },
+    infoIcon: {
+      fontSize: '1rem',
     },
   })
 )
@@ -42,6 +45,7 @@ export const SimplePopover: FC<{ text: string | React.ReactNode }> = (
       <IconButton
         aria-describedby={id}
         color="inherit"
+        className={classes.infoIcon}
         onClick={handleClick}
         size="small"
       >

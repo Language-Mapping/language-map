@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core'
 
 import { SearchByOmnibox } from 'components/home/SearchByOmnibox'
-import { GeocoderPopout, GeolocToggle } from 'components/map'
+import { GeocoderPopout } from 'components/map'
 import { FiltersWarning } from 'components/home/FiltersWarning'
 import { SearchTabsProps, TabPanelProps } from './types'
 
@@ -139,7 +139,6 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <GeocoderPopout mapRef={mapRef} />
-        <GeolocToggle />
       </TabPanel>
     </SwipeableViews>
   )

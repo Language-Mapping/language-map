@@ -65,7 +65,7 @@ export const useLocalPanelStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
     },
     smallerText: {
-      fontSize: '0.8rem',
+      fontSize: '0.75rem',
     },
   })
 )
