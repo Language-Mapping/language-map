@@ -29,6 +29,7 @@ type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
   promoteId?: string
 }
 
+export type BaseLayer = 'light' | 'dark' | 'none'
 export type BoundsArray = [[number, number], [number, number]]
 export type GeocodeMarkerProps = LongLat & { text: string }
 export type InitialMapProps = InteractiveMapProps

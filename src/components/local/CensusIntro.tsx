@@ -7,7 +7,7 @@ import { UItextFromAirtable } from 'components/generic'
 export const CensusIntro: FC = () => {
   return (
     <Switch>
-      <Route path={routes.local} exact>
+      <Route path={routes.local}>
         {/* Below text may not be applicable to census popover... */}
         <UItextFromAirtable id="census-panel-intro" />
       </Route>

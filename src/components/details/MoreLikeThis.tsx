@@ -29,11 +29,6 @@ const useStyles = makeStyles((theme: Theme) =>
       minWidth: 325,
       padding: '1rem',
     },
-    popoverHeading: {
-      fontSize: '1.3rem',
-      display: 'flex',
-      alignItems: 'center',
-    },
   })
 )
 

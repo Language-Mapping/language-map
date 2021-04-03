@@ -2,11 +2,16 @@ import React, { FC } from 'react'
 
 import * as Types from './types'
 
+// TODO: rm if not using
+// const isLocalDev = window?.location.hostname === 'lampel-2.local'
+
 const initialState = {
   autoZoomCensus: true,
   geolocActive: false,
   showNeighbs: false,
   showCounties: false,
+  // baseLayer: isLocalDev ? 'none' : 'light', // TODO: default to none in dev
+  baseLayer: 'light',
 } as Types.InitialMapToolsState
 
 const MapToolsContext = React.createContext<
@@ -21,6 +26,8 @@ function reducer(
   action: Types.MapToolsAction
 ) {
   switch (action.type) {
+    case 'SET_BASELAYER':
+      return { ...state, baseLayer: action.payload }
     case 'TOGGLE_CENSUS_AUTO_ZOOM':
       return { ...state, autoZoomCensus: !state.autoZoomCensus }
     case 'TOGGLE_NEIGHBORHOODS_LAYER':
@@ -36,7 +43,7 @@ function reducer(
           action.payload === undefined ? !state.showCounties : action.payload,
       }
     case 'SET_GEOLOC_ACTIVE':
-      return { ...state, geolocActive: action.payload }
+      return { ...state, geolocActive: !state.geolocActive }
     case 'SET_CENSUS_FIELD':
       return {
         ...state,

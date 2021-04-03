@@ -18,17 +18,16 @@ export const addLangTypeIconsToMap = (
   iconsConfig.forEach((iconConfig) => {
     const { id, icon } = iconConfig
 
-    if (map.hasImage(id)) {
-      map.removeImage(id)
-    }
+    if (map.hasImage(id)) map.removeImage(id)
 
-    // CRED:
-    // https://github.com/mapbox/mapbox-gl-js/issues/5529#issuecomment-340011876
+    // CRED: github.com/mapbox/mapbox-gl-js/issues/5529#issuecomment-340011876
     const img = new Image(48, 48) // src files are 24x24 viewbox
 
     // Enabling the `sdf` property allows icons to be colored on the fly:
     // https://docs.mapbox.com/help/troubleshooting/using-recolorable-images-in-mapbox-maps/#mapbox-gl-js
-    img.onload = () => map?.addImage(id, img, { sdf: true })
+    img.onload = () =>
+      map.hasImage(id) ? null : map.addImage(id, img, { sdf: true })
+
     // TODO: confirm fixed (same as Sentry comment above):
     // `TypeError: null is not an object (evaluating 'e.addImage')
     // sentry.io/organizations/endangered-language-alliance/issues/2073089812
