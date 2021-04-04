@@ -16,7 +16,6 @@ import {
 import { GoSearch } from 'react-icons/go'
 import { MdClose } from 'react-icons/md'
 
-import { HideOnScroll } from 'components/generic'
 import { usePanelDispatch } from 'components/panels'
 import { icons } from 'components/config'
 import { routes } from 'components/config/api'
@@ -154,45 +153,42 @@ export const PanelTitleBar: FC = (props) => {
   )
 
   // WISHLIST: add maximize btn on mobile
-  // WISHLIST: MAKE AUTO-HIDE WORK 😞
   return (
-    <HideOnScroll {...props}>
-      <AppBar className={classes.root}>
-        <Toolbar variant="dense" className={classes.toolbar}>
-          <Switch>
-            {/* Census can just have home btn */}
-            <Route path={routes.local} />
-            <Route path={['/', '/:level1']} exact />
-            <Route>
-              <SplitCrumbs />
-            </Route>
-          </Switch>
-          <Switch>
-            <Route path="/" exact>
-              {/* Flex spacer */}
-              <div />
-              <PanelTitle text={panelHeading} />
-            </Route>
-            <Route path="/:level1/:level2" exact>
-              <PanelTitle text={panelHeading} icon={icons[panelHeading]} />
-            </Route>
-            <Route path="/Census">
-              {/* Census just needs panel heading override */}
-              <LinkToHomeBtn />
-              <PanelTitle
-                text="Census Language Data"
-                icon={icons[panelHeading]}
-              />
-            </Route>
-            <Route path="/:level1" exact>
-              {/* Home btn on /TopLevelRoutes looks balanced on left */}
-              <LinkToHomeBtn />
-              <PanelTitle text={panelHeading} icon={icons[panelHeading]} />
-            </Route>
-          </Switch>
-          {RightSideBtns}
-        </Toolbar>
-      </AppBar>
-    </HideOnScroll>
+    <AppBar className={classes.root} position="sticky">
+      <Toolbar variant="dense" className={classes.toolbar}>
+        <Switch>
+          {/* Census can just have home btn */}
+          <Route path={routes.local} />
+          <Route path={['/', '/:level1']} exact />
+          <Route>
+            <SplitCrumbs />
+          </Route>
+        </Switch>
+        <Switch>
+          <Route path="/" exact>
+            {/* Flex spacer */}
+            <div />
+            <PanelTitle text={panelHeading} />
+          </Route>
+          <Route path="/:level1/:level2" exact>
+            <PanelTitle text={panelHeading} icon={icons[panelHeading]} />
+          </Route>
+          <Route path="/Census">
+            {/* Census just needs panel heading override */}
+            <LinkToHomeBtn />
+            <PanelTitle
+              text="Census Language Data"
+              icon={icons[panelHeading]}
+            />
+          </Route>
+          <Route path="/:level1" exact>
+            {/* Home btn on /TopLevelRoutes looks balanced on left */}
+            <LinkToHomeBtn />
+            <PanelTitle text={panelHeading} icon={icons[panelHeading]} />
+          </Route>
+        </Switch>
+        {RightSideBtns}
+      </Toolbar>
+    </AppBar>
   )
 }

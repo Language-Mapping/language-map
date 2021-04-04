@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     mapWrap: {
-      position: 'fixed',
+      position: 'absolute',
       bottom: BOTTOM_NAV_HEIGHT_MOBILE,
       left: 0,
       right: 0,
