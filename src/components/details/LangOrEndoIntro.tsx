@@ -1,10 +1,8 @@
 import React, { FC } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
 import { EndoImageWrap } from 'components/details'
-import { routes } from 'components/config/api'
 import { TonsOfData } from './types'
 
 // Shaky but makes long endos like Church Slavonic's fit
@@ -22,17 +20,18 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     subHeading: {
-      fontSize: '1.25rem',
+      fontSize: '1.5rem',
+      marginBottom: '0.25rem',
       lineHeight: 1.25,
       display: 'block',
-      color: theme.palette.secondary.light,
+      color: theme.palette.text.secondary,
     },
   })
 )
 
 // Mongolian, ASL, etc. have URLs to images
 export const LangOrEndoIntro: FC<TonsOfData> = (props) => {
-  const CHAR_CUTOFF = 17
+  const CHAR_CUTOFF = 17 // TODO: fix some newly found monsters
   const { data } = props
   const { Endonym, Language, 'Font Image Alt': altImage, name } = data
   const language = name || Language // TODO: deal with this somehow
@@ -51,12 +50,7 @@ export const LangOrEndoIntro: FC<TonsOfData> = (props) => {
         </Typography>
       )}
       {(altImage || language !== Endonym) && (
-        <Typography
-          variant="h6"
-          component={RouterLink}
-          to={`${routes.explore}/Language/${language}`}
-          className={classes.subHeading}
-        >
+        <Typography variant="h6" className={classes.subHeading}>
           {language}
         </Typography>
       )}

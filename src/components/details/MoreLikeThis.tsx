@@ -1,5 +1,4 @@
-import React, { FC, useState } from 'react'
-import { Route } from 'react-router-dom'
+import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { IoIosPeople } from 'react-icons/io'
 
@@ -8,7 +7,6 @@ import { SwatchOnly } from 'components/legend'
 import { Chip } from 'components/details'
 
 import * as Types from './types'
-import { LocationLink } from './LocationLink'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.75rem',
       justifyContent: 'center',
       flexWrap: 'wrap',
-      margin: '0.5rem 0 0.75rem',
+      marginBottom: '0.5rem',
       '& > * + *': {
         marginLeft: '0.35rem',
       },
@@ -28,7 +26,6 @@ const useStyles = makeStyles((theme: Theme) =>
 export const MoreLikeThis: FC<Types.TonsOfData> = (props) => {
   const { data, children } = props
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
 
   const {
     'World Region': WorldRegion,
@@ -41,13 +38,6 @@ export const MoreLikeThis: FC<Types.TonsOfData> = (props) => {
   // TODO: use TS on all mid-route paths, e.g. "World Region"
   return (
     <div className={classes.root}>
-      <Route path="/Explore/Language/:language/:id" exact>
-        <LocationLink
-          anchorEl={anchorEl}
-          setAnchorEl={setAnchorEl}
-          data={data}
-        />
-      </Route>
       <Chip
         text={WorldRegion}
         to={`${routes.explore}/World Region/${WorldRegion}`}

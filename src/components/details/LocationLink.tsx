@@ -1,16 +1,25 @@
 import React, { FC } from 'react'
-import { useHistory } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Popover } from '@material-ui/core'
+import { Link, Popover } from '@material-ui/core'
 import { BiMapPin } from 'react-icons/bi'
 
-import { Chip, NeighborhoodList } from 'components/details'
+import { NeighborhoodList } from 'components/details'
 import { DialogCloseBtn } from 'components/generic/modals'
 
 import { LocationLinkProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    link: {
+      display: 'inline-flex',
+      alignItems: 'center',
+      fontSize: '0.85rem',
+      marginBottom: '0.75rem',
+      '& > svg': {
+        marginRight: 4,
+      },
+    },
     popover: {
       maxWidth: 350,
       minWidth: 325,
@@ -21,13 +30,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const LocationLink: FC<LocationLinkProps> = (props) => {
   const { anchorEl, setAnchorEl, data } = props
-  const history = useHistory()
   const classes = useStyles()
   const { Town, Neighborhood } = data
 
   const primaryLoc = Town || Neighborhood
   const addlCount = data['Additional Neighborhoods']?.length
-  const neighbsChipText = `${primaryLoc}${addlCount ? ` +${addlCount}` : ''}`
+  const linkText = `${primaryLoc}${addlCount ? ` +${addlCount}` : ''}`
   const explorePath = Town ? 'Town' : 'Neighborhood'
 
   const open = Boolean(anchorEl)
@@ -35,19 +43,20 @@ export const LocationLink: FC<LocationLinkProps> = (props) => {
   const handleClose = () => setAnchorEl(null)
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault()
     setAnchorEl(event.currentTarget)
   }
 
   if (!addlCount) {
     return (
-      <Chip
-        text={neighbsChipText}
-        icon={<BiMapPin />}
+      <RouterLink
+        className={classes.link}
         title={`View more languages spoken in ${primaryLoc}`}
-        handleClick={() =>
-          history.push(`/Explore/${explorePath}/${primaryLoc}`)
-        }
-      />
+        to={`/Explore/${explorePath}/${primaryLoc}`}
+      >
+        <BiMapPin />
+        {linkText}
+      </RouterLink>
     )
   }
 
@@ -68,12 +77,18 @@ export const LocationLink: FC<LocationLinkProps> = (props) => {
           onClose={() => handleClose()}
         />
       </Popover>
-      <Chip
-        text={neighbsChipText}
-        icon={<BiMapPin />}
+      <Link
+        href="#"
+        role="button"
+        className={classes.link}
         title="Show neighborhood or town options"
-        handleClick={handleClick}
-      />
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore // TODO: mas tarde...
+        onClick={handleClick}
+      >
+        <BiMapPin />
+        {linkText}
+      </Link>
     </>
   )
 }

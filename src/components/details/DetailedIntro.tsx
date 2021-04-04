@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Route, Switch } from 'react-router-dom'
 
@@ -9,6 +9,7 @@ import { StatsAndMeta } from 'components/explore/StatsAndMeta'
 import { LangProfileDescrip } from 'components/explore'
 import { routes } from 'components/config/api'
 import { LangOrEndoIntro } from './LangOrEndoIntro'
+import { LocationLink } from './LocationLink'
 import { DetailedIntroProps } from './types'
 import { ReadMoreLangDescrip } from './ReadMoreLangDescrip'
 
@@ -16,8 +17,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       textAlign: 'center',
-      paddingBottom: '0.75rem',
-      marginBottom: '1rem',
+      paddingBottom: '0.5rem', // allow for "Read more" section
+      marginBottom: '1.25rem',
       borderBottom: `solid 1px ${theme.palette.divider}`,
     },
   })
@@ -27,10 +28,18 @@ const useStyles = makeStyles((theme: Theme) =>
 export const DetailedIntro: FC<DetailedIntroProps> = (props) => {
   const { data, shareNoun, isInstance, langDescripID } = props
   const classes = useStyles()
+  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
 
   return (
     <header className={classes.root}>
       <LangOrEndoIntro data={data} />
+      <Route path="/Explore/Language/:language/:id" exact>
+        <LocationLink
+          anchorEl={anchorEl}
+          setAnchorEl={setAnchorEl}
+          data={data}
+        />
+      </Route>
       <Switch>
         <Route path="/Explore/Language/:language/:id" exact />
         <Route>
