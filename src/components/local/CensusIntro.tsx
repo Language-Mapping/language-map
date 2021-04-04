@@ -9,7 +9,7 @@ export const CensusIntro: FC = () => {
     <Switch>
       <Route path={routes.local}>
         {/* Below text may not be applicable to census popover... */}
-        <UItextFromAirtable id="census-panel-intro" />
+        <UItextFromAirtable id="census-panel-intro-top" />
       </Route>
       <Route>
         <UItextFromAirtable id="census-popout-intro" />

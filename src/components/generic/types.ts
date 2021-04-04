@@ -1,5 +1,6 @@
 export type UItextTableID =
-  | 'census-panel-intro'
+  | 'census-panel-intro-top'
+  | 'census-panel-intro-bottom'
   | 'census-popout-intro'
   | 'census-search-helper'
   | 'census-search-placeholder'

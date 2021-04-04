@@ -13,12 +13,11 @@ export const onHover: Types.OnHover = (
   const topFeat = features[0]
   const topFeatSrc = topFeat?.source
 
+  // Census hover wrecks the world
   const isOneOfOurs = [
     mbStyleTileConfig.langSrcID,
     'neighborhoods',
     'counties',
-    'puma',
-    'tract',
   ].includes(topFeatSrc)
 
   if (!isOneOfOurs) {
