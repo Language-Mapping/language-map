@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import Slide from '@material-ui/core/Slide'
+import { Fade } from '@material-ui/core'
 
 import { useHideOnScroll } from './hooks'
 
@@ -12,11 +12,11 @@ type HideOnScrollProps = {
 export const HideOnScroll: FC<HideOnScrollProps> = (props) => {
   const { children, panelRefElem } = props
 
-  const hide = useHideOnScroll(panelRefElem, 125)
+  const hide = useHideOnScroll(panelRefElem)
 
   return (
-    <Slide direction="down" appear={false} in={!hide}>
+    <Fade appear={false} in={!hide} timeout={300}>
       <div>{children}</div>
-    </Slide>
+    </Fade>
   )
 }

@@ -21,6 +21,8 @@ import { icons } from 'components/config'
 import { routes } from 'components/config/api'
 import { SplitCrumbs } from './SplitCrumbs'
 
+type StyleProps = { hide?: boolean }
+
 const topCornersRadius = 4 // same as bottom left/right in nav bar
 const borderTopLeftRadius = topCornersRadius
 const borderTopRightRadius = topCornersRadius
@@ -30,6 +32,12 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       borderTopLeftRadius,
       borderTopRightRadius,
+      transition: '300ms all',
+      transform: (props: StyleProps) =>
+        props.hide ? 'translateY(-40px)' : 'translateY(0)',
+      opacity: (props: StyleProps) => (props.hide ? 0 : 1),
+      maxHeight: (props: StyleProps) => (props.hide ? 0 : 48),
+      zIndex: (props: StyleProps) => (props.hide ? -1 : 1),
       // TODO: rm when done
       //   boxShadow: '0 2px 7px hsla(0, 0%, 0%, 0.25)',
       //   height: MOBILE_PANEL_HEADER_HT,
@@ -74,7 +82,7 @@ type PanelTitleProps = {
 
 const PanelTitle: FC<PanelTitleProps> = (props) => {
   const { text, icon } = props
-  const classes = useStyles()
+  const classes = useStyles({})
   // TODO: make sure there are icons for all top-level views
 
   return (
@@ -107,8 +115,9 @@ const LinkToHomeBtn: FC = (props) => {
   )
 }
 
-export const PanelTitleBar: FC = (props) => {
-  const classes = useStyles()
+export const PanelTitleBar: FC<{ hide: boolean }> = (props) => {
+  const { hide } = props
+  const classes = useStyles({ hide })
   const { pathname } = useLocation()
   // Lil' gross, but use Level2 route name first, otherwise Level1
   const panelHeading =

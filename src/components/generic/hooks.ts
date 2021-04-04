@@ -1,5 +1,6 @@
 import { useRef, useState, useCallback, useEffect } from 'react'
 import { useAirtable } from 'components/explore/hooks'
+import { useLocation } from 'react-router-dom'
 import { UItextTableID, UseUItext } from './types'
 
 export const useUItext = (id: UItextTableID): UseUItext => {
@@ -30,10 +31,12 @@ function getScrollY(scroller: HTMLElement | null): number {
 
 export const useHideOnScroll = (
   panelRefElem: HTMLDivElement | null,
-  threshold = 100
+  threshold = 125
 ): boolean => {
   const scrollRef = useRef<number>(0)
   const [hide, setHide] = useState(false)
+  const loc = useLocation()
+  const { pathname } = loc
 
   const handleScroll = useCallback(() => {
     const scrollY = getScrollY(panelRefElem)
@@ -49,6 +52,11 @@ export const useHideOnScroll = (
 
     setHide(shouldHide)
   }, [panelRefElem, threshold])
+
+  // Show on each pathname change, otherwise it stays hidden
+  useEffect(() => {
+    setHide(false)
+  }, [pathname])
 
   useEffect(() => {
     if (!panelRefElem) return

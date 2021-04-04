@@ -13,7 +13,6 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       bottom: '1rem',
       right: '1rem',
-      zIndex: 5000,
     },
   })
 )
@@ -33,7 +32,7 @@ export const BackToTopBtn: FC<BackToTopBtnProps> = (props) => {
   }
 
   return (
-    <Zoom in={hide}>
+    <Zoom in={hide} timeout={300}>
       <div
         onClick={handleClick}
         role="presentation"
