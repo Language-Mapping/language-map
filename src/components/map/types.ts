@@ -31,7 +31,7 @@ type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
 
 export type BaseLayer = 'light' | 'dark' | 'none'
 export type BoundsArray = [[number, number], [number, number]]
-export type GeocodeMarkerProps = LongLat & { text: string }
+export type GeocodeMarkerProps = LongLat & { text: string; subtle?: boolean }
 export type InitialMapProps = InteractiveMapProps
 export type LangIconConfig = { icon: string; id: string }
 export type LayerBasics = { 'source-layer': string; id: string }
@@ -314,3 +314,16 @@ export type UseZoomToBounds = (
   mapLoaded: boolean,
   map?: Map
 ) => void
+
+export type SrcAndFeatID = { srcID: string; featID: string }
+
+export type OnHover = (
+  event: MapEvent,
+  setTooltip: React.Dispatch<Tooltip | null>,
+  map?: Map,
+  SrcAndFeatID?: SrcAndFeatID
+) => void
+
+export type Tooltip = GeocodeMarkerProps
+
+export type UseRenameLaterUgh = () => SrcAndFeatID | undefined

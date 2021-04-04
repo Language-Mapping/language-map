@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 // TOO annoying. I'll take the risk, esp. since it has not seemed problematic:
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { FC, useState, useContext, useEffect } from 'react'
+import React, { FC, useState, useContext, useEffect, useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 // TODO: try to lazy load the biggest dep of all. See:
 // www.debugbear.com/blog/bundle-splitting-components-with-webpack-and-react
@@ -21,7 +21,6 @@ import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
 import { PolygonLayer } from './NeighborhoodsLayer'
 import { getAllLangFeatIDs } from '../../utils'
-// import { isTouchEnabled } from '../../utils' // TODO: restore
 
 import * as Types from './types'
 import * as utils from './utils'
@@ -34,21 +33,25 @@ utils.rightToLeftSetup()
 
 export const Map: FC<Types.MapProps> = (props) => {
   const { mapLoaded, mapRef, setMapLoaded } = props
+
+  const history = useHistory()
   const loc = useLocation()
+  const { pathname } = loc
 
   const { autoZoomCensus, censusActiveField, baseLayer } = useMapToolsState()
-  const { pathname } = loc
-  const selLangPointCoords = hooks.useSelLangPointCoords()
+  const { panelOpen } = usePanelState()
   const { state } = useContext(GlobalContext)
   const { langFeatures, filterHasRun } = state
 
-  const history = useHistory()
   const map: MbMap | undefined = mapRef.current?.getMap()
+  const selLangPointCoords = hooks.useSelLangPointCoords()
   const offset = hooks.useOffset()
   const breakpoint = hooks.useBreakpoint()
-  const { panelOpen } = usePanelState()
+  const srcAndFeatID = hooks.useFeatSrcFromMatch()
+  const touchEnabled = useMemo(() => utils.isTouchEnabled(), [])
 
   const [beforeId, setBeforeId] = useState<string>('background')
+  const [tooltip, setTooltip] = useState<Types.Tooltip | null>(null)
   const [isMapTilted, setIsMapTilted] = useState<boolean>(false)
   const [mapIsMoving, setMapIsMoving] = useState<boolean>(false)
   const [showPopups, setShowPopups] = useState<boolean>(true)
@@ -288,20 +291,12 @@ export const Map: FC<Types.MapProps> = (props) => {
         {...config.mapProps}
         mapStyle={mapStyle}
         ref={mapRef}
-        /* eslint-disable operator-linebreak */
-        // interactiveLayerIds={
-        //   boundariesVisible
-        //     ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //       // @ts-ignore
-        //       [...boundariesLayerIDs, ...interactiveLayerIds]
-        //     : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //       // @ts-ignore
-        //       [...interactiveLayerIds]
-        // }
-        /* eslint-enable operator-linebreak */
         onViewportChange={setViewport}
         onClick={(event: Types.MapEvent) => onClick(event)}
-        onHover={onHover}
+        onHover={(event: Types.MapEvent) => {
+          // Gave up on preventing mobile hover 🤷‍♂️
+          onHover(event, setTooltip, map, srcAndFeatID)
+        }}
         onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
       >
         <Geolocation
@@ -313,39 +308,19 @@ export const Map: FC<Types.MapProps> = (props) => {
         />
         {/* TODO: hide label on clear */}
         {geocodeMarker && !mapIsMoving && <GeocodeMarker {...geocodeMarker} />}
+        <PolygonLayer {...{ map, mapLoaded, beforeId }} configKey="counties" />
         <PolygonLayer
-          map={map}
-          beforeId={beforeId}
-          mapLoaded={mapLoaded}
-          configKey="counties"
-        />
-        <PolygonLayer
-          map={map}
-          beforeId={beforeId}
-          mapLoaded={mapLoaded}
+          {...{ map, mapLoaded, beforeId }}
           configKey="neighborhoods"
         />
-        <CensusLayer
-          map={map}
-          configKey="puma"
-          beforeId={beforeId}
-          mapLoaded={mapLoaded}
-        />
-        <CensusLayer
-          map={map}
-          configKey="tract"
-          beforeId={beforeId}
-          mapLoaded={mapLoaded}
-        />
+        <CensusLayer {...{ map, mapLoaded, beforeId }} configKey="puma" />
+        <CensusLayer {...{ map, mapLoaded, beforeId }} configKey="tract" />
         <LangMbSrcAndLayer />
         {mapLoaded && showPopups && !mapIsMoving && (
           <MapPopups setShowPopups={setShowPopups} />
         )}
         {/* Popups are annoying on mobile */}
-        {/* TODO: RESTORE */}
-        {/* {!isTouchEnabled() && tooltip && (
-          <MapPopup {...tooltip} setVisible={() => setTooltip(null)} />
-        )} */}
+        {!touchEnabled && tooltip && <GeocodeMarker {...tooltip} subtle />}
       </MapGL>
       <MapCtrlBtns
         isMapTilted={isMapTilted}

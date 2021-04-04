@@ -334,3 +334,22 @@ export const useZoomToBounds: Types.UseZoomToBounds = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapLoaded, xMax, xMin, yMin, yMax, map])
 }
+
+// TODO: make it not insanely fragile, or abandon hover stuff on polygons
+export const useFeatSrcFromMatch: Types.UseRenameLaterUgh = () => {
+  const neighbsMatch = useRouteMatch<{ id: string }>({
+    path: ['/Explore/Neighborhood/:id', '/Explore/Neighborhood/:id/:something'],
+    exact: true,
+  })
+
+  const countiesMatch = useRouteMatch<{ id: string }>({
+    path: ['/Explore/County/:id', '/Explore/County/:id/:something'],
+    exact: true,
+  })
+
+  const featID = neighbsMatch?.params.id || countiesMatch?.params.id
+
+  if (!featID) return undefined
+
+  return { featID, srcID: neighbsMatch ? 'neighborhoods' : 'counties' }
+}
