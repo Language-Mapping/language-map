@@ -326,7 +326,7 @@ export const useZoomToBounds: Types.UseZoomToBounds = (
     ] as Types.BoundsArray
 
     const webMercViewport = utils.getPolyWebMercView(boundsArray, offset)
-    const zoom = Math.min(webMercViewport.zoom, 13) // tracts are too small
+    const zoom = Math.min(webMercViewport.zoom, POINT_ZOOM_LEVEL) // tracts are too small
 
     flyToPoint(map, { ...webMercViewport, offset, zoom })
 

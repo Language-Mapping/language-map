@@ -144,6 +144,7 @@ export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
                 <CustomCard
                   key={loc}
                   title={loc}
+                  intro={data.County[i]}
                   url={url}
                   footer={<CardFooter text={loc} />}
                 />
