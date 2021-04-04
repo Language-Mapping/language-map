@@ -4,9 +4,8 @@ import { InstanceLevelSchema, LangLevelSchema } from 'components/context'
 // which only need a handful of props, but it covers the TS base in a pinch
 export type FullOnEverything = LangLevelSchema & InstanceLevelSchema
 
-export type MoreLikeThisProps = {
+export type TonsOfData = {
   data: FullOnEverything
-  isInstance?: boolean
 }
 
 export type ChipProps = {
@@ -17,24 +16,25 @@ export type ChipProps = {
   handleClick?: (e: React.MouseEvent<HTMLDivElement>) => void
 }
 
-export type NeighborhoodListProps = MoreLikeThisProps & {
-  data: FullOnEverything
-}
-
-export type DetailedIntroProps = Pick<MoreLikeThisProps, 'isInstance'> & {
-  data: FullOnEverything
+export type DetailedIntroProps = TonsOfData & {
+  isInstance?: boolean
   langDescripID?: string
   shareNoun?: string
 }
 
-export type DetailsProps = Pick<MoreLikeThisProps, 'isInstance'> & {
+export type LocationLinkProps = TonsOfData & {
+  anchorEl: HTMLDivElement | null
+  setAnchorEl: React.Dispatch<HTMLDivElement | null>
+}
+
+export type DetailsProps = {
   data: FullOnEverything | null
   instanceDescripID?: string
   langDescripID?: string
   shareNoun?: string
 }
 
-export type LangOrEndoIntroProps = DetailedIntroProps & { name?: string }
+export type LangOrEndoIntroProps = DetailedIntroProps
 
 export type UseDetails = {
   error: unknown

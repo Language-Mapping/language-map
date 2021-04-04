@@ -37,7 +37,7 @@ export const DetailedIntro: FC<DetailedIntroProps> = (props) => {
           <StatsAndMeta data={data} />
         </Route>
       </Switch>
-      <MoreLikeThis data={data} isInstance={isInstance}>
+      <MoreLikeThis data={data}>
         <CensusPopover data={data} />
       </MoreLikeThis>
       <Media data={data} shareNoun={shareNoun} omitClear={!isInstance} />

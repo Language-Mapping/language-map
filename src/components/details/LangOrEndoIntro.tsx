@@ -5,7 +5,7 @@ import { Typography } from '@material-ui/core'
 
 import { EndoImageWrap } from 'components/details'
 import { routes } from 'components/config/api'
-import { LangOrEndoIntroProps } from './types'
+import { TonsOfData } from './types'
 
 // Shaky but makes long endos like Church Slavonic's fit
 type StyleProps = { tooLong: boolean }
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 // Mongolian, ASL, etc. have URLs to images
-export const LangOrEndoIntro: FC<LangOrEndoIntroProps> = (props) => {
+export const LangOrEndoIntro: FC<TonsOfData> = (props) => {
   const CHAR_CUTOFF = 17
   const { data } = props
   const { Endonym, Language, 'Font Image Alt': altImage, name } = data

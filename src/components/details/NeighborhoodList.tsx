@@ -47,7 +47,7 @@ const CardFooter: FC<{ text?: string }> = ({ text }) => {
   )
 }
 
-export const NeighborhoodList: FC<Types.NeighborhoodListProps> = (props) => {
+export const NeighborhoodList: FC<Types.DetailedIntroProps> = (props) => {
   const { data, isInstance } = props
   const classes = useStyles()
   const {
