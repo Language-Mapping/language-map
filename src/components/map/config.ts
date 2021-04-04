@@ -6,7 +6,7 @@ export * from './config.points'
 export const MAPBOX_TOKEN = process.env.REACT_APP_MB_TOKEN
 export const NYC_LAT_LONG = { latitude: 40.7128, longitude: -74.006 }
 export const initialMapState = { ...NYC_LAT_LONG, zoom: 8.5 }
-export const POINT_ZOOM_LEVEL = 14.5 // clicked point or single-result filter
+export const POINT_ZOOM_LEVEL = 13 // clicked point or single-result filter
 export const mbStyleTileConfig = {
   layerId: 'mb-data', // TODO: a dev/deploy-only instance!
   langSrcID: 'languages-src', // arbitrary, set in code, never changes

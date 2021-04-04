@@ -8,7 +8,9 @@ import * as MapTypes from './types'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     markerLabel: {
-      backgroundColor: 'hsl(228deg 87% 61%)', // matches default blue pin
+      // Default label color to match default blue pin
+      backgroundColor: (props: { subtle?: boolean }) =>
+        props.subtle ? theme.palette.background.paper : 'hsl(228deg 87% 61%)',
       borderRadius: 4,
       boxShadow: theme.shadows[4],
       color: theme.palette.text.primary,
@@ -23,9 +25,10 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+// Misleading as we're using it for more than just geocoding
 export const GeocodeMarker: FC<MapTypes.GeocodeMarkerProps> = (props) => {
-  const { latitude, longitude, text } = props
-  const classes = useStyles()
+  const { latitude, longitude, text, subtle } = props
+  const classes = useStyles({ subtle })
 
   return (
     <Marker {...{ latitude, longitude }} offsetTop={8}>

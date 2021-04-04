@@ -1,14 +1,10 @@
-import React, { FC, useState } from 'react'
-import { Route, useHistory } from 'react-router-dom'
+import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Popover } from '@material-ui/core'
-import { BiMapPin } from 'react-icons/bi'
 import { IoIosPeople } from 'react-icons/io'
 
 import { routes } from 'components/config/api'
 import { SwatchOnly } from 'components/legend'
-import { Chip, NeighborhoodList } from 'components/details'
-import { DialogCloseBtn } from 'components/generic/modals'
+import { Chip } from 'components/details'
 
 import * as Types from './types'
 
@@ -19,24 +15,17 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.75rem',
       justifyContent: 'center',
       flexWrap: 'wrap',
-      margin: '0.5rem 0 0.75rem',
+      marginBottom: '0.5rem',
       '& > * + *': {
         marginLeft: '0.35rem',
       },
     },
-    popover: {
-      maxWidth: 350,
-      minWidth: 325,
-      padding: '1rem',
-    },
   })
 )
 
-export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
-  const { data, children, isInstance } = props
+export const MoreLikeThis: FC<Types.TonsOfData> = (props) => {
+  const { data, children } = props
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
-  const history = useHistory()
 
   const {
     'World Region': WorldRegion,
@@ -44,71 +33,11 @@ export const MoreLikeThis: FC<Types.MoreLikeThisProps> = (props) => {
     countryImg,
     Macrocommunity: macro,
     worldRegionColor,
-    Town,
-    Neighborhood,
   } = data
-
-  const primaryLoc = Town || Neighborhood
-
-  const handleClose = () => setAnchorEl(null)
-
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const open = Boolean(anchorEl)
-  const id = open ? 'neighbs-menu-popover' : undefined
-
-  let LocationChip
-  const addlCount = isInstance && data['Additional Neighborhoods']?.length
-  const neighbsChipText = `${primaryLoc}${addlCount ? ` +${addlCount}` : ''}`
-  const explorePath = Town ? 'Town' : 'Neighborhood'
-
-  if (addlCount) {
-    LocationChip = (
-      <>
-        <Popover
-          id={id}
-          open={open}
-          anchorEl={anchorEl}
-          onClose={handleClose}
-          PaperProps={{ className: classes.popover, elevation: 12 }}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          transformOrigin={{ vertical: 'center', horizontal: 'left' }}
-        >
-          <NeighborhoodList data={data} isInstance={isInstance} />
-          <DialogCloseBtn
-            tooltip="Close census menu"
-            onClose={() => handleClose()}
-          />
-        </Popover>
-        <Chip
-          text={neighbsChipText}
-          icon={<BiMapPin />}
-          title="Show neighborhood or town options"
-          handleClick={handleClick}
-        />
-      </>
-    )
-  } else {
-    LocationChip = (
-      <Chip
-        text={neighbsChipText}
-        icon={<BiMapPin />}
-        title={`View more languages spoken in ${primaryLoc}`}
-        handleClick={() =>
-          history.push(`/Explore/${explorePath}/${primaryLoc}`)
-        }
-      />
-    )
-  }
 
   // TODO: use TS on all mid-route paths, e.g. "World Region"
   return (
     <div className={classes.root}>
-      <Route path="/Explore/Language/:language/:id" exact>
-        {LocationChip}
-      </Route>
       <Chip
         text={WorldRegion}
         to={`${routes.explore}/World Region/${WorldRegion}`}

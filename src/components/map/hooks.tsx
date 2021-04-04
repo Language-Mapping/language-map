@@ -326,11 +326,30 @@ export const useZoomToBounds: Types.UseZoomToBounds = (
     ] as Types.BoundsArray
 
     const webMercViewport = utils.getPolyWebMercView(boundsArray, offset)
-    const zoom = Math.min(webMercViewport.zoom, 13) // tracts are too small
+    const zoom = Math.min(webMercViewport.zoom, POINT_ZOOM_LEVEL) // tracts are too small
 
     flyToPoint(map, { ...webMercViewport, offset, zoom })
 
     // LEGIT. selPolyBounds as a dep will break the world.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapLoaded, xMax, xMin, yMin, yMax, map])
+}
+
+// TODO: make it not insanely fragile, or abandon hover stuff on polygons
+export const useFeatSrcFromMatch: Types.UseRenameLaterUgh = () => {
+  const neighbsMatch = useRouteMatch<{ id: string }>({
+    path: ['/Explore/Neighborhood/:id', '/Explore/Neighborhood/:id/:something'],
+    exact: true,
+  })
+
+  const countiesMatch = useRouteMatch<{ id: string }>({
+    path: ['/Explore/County/:id', '/Explore/County/:id/:something'],
+    exact: true,
+  })
+
+  const featID = neighbsMatch?.params.id || countiesMatch?.params.id
+
+  if (!featID) return undefined
+
+  return { featID, srcID: neighbsMatch ? 'neighborhoods' : 'counties' }
 }

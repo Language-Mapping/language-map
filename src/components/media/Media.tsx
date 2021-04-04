@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       listStyle: 'none',
-      margin: '0 0 0.5rem',
+      margin: '0 0 0.75rem',
       padding: 0,
       '& li + li': {
         marginLeft: '0.5rem',

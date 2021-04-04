@@ -306,3 +306,9 @@ export const getCenterOfBounds = (
 
   return { latitude, longitude }
 }
+
+// CRED: geeksforgeeks.org/how-to-detect-touch-screen-device-using-javascript/
+export const isTouchEnabled = (): boolean =>
+  (window && 'ontouchstart' in window) ||
+  navigator.maxTouchPoints > 0 ||
+  navigator.msMaxTouchPoints > 0

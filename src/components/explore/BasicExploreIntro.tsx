@@ -9,7 +9,7 @@ import { BasicExploreIntroProps } from './types'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      marginBottom: '1.5rem',
+      marginBottom: '1rem',
       borderBottom: `solid 1px ${theme.palette.divider}`,
       paddingBottom: '0.75rem',
     },

@@ -1,9 +1,8 @@
 import React, { FC, useState } from 'react'
-import ReactMarkdown from 'react-markdown'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Link } from '@material-ui/core'
 
-import { ToggleableSection } from 'components/generic'
+import { ToggleableSection, MarkdownWithRouteLinks } from 'components/generic'
 
 type ReadMoreProps = { text: string; fontSize?: string | number }
 type ReadMoreStyles = { open?: boolean } & Pick<ReadMoreProps, 'fontSize'>
@@ -50,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
     description: {
       textAlign: 'left',
       fontSize: (props: ReadMoreStyles) => props.fontSize,
-      marginBottom: '0.75rem',
+      marginBottom: '1rem',
       lineHeight: 1.75,
     },
   })
@@ -83,7 +82,7 @@ export const ReadMore: FC<ReadMoreProps> = (props) => {
     <>
       <ToggleableSection show={showDescrip} initialHeight="2.5rem">
         <div className={classes.description}>
-          <ReactMarkdown>{text}</ReactMarkdown>
+          <MarkdownWithRouteLinks text={text} />
         </div>
       </ToggleableSection>
       {ToggleDescription}

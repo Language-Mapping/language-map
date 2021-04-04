@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.75rem',
       justifyContent: 'center',
       listStyle: 'none',
-      margin: '0.5rem 0',
+      margin: '0.5rem 0 0.75rem',
       padding: 0,
       '& > :not(:last-child)': {
         borderRight: `solid 1px ${theme.palette.text.secondary}`,
