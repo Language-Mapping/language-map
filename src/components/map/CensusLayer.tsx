@@ -2,8 +2,8 @@ import React, { FC } from 'react'
 import { Source, Layer } from 'react-map-gl'
 
 import { CensusLayerProps } from './types'
+import { CENSUS_PROMOTE_ID_FIELD, censusLayersConfig } from './config.census'
 import { useCensusSymb, useZoomToBounds } from './hooks'
-import { CENSUS_PROMOTE_ID_FIELD, censusLayersConfig } from './config'
 
 export const CensusLayer: FC<CensusLayerProps> = (props) => {
   const { map, beforeId, configKey, mapLoaded } = props
@@ -21,7 +21,9 @@ export const CensusLayer: FC<CensusLayerProps> = (props) => {
 
   useZoomToBounds(routePath, tableName, mapLoaded, map)
 
-  if (error || isLoading) return null // TODO: sentry
+  if (error) return null // TODO: sentry
+
+  const visibility = visible || isLoading ? 'visible' : 'none'
 
   return (
     <Source
@@ -45,7 +47,7 @@ export const CensusLayer: FC<CensusLayerProps> = (props) => {
         source-layer={sourceLayer}
         type="fill"
         paint={fillPaint}
-        layout={{ visibility: visible ? 'visible' : 'none' }}
+        layout={{ visibility }}
       />
       <Layer
         beforeId={beforeId}
@@ -54,7 +56,7 @@ export const CensusLayer: FC<CensusLayerProps> = (props) => {
         source-layer={sourceLayer}
         type="line"
         paint={linePaint}
-        layout={{ visibility: visible ? 'visible' : 'none' }}
+        layout={{ visibility }}
       />
     </Source>
   )

@@ -17,6 +17,26 @@ import { censusGroupHeadings } from './config'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    // NOTE: there are also overrides in style.css (giant mess)
+    root: {
+      marginBottom: '0.5rem',
+      // The search box itself
+      '& .MuiInputBase-root': {
+        backgroundColor: '#fff', // TODO: consider showing triangle menu icon
+      },
+      // Search icon on left side
+      '& .MuiInputAdornment-root': {
+        color: theme.palette.grey[500],
+      },
+      // Cheap gross way to show icon against white input BG override
+      '& .MuiSvgIcon-root': {
+        // Tried secondary text color without luck. Maybe alpha breaks it?
+        fill: theme.palette.grey[500],
+      },
+      [theme.breakpoints.down('sm')]: {
+        marginBottom: '0.25rem',
+      },
+    },
     paper: {
       // Stands out against panels behind it
       backgroundColor: theme.palette.background.default,
@@ -47,6 +67,15 @@ const useStyles = makeStyles((theme: Theme) =>
     option: {
       fontSize: '0.75em',
       minHeight: 32,
+    },
+    input: {
+      color: theme.palette.grey[700],
+      fontSize: '1rem',
+      // Make text more opaque than the 0.5 default
+      // CRED: https://stackoverflow.com/a/48545561/1048518
+      '&::placeholder': {
+        opacity: 0.85,
+      },
     },
   })
 )
@@ -98,9 +127,11 @@ export const CensusFieldSelect: FC = (props) => {
     <Autocomplete
       id="census-autocomplete"
       classes={{
+        root: classes.root,
         option: classes.option,
         listbox: classes.listbox,
         paper: classes.paper,
+        input: classes.input,
       }}
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore // it actually DOES exist on currentTarget
@@ -128,9 +159,7 @@ export const CensusFieldSelect: FC = (props) => {
           variant="outlined"
           helperText={<UItextFromAirtable id="census-search-helper" />}
           InputLabelProps={{ disableAnimation: true, shrink: true }}
-          FormHelperTextProps={{
-            variant: 'outlined',
-          }}
+          FormHelperTextProps={{ variant: 'outlined' }}
         />
       )}
     />

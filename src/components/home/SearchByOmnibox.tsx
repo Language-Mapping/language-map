@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     // NOTE: there are also overrides in style.css (giant mess)
     root: {
+      marginBottom: '0.5rem',
       // The search box itself
       '& .MuiInputBase-root': {
         backgroundColor: '#fff',
@@ -30,7 +31,6 @@ const useStyles = makeStyles((theme: Theme) =>
       '& .MuiInputAdornment-root': {
         color: theme.palette.grey[500],
       },
-      marginBottom: '0.5rem',
       [theme.breakpoints.down('sm')]: {
         marginBottom: '0.25rem',
       },

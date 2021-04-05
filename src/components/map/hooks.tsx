@@ -18,7 +18,11 @@ import { AIRTABLE_CENSUS_BASE } from 'components/config'
 import { routes } from 'components/config/api'
 import { usePanelState } from 'components/panels'
 import { useWindowResize } from '../../utils'
-import { iconStyleOverride, POINT_ZOOM_LEVEL } from './config'
+import {
+  allPolyLayersConfig,
+  iconStyleOverride,
+  POINT_ZOOM_LEVEL,
+} from './config'
 import { flyToPoint, flyToBounds } from './utils'
 
 import * as Types from './types'
@@ -155,13 +159,13 @@ export const usePolygonWebMerc: Types.UsePolygonWebMerc = (
   routePath,
   tableName
 ) => {
-  const match = useRouteMatch<{ name?: string; id?: string }>({
+  const match = useRouteMatch<{ id?: string }>({
     path: routePath,
     exact: true,
   })
   const isCensus = ['puma', 'tract'].includes(tableName)
   const filterField = isCensus ? 'GEOID' : 'name'
-  const filterValue = match?.params.name || match?.params.id
+  const filterValue = match?.params.id
 
   const { data, isLoading, error } = useAirtable<
     Types.NeighborhoodTableSchema | Types.CountyTableSchema
@@ -352,4 +356,39 @@ export const useFeatSrcFromMatch: Types.UseRenameLaterUgh = () => {
   if (!featID) return undefined
 
   return { featID, srcID: neighbsMatch ? 'neighborhoods' : 'counties' }
+}
+
+export const usePolySelFeatSymb: Types.UsePolySelFeatSymb = (settings) => {
+  const { map, mapLoaded, configKey } = settings
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore // TODO: come on
+  const layerConfig = allPolyLayersConfig[configKey]
+  const { sourceID, sourceLayer, routePath, visContextKey } = layerConfig
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const visible = useMapToolsState()[visContextKey]
+  // TODO: show at next level, e.g. /Explore/Neighborhood/Astoria/Something
+  const match = useRouteMatch<{ id: string }>({ path: routePath, exact: true })
+  const valueParam = match?.params.id
+
+  // Clear/set selected feature state
+  useEffect(() => {
+    if (!map || !mapLoaded) return
+
+    map.removeFeatureState({ source: sourceID, sourceLayer }) // clear each time
+
+    if (valueParam) {
+      map.setFeatureState(
+        {
+          sourceLayer,
+          source: sourceID,
+          id: valueParam,
+        },
+        { selected: true }
+      )
+    }
+    // Definitely need `mapLoaded`
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, mapLoaded, match, valueParam, visible])
 }
