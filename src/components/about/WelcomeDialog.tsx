@@ -1,22 +1,16 @@
 import React, { FC, useState } from 'react'
-import { useQuery } from 'react-query'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   Typography,
+  Backdrop,
 } from '@material-ui/core'
 
-import { LoadingBackdrop } from 'components/generic/modals'
-import { WpApiPageResponse } from './types'
+import { MarkdownWithRouteLinks, useUItext } from 'components/generic'
 import { WelcomeFooter } from './WelcomeFooter'
-import { createMarkup } from '../../utils'
 import { ReactComponent as ProjectLogo } from '../../img/logo.svg'
-
-type AboutPageProps = {
-  queryKey: number
-}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -89,58 +83,49 @@ export const Logo: FC = (props) => {
   )
 }
 
-export const WelcomeDialog: FC<AboutPageProps> = (props) => {
-  const { queryKey } = props
+export const WelcomeDialog: FC = (props) => {
   const classes = useStyles()
   const { dialogContent, welcomePaper } = classes
-  const { data, isFetching, error } = useQuery(queryKey)
-  const wpData = data as WpApiPageResponse
   const [open, setOpen] = useState<boolean>(true)
-
-  // TODO: aria-something
-  if (isFetching)
-    return (
-      <LoadingBackdrop
-        data-testid="about-page-backdrop" // TODO: something?
-      />
-    )
-
+  const { text, error, isLoading } = useUItext('welcome-dialog')
   const handleClose = () => setOpen(false)
 
-  // TODO: wire up Sentry // TODO: aria
-  // TODO: TS for error (`error.message` is a string)
+  let Content
+
+  // data-testid="about-page-backdrop" // TODO: something?
+  if (isLoading) return <Backdrop open />
+
   if (error) {
-    return (
-      <Dialog open onClose={handleClose} maxWidth="sm">
+    Content = (
+      <>
         An error has occurred.{' '}
         <span role="img" aria-label="man shrugging emoji">
           🤷‍♂
         </span>
-      </Dialog>
+      </>
     )
+  } else {
+    Content = <MarkdownWithRouteLinks rootElemType="p" text={text} />
   }
 
+  // TODO: wire up Sentry // TODO: aria
+  // TODO: TS for error (`error.message` is a string)
   return (
     <Dialog
       open={open}
       onClose={handleClose}
       disableEscapeKeyDown
       disableBackdropClick
-      aria-labelledby={`${queryKey}-dialog-title`}
-      aria-describedby={`${queryKey}-dialog-description`}
-      maxWidth="md"
+      aria-labelledby="welcome-dialog-title"
+      aria-describedby="welcome-dialog-description"
+      maxWidth="sm"
       PaperProps={{ className: welcomePaper }}
     >
       <DialogTitle disableTypography>
         <Logo />
       </DialogTitle>
       <DialogContent dividers className={dialogContent}>
-        <div
-          dangerouslySetInnerHTML={createMarkup(
-            (wpData && wpData.content.rendered) || ''
-          )}
-          id={`${queryKey}-dialog-description`}
-        />
+        {Content}
       </DialogContent>
       <WelcomeFooter handleClose={handleClose} />
     </Dialog>

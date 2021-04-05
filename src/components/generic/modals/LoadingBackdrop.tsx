@@ -49,7 +49,7 @@ export const LoadingBackdrop: FC<LoadingBackdrop> = (props) => {
           <Typography variant="h4" component="h2" className={classes.text}>
             {text}
           </Typography>
-          <CircularProgress color="inherit" size={38} />
+          <CircularProgress color="inherit" size={43} />
         </div>
         <div className={navClasses.spacerDesktop} />
       </div>
