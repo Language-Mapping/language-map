@@ -13,10 +13,10 @@ export const InfoPanel: FC = () => {
     <>
       <ReactQueryCacheProvider queryCache={wpQueryCache}>
         <Route path={routes.about}>
-          <AboutPageView title="About" queryKey={wpQueryIDs.about} />
+          <AboutPageView noImgShadow queryKey={wpQueryIDs.about} />
         </Route>
         <Route path={routes.help}>
-          <AboutPageView title="Help" queryKey={wpQueryIDs.help} />
+          <AboutPageView queryKey={wpQueryIDs.help} />
         </Route>
         <Route path={routes.feedback}>
           <FeedbackForm />

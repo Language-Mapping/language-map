@@ -1,70 +1,64 @@
 import React, { FC } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
 import { useQuery } from 'react-query'
-import { Dialog } from '@material-ui/core'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
-import { LoadingBackdrop } from 'components/generic/modals'
-import * as Types from './types'
-import { useStyles } from './styles'
+import { LoadingIndicator } from 'components/generic/modals'
+import { AboutPageProps, WpApiPageResponse } from './types'
 import { createMarkup } from '../../utils'
-import { LocWithState } from '../config/types'
 import { defaultQueryFn } from './utils'
 
-export const AboutPageView: FC<Types.AboutPageProps> = (props) => {
-  const { queryKey, title } = props
+const NO_IMG_SHADOW_CLASSNAME = 'no-img-shadow'
+
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      '& img': {
+        height: 'auto',
+        margin: '1rem auto',
+        maxWidth: '100%',
+        boxShadow: theme.shadows[8],
+        // Prevent screenshots from getting lost in Paper bg if same color:
+        // outline: 'solid 1px hsl(0deg 0% 40%)',
+        [theme.breakpoints.only('xs')]: {
+          margin: '0.5rem 0',
+        },
+      },
+      '& figure': {
+        margin: '1rem 0', // horiz. margin defaults to huge 40px in Chrome
+        textAlign: 'center',
+      },
+      [`& .${NO_IMG_SHADOW_CLASSNAME} img`]: {
+        boxShadow: 'none',
+      },
+    },
+  })
+)
+
+export const AboutPageView: FC<AboutPageProps> = (props) => {
+  const { queryKey, noImgShadow } = props
   const classes = useStyles()
-  const history = useHistory()
-  const {
-    pathname: currPathname,
-    state: locState,
-  } = useLocation() as LocWithState
-  const { data, isFetching, error } = useQuery(queryKey, () =>
-    defaultQueryFn<Types.WpApiPageResponse>(queryKey)
+
+  const { data, isLoading, error } = useQuery(queryKey, () =>
+    defaultQueryFn<WpApiPageResponse>(queryKey)
   )
 
-  if (isFetching)
-    return (
-      <LoadingBackdrop
-        centerOnScreen
-        text="" // default "Loading..." text kind of annoying here
-        testID={`${title?.replace(' ', '').toLowerCase()}-page-backdrop`}
-      />
-    )
-
-  // Go back in history if route wasn't table-based, otherwise go home. Also
-  // avoids an infinite cycle of table-help-table backness.
-  // TODO: see notes in ResultsModal
-  const handleClose = (): void => {
-    if (locState?.from)
-      history.push({
-        pathname: locState.from,
-
-        state: {
-          from: currPathname,
-        },
-      })
-    else history.goBack()
-  }
+  if (isLoading) return <LoadingIndicator omitText />
 
   // TODO: wire up Sentry; aria; TS for error (`error.message` is a string)
-  if (error) {
-    return (
-      <Dialog open onClose={handleClose} maxWidth="md">
-        An error has occurred.{' '}
-        <span role="img" aria-label="man shrugging emoji">
-          🤷‍♂
-        </span>
-      </Dialog>
-    )
-  }
-
-  // TODO: use `keepMounted` for About for SEO purposes?
-  // TODO: consider SimpleDialog for some or all of these
   return (
-    <div className={classes.dialogContent}>
+    <div className={classes.root}>
+      {error && (
+        <>
+          An error has occurred.{' '}
+          <span role="img" aria-label="man shrugging emoji">
+            🤷‍♂
+          </span>
+        </>
+      )}
       <div
+        className={noImgShadow ? NO_IMG_SHADOW_CLASSNAME : ''}
         dangerouslySetInnerHTML={createMarkup(data?.content.rendered || '')}
-        id={`${queryKey}-dialog-description`}
+        id={`${queryKey}-content`}
       />
     </div>
   )
