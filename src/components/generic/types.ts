@@ -30,6 +30,7 @@ export type UseUItext = {
 
 export type UItextFromAirtableProps = {
   id: UItextTableID
+  rootElemType?: MarkdownRootElemType
 }
 
 export type LinkRenderer = {

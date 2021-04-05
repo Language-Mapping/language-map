@@ -10,7 +10,7 @@ const renderers = (rootElemType: MarkdownRootElemType = 'span') => ({
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   paragraph: ({ children }) => {
-    if (rootElemType === 'p') return <p>{children}</p>
+    if (rootElemType === 'p') return <p style={{ marginTop: 0 }}>{children}</p>
     if (rootElemType === 'div') return <div>{children}</div>
 
     return <span>{children}</span>

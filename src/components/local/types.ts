@@ -19,3 +19,13 @@ export type UseCensusReturn = {
   isLoading: boolean
   error: AirtableError | null
 }
+
+export type LegendMarkersProps = {
+  high: number
+  low?: number
+}
+
+export type LegendBarProps = {
+  lowColor?: string
+  highColor?: string
+}

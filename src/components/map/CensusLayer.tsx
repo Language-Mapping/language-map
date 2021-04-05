@@ -23,7 +23,7 @@ export const CensusLayer: FC<CensusLayerProps> = (props) => {
 
   if (error) return null // TODO: sentry
 
-  const visibility = visible || isLoading ? 'visible' : 'none'
+  const visibility = visible && !isLoading ? 'visible' : 'none'
 
   return (
     <Source

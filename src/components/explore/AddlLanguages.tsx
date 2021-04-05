@@ -12,7 +12,7 @@ export const AddlLanguages: FC<{ data: string[] }> = (props) => {
       <Explanation>
         Additional languages spoken in this neighborhood:
       </Explanation>
-      <ul>
+      <ul style={{ marginTop: 0 }}>
         {data.map((langName) => (
           <li key={langName}>
             <RouterLink to={`${routes.explore}/Language/${langName}`}>

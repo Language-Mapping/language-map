@@ -9,7 +9,7 @@ import {
 } from 'components/context/SymbAndLabelContext'
 
 type CustomFormControlProps = {
-  label: string
+  label: React.ReactNode
   switchControl: React.ReactElement
 }
 
@@ -17,7 +17,11 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       marginLeft: 0,
+      marginRight: 0,
       marginBottom: '0.25rem',
+      '&+ *': {
+        marginLeft: 0,
+      },
     },
     controlLabel: {
       display: 'flex',
@@ -25,6 +29,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     smallerText: {
       fontSize: '0.75rem',
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '0.65rem',
+      },
     },
   })
 )

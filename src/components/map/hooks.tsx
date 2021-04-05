@@ -9,6 +9,7 @@ import {
   GlobalContext,
   InstanceLevelSchema,
   useMapToolsState,
+  useMapToolsDispatch,
 } from 'components/context'
 import { AtSymbFields, AtSchemaFields } from 'components/legend/types'
 import { layerSymbFields } from 'components/legend/config'
@@ -253,6 +254,7 @@ export const useCensusSymb: Types.UseCensusSymb = (
   censusScope,
   map
 ) => {
+  const mapToolsDispatch = useMapToolsDispatch()
   const { pathname } = useLocation()
   const { censusActiveField } = useMapToolsState()
   const { id: field, scope } = censusActiveField || {}
@@ -277,6 +279,7 @@ export const useCensusSymb: Types.UseCensusSymb = (
     'fill-color': 'transparent', // mitigates the brief lag before load
   })
   const [highLow, setHighLow] = useState<{ high: number; low?: number }>()
+  const { high, low } = highLow || {} // avoid useEffect "complex deps" warning
 
   useEffect(() => {
     if (!map || isLoading || !data.length || !field || !visible) return
@@ -289,6 +292,10 @@ export const useCensusSymb: Types.UseCensusSymb = (
     // TODO: rm if not using min
     // low: (firstItemLastClass / stats.min(valuesCurrField)) * 100,
     setHighLow({ high: (firstItemLastClass / max) * 100 })
+    mapToolsDispatch({
+      type: 'SET_CENSUS_HIGH_LOW',
+      payload: { high: max, low: 0 },
+    })
 
     data.forEach((row) => {
       const featConfig = { source: censusScope, sourceLayer, id: row.GEOID }
@@ -304,8 +311,8 @@ export const useCensusSymb: Types.UseCensusSymb = (
   useEffect(() => {
     if (!highLow) return
 
-    setFillPaint(utils.setInterpolatedFill(highLow.high, highLow.low))
-  }, [highLow])
+    setFillPaint(utils.setInterpolatedFill(highLow.high, highLow?.low))
+  }, [high, highLow, low])
 
   return { fillPaint, visible, error, isLoading }
 }

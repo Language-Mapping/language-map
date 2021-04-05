@@ -8,10 +8,9 @@ import Autocomplete, {
 
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'
 import { UItextFromAirtable, useUItext } from 'components/generic'
-
 import { routes } from 'components/config/api'
 import { UItextTableID } from 'components/generic/types'
-import * as Types from './types'
+import { GroupHeaderProps, CensusScope, UseCensusResponse } from './types'
 import { useCensusFields } from './hooks'
 import { setCensusField } from './utils'
 import { censusGroupHeadings } from './config'
@@ -20,10 +19,10 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     // NOTE: there are also overrides in style.css (giant mess)
     root: {
-      marginBottom: '0.5rem',
+      marginBottom: '1rem',
       // The search box itself
       '& .MuiInputBase-root': {
-        backgroundColor: '#fff', // TODO: consider showing triangle menu icon
+        backgroundColor: '#fff',
       },
       // Search icon on left side
       '& .MuiInputAdornment-root': {
@@ -35,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
         fill: theme.palette.grey[500],
       },
       [theme.breakpoints.down('sm')]: {
-        marginBottom: '0.25rem',
+        // marginBottom: '0.25rem',
       },
     },
     paper: {
@@ -81,7 +80,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const CensusGroupHeader: FC<Types.GroupHeaderProps> = (props) => {
+const CensusGroupHeader: FC<GroupHeaderProps> = (props) => {
   const { title, censusScope } = props
   const classes = useStyles()
   const { text: subTitle } = useUItext(
@@ -101,14 +100,14 @@ const CensusGroupHeader: FC<Types.GroupHeaderProps> = (props) => {
 }
 
 const renderGroup = (params: AutocompleteRenderGroupParams) => {
-  const groupConfig = censusGroupHeadings[params.group as Types.CensusScope]
+  const groupConfig = censusGroupHeadings[params.group as CensusScope]
   const { title } = groupConfig
 
   return [
     <CensusGroupHeader
       key={params.key}
       title={title}
-      censusScope={params.group as Types.CensusScope}
+      censusScope={params.group as CensusScope}
     />,
     params.children,
   ]
@@ -125,7 +124,7 @@ export const CensusFieldSelect: FC = (props) => {
   const defaultValue =
     data.find(({ id }) => id === censusActiveField?.id) || null
 
-  const handleChange = (value: Types.UseCensusResponse | null) => {
+  const handleChange = (value: UseCensusResponse | null) => {
     setCensusField(value, mapToolsDispatch)
     // TODO: UGHHHH don't transition/animate panels on stuff like this!
     history.push(routes.local) // clears any census popups
@@ -165,7 +164,6 @@ export const CensusFieldSelect: FC = (props) => {
         <TextField
           {...params}
           placeholder={placeholderText}
-          margin="dense"
           variant="outlined"
           helperText={<UItextFromAirtable id="census-search-helper" />}
           InputLabelProps={{ disableAnimation: true, shrink: true }}

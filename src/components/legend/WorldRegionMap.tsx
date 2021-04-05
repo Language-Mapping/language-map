@@ -46,7 +46,7 @@ export const WorldRegionMap: FC = () => {
   )
 
   return (
-    <Explanation component="div" className={classes.root}>
+    <Explanation className={classes.root}>
       {WorldMapTip}
       <ToggleableSection show={showWorldMap}>
         This map was based on the{' '}

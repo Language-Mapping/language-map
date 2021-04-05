@@ -4,10 +4,10 @@ import { MarkdownWithRouteLinks, useUItext } from 'components/generic'
 import { UItextFromAirtableProps } from './types'
 
 export const UItextFromAirtable: FC<UItextFromAirtableProps> = (props) => {
-  const { id } = props
+  const { id, rootElemType } = props
   const { text, error, isLoading } = useUItext(id)
 
   if (error || isLoading) return null
 
-  return <MarkdownWithRouteLinks text={text} />
+  return <MarkdownWithRouteLinks rootElemType={rootElemType} text={text} />
 }
