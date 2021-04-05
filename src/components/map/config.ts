@@ -1,6 +1,7 @@
 import { BaseLayer, InitialMapProps, BoundsArray } from './types'
+import { censusLayersConfig } from './config.census'
+import { nonCensusPolygonConfig } from './config.non-census-poly'
 
-export * from './config.census'
 export * from './config.points'
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MB_TOKEN
@@ -17,6 +18,11 @@ export const mbStyleTileConfig = {
     light: 'mapbox://styles/elalliance/ckdovh9us01wz1ipa5fjihv7l',
     none: 'mapbox://styles/elalliance/cki50pk2s00ux19phcg6k2tjc',
   } as { [key in BaseLayer]: string },
+}
+
+export const allPolyLayersConfig = {
+  ...censusLayersConfig,
+  ...nonCensusPolygonConfig,
 }
 
 export const mapProps: InitialMapProps = {

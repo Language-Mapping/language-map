@@ -1,5 +1,5 @@
-// TODO: rename file to something logical; mv it and all children to ../local
-import React, { FC } from 'react'
+// TODO: rename file to something logical
+import React, { FC, useRef } from 'react'
 import { Map } from 'mapbox-gl'
 import Geocoder from 'react-map-gl-geocoder'
 
@@ -14,7 +14,7 @@ import { GeocodeResult, BoundsArray, GeocoderPopoutProps } from './types'
 
 export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
   const { mapRef } = props
-  const geocoderContainerRef = React.useRef<HTMLDivElement>(null)
+  const geocoderContainerRef = useRef<HTMLDivElement>(null)
   const { width, height } = useWindowResize()
   const offset = useOffset()
   const { text: placeholderText } = useUItext('loc-search-placeholder')

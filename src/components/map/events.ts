@@ -1,6 +1,8 @@
 import * as Types from './types'
 import { mbStyleTileConfig } from './config'
 
+const { langSrcID } = mbStyleTileConfig
+
 export const onHover: Types.OnHover = (
   event,
   setTooltip,
@@ -13,24 +15,25 @@ export const onHover: Types.OnHover = (
   const topFeat = features[0]
   const topFeatSrc = topFeat?.source
 
-  const isOneOfOurs = [
-    mbStyleTileConfig.langSrcID,
-    'neighborhoods',
-    'counties',
-    'puma',
-    'tract',
-  ].includes(topFeatSrc)
+  // Census hover wrecks the world
+  const highlightableLayers = [langSrcID, 'neighborhoods', 'counties'].includes(
+    topFeatSrc
+  )
 
-  if (!isOneOfOurs) {
+  const cursorableLayers = [langSrcID, 'puma', 'tract'].includes(topFeatSrc)
+
+  if (!highlightableLayers && !cursorableLayers) {
     target.style.cursor = 'default'
     setTooltip(null) // close it no matter what
 
     return
   }
 
-  target.style.cursor = 'pointer'
+  target.style.cursor = 'pointer' // give users indication that they can click
 
-  if (topFeatSrc !== mbStyleTileConfig.langSrcID) {
+  if (!highlightableLayers) return // ...but jump ship for census (for now)
+
+  if (topFeatSrc !== langSrcID) {
     setTooltip(null)
 
     const { sourceLayer, source, id } = topFeat

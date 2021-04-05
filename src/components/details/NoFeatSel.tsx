@@ -12,7 +12,7 @@ export const NoFeatSel: FC<{ reason?: string }> = (props) => {
   return (
     <>
       <PanelHeading text={reason} />
-      <Explanation component="div">
+      <Explanation>
         <p>Please select a community using one of the following options:</p>
         <ul>
           <li>Click a point on the map.</li>

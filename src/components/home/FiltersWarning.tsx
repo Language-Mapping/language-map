@@ -55,7 +55,7 @@ export const FiltersWarning: FC = () => {
   )
 
   return (
-    <Explanation component="div" className={classes.inner}>
+    <Explanation className={classes.inner}>
       {BadgeDot}
       <div>
         Current filters have been applied and may affect results. You can{' '}

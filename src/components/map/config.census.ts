@@ -1,6 +1,9 @@
 // Tell MB not to use default `id` as unique ID
 export const CENSUS_PROMOTE_ID_FIELD = 'GEOID'
 
+// NOTE: did not implement "selected" or "hover" states for census layers due to
+// complexities with their dynamic fills.
+
 // The feature-state approach came from:
 // https://docs.mapbox.com/help/tutorials/data-joins-with-mapbox-boundaries/
 const fillPaint = {

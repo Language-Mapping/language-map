@@ -1,10 +1,12 @@
 import React, { FC } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { Popover, Typography } from '@material-ui/core'
+import { Link, Button, Popover, Typography } from '@material-ui/core'
 
 import { DialogCloseBtn } from 'components/generic/modals'
 import { useMapToolsState, useMapToolsDispatch } from 'components/context'
 import { ToggleWithHelper, useUItext } from 'components/generic'
+import { routes } from 'components/config/api'
 import { BaseLayerToggles } from './BaseLayerToggles'
 
 type MapOptionsMenuProps = {
@@ -21,6 +23,18 @@ const useStyles = makeStyles((theme: Theme) =>
     popoverHeading: {
       fontSize: '1.5rem',
       marginBottom: '0.75rem',
+    },
+    censusLinks: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '0.85rem',
+    },
+    censusLinkLabel: {
+      marginRight: 4,
+    },
+    censusLink: {
+      fontSize: 'inherit',
     },
   })
 )
@@ -42,9 +56,15 @@ const useHelperText = (): UseHelperTextReturn => {
 export const MapOptionsMenu: FC<MapOptionsMenuProps> = (props) => {
   const { anchorEl, setAnchorEl } = props
   const classes = useStyles()
-  const { showCounties, showNeighbs, geolocActive } = useMapToolsState()
+  const {
+    showCounties,
+    showNeighbs,
+    geolocActive,
+    censusActiveField,
+  } = useMapToolsState()
   const mapToolsDispatch = useMapToolsDispatch()
   const { neighbsHelp, countiesHelp, geolocHelp } = useHelperText()
+  const activeField = censusActiveField?.id
 
   const open = Boolean(anchorEl)
   const id = open ? 'map-menu-popover' : undefined
@@ -100,6 +120,29 @@ export const MapOptionsMenu: FC<MapOptionsMenuProps> = (props) => {
         name="toggle-geolocation"
         helperText={geolocHelp}
       />
+      <div className={classes.censusLinks}>
+        <span className={classes.censusLinkLabel}>Census data:</span>
+        <Button
+          component={RouterLink}
+          size="small"
+          className={classes.censusLink}
+          color="secondary"
+          to={routes.local}
+        >
+          View options
+        </Button>
+        <Link
+          component={Button}
+          size="small"
+          className={classes.censusLink}
+          color="secondary"
+          title="Clear census layer language"
+          disabled={activeField === undefined}
+          onClick={() => mapToolsDispatch({ type: 'CLEAR_CENSUS_FIELD' })}
+        >
+          Clear selection
+        </Link>
+      </div>
       <BaseLayerToggles />
       <DialogCloseBtn tooltip="Close map menu" onClose={() => handleClose()} />
     </Popover>

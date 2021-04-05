@@ -128,19 +128,14 @@ export type PanelSectionProps = {
   explanation?: string | React.ReactNode
 }
 
-export type CensusLayerProps = {
-  mapLoaded: boolean
-  configKey: string
-  beforeId?: string
-  map?: Map
-}
-
 export type PolygonLayerProps = {
   mapLoaded: boolean
   configKey: string
   beforeId?: string
   map?: Map
 }
+
+export type CensusLayerProps = PolygonLayerProps
 
 export type MapProps = {
   mapLoaded: boolean
@@ -325,5 +320,7 @@ export type OnHover = (
 ) => void
 
 export type Tooltip = GeocodeMarkerProps
-
 export type UseRenameLaterUgh = () => SrcAndFeatID | undefined
+export type UsePolySelFeatSymb = (
+  settings: Omit<PolygonLayerProps, 'beforeId'>
+) => void

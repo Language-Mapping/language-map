@@ -4,7 +4,7 @@ export type CensusScope = 'tract' | 'puma'
 
 export type GroupHeaderProps = {
   title: string
-  subTitle: string
+  censusScope: CensusScope
 }
 
 export type UseCensusResponse = {
@@ -18,4 +18,14 @@ export type UseCensusReturn = {
   data: UseCensusResponse[]
   isLoading: boolean
   error: AirtableError | null
+}
+
+export type LegendMarkersProps = {
+  high: number
+  low?: number
+}
+
+export type LegendBarProps = {
+  lowColor?: string
+  highColor?: string
 }

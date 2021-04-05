@@ -34,7 +34,7 @@ export const LangMbSrcAndLayer: FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [endoFonts, setEndoFonts] = useState<any[]>()
 
-  // TODO: hook, obviously
+  // TODO: useCallback or something
   const getLayout = (layout: AnyLayout): AnyLayout => {
     const bareMinimum: AnyLayout = {
       ...config.mapLabelDefaults.layout,

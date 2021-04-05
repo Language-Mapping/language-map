@@ -42,9 +42,9 @@ const useStyles = makeStyles((theme: Theme) =>
     popupHeading: {
       color: theme.palette.text.primary,
       lineHeight: 1.2,
-      marginBottom: '0.25rem',
     },
     popupContent: {
+      marginTop: '0.25rem', // `marginBottom` on heading not good if no content
       color: theme.palette.text.secondary,
       fontSize: '0.75rem',
       margin: 0,
@@ -98,7 +98,7 @@ const LanguagePopup: FC<Pick<MapPopupsProps, 'setShowPopups'>> = (props) => {
       latitude={Latitude}
       setShowPopups={setShowPopups}
       heading={Endonym}
-      content={Language}
+      content={Language !== Endonym && Language}
     />
   )
 }
@@ -149,6 +149,18 @@ const CensusPopup: FC<MapPopupsProps> = (props) => {
     baseID: AIRTABLE_CENSUS_BASE,
   })
 
+  const { data: prettyData } = useAirtable<{
+    pretty: string
+  }>(
+    'Census',
+    {
+      fields: ['pretty'],
+      filterByFormula: `{id} = "${field}"`,
+      maxRecords: 1,
+    },
+    { enabled: !censusActiveField?.pretty }
+  )
+
   if (isLoading || error || !data.length) return <></>
 
   const firstRow = data[0]
@@ -157,8 +169,11 @@ const CensusPopup: FC<MapPopupsProps> = (props) => {
 
   const Content = (
     <>
-      of <i>{censusActiveField?.pretty || field}</i> in{' '}
-      {`${firstRow.Neighborhood || 'this census tract'}`}
+      of{' '}
+      <i>
+        {censusActiveField?.pretty || prettyData[0]?.pretty || 'this language'}
+      </i>{' '}
+      in {`${firstRow.Neighborhood || 'this census tract'}`}
     </>
   )
 

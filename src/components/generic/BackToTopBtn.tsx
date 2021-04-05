@@ -1,36 +1,30 @@
 import React, { FC } from 'react'
-import useScrollTrigger from '@material-ui/core/useScrollTrigger'
 import { createStyles, makeStyles, Theme, Zoom, Fab } from '@material-ui/core'
 import { FaArrowCircleUp } from 'react-icons/fa'
 
-type TabPanelProps = {
-  index: number
-  value: number
+type BackToTopBtnProps = {
+  hide: boolean
+  targetElemID: string
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     backToTopBtn: {
-      position: 'fixed',
-      bottom: theme.spacing(1),
-      right: 175,
-      zIndex: 5000,
+      position: 'absolute',
+      bottom: '1rem',
+      right: '1rem',
     },
   })
 )
 
-export const BackToTopBtn: FC = (props) => {
+export const BackToTopBtn: FC<BackToTopBtnProps> = (props) => {
+  const { hide, targetElemID } = props
   const classes = useStyles()
-  const trigger = useScrollTrigger({
-    // target: window ? window() : undefined,
-    disableHysteresis: true,
-    threshold: 125, // threshold: 100
-  })
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const anchor = (
       (event.target as HTMLDivElement).ownerDocument || document
-    ).querySelector('#back-to-top-anchor')
+    ).querySelector(`#${targetElemID}`)
 
     if (anchor) {
       anchor.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -38,7 +32,7 @@ export const BackToTopBtn: FC = (props) => {
   }
 
   return (
-    <Zoom in={trigger}>
+    <Zoom in={hide} timeout={300}>
       <div
         onClick={handleClick}
         role="presentation"

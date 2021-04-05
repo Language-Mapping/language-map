@@ -11,7 +11,10 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       marginBottom: '1rem',
       borderBottom: `solid 1px ${theme.palette.divider}`,
-      paddingBottom: '0.75rem',
+      paddingBottom: '0.25rem',
+      '& p': {
+        marginBottom: '0.25rem',
+      },
     },
     titleAndIcon: {
       alignItems: 'center',

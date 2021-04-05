@@ -101,6 +101,8 @@ type CensusFieldPayload = {
   pretty?: string
 }
 
+type CensusHighLow = { high: number; low: number } | undefined
+
 export type InitialMapToolsState = {
   autoZoomCensus: boolean
   showNeighbs: boolean
@@ -108,11 +110,13 @@ export type InitialMapToolsState = {
   geolocActive: boolean
   baseLayer: BaseLayer
   censusActiveField?: CensusFieldPayload
+  censusHighLow?: CensusHighLow
 }
 
 export type MapToolsAction =
   | { type: 'CLEAR_CENSUS_FIELD' }
   | { type: 'SET_CENSUS_FIELD'; payload: CensusFieldPayload }
+  | { type: 'SET_CENSUS_HIGH_LOW'; payload: CensusHighLow }
   | { type: 'SET_BASELAYER'; payload: BaseLayer }
   | { type: 'SET_GEOLOC_ACTIVE' }
   | { type: 'TOGGLE_NEIGHBORHOODS_LAYER'; payload?: boolean }

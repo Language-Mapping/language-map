@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { Link as RouterLink, useHistory } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import { Typography, Popover, Button } from '@material-ui/core'
 import { FaClipboardList } from 'react-icons/fa'
@@ -9,7 +9,6 @@ import { useMapToolsDispatch, useMapToolsState } from 'components/context'
 import { CensusIntro } from 'components/local'
 import { Chip } from 'components/details'
 import { DialogCloseBtn } from 'components/generic/modals'
-import { routes } from 'components/config/api'
 import { Explanation, SubtleText, UItextFromAirtable } from 'components/generic'
 
 import * as Types from './types'
@@ -46,7 +45,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
   const { data } = props
-  const history = useHistory()
   const mapToolsDispatch = useMapToolsDispatch()
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
   const classes = useStyles()
@@ -68,8 +66,6 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
         type: 'SET_CENSUS_FIELD',
         payload: { id: censusField, scope: censusScope },
       })
-
-      history.push(routes.local)
     }
   }
 

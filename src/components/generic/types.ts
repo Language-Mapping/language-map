@@ -1,8 +1,11 @@
 export type UItextTableID =
-  | 'census-panel-intro'
+  | 'census-panel-intro-bottom'
+  | 'census-panel-intro-top'
   | 'census-popout-intro'
   | 'census-search-helper'
   | 'census-search-placeholder'
+  | 'census-search-puma-heading'
+  | 'census-search-tract-heading'
   | 'census-vintage'
   | 'details-neighb-loc-list'
   | 'feedback-details-text'
@@ -27,6 +30,7 @@ export type UseUItext = {
 
 export type UItextFromAirtableProps = {
   id: UItextTableID
+  rootElemType?: MarkdownRootElemType
 }
 
 export type LinkRenderer = {

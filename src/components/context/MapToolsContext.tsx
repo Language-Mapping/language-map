@@ -49,6 +49,11 @@ function reducer(
         ...state,
         censusActiveField: action.payload,
       }
+    case 'SET_CENSUS_HIGH_LOW':
+      return {
+        ...state,
+        censusHighLow: action.payload,
+      }
     case 'CLEAR_CENSUS_FIELD':
       return { ...state, censusActiveField: undefined }
     default: {

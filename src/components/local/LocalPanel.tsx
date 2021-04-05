@@ -1,21 +1,23 @@
 import React, { FC } from 'react'
 
-import { AllLangDataToggle } from 'components/legend'
-import { Explanation } from 'components/generic'
+import { BasicExploreIntro } from 'components/explore'
+import { Explanation, UItextFromAirtable } from 'components/generic'
 import { CensusFieldSelect } from './CensusFieldSelect'
 import { CensusIntro } from './CensusIntro'
-import { CensusAutoZoomToggle } from './CensusAutoZoomToggle'
+import { CensusTogglesWrap } from './CensusTogglesWrap'
+import { LegendGradient } from './LegendGradient'
 
 // TODO: rename all instances of "Local" to "Census"
 export const LocalPanel: FC = () => {
   return (
     <>
-      <Explanation>
-        <CensusIntro />
-      </Explanation>
+      <BasicExploreIntro introParagraph={<CensusIntro />} />
       <CensusFieldSelect />
-      <AllLangDataToggle />
-      <CensusAutoZoomToggle />
+      <LegendGradient />
+      <CensusTogglesWrap />
+      <Explanation>
+        <UItextFromAirtable id="census-panel-intro-bottom" />
+      </Explanation>
     </>
   )
 }

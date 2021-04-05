@@ -195,10 +195,7 @@ export const prepEndoFilters = (
 
 // Exponential looks pretty good, at least for the tract-level so far
 // https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#interpolate
-export const setInterpolatedFill = (
-  highest: number,
-  lowest?: number
-): FillPaint => ({
+export const setInterpolatedFill = (high: number, low = 0): FillPaint => ({
   'fill-color': [
     'case',
     ['!=', ['feature-state', 'total'], NaN],
@@ -206,9 +203,9 @@ export const setInterpolatedFill = (
       'interpolate',
       ['exponential', ...[0.95]],
       ['feature-state', 'total'], // TODO: TS for "total"
-      lowest || 0,
+      low,
       'rgb(237, 248, 233)',
-      highest,
+      high,
       'rgb(0, 109, 44)',
     ],
     'rgba(255, 255, 255, 0)',

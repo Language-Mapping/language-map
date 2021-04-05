@@ -9,6 +9,7 @@ import {
   GlobalContext,
   InstanceLevelSchema,
   useMapToolsState,
+  useMapToolsDispatch,
 } from 'components/context'
 import { AtSymbFields, AtSchemaFields } from 'components/legend/types'
 import { layerSymbFields } from 'components/legend/config'
@@ -18,7 +19,11 @@ import { AIRTABLE_CENSUS_BASE } from 'components/config'
 import { routes } from 'components/config/api'
 import { usePanelState } from 'components/panels'
 import { useWindowResize } from '../../utils'
-import { iconStyleOverride, POINT_ZOOM_LEVEL } from './config'
+import {
+  allPolyLayersConfig,
+  iconStyleOverride,
+  POINT_ZOOM_LEVEL,
+} from './config'
 import { flyToPoint, flyToBounds } from './utils'
 
 import * as Types from './types'
@@ -155,13 +160,13 @@ export const usePolygonWebMerc: Types.UsePolygonWebMerc = (
   routePath,
   tableName
 ) => {
-  const match = useRouteMatch<{ name?: string; id?: string }>({
+  const match = useRouteMatch<{ id?: string }>({
     path: routePath,
     exact: true,
   })
   const isCensus = ['puma', 'tract'].includes(tableName)
   const filterField = isCensus ? 'GEOID' : 'name'
-  const filterValue = match?.params.name || match?.params.id
+  const filterValue = match?.params.id
 
   const { data, isLoading, error } = useAirtable<
     Types.NeighborhoodTableSchema | Types.CountyTableSchema
@@ -249,6 +254,7 @@ export const useCensusSymb: Types.UseCensusSymb = (
   censusScope,
   map
 ) => {
+  const mapToolsDispatch = useMapToolsDispatch()
   const { pathname } = useLocation()
   const { censusActiveField } = useMapToolsState()
   const { id: field, scope } = censusActiveField || {}
@@ -273,6 +279,7 @@ export const useCensusSymb: Types.UseCensusSymb = (
     'fill-color': 'transparent', // mitigates the brief lag before load
   })
   const [highLow, setHighLow] = useState<{ high: number; low?: number }>()
+  const { high, low } = highLow || {} // avoid useEffect "complex deps" warning
 
   useEffect(() => {
     if (!map || isLoading || !data.length || !field || !visible) return
@@ -285,6 +292,10 @@ export const useCensusSymb: Types.UseCensusSymb = (
     // TODO: rm if not using min
     // low: (firstItemLastClass / stats.min(valuesCurrField)) * 100,
     setHighLow({ high: (firstItemLastClass / max) * 100 })
+    mapToolsDispatch({
+      type: 'SET_CENSUS_HIGH_LOW',
+      payload: { high: max, low: 0 },
+    })
 
     data.forEach((row) => {
       const featConfig = { source: censusScope, sourceLayer, id: row.GEOID }
@@ -300,8 +311,8 @@ export const useCensusSymb: Types.UseCensusSymb = (
   useEffect(() => {
     if (!highLow) return
 
-    setFillPaint(utils.setInterpolatedFill(highLow.high, highLow.low))
-  }, [highLow])
+    setFillPaint(utils.setInterpolatedFill(highLow.high, highLow?.low))
+  }, [high, highLow, low])
 
   return { fillPaint, visible, error, isLoading }
 }
@@ -352,4 +363,39 @@ export const useFeatSrcFromMatch: Types.UseRenameLaterUgh = () => {
   if (!featID) return undefined
 
   return { featID, srcID: neighbsMatch ? 'neighborhoods' : 'counties' }
+}
+
+export const usePolySelFeatSymb: Types.UsePolySelFeatSymb = (settings) => {
+  const { map, mapLoaded, configKey } = settings
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore // TODO: come on
+  const layerConfig = allPolyLayersConfig[configKey]
+  const { sourceID, sourceLayer, routePath, visContextKey } = layerConfig
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const visible = useMapToolsState()[visContextKey]
+  // TODO: show at next level, e.g. /Explore/Neighborhood/Astoria/Something
+  const match = useRouteMatch<{ id: string }>({ path: routePath, exact: true })
+  const valueParam = match?.params.id
+
+  // Clear/set selected feature state
+  useEffect(() => {
+    if (!map || !mapLoaded) return
+
+    map.removeFeatureState({ source: sourceID, sourceLayer }) // clear each time
+
+    if (valueParam) {
+      map.setFeatureState(
+        {
+          sourceLayer,
+          source: sourceID,
+          id: valueParam,
+        },
+        { selected: true }
+      )
+    }
+    // Definitely need `mapLoaded`
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, mapLoaded, match, valueParam, visible])
 }

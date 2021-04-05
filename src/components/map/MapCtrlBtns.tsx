@@ -11,7 +11,7 @@ import { MapOptionsMenu } from './MapOptionsMenu'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      position: 'fixed',
+      position: 'absolute',
       top: -8,
       right: 6,
       zIndex: 1100, // above app bar

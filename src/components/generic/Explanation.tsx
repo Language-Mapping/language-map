@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       color: theme.palette.text.secondary,
       fontSize: '0.75rem',
-      marginTop: '0.5rem',
+      marginTop: 0,
       marginBottom: '0.5rem',
     },
   })
@@ -19,7 +19,7 @@ type ExplanationProps = {
 }
 
 export const Explanation: FC<ExplanationProps> = (props) => {
-  const { children, component = 'p', className = '' } = props
+  const { children, component = 'div', className = '' } = props
   const classes = useStyles()
 
   return (
