@@ -8,27 +8,21 @@ import {
   Backdrop,
 } from '@material-ui/core'
 
-import { MarkdownWithRouteLinks, useUItext } from 'components/generic'
+import { MarkdownWithRouteLinks, useUItext, Logo } from 'components/generic'
 import { WelcomeFooter } from './WelcomeFooter'
-import { ReactComponent as ProjectLogo } from '../../img/logo.svg'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     backdrop: {
-      color: '#fff',
-      zIndex: theme.zIndex.drawer + 1,
-    },
-    logo: {
-      height: '4.5rem',
-      color: theme.palette.text.primary,
-      '& #title': { fill: 'currentColor' },
-      '& #subtitle': { fill: 'currentColor' },
-      '& #accent': { stroke: theme.palette.primary.light },
-      [theme.breakpoints.up('sm')]: { height: '6rem' },
+      backgroundColor: 'rgb(0 0 0 / 75%)', // makes map more obscure
     },
     dialogTitle: {
       display: 'flex',
       justifyContent: 'center',
+      marginTop: '0.25rem',
+      [theme.breakpoints.down('sm')]: {
+        padding: '0.75rem',
+      },
     },
     logoInner: {
       display: 'inline-flex',
@@ -36,6 +30,9 @@ const useStyles = makeStyles((theme: Theme) =>
       textAlign: 'center',
       [theme.breakpoints.down('sm')]: {
         fontSize: '3rem',
+        '& svg': {
+          height: '3.5rem', // needs more height than the main logo on mobile
+        },
       },
     },
     subSubTitle: {
@@ -45,14 +42,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     dialogContent: {
       [theme.breakpoints.down('sm')]: {
-        padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+        paddingLeft: '1rem',
+        paddingRight: '1rem',
         '& p': {
           fontSize: '0.9rem',
         },
       },
     },
     // Squeeze a bit more room out of the dialog
-    welcomePaper: {
+    paper: {
       [theme.breakpoints.up('sm')]: {
         marginLeft: theme.spacing(3),
         marginRight: theme.spacing(3),
@@ -66,15 +64,14 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-// TODO: separate file. You know the drill.
-export const Logo: FC = (props) => {
+const WelcomeDialogTitle: FC = () => {
   const classes = useStyles()
-  const { logo, logoInner, subSubTitle, dialogTitle } = classes
+  const { logoInner, subSubTitle } = classes
 
   return (
-    <Typography variant="h2" className={dialogTitle}>
+    <Typography variant="h2">
       <div className={logoInner}>
-        <ProjectLogo className={logo} />
+        <Logo darkTheme />
         <Typography variant="caption" className={subSubTitle}>
           An urban language map
         </Typography>
@@ -83,9 +80,9 @@ export const Logo: FC = (props) => {
   )
 }
 
-export const WelcomeDialog: FC = (props) => {
+export const WelcomeDialog: FC = () => {
   const classes = useStyles()
-  const { dialogContent, welcomePaper } = classes
+  const { dialogContent, paper, dialogTitle, backdrop } = classes
   const [open, setOpen] = useState<boolean>(true)
   const { text, error, isLoading } = useUItext('welcome-dialog')
   const handleClose = () => setOpen(false)
@@ -108,8 +105,7 @@ export const WelcomeDialog: FC = (props) => {
     Content = <MarkdownWithRouteLinks rootElemType="p" text={text} />
   }
 
-  // TODO: wire up Sentry // TODO: aria
-  // TODO: TS for error (`error.message` is a string)
+  // TODO: wire up Sentry; aria; TS for error (`error.message` is a string)
   return (
     <Dialog
       open={open}
@@ -119,10 +115,11 @@ export const WelcomeDialog: FC = (props) => {
       aria-labelledby="welcome-dialog-title"
       aria-describedby="welcome-dialog-description"
       maxWidth="sm"
-      PaperProps={{ className: welcomePaper }}
+      BackdropProps={{ classes: { root: backdrop } }}
+      PaperProps={{ classes: { root: paper }, elevation: 24 }}
     >
-      <DialogTitle disableTypography>
-        <Logo />
+      <DialogTitle disableTypography className={dialogTitle}>
+        <WelcomeDialogTitle />
       </DialogTitle>
       <DialogContent dividers className={dialogContent}>
         {Content}
