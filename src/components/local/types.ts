@@ -4,7 +4,7 @@ export type CensusScope = 'tract' | 'puma'
 
 export type GroupHeaderProps = {
   title: string
-  subTitle: string
+  censusScope: CensusScope
 }
 
 export type UseCensusResponse = {

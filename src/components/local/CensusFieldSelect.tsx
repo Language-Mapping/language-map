@@ -10,6 +10,7 @@ import { useMapToolsDispatch, useMapToolsState } from 'components/context'
 import { UItextFromAirtable, useUItext } from 'components/generic'
 
 import { routes } from 'components/config/api'
+import { UItextTableID } from 'components/generic/types'
 import * as Types from './types'
 import { useCensusFields } from './hooks'
 import { setCensusField } from './utils'
@@ -81,25 +82,34 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const CensusGroupHeader: FC<Types.GroupHeaderProps> = (props) => {
-  const { title, subTitle } = props
+  const { title, censusScope } = props
   const classes = useStyles()
+  const { text: subTitle } = useUItext(
+    `census-search-${censusScope}-heading` as UItextTableID
+  )
 
   return (
     <ListSubheader className={classes.groupHeader}>
       <Typography className={classes.groupTitle} variant="h6">
         {title}
       </Typography>
-      <Typography className={classes.groupSubTitle}>{subTitle}</Typography>
+      <Typography className={classes.groupSubTitle}>
+        {subTitle || ` `}
+      </Typography>
     </ListSubheader>
   )
 }
 
 const renderGroup = (params: AutocompleteRenderGroupParams) => {
   const groupConfig = censusGroupHeadings[params.group as Types.CensusScope]
-  const { title, subTitle } = groupConfig
+  const { title } = groupConfig
 
   return [
-    <CensusGroupHeader key={params.key} title={title} subTitle={subTitle} />,
+    <CensusGroupHeader
+      key={params.key}
+      title={title}
+      censusScope={params.group as Types.CensusScope}
+    />,
     params.children,
   ]
 }
