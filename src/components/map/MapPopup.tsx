@@ -98,7 +98,7 @@ const LanguagePopup: FC<Pick<MapPopupsProps, 'setShowPopups'>> = (props) => {
       latitude={Latitude}
       setShowPopups={setShowPopups}
       heading={Endonym}
-      content={Language}
+      content={Language !== Endonym && Language}
     />
   )
 }
@@ -149,6 +149,18 @@ const CensusPopup: FC<MapPopupsProps> = (props) => {
     baseID: AIRTABLE_CENSUS_BASE,
   })
 
+  const { data: prettyData } = useAirtable<{
+    pretty: string
+  }>(
+    'Census',
+    {
+      fields: ['pretty'],
+      filterByFormula: `{id} = "${field}"`,
+      maxRecords: 1,
+    },
+    { enabled: !censusActiveField?.pretty }
+  )
+
   if (isLoading || error || !data.length) return <></>
 
   const firstRow = data[0]
@@ -157,8 +169,11 @@ const CensusPopup: FC<MapPopupsProps> = (props) => {
 
   const Content = (
     <>
-      of <i>{censusActiveField?.pretty || field}</i> in{' '}
-      {`${firstRow.Neighborhood || 'this census tract'}`}
+      of{' '}
+      <i>
+        {censusActiveField?.pretty || prettyData[0]?.pretty || 'this language'}
+      </i>{' '}
+      in {`${firstRow.Neighborhood || 'this census tract'}`}
     </>
   )
 
