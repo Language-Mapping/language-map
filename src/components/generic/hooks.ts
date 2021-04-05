@@ -31,7 +31,7 @@ function getScrollY(scroller: HTMLElement | null): number {
 
 export const useHideOnScroll = (
   panelRefElem: HTMLDivElement | null,
-  threshold = 125
+  threshold = 150 // prevents mobile weirdness on things like Census dropdown
 ): boolean => {
   const scrollRef = useRef<number>(0)
   const [hide, setHide] = useState(false)

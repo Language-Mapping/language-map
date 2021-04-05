@@ -42,9 +42,9 @@ const useStyles = makeStyles((theme: Theme) =>
     popupHeading: {
       color: theme.palette.text.primary,
       lineHeight: 1.2,
-      marginBottom: '0.25rem',
     },
     popupContent: {
+      marginTop: '0.25rem', // `marginBottom` on heading not good if no content
       color: theme.palette.text.secondary,
       fontSize: '0.75rem',
       margin: 0,
