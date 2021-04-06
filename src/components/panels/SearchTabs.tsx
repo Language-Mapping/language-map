@@ -12,21 +12,15 @@ import {
 
 import { SearchByOmnibox } from 'components/home/SearchByOmnibox'
 import { GeocoderPopout } from 'components/map'
-import { SlideDown } from 'components/generic'
-import { FiltersWarning } from 'components/home/FiltersWarning'
-import { SearchTabsProps, TabPanelProps } from './types'
+import { SlideDown, PopoverWithUItext } from 'components/generic'
+import { UItextTableID } from 'components/generic/types'
+import { TabPanel } from './TabPanel'
+import { SearchTabsProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) => {
   const { palette } = theme
 
   return createStyles({
-    tabPanel: {
-      padding: '1.25rem',
-      borderBottom: `solid 1px ${theme.palette.divider}`,
-      [theme.breakpoints.down('sm')]: {
-        padding: '1rem 0.75rem',
-      },
-    },
     tabRoot: {
       fontSize: '0.85rem',
     },
@@ -36,8 +30,15 @@ const useStyles = makeStyles((theme: Theme) => {
         borderColor: palette.secondary.light,
       },
     },
-    textColorSecondary: {
-      color: palette.text.secondary,
+    quickFlex: {
+      alignItems: 'center',
+      display: 'grid',
+      gridColumnGap: 4,
+      justifyContent: 'center',
+      gridTemplateColumns: 'minmax(350px, auto) 32px',
+      [theme.breakpoints.down('sm')]: {
+        gridTemplateColumns: 'minmax(325px, auto) 24px',
+      },
     },
   })
 })
@@ -47,20 +48,14 @@ const a11yProps = (index: number) => ({
   'aria-controls': `search-tabpanel-${index}`,
 })
 
-const TabPanel: FC<TabPanelProps> = (props) => {
-  const { children, value, index, ...other } = props
+const QuickFlex: FC<{ uiTextID: UItextTableID }> = (props) => {
+  const { children, uiTextID } = props
   const classes = useStyles()
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`search-tabpanel-${index}`}
-      aria-labelledby={`search-tab-${index}`}
-      className={classes.tabPanel}
-      {...other}
-    >
-      {value === index && <>{children}</>}
+    <div className={classes.quickFlex}>
+      {children}
+      <PopoverWithUItext id={uiTextID} />
     </div>
   )
 }
@@ -115,27 +110,26 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
       onChangeIndex={handleChangeIndex}
     >
       <TabPanel value={value} index={0}>
-        <SearchByOmnibox />
-        <FiltersWarning />
+        <QuickFlex uiTextID="omni-info-popout">
+          <SearchByOmnibox />
+        </QuickFlex>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <GeocoderPopout mapRef={mapRef} />
+        <QuickFlex uiTextID="loc-search-info-popout">
+          <GeocoderPopout mapRef={mapRef} />
+        </QuickFlex>
       </TabPanel>
     </SwipeableViews>
   )
 
-  if (!fixed)
-    return (
-      <>
-        {TabAppBar}
-        {TabMeat}
-      </>
-    )
-
-  return (
-    <SlideDown inProp={open as boolean}>
+  const Everybody = (
+    <>
       {TabAppBar}
       {TabMeat}
-    </SlideDown>
+    </>
   )
+
+  if (!fixed) return Everybody
+
+  return <SlideDown inProp={open as boolean}>{Everybody}</SlideDown>
 }

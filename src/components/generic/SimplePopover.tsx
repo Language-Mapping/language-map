@@ -1,33 +1,29 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import Popover from '@material-ui/core/Popover'
-import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
 import { GoInfo } from 'react-icons/go'
+
+import { Explanation } from './Explanation'
+import { useUItext } from './hooks'
+import { SimplePopoverProps, PopoverWithUItextProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     popover: {
-      maxWidth: 300,
+      maxWidth: 325,
+      padding: '0.75rem 1rem',
     },
-    typography: {
-      fontSize: '0.75rem',
-      padding: '1rem',
-    },
-    infoIcon: {
-      fontSize: '1rem',
+    explanationOverride: {
+      marginBottom: 0,
     },
   })
 )
 
-// TODO: either rename to "InfoPopover" or support alternate icon and call it
-// "ButtonPopover"
-export const SimplePopover: FC<{ text: string | React.ReactNode }> = (
-  props
-) => {
-  const { text } = props
+export const SimplePopover: FC<SimplePopoverProps> = (props) => {
+  const { content, icon = <GoInfo /> } = props
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
@@ -45,31 +41,36 @@ export const SimplePopover: FC<{ text: string | React.ReactNode }> = (
       <IconButton
         aria-describedby={id}
         color="inherit"
-        className={classes.infoIcon}
         onClick={handleClick}
         size="small"
       >
-        <GoInfo />
+        {icon}
       </IconButton>
       <Popover
         id={id}
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
-        PaperProps={{
-          className: classes.popover,
-        }}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
+        elevation={18}
+        PaperProps={{ className: classes.popover }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <Typography className={classes.typography}>{text}</Typography>
+        <Explanation className={classes.explanationOverride}>
+          {content}
+        </Explanation>
       </Popover>
     </div>
   )
+}
+
+// Had to break this out because otherwise the anchor did not work properly when
+// the content was still loading.
+export const PopoverWithUItext: FC<PopoverWithUItextProps> = (props) => {
+  const { id } = props
+  const { text, error } = useUItext(id)
+
+  if (error) return null
+
+  return <SimplePopover content={text} />
 }

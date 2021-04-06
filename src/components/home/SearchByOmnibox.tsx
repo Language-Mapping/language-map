@@ -65,6 +65,7 @@ const useStyles = makeStyles((theme: Theme) =>
       '&::placeholder': {
         opacity: 0.85, // 0.5 default makes it too light
         color: theme.palette.grey[500],
+        fontSize: '0.85rem',
       },
     },
   })

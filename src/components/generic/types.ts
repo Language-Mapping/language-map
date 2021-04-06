@@ -14,6 +14,7 @@ export type UItextTableID =
   | 'info-link--help'
   | 'info-link--user-manual'
   | 'lang-profile-loc-list'
+  | 'loc-search-info-popout'
   | 'loc-search-placeholder'
   | 'map-menu-baselayers'
   | 'map-menu-counties'
@@ -21,6 +22,7 @@ export type UItextTableID =
   | 'map-menu-neighbs'
   | 'neighb-loc-list'
   | 'omni-placeholder'
+  | 'omni-info-popout'
   | 'welcome-dialog'
 
 export type UseUItext = {
@@ -47,4 +49,13 @@ export type ToggleWithHelperProps<TChange = React.Dispatch<unknown>> = {
   handleChange: TChange
   checked?: boolean
   helperText?: React.ReactNode
+}
+
+export type SimplePopoverProps = {
+  content: string | React.ReactNode
+  icon?: React.ReactNode
+}
+
+export type PopoverWithUItextProps = {
+  id: UItextTableID
 }

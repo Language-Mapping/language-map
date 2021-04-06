@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'baseline',
       display: 'flex',
       fontStyle: 'italic',
+      marginBottom: '1rem',
     },
     badgeDot: {
       backgroundColor: theme.palette.warning.light,

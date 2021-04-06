@@ -9,6 +9,7 @@ import {
   LangPointsToggle,
 } from 'components/legend'
 import { useSymbAndLabelState } from 'components/context'
+import { FiltersWarning } from 'components/home/FiltersWarning'
 import { WorldRegionMap } from './WorldRegionMap'
 import { useLegendConfig } from './hooks'
 import { LangLabelsToggle } from './LangPointsToggle'
@@ -84,6 +85,7 @@ export const LegendPanel: FC = () => {
 
   return (
     <>
+      <FiltersWarning />
       <div className={classes.legendCtrls}>
         <LayerSymbSelect />
         <LayerLabelSelect />
