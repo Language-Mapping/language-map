@@ -5,6 +5,7 @@ import { FiShare } from 'react-icons/fi'
 import { GoGear } from 'react-icons/go'
 
 import { ShareButtons } from 'components/generic'
+import { HIDE_WELCOME_LOCAL_STG_KEY } from 'components/about'
 
 type SettingsProps = {
   smallerTextClass: string
@@ -32,20 +33,17 @@ export const Settings: FC<SettingsProps> = (props) => {
   const classes = useStyles()
   const { switchFormCtrlRoot, settingsHeading } = classes
 
-  // TODO: consider using`localStorage.getItem('hideWelcome')`
   const [showWelcomeChecked, setShowWelcomeChecked] = useState(
-    !window.localStorage.hideWelcome
+    !window.localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY)
   )
 
-  // Consider this instead:
-  // https://developer.mozilla.org/en-US/docs/Web/API/Storage/setItem
   const handleWelcomeSwitchChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.checked) {
-      delete window.localStorage.hideWelcome
+      localStorage.removeItem(HIDE_WELCOME_LOCAL_STG_KEY)
     } else {
-      window.localStorage.hideWelcome = true
+      localStorage.setItem(HIDE_WELCOME_LOCAL_STG_KEY, 'true')
     }
 
     setShowWelcomeChecked(event.target.checked)

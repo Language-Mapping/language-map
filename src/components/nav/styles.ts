@@ -10,13 +10,15 @@ type NavStyleProps = {
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    topBarRoot: {
+    root: {
       position: 'relative',
       display: 'flex',
       textAlign: 'center',
-      top: 4,
-      [theme.breakpoints.up('sm')]: { top: theme.spacing(1) },
-      [theme.breakpoints.only('sm')]: { left: theme.spacing(1), top: 12 },
+      top: '0.5rem',
+      left: '0.5rem',
+      [theme.breakpoints.up('sm')]: { top: '1rem' },
+      [theme.breakpoints.up('md')]: { top: 20 },
+      [theme.breakpoints.up('xl')]: { top: 24 },
       // Direct children relative position so `zIndex` can be used
       '& > *': { position: 'relative' },
       '& a, & a:visited': {
@@ -41,10 +43,11 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
     logo: {
-      height: '3.5rem',
-      [theme.breakpoints.up('sm')]: { height: '4.5rem' },
-      [theme.breakpoints.up('md')]: { height: '5rem' },
-      [theme.breakpoints.up('lg')]: { height: '6rem' },
+      height: '2.75rem',
+      [theme.breakpoints.up('sm')]: { height: '3.5rem' },
+      [theme.breakpoints.up('md')]: { height: '4rem' },
+      [theme.breakpoints.up('lg')]: { height: '4.5rem' },
+      [theme.breakpoints.up('xl')]: { height: '5rem' },
     },
     title: {
       zIndex: 1,

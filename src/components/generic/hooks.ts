@@ -36,7 +36,7 @@ export const useHideOnScroll = (
   const scrollRef = useRef<number>(0)
   const [hide, setHide] = useState(false)
   const loc = useLocation()
-  const { pathname } = loc
+  const { pathname, hash } = loc
 
   const handleScroll = useCallback(() => {
     const scrollY = getScrollY(panelRefElem)
@@ -57,6 +57,12 @@ export const useHideOnScroll = (
   useEffect(() => {
     setHide(false)
   }, [pathname])
+
+  useEffect(() => {
+    if (!hash) return
+
+    setHide(true)
+  }, [hash]) // hash makes it work for Help and About anchors
 
   useEffect(() => {
     if (!panelRefElem) return

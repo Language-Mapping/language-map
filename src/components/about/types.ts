@@ -12,9 +12,9 @@ export type RemoteContentState = {
   content: string | null
 }
 
-export type WpQueryKeys = 'about' | 'help' | 'welcome'
+export type WpQueryKeys = 'about' | 'help'
 
 export type AboutPageProps = {
   queryKey: number
-  title?: string
+  noImgShadow?: boolean
 }

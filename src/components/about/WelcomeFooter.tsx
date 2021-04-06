@@ -8,6 +8,8 @@ import {
   Typography,
 } from '@material-ui/core'
 
+import { HIDE_WELCOME_LOCAL_STG_KEY } from './config'
+
 type WelcomeFooterProps = {
   handleClose: () => void
 }
@@ -60,16 +62,16 @@ export const WelcomeFooter: FC<WelcomeFooterProps> = (props) => {
   const { localStorage } = window
 
   const [showWelcomeModal, setShowWelcomeModal] = useState(
-    !localStorage.hideWelcome
+    !localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY)
   )
 
   const handleShowOnStartupChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     if (event.target.checked) {
-      delete window.localStorage.hideWelcome
+      localStorage.removeItem(HIDE_WELCOME_LOCAL_STG_KEY)
     } else {
-      localStorage.hideWelcome = true
+      localStorage.setItem(HIDE_WELCOME_LOCAL_STG_KEY, 'true')
     }
 
     setShowWelcomeModal(event.target.checked)

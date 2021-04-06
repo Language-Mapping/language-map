@@ -1,9 +1,10 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useState, useEffect } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { InteractiveMap } from 'react-map-gl'
 
 import { PanelWrap, usePanelState } from 'components/panels'
 import { TopBar, OffCanvasNav } from 'components/nav'
+import { WelcomeDialog, HIDE_WELCOME_LOCAL_STG_KEY } from 'components/about'
 import { Map } from 'components/map'
 import { LoadingBackdrop } from 'components/generic/modals'
 import { BottomNav } from './nav/BottomNav'
@@ -58,10 +59,18 @@ export const AppWrap: FC = () => {
   const classes = useStyles({ panelOpen })
   const [offCanvasNavOpen, setOffCanvasNavOpen] = useState<boolean>(false)
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
+  const [showWelcome, setShowWelcome] = useState<boolean | null | string>(
+    window.localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY)
+  )
+
+  useEffect(() => {
+    setShowWelcome(!window?.localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY))
+  }, [])
 
   return (
     <>
-      {!mapLoaded && <LoadingBackdrop />}
+      {showWelcome && <WelcomeDialog />}
+      {!mapLoaded && <LoadingBackdrop centerOnScreen text="Loading..." />}
       <TopBar />
       <main className={classes.mainWrap}>
         <div className={classes.mapWrap}>

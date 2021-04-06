@@ -21,6 +21,7 @@ export type UItextTableID =
   | 'map-menu-neighbs'
   | 'neighb-loc-list'
   | 'omni-placeholder'
+  | 'welcome-dialog'
 
 export type UseUItext = {
   error: unknown

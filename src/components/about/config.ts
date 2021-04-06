@@ -6,5 +6,6 @@ export const WP_API_PAGES_ENDPOINT =
 export const wpQueryIDs = {
   about: 203,
   help: 209,
-  welcome: 225,
 } as { [key in WpQueryKeys]: number }
+
+export const HIDE_WELCOME_LOCAL_STG_KEY = 'hideWelcome'
