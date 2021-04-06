@@ -1,26 +1,26 @@
 {
-  "short_name": "NYCLD Map",
-  "name": "Languages of New York City Map",
+  "short_name": "NYC Langs",
+  "name": "Languages of New York City",
   "description": "An interactive language diversity map of New York City",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "favicon.ico?v=2.1",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "logo192.png?v=2.1",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "logo512.png?v=2.1",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#2c695d",
-  "background_color": "#66ab9d"
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff"
 }
