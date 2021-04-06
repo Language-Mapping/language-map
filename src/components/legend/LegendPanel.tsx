@@ -15,10 +15,6 @@ import { LangLabelsToggle } from './LangPointsToggle'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {
-      margin: '1rem 0',
-      padding: '1rem 0.75rem',
-    },
     panelSectionHeading: {
       color: theme.palette.text.secondary,
       fontSize: '1rem',

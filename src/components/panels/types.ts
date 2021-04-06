@@ -16,6 +16,8 @@ export type PanelWrapProps = Pick<MapProps, 'mapRef'> & {
 
 export type SearchTabsProps = {
   mapRef: React.RefObject<InteractiveMap>
+  fixed?: boolean // non-Home panels have a hidden SearcTabs component
+  open?: boolean
 }
 
 export type TabPanelProps = {

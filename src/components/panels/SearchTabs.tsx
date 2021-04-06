@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import SwipeableViews from 'react-swipeable-views'
 import AppBar from '@material-ui/core/AppBar'
 import {
@@ -12,16 +12,19 @@ import {
 
 import { SearchByOmnibox } from 'components/home/SearchByOmnibox'
 import { GeocoderPopout } from 'components/map'
+import { SlideDown } from 'components/generic'
 import { FiltersWarning } from 'components/home/FiltersWarning'
 import { SearchTabsProps, TabPanelProps } from './types'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = makeStyles((theme: Theme) => {
+  const { palette } = theme
+
+  return createStyles({
     tabPanel: {
-      padding: '1rem 1.25rem',
+      padding: '1.25rem',
       borderBottom: `solid 1px ${theme.palette.divider}`,
       [theme.breakpoints.down('sm')]: {
-        padding: '0.75rem',
+        padding: '1rem 0.75rem',
       },
     },
     tabRoot: {
@@ -29,15 +32,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     selected: {
       '&.search-tab': {
-        color: theme.palette.text.primary,
-        borderColor: theme.palette.secondary.light,
+        color: palette.text.primary,
+        borderColor: palette.secondary.light,
       },
     },
     textColorSecondary: {
-      color: theme.palette.text.secondary,
+      color: palette.text.secondary,
     },
   })
-)
+})
 
 const a11yProps = (index: number) => ({
   id: `search-tab-${index}`,
@@ -63,10 +66,10 @@ const TabPanel: FC<TabPanelProps> = (props) => {
 }
 
 export const SearchTabs: FC<SearchTabsProps> = (props) => {
-  const { mapRef } = props
+  const { mapRef, fixed, open } = props
   const classes = useStyles()
   const theme = useTheme()
-  const [value, setValue] = React.useState<number>(0)
+  const [value, setValue] = useState<number>(0)
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
@@ -121,10 +124,18 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
     </SwipeableViews>
   )
 
+  if (!fixed)
+    return (
+      <>
+        {TabAppBar}
+        {TabMeat}
+      </>
+    )
+
   return (
-    <>
+    <SlideDown inProp={open as boolean}>
       {TabAppBar}
       {TabMeat}
-    </>
+    </SlideDown>
   )
 }
