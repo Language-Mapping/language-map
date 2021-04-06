@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       marginBottom: '1rem',
       // The search box itself
-      '& .MuiInputBase-root': {
+      '& .MuiInputBase-root:not(.Mui-disabled)': {
         backgroundColor: '#fff',
       },
       // Search icon on left side
@@ -93,7 +93,8 @@ const CensusGroupHeader: FC<GroupHeaderProps> = (props) => {
         {title}
       </Typography>
       <Typography className={classes.groupSubTitle}>
-        {subTitle || ` `}
+        {/* Prevent jank on group headings when dynamic AT text arrives */}
+        {subTitle || '\u00A0'}
       </Typography>
     </ListSubheader>
   )
@@ -130,7 +131,15 @@ export const CensusFieldSelect: FC = (props) => {
     history.push(routes.local) // clears any census popups
   }
 
-  if (error) return <p>Something went wrong fetching census config.</p>
+  // TODO: reuse in utils (nearly identical to Omnibox)
+  let placeholder: string
+  const problemo = error !== null || (!isLoading && !data.length)
+  const errorText = 'Could not get census data'
+  const loadingText = 'Loading census data...'
+
+  if (isLoading) placeholder = loadingText
+  else if (problemo) placeholder = errorText
+  else placeholder = placeholderText
 
   return (
     <Autocomplete
@@ -152,7 +161,8 @@ export const CensusFieldSelect: FC = (props) => {
       }
       groupBy={({ scope }) => scope}
       loading={isLoading}
-      loadingText="Getting census data..."
+      loadingText={loadingText} // does nothing
+      disabled={isLoading || problemo}
       onChange={(event, value) => handleChange(value)}
       options={data}
       renderGroup={renderGroup}
@@ -163,7 +173,7 @@ export const CensusFieldSelect: FC = (props) => {
       renderInput={(params) => (
         <TextField
           {...params}
-          placeholder={placeholderText}
+          placeholder={placeholder}
           variant="outlined"
           helperText={<UItextFromAirtable id="census-search-helper" />}
           InputLabelProps={{ disableAnimation: true, shrink: true }}
