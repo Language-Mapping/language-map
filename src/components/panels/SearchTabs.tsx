@@ -18,35 +18,14 @@ import { SearchTabsProps, TabPanelProps } from './types'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     tabPanel: {
-      padding: '1rem 1.25rem 0',
+      padding: '1rem 1.25rem',
+      borderBottom: `solid 1px ${theme.palette.divider}`,
       [theme.breakpoints.down('sm')]: {
-        padding: '0.75rem 0.75rem 0',
+        padding: '0.75rem',
       },
-      '& .mapboxgl-ctrl-geocoder': {
-        maxWidth: 'unset',
-        width: '100%',
-        fontSize: '1rem',
-        marginBottom: '0.5rem',
-      },
-      '& .mapboxgl-ctrl-geocoder--icon-search': {
-        fontSize: '1rem',
-        top: 8,
-        left: 6,
-      },
-      '& .mapboxgl-ctrl-geocoder--icon': {
-        fill: theme.palette.grey[500],
-      },
-      '& .mapboxgl-ctrl-geocoder--input': {
-        padding: '0.15rem 1rem 0.15rem 2.25rem', // huge horiz padding for icon
-        height: 40, // roughly same as omnibox
-      },
-    },
-    tabsRoot: {
-      minHeight: 42,
     },
     tabRoot: {
       fontSize: '0.85rem',
-      minHeight: 42,
     },
     selected: {
       '&.search-tab': {
@@ -109,7 +88,6 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
         textColor="secondary"
         variant="fullWidth"
         aria-label="search panel"
-        classes={{ root: classes.tabsRoot }}
       >
         <Tab
           className="search-tab"

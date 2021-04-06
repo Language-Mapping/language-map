@@ -15,6 +15,7 @@ import { useCensusFields } from './hooks'
 import { setCensusField } from './utils'
 import { censusGroupHeadings } from './config'
 
+// TODO: reuse the stuff from SearchByOmni, they're nearly identical
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     // NOTE: there are also overrides in style.css (giant mess)
@@ -32,9 +33,6 @@ const useStyles = makeStyles((theme: Theme) =>
       '& .MuiSvgIcon-root': {
         // Tried secondary text color without luck. Maybe alpha breaks it?
         fill: theme.palette.grey[500],
-      },
-      [theme.breakpoints.down('sm')]: {
-        // marginBottom: '0.25rem',
       },
     },
     paper: {
@@ -74,7 +72,8 @@ const useStyles = makeStyles((theme: Theme) =>
       // Make text more opaque than the 0.5 default
       // CRED: https://stackoverflow.com/a/48545561/1048518
       '&::placeholder': {
-        opacity: 0.85,
+        opacity: 0.85, // 0.5 default makes it too light
+        color: theme.palette.grey[500],
       },
     },
   })
