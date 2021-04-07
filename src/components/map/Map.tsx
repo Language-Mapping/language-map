@@ -10,12 +10,16 @@ import MapGL, { MapLoadEvent } from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
-import { GlobalContext, useMapToolsState } from 'components/context'
+import {
+  GlobalContext,
+  useMapToolsState,
+  useMapToolsDispatch,
+} from 'components/context'
 import { usePanelState } from 'components/panels'
 import { onHover } from './events'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { Geolocation } from './Geolocation'
-import { MapPopups } from './MapPopup'
+import { MapPopup, MapPopups } from './MapPopup'
 import { MapCtrlBtns } from './MapCtrlBtns'
 import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
@@ -39,9 +43,11 @@ export const Map: FC<Types.MapProps> = (props) => {
   const { pathname } = loc
 
   const { autoZoomCensus, censusActiveField, baseLayer } = useMapToolsState()
+  const { geocodeMarkerText } = useMapToolsState()
   const { panelOpen } = usePanelState()
   const { state } = useContext(GlobalContext)
   const { langFeatures, filterHasRun } = state
+  const mapToolsDispatch = useMapToolsDispatch()
 
   const map: MbMap | undefined = mapRef.current?.getMap()
   const selLangPointCoords = hooks.useSelLangPointCoords()
@@ -57,11 +63,6 @@ export const Map: FC<Types.MapProps> = (props) => {
   const [showPopups, setShowPopups] = useState<boolean>(true)
   const [viewport, setViewport] = useState<Types.ViewportState>(initialMapState)
   const [mapStyle, setMapStyle] = useState(mbStyleTileConfig.customStyles.light)
-
-  const [
-    geocodeMarker,
-    setGeocodeMarker,
-  ] = useState<Types.GeocodeMarkerProps | null>()
 
   // TODO: mobile:
   const shouldFlyHome = hooks.useZoomToLangFeatsExtent(isMapTilted, map)
@@ -88,7 +89,6 @@ export const Map: FC<Types.MapProps> = (props) => {
   // Reset popup visibility and clear geocode marker
   useEffect(() => {
     setShowPopups(true) // reset it on route change just in case X was clicked
-    setGeocodeMarker(null) // TODO: confirm this approach. Same as current tho
   }, [pathname])
 
   useEffect(() => {
@@ -190,11 +190,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     })
 
     mapObj.on('zoomend', function onMoveEnd(customEventData) {
-      const { geocodeMarker: geocodeMarkerParams } = customEventData
-
       setMapIsMoving(false)
-
-      if (geocodeMarkerParams) setGeocodeMarker(geocodeMarkerParams)
     })
 
     mapObj.addControl(
@@ -219,6 +215,9 @@ export const Map: FC<Types.MapProps> = (props) => {
 
   function onClick(event: Types.MapEvent): void {
     if (!map || !mapLoaded) return
+
+    // Clear geocode marker
+    mapToolsDispatch({ type: 'SET_GEOCODE_LABEL', payload: null })
 
     // CRED: https://stackoverflow.com/a/42984268/1048518
     const topLangFeat = utils.queryRenderedPoints(
@@ -306,8 +305,16 @@ export const Map: FC<Types.MapProps> = (props) => {
             setViewport({ ...mapViewport, zoom: config.POINT_ZOOM_LEVEL })
           }}
         />
-        {/* TODO: hide label on clear */}
-        {geocodeMarker && !mapIsMoving && <GeocodeMarker {...geocodeMarker} />}
+        {geocodeMarkerText && !mapIsMoving && (
+          <MapPopup
+            heading={geocodeMarkerText.text}
+            latitude={geocodeMarkerText.latitude}
+            longitude={geocodeMarkerText.longitude}
+            handleClose={() =>
+              mapToolsDispatch({ type: 'SET_GEOCODE_LABEL', payload: null })
+            }
+          />
+        )}
         <PolygonLayer {...{ map, mapLoaded, beforeId }} configKey="counties" />
         <PolygonLayer
           {...{ map, mapLoaded, beforeId }}
@@ -317,7 +324,7 @@ export const Map: FC<Types.MapProps> = (props) => {
         <CensusLayer {...{ map, mapLoaded, beforeId }} configKey="tract" />
         <LangMbSrcAndLayer />
         {mapLoaded && showPopups && !mapIsMoving && (
-          <MapPopups setShowPopups={setShowPopups} />
+          <MapPopups handleClose={() => setShowPopups(false)} />
         )}
         {/* Popups are annoying on mobile */}
         {!touchEnabled && tooltip && <GeocodeMarker {...tooltip} subtle />}

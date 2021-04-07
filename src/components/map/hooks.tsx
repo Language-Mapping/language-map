@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react'
-import { WebMercatorViewport } from 'react-map-gl'
 import { FillPaint, LngLatBounds } from 'mapbox-gl'
 import { useTheme } from '@material-ui/core/styles'
 import * as stats from 'simple-statistics'
@@ -70,17 +69,6 @@ export function useBreakpoint(): Types.Breakpoint {
   if (width >= xl) return 'huge'
 
   return 'desktop'
-}
-
-export const useInitialViewport: Types.GetWebMercViewport = (params) => {
-  const { width, height } = useWindowResize()
-  const { bounds, padding } = params
-
-  const coords = { ...params, width, height } // zoom: 14, // need?
-  const initMerc = new WebMercatorViewport(coords)
-  const initMercBounds = bounds
-
-  return initMerc.fitBounds(initMercBounds, { padding })
 }
 
 export const useLayersConfig = (

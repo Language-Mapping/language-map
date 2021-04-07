@@ -6,6 +6,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
+import { useMapToolsDispatch } from 'components/context'
 import { useUItext } from 'components/generic'
 import { MAPBOX_TOKEN, NYC_LAT_LONG, POINT_ZOOM_LEVEL } from './config'
 import { useWindowResize } from '../../utils'
@@ -55,7 +56,7 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
   const offset = useOffset()
   const { text: placeholderText } = useUItext('loc-search-placeholder')
   const classes = useStyles()
-
+  const mapToolsDispatch = useMapToolsDispatch()
   const handleGeocodeResult = ({ result }: GeocodeResult) => {
     if (!mapRef.current) return
 
@@ -90,7 +91,15 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
         offset,
       }
 
-      flyToPoint(map, settings, text)
+      flyToPoint(map, settings)
+      mapToolsDispatch({
+        type: 'SET_GEOCODE_LABEL',
+        payload: {
+          latitude: center[1],
+          longitude: center[0],
+          text,
+        },
+      })
     }
   }
 
@@ -107,6 +116,10 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
         limit={3} // default: 5
         mapboxApiAccessToken={MAPBOX_TOKEN}
         mapRef={mapRef}
+        marker={false}
+        onClear={() => {
+          mapToolsDispatch({ type: 'SET_GEOCODE_LABEL', payload: null })
+        }}
         onResult={handleGeocodeResult} // TODO: useCallback
         placeholder={placeholderText || ' '}
         proximity={NYC_LAT_LONG}

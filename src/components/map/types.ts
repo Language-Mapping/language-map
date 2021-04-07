@@ -225,7 +225,7 @@ export type UseLayersConfig = {
 
 // Not a component, but shared by several
 export type MapPopupsProps = {
-  setShowPopups: React.Dispatch<boolean>
+  handleClose: () => void
 }
 
 export type PolygonPopupProps = MapPopupsProps & {
@@ -233,8 +233,7 @@ export type PolygonPopupProps = MapPopupsProps & {
   addlFields?: string[]
 }
 
-export type MapPopupProps = PopupSettings &
-  Pick<MapPopupsProps, 'setShowPopups'>
+export type MapPopupProps = PopupSettings & Pick<MapPopupsProps, 'handleClose'>
 
 export type SelFeatAttribs = InternalUse
 

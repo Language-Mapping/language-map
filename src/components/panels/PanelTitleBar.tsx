@@ -78,10 +78,10 @@ type PanelTitleProps = {
   icon?: React.ReactNode
 }
 
+// TODO: move this and the big Routes thing into new component
 const PanelTitle: FC<PanelTitleProps> = (props) => {
   const { text, icon } = props
   const classes = useStyles({})
-  // TODO: make sure there are icons for all top-level views
 
   return (
     <div className={classes.panelTitleAndIcon}>

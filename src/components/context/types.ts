@@ -102,9 +102,15 @@ type CensusFieldPayload = {
 }
 
 type CensusHighLow = { high: number; low: number } | undefined
+type GeocodeMarkerSettings = {
+  latitude: number
+  longitude: number
+  text: string
+}
 
 export type InitialMapToolsState = {
   autoZoomCensus: boolean
+  geocodeMarkerText: GeocodeMarkerSettings | null
   showNeighbs: boolean
   showCounties: boolean
   geolocActive: boolean
@@ -115,6 +121,7 @@ export type InitialMapToolsState = {
 
 export type MapToolsAction =
   | { type: 'CLEAR_CENSUS_FIELD' }
+  | { type: 'SET_GEOCODE_LABEL'; payload: null | GeocodeMarkerSettings }
   | { type: 'SET_CENSUS_FIELD'; payload: CensusFieldPayload }
   | { type: 'SET_CENSUS_HIGH_LOW'; payload: CensusHighLow }
   | { type: 'SET_BASELAYER'; payload: BaseLayer }
