@@ -15,13 +15,14 @@ import { useCensusFields } from './hooks'
 import { setCensusField } from './utils'
 import { censusGroupHeadings } from './config'
 
+// TODO: reuse the stuff from SearchByOmni, they're nearly identical
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     // NOTE: there are also overrides in style.css (giant mess)
     root: {
       marginBottom: '1rem',
       // The search box itself
-      '& .MuiInputBase-root': {
+      '& .MuiInputBase-root:not(.Mui-disabled)': {
         backgroundColor: '#fff',
       },
       // Search icon on left side
@@ -32,9 +33,6 @@ const useStyles = makeStyles((theme: Theme) =>
       '& .MuiSvgIcon-root': {
         // Tried secondary text color without luck. Maybe alpha breaks it?
         fill: theme.palette.grey[500],
-      },
-      [theme.breakpoints.down('sm')]: {
-        // marginBottom: '0.25rem',
       },
     },
     paper: {
@@ -74,7 +72,8 @@ const useStyles = makeStyles((theme: Theme) =>
       // Make text more opaque than the 0.5 default
       // CRED: https://stackoverflow.com/a/48545561/1048518
       '&::placeholder': {
-        opacity: 0.85,
+        opacity: 0.85, // 0.5 default makes it too light
+        color: theme.palette.grey[500],
       },
     },
   })
@@ -93,7 +92,8 @@ const CensusGroupHeader: FC<GroupHeaderProps> = (props) => {
         {title}
       </Typography>
       <Typography className={classes.groupSubTitle}>
-        {subTitle || ` `}
+        {/* Prevent jank on group headings when dynamic AT text arrives */}
+        {subTitle || '\u00A0'}
       </Typography>
     </ListSubheader>
   )
@@ -130,7 +130,15 @@ export const CensusFieldSelect: FC = (props) => {
     history.push(routes.local) // clears any census popups
   }
 
-  if (error) return <p>Something went wrong fetching census config.</p>
+  // TODO: reuse in utils (nearly identical to Omnibox)
+  let placeholder: string
+  const problemo = error !== null || (!isLoading && !data.length)
+  const errorText = 'Could not get census data'
+  const loadingText = 'Loading census data...'
+
+  if (isLoading) placeholder = loadingText
+  else if (problemo) placeholder = errorText
+  else placeholder = placeholderText
 
   return (
     <Autocomplete
@@ -152,7 +160,8 @@ export const CensusFieldSelect: FC = (props) => {
       }
       groupBy={({ scope }) => scope}
       loading={isLoading}
-      loadingText="Getting census data..."
+      loadingText={loadingText} // does nothing
+      disabled={isLoading || problemo}
       onChange={(event, value) => handleChange(value)}
       options={data}
       renderGroup={renderGroup}
@@ -163,7 +172,7 @@ export const CensusFieldSelect: FC = (props) => {
       renderInput={(params) => (
         <TextField
           {...params}
-          placeholder={placeholderText}
+          placeholder={placeholder}
           variant="outlined"
           helperText={<UItextFromAirtable id="census-search-helper" />}
           InputLabelProps={{ disableAnimation: true, shrink: true }}

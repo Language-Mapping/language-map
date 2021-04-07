@@ -22,17 +22,14 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     // NOTE: there are also overrides in style.css (giant mess)
     root: {
-      marginBottom: '0.5rem',
+      marginBottom: 0, // set this on the tab panel instead
       // The search box itself
-      '& .MuiInputBase-root': {
+      '& .MuiInputBase-root:not(.Mui-disabled)': {
         backgroundColor: '#fff',
       },
       // Search icon on left side
       '& .MuiInputAdornment-root': {
         color: theme.palette.grey[500],
-      },
-      [theme.breakpoints.down('sm')]: {
-        marginBottom: '0.25rem',
       },
     },
     paper: {
@@ -66,7 +63,9 @@ const useStyles = makeStyles((theme: Theme) =>
       // Make text more opaque than the 0.5 default
       // CRED: https://stackoverflow.com/a/48545561/1048518
       '&::placeholder': {
-        opacity: 0.85,
+        opacity: 0.85, // 0.5 default makes it too light
+        color: theme.palette.grey[500],
+        fontSize: '0.85rem',
       },
     },
   })
@@ -92,11 +91,19 @@ export const SearchByOmnibox: FC = (props) => {
   const history = useHistory()
   const { text: placeholderText } = useUItext('omni-placeholder')
 
-  if (error) return <div>Something went wrong fetching search data.</div>
-
+  // TODO: make it so this doesn't have to loop twice, aka prep AND sort.
   const options = prepAutocompleteGroups(data).sort(
     sortArrOfObjects<PreppedAutocompleteGroup>('location')
   )
+
+  let placeholder: string
+  const problemo = error !== null || (!isLoading && !data.length)
+  const errorText = 'Could not get language data'
+  const loadingText = 'Loading language data...'
+
+  if (isLoading) placeholder = loadingText
+  else if (problemo) placeholder = errorText
+  else placeholder = placeholderText
 
   return (
     <Autocomplete
@@ -112,7 +119,8 @@ export const SearchByOmnibox: FC = (props) => {
       getOptionLabel={(option) => option.name}
       options={options}
       loading={isLoading}
-      loadingText="Loading language data..."
+      disabled={isLoading || problemo}
+      loadingText={loadingText} // does nothing
       renderGroup={renderGroup}
       renderOption={(option) => <OmniboxResult data={option} />}
       size="small"
@@ -148,7 +156,7 @@ export const SearchByOmnibox: FC = (props) => {
             {...params}
             variant="outlined"
             color="secondary"
-            placeholder={placeholderText}
+            placeholder={placeholder}
           />
         )
       }}

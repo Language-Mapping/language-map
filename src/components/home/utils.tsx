@@ -39,10 +39,10 @@ export const renderGroup = (params: AutocompleteRenderGroupParams) => {
 export const prepAutocompleteGroups = (
   data: LangLevelSchema[]
 ): PreppedAutocompleteGroup[] =>
-  data.reduce((all: PreppedAutocompleteGroup[], thisOne) => {
+  data?.reduce((all: PreppedAutocompleteGroup[], thisOne) => {
     return [
       ...all,
-      ...thisOne.instanceIDs.map((id, i) => {
+      ...thisOne.instanceIDs?.map((id, i) => {
         return {
           ...thisOne,
           id,

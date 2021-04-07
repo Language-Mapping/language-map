@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import SwipeableViews from 'react-swipeable-views'
 import AppBar from '@material-ui/core/AppBar'
 import {
@@ -12,82 +12,59 @@ import {
 
 import { SearchByOmnibox } from 'components/home/SearchByOmnibox'
 import { GeocoderPopout } from 'components/map'
-import { FiltersWarning } from 'components/home/FiltersWarning'
-import { SearchTabsProps, TabPanelProps } from './types'
+import { SlideDown, PopoverWithUItext } from 'components/generic'
+import { UItextTableID } from 'components/generic/types'
+import { TabPanel } from './TabPanel'
+import { SearchTabsProps } from './types'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    tabPanel: {
-      padding: '1rem 1.25rem 0',
-      [theme.breakpoints.down('sm')]: {
-        padding: '0.75rem 0.75rem 0',
-      },
-      '& .mapboxgl-ctrl-geocoder': {
-        maxWidth: 'unset',
-        width: '100%',
-        fontSize: '1rem',
-        marginBottom: '0.5rem',
-      },
-      '& .mapboxgl-ctrl-geocoder--icon-search': {
-        fontSize: '1rem',
-        top: 8,
-        left: 6,
-      },
-      '& .mapboxgl-ctrl-geocoder--icon': {
-        fill: theme.palette.grey[500],
-      },
-      '& .mapboxgl-ctrl-geocoder--input': {
-        padding: '0.15rem 1rem 0.15rem 2.25rem', // huge horiz padding for icon
-        height: 40, // roughly same as omnibox
-      },
-    },
-    tabsRoot: {
-      minHeight: 42,
-    },
+const useStyles = makeStyles((theme: Theme) => {
+  const { palette } = theme
+
+  return createStyles({
     tabRoot: {
       fontSize: '0.85rem',
-      minHeight: 42,
     },
     selected: {
       '&.search-tab': {
-        color: theme.palette.text.primary,
-        borderColor: theme.palette.secondary.light,
+        color: palette.text.primary,
+        borderColor: palette.secondary.light,
       },
     },
-    textColorSecondary: {
-      color: theme.palette.text.secondary,
+    quickFlex: {
+      alignItems: 'center',
+      display: 'grid',
+      gridColumnGap: 4,
+      justifyContent: 'center',
+      gridTemplateColumns: 'minmax(350px, auto) 32px',
+      [theme.breakpoints.down('sm')]: {
+        gridTemplateColumns: 'minmax(325px, auto) 24px',
+      },
     },
   })
-)
+})
 
 const a11yProps = (index: number) => ({
   id: `search-tab-${index}`,
   'aria-controls': `search-tabpanel-${index}`,
 })
 
-const TabPanel: FC<TabPanelProps> = (props) => {
-  const { children, value, index, ...other } = props
+const QuickFlex: FC<{ uiTextID: UItextTableID }> = (props) => {
+  const { children, uiTextID } = props
   const classes = useStyles()
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`search-tabpanel-${index}`}
-      aria-labelledby={`search-tab-${index}`}
-      className={classes.tabPanel}
-      {...other}
-    >
-      {value === index && <>{children}</>}
+    <div className={classes.quickFlex}>
+      {children}
+      <PopoverWithUItext id={uiTextID} />
     </div>
   )
 }
 
 export const SearchTabs: FC<SearchTabsProps> = (props) => {
-  const { mapRef } = props
+  const { mapRef, fixed, open } = props
   const classes = useStyles()
   const theme = useTheme()
-  const [value, setValue] = React.useState<number>(0)
+  const [value, setValue] = useState<number>(0)
 
   const handleChange = (
     event: React.ChangeEvent<unknown>,
@@ -109,7 +86,6 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
         textColor="secondary"
         variant="fullWidth"
         aria-label="search panel"
-        classes={{ root: classes.tabsRoot }}
       >
         <Tab
           className="search-tab"
@@ -134,19 +110,26 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
       onChangeIndex={handleChangeIndex}
     >
       <TabPanel value={value} index={0}>
-        <SearchByOmnibox />
-        <FiltersWarning />
+        <QuickFlex uiTextID="omni-info-popout">
+          <SearchByOmnibox />
+        </QuickFlex>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <GeocoderPopout mapRef={mapRef} />
+        <QuickFlex uiTextID="loc-search-info-popout">
+          <GeocoderPopout mapRef={mapRef} />
+        </QuickFlex>
       </TabPanel>
     </SwipeableViews>
   )
 
-  return (
+  const Everybody = (
     <>
       {TabAppBar}
       {TabMeat}
     </>
   )
+
+  if (!fixed) return Everybody
+
+  return <SlideDown inProp={open as boolean}>{Everybody}</SlideDown>
 }

@@ -14,13 +14,16 @@ export type UItextTableID =
   | 'info-link--help'
   | 'info-link--user-manual'
   | 'lang-profile-loc-list'
+  | 'loc-search-info-popout'
   | 'loc-search-placeholder'
   | 'map-menu-baselayers'
   | 'map-menu-counties'
   | 'map-menu-geoloc'
   | 'map-menu-neighbs'
   | 'neighb-loc-list'
+  | 'omni-info-popout'
   | 'omni-placeholder'
+  | 'table-info-btn'
   | 'welcome-dialog'
 
 export type UseUItext = {
@@ -47,4 +50,13 @@ export type ToggleWithHelperProps<TChange = React.Dispatch<unknown>> = {
   handleChange: TChange
   checked?: boolean
   helperText?: React.ReactNode
+}
+
+export type SimplePopoverProps = {
+  content: string | React.ReactNode
+  icon?: React.ReactNode
+}
+
+export type PopoverWithUItextProps = {
+  id: UItextTableID
 }
