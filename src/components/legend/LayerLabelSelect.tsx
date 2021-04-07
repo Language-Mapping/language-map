@@ -14,6 +14,9 @@ export const LayerLabelSelect: FC = () => {
   const symbLabelDispatch = useLabelAndSymbDispatch()
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    // Always show on change, confusing otherwise
+    symbLabelDispatch({ type: 'TOGGLE_LANG_LABELS', payload: false })
+
     symbLabelDispatch({
       type: 'SET_LANG_LAYER_LABELS',
       payload: event.target.value as keyof InstanceLevelSchema,

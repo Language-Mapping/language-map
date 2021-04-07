@@ -15,6 +15,9 @@ export const LayerSymbSelect: FC = () => {
   const groupIDs = ['World Region', 'Size', 'Status'] // TODO: config file
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    // Always show on change, confusing otherwise
+    symbLabelDispatch({ type: 'TOGGLE_LANG_POINTS', payload: false })
+
     symbLabelDispatch({
       type: 'SET_LANG_LAYER_SYMBOLOGY',
       payload: event.target.value as keyof InstanceLevelSchema,
