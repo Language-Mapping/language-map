@@ -23,6 +23,7 @@ export const MediaColumnFilter: FC<Types.FilterComponentProps> = (props) => {
   const { tableData, field } = columnDef
   const { filterValue } = tableData
   const checked = filterValue === CHECK_STRING
+  const inputElemName = `${field?.replace(/\s/g, '-').toLowerCase()}-filter`
 
   // REFACTOR: useMemo maybe? This gets run for EVERY record, and it's the same
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +37,7 @@ export const MediaColumnFilter: FC<Types.FilterComponentProps> = (props) => {
         <Checkbox
           checked={checked}
           onChange={handleChange}
-          name={`set-${field?.replaceAll(' ', '-')}-filter`}
+          name={inputElemName}
           size="small"
         />
       }

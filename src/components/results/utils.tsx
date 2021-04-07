@@ -41,9 +41,10 @@ export function renderEndoColumn(
   )
 }
 
+// This is a misleading name since it's now "County", but it does the same thing
 export function renderDescripCol(): string | React.ReactNode {
   return (
-    <IconButton title="View description" size="small" color="secondary">
+    <IconButton title="View full-screen details" size="small" color="secondary">
       <GoFile />
     </IconButton>
   )
