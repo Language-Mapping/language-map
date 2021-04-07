@@ -19,6 +19,7 @@ import { MdClose } from 'react-icons/md'
 import { usePanelDispatch } from 'components/panels'
 import { icons } from 'components/config'
 import { routes } from 'components/config/api'
+import { pluralize } from 'components/explore/utils'
 import { SplitCrumbs } from './SplitCrumbs'
 
 type StyleProps = { hide?: boolean }
@@ -38,12 +39,6 @@ const useStyles = makeStyles((theme: Theme) =>
       opacity: (props: StyleProps) => (props.hide ? 0 : 1),
       maxHeight: (props: StyleProps) => (props.hide ? 0 : 48),
       zIndex: (props: StyleProps) => (props.hide ? -1 : 1),
-      // TODO: rm when done
-      //   boxShadow: '0 2px 7px hsla(0, 0%, 0%, 0.25)',
-      //   height: MOBILE_PANEL_HEADER_HT,
-      //   position: 'absolute',
-      //   top: 0,
-      //   width: '100%',
     },
     colorDefault: {
       backgroundColor: 'transparent',
@@ -66,6 +61,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     panelTitleText: {
       fontSize: '1.5rem',
+      [theme.breakpoints.down('sm')]: {
+        fontSize: '1.25rem',
+      },
     },
     rightSideBtns: {
       '& > * + *': {
@@ -115,13 +113,63 @@ const LinkToHomeBtn: FC = (props) => {
   )
 }
 
+const PanelTitleRoutes: FC<{ panelTitle: string }> = (props) => {
+  const { panelTitle } = props
+
+  return (
+    <Switch>
+      <Route path="/" exact>
+        {/* Flex spacer */}
+        <div />
+        <PanelTitle text="Languages of NYC" />
+      </Route>
+      <Route path={routes.none}>
+        <PanelTitle text="No community selected" />
+      </Route>
+      <Route path={routes.table}>
+        <PanelTitle text=" " />
+      </Route>
+      <Route
+        path={['/Explore/:field/:value/:language/:id', routes.details]}
+        exact
+      >
+        <PanelTitle text="Community Profile" icon={icons.CommunityProfile} />
+      </Route>
+      <Route
+        path={[
+          '/Explore/:field/:value/:language',
+          '/Explore/Language/:language',
+        ]}
+        exact
+      >
+        <PanelTitle text="Language Profile" icon={icons.Language} />
+      </Route>
+      <Route path="/Explore/:field" exact>
+        <PanelTitle text={pluralize(panelTitle)} icon={icons[panelTitle]} />
+      </Route>
+      <Route path="/Explore/:field/:value" exact>
+        <PanelTitle text={panelTitle} icon={icons[panelTitle]} />
+      </Route>
+      <Route path="/Census">
+        {/* Census just needs panel heading override */}
+        <LinkToHomeBtn />
+        <PanelTitle text="Census Language Data" icon={icons[panelTitle]} />
+      </Route>
+      <Route path="/:level1" exact>
+        {/* Home btn on /TopLevelRoutes looks balanced on left */}
+        <LinkToHomeBtn />
+        <PanelTitle text={panelTitle} icon={icons[panelTitle]} />
+      </Route>
+    </Switch>
+  )
+}
+
 export const PanelTitleBar: FC<{ hide: boolean }> = (props) => {
   const { hide } = props
   const classes = useStyles({ hide })
   const { pathname } = useLocation()
   // Lil' gross, but use Level2 route name first, otherwise Level1
-  const panelHeading =
-    pathname.split('/')[2] || pathname.split('/')[1] || 'Languages of NYC'
+  const panelTitle = pathname.split('/')[2] || pathname.split('/')[1]
   const panelDispatch = usePanelDispatch()
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -173,29 +221,7 @@ export const PanelTitleBar: FC<{ hide: boolean }> = (props) => {
             <SplitCrumbs />
           </Route>
         </Switch>
-        <Switch>
-          <Route path="/" exact>
-            {/* Flex spacer */}
-            <div />
-            <PanelTitle text={panelHeading} />
-          </Route>
-          <Route path="/:level1/:level2" exact>
-            <PanelTitle text={panelHeading} icon={icons[panelHeading]} />
-          </Route>
-          <Route path="/Census">
-            {/* Census just needs panel heading override */}
-            <LinkToHomeBtn />
-            <PanelTitle
-              text="Census Language Data"
-              icon={icons[panelHeading]}
-            />
-          </Route>
-          <Route path="/:level1" exact>
-            {/* Home btn on /TopLevelRoutes looks balanced on left */}
-            <LinkToHomeBtn />
-            <PanelTitle text={panelHeading} icon={icons[panelHeading]} />
-          </Route>
-        </Switch>
+        <PanelTitleRoutes panelTitle={panelTitle} />
         {RightSideBtns}
       </Toolbar>
     </AppBar>

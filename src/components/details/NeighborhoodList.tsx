@@ -31,6 +31,8 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       '& svg': {
         marginRight: '0.25em',
+        color: theme.palette.text.secondary,
+        fontSize: '0.85em',
       },
     },
   })

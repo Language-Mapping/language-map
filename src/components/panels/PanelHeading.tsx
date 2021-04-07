@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+// NOTE: this is old and only used by NoFeatSel at time of writing
 export const PanelHeading: FC<PanelHeadingProps> = (props) => {
   const { icon, text, className, component = 'h2' } = props
   const classes = useStyles()

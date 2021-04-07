@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     dialogContent: {
       padding: theme.spacing(3),
+      [theme.breakpoints.down('sm')]: {
+        padding: '2rem 1rem', // make media btns fit
+      },
     },
   })
 )
