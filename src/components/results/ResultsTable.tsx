@@ -1,8 +1,7 @@
 /* eslint-disable react/display-name */
 import React, { FC, useState } from 'react'
-import { Route, useHistory, useLocation } from 'react-router-dom'
+import { Route, useHistory } from 'react-router-dom'
 import MaterialTable from 'material-table'
-import { AiOutlineQuestionCircle } from 'react-icons/ai'
 
 import { routes } from 'components/config/api'
 import { InstanceLevelSchema } from 'components/context'
@@ -19,7 +18,6 @@ import {
 export const ResultsTable: FC<ResultsTableProps> = (props) => {
   const { data: tableData } = props
   const history = useHistory()
-  const loc = useLocation()
   const tableRef = React.useRef<MuiTableWithLangs>(null)
   const [clearBtnEnabled, setClearBtnEnabled] = useState<boolean>(false)
 
@@ -178,19 +176,6 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
         }}
         // CANNOT get this to work without setting the focus to the clear btn
         // onSearchChange={(search) => setClearBtnEnabled(true)}
-        actions={[
-          {
-            icon: () => <AiOutlineQuestionCircle />,
-            tooltip: 'Help',
-            isFreeAction: true,
-            onClick: () =>
-              // Avoid an infinite cycle of table-help-table backness
-              history.push({
-                pathname: '/Info/Help',
-                state: { from: loc.pathname }, // TODO: spread ...loc.state ??
-              }),
-          },
-        ]}
       />
     </>
   )

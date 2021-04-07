@@ -9,6 +9,7 @@ import { RiFilterOffFill } from 'react-icons/ri'
 
 import { GlobalContext } from 'components/context'
 import { routes } from 'components/config/api'
+import { PopoverWithUItext } from 'components/generic'
 import { ResultsTitle } from './ResultsTitle'
 
 import * as Types from './types'
@@ -93,10 +94,13 @@ export const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       display: 'grid',
       gridArea: 'buttons',
-      gridColumnGap: '0.5em',
-      gridTemplateColumns: 'auto auto',
+      gridColumnGap: '0.5rem',
+      gridTemplateColumns: 'auto auto auto',
       justifyContent: 'center',
       // outline: 'solid green 1px',
+      [theme.breakpoints.only('xs')]: {
+        gridColumnGap: '0.25rem',
+      },
     },
   })
 )
@@ -211,6 +215,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
         >
           Clear filters
         </Button>
+        <PopoverWithUItext id="table-info-btn" />
       </div>
       <small className={`${classes.localIndicator} ${classes.localCommLegend}`}>
         <BiMapPin /> Local community data

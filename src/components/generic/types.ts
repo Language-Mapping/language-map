@@ -21,8 +21,9 @@ export type UItextTableID =
   | 'map-menu-geoloc'
   | 'map-menu-neighbs'
   | 'neighb-loc-list'
-  | 'omni-placeholder'
   | 'omni-info-popout'
+  | 'omni-placeholder'
+  | 'table-info-btn'
   | 'welcome-dialog'
 
 export type UseUItext = {
