@@ -21,8 +21,8 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     popover: {
-      maxWidth: 350,
-      minWidth: 325,
+      maxWidth: 375,
+      minWidth: 350, // needs at least 350ish, otherwise single card fills row
       padding: '1rem',
     },
   })

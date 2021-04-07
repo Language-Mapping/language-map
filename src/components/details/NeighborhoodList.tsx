@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
       margin: '0.5rem 0',
     },
     mainHeading: {
-      marginBottom: 0,
+      marginBottom: '0.5rem',
     },
     sectionHeading: {
       marginTop: '1rem',
@@ -118,7 +118,7 @@ export const NeighborhoodList: FC<Types.DetailedIntroProps> = (props) => {
       <Explanation>
         <Switch>
           <Route path="/Explore/Language/:language/:id" exact>
-            <UItextFromAirtable id="details-neighb-loc-list" />
+            <UItextFromAirtable id="details-neighb-loc-list" rootElemType="p" />
           </Route>
           <Route>
             <UItextFromAirtable id="lang-profile-loc-list" />
@@ -127,9 +127,11 @@ export const NeighborhoodList: FC<Types.DetailedIntroProps> = (props) => {
       </Explanation>
       <CardListWrap>
         <Switch>
+          {/* Inside the Details "Locations" popout */}
           <Route path="/Explore/Language/:language/:id" exact>
             <CustomCard
               title={locName}
+              // intro={`${data.County[0]}`} // TODO: County as intro
               url={`/Explore/${locRouteName}/${locName}`}
               footer={<CardFooter text={locName} />}
             />
