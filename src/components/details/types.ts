@@ -34,7 +34,12 @@ export type DetailsProps = {
   shareNoun?: string
 }
 
-export type LangOrEndoIntroProps = DetailedIntroProps
+export type LangOrEndoIntroProps = {
+  data: Pick<
+    FullOnEverything,
+    'Endonym' | 'Language' | 'Font Image Alt' | 'name'
+  >
+}
 
 export type UseDetails = {
   error: unknown

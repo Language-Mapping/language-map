@@ -162,6 +162,7 @@ export const CensusFieldSelect: FC = (props) => {
       loading={isLoading}
       loadingText={loadingText} // does nothing
       disabled={isLoading || problemo}
+      color="secondary"
       onChange={(event, value) => handleChange(value)}
       options={data}
       renderGroup={renderGroup}

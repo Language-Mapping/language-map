@@ -12,7 +12,6 @@ import {
   ShareButtons,
   ShareButtonsWrap,
 } from 'components/generic'
-import { icons } from 'components/config'
 import { CardListWrap } from './CardList'
 import { useAirtable } from './hooks'
 import { TonsWithAddl, MidLevelExploreProps } from './types'
@@ -127,7 +126,6 @@ export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
     <>
       <BasicExploreIntro
         title={value}
-        icon={icons.Neighborhood}
         introParagraph={firstRecord?.summary}
         subtitle={firstRecord?.County}
         extree={Extree}

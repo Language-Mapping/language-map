@@ -8,10 +8,10 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       display: 'flex',
       flexWrap: 'wrap',
-      fontSize: '0.75rem',
+      fontSize: '0.65rem',
       justifyContent: 'center',
       listStyle: 'none',
-      margin: '0.5rem 0 0.75rem',
+      margin: '0 0 0.65rem',
       padding: 0,
       '& > :not(:last-child)': {
         borderRight: `solid 1px ${theme.palette.text.secondary}`,

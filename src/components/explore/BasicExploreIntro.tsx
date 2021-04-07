@@ -5,6 +5,7 @@ import { Typography } from '@material-ui/core'
 import { FiltersWarning } from 'components/home/FiltersWarning'
 import { Explanation } from 'components/generic'
 import { BasicExploreIntroProps } from './types'
+import { PanelIntroTitle, PanelIntroSubtitle } from './PanelIntroTitleSubtitle'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,35 +17,10 @@ const useStyles = makeStyles((theme: Theme) =>
         marginBottom: '0.25rem',
       },
     },
-    titleAndIcon: {
-      alignItems: 'center',
-      display: 'flex',
-      fontSize: '2rem',
-      justifyContent: 'center',
-      lineHeight: 1.25,
-      marginBottom: '0.5rem',
-      textAlign: 'center',
-      textShadow: '1px 1px 3px hsla(0, 0%, 0%, 0.45)',
-      '& svg': {
-        color: theme.palette.text.secondary,
-      },
-      '& > :first-child': {
-        marginRight: '0.5rem',
-      },
-    },
     // FIXME: long lines like "Central African Republic" (flex/wrap weird)
     // titleText: {
     // flex: 0, // makes super long words not create too much empty space
     // },
-    // e.g. Endonym
-    subtitle: {
-      color: theme.palette.text.secondary,
-      fontSize: '1.25rem',
-      lineHeight: 1,
-      marginTop: 0,
-      marginBottom: '0.75rem',
-      textAlign: 'center',
-    },
     // e.g. glotto/iso/global speakers
     subSubtitle: {
       color: theme.palette.text.secondary,
@@ -61,18 +37,12 @@ export const BasicExploreIntro: FC<BasicExploreIntroProps> = (props) => {
     <>
       <Typography className={classes.root} component="header">
         {title && (
-          <Typography
-            component="h2"
-            variant="h4"
-            className={classes.titleAndIcon}
-          >
+          <PanelIntroTitle>
             {icon}
             {title}
-          </Typography>
+          </PanelIntroTitle>
         )}
-        {subtitle && (
-          <Typography className={classes.subtitle}>{subtitle}</Typography>
-        )}
+        {subtitle && <PanelIntroSubtitle>{subtitle}</PanelIntroSubtitle>}
         {subSubtitle && (
           <div className={classes.subSubtitle}>{subSubtitle}</div>
         )}

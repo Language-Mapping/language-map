@@ -113,3 +113,12 @@ export const getUniqueInstances = (
 
   return uniqueInstances
 }
+
+export const pluralize = (text: string): string => {
+  const lastChar = text.substring(text.length - 1)
+
+  if (lastChar === 's') return `${text}es`
+  if (lastChar === 'y') return `${text.slice(0, text.lastIndexOf(lastChar))}ies`
+
+  return `${text}s`
+}

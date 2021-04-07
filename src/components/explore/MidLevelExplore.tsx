@@ -1,11 +1,12 @@
 import React, { FC } from 'react'
 import { useParams, Route } from 'react-router-dom'
 
-import { FlagFromHook } from 'components/generic/icons-and-swatches'
-import { SwatchOnly } from 'components/legend'
+import {
+  FlagFromHook,
+  ColoredCircle,
+} from 'components/generic/icons-and-swatches'
 import { BasicExploreIntro } from 'components/panels'
 import { LoadingIndicatorBar } from 'components/generic/modals'
-import { icons } from 'components/config'
 import { CardList } from './CardList'
 import { useAirtable } from './hooks'
 import { prepFormula, prepFields } from './utils'
@@ -37,9 +38,8 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
   let Icon = null // TODO: re-componentize
 
   if (field === 'World Region') {
-    Icon = <SwatchOnly backgroundColor={data ? data[0].worldRegionColor : ''} />
+    Icon = <ColoredCircle color={data[0]?.worldRegionColor} />
   } else if (field === 'Country') Icon = <FlagFromHook value={value} />
-  else Icon = <>{icons[field]}</>
 
   // Gross extra steps for Airtable FIND issue, which returns in ARRAYJOIN
   // things like "Dominican Republic" in a "Dominica" query:

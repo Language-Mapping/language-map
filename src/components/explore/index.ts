@@ -11,5 +11,6 @@ export * from './LayerToggle'
 export * from './MidLevelExplore'
 export * from './NeighborhoodsInstance'
 export * from './NeighborhoodsLanding'
+export * from './PanelIntroTitleSubtitle'
 
 export * from './types'

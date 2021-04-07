@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom'
 import { Typography } from '@material-ui/core'
 
 import { RecordDescription } from 'components/results'
-import { DetailedIntro } from 'components/details'
+import { DetailedIntro, LangOrEndoIntro } from 'components/details'
 import { LoadingIndicatorBar } from 'components/generic/modals'
 import { FeedbackToggle } from 'components/about'
 import { NoFeatSel } from './NoFeatSel'
@@ -58,7 +58,9 @@ export const Details: FC<DetailsProps> = (props) => {
 
   return (
     <>
-      <DetailedIntro data={data} langDescripID={langDescripID} isInstance />
+      <DetailedIntro data={data} langDescripID={langDescripID} isInstance>
+        <LangOrEndoIntro data={data} />
+      </DetailedIntro>
       {/* There should always be a description, but checking just in case */}
       {descripID && (
         <Typography variant="body2" component="div" align="left">

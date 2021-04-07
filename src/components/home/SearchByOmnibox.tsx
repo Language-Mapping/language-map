@@ -125,6 +125,7 @@ export const SearchByOmnibox: FC = (props) => {
       renderOption={(option) => <OmniboxResult data={option} />}
       size="small"
       popupIcon={null}
+      color="secondary"
       onChange={(event, value) => {
         // Can't just do <RouterLink>, otherwise keyboard selection no-go...
         if (value) history.push(`/Explore/Language/${value.name}/${value.id}`)

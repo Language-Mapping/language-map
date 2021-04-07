@@ -29,6 +29,7 @@ export const routes = {
   home: '/',
   neighborhood: '/Explore/Neighborhood',
   table: '/table',
+  tableDetail: '/table/:id',
   none: '/Explore/Language/none',
   details: '/Explore/Language/:value/:id',
   countiesBase: '/Explore/County',

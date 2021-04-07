@@ -121,13 +121,7 @@ export type AirtableSchemaQuery = SchemaTableFields & {
   name: RouteableTableNames
 }
 
-// TODO: figure it out
-// export type UseAirtable<TResult> = (
-//   tableName: string,
-//   options: AirtableOptions,
-//   reactQueryOptions?: { enabled?: boolean } // TODO: ugh
-// ) => {
-//   data: TResult[]
-//   error: AirtableError | null
-//   isLoading: boolean
+// TODO: ellipsis for the monsters...
+// export type PanelIntroTitleProps = {
+//   tooLong?: boolean
 // }

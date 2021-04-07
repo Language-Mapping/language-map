@@ -17,7 +17,7 @@ export const FlagWithTitle: FC<{
   return (
     <>
       <img
-        style={{ height: '0.8em', marginRight: '0.25em' }}
+        style={{ height: '0.8em', marginRight: '0.25rem' }}
         className="country-flag"
         alt={`${altText} flag`}
         src={src}

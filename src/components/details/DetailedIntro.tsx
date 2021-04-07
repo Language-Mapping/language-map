@@ -8,7 +8,6 @@ import { CensusPopover } from 'components/explore/CensusPopover'
 import { StatsAndMeta } from 'components/explore/StatsAndMeta'
 import { LangProfileDescrip } from 'components/explore'
 import { routes } from 'components/config/api'
-import { LangOrEndoIntro } from './LangOrEndoIntro'
 import { LocationLink } from './LocationLink'
 import { DetailedIntroProps } from './types'
 import { ReadMoreLangDescrip } from './ReadMoreLangDescrip'
@@ -26,14 +25,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 // The intro section of pre-Details ("Language Profile") and Details views
 export const DetailedIntro: FC<DetailedIntroProps> = (props) => {
-  const { data, shareNoun, isInstance, langDescripID } = props
+  const { data, shareNoun, isInstance, langDescripID, children } = props
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
 
   return (
     <header className={classes.root}>
-      <LangOrEndoIntro data={data} />
-      <Route path="/Explore/Language/:language/:id" exact>
+      {children}
+      <Route path={[routes.details, routes.tableDetail]} exact>
         <LocationLink
           anchorEl={anchorEl}
           setAnchorEl={setAnchorEl}
@@ -41,7 +40,7 @@ export const DetailedIntro: FC<DetailedIntroProps> = (props) => {
         />
       </Route>
       <Switch>
-        <Route path="/Explore/Language/:language/:id" exact />
+        <Route path={[routes.details, routes.tableDetail]} exact />
         <Route>
           <StatsAndMeta data={data} />
         </Route>

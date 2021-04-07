@@ -7,13 +7,13 @@ import { PanelHeading } from 'components/panels'
 import { RandomLinkBtn } from './RandomLinkBtn'
 
 export const NoFeatSel: FC<{ reason?: string }> = (props) => {
-  const { reason = 'No community selected' } = props
+  const { reason } = props // Basically just "Community not found..."
 
   return (
     <>
-      <PanelHeading text={reason} />
+      {reason && <PanelHeading text={reason} />}
       <Explanation>
-        <p>Please select a community using one of the following options:</p>
+        Please select a community using one of the following options:
         <ul>
           <li>Click a point on the map.</li>
           <li>

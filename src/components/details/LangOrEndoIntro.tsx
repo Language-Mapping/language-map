@@ -1,58 +1,25 @@
 import React, { FC } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
 
 import { EndoImageWrap } from 'components/details'
-import { TonsOfData } from './types'
-
-// Shaky but makes long endos like Church Slavonic's fit
-type StyleProps = { tooLong: boolean }
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    heading: {
-      textShadow: '1px 1px 3px hsla(0, 0%, 0%, 0.45)',
-      // WISHLIST: cool if you can do it: position: 'sticky', top: '3rem',
-      fontSize: (props: StyleProps) => (props.tooLong ? '2rem' : '2.4rem'),
-      [theme.breakpoints.up('sm')]: {
-        // Safari and/or Firefox seem to need smaller font than Chrome
-        fontSize: (props: StyleProps) => (props.tooLong ? '2.3rem' : '3rem'),
-      },
-    },
-    subHeading: {
-      fontSize: '1.5rem',
-      marginBottom: '0.25rem',
-      lineHeight: 1.25,
-      display: 'block',
-      color: theme.palette.text.secondary,
-    },
-  })
-)
+import { PanelIntroTitle, PanelIntroSubtitle } from 'components/explore'
+import { LangOrEndoIntroProps } from './types'
 
 // Mongolian, ASL, etc. have URLs to images
-export const LangOrEndoIntro: FC<TonsOfData> = (props) => {
-  const CHAR_CUTOFF = 17 // TODO: fix some newly found monsters
+export const LangOrEndoIntro: FC<LangOrEndoIntroProps> = (props) => {
   const { data } = props
   const { Endonym, Language, 'Font Image Alt': altImage, name } = data
   const language = name || Language // TODO: deal with this somehow
-
-  const classes = useStyles({
-    // SEMI-GROSS: if there are no spaces in the Endonym and it's over the
-    // character cutoff defined above, reduce the font size
-    tooLong: !Endonym.trim().includes(' ') && Endonym.length >= CHAR_CUTOFF,
-  })
+  // const CHAR_CUTOFF = 17 // TODO: ellipsis for the monsters...
+  // const tooLong = !Endonym.trim().includes(' ')
+  // && Endonym.length >= CHAR_CUTOFF
 
   return (
     <>
       {(altImage && <EndoImageWrap url={altImage[0].url} alt={language} />) || (
-        <Typography variant="h3" className={classes.heading}>
-          {Endonym}
-        </Typography>
+        <PanelIntroTitle>{Endonym}</PanelIntroTitle>
       )}
       {(altImage || language !== Endonym) && (
-        <Typography variant="h6" className={classes.subHeading}>
-          {language}
-        </Typography>
+        <PanelIntroSubtitle>{language}</PanelIntroSubtitle>
       )}
     </>
   )

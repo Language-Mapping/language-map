@@ -1,7 +1,11 @@
 import React, { FC } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { DetailedIntro, NeighborhoodList } from 'components/details'
+import {
+  DetailedIntro,
+  NeighborhoodList,
+  LangOrEndoIntro,
+} from 'components/details'
 import { LoadingIndicatorBar } from 'components/generic/modals'
 import { FullOnEverything } from 'components/details/types'
 import { FeedbackToggle } from 'components/about'
@@ -35,7 +39,9 @@ export const LangCardsList: FC<{ field?: string }> = (props) => {
 
   return (
     <>
-      <DetailedIntro data={thisLangConfig} />
+      <DetailedIntro data={thisLangConfig}>
+        <LangOrEndoIntro data={data[0]} />
+      </DetailedIntro>
       <NeighborhoodList data={thisLangConfig} />
       <FeedbackToggle />
     </>
