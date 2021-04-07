@@ -3,7 +3,6 @@ import React, { FC } from 'react'
 import { BasicExploreIntro } from 'components/explore'
 import { Explanation, UItextFromAirtable } from 'components/generic'
 import { CensusFieldSelect } from './CensusFieldSelect'
-import { CensusIntro } from './CensusIntro'
 import { CensusTogglesWrap } from './CensusTogglesWrap'
 import { LegendGradient } from './LegendGradient'
 
@@ -11,7 +10,11 @@ import { LegendGradient } from './LegendGradient'
 export const LocalPanel: FC = () => {
   return (
     <>
-      <BasicExploreIntro introParagraph={<CensusIntro />} />
+      <BasicExploreIntro
+        introParagraph={
+          <UItextFromAirtable id="census-panel-intro-top" rootElemType="p" />
+        }
+      />
       <CensusFieldSelect />
       <LegendGradient />
       <CensusTogglesWrap />

@@ -6,12 +6,11 @@ import { FaClipboardList } from 'react-icons/fa'
 import { MdLayersClear, MdLayers } from 'react-icons/md'
 
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'
-import { CensusIntro } from 'components/local'
 import { Chip } from 'components/details'
 import { DialogCloseBtn } from 'components/generic/modals'
-import { Explanation, SubtleText, UItextFromAirtable } from 'components/generic'
+import { Explanation, UItextFromAirtable } from 'components/generic'
 
-import * as Types from './types'
+import { CensusPopoverProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -19,31 +18,35 @@ const useStyles = makeStyles((theme: Theme) =>
       maxWidth: 350,
       padding: '1rem',
     },
+    intro: {
+      paddingBottom: '0.75rem',
+      borderBottom: `dashed 1px ${theme.palette.divider}`,
+      fontSize: '0.65rem',
+      marginBottom: '1rem',
+    },
     popoverHeading: {
-      fontSize: '1.3rem',
+      fontSize: '1.25rem',
     },
     buttonGroup: {
-      justifyContent: 'space-evenly',
       display: 'grid',
+      gridColumnGap: '0.25rem',
       gridTemplateColumns: 'auto auto',
-      gridColumnGap: '0.5rem',
-      marginTop: '0.75rem',
+      justifyContent: 'space-evenly',
+      marginBottom: '0.5rem',
     },
     metaPara: {
-      marginTop: '0.75rem',
-      paddingTop: '1rem',
-      borderTop: `dashed 1px ${theme.palette.divider}`,
       color: theme.palette.text.primary,
+      marginBottom: '1rem',
+      fontSize: '0.85rem',
     },
     viewAllLink: {
       display: 'block',
       fontSize: '0.75rem',
-      marginTop: '0.5rem',
     },
   })
 )
 
-export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
+export const CensusPopover: FC<CensusPopoverProps> = (props) => {
   const { data } = props
   const mapToolsDispatch = useMapToolsDispatch()
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
@@ -73,18 +76,12 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
   const censusLabel = censusScope === 'puma' ? 'PUMA' : 'tract'
   const activeField = censusActiveField?.id
 
-  const Heading = (
-    <Typography variant="h6" className={classes.popoverHeading}>
-      Census Language Data (NYC only)
-    </Typography>
-  )
-
   const MetaPara = (
-    <Explanation className={classes.metaPara}>
+    <Typography className={classes.metaPara}>
       Speakers of <em>{name}</em> are likely to be included within the census
       category of <b>{censusPretty}</b> at the ACS{' '}
       <UItextFromAirtable id="census-vintage" /> <em>{censusLabel}</em> level.
-    </Explanation>
+    </Typography>
   )
 
   const PopoverMenu = (
@@ -95,12 +92,14 @@ export const CensusPopover: FC<Types.CensusPopoverProps> = (props) => {
       onClose={handleClose}
       PaperProps={{ className: classes.root, elevation: 24 }}
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      transformOrigin={{ vertical: 'center', horizontal: 'left' }}
+      transformOrigin={{ vertical: 'center', horizontal: 'center' }}
     >
-      {Heading}
-      <SubtleText>
-        <CensusIntro />
-      </SubtleText>
+      <Typography variant="h6" className={classes.popoverHeading}>
+        Census Language Data (NYC only)
+      </Typography>
+      <Explanation className={classes.intro}>
+        <UItextFromAirtable id="census-popout-intro" />
+      </Explanation>
       {MetaPara}
       <div className={classes.buttonGroup}>
         <Button
