@@ -1,7 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 // TOO annoying. I'll take the risk, esp. since it has not seemed problematic:
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { FC, useState, useContext, useEffect, useMemo } from 'react'
+import React, {
+  FC,
+  useState,
+  useContext,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 // TODO: try to lazy load the biggest dep of all. See:
 // www.debugbear.com/blog/bundle-splitting-components-with-webpack-and-react
@@ -25,13 +32,7 @@ import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
 import { PolygonLayer } from './NeighborhoodsLayer'
 import { getAllLangFeatIDs } from '../../utils'
-
-import {
-  useOffset,
-  useBreakpoint,
-  useFeatSrcFromMatch,
-  useZoomToLangFeatsExtent,
-} from './hooks'
+import { useOffset, useBreakpoint, useZoomToLangFeatsExtent } from './hooks'
 
 import * as Types from './types'
 import * as utils from './utils'
@@ -57,17 +58,21 @@ export const Map: FC<Types.MapProps> = (props) => {
   const map: MbMap | undefined = mapRef.current?.getMap()
   const offset = useOffset()
   const breakpoint = useBreakpoint()
-  const srcAndFeatID = useFeatSrcFromMatch()
   const touchEnabled = useMemo(() => utils.isTouchEnabled(), [])
 
   const [beforeId, setBeforeId] = useState<string>('background')
   const [tooltip, setTooltip] = useState<Types.Tooltip | null>(null)
   const [isMapTilted, setIsMapTilted] = useState<boolean>(false)
-  const [mapIsMoving, setMapIsMoving] = useState<boolean>(false)
+  const [mapIsMoving, setMapIsMoving] = useState<boolean>(true)
   const [showPopups, setShowPopups] = useState<boolean>(true)
   const [viewport, setViewport] = useState<Types.ViewportState>(initialMapState)
   const [mapStyle, setMapStyle] = useState(mbStyleTileConfig.customStyles.light)
   const shouldFlyHome = useZoomToLangFeatsExtent(isMapTilted, map) // TODO: mob
+  const handlePopupClose = useCallback(() => setShowPopups(false), [])
+  const handleGeocodeClose = useCallback(
+    () => mapToolsDispatch({ type: 'SET_GEOCODE_LABEL', payload: null }),
+    []
+  )
 
   useEffect(() => {
     if (!map) return
@@ -168,8 +173,18 @@ export const Map: FC<Types.MapProps> = (props) => {
       setBeforeId(before)
     })
 
-    mapObj.on('zoomend', function onMoveEnd(customEventData) {
+    mapObj.on('zoomend', function onMoveEnd(zoomEndEvent) {
       setMapIsMoving(false)
+    })
+
+    // Prevent Census symbology from going all black on baselayer change
+    mapObj.on('styledataloading', function onMoveEnd(zoomEndEvent) {
+      setMapLoaded(false)
+    })
+
+    // Prevent Census symbology from going all black on baselayer change
+    mapObj.on('styledata', function onMoveEnd(zoomEndEvent) {
+      if (mapObj.areTilesLoaded()) setMapLoaded(true)
     })
 
     mapObj.addControl(
@@ -181,8 +196,9 @@ export const Map: FC<Types.MapProps> = (props) => {
   function onClick(event: Types.MapEvent): void {
     if (!map || !mapLoaded) return
 
-    // Clear geocode marker
+    // Clear geocode marker and tooltip
     mapToolsDispatch({ type: 'SET_GEOCODE_LABEL', payload: null })
+    setTooltip(null)
 
     // CRED: https://stackoverflow.com/a/42984268/1048518
     const topLangFeat = utils.queryRenderedPoints(
@@ -258,8 +274,7 @@ export const Map: FC<Types.MapProps> = (props) => {
         onViewportChange={setViewport}
         onClick={(event: Types.MapEvent) => onClick(event)}
         onHover={(event: Types.MapEvent) => {
-          // Gave up on preventing mobile hover 🤷‍♂️
-          onHover(event, setTooltip, map, srcAndFeatID)
+          onHover(event, setTooltip, map) // Gave up on no mobile hover 🤷‍♂️
         }}
         onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
       >
@@ -275,9 +290,7 @@ export const Map: FC<Types.MapProps> = (props) => {
             heading={geocodeMarkerText.text}
             latitude={geocodeMarkerText.latitude}
             longitude={geocodeMarkerText.longitude}
-            handleClose={() =>
-              mapToolsDispatch({ type: 'SET_GEOCODE_LABEL', payload: null })
-            }
+            handleClose={handleGeocodeClose}
           />
         )}
         <PolygonLayer {...{ map, mapLoaded, beforeId }} configKey="counties" />
@@ -287,9 +300,13 @@ export const Map: FC<Types.MapProps> = (props) => {
         />
         <CensusLayer {...{ map, mapLoaded, beforeId }} configKey="puma" />
         <CensusLayer {...{ map, mapLoaded, beforeId }} configKey="tract" />
-        <LangMbSrcAndLayer map={map} isMapTilted={isMapTilted} />
+        <LangMbSrcAndLayer
+          map={map}
+          mapLoaded={mapLoaded}
+          isMapTilted={isMapTilted}
+        />
         {mapLoaded && showPopups && !mapIsMoving && (
-          <MapPopups handleClose={() => setShowPopups(false)} />
+          <MapPopups handleClose={handlePopupClose} />
         )}
         {/* Popups are annoying on mobile */}
         {!touchEnabled && tooltip && !mapIsMoving && (

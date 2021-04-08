@@ -241,11 +241,12 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
 export const useCensusSymb: Types.UseCensusSymb = (
   sourceLayer,
   censusScope,
+  mapLoaded,
   map
 ) => {
   const mapToolsDispatch = useMapToolsDispatch()
   const { pathname } = useLocation()
-  const { censusActiveField } = useMapToolsState()
+  const { censusActiveField, baseLayer } = useMapToolsState()
   const { id: field, scope } = censusActiveField || {}
   const visible = field !== undefined && censusScope === scope
   const queryID = scope || 'tract'
@@ -271,7 +272,8 @@ export const useCensusSymb: Types.UseCensusSymb = (
   const { high, low } = highLow || {} // avoid useEffect "complex deps" warning
 
   useEffect(() => {
-    if (!map || isLoading || !data.length || !field || !visible) return
+    if (!map || !mapLoaded || isLoading || !data.length || !field || !visible)
+      return
 
     const valuesCurrField = data.map((row) => row[field])
     const means = stats.ckmeans(valuesCurrField, 5)
@@ -295,7 +297,7 @@ export const useCensusSymb: Types.UseCensusSymb = (
       } as { total: number })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [field, isLoading, pathname])
+  }, [field, isLoading, pathname, mapLoaded, baseLayer])
 
   useEffect(() => {
     if (!highLow) return
@@ -309,17 +311,17 @@ export const useCensusSymb: Types.UseCensusSymb = (
 export const useZoomToBounds: Types.UseZoomToBounds = (
   routePath,
   tableName,
-  sourceID,
+  mapLoaded,
   map
 ) => {
   const selPolyBounds = usePolygonWebMerc(routePath, tableName)
   const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = selPolyBounds
   const offset = useOffset()
-  const isSourceLoaded = map?.isSourceLoaded(sourceID)
 
   // Zoom to selected feature extent
   useEffect(() => {
-    if (!map || !isSourceLoaded || !xMax || !xMin || !yMin || !yMax) return
+    const noBounds = !xMax || !xMin || !yMin || !yMax
+    if (!map || !mapLoaded || noBounds) return
 
     const boundsArray = [
       [xMin, yMin],
@@ -334,7 +336,7 @@ export const useZoomToBounds: Types.UseZoomToBounds = (
 
     // LEGIT. offset and selPolyBounds as a dep will break the world.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSourceLoaded, xMax, xMin, yMin, yMax, map])
+  }, [xMax, xMin, yMin, yMax, map, mapLoaded])
 }
 
 // TODO: make it not insanely fragile, or abandon hover stuff on polygons

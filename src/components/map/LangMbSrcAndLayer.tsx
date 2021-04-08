@@ -11,9 +11,10 @@ import * as config from './config'
 import { LayerPropsPlusMeta, LangMbSrcAndLayerProps } from './types'
 
 export const LangMbSrcAndLayer: FC<LangMbSrcAndLayerProps> = (props) => {
-  const { map, isMapTilted } = props
+  const { map, isMapTilted, mapLoaded } = props
   const symbLabelState = useSymbAndLabelState()
   const selLangPointCoords = useSelLangPointCoords()
+  const { lat, lon } = selLangPointCoords || {}
   const offset = useOffset()
   const {
     activeLabelID,
@@ -29,7 +30,6 @@ export const LangMbSrcAndLayer: FC<LangMbSrcAndLayerProps> = (props) => {
     fields: ['name', 'Font'],
     filterByFormula: "{Font} != ''",
   })
-  const isSourceLoaded = map?.isSourceLoaded(config.mbStyleTileConfig.langSrcID)
 
   const { data: layersData, error: layersError } = useLayersConfig(
     activeSymbGroupID
@@ -77,15 +77,13 @@ export const LangMbSrcAndLayer: FC<LangMbSrcAndLayerProps> = (props) => {
 
   // Do selected feature stuff on sel feat change or map load
   useEffect(() => {
-    const { lat, lon } = selLangPointCoords || {}
-    if (!map || !isSourceLoaded || !lat || !lon) return
+    if (!map || !mapLoaded || !lat || !lon) return
 
     const settings = getFlyToPointSettings({ lat, lon }, offset, isMapTilted)
 
     flyToPoint(map, settings)
-    // LEGIT disabling of deps. Breaks otherwise.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSourceLoaded, selLangPointCoords.lat, selLangPointCoords.lon])
+  }, [mapLoaded, lat, lon]) // LEGIT disabling of deps. Breaks otherwise.
 
   if (fontsError || layersError)
     throw new Error(`Something went wrong setting up ${activeSymbGroupID}`)

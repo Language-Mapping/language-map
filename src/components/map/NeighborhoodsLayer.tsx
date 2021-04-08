@@ -1,28 +1,26 @@
 import React, { FC } from 'react'
+import { Route } from 'react-router-dom'
 import { Source, Layer } from 'react-map-gl'
 import { FillPaint } from 'mapbox-gl'
 
 import { useMapToolsState } from 'components/context'
 import { PolygonLayerProps } from './types'
-import { useZoomToBounds, usePolySelFeatSymb } from './hooks'
 import { nonCensusPolygonConfig } from './config.non-census-poly'
+import { SelectedPolygon } from './SelectedPolygon'
 
 // Handy remnant from Boundaries layers:
 // filter={['in', ['id'], ['literal', recordIDs]]}
 
 export const PolygonLayer: FC<PolygonLayerProps> = (props) => {
-  const { map, beforeId, configKey } = props
+  const { beforeId, configKey } = props
   /* eslint-disable @typescript-eslint/ban-ts-comment */
   // @ts-ignore // TODO: come on
   const layerConfig = nonCensusPolygonConfig[configKey]
   const { sourceID, sourceLayer, routePath, visContextKey } = layerConfig
-  const { tableName, url, fillPaint, linePaint } = layerConfig
+  const { url, fillPaint, linePaint, selLineColor, selFillColor } = layerConfig
   // @ts-ignore
   const visible = useMapToolsState()[visContextKey]
   /* eslint-enable @typescript-eslint/ban-ts-comment */
-
-  useZoomToBounds(routePath, tableName, sourceID, map)
-  usePolySelFeatSymb({ map, configKey })
 
   return (
     <Source
@@ -57,6 +55,13 @@ export const PolygonLayer: FC<PolygonLayerProps> = (props) => {
         beforeId={beforeId}
         layout={{ visibility: visible ? 'visible' : 'none' }}
       />
+      <Route path={routePath} exact>
+        <SelectedPolygon
+          {...props}
+          selLineColor={selLineColor}
+          selFillColor={selFillColor}
+        />
+      </Route>
     </Source>
   )
 }

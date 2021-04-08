@@ -128,15 +128,6 @@ export type PanelSectionProps = {
   explanation?: string | React.ReactNode
 }
 
-export type PolygonLayerProps = {
-  mapLoaded: boolean
-  configKey: string
-  beforeId?: string
-  map?: Map
-}
-
-export type CensusLayerProps = PolygonLayerProps
-
 export type MapProps = {
   mapLoaded: boolean
   setMapLoaded: React.Dispatch<boolean>
@@ -266,6 +257,7 @@ export type UseCensusSymbReturn = {
 export type UseCensusSymb = (
   sourceLayer: string,
   censusScope: CensusScope,
+  mapLoaded: boolean,
   map?: Map
 ) => UseCensusSymbReturn
 
@@ -305,7 +297,7 @@ export type CountyTableSchema = BoundsColumns & {
 export type UseZoomToBounds = (
   routePath: string,
   tableName: string,
-  sourceID: string,
+  mapLoaded: boolean,
   map?: Map
 ) => void
 
@@ -314,17 +306,32 @@ export type SrcAndFeatID = { srcID: string; featID: string }
 export type OnHover = (
   event: MapEvent,
   setTooltip: React.Dispatch<Tooltip | null>,
-  map?: Map,
-  SrcAndFeatID?: SrcAndFeatID
+  map?: Map
 ) => void
 
 export type Tooltip = GeocodeMarkerProps
 export type UseRenameLaterUgh = () => SrcAndFeatID | undefined
+
+export type PolygonLayerProps = {
+  configKey: string
+  beforeId?: string
+  mapLoaded: boolean
+  map?: Map
+}
+
+export type CensusLayerProps = PolygonLayerProps
+
 export type UsePolySelFeatSymb = (
-  settings: Pick<PolygonLayerProps, 'configKey' | 'map'>
+  settings: Omit<PolygonLayerProps, 'beforeId'>
 ) => void
 
 export type LangMbSrcAndLayerProps = {
   isMapTilted: boolean
+  mapLoaded: boolean
   map?: Map
+}
+
+export type SelectedPolygonProps = PolygonLayerProps & {
+  selLineColor: string
+  selFillColor?: string
 }

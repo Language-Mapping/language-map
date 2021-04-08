@@ -3,9 +3,11 @@ import { Route } from 'react-router-dom'
 import { Source, Layer } from 'react-map-gl'
 
 import { CensusLayerProps } from './types'
-import { CENSUS_PROMOTE_ID_FIELD, censusLayersConfig } from './config.census'
+import { censusLayersConfig } from './config.census'
 import { useCensusSymb } from './hooks'
-import { SelectedCensusPolygon } from './SelectedCensusPolygon'
+import { SelectedPolygon } from './SelectedPolygon'
+
+const CENSUS_PROMOTE_ID_FIELD = 'GEOID' // MB default is `id` as unique ID
 
 export const CensusLayer: FC<CensusLayerProps> = (props) => {
   const { map, beforeId, configKey, mapLoaded } = props
@@ -18,6 +20,7 @@ export const CensusLayer: FC<CensusLayerProps> = (props) => {
   const { fillPaint, visible, error, isLoading } = useCensusSymb(
     sourceLayer,
     sourceID,
+    mapLoaded,
     map
   )
 
@@ -59,10 +62,7 @@ export const CensusLayer: FC<CensusLayerProps> = (props) => {
         layout={{ visibility }}
       />
       <Route path={`/Census/${sourceID}/:field/:id`} exact>
-        <SelectedCensusPolygon
-          {...{ map, beforeId, configKey, mapLoaded }}
-          lineColor="hsl(133, 100%, 47%)"
-        />
+        <SelectedPolygon {...props} selLineColor="hsl(133, 100%, 47%)" />
       </Route>
     </Source>
   )
