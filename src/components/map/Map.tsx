@@ -26,9 +26,15 @@ import { GeocodeMarker } from './GeocodeMarker'
 import { PolygonLayer } from './NeighborhoodsLayer'
 import { getAllLangFeatIDs } from '../../utils'
 
+import {
+  useOffset,
+  useBreakpoint,
+  useFeatSrcFromMatch,
+  useZoomToLangFeatsExtent,
+} from './hooks'
+
 import * as Types from './types'
 import * as utils from './utils'
-import * as hooks from './hooks'
 import * as config from './config'
 
 const { mbStyleTileConfig, langTypeIconsConfig, initialMapState } = config
@@ -37,7 +43,6 @@ utils.rightToLeftSetup()
 
 export const Map: FC<Types.MapProps> = (props) => {
   const { mapLoaded, mapRef, setMapLoaded } = props
-
   const history = useHistory()
   const loc = useLocation()
   const { pathname } = loc
@@ -50,10 +55,9 @@ export const Map: FC<Types.MapProps> = (props) => {
   const mapToolsDispatch = useMapToolsDispatch()
 
   const map: MbMap | undefined = mapRef.current?.getMap()
-  const selLangPointCoords = hooks.useSelLangPointCoords()
-  const offset = hooks.useOffset()
-  const breakpoint = hooks.useBreakpoint()
-  const srcAndFeatID = hooks.useFeatSrcFromMatch()
+  const offset = useOffset()
+  const breakpoint = useBreakpoint()
+  const srcAndFeatID = useFeatSrcFromMatch()
   const touchEnabled = useMemo(() => utils.isTouchEnabled(), [])
 
   const [beforeId, setBeforeId] = useState<string>('background')
@@ -63,9 +67,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   const [showPopups, setShowPopups] = useState<boolean>(true)
   const [viewport, setViewport] = useState<Types.ViewportState>(initialMapState)
   const [mapStyle, setMapStyle] = useState(mbStyleTileConfig.customStyles.light)
-
-  // TODO: mobile:
-  const shouldFlyHome = hooks.useZoomToLangFeatsExtent(isMapTilted, map)
+  const shouldFlyHome = useZoomToLangFeatsExtent(isMapTilted, map) // TODO: mob
 
   useEffect(() => {
     if (!map) return
@@ -125,29 +127,6 @@ export const Map: FC<Types.MapProps> = (props) => {
     )
   }, [langFeatures.length, beforeId, filterHasRun])
 
-  // Do selected feature stuff on sel feat change or map load
-  useEffect(() => {
-    if (
-      !map ||
-      !mapLoaded ||
-      selLangPointCoords.lat === null ||
-      selLangPointCoords.lon === null
-    )
-      return
-
-    const settings = utils.getFlyToPointSettings(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      { ...selLangPointCoords },
-      offset,
-      isMapTilted
-    )
-
-    utils.flyToPoint(map, settings)
-    // LEGIT disabling of deps. Breaks otherwise.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selLangPointCoords.lat, selLangPointCoords.lon])
-
   function onLoad(mapLoadEvent: MapLoadEvent) {
     setMapLoaded(true)
 
@@ -197,20 +176,6 @@ export const Map: FC<Types.MapProps> = (props) => {
       new AttributionControl({ compact: false }), // give MB well-deserved cred
       'bottom-right'
     )
-
-    if (selLangPointCoords.lat !== null && selLangPointCoords.lon !== null) {
-      const settings = utils.getFlyToPointSettings(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        selLangPointCoords,
-        offset,
-        isMapTilted
-      )
-
-      utils.flyToPoint(mapObj, settings)
-    } else {
-      utils.flyHome(mapObj, offset)
-    }
   }
 
   function onClick(event: Types.MapEvent): void {
@@ -322,12 +287,14 @@ export const Map: FC<Types.MapProps> = (props) => {
         />
         <CensusLayer {...{ map, mapLoaded, beforeId }} configKey="puma" />
         <CensusLayer {...{ map, mapLoaded, beforeId }} configKey="tract" />
-        <LangMbSrcAndLayer />
+        <LangMbSrcAndLayer map={map} isMapTilted={isMapTilted} />
         {mapLoaded && showPopups && !mapIsMoving && (
           <MapPopups handleClose={() => setShowPopups(false)} />
         )}
         {/* Popups are annoying on mobile */}
-        {!touchEnabled && tooltip && <GeocodeMarker {...tooltip} subtle />}
+        {!touchEnabled && tooltip && !mapIsMoving && (
+          <GeocodeMarker {...tooltip} subtle />
+        )}
       </MapGL>
       <MapCtrlBtns
         isMapTilted={isMapTilted}

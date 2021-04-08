@@ -91,6 +91,7 @@ export const useLayersConfig = (
   return { error, data: prepped, isLoading }
 }
 
+// TODO: into utils
 const createLayerStyles = (
   rows: AtSymbFields[],
   group: keyof InstanceLevelSchema
@@ -308,16 +309,17 @@ export const useCensusSymb: Types.UseCensusSymb = (
 export const useZoomToBounds: Types.UseZoomToBounds = (
   routePath,
   tableName,
-  mapLoaded,
+  sourceID,
   map
 ) => {
   const selPolyBounds = usePolygonWebMerc(routePath, tableName)
   const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = selPolyBounds
   const offset = useOffset()
+  const isSourceLoaded = map?.isSourceLoaded(sourceID)
 
   // Zoom to selected feature extent
   useEffect(() => {
-    if (!map || !mapLoaded || !xMax || !xMin || !yMin || !yMax) return
+    if (!map || !isSourceLoaded || !xMax || !xMin || !yMin || !yMax) return
 
     const boundsArray = [
       [xMin, yMin],
@@ -325,13 +327,14 @@ export const useZoomToBounds: Types.UseZoomToBounds = (
     ] as Types.BoundsArray
 
     const webMercViewport = utils.getPolyWebMercView(boundsArray, offset)
-    const zoom = Math.min(webMercViewport.zoom, POINT_ZOOM_LEVEL) // tracts are too small
+    // Tracts are too small:
+    const zoom = Math.min(webMercViewport.zoom, POINT_ZOOM_LEVEL)
 
     flyToPoint(map, { ...webMercViewport, offset, zoom })
 
     // LEGIT. offset and selPolyBounds as a dep will break the world.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapLoaded, xMax, xMin, yMin, yMax, map])
+  }, [isSourceLoaded, xMax, xMin, yMin, yMax, map])
 }
 
 // TODO: make it not insanely fragile, or abandon hover stuff on polygons
@@ -354,7 +357,7 @@ export const useFeatSrcFromMatch: Types.UseRenameLaterUgh = () => {
 }
 
 export const usePolySelFeatSymb: Types.UsePolySelFeatSymb = (settings) => {
-  const { map, mapLoaded, configKey } = settings
+  const { map, configKey } = settings
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // TODO: come on
   const layerConfig = allPolyLayersConfig[configKey]
@@ -363,13 +366,14 @@ export const usePolySelFeatSymb: Types.UsePolySelFeatSymb = (settings) => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const visible = useMapToolsState()[visContextKey]
-  // TODO: show at next level, e.g. /Explore/Neighborhood/Astoria/Something
+  // TODO: show at next level? e.g. /Explore/Neighborhood/Astoria/Something
   const match = useRouteMatch<{ id: string }>({ path: routePath, exact: true })
   const valueParam = match?.params.id
+  const isStyleLoaded = map?.isStyleLoaded()
 
   // Clear/set selected feature state
   useEffect(() => {
-    if (!map || !mapLoaded) return
+    if (!map || !isStyleLoaded) return
 
     map.removeFeatureState({ source: sourceID, sourceLayer }) // clear each time
 
@@ -383,7 +387,5 @@ export const usePolySelFeatSymb: Types.UsePolySelFeatSymb = (settings) => {
         { selected: true }
       )
     }
-    // Definitely need `mapLoaded`
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, mapLoaded, match, valueParam, visible])
+  }, [map, isStyleLoaded, match, valueParam, visible, sourceID, sourceLayer])
 }

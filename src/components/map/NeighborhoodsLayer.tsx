@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import { Source, Layer } from 'react-map-gl'
+import { FillPaint } from 'mapbox-gl'
 
 import { useMapToolsState } from 'components/context'
 import { PolygonLayerProps } from './types'
@@ -10,19 +11,18 @@ import { nonCensusPolygonConfig } from './config.non-census-poly'
 // filter={['in', ['id'], ['literal', recordIDs]]}
 
 export const PolygonLayer: FC<PolygonLayerProps> = (props) => {
-  const { map, beforeId, mapLoaded, configKey } = props
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  const { map, beforeId, configKey } = props
+  /* eslint-disable @typescript-eslint/ban-ts-comment */
   // @ts-ignore // TODO: come on
   const layerConfig = nonCensusPolygonConfig[configKey]
   const { sourceID, sourceLayer, routePath, visContextKey } = layerConfig
   const { tableName, url, fillPaint, linePaint } = layerConfig
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const visible = useMapToolsState()[visContextKey]
+  /* eslint-enable @typescript-eslint/ban-ts-comment */
 
-  useZoomToBounds(routePath, tableName, mapLoaded, map)
-  usePolySelFeatSymb({ map, mapLoaded, configKey })
+  useZoomToBounds(routePath, tableName, sourceID, map)
+  usePolySelFeatSymb({ map, configKey })
 
   return (
     <Source
@@ -43,9 +43,7 @@ export const PolygonLayer: FC<PolygonLayerProps> = (props) => {
         id={`${sourceID}-poly`}
         source={sourceID}
         source-layer={sourceLayer}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        paint={fillPaint}
+        paint={fillPaint as FillPaint}
         type="fill"
         beforeId={beforeId}
         layout={{ visibility: visible ? 'visible' : 'none' }}

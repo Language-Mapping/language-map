@@ -4,14 +4,17 @@ import { Source, Layer } from 'react-map-gl'
 
 import { useSymbAndLabelState } from 'components/context'
 import { useAirtable } from 'components/explore/hooks'
-import { prepEndoFilters } from './utils'
-import { useLayersConfig } from './hooks'
+import { prepEndoFilters, getFlyToPointSettings, flyToPoint } from './utils'
+import { useLayersConfig, useSelLangPointCoords, useOffset } from './hooks'
 
 import * as config from './config'
-import * as Types from './types'
+import { LayerPropsPlusMeta, LangMbSrcAndLayerProps } from './types'
 
-export const LangMbSrcAndLayer: FC = () => {
+export const LangMbSrcAndLayer: FC<LangMbSrcAndLayerProps> = (props) => {
+  const { map, isMapTilted } = props
   const symbLabelState = useSymbAndLabelState()
+  const selLangPointCoords = useSelLangPointCoords()
+  const offset = useOffset()
   const {
     activeLabelID,
     activeSymbGroupID,
@@ -20,12 +23,13 @@ export const LangMbSrcAndLayer: FC = () => {
   } = symbLabelState
   const {
     data: fontsData,
-    isLoading: isFontsLoading,
+    isLoading: areFontsLoading,
     error: fontsError,
   } = useAirtable<{ name: string; Font: string }>('Language', {
     fields: ['name', 'Font'],
     filterByFormula: "{Font} != ''",
   })
+  const isSourceLoaded = map?.isSourceLoaded(config.mbStyleTileConfig.langSrcID)
 
   const { data: layersData, error: layersError } = useLayersConfig(
     activeSymbGroupID
@@ -65,11 +69,23 @@ export const LangMbSrcAndLayer: FC = () => {
   }
 
   useEffect(() => {
-    if (isFontsLoading || !fontsData.length) return
+    if (areFontsLoading || !fontsData.length) return
 
     setEndoFonts(prepEndoFilters(fontsData))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFontsLoading])
+  }, [areFontsLoading])
+
+  // Do selected feature stuff on sel feat change or map load
+  useEffect(() => {
+    const { lat, lon } = selLangPointCoords || {}
+    if (!map || !isSourceLoaded || !lat || !lon) return
+
+    const settings = getFlyToPointSettings({ lat, lon }, offset, isMapTilted)
+
+    flyToPoint(map, settings)
+    // LEGIT disabling of deps. Breaks otherwise.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSourceLoaded, selLangPointCoords.lat, selLangPointCoords.lon])
 
   if (fontsError || layersError)
     throw new Error(`Something went wrong setting up ${activeSymbGroupID}`)
@@ -83,7 +99,7 @@ export const LangMbSrcAndLayer: FC = () => {
       url={`mapbox://${config.mbStyleTileConfig.tilesetId}`}
       id={config.mbStyleTileConfig.langSrcID}
     >
-      {layersData.map((layer: Types.LayerPropsPlusMeta) => {
+      {layersData.map((layer: LayerPropsPlusMeta) => {
         let { paint, layout } = layer
 
         layout = getLayout(layout)

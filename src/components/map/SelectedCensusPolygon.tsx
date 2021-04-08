@@ -10,7 +10,7 @@ import { useZoomToBounds } from './hooks'
 export const SelectedCensusPolygon: FC<
   CensusLayerProps & { lineColor: string }
 > = (props) => {
-  const { map, beforeId, configKey, mapLoaded, lineColor } = props
+  const { map, beforeId, configKey, lineColor } = props
   const { id } = useParams<{ id: string }>()
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // TODO: come on
@@ -20,7 +20,7 @@ export const SelectedCensusPolygon: FC<
   const GEOID = parseInt(id, 10)
   const filter: Expression = ['case', ['==', ['get', 'GEOID'], GEOID]]
 
-  useZoomToBounds(routePath, tableName, mapLoaded, map)
+  useZoomToBounds(routePath, tableName, sourceID, map)
 
   return (
     <Layer

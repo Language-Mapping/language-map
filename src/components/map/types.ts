@@ -305,7 +305,7 @@ export type CountyTableSchema = BoundsColumns & {
 export type UseZoomToBounds = (
   routePath: string,
   tableName: string,
-  mapLoaded: boolean,
+  sourceID: string,
   map?: Map
 ) => void
 
@@ -321,5 +321,10 @@ export type OnHover = (
 export type Tooltip = GeocodeMarkerProps
 export type UseRenameLaterUgh = () => SrcAndFeatID | undefined
 export type UsePolySelFeatSymb = (
-  settings: Omit<PolygonLayerProps, 'beforeId'>
+  settings: Pick<PolygonLayerProps, 'configKey' | 'map'>
 ) => void
+
+export type LangMbSrcAndLayerProps = {
+  isMapTilted: boolean
+  map?: Map
+}
