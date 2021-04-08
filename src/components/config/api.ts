@@ -33,6 +33,7 @@ export const routes = {
   none: '/Explore/Language/none',
   details: '/Explore/Language/:value/:id',
   countiesBase: '/Explore/County',
+  languageInstance: '/Explore/Language/:language',
   ...censusRoutes,
   ...infoRoutes,
 } as {

@@ -121,7 +121,7 @@ const PanelTitleRoutes: FC<{ panelTitle: string }> = (props) => {
       <Route path="/" exact>
         {/* Flex spacer */}
         <div />
-        <PanelTitle text="Languages of NYC" />
+        <PanelTitle text="Search and Display Sites" />
       </Route>
       <Route path={routes.none}>
         <PanelTitle text="No community selected" />
@@ -133,16 +133,13 @@ const PanelTitleRoutes: FC<{ panelTitle: string }> = (props) => {
         path={['/Explore/:field/:value/:language/:id', routes.details]}
         exact
       >
-        <PanelTitle text="Community Profile" icon={icons.CommunityProfile} />
+        <PanelTitle text="Site Details" icon={icons.SiteDetails} />
       </Route>
       <Route
-        path={[
-          '/Explore/:field/:value/:language',
-          '/Explore/Language/:language',
-        ]}
+        path={['/Explore/:field/:value/:language', routes.languageInstance]}
         exact
       >
-        <PanelTitle text="Language Profile" icon={icons.Language} />
+        <PanelTitle text="Language" icon={icons.Language} />
       </Route>
       <Route path="/Explore/:field" exact>
         <PanelTitle text={pluralize(panelTitle)} icon={icons[panelTitle]} />

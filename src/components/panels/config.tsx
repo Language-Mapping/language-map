@@ -61,7 +61,7 @@ export const nonNavRoutesConfig = [
   { component: <DetailsPanel />, rootPath: routes.details, exact: true },
   {
     component: <LangCardsList field="Language" />, // set field explicitly
-    rootPath: '/Explore/Language/:language',
+    rootPath: routes.languageInstance,
   },
   {
     component: <NeighborhoodsLanding />,

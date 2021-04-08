@@ -15,7 +15,6 @@ export const icons = {
   Census: <FaClipboard />,
   Country: <GoGlobe />,
   County: <RiGovernmentLine />,
-  CommunityProfile: <IoPeopleOutline />,
   Data: <BsTable />,
   Explore: <FaBinoculars />,
   Feedback: <MdChat />,
@@ -25,6 +24,7 @@ export const icons = {
   Language: <BiUserVoice />,
   Macrocommunity: <IoIosPeople />,
   Neighborhood: <BiMapPin />,
+  SiteDetails: <IoPeopleOutline />,
   Town: <FaCity />,
   UserManual: <AiFillFilePdf />, // not actually a route
   'Language Family': <GiFamilyTree />,

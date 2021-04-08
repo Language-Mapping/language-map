@@ -4,6 +4,7 @@ export type RouteLocation =
   | '/Explore'
   | '/Explore/:field'
   | '/Explore/:field/:value'
+  | '/Explore/Language/:language'
   | '/Explore/Language/:value/:id'
   | '/Explore/Language/none' // reserved, aka "No community selected"
   | '/Explore/Neighborhood'
