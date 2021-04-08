@@ -7,6 +7,7 @@ import { Typography } from '@material-ui/core'
 import { InstanceLevelSchema, useMapToolsState } from 'components/context'
 import { useAirtable } from 'components/explore/hooks'
 import { AIRTABLE_CENSUS_BASE } from 'components/config'
+import { routes } from 'components/config/api'
 import {
   CensusTableRow,
   MapPopupProps,
@@ -208,7 +209,7 @@ export const MapPopups: FC<MapPopupsProps> = (props) => {
           addlFields={['name']}
         />
       </Route>
-      <Route path="/Census/:table/:field/:id" exact>
+      <Route path={routes.censusDetail} exact>
         <CensusPopup handleClose={handleClose} />
       </Route>
     </Switch>

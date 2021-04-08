@@ -329,7 +329,7 @@ export const useZoomToBounds: Types.UseZoomToBounds = (
 
     flyToPoint(map, { ...webMercViewport, offset, zoom })
 
-    // LEGIT. selPolyBounds as a dep will break the world.
+    // LEGIT. offset and selPolyBounds as a dep will break the world.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapLoaded, xMax, xMin, yMin, yMax, map])
 }

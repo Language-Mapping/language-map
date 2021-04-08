@@ -1,8 +1,8 @@
 import React, { FC } from 'react'
+import { useParams, useRouteMatch } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { SwatchOnly } from 'components/legend'
-import { useParams, useRouteMatch } from 'react-router-dom'
 import { RouteMatch, TonsWithAddl } from './types'
 import { getUniqueInstances } from './utils'
 import { CustomCard } from './CustomCard'

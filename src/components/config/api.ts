@@ -15,6 +15,10 @@ export const reactQueryDefaults = {
 const censusRoutes = {
   local: '/Census',
   censusDetail: '/Census/:table/:field/:id',
+  pumaDetail: '/Census/puma/:field/:id',
+  tractDetail: '/Census/tract/:field/:id',
+} as {
+  [key: string]: RouteLocation
 }
 
 const infoRoutes = {
