@@ -1,6 +1,11 @@
 import React, { FC, useEffect, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import {
+  createStyles,
+  makeStyles,
+  Theme,
+  lighten,
+} from '@material-ui/core/styles'
 import { BottomNavigation, BottomNavigationAction } from '@material-ui/core'
 
 import { usePanelState, usePanelDispatch } from 'components/panels'
@@ -46,7 +51,7 @@ radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`
       transition: 'all 300ms ease',
       '&:hover': {
         [theme.breakpoints.up('sm')]: {
-          background: theme.palette.primary.main,
+          background: lighten(theme.palette.primary.dark, 0.1),
         },
       },
       '& svg': {
@@ -107,25 +112,28 @@ export const BottomNav: FC = (props) => {
   const currPathSansSlash = pathname.split('/')[1]
   const current = currPathSansSlash || '/'
 
-  const handleChange = (newValue: string): void => {
-    if (!panelOpen) {
-      panelDispatch({ type: 'TOGGLE_MAIN_PANEL', payload: true })
+  const handleChange = React.useCallback(
+    (newValue: string): void => {
+      if (!panelOpen) {
+        panelDispatch({ type: 'TOGGLE_MAIN_PANEL', payload: true })
 
-      return
-    }
+        return
+      }
 
-    if (newValue === pathname) {
-      panelDispatch({ type: 'TOGGLE_MAIN_PANEL', payload: false })
+      if (newValue === pathname) {
+        panelDispatch({ type: 'TOGGLE_MAIN_PANEL', payload: false })
 
-      return
-    }
+        return
+      }
 
-    const correspRoute = subRoutePath[currPathSansSlash]
+      const correspRoute = subRoutePath[currPathSansSlash]
 
-    if (correspRoute) {
-      setSubRoutePath({ ...subRoutePath, [currPathSansSlash]: pathname })
-    }
-  }
+      if (correspRoute) {
+        setSubRoutePath({ ...subRoutePath, [currPathSansSlash]: pathname })
+      }
+    },
+    [currPathSansSlash, panelDispatch, panelOpen, pathname, subRoutePath]
+  )
 
   // Route changes should only affect their corresponding item
   useEffect(() => {
@@ -163,7 +171,7 @@ export const BottomNav: FC = (props) => {
             component={NavLink}
             label={config.heading}
             icon={config.icon}
-            value={rootPath}
+            value={subRouteStateKey}
             to={to}
             showLabel
             classes={{ root, selected, label, wrapper }}

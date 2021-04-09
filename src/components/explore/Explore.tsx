@@ -19,8 +19,6 @@ export const Explore: FC = () => {
       sort: [{ field: 'exploreSortOrder' }],
     }
   )
-  // TODO: adapt or remove if not using
-  // utils.pluralTextIfNeeded(uniqueInstances.length),
 
   const intro = (
     <>
