@@ -3,13 +3,8 @@ import { mbStyleTileConfig } from './config'
 
 const { langSrcID } = mbStyleTileConfig
 
-export const onHover: Types.OnHover = (
-  event,
-  setTooltip,
-  map,
-  srcAndFeatID
-) => {
-  if (!map) return
+export const onHover: Types.OnHover = (event, setTooltip, map) => {
+  if (!map || map?.isMoving()) return
 
   const { target, features } = event
   const topFeat = features[0]
@@ -22,9 +17,17 @@ export const onHover: Types.OnHover = (
 
   const cursorableLayers = [langSrcID, 'puma', 'tract'].includes(topFeatSrc)
 
+  // Nothing going on, just the basemap
   if (!highlightableLayers && !cursorableLayers) {
     target.style.cursor = 'default'
     setTooltip(null) // close it no matter what
+
+    // Clear counties and neighbs each time
+    map.removeFeatureState({
+      source: 'neighborhoods',
+      sourceLayer: 'neighborhoods',
+    })
+    map.removeFeatureState({ source: 'counties', sourceLayer: 'counties' })
 
     return
   }
@@ -40,13 +43,6 @@ export const onHover: Types.OnHover = (
 
     map.removeFeatureState({ source, sourceLayer }) // clear each time
     map.setFeatureState({ sourceLayer, source, id }, { hover: true })
-
-    if (srcAndFeatID && srcAndFeatID.srcID === source) {
-      map.setFeatureState(
-        { sourceLayer, source, id: srcAndFeatID.featID },
-        { selected: true }
-      )
-    }
 
     return
   }

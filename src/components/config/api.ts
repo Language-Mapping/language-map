@@ -15,6 +15,10 @@ export const reactQueryDefaults = {
 const censusRoutes = {
   local: '/Census',
   censusDetail: '/Census/:table/:field/:id',
+  pumaDetail: '/Census/puma/:field/:id',
+  tractDetail: '/Census/tract/:field/:id',
+} as {
+  [key: string]: RouteLocation
 }
 
 const infoRoutes = {
@@ -28,11 +32,12 @@ export const routes = {
   explore: '/Explore',
   home: '/',
   neighborhood: '/Explore/Neighborhood',
-  table: '/table',
-  tableDetail: '/table/:id',
+  data: '/Data', // aka "table"
+  dataDetail: '/Data/:id', // aka "table"
   none: '/Explore/Language/none',
   details: '/Explore/Language/:value/:id',
   countiesBase: '/Explore/County',
+  languageInstance: '/Explore/Language/:language',
   ...censusRoutes,
   ...infoRoutes,
 } as {

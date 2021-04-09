@@ -1,25 +1,28 @@
 import React, { FC } from 'react'
+import { Route } from 'react-router-dom'
 import { Source, Layer } from 'react-map-gl'
 
 import { CensusLayerProps } from './types'
-import { CENSUS_PROMOTE_ID_FIELD, censusLayersConfig } from './config.census'
-import { useCensusSymb, useZoomToBounds } from './hooks'
+import { censusLayersConfig } from './config.census'
+import { useCensusSymb } from './hooks'
+import { SelectedPolygon } from './SelectedPolygon'
+
+const CENSUS_PROMOTE_ID_FIELD = 'GEOID' // MB default is `id` as unique ID
 
 export const CensusLayer: FC<CensusLayerProps> = (props) => {
   const { map, beforeId, configKey, mapLoaded } = props
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // TODO: come on
   const layerConfig = censusLayersConfig[configKey]
-  const { sourceID, sourceLayer, routePath } = layerConfig
-  const { tableName, url, linePaint } = layerConfig
+  const { sourceID, sourceLayer } = layerConfig
+  const { url, linePaint } = layerConfig
 
   const { fillPaint, visible, error, isLoading } = useCensusSymb(
     sourceLayer,
     sourceID,
+    mapLoaded,
     map
   )
-
-  useZoomToBounds(routePath, tableName, mapLoaded, map)
 
   if (error) return null // TODO: sentry
 
@@ -58,6 +61,9 @@ export const CensusLayer: FC<CensusLayerProps> = (props) => {
         paint={linePaint}
         layout={{ visibility }}
       />
+      <Route path={`/Census/${sourceID}/:field/:id`} exact>
+        <SelectedPolygon {...props} selLineColor="hsl(133, 100%, 47%)" />
+      </Route>
     </Source>
   )
 }

@@ -24,35 +24,35 @@ export const panelWidths = { mid: 450, midLarge: 600 }
 // Bottom bar nav panel
 export const navRoutes: MapPanel[] = [
   {
-    heading: 'Home',
+    heading: 'Search',
     icon: icons.Home,
     component: <LegendPanel />,
-    rootPath: '/',
+    rootPath: routes.home,
     exact: true,
   },
   {
     heading: 'Explore',
     icon: icons.Explore,
     component: <Explore />,
-    rootPath: '/Explore',
+    rootPath: routes.explore,
   },
   {
     heading: 'Data',
     icon: <NavItemWithBadge>{icons.Data}</NavItemWithBadge>,
     component: null,
-    rootPath: '/table',
+    rootPath: routes.data,
   },
   {
     heading: 'Census',
     icon: icons.Census,
     component: <LocalPanel />,
-    rootPath: '/Census',
+    rootPath: routes.local,
   },
   {
     heading: 'Info',
     icon: icons.Info,
     component: <InfoPanel />,
-    rootPath: '/Info',
+    rootPath: routes.info,
   },
 ]
 
@@ -61,7 +61,7 @@ export const nonNavRoutesConfig = [
   { component: <DetailsPanel />, rootPath: routes.details, exact: true },
   {
     component: <LangCardsList field="Language" />, // set field explicitly
-    rootPath: '/Explore/Language/:language',
+    rootPath: routes.languageInstance,
   },
   {
     component: <NeighborhoodsLanding />,

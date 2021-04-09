@@ -1,33 +1,18 @@
 import React, { FC } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
-
-import { routes } from 'components/config/api'
-import { Explanation } from 'components/generic'
+import { Explanation, UItextFromAirtable } from 'components/generic'
 import { PanelHeading } from 'components/panels'
 import { RandomLinkBtn } from './RandomLinkBtn'
 
 export const NoFeatSel: FC<{ reason?: string }> = (props) => {
   const { reason } = props // Basically just "Community not found..."
 
+  document.title = 'No site selected - NYC Languages' // TODO: make it matter
+
   return (
     <>
       {reason && <PanelHeading text={reason} />}
       <Explanation>
-        Please select a community using one of the following options:
-        <ul>
-          <li>Click a point on the map.</li>
-          <li>
-            Search for a language from{' '}
-            <RouterLink to={routes.home}>Home</RouterLink>.
-          </li>
-          <li>
-            Specify a community in{' '}
-            <RouterLink to={routes.table}>Data</RouterLink>.
-          </li>
-        </ul>
-        <p>
-          Or, click the button below to visit a randomly selected community.
-        </p>
+        <UItextFromAirtable id="none-selected" />
       </Explanation>
       <div
         style={{ textAlign: 'center', maxWidth: '85%', margin: '16px auto' }}

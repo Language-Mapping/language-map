@@ -7,6 +7,7 @@ import { Typography } from '@material-ui/core'
 import { InstanceLevelSchema, useMapToolsState } from 'components/context'
 import { useAirtable } from 'components/explore/hooks'
 import { AIRTABLE_CENSUS_BASE } from 'components/config'
+import { routes } from 'components/config/api'
 import {
   CensusTableRow,
   MapPopupProps,
@@ -55,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
 // The actual <Popup> component
 export const MapPopup: FC<MapPopupProps> = (props) => {
   const classes = useStyles()
-  const { longitude, latitude, setShowPopups, heading, content } = props
+  const { longitude, latitude, handleClose, heading, content } = props
   const { mapPopupRoot, popupHeading, popupContent } = classes
 
   return (
@@ -64,9 +65,7 @@ export const MapPopup: FC<MapPopupProps> = (props) => {
       longitude={longitude}
       latitude={latitude}
       className={mapPopupRoot}
-      onClose={() => {
-        setShowPopups(false)
-      }}
+      onClose={handleClose}
     >
       <header>
         <Typography variant="h6" component="h3" className={popupHeading}>
@@ -78,8 +77,8 @@ export const MapPopup: FC<MapPopupProps> = (props) => {
   )
 }
 
-const LanguagePopup: FC<Pick<MapPopupsProps, 'setShowPopups'>> = (props) => {
-  const { setShowPopups } = props
+const LanguagePopup: FC<Pick<MapPopupsProps, 'handleClose'>> = (props) => {
+  const { handleClose } = props
   const { id } = useParams<{ id: string }>()
 
   const { data, isLoading, error } = useAirtable<InstanceLevelSchema>('Data', {
@@ -96,7 +95,7 @@ const LanguagePopup: FC<Pick<MapPopupsProps, 'setShowPopups'>> = (props) => {
     <MapPopup
       longitude={Longitude}
       latitude={Latitude}
-      setShowPopups={setShowPopups}
+      handleClose={handleClose}
       heading={Endonym}
       content={Language !== Endonym && Language}
     />
@@ -104,7 +103,7 @@ const LanguagePopup: FC<Pick<MapPopupsProps, 'setShowPopups'>> = (props) => {
 }
 
 const PolygonPopup: FC<PolygonPopupProps> = (props) => {
-  const { setShowPopups, tableName, addlFields = [] } = props
+  const { handleClose, tableName, addlFields = [] } = props
   const { id } = useParams<{ id: string }>()
 
   const { data, isLoading, error } = useAirtable<NeighborhoodTableSchema>(
@@ -125,7 +124,7 @@ const PolygonPopup: FC<PolygonPopupProps> = (props) => {
     <MapPopup
       longitude={longitude}
       latitude={latitude}
-      setShowPopups={setShowPopups}
+      handleClose={handleClose}
       heading={firstResult.name}
       content={firstResult.County || ''}
     />
@@ -133,7 +132,7 @@ const PolygonPopup: FC<PolygonPopupProps> = (props) => {
 }
 
 const CensusPopup: FC<MapPopupsProps> = (props) => {
-  const { setShowPopups } = props
+  const { handleClose } = props
   const { field, id, table } = useParams<{
     id: string
     field: string
@@ -181,7 +180,7 @@ const CensusPopup: FC<MapPopupsProps> = (props) => {
     <MapPopup
       longitude={longitude}
       latitude={latitude}
-      setShowPopups={setShowPopups}
+      handleClose={handleClose}
       heading={`${heading} speakers`}
       content={Content}
     />
@@ -189,29 +188,29 @@ const CensusPopup: FC<MapPopupsProps> = (props) => {
 }
 
 export const MapPopups: FC<MapPopupsProps> = (props) => {
-  const { setShowPopups } = props
+  const { handleClose } = props
 
   return (
     <Switch>
       <Route path="/Explore/Language/:language/:id" exact>
-        <LanguagePopup setShowPopups={setShowPopups} />
+        <LanguagePopup handleClose={handleClose} />
       </Route>
       <Route path="/Explore/Neighborhood/:id" exact>
         <PolygonPopup
-          setShowPopups={setShowPopups}
+          handleClose={handleClose}
           tableName="Neighborhood"
           addlFields={['County', 'name']}
         />
       </Route>
       <Route path="/Explore/County/:id" exact>
         <PolygonPopup
-          setShowPopups={setShowPopups}
+          handleClose={handleClose}
           tableName="County"
           addlFields={['name']}
         />
       </Route>
-      <Route path="/Census/:table/:field/:id" exact>
-        <CensusPopup setShowPopups={setShowPopups} />
+      <Route path={routes.censusDetail} exact>
+        <CensusPopup handleClose={handleClose} />
       </Route>
     </Switch>
   )

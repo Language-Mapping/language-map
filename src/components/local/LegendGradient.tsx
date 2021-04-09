@@ -85,9 +85,9 @@ const LegendMarkers: FC<LegendMarkersProps> = (props) => {
 
 export const LegendGradient: FC = (props) => {
   const classes = useStyles()
-  const { censusHighLow } = useMapToolsState()
+  const { censusHighLow, censusActiveField } = useMapToolsState()
 
-  if (!censusHighLow) return null
+  if (!censusHighLow || !censusActiveField) return null
 
   const { low, high } = censusHighLow
 

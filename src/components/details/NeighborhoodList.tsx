@@ -115,7 +115,7 @@ export const NeighborhoodList: FC<Types.DetailedIntroProps> = (props) => {
         component="h3"
         className={`${classes.verticalAlign} ${classes.mainHeading}`}
       >
-        <BiMapPin /> Locations
+        <BiMapPin /> Sites
       </Typography>
       <Explanation>
         <Switch>

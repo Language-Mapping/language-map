@@ -128,15 +128,6 @@ export type PanelSectionProps = {
   explanation?: string | React.ReactNode
 }
 
-export type PolygonLayerProps = {
-  mapLoaded: boolean
-  configKey: string
-  beforeId?: string
-  map?: Map
-}
-
-export type CensusLayerProps = PolygonLayerProps
-
 export type MapProps = {
   mapLoaded: boolean
   setMapLoaded: React.Dispatch<boolean>
@@ -225,7 +216,7 @@ export type UseLayersConfig = {
 
 // Not a component, but shared by several
 export type MapPopupsProps = {
-  setShowPopups: React.Dispatch<boolean>
+  handleClose: () => void
 }
 
 export type PolygonPopupProps = MapPopupsProps & {
@@ -233,8 +224,7 @@ export type PolygonPopupProps = MapPopupsProps & {
   addlFields?: string[]
 }
 
-export type MapPopupProps = PopupSettings &
-  Pick<MapPopupsProps, 'setShowPopups'>
+export type MapPopupProps = PopupSettings & Pick<MapPopupsProps, 'handleClose'>
 
 export type SelFeatAttribs = InternalUse
 
@@ -267,6 +257,7 @@ export type UseCensusSymbReturn = {
 export type UseCensusSymb = (
   sourceLayer: string,
   censusScope: CensusScope,
+  mapLoaded: boolean,
   map?: Map
 ) => UseCensusSymbReturn
 
@@ -315,12 +306,32 @@ export type SrcAndFeatID = { srcID: string; featID: string }
 export type OnHover = (
   event: MapEvent,
   setTooltip: React.Dispatch<Tooltip | null>,
-  map?: Map,
-  SrcAndFeatID?: SrcAndFeatID
+  map?: Map
 ) => void
 
 export type Tooltip = GeocodeMarkerProps
 export type UseRenameLaterUgh = () => SrcAndFeatID | undefined
+
+export type PolygonLayerProps = {
+  configKey: string
+  beforeId?: string
+  mapLoaded: boolean
+  map?: Map
+}
+
+export type CensusLayerProps = PolygonLayerProps
+
 export type UsePolySelFeatSymb = (
   settings: Omit<PolygonLayerProps, 'beforeId'>
 ) => void
+
+export type LangMbSrcAndLayerProps = {
+  isMapTilted: boolean
+  mapLoaded: boolean
+  map?: Map
+}
+
+export type SelectedPolygonProps = PolygonLayerProps & {
+  selLineColor: string
+  selFillColor?: string
+}

@@ -22,10 +22,11 @@ export const DetailsModal: FC = () => {
 
   return (
     <SimpleDialog
+      maxWidth="md"
       open
       onClose={() =>
         history.push({
-          pathname: routes.table,
+          pathname: routes.data,
           state: { ...loc.state, pathname: loc.pathname },
         })
       }

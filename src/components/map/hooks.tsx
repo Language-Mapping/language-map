@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react'
-import { WebMercatorViewport } from 'react-map-gl'
 import { FillPaint, LngLatBounds } from 'mapbox-gl'
 import { useTheme } from '@material-ui/core/styles'
 import * as stats from 'simple-statistics'
@@ -72,17 +71,6 @@ export function useBreakpoint(): Types.Breakpoint {
   return 'desktop'
 }
 
-export const useInitialViewport: Types.GetWebMercViewport = (params) => {
-  const { width, height } = useWindowResize()
-  const { bounds, padding } = params
-
-  const coords = { ...params, width, height } // zoom: 14, // need?
-  const initMerc = new WebMercatorViewport(coords)
-  const initMercBounds = bounds
-
-  return initMerc.fitBounds(initMercBounds, { padding })
-}
-
 export const useLayersConfig = (
   tableName: keyof InstanceLevelSchema
 ): Types.UseLayersConfig => {
@@ -103,6 +91,7 @@ export const useLayersConfig = (
   return { error, data: prepped, isLoading }
 }
 
+// TODO: into utils
 const createLayerStyles = (
   rows: AtSymbFields[],
   group: keyof InstanceLevelSchema
@@ -252,11 +241,12 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
 export const useCensusSymb: Types.UseCensusSymb = (
   sourceLayer,
   censusScope,
+  mapLoaded,
   map
 ) => {
   const mapToolsDispatch = useMapToolsDispatch()
   const { pathname } = useLocation()
-  const { censusActiveField } = useMapToolsState()
+  const { censusActiveField, baseLayer } = useMapToolsState()
   const { id: field, scope } = censusActiveField || {}
   const visible = field !== undefined && censusScope === scope
   const queryID = scope || 'tract'
@@ -282,7 +272,8 @@ export const useCensusSymb: Types.UseCensusSymb = (
   const { high, low } = highLow || {} // avoid useEffect "complex deps" warning
 
   useEffect(() => {
-    if (!map || isLoading || !data.length || !field || !visible) return
+    if (!map || !mapLoaded || isLoading || !data.length || !field || !visible)
+      return
 
     const valuesCurrField = data.map((row) => row[field])
     const means = stats.ckmeans(valuesCurrField, 5)
@@ -306,7 +297,7 @@ export const useCensusSymb: Types.UseCensusSymb = (
       } as { total: number })
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [field, isLoading, pathname])
+  }, [field, isLoading, pathname, mapLoaded, baseLayer])
 
   useEffect(() => {
     if (!highLow) return
@@ -329,7 +320,8 @@ export const useZoomToBounds: Types.UseZoomToBounds = (
 
   // Zoom to selected feature extent
   useEffect(() => {
-    if (!map || !mapLoaded || !xMax || !xMin || !yMin || !yMax) return
+    const noBounds = !xMax || !xMin || !yMin || !yMax
+    if (!map || !mapLoaded || noBounds) return
 
     const boundsArray = [
       [xMin, yMin],
@@ -337,13 +329,14 @@ export const useZoomToBounds: Types.UseZoomToBounds = (
     ] as Types.BoundsArray
 
     const webMercViewport = utils.getPolyWebMercView(boundsArray, offset)
-    const zoom = Math.min(webMercViewport.zoom, POINT_ZOOM_LEVEL) // tracts are too small
+    // Tracts are too small:
+    const zoom = Math.min(webMercViewport.zoom, POINT_ZOOM_LEVEL)
 
     flyToPoint(map, { ...webMercViewport, offset, zoom })
 
-    // LEGIT. selPolyBounds as a dep will break the world.
+    // LEGIT. offset and selPolyBounds as a dep will break the world.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapLoaded, xMax, xMin, yMin, yMax, map])
+  }, [xMax, xMin, yMin, yMax, map, mapLoaded])
 }
 
 // TODO: make it not insanely fragile, or abandon hover stuff on polygons
@@ -366,7 +359,7 @@ export const useFeatSrcFromMatch: Types.UseRenameLaterUgh = () => {
 }
 
 export const usePolySelFeatSymb: Types.UsePolySelFeatSymb = (settings) => {
-  const { map, mapLoaded, configKey } = settings
+  const { map, configKey } = settings
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // TODO: come on
   const layerConfig = allPolyLayersConfig[configKey]
@@ -375,13 +368,14 @@ export const usePolySelFeatSymb: Types.UsePolySelFeatSymb = (settings) => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const visible = useMapToolsState()[visContextKey]
-  // TODO: show at next level, e.g. /Explore/Neighborhood/Astoria/Something
+  // TODO: show at next level? e.g. /Explore/Neighborhood/Astoria/Something
   const match = useRouteMatch<{ id: string }>({ path: routePath, exact: true })
   const valueParam = match?.params.id
+  const isStyleLoaded = map?.isStyleLoaded()
 
   // Clear/set selected feature state
   useEffect(() => {
-    if (!map || !mapLoaded) return
+    if (!map || !isStyleLoaded) return
 
     map.removeFeatureState({ source: sourceID, sourceLayer }) // clear each time
 
@@ -395,7 +389,5 @@ export const usePolySelFeatSymb: Types.UsePolySelFeatSymb = (settings) => {
         { selected: true }
       )
     }
-    // Definitely need `mapLoaded`
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [map, mapLoaded, match, valueParam, visible])
+  }, [map, isStyleLoaded, match, valueParam, visible, sourceID, sourceLayer])
 }

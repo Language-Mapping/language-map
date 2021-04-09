@@ -8,6 +8,7 @@ import * as Types from './types'
 const initialState = {
   autoZoomCensus: true,
   geolocActive: false,
+  geocodeMarkerText: null,
   showNeighbs: false,
   showCounties: false,
   // baseLayer: isLocalDev ? 'none' : 'light', // TODO: default to none in dev
@@ -56,6 +57,8 @@ function reducer(
       }
     case 'CLEAR_CENSUS_FIELD':
       return { ...state, censusActiveField: undefined }
+    case 'SET_GEOCODE_LABEL':
+      return { ...state, geocodeMarkerText: action.payload }
     default: {
       return state
     }

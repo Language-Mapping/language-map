@@ -43,7 +43,7 @@ const ResultsModal: FC = () => {
 
   const history = useHistory()
   const loc = useLocation()
-  const match = useRouteMatch('/table')
+  const match = useRouteMatch(routes.data)
   const { pathname: currPathname, state: locState } = useLocation<
     LocWithState
   >() as LocWithState
@@ -51,17 +51,14 @@ const ResultsModal: FC = () => {
   const [lastLoc, setLastLoc] = useState()
   const { data, isLoading, error } = useAirtable<InstanceLevelSchema>('Data', {
     fields,
-    // Save a little bandwidth on local dev
-    maxRecords: window?.location.hostname === 'lampel-2.local' ? 100 : 20000,
+    // Save a little bandwidth on local dev (30 is enough to paginate)
+    maxRecords: window?.location.hostname === 'lampel-2.local' ? 30 : 20000,
   })
 
   // CRED:
   // help.mouseflow.com/en/articles/4310818-tracking-url-changes-with-react
   useEffect(() => {
-    if (
-      !currPathname.includes(routes.table) &&
-      locState?.from !== routes.help
-    ) {
+    if (!currPathname.includes(routes.data) && locState?.from !== routes.help) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore // TODO: take some time, fix it
       setLastLoc(loc)

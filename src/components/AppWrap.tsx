@@ -70,7 +70,7 @@ export const AppWrap: FC = () => {
   return (
     <>
       {showWelcome && <WelcomeDialog />}
-      {!mapLoaded && <LoadingBackdrop centerOnScreen text="Loading..." />}
+      {!mapLoaded && <LoadingBackdrop text="Loading..." />}
       <TopBar />
       <main className={classes.mainWrap}>
         <div className={classes.mapWrap}>

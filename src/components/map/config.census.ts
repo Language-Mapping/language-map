@@ -1,8 +1,5 @@
-// Tell MB not to use default `id` as unique ID
-export const CENSUS_PROMOTE_ID_FIELD = 'GEOID'
-
-// NOTE: did not implement "selected" or "hover" states for census layers due to
-// complexities with their dynamic fills.
+// NOTE: did not implement "hover" state for census layers due to complexities
+// with their dynamic fills.
 
 // The feature-state approach came from:
 // https://docs.mapbox.com/help/tutorials/data-joins-with-mapbox-boundaries/
@@ -29,25 +26,30 @@ const fillPaint = {
 
 const linePaint = { 'line-color': '#c2c2c2', 'line-opacity': 0.2 }
 
+const common = {
+  linePaint,
+  fillPaint,
+  uniqueIDfield: 'GEOID',
+  idIsNumeric: true,
+}
+
 export const censusLayersConfig = {
   puma: {
-    linePaint,
+    ...common,
     routePath: '/Census/puma/:field/:id',
     sourceID: 'puma',
     sourceLayer: 'puma',
     tableName: 'puma',
     url: 'mapbox://elalliance.ckmyzhyit0n4b21mxt9rdkeiy-7w6dn',
     visContextKey: 'showNeighbs',
-    fillPaint,
   },
   tract: {
-    linePaint,
+    ...common,
     routePath: '/Census/tract/:field/:id',
     sourceID: 'tract',
     sourceLayer: 'tract',
     tableName: 'tract',
     url: 'mapbox://elalliance.ckmz05zuf04p421nltfeih779-91sof',
     visContextKey: 'showCounties',
-    fillPaint,
   },
 }

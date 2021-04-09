@@ -1,28 +1,26 @@
 import React, { FC } from 'react'
+import { Route } from 'react-router-dom'
 import { Source, Layer } from 'react-map-gl'
+import { FillPaint } from 'mapbox-gl'
 
 import { useMapToolsState } from 'components/context'
 import { PolygonLayerProps } from './types'
-import { useZoomToBounds, usePolySelFeatSymb } from './hooks'
 import { nonCensusPolygonConfig } from './config.non-census-poly'
+import { SelectedPolygon } from './SelectedPolygon'
 
 // Handy remnant from Boundaries layers:
 // filter={['in', ['id'], ['literal', recordIDs]]}
 
 export const PolygonLayer: FC<PolygonLayerProps> = (props) => {
-  const { map, beforeId, mapLoaded, configKey } = props
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  const { beforeId, configKey } = props
+  /* eslint-disable @typescript-eslint/ban-ts-comment */
   // @ts-ignore // TODO: come on
   const layerConfig = nonCensusPolygonConfig[configKey]
   const { sourceID, sourceLayer, routePath, visContextKey } = layerConfig
-  const { tableName, url, fillPaint, linePaint } = layerConfig
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  const { url, fillPaint, linePaint, selLineColor, selFillColor } = layerConfig
   // @ts-ignore
   const visible = useMapToolsState()[visContextKey]
-
-  useZoomToBounds(routePath, tableName, mapLoaded, map)
-  usePolySelFeatSymb({ map, mapLoaded, configKey })
+  /* eslint-enable @typescript-eslint/ban-ts-comment */
 
   return (
     <Source
@@ -43,9 +41,7 @@ export const PolygonLayer: FC<PolygonLayerProps> = (props) => {
         id={`${sourceID}-poly`}
         source={sourceID}
         source-layer={sourceLayer}
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        paint={fillPaint}
+        paint={fillPaint as FillPaint}
         type="fill"
         beforeId={beforeId}
         layout={{ visibility: visible ? 'visible' : 'none' }}
@@ -59,6 +55,13 @@ export const PolygonLayer: FC<PolygonLayerProps> = (props) => {
         beforeId={beforeId}
         layout={{ visibility: visible ? 'visible' : 'none' }}
       />
+      <Route path={routePath} exact>
+        <SelectedPolygon
+          {...props}
+          selLineColor={selLineColor}
+          selFillColor={selFillColor}
+        />
+      </Route>
     </Source>
   )
 }

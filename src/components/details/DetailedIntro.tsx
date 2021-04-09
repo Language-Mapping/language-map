@@ -32,7 +32,7 @@ export const DetailedIntro: FC<DetailedIntroProps> = (props) => {
   return (
     <header className={classes.root}>
       {children}
-      <Route path={[routes.details, routes.tableDetail]} exact>
+      <Route path={[routes.details, routes.dataDetail]} exact>
         <LocationLink
           anchorEl={anchorEl}
           setAnchorEl={setAnchorEl}
@@ -40,7 +40,7 @@ export const DetailedIntro: FC<DetailedIntroProps> = (props) => {
         />
       </Route>
       <Switch>
-        <Route path={[routes.details, routes.tableDetail]} exact />
+        <Route path={[routes.details, routes.dataDetail]} exact />
         <Route>
           <StatsAndMeta data={data} />
         </Route>

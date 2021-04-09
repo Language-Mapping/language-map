@@ -89,7 +89,7 @@ export const TimelineCrumbs: FC<TimelineCrumbsProps> = (props) => {
       {/* Always link to Home at bottom of timeline */}
       <TimelineItem classes={{ root: classes.timelineItem }}>
         <TimelineSeparator>
-          <TimelineDot color="secondary">{icons.Home}</TimelineDot>
+          <TimelineDot color="secondary">{icons.HomeLink}</TimelineDot>
         </TimelineSeparator>
         <TimelineContent>
           <RouterLink to="/">Home</RouterLink>
