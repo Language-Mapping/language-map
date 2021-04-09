@@ -24,7 +24,7 @@ export const panelWidths = { mid: 450, midLarge: 600 }
 // Bottom bar nav panel
 export const navRoutes: MapPanel[] = [
   {
-    heading: 'Home',
+    heading: 'Search',
     icon: icons.Home,
     component: <LegendPanel />,
     rootPath: routes.home,
