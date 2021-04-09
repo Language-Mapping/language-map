@@ -22,6 +22,7 @@ export const DetailsModal: FC = () => {
 
   return (
     <SimpleDialog
+      maxWidth="md"
       open
       onClose={() =>
         history.push({

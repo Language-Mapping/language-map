@@ -54,7 +54,7 @@ const PanelTitle: FC<PanelTitleProps> = (props) => {
 
 const LinkToHomeBtn: FC = (props) => {
   return (
-    <Tooltip title="Go to Home panel">
+    <Tooltip title="Search & Display Options">
       <IconButton
         size="small"
         aria-label="go home"
