@@ -45,7 +45,7 @@ const DetailsWrap: FC = () => {
   return <Details {...{ instanceDescripID, langDescripID, data }} />
 }
 
-// Used in /Explore/Language/:language/:id and /table/:id
+// Used in /Explore/Language/:language/:id and /Data/:id
 export const Details: FC<DetailsProps> = (props) => {
   const { instanceDescripID, langDescripID, data } = props
 

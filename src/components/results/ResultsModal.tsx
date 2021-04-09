@@ -43,7 +43,7 @@ const ResultsModal: FC = () => {
 
   const history = useHistory()
   const loc = useLocation()
-  const match = useRouteMatch('/table')
+  const match = useRouteMatch(routes.data)
   const { pathname: currPathname, state: locState } = useLocation<
     LocWithState
   >() as LocWithState

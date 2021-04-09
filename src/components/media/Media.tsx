@@ -8,6 +8,7 @@ import { IoIosCloseCircleOutline } from 'react-icons/io'
 import { FaMapMarkedAlt } from 'react-icons/fa'
 
 import { ShareButtons, ShareButtonsWrap } from 'components/generic'
+import { routes } from 'components/config/api'
 import { MediaListItemProps, MediaProps } from './types'
 import { MediaModal } from './MediaModal'
 
@@ -67,7 +68,9 @@ export const Media: FC<MediaProps> = (props) => {
   const { data, omitClear, shareNoun = 'community' } = props
   const history = useHistory()
   const [mediaUrl, setMediaUrl] = useState<string>()
-  const isTable: { params: { id: string } } | null = useRouteMatch('/table/:id')
+  const isTable: { params: { id: string } } | null = useRouteMatch(
+    routes.dataDetail
+  )
   const [showShareBtns, setShowShareBtns] = useState<boolean>(false)
   const classes = useStyles({ showShareBtns })
   const { Language, Video, Audio, Description, name } = data
@@ -99,7 +102,7 @@ export const Media: FC<MediaProps> = (props) => {
           variant="outlined"
           handleClick={() => setMediaUrl(Audio)}
         />
-        {/* TODO: use Switch + Route for this, e.g. /table/:id */}
+        {/* TODO: use Switch + Route for this, e.g. /Data/:id */}
         {!omitClear &&
           ((!isTable && (
             <MediaListItem

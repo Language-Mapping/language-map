@@ -5,6 +5,7 @@ import { Link } from '@material-ui/core'
 
 import { GlobalContext } from 'components/context'
 import { Explanation } from 'components/generic'
+import { routes } from 'components/config/api'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -50,7 +51,7 @@ export const FiltersWarning: FC = () => {
   )
 
   const TableLink = (
-    <Link to="/table" component={RouterLink}>
+    <Link to={routes.data} component={RouterLink}>
       view
     </Link>
   )

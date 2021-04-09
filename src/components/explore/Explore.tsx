@@ -4,6 +4,7 @@ import { Link } from '@material-ui/core'
 
 import { BasicExploreIntro } from 'components/explore'
 import { LoadingIndicatorBar } from 'components/generic/modals'
+import { routes } from 'components/config/api'
 import { icons } from 'components/config'
 import { CardListWrap } from './CardList'
 import { CustomCard } from './CustomCard'
@@ -23,12 +24,12 @@ export const Explore: FC = () => {
   const intro = (
     <>
       For an explanation of the options below, visit the{' '}
-      <Link component={RouterLink} to="/Info/Help">
+      <Link component={RouterLink} to={routes.help}>
         Help page
       </Link>{' '}
       for definitions and additional info. You can also view and filter all
       language communities in the{' '}
-      <Link component={RouterLink} to="/table">
+      <Link component={RouterLink} to={routes.data}>
         Data table
       </Link>{' '}
       as well.

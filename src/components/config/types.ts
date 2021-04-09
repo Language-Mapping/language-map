@@ -16,8 +16,8 @@ export type RouteLocation =
   | '/Info/About'
   | '/Info/Feedback'
   | '/Info/Help'
-  | '/table'
-  | '/table/:id'
+  | '/Data'
+  | '/Data/:id'
 // TODO: ^^^^ figure out why it's not actually checking
 
 export type LocWithState = {

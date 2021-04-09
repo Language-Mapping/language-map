@@ -6,6 +6,7 @@ import { Paper, Toolbar } from '@material-ui/core'
 
 import { SearchTabs, usePanelState } from 'components/panels'
 import { BackToTopBtn, useHideOnScroll } from 'components/generic'
+import { routes } from 'components/config/api'
 import { PanelTitleBar } from './PanelTitleBar'
 import { PanelWrapProps } from './types'
 
@@ -83,7 +84,7 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
   // @ts-ignore // TODO: 😞
   const isPageWithID = useRouteMatch<{ params: { id: number } }>([
     '/Explore/Language/:langName/:id',
-    '/table/:id',
+    routes.dataDetail,
     // @ts-ignore // TODO: 😞
   ])?.params.id
   const asArray = pathname.split('/')

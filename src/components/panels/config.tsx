@@ -27,32 +27,32 @@ export const navRoutes: MapPanel[] = [
     heading: 'Home',
     icon: icons.Home,
     component: <LegendPanel />,
-    rootPath: '/',
+    rootPath: routes.home,
     exact: true,
   },
   {
     heading: 'Explore',
     icon: icons.Explore,
     component: <Explore />,
-    rootPath: '/Explore',
+    rootPath: routes.explore,
   },
   {
     heading: 'Data',
     icon: <NavItemWithBadge>{icons.Data}</NavItemWithBadge>,
     component: null,
-    rootPath: '/table',
+    rootPath: routes.data,
   },
   {
     heading: 'Census',
     icon: icons.Census,
     component: <LocalPanel />,
-    rootPath: '/Census',
+    rootPath: routes.local,
   },
   {
     heading: 'Info',
     icon: icons.Info,
     component: <InfoPanel />,
-    rootPath: '/Info',
+    rootPath: routes.info,
   },
 ]
 

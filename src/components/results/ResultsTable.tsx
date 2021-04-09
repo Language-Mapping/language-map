@@ -117,7 +117,7 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
 
   return (
     <>
-      <Route path="/table/:id">
+      <Route path={routes.dataDetail}>
         <DetailsModal />
       </Route>
       <MaterialTable
