@@ -58,10 +58,7 @@ const ResultsModal: FC = () => {
   // CRED:
   // help.mouseflow.com/en/articles/4310818-tracking-url-changes-with-react
   useEffect(() => {
-    if (
-      !currPathname.includes(routes.table) &&
-      locState?.from !== routes.help
-    ) {
+    if (!currPathname.includes(routes.data) && locState?.from !== routes.help) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore // TODO: take some time, fix it
       setLastLoc(loc)

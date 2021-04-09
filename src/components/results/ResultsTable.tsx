@@ -58,7 +58,7 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
 
     // Has nothing to do with County, just need it for full-screen view
     if (field === 'County') {
-      history.push(`${routes.table}/${rowData.id}`) // open Details modal
+      history.push(`${routes.data}/${rowData.id}`) // open Details modal
 
       return
     }

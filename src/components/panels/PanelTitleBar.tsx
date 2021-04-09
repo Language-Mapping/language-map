@@ -124,9 +124,9 @@ const PanelTitleRoutes: FC<{ panelTitle: string }> = (props) => {
         <PanelTitle text="Search and Display Sites" />
       </Route>
       <Route path={routes.none}>
-        <PanelTitle text="No community selected" />
+        <PanelTitle text="No site selected" />
       </Route>
-      <Route path={routes.table}>
+      <Route path={routes.data}>
         <PanelTitle text=" " />
       </Route>
       <Route

@@ -25,7 +25,7 @@ export const DetailsModal: FC = () => {
       open
       onClose={() =>
         history.push({
-          pathname: routes.table,
+          pathname: routes.data,
           state: { ...loc.state, pathname: loc.pathname },
         })
       }

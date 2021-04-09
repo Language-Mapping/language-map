@@ -1,10 +1,8 @@
 import React, { FC } from 'react'
-import { Link as RouterLink } from 'react-router-dom'
-import { Link } from '@material-ui/core'
 
 import { BasicExploreIntro } from 'components/explore'
 import { LoadingIndicatorBar } from 'components/generic/modals'
-import { routes } from 'components/config/api'
+import { UItextFromAirtable } from 'components/generic'
 import { icons } from 'components/config'
 import { CardListWrap } from './CardList'
 import { CustomCard } from './CustomCard'
@@ -21,24 +19,11 @@ export const Explore: FC = () => {
     }
   )
 
-  const intro = (
-    <>
-      For an explanation of the options below, visit the{' '}
-      <Link component={RouterLink} to={routes.help}>
-        Help page
-      </Link>{' '}
-      for definitions and additional info. You can also view and filter all
-      language communities in the{' '}
-      <Link component={RouterLink} to={routes.data}>
-        Data table
-      </Link>{' '}
-      as well.
-    </>
-  )
-
   return (
     <>
-      <BasicExploreIntro introParagraph={intro} />
+      <BasicExploreIntro
+        introParagraph={<UItextFromAirtable id="explore-intro" />}
+      />
       {isLoading && <LoadingIndicatorBar omitText />}
       {error && 'Could not load'}
       <CardListWrap>
