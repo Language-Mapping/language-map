@@ -10,7 +10,6 @@ import { useMapToolsDispatch } from 'components/context'
 import { useUItext } from 'components/generic'
 import { MAPBOX_TOKEN, NYC_LAT_LONG, POINT_ZOOM_LEVEL } from './config'
 import { useWindowResize } from '../../utils'
-import { useOffset } from './hooks'
 import { flyToBounds, flyToPoint } from './utils'
 import { GeocodeResult, BoundsArray, GeocoderPopoutProps } from './types'
 
@@ -53,7 +52,6 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
   const { mapRef } = props
   const geocoderContainerRef = useRef<HTMLDivElement>(null)
   const { width, height } = useWindowResize()
-  const offset = useOffset()
   const { text: placeholderText } = useUItext('loc-search-placeholder')
   const classes = useStyles()
   const mapToolsDispatch = useMapToolsDispatch()
@@ -78,7 +76,6 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
           [bbox[2], bbox[3]],
         ] as BoundsArray,
         padding: 25,
-        offset,
       }
 
       flyToBounds(map, settings)
@@ -88,7 +85,6 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
         longitude: center[0],
         zoom: POINT_ZOOM_LEVEL,
         disregardCurrZoom: true,
-        offset,
       }
 
       flyToPoint(map, settings)

@@ -188,7 +188,6 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
 ) => {
   const { state } = useContext(GlobalContext)
   const { langFeatures, langFeatsLenCache } = state
-  const offset = useOffset()
   const [shouldFlyHome, setShouldFlyHome] = useState<boolean>(false)
 
   // Fly to extent of lang features on length change
@@ -215,7 +214,6 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
         longitude: firstCoords[0],
         zoom: POINT_ZOOM_LEVEL,
         pitch: isMapTilted ? 80 : 0,
-        offset,
       })
 
       return
@@ -230,7 +228,6 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
       height: window.innerHeight as number,
       width: window.innerWidth as number,
       bounds: bounds.toArray() as Types.BoundsArray,
-      offset,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [langFeatures.length])
@@ -316,7 +313,6 @@ export const useZoomToBounds: Types.UseZoomToBounds = (
 ) => {
   const selPolyBounds = usePolygonWebMerc(routePath, tableName)
   const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = selPolyBounds
-  const offset = useOffset()
 
   // Zoom to selected feature extent
   useEffect(() => {
@@ -328,11 +324,11 @@ export const useZoomToBounds: Types.UseZoomToBounds = (
       [xMax, yMax],
     ] as Types.BoundsArray
 
-    const webMercViewport = utils.getPolyWebMercView(boundsArray, offset)
+    const webMercViewport = utils.getPolyWebMercView(boundsArray)
     // Tracts are too small:
     const zoom = Math.min(webMercViewport.zoom, POINT_ZOOM_LEVEL)
 
-    flyToPoint(map, { ...webMercViewport, offset, zoom })
+    flyToPoint(map, { ...webMercViewport, zoom })
 
     // LEGIT. offset and selPolyBounds as a dep will break the world.
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -93,9 +93,8 @@ const ToggleSearchMenuBtn: FC = () => {
   )
 }
 
-export const PanelTitleBar: FC<{ hide: boolean }> = (props) => {
-  const { hide } = props
-  const classes = useStyles({ hide })
+export const PanelTitleBar: FC = (props) => {
+  const classes = useStyles({})
   const { pathname } = useLocation()
   // Lil' gross, but use Level2 route name first, otherwise Level1
   const panelTitle = pathname.split('/')[2] || pathname.split('/')[1]
@@ -111,7 +110,7 @@ export const PanelTitleBar: FC<{ hide: boolean }> = (props) => {
 
   // WISHLIST: add maximize btn on mobile
   return (
-    <AppBar className={classes.root} position="sticky">
+    <AppBar className={classes.root} position="sticky" id="panel-title-bar">
       <Toolbar variant="dense" className={classes.toolbar}>
         <Switch>
           {/* Census can just have home btn */}

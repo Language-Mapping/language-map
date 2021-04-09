@@ -1,6 +1,10 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme, Zoom, Fab } from '@material-ui/core'
 import { FaArrowCircleUp } from 'react-icons/fa'
+import {
+  BOTTOM_NAV_HEIGHT,
+  BOTTOM_NAV_HEIGHT_MOBILE,
+} from 'components/nav/config'
 
 type BackToTopBtnProps = {
   hide: boolean
@@ -11,8 +15,12 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     backToTopBtn: {
       position: 'absolute',
-      bottom: '1rem',
-      right: '1rem',
+      bottom: BOTTOM_NAV_HEIGHT + 8,
+      right: '1.25rem',
+      [theme.breakpoints.down('sm')]: {
+        bottom: BOTTOM_NAV_HEIGHT_MOBILE + 4,
+        right: 8,
+      },
     },
   })
 )

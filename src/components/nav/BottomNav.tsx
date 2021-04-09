@@ -10,7 +10,7 @@ import { BottomNavigation, BottomNavigationAction } from '@material-ui/core'
 
 import { usePanelState, usePanelDispatch } from 'components/panels'
 import { routes } from 'components/config/api'
-import { navRoutes, panelWidths } from '../panels/config'
+import { navRoutes } from '../panels/config'
 import { BOTTOM_NAV_HEIGHT_MOBILE } from './config'
 
 const useStyles = makeStyles((theme: Theme) => {
@@ -23,28 +23,18 @@ radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`
       borderBottomLeftRadius: 4,
       borderBottomRightRadius: 4,
       bottom: 0,
-      boxShadow: '0px 0px 5px 0px rgba(0,0,0,0.1)',
-      left: 0,
       position: 'absolute',
-      right: 0,
+      boxShadow: '0px 0px 5px 0px rgba(0,0,0,0.1)',
       zIndex: 1,
+      width: '100%',
       [theme.breakpoints.down('sm')]: {
         boxShadow: '0px -5px 5px 0px rgba(0,0,0,0.1)',
         borderRadius: 0,
         height: BOTTOM_NAV_HEIGHT_MOBILE,
       },
-      [theme.breakpoints.up('md')]: {
-        left: 24,
-        right: 'auto',
-        bottom: 36, // above MB logo // TODO: mv logo to right side
-        width: panelWidths.mid,
-      },
-      [theme.breakpoints.up('xl')]: {
-        width: panelWidths.midLarge,
-      },
     },
     // TODO: clip-path notch instead of boring rounded corners
-    root: {
+    bottomNavActionRoot: {
       minWidth: 'auto', // 80 = too-large default,
       // Probably NOT light/dark theme interchangeable:
       outline: `solid 1px hsla(168, 41%, 19%, 0.15)`,
@@ -102,9 +92,9 @@ const initialSubRoutes = {
 export const BottomNav: FC = (props) => {
   const { pathname } = useLocation()
   const classes = useStyles()
-  const { root, selected, label, wrapper } = classes
-  const panelDispatch = usePanelDispatch()
+  const { bottomNavActionRoot, selected, label, wrapper } = classes
   const { panelOpen } = usePanelState()
+  const panelDispatch = usePanelDispatch()
   const [subRoutePath, setSubRoutePath] = useState(
     initialSubRoutes as { [key: string]: string }
   )
@@ -151,8 +141,28 @@ export const BottomNav: FC = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
+  const NavActions = navRoutes.map((config) => {
+    const { rootPath } = config
+    const subRouteStateKey = rootPath.split('/')[1] || '/'
+    const to = subRoutePath[subRouteStateKey] || rootPath
+
+    return (
+      <BottomNavigationAction
+        key={config.heading}
+        component={NavLink}
+        label={config.heading}
+        icon={config.icon}
+        value={subRouteStateKey}
+        to={to}
+        showLabel
+        classes={{ root: bottomNavActionRoot, selected, label, wrapper }}
+      />
+    )
+  })
+
   return (
     <BottomNavigation
+      id="bottom-nav"
       value={current}
       // component="nav" // TODO: restore w/o errors
       onChange={(event, newValue) => {
@@ -160,24 +170,7 @@ export const BottomNav: FC = (props) => {
       }}
       className={classes.bottomNavRoot}
     >
-      {navRoutes.map((config) => {
-        const { rootPath } = config
-        const subRouteStateKey = rootPath.split('/')[1] || '/'
-        const to = subRoutePath[subRouteStateKey] || rootPath
-
-        return (
-          <BottomNavigationAction
-            key={config.heading}
-            component={NavLink}
-            label={config.heading}
-            icon={config.icon}
-            value={subRouteStateKey}
-            to={to}
-            showLabel
-            classes={{ root, selected, label, wrapper }}
-          />
-        )
-      })}
+      {NavActions}
     </BottomNavigation>
   )
 }

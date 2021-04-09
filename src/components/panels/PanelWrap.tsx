@@ -1,16 +1,21 @@
-import React, { FC, useEffect, useRef } from 'react'
+import React, { FC, useEffect, useRef, useState, useCallback } from 'react'
 import { Route, Switch, useRouteMatch, useLocation } from 'react-router-dom'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Paper, Toolbar } from '@material-ui/core'
 
 import { SearchTabs, usePanelState } from 'components/panels'
-import { BackToTopBtn, useHideOnScroll } from 'components/generic'
+import { BackToTopBtn } from 'components/generic'
 import { routes } from 'components/config/api'
+import { BottomNav } from 'components/nav'
+import { BOTTOM_NAV_HEIGHT_MOBILE } from 'components/nav/config'
 import { PanelTitleBar } from './PanelTitleBar'
 import { PanelWrapProps } from './types'
 
-import * as config from './config'
+import {
+  panelWidths,
+  MOBILE_PANEL_HEADER_HT,
+  nonNavRoutesConfig,
+} from './config'
 import './styles.css'
 
 type StyleProps = {
@@ -21,30 +26,29 @@ type StyleProps = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      borderBottomLeftRadius: 0, // override paper
-      borderBottomRightRadius: 0, // override paper
-      bottom: 48, // default is set directly in MUI to 56
-      boxShadow: '0 -2px 7px hsla(0, 0%, 0%, 0.25)',
-      left: 0,
+      backgroundColor: theme.palette.background.paper,
+      boxShadow: '2px 0 7px hsla(0, 0%, 0%, 0.25)',
       opacity: (props: StyleProps) => (props.panelOpen ? 1 : 0),
-      position: 'absolute',
-      right: 0,
-      top: '45%',
+      width: '100%',
       transition: '300ms ease all',
-      transform: (props: StyleProps) =>
-        `translateY(${props.panelOpen ? 0 : '100%'})`,
+      display: 'grid',
+      position: 'relative',
+      gridTemplateRows: 'auto 1fr auto',
       [theme.breakpoints.up('sm')]: {
-        left: 8,
-        right: 8,
-      },
-      [theme.breakpoints.up('md')]: {
-        top: 24,
-        left: 24,
-        bottom: 92, // 36 + 56 (aka BottomNav `bottom` + `height`)
-        width: config.panelWidths.mid,
+        transform: (props: StyleProps) =>
+          `translateX(${props.panelOpen ? 0 : '-100%'})`,
+        maxWidth: (props: StyleProps) =>
+          props.panelOpen ? panelWidths.mid : 0,
+        flexBasis: (props: StyleProps) =>
+          props.panelOpen ? panelWidths.mid : 0,
+        flexGrow: 1,
+        flexShrink: 0,
       },
       [theme.breakpoints.up('xl')]: {
-        width: config.panelWidths.midLarge,
+        maxWidth: (props: StyleProps) =>
+          props.panelOpen ? panelWidths.midLarge : 0,
+        flexBasis: (props: StyleProps) =>
+          props.panelOpen ? panelWidths.midLarge : 0,
       },
       '& .MuiInputLabel-formControl': {
         color: theme.palette.text.secondary,
@@ -52,12 +56,12 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     panelContentRoot: {
-      bottom: 0,
       overflowX: 'hidden',
-      overflowY: 'auto',
-      position: 'absolute',
-      top: 0,
       width: '100%',
+      position: 'absolute',
+      top: MOBILE_PANEL_HEADER_HT,
+      bottom: BOTTOM_NAV_HEIGHT_MOBILE,
+      overflowY: 'auto',
     },
     innerPanel: {
       padding: '0.75rem 0.75rem',
@@ -68,16 +72,25 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
+// TODO: into utils
+function getScrollY(scroller: HTMLElement): number {
+  if (!scroller) return window.pageYOffset
+  if (scroller.scrollTop !== undefined) return scroller.scrollTop
+
+  return (document.documentElement || document.body.parentNode || document.body)
+    .scrollTop
+}
+
 // WISHLIST: consider swipeable views for moving between panels:
 // https://react-swipeable-views.com/demos/demos/
 export const PanelWrap: FC<PanelWrapProps> = (props) => {
   const { mapRef } = props
   const { panelOpen, searchTabsOpen } = usePanelState()
   const loc = useLocation()
-  const { pathname } = loc
+  const { pathname, hash } = loc
   const targetElemID = 'back-to-top-anchor'
+  const [hide, setHide] = useState(false)
   const panelRef = useRef<HTMLDivElement | null>(null)
-  const hide = useHideOnScroll(panelRef.current)
   const classes = useStyles({ panelOpen, hide })
 
   /* eslint-disable @typescript-eslint/ban-ts-comment */
@@ -89,6 +102,38 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
   ])?.params.id
   const asArray = pathname.split('/')
   const pageTitle = asArray[4] || asArray[3] || asArray[2] || asArray[1]
+  const scrollRef = useRef<number>(0)
+  const threshold = 125
+
+  const handleScroll = useCallback(
+    (e: React.UIEvent<HTMLElement, UIEvent>) => {
+      if (!panelRef.current) return
+
+      let shouldHide = false
+      const scrollY = getScrollY(panelRef.current)
+      const prevScrollY = scrollRef.current
+
+      scrollRef.current = scrollY
+
+      if (scrollY > prevScrollY && scrollY > threshold) {
+        shouldHide = true
+      }
+
+      setHide(shouldHide)
+    },
+    [panelRef]
+  )
+
+  // Show on each pathname change, otherwise it stays hidden
+  useEffect(() => {
+    setHide(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!hash) return
+
+    setHide(true)
+  }, [hash]) // hash makes it work for Help and About anchors
 
   // TODO: make this actually work on mobile, and confirm on desktop
   useEffect(() => {
@@ -110,13 +155,16 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
   }
 
   return (
-    <Paper className={classes.root} elevation={8}>
-      <PanelTitleBar hide={hide} />
+    <div className={classes.root}>
+      <PanelTitleBar />
       <TransitionGroup>
         <CSSTransition key={loc.key} classNames="fade" timeout={950} appear>
-          <div className={classes.panelContentRoot} ref={panelRef}>
+          <div
+            className={classes.panelContentRoot}
+            onScroll={handleScroll}
+            ref={panelRef}
+          >
             <div id={targetElemID} />
-            <Toolbar variant="dense" />
             <Switch>
               {/* Always show Search tabs on Home */}
               <Route path="/" exact>
@@ -128,7 +176,7 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
             </Switch>
             <div className={classes.innerPanel}>
               <Switch location={loc}>
-                {config.nonNavRoutesConfig.map((routeConfig) => {
+                {nonNavRoutesConfig.map((routeConfig) => {
                   const { exact, rootPath, component } = routeConfig
 
                   return (
@@ -143,6 +191,7 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
         </CSSTransition>
       </TransitionGroup>
       <BackToTopBtn hide={hide} targetElemID={targetElemID} />
-    </Paper>
+      <BottomNav />
+    </div>
   )
 }

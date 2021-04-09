@@ -99,7 +99,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   }, [pathname])
 
   useEffect(() => {
-    if (map) utils.flyHome(map, offset)
+    if (map) utils.flyHome(map)
   }, [shouldFlyHome])
 
   // Load symbol icons on load. Must be done on load and whenever `baselayer` is
@@ -116,7 +116,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   // Auto-zoom to initial extent on Census language change
   useEffect(() => {
     // Don't zoom on clearing Census dropdown, aka no language field selected
-    if (map && autoZoomCensus && censusActiveField) utils.flyHome(map, offset)
+    if (map && autoZoomCensus && censusActiveField) utils.flyHome(map)
   }, [censusActiveField])
 
   // Filter lang feats in map on length change or symbology change
@@ -254,13 +254,13 @@ export const Map: FC<Types.MapProps> = (props) => {
     if (!map || !mapLoaded) return
 
     if (actionID === 'home') {
-      utils.flyHome(map, offset)
+      utils.flyHome(map)
     } else if (actionID === 'reset-pitch') {
       setIsMapTilted(!isMapTilted)
     } else if (actionID === 'in') {
-      map.zoomIn({ offset }, { forceViewportUpdate: true })
+      map.zoomIn(undefined, { forceViewportUpdate: true })
     } else if (actionID === 'out') {
-      map.zoomOut({ offset }, { forceViewportUpdate: true })
+      map.zoomOut(undefined, { forceViewportUpdate: true })
     }
   }
 

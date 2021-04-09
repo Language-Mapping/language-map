@@ -11,13 +11,12 @@ import { MapOptionsMenu } from './MapOptionsMenu'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      position: 'absolute',
-      top: -8,
-      right: 6,
-      zIndex: 1100, // above app bar
+      width: 75,
+      flex: 1,
+      padding: 4,
+      backgroundColor: 'none',
       [theme.breakpoints.up('sm')]: {
-        top: theme.spacing(1),
-        right: theme.spacing(1),
+        backgroundColor: theme.palette.primary.dark,
       },
       '& svg': {
         fontSize: '1.4em',
