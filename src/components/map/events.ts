@@ -4,9 +4,10 @@ import { mbStyleTileConfig } from './config'
 const { langSrcID } = mbStyleTileConfig
 
 export const onHover: Types.OnHover = (event, setTooltip, map) => {
-  if (!map || map?.isMoving()) return
-
   const { target, features } = event
+
+  if (!map || map?.isMoving() || !features) return // no feats means errors...
+
   const topFeat = features[0]
   const topFeatSrc = topFeat?.source
 
