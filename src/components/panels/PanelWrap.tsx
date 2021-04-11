@@ -4,7 +4,11 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Hidden } from '@material-ui/core'
 
-import { SearchTabs, usePanelState } from 'components/panels'
+import {
+  SearchTabs,
+  usePanelState,
+  PanelCloseBtnSticky,
+} from 'components/panels'
 import { BackToTopBtn, useHideOnScroll } from 'components/generic'
 import { routes } from 'components/config/api'
 import { BottomNav } from 'components/nav'
@@ -15,20 +19,18 @@ import { panelWidths, nonNavRoutesConfig } from './config'
 import './styles.css'
 
 type Style = {
-  hide: boolean
   open: boolean
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      backgroundColor: theme.palette.background.paper,
       boxShadow: '1px 2px 8px hsl(0deg 0% 0% / 65%)',
-      display: 'flex',
-      flexDirection: 'column',
       opacity: (props: Style) => (props.open ? 1 : 0),
-      position: 'relative',
       transition: '300ms ease all',
       [theme.breakpoints.up('md')]: {
+        position: 'relative', // NOT SURE TRY ON DESK
         maxWidth: (props: Style) => (props.open ? panelWidths.mid : 0),
         flexBasis: (props: Style) => (props.open ? panelWidths.mid : 0),
       },
@@ -38,46 +40,51 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       [theme.breakpoints.down('sm')]: {
         // Prevent extra gap on phone/tablet:
-        borderTopWidth: (props: Style) => (props.open ? 4 : 0),
-        borderTopColor: theme.palette.primary.dark,
-        borderTopStyle: `solid`,
-        order: 1, // before nav btns
-      },
-      [theme.breakpoints.only('xs')]: {
-        maxHeight: (props: Style) => (props.open ? 275 : 0),
-        minHeight: (props: Style) => (props.open ? 275 : 0),
+        // borderTopWidth: (props: Style) => (props.open ? 3 : 0),
+        // borderTopColor: theme.palette.primary.dark,
+        // borderTopStyle: `solid`,
+        order: 2,
+        display: 'block',
+        maxHeight: '40vh',
+        flex: 1,
       },
       [theme.breakpoints.only('sm')]: {
-        maxHeight: (props: Style) => (props.open ? '40vh' : 0),
-        minHeight: (props: Style) => (props.open ? '40vh' : 0),
+        maxHeight: (props: Style) => (props.open ? '45vh' : 0),
+        minHeight: (props: Style) => (props.open ? '45vh' : 0),
       },
       '& .MuiInputLabel-formControl': {
         color: theme.palette.text.secondary,
         fontSize: '1rem',
       },
       '& .trans-group': {
-        backgroundColor: theme.palette.background.paper,
-        flex: (props: Style) => (props.open ? 1 : 0),
-        overflowY: 'auto',
-        [theme.breakpoints.up('sm')]: {
-          flex: 1,
+        height: '100%',
+        [theme.breakpoints.up('md')]: {
+          position: 'relative',
         },
       },
     },
     panelContent: {
-      height: '100%',
       opacity: 1,
-      overflowX: 'hidden',
       overflowY: 'auto',
-      padding: '1.25rem 0.75rem',
-      position: 'relative',
+      padding: '1rem 0.75rem 1.25rem',
       width: '100%',
       [theme.breakpoints.up('md')]: {
         padding: '1.5rem 1.25rem',
+        position: 'absolute',
+        top: 48,
+        bottom: 48,
+        width: '100%',
       },
       [theme.breakpoints.only('sm')]: {
         margin: '1rem auto',
         maxWidth: 675, // slightly fragile but makes for 3x cards per row
+      },
+      [theme.breakpoints.up('xl')]: {
+        padding: '1.75rem 1.5rem',
+      },
+      [theme.breakpoints.down('sm')]: {
+        height: '100%',
+        padding: '1rem 0.75rem 1.25rem',
       },
     },
   })
@@ -93,7 +100,9 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
   const targetElemID = 'back-to-top-anchor'
   const panelRef = useRef<HTMLDivElement | null>(null)
   const hide = useHideOnScroll(panelRef.current)
-  const classes = useStyles({ open: panelOpen, hide })
+  const classes = useStyles({ open: panelOpen })
+
+  // React.useEffect(() => { window.scrollTo(0, 1) }, []) // TODO: try
 
   /* eslint-disable @typescript-eslint/ban-ts-comment */
   // @ts-ignore // TODO: 😞
@@ -129,8 +138,11 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
       <Hidden smDown>
         <PanelTitleBar />
       </Hidden>
+      <Hidden mdUp>
+        <PanelCloseBtnSticky />
+      </Hidden>
       <TransitionGroup className="trans-group">
-        <CSSTransition key={loc.key} classNames="fade" timeout={950} appear>
+        <CSSTransition key={loc.key} classNames="fade" timeout={950}>
           <div className={classes.panelContent} ref={panelRef}>
             <div id={targetElemID} />
             <Route path="/" exact>

@@ -16,24 +16,28 @@ import { PanelTitleBar } from './panels/PanelTitleBar'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      bottom: 0,
       display: 'flex',
-      height: '100%',
-      overflow: 'hidden',
-      position: 'absolute',
+      position: 'fixed',
+      bottom: 0,
+      left: 0,
+      right: 0,
       top: 0,
       transition: '300ms ease all',
-      width: '100%',
       [theme.breakpoints.down('sm')]: {
         flexDirection: 'column',
       },
       '& .map-container': {
         flex: 1,
         position: 'relative', // for logo on wider screens
+        transition: '300ms ease all',
         [theme.breakpoints.up('md')]: {
           borderTop: `solid ${theme.palette.primary.dark} 3px`,
           borderBottom: `solid ${theme.palette.primary.dark} 3px`,
           display: 'flex',
+        },
+        [theme.breakpoints.down('sm')]: {
+          flex: 2,
+          flexBasis: '50%,',
         },
       },
       // TODO: into MapPopup component, and increase "X" size

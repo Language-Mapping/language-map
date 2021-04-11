@@ -23,9 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
       '& li + li': {
         marginLeft: '0.5rem',
       },
-      '& + *': {
-        marginBottom: '0.85rem',
-      },
     },
     mediaLink: {
       alignItems: 'center',

@@ -31,6 +31,9 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.primary,
       fontSize: '0.75rem',
       lineHeight: 1.65,
+      [theme.breakpoints.up('xl')]: {
+        fontSize: '0.85rem',
+      },
       [theme.breakpoints.only('sm')]: {
         fontSize: '0.85rem',
       },
