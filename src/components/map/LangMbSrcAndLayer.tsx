@@ -5,7 +5,7 @@ import { Source, Layer } from 'react-map-gl'
 import { useSymbAndLabelState } from 'components/context'
 import { useAirtable } from 'components/explore/hooks'
 import { prepEndoFilters, getFlyToPointSettings, flyToPoint } from './utils'
-import { useLayersConfig, useSelLangPointCoords } from './hooks'
+import { useLayersConfig, useSelLangPointCoords } from './hooks.points'
 
 import * as config from './config'
 import { LayerPropsPlusMeta, LangMbSrcAndLayerProps } from './types'

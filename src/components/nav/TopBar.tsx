@@ -16,11 +16,14 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '1rem',
       left: '50%',
       position: 'absolute',
-      top: '0.75rem',
+      top: 0,
       transform: 'translateX(-50%)',
       zIndex: 1,
-      [theme.breakpoints.only('md')]: {
+      [theme.breakpoints.only('lg')]: {
         top: '0.25rem',
+      },
+      [theme.breakpoints.up('xl')]: {
+        top: '0.75rem',
       },
       [theme.breakpoints.down('sm')]: {
         display: 'none',

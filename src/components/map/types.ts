@@ -20,6 +20,7 @@ import * as GeoJSON from 'geojson'
 
 import { InstanceLevelSchema, InternalUse } from 'components/context'
 import { CensusScope } from 'components/local/types'
+import { Breakpoint } from 'components/generic/types'
 
 type Padding =
   | number
@@ -49,7 +50,6 @@ export type PopupContent = { heading: string; content?: React.ReactNode }
 export type PopupSettings = PopupContent & LongLat
 export type UseStyleProps = { panelOpen: boolean }
 export type ViewportState = Partial<ViewportProps> & ViewState
-export type Breakpoint = 'mobile' | 'desktop' | 'huge'
 export type Offset = [number, number] // [x, y] // TODO: rm if
 
 export type LayerPropsPlusMeta = Omit<LayerProps, 'paint' | 'layout' | 'id'> & {
@@ -175,10 +175,13 @@ export type PrepPopupContent = (
 
 export type GetPolyWebMercView = (boundsArray: BoundsArray) => LongLatAndZoom
 
+export type FlyHome = (map: Map, breakpoint: Breakpoint) => void
+
 export type FlyToBounds = (
   map: Map,
   settings: BoundsConfig & {
     bounds: BoundsArray
+    breakpoint: Breakpoint
   }
 ) => void
 

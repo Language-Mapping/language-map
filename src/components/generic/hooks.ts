@@ -1,7 +1,9 @@
 import { useRef, useState, useCallback, useEffect } from 'react'
+import { useTheme } from '@material-ui/core/styles'
 import { useAirtable } from 'components/explore/hooks'
 import { useLocation } from 'react-router-dom'
-import { UItextTableID, UseUItext } from './types'
+import { UItextTableID, UseUItext, Breakpoint } from './types'
+import { useWindowResize } from '../../utils'
 
 export const useUItext = (id: UItextTableID): UseUItext => {
   const { data, isLoading, error } = useAirtable<{ text?: string }>('UI Text', {
@@ -75,4 +77,17 @@ export const useHideOnScroll = (
   }, [handleScroll, panelRefElem, threshold])
 
   return hide
+}
+
+export function useBreakpoint(): Breakpoint {
+  const theme = useTheme()
+  const { width } = useWindowResize()
+
+  const { md, sm, lg } = theme.breakpoints.values
+
+  if (width < sm) return 'mobile'
+  if (width < md) return 'tablet'
+  if (width < lg) return 'desktop'
+
+  return 'huge'
 }

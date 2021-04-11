@@ -92,12 +92,17 @@ export const prepPopupContent: Types.PrepPopupContent = (
 
 export const flyToBounds: Types.FlyToBounds = (
   map,
-  { height, width, bounds }
+  { height, width, bounds, breakpoint }
 ) => {
+  let padding: number
+
+  if (breakpoint === 'mobile' || breakpoint === 'tablet') padding = 25
+  else padding = 100
+
   const webMercViewport = new WebMercatorViewport({
     width,
     height,
-  }).fitBounds(bounds, { padding: 75 })
+  }).fitBounds(bounds, { padding })
   const { latitude, longitude, zoom } = webMercViewport
 
   map.flyTo({ essential: true, zoom, center: [longitude, latitude] }, {
@@ -211,11 +216,12 @@ export const setInterpolatedFill = (high: number, low = 0): FillPaint => ({
   'fill-opacity': 0.9,
 })
 
-export const flyHome = (map: MbMap): void => {
+export const flyHome: Types.FlyHome = (map, breakpoint): void => {
   const settings = {
     height: map.getContainer().clientHeight,
     width: map.getContainer().clientWidth,
     bounds: config.initialBounds,
+    breakpoint,
   }
 
   // TODO: prevent errors on resize-while-loading

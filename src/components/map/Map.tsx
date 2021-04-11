@@ -22,6 +22,7 @@ import {
   useMapToolsState,
   useMapToolsDispatch,
 } from 'components/context'
+import { useBreakpoint } from 'components/generic'
 import { onHover } from './events'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { Geolocation } from './Geolocation'
@@ -52,6 +53,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   const { state } = useContext(GlobalContext)
   const { langFeatures, filterHasRun } = state
   const mapToolsDispatch = useMapToolsDispatch()
+  const breakpoint = useBreakpoint()
 
   const map: MbMap | undefined = mapRef.current?.getMap()
   const touchEnabled = useMemo(() => utils.isTouchEnabled(), [])
@@ -83,7 +85,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   }, [pathname])
 
   useEffect(() => {
-    if (map) utils.flyHome(map)
+    if (map) utils.flyHome(map, breakpoint)
   }, [shouldFlyHome])
 
   // Load symbol icons on load. Must be done on load and whenever `baselayer` is
@@ -100,7 +102,8 @@ export const Map: FC<Types.MapProps> = (props) => {
   // Auto-zoom to initial extent on Census language change
   useEffect(() => {
     // Don't zoom on clearing Census dropdown, aka no language field selected
-    if (map && autoZoomCensus && censusActiveField) utils.flyHome(map)
+    if (map && autoZoomCensus && censusActiveField)
+      utils.flyHome(map, breakpoint)
   }, [censusActiveField])
 
   // Filter lang feats in map on length change or symbology change
@@ -238,7 +241,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     if (!map || !mapLoaded) return
 
     if (actionID === 'home') {
-      utils.flyHome(map)
+      utils.flyHome(map, breakpoint)
     } else if (actionID === 'reset-pitch') {
       setIsMapTilted(!isMapTilted)
     } else if (actionID === 'in') {

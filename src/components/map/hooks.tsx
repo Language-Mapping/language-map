@@ -1,149 +1,22 @@
 import { useContext, useEffect, useState } from 'react'
 import { FillPaint, LngLatBounds } from 'mapbox-gl'
-import { useTheme } from '@material-ui/core/styles'
 import * as stats from 'simple-statistics'
 
-import { panelWidths } from 'components/panels/config'
 import {
   GlobalContext,
-  InstanceLevelSchema,
   useMapToolsState,
   useMapToolsDispatch,
 } from 'components/context'
-import { AtSymbFields, AtSchemaFields } from 'components/legend/types'
-import { layerSymbFields } from 'components/legend/config'
 import { useAirtable } from 'components/explore/hooks'
 import { useLocation, useRouteMatch } from 'react-router-dom'
 import { AIRTABLE_CENSUS_BASE } from 'components/config'
 import { routes } from 'components/config/api'
-import { usePanelState } from 'components/panels'
-import { useWindowResize } from '../../utils'
-import {
-  allPolyLayersConfig,
-  iconStyleOverride,
-  POINT_ZOOM_LEVEL,
-} from './config'
+import { useBreakpoint } from 'components/generic'
+import { allPolyLayersConfig, POINT_ZOOM_LEVEL } from './config'
 import { flyToPoint, flyToBounds } from './utils'
 
 import * as Types from './types'
 import * as utils from './utils'
-
-// Set offsets to account for the panel-on-map layout as it would otherwise
-// expect the map center to be the screen center. Did not find a good way to do
-// this on init, so instead it gets used dynamically on each zoom-to-stuff
-// scenario. The values are pretty approximate and somewhat fragile as they were
-// determined through much trial and error.
-export function useOffset(): Types.Offset {
-  const { panelOpen } = usePanelState()
-  const { width, height } = useWindowResize()
-  const breakpoint = useBreakpoint()
-  const bottomBarHeight = 48
-  const deskGutter = 24
-  const topBarHeightIsh = 75
-
-  let left = 0
-  let bottom = deskGutter / 2 // roughly ok on larger screens
-
-  if (panelOpen) {
-    if (breakpoint === 'mobile') {
-      bottom = (-1 * (height - bottomBarHeight - topBarHeightIsh)) / 4
-    } else if (breakpoint === 'huge') {
-      left = (width - panelWidths.midLarge - deskGutter * 4) / 4
-    } else {
-      left = (width - panelWidths.mid + deskGutter * 4) / 4
-    }
-  } else if (breakpoint === 'mobile') {
-    bottom = 0
-  }
-
-  return [left, bottom]
-}
-
-export function useBreakpoint(): Types.Breakpoint {
-  const theme = useTheme()
-  const { width } = useWindowResize()
-
-  const { xl, md } = theme.breakpoints.values
-
-  if (width < md) return 'mobile'
-  if (width >= xl) return 'huge'
-
-  return 'desktop'
-}
-
-export const useLayersConfig = (
-  tableName: keyof InstanceLevelSchema
-): Types.UseLayersConfig => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const moreFields = layerSymbFields[tableName] || []
-  const { data, isLoading, error } = useAirtable<AtSchemaFields>(tableName, {
-    // WOW: field order really matters in regards to react-query. If this is
-    // the same as the one being used by legend config, it doesn't load
-    // properly on page load
-    fields: ['name', ...moreFields],
-  })
-
-  let prepped: Types.LayerPropsPlusMeta[] = []
-
-  if (data.length) prepped = createLayerStyles(data, tableName)
-
-  return { error, data: prepped, isLoading }
-}
-
-// TODO: into utils
-const createLayerStyles = (
-  rows: AtSymbFields[],
-  group: keyof InstanceLevelSchema
-): Types.LayerPropsPlusMeta[] =>
-  // CRED: fo' spread: https://bit.ly/37nzMRT
-  rows.map((settings) => ({
-    id: settings.name,
-    type: 'symbol', // not being used at time of writing, just satisfy TS
-    group, // aka Airtable table name, and possibly query ID
-    filter: ['match', ['get', group], [settings.name], true, false],
-    layout: {
-      // Making an assumption that image-based icons will look better with the
-      // slightly-larger, placement-ignorant style
-      ...(settings['icon-image'] && {
-        'icon-image': settings['icon-image'],
-        ...iconStyleOverride,
-      }),
-      ...(!settings['icon-image'] &&
-        settings['icon-size'] && { 'icon-size': settings['icon-size'] }),
-    },
-    paint: {
-      ...(settings['icon-color'] && { 'icon-color': settings['icon-color'] }),
-      ...(settings['text-color'] && { 'text-color': settings['text-color'] }),
-      ...(settings['text-halo-color'] && {
-        'text-halo-color': settings['text-halo-color'],
-      }),
-    },
-  }))
-
-export const useSelLangPointCoords = (): Types.UseSelLangPointCoordsReturn => {
-  const match = useRouteMatch<{ id: string }>({
-    path: '/Explore/Language/:language/:id',
-    exact: true,
-  })
-
-  const { data, error, isLoading } = useAirtable<Types.SelFeatAttribs>(
-    'Data',
-    {
-      fields: ['Latitude', 'Longitude'],
-      filterByFormula: `{id} = ${match?.params.id}`,
-      maxRecords: 1,
-    },
-    { enabled: !!match }
-  )
-
-  if (isLoading || error) return { lat: null, lon: null }
-
-  return {
-    lat: data[0]?.Latitude || null,
-    lon: data[0]?.Longitude || null,
-  }
-}
 
 export const usePolygonWebMerc: Types.UsePolygonWebMerc = (
   routePath,
@@ -189,6 +62,7 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
   const { state } = useContext(GlobalContext)
   const { langFeatures, langFeatsLenCache } = state
   const [shouldFlyHome, setShouldFlyHome] = useState<boolean>(false)
+  const breakpoint = useBreakpoint()
 
   // Fly to extent of lang features on length change
   useEffect((): void => {
@@ -228,6 +102,7 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
       height: window.innerHeight as number,
       width: window.innerWidth as number,
       bounds: bounds.toArray() as Types.BoundsArray,
+      breakpoint,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [langFeatures.length])
@@ -311,6 +186,7 @@ export const useZoomToBounds: Types.UseZoomToBounds = (
   mapLoaded,
   map
 ) => {
+  const breakpoint = useBreakpoint()
   const selPolyBounds = usePolygonWebMerc(routePath, tableName)
   const { x_max: xMax, x_min: xMin, y_min: yMin, y_max: yMax } = selPolyBounds
 
@@ -319,16 +195,15 @@ export const useZoomToBounds: Types.UseZoomToBounds = (
     const noBounds = !xMax || !xMin || !yMin || !yMax
     if (!map || !mapLoaded || noBounds) return
 
-    const boundsArray = [
-      [xMin, yMin],
-      [xMax, yMax],
+    const bounds = [
+      [xMin, yMin] as [number, number],
+      [xMax, yMax] as [number, number],
     ] as Types.BoundsArray
 
-    const webMercViewport = utils.getPolyWebMercView(boundsArray)
-    // Tracts are too small:
-    const zoom = Math.min(webMercViewport.zoom, POINT_ZOOM_LEVEL)
+    const height = map.getContainer().offsetHeight
+    const width = map.getContainer().offsetWidth
 
-    flyToPoint(map, { ...webMercViewport, zoom })
+    flyToBounds(map, { height, width, bounds, breakpoint })
 
     // LEGIT. offset and selPolyBounds as a dep will break the world.
     // eslint-disable-next-line react-hooks/exhaustive-deps
