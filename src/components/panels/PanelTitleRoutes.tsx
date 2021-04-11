@@ -15,16 +15,18 @@ type PanelTitleProps = {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex',
       alignItems: 'center',
+      display: 'flex',
       '& > svg': {
         color: theme.palette.text.hint,
-        marginRight: 4,
-        fontSize: '1.25em',
+        marginRight: 6,
       },
     },
     panelTitleText: {
       fontSize: '1.5rem',
+      [theme.breakpoints.only('xs')]: {
+        fontSize: '1.25rem',
+      },
     },
     rightSideBtns: {
       '& > * + *': {
@@ -71,6 +73,7 @@ const LinkToHomeBtn: FC = (props) => {
 export const PanelTitleRoutes: FC<{ panelTitle: string }> = (props) => {
   const { panelTitle } = props
 
+  // TODO: add small logo to left side of bar
   return (
     <Switch>
       <Route path="/" exact>

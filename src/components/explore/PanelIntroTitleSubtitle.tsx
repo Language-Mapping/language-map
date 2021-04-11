@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       textAlign: 'center',
       textShadow: '1px 1px 4px hsla(0, 0%, 0%, 0.4)',
-      fontSize: '2rem',
+      fontSize: '2.25rem',
       marginBottom: '0.25rem',
       [theme.breakpoints.up('sm')]: {
         // Safari and/or Firefox seem to need smaller font than Chrome
@@ -32,10 +32,13 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     subTitle: {
       fontSize: '1.25rem',
-      marginBottom: '0.5rem',
+      marginBottom: '0.25rem',
       lineHeight: 1,
       color: theme.palette.text.secondary,
       textAlign: 'center',
+      '& + *': {
+        marginBottom: '0.85rem',
+      },
     },
   })
 )

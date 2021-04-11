@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
         // Make text more opaque than the 0.5 default
         // CRED: https://stackoverflow.com/a/48545561/1048518
         '&::placeholder': {
+          fontSize: '0.85rem',
           opacity: 0.85,
         },
       },

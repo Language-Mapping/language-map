@@ -1,43 +1,47 @@
 import React, { FC, useState, useEffect } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { InteractiveMap } from 'react-map-gl'
+import { Hidden } from '@material-ui/core'
 
 import { PanelWrap, usePanelState, ShowPanelBtn } from 'components/panels'
-import { TopBar } from 'components/nav'
+import { BottomNav, TopBar } from 'components/nav'
 import { WelcomeDialog, HIDE_WELCOME_LOCAL_STG_KEY } from 'components/about'
 import { Map } from 'components/map'
-import { LoadingBackdrop } from 'components/generic/modals'
+import {
+  LoadingBackdropEmpty,
+  LoadingTextOnElem,
+} from 'components/generic/modals'
+import { PanelTitleBar } from './panels/PanelTitleBar'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      top: 0,
       bottom: 0,
-      position: 'absolute',
-      height: '100%',
-      width: '100%',
-      overflow: 'hidden',
       display: 'flex',
+      height: '100%',
+      overflow: 'hidden',
+      position: 'absolute',
+      top: 0,
+      transition: '300ms ease all',
+      width: '100%',
+      [theme.breakpoints.down('sm')]: {
+        flexDirection: 'column',
+      },
+      '& .map-container': {
+        flex: 1,
+        position: 'relative', // for logo on wider screens
+        [theme.breakpoints.up('md')]: {
+          borderTop: `solid ${theme.palette.primary.dark} 3px`,
+          borderBottom: `solid ${theme.palette.primary.dark} 3px`,
+          display: 'flex',
+        },
+      },
+      // TODO: into MapPopup component, and increase "X" size
       '& .mapboxgl-popup-tip': {
         borderTopColor: theme.palette.background.paper,
       },
       '& .mapboxgl-popup-content': {
         backgroundColor: theme.palette.background.paper,
-      },
-      [theme.breakpoints.down('sm')]: {
-        flexDirection: 'column',
-        // TODO: rm when done
-        // '& .mapboxgl-ctrl-bottom-left > .mapboxgl-ctrl': {
-        //   marginBottom: '0.5rem', // MB logo has too much spacing
-        // },
-        // '& .mapboxgl-ctrl-bottom-right > .mapboxgl-ctrl': {
-        //   marginBottom: '0.25rem', // MB attribution needs a little spacing
-        // },
-        // '& .mapboxgl-ctrl-bottom-right, .mapboxgl-ctrl-bottom-left': {
-        //   transition: 'bottom 300ms ease',
-        //   bottom: (props: { panelOpen: boolean }) =>
-        //     props.panelOpen ? 'calc(50% + 0.45rem)' : 0,
-        // },
       },
     },
   })
@@ -59,16 +63,20 @@ export const AppWrap: FC = () => {
   return (
     <>
       {showWelcome && <WelcomeDialog />}
-      {!mapLoaded && <LoadingBackdrop text="Loading..." />}
-      <TopBar />
+      <LoadingBackdropEmpty open={!mapLoaded} />
+      <ShowPanelBtn panelOpen={panelOpen} />
       <main className={classes.root}>
-        <ShowPanelBtn panelOpen={panelOpen} />
+        <Hidden mdUp>
+          <PanelTitleBar />
+        </Hidden>
         <PanelWrap mapRef={mapRef} />
-        <Map
-          mapRef={mapRef}
-          mapLoaded={mapLoaded}
-          setMapLoaded={setMapLoaded}
-        />
+        <Map mapRef={mapRef} mapLoaded={mapLoaded} setMapLoaded={setMapLoaded}>
+          <TopBar />
+          {!mapLoaded && <LoadingTextOnElem />}
+        </Map>
+        <Hidden mdUp>
+          <BottomNav />
+        </Hidden>
       </main>
     </>
   )

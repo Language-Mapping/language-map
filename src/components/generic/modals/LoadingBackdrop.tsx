@@ -2,8 +2,6 @@ import React, { FC } from 'react'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import { Backdrop, CircularProgress, Typography } from '@material-ui/core'
 
-import { useStyles as useNavStyles } from 'components/nav/styles'
-
 type LoadingBackdrop = {
   centerOnScreen?: boolean
   text?: string
@@ -12,7 +10,7 @@ type LoadingBackdrop = {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    backdropRoot: {
+    root: {
       color: '#fff',
       flexDirection: 'column',
       textAlign: 'center',
@@ -33,25 +31,27 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const LoadingBackdrop: FC<LoadingBackdrop> = (props) => {
-  const { centerOnScreen, text = 'Loading...', testID } = props
+export const LoadingBackdropEmpty: FC<{ open: boolean }> = (props) => {
+  const { open } = props
   const classes = useStyles()
-  const navClasses = useNavStyles({ panelOpen: !centerOnScreen })
+
+  return <Backdrop className={classes.root} open={open} />
+}
+
+export const LoadingBackdrop: FC<LoadingBackdrop> = (props) => {
+  const { text = 'Loading...', testID } = props
+  const classes = useStyles()
 
   return (
     // TODO: aria-something // NOTE: about's testid must = 'about-page-backdrop'
-    <Backdrop className={classes.backdropRoot} open data-testid={testID}>
+    <Backdrop className={classes.root} open data-testid={testID}>
       <div className={classes.backdropContent}>
-        <div
-          className={`${navClasses.spacerDesktop} ${navClasses.spacerLeft}`}
-        />
         <div>
           <Typography variant="h4" component="h2" className={classes.text}>
             {text}
           </Typography>
           <CircularProgress color="inherit" size={43} />
         </div>
-        <div className={navClasses.spacerDesktop} />
       </div>
     </Backdrop>
   )

@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
         boxShadow: theme.shadows[8],
         // Prevent screenshots from getting lost in Paper bg if same color:
         // outline: 'solid 1px hsl(0deg 0% 40%)',
-        [theme.breakpoints.only('xs')]: {
+        [theme.breakpoints.down('xs')]: {
           margin: '0.5rem 0',
         },
       },

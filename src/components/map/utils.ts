@@ -115,7 +115,6 @@ export const flyToPoint: Types.FlyToPoint = (
     disregardCurrZoom,
     latitude,
     longitude,
-    pitch = 0,
     zoom: targetZoom,
   } = settings
   let zoom = targetZoom
@@ -138,7 +137,7 @@ export const flyToPoint: Types.FlyToPoint = (
   }
 
   const center = [longitude, latitude] as [number, number]
-  const params = { essential: true, zoom, center, bearing, pitch }
+  const params = { essential: true, zoom, center, bearing }
 
   if (disregardCurrZoom) {
     map.flyTo(params, customEventData)

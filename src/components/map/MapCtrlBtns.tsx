@@ -11,24 +11,28 @@ import { MapOptionsMenu } from './MapOptionsMenu'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      width: 75,
-      flex: 1,
-      padding: 4,
-      backgroundColor: 'none',
-      [theme.breakpoints.up('sm')]: {
-        backgroundColor: theme.palette.primary.dark,
-      },
       '& svg': {
-        fontSize: '1.4em',
+        fontSize: '1.25rem',
+      },
+      [theme.breakpoints.down('sm')]: {
+        position: 'absolute',
+        right: '0.5rem',
+        top: -4, // deals w/padding on btn root
+      },
+      [theme.breakpoints.only('xs')]: {
+        right: '0.25rem',
+        top: '-0.5rem', // deals w/padding on btn root
       },
       [theme.breakpoints.up('md')]: {
-        fontSize: '1.35em',
+        backgroundColor: theme.palette.primary.dark,
+        boxShadow: '-1px 2px 8px hsl(0deg 0% 0% / 65%)',
+        height: '100%',
       },
     },
     speedDialAction: {
-      margin: '0 0.2rem 0.2rem',
-      [theme.breakpoints.up('sm')]: {
-        margin: '0.2em',
+      margin: '0 0.25rem 0.25rem',
+      [theme.breakpoints.up('md')]: {
+        margin: '0 0.5rem 0.5rem',
       },
       '&:hover': {
         [theme.breakpoints.down('sm')]: {

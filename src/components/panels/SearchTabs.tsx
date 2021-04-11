@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) => {
       gridColumnGap: 4,
       justifyContent: 'center',
       gridTemplateColumns: 'minmax(350px, auto) 32px',
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.only('xs')]: {
         gridTemplateColumns: 'minmax(325px, auto) 24px',
       },
     },
@@ -78,7 +78,7 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
   }
 
   const TabAppBar = (
-    <AppBar position="static" color="transparent">
+    <AppBar position="static" color="transparent" elevation={0}>
       <Tabs
         value={value}
         onChange={handleChange}

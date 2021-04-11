@@ -10,30 +10,18 @@ import { routes } from 'components/config/api'
 import { SplitCrumbs } from './SplitCrumbs'
 import { PanelTitleRoutes } from './PanelTitleRoutes'
 
-type StyleProps = { hide?: boolean }
-
-const topCornersRadius = 4 // same as bottom left/right in nav bar
-const borderTopLeftRadius = topCornersRadius
-const borderTopRightRadius = topCornersRadius
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      borderTopLeftRadius,
-      borderTopRightRadius,
       transition: '300ms all',
-      transform: (props: StyleProps) =>
-        props.hide ? 'translateY(-40px)' : 'translateY(0)',
-      opacity: (props: StyleProps) => (props.hide ? 0 : 1),
-      maxHeight: (props: StyleProps) => (props.hide ? 0 : 48),
-      zIndex: (props: StyleProps) => (props.hide ? -1 : 1),
     },
     toolbar: {
       backgroundColor: theme.palette.primary.dark,
-      borderTopLeftRadius,
-      borderTopRightRadius,
       padding: '0 0.5rem',
       justifyContent: 'space-between',
+      [theme.breakpoints.only('xs')]: {
+        minHeight: 42,
+      },
     },
     rightSideBtns: {
       '& > * + *': {
@@ -110,7 +98,7 @@ export const PanelTitleBar: FC = (props) => {
 
   // WISHLIST: add maximize btn on mobile
   return (
-    <AppBar className={classes.root} position="sticky" id="panel-title-bar">
+    <AppBar className={classes.root} position="static" elevation={16}>
       <Toolbar variant="dense" className={classes.toolbar}>
         <Switch>
           {/* Census can just have home btn */}

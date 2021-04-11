@@ -15,7 +15,9 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'inline-flex',
       alignItems: 'center',
       fontSize: '0.85rem',
-      marginBottom: '0.75rem',
+      '& + *': {
+        marginBottom: '0.75rem',
+      },
       '& > svg': {
         marginRight: 4,
       },

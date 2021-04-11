@@ -22,7 +22,6 @@ import {
   useMapToolsState,
   useMapToolsDispatch,
 } from 'components/context'
-import { usePanelState } from 'components/panels'
 import { onHover } from './events'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { Geolocation } from './Geolocation'
@@ -32,7 +31,7 @@ import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
 import { PolygonLayer } from './NeighborhoodsLayer'
 import { getAllLangFeatIDs } from '../../utils'
-import { useOffset, useBreakpoint, useZoomToLangFeatsExtent } from './hooks'
+import { useZoomToLangFeatsExtent } from './hooks'
 
 import * as Types from './types'
 import * as utils from './utils'
@@ -43,21 +42,18 @@ const { mbStyleTileConfig, langTypeIconsConfig, initialMapState } = config
 utils.rightToLeftSetup()
 
 export const Map: FC<Types.MapProps> = (props) => {
-  const { mapLoaded, mapRef, setMapLoaded } = props
+  const { children, mapLoaded, mapRef, setMapLoaded } = props
   const history = useHistory()
   const loc = useLocation()
   const { pathname } = loc
 
   const { autoZoomCensus, censusActiveField, baseLayer } = useMapToolsState()
   const { geocodeMarkerText } = useMapToolsState()
-  const { panelOpen } = usePanelState()
   const { state } = useContext(GlobalContext)
   const { langFeatures, filterHasRun } = state
   const mapToolsDispatch = useMapToolsDispatch()
 
   const map: MbMap | undefined = mapRef.current?.getMap()
-  const offset = useOffset()
-  const breakpoint = useBreakpoint()
   const touchEnabled = useMemo(() => utils.isTouchEnabled(), [])
 
   const [beforeId, setBeforeId] = useState<string>('background')
@@ -79,18 +75,6 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     if (isMapTilted) map.setPitch(80, { forceViewportUpdate: true })
     else map.setPitch(0, { forceViewportUpdate: true })
-
-    if (breakpoint !== 'mobile' || !panelOpen) return
-
-    // Pitch reset in 50/50 page layout on smaller screens needs extra love:
-    setTimeout(() => {
-      const yOffset = isMapTilted ? -0.1 : 0.1
-
-      // TODO: smooth this out for 3D
-      map.panBy([0, yOffset * offset[1]], undefined, {
-        forceViewportUpdate: true,
-      })
-    }, 5)
   }, [isMapTilted])
 
   // Reset popup visibility and clear geocode marker
@@ -266,59 +250,65 @@ export const Map: FC<Types.MapProps> = (props) => {
 
   return (
     <>
-      <MapGL
-        {...viewport}
-        {...config.mapProps}
-        mapStyle={mapStyle}
-        ref={mapRef}
-        onViewportChange={setViewport}
-        onClick={(event: Types.MapEvent) => onClick(event)}
-        onHover={(event: Types.MapEvent) => {
-          onHover(event, setTooltip, map) // Gave up on no mobile hover 🤷‍♂️
-        }}
-        onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
-      >
-        <Geolocation
-          onViewportChange={(mapViewport: Types.ViewportState) => {
-            // CRED:
-            // github.com/visgl/react-map-gl/issues/887#issuecomment-531580394
-            setViewport({ ...mapViewport, zoom: config.POINT_ZOOM_LEVEL })
+      <div className="map-container">
+        {children}
+        <MapGL
+          {...viewport}
+          {...config.mapProps}
+          mapStyle={mapStyle}
+          ref={mapRef}
+          onViewportChange={setViewport}
+          onClick={(event: Types.MapEvent) => onClick(event)}
+          onHover={(event: Types.MapEvent) => {
+            onHover(event, setTooltip, map) // Gave up on no mobile hover 🤷‍♂️
+          }}
+          onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
+        >
+          <Geolocation
+            onViewportChange={(mapViewport: Types.ViewportState) => {
+              // CRED:
+              // github.com/visgl/react-map-gl/issues/887#issuecomment-531580394
+              setViewport({ ...mapViewport, zoom: config.POINT_ZOOM_LEVEL })
+            }}
+          />
+          {geocodeMarkerText && !mapIsMoving && (
+            <MapPopup
+              heading={geocodeMarkerText.text}
+              latitude={geocodeMarkerText.latitude}
+              longitude={geocodeMarkerText.longitude}
+              handleClose={handleGeocodeClose}
+            />
+          )}
+          <PolygonLayer
+            {...{ map, mapLoaded, beforeId }}
+            configKey="counties"
+          />
+          <PolygonLayer
+            {...{ map, mapLoaded, beforeId }}
+            configKey="neighborhoods"
+          />
+          <CensusLayer {...{ map, mapLoaded, beforeId }} configKey="puma" />
+          <CensusLayer {...{ map, mapLoaded, beforeId }} configKey="tract" />
+          <LangMbSrcAndLayer
+            map={map}
+            mapLoaded={mapLoaded}
+            isMapTilted={isMapTilted}
+          />
+          {mapLoaded && showPopups && !mapIsMoving && (
+            <MapPopups handleClose={handlePopupClose} />
+          )}
+          {/* Popups are annoying on mobile */}
+          {!touchEnabled && tooltip && !mapIsMoving && (
+            <GeocodeMarker {...tooltip} subtle />
+          )}
+        </MapGL>
+        <MapCtrlBtns
+          isMapTilted={isMapTilted}
+          onMapCtrlClick={(actionID: Types.MapControlAction) => {
+            onMapCtrlClick(actionID)
           }}
         />
-        {geocodeMarkerText && !mapIsMoving && (
-          <MapPopup
-            heading={geocodeMarkerText.text}
-            latitude={geocodeMarkerText.latitude}
-            longitude={geocodeMarkerText.longitude}
-            handleClose={handleGeocodeClose}
-          />
-        )}
-        <PolygonLayer {...{ map, mapLoaded, beforeId }} configKey="counties" />
-        <PolygonLayer
-          {...{ map, mapLoaded, beforeId }}
-          configKey="neighborhoods"
-        />
-        <CensusLayer {...{ map, mapLoaded, beforeId }} configKey="puma" />
-        <CensusLayer {...{ map, mapLoaded, beforeId }} configKey="tract" />
-        <LangMbSrcAndLayer
-          map={map}
-          mapLoaded={mapLoaded}
-          isMapTilted={isMapTilted}
-        />
-        {mapLoaded && showPopups && !mapIsMoving && (
-          <MapPopups handleClose={handlePopupClose} />
-        )}
-        {/* Popups are annoying on mobile */}
-        {!touchEnabled && tooltip && !mapIsMoving && (
-          <GeocodeMarker {...tooltip} subtle />
-        )}
-      </MapGL>
-      <MapCtrlBtns
-        isMapTilted={isMapTilted}
-        onMapCtrlClick={(actionID: Types.MapControlAction) => {
-          onMapCtrlClick(actionID)
-        }}
-      />
+      </div>
     </>
   )
 }

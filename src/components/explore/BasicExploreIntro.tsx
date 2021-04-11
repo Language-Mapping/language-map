@@ -10,8 +10,9 @@ import { PanelIntroTitle, PanelIntroSubtitle } from './PanelIntroTitleSubtitle'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      marginBottom: '1rem',
       borderBottom: `solid 1px ${theme.palette.divider}`,
+      fontSize: '1.25rem',
+      marginBottom: '1.25rem',
       paddingBottom: '0.25rem',
       '& p': {
         marginBottom: '0.25rem',
@@ -24,6 +25,15 @@ const useStyles = makeStyles((theme: Theme) =>
     // e.g. glotto/iso/global speakers
     subSubtitle: {
       color: theme.palette.text.secondary,
+    },
+    // Override Explanation
+    introParagraph: {
+      color: theme.palette.text.primary,
+      fontSize: '0.75rem',
+      lineHeight: 1.65,
+      [theme.breakpoints.only('sm')]: {
+        fontSize: '0.85rem',
+      },
     },
   })
 )
@@ -46,7 +56,11 @@ export const BasicExploreIntro: FC<BasicExploreIntroProps> = (props) => {
         {subSubtitle && (
           <div className={classes.subSubtitle}>{subSubtitle}</div>
         )}
-        {introParagraph && <Explanation>{introParagraph}</Explanation>}
+        {introParagraph && (
+          <Explanation className={classes.introParagraph}>
+            {introParagraph}
+          </Explanation>
+        )}
         {extree}
       </Typography>
       <FiltersWarning />

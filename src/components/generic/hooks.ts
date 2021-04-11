@@ -59,9 +59,7 @@ export const useHideOnScroll = (
   }, [pathname])
 
   useEffect(() => {
-    if (!hash) return
-
-    setHide(true)
+    if (hash) setHide(true)
   }, [hash]) // hash makes it work for Help and About anchors
 
   useEffect(() => {

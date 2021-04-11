@@ -18,19 +18,16 @@ const useStyles = makeStyles((theme: Theme) => {
 radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`
 
   return createStyles({
-    bottomNavRoot: {
+    root: {
       backgroundColor: theme.palette.primary.dark,
-      borderBottomLeftRadius: 4,
-      borderBottomRightRadius: 4,
-      bottom: 0,
-      position: 'absolute',
       boxShadow: '0px 0px 5px 0px rgba(0,0,0,0.1)',
       zIndex: 1,
       width: '100%',
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         boxShadow: '0px -5px 5px 0px rgba(0,0,0,0.1)',
         borderRadius: 0,
         height: BOTTOM_NAV_HEIGHT_MOBILE,
+        order: 2, // relative to panel content
       },
     },
     // TODO: clip-path notch instead of boring rounded corners
@@ -60,7 +57,7 @@ radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`
       },
     },
     wrapper: {
-      fontSize: theme.typography.button.fontSize,
+      fontSize: '0.85rem',
       [theme.breakpoints.down('sm')]: {
         fontSize: '0.75rem',
       },
@@ -168,7 +165,7 @@ export const BottomNav: FC = (props) => {
       onChange={(event, newValue) => {
         handleChange(newValue)
       }}
-      className={classes.bottomNavRoot}
+      className={classes.root}
     >
       {NavActions}
     </BottomNavigation>

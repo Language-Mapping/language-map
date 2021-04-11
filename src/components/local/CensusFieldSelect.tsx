@@ -20,7 +20,8 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     // NOTE: there are also overrides in style.css (giant mess)
     root: {
-      marginBottom: '1rem',
+      margin: '0 auto 1rem',
+      maxWidth: 450, // small looks silly on portrait tablet
       // The search box itself
       '& .MuiInputBase-root:not(.Mui-disabled)': {
         backgroundColor: '#fff',

@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       textAlign: 'center',
-      paddingBottom: '0.5rem', // allow for "Read more" section
+      paddingBottom: '0.75rem', // allow for "Read more" section
       marginBottom: '1.25rem',
       borderBottom: `solid 1px ${theme.palette.divider}`,
     },

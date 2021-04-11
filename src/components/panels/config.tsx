@@ -18,7 +18,6 @@ import { InfoPanel } from 'components/about/InfoPanel'
 import { routes } from 'components/config/api'
 import { NavItemWithBadge } from './NavItemWithBadge'
 
-export const MOBILE_PANEL_HEADER_HT = 48 // .MuiToolbar-dense default min-height
 export const panelWidths = { mid: 450, midLarge: 600 }
 
 // Bottom bar nav panel

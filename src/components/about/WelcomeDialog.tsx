@@ -19,20 +19,18 @@ const useStyles = makeStyles((theme: Theme) =>
     dialogTitle: {
       display: 'flex',
       justifyContent: 'center',
-      marginTop: '0.25rem',
-      [theme.breakpoints.down('sm')]: {
-        padding: '0.75rem',
+      paddingTop: '1rem',
+      [theme.breakpoints.down('xs')]: {
+        padding: '1rem 0.75rem 0.75rem',
       },
     },
     logoInner: {
       display: 'inline-flex',
       flexDirection: 'column',
       textAlign: 'center',
-      [theme.breakpoints.down('sm')]: {
-        fontSize: '3rem',
-        '& svg': {
-          height: '3.5rem', // needs more height than the main logo on mobile
-        },
+      fontSize: '1rem',
+      '& svg': {
+        marginBottom: '0.25rem',
       },
     },
     subSubTitle: {
@@ -41,11 +39,14 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.75rem',
     },
     dialogContent: {
-      [theme.breakpoints.down('sm')]: {
-        paddingLeft: '1rem',
-        paddingRight: '1rem',
+      fontSize: '1rem',
+      paddingTop: '1.5rem',
+      paddingBottom: '1.5rem',
+      [theme.breakpoints.down('xs')]: {
+        paddingLeft: '1.25rem',
+        paddingRight: '1.25rem',
         '& p': {
-          fontSize: '0.9rem',
+          fontSize: '0.85rem',
         },
       },
     },
@@ -55,7 +56,7 @@ const useStyles = makeStyles((theme: Theme) =>
         marginLeft: theme.spacing(3),
         marginRight: theme.spacing(3),
       },
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('xs')]: {
         marginBottom: 0,
         marginTop: 0,
         maxHeight: `calc(100% - ${theme.spacing(4)}px)`,

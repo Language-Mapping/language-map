@@ -21,6 +21,7 @@ export type MediaListItemProps = {
   icon: React.ReactNode
   type: MediaKey
   disabled?: boolean
+  bold?: boolean
   variant?: 'text' | 'outlined' | 'contained'
   handleClick: () => void
 }
