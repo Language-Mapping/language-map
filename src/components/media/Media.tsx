@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       listStyle: 'none',
       margin: 0,
+      marginBottom: '0.25rem',
       padding: 0,
       '& li + li': {
         marginLeft: '0.5rem',

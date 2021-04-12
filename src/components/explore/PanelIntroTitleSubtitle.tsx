@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme: Theme) =>
       '& + *': {
         marginBottom: '0.85rem',
       },
+      [theme.breakpoints.only('sm')]: {
+        marginBottom: '1.25rem',
+      },
     },
   })
 )
