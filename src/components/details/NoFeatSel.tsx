@@ -6,8 +6,6 @@ import { RandomLinkBtn } from './RandomLinkBtn'
 export const NoFeatSel: FC<{ reason?: string }> = (props) => {
   const { reason } = props // Basically just "Community not found..."
 
-  document.title = 'No site selected - NYC Languages' // TODO: make it matter
-
   return (
     <>
       {reason && <PanelHeading text={reason} />}

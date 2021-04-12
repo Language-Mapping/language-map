@@ -9,23 +9,19 @@ import { usePanelDispatch } from 'components/panels'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     stickyBtn: {
-      backgroundColor: theme.palette.primary.dark,
-      height: 3,
+      height: 0,
+      marginRight: 12,
+      marginTop: 8,
       position: 'sticky',
       textAlign: 'right',
       top: 0,
-      zIndex: 1,
     },
     btnContainer: {
-      display: 'inline-flex',
-      justifyContent: 'center',
-      backgroundColor: 'inherit',
-      borderBottomLeftRadius: 8,
-      height: '1rem',
-      width: '1rem',
       alignItems: 'center',
-      padding: '0.75rem',
-      boxShadow: '-2px 2px 6px 0px rgb(33 33 33 / 67%)',
+      display: 'inline-flex',
+      height: '1.25rem',
+      justifyContent: 'center',
+      width: '1.25rem',
     },
   })
 )

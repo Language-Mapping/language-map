@@ -23,10 +23,8 @@ radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`
       boxShadow: '0px 0px 5px 0px rgba(0,0,0,0.1)',
       zIndex: 1,
       width: '100%',
-      [theme.breakpoints.up('md')]: {
-        position: 'absolute',
-        bottom: 0,
-      },
+      position: 'absolute',
+      bottom: 0,
       [theme.breakpoints.down('md')]: {
         boxShadow: '0px -5px 5px 0px rgba(0,0,0,0.1)',
         borderRadius: 0,
@@ -42,7 +40,7 @@ radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`
       transition: 'all 300ms ease',
       flexBasis: '20%',
       '&:hover': {
-        [theme.breakpoints.up('sm')]: {
+        [theme.breakpoints.up('md')]: {
           background: lighten(theme.palette.primary.dark, 0.1),
         },
       },

@@ -18,8 +18,8 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: BOTTOM_NAV_HEIGHT + 8,
       right: '1.25rem',
       [theme.breakpoints.down('sm')]: {
-        bottom: BOTTOM_NAV_HEIGHT_MOBILE + 4,
-        right: 8,
+        bottom: BOTTOM_NAV_HEIGHT_MOBILE + 8,
+        right: '1rem',
       },
     },
   })

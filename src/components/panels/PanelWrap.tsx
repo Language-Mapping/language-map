@@ -1,5 +1,5 @@
-import React, { FC, useEffect, useRef } from 'react'
-import { Route, Switch, useRouteMatch, useLocation } from 'react-router-dom'
+import React, { FC, useRef } from 'react'
+import { Route, Switch, useLocation } from 'react-router-dom'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Hidden } from '@material-ui/core'
@@ -10,7 +10,6 @@ import {
   PanelCloseBtnSticky,
 } from 'components/panels'
 import { BackToTopBtn, useHideOnScroll } from 'components/generic'
-import { routes } from 'components/config/api'
 import { BottomNav } from 'components/nav'
 import { PanelTitleBar } from './PanelTitleBar'
 import { PanelWrapProps } from './types'
@@ -18,39 +17,32 @@ import { PanelWrapProps } from './types'
 import { panelWidths, nonNavRoutesConfig } from './config'
 import './styles.css'
 
-type Style = {
-  open: boolean
-}
+type Style = { open: boolean }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       backgroundColor: theme.palette.background.paper,
+      bottom: 0,
       boxShadow: '1px 2px 8px hsl(0deg 0% 0% / 65%)',
-      opacity: (props: Style) => (props.open ? 1 : 0),
-      transition: '300ms ease all',
+      position: 'absolute',
+      top: '50%',
+      transition: 'all 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
       [theme.breakpoints.up('md')]: {
-        position: 'relative', // NOT SURE TRY ON DESK
-        maxWidth: (props: Style) => (props.open ? panelWidths.mid : 0),
-        flexBasis: (props: Style) => (props.open ? panelWidths.mid : 0),
+        bottom: 0,
+        left: 0,
+        top: 0,
+        width: panelWidths.mid,
+        opacity: (props: Style) => (props.open ? 1 : 0),
+        transform: (props: Style) =>
+          props.open ? 'translateX(0)' : `translateX(-100%)`,
       },
       [theme.breakpoints.up('xl')]: {
-        maxWidth: (props: Style) => (props.open ? panelWidths.midLarge : 0),
-        flexBasis: (props: Style) => (props.open ? panelWidths.midLarge : 0),
+        width: panelWidths.midLarge,
       },
       [theme.breakpoints.down('sm')]: {
-        // Prevent extra gap on phone/tablet:
-        // borderTopWidth: (props: Style) => (props.open ? 3 : 0),
-        // borderTopColor: theme.palette.primary.dark,
-        // borderTopStyle: `solid`,
-        order: 2,
-        display: 'block',
-        maxHeight: '40vh',
-        flex: 1,
-      },
-      [theme.breakpoints.only('sm')]: {
-        maxHeight: (props: Style) => (props.open ? '45vh' : 0),
-        minHeight: (props: Style) => (props.open ? '45vh' : 0),
+        width: '100%',
+        borderTop: `solid 6px ${theme.palette.primary.dark}`,
       },
       '& .MuiInputLabel-formControl': {
         color: theme.palette.text.secondary,
@@ -58,8 +50,9 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       '& .trans-group': {
         height: '100%',
+        width: '100%',
         [theme.breakpoints.up('md')]: {
-          position: 'relative',
+          position: 'relative', // not sure if needed
         },
       },
     },
@@ -73,18 +66,19 @@ const useStyles = makeStyles((theme: Theme) =>
         position: 'absolute',
         top: 48,
         bottom: 48,
-        width: '100%',
+      },
+      [theme.breakpoints.down('sm')]: {
+        opacity: (props: Style) => (props.open ? 1 : 0),
+        transition: 'all 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+        height: '100%',
+        padding: '1rem 0.75rem 1.25rem',
       },
       [theme.breakpoints.only('sm')]: {
         margin: '1rem auto',
-        maxWidth: 675, // slightly fragile but makes for 3x cards per row
+        padding: '1.5rem 8vw',
       },
       [theme.breakpoints.up('xl')]: {
         padding: '1.75rem 1.5rem',
-      },
-      [theme.breakpoints.down('sm')]: {
-        height: '100%',
-        padding: '1rem 0.75rem 1.25rem',
       },
     },
   })
@@ -96,42 +90,10 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
   const { mapRef } = props
   const { panelOpen, searchTabsOpen } = usePanelState()
   const loc = useLocation()
-  const { pathname } = loc
   const targetElemID = 'back-to-top-anchor'
   const panelRef = useRef<HTMLDivElement | null>(null)
   const hide = useHideOnScroll(panelRef.current)
   const classes = useStyles({ open: panelOpen })
-
-  // React.useEffect(() => { window.scrollTo(0, 1) }, []) // TODO: try
-
-  /* eslint-disable @typescript-eslint/ban-ts-comment */
-  // @ts-ignore // TODO: 😞
-  const isPageWithID = useRouteMatch<{ params: { id: number } }>([
-    '/Explore/Language/:langName/:id',
-    routes.dataDetail,
-    // @ts-ignore // TODO: 😞
-  ])?.params.id
-  const asArray = pathname.split('/')
-  const pageTitle = asArray[4] || asArray[3] || asArray[2] || asArray[1]
-
-  // TODO: make this actually work on mobile, and confirm on desktop
-  useEffect(() => {
-    // @ts-ignore
-    document?.activeElement?.blur() // CRED: stackoverflow.com/a/2568972/1048518
-  }, [pathname])
-  /* eslint-enable @typescript-eslint/ban-ts-comment */
-
-  // Default Home title // TODO: set this for reuse somewhere if needed
-  if (!pageTitle) document.title = 'Languages of New York City'
-  // Everything else gets the first available path segment, except for detail
-  // view via Details or Table.
-  else if (!isPageWithID) {
-    // CRED: https://flaviocopes.com/how-to-uppercase-first-letter-javascript/
-    const pageTitleCapitalized =
-      pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1)
-
-    document.title = `${pageTitleCapitalized} - NYC Languages`
-  }
 
   return (
     <div className={classes.root}>
@@ -164,6 +126,8 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
                 )
               })}
             </Switch>
+            {/* Last-ditch effort to allow scrolling on mobile */}
+            <div style={{ height: 200, width: '100%' }} />
           </div>
         </CSSTransition>
       </TransitionGroup>

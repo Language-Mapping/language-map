@@ -27,14 +27,12 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       '& svg': {
         color: theme.palette.text.secondary, // for react-icons, not Swatch
-      },
-      '& > :first-child': {
-        marginRight: '0.25rem',
+        marginRight: '0.25em',
       },
     },
     subTitle: {
-      fontSize: '1.25rem',
-      marginBottom: '0.25rem',
+      fontSize: '1.5rem',
+      marginBottom: '0.5rem',
       lineHeight: 1,
       color: theme.palette.text.secondary,
       textAlign: 'center',

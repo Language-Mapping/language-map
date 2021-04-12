@@ -6,6 +6,7 @@ import { HiOutlineSearch } from 'react-icons/hi'
 
 import { usePanelDispatch, PanelCloseBtn } from 'components/panels'
 import { routes } from 'components/config/api'
+import { PANEL_TITLE_BAR_HT_MOBILE } from 'components/nav/config'
 import { SplitCrumbs } from './SplitCrumbs'
 import { PanelTitleRoutes } from './PanelTitleRoutes'
 
@@ -13,17 +14,16 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       transition: '300ms all',
-      [theme.breakpoints.up('md')]: {
-        position: 'absolute',
-        top: 0,
-      },
+      position: 'absolute',
+      top: 0,
+      width: '100%',
     },
     toolbar: {
       backgroundColor: theme.palette.primary.dark,
       padding: '0 0.5rem',
       justifyContent: 'space-between',
       [theme.breakpoints.only('xs')]: {
-        minHeight: 42,
+        minHeight: PANEL_TITLE_BAR_HT_MOBILE,
       },
     },
     rightSideBtns: {

@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
       borderBottom: `solid 1px ${theme.palette.divider}`,
       fontSize: '1.25rem',
       marginBottom: '1.25rem',
-      paddingBottom: '0.25rem',
+      paddingBottom: '0.5rem',
       '& p': {
         marginBottom: '0.25rem',
       },

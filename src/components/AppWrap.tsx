@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { InteractiveMap } from 'react-map-gl'
 import { Hidden } from '@material-ui/core'
 
+import { panelWidths } from 'components/panels/config'
 import { PanelWrap, usePanelState, ShowPanelBtn } from 'components/panels'
 import { BottomNav, TopBar } from 'components/nav'
 import { WelcomeDialog, HIDE_WELCOME_LOCAL_STG_KEY } from 'components/about'
@@ -11,33 +12,43 @@ import {
   LoadingBackdropEmpty,
   LoadingTextOnElem,
 } from 'components/generic/modals'
+import {
+  PANEL_TITLE_BAR_HT_MOBILE,
+  BOTTOM_NAV_HEIGHT_MOBILE,
+} from 'components/nav/config'
 import { PanelTitleBar } from './panels/PanelTitleBar'
+import { usePageTitle } from './generic/hooks'
+
+type Style = { open: boolean }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex',
       position: 'fixed',
       bottom: 0,
       left: 0,
       right: 0,
       top: 0,
-      transition: '300ms ease all',
-      [theme.breakpoints.down('sm')]: {
-        flexDirection: 'column',
-      },
       '& .map-container': {
-        flex: 1,
-        position: 'relative', // for logo on wider screens
-        transition: '300ms ease all',
+        position: 'absolute', // for logo on wider screens
+        transition: 'all 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
         [theme.breakpoints.up('md')]: {
           borderTop: `solid ${theme.palette.primary.dark} 3px`,
           borderBottom: `solid ${theme.palette.primary.dark} 3px`,
           display: 'flex',
+          left: (props: Style) => (props.open ? panelWidths.mid : 0),
+          right: 0,
+          top: 0,
+          bottom: 0,
+        },
+        [theme.breakpoints.up('xl')]: {
+          left: (props: Style) => (props.open ? panelWidths.midLarge : 0),
         },
         [theme.breakpoints.down('sm')]: {
-          flex: 2,
-          flexBasis: '50%,',
+          top: PANEL_TITLE_BAR_HT_MOBILE,
+          width: '100%',
+          bottom: (props: Style) =>
+            props.open ? '50%' : BOTTOM_NAV_HEIGHT_MOBILE,
         },
       },
       // TODO: into MapPopup component, and increase "X" size
@@ -54,11 +65,13 @@ const useStyles = makeStyles((theme: Theme) =>
 export const AppWrap: FC = () => {
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
   const { panelOpen } = usePanelState()
-  const classes = useStyles({ panelOpen })
+  const classes = useStyles({ open: panelOpen })
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
   const [showWelcome, setShowWelcome] = useState<boolean | null | string>(
     window.localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY)
   )
+
+  usePageTitle()
 
   useEffect(() => {
     setShowWelcome(!window?.localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY))
