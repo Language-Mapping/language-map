@@ -97,7 +97,7 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
   return (
     <div className={classes.root}>
       <Hidden smDown>
-        <PanelTitleBar />
+        <PanelTitleBar mapRef={mapRef} />
       </Hidden>
       <Hidden mdUp>
         <PanelCloseBtnSticky />
@@ -122,8 +122,7 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
                 )
               })}
             </Switch>
-            {/* Last-ditch effort to allow scrolling on mobile */}
-            <div style={{ height: 200, width: '100%' }} />
+            <div style={{ height: 125, width: '100%' }} />
           </div>
         </CSSTransition>
       </TransitionGroup>

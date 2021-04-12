@@ -28,11 +28,12 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       boxShadow: theme.shadows[12],
       [theme.breakpoints.down('sm')]: {
-        boxShadow: theme.shadows[24],
+        boxShadow:
+          '0px 11px 10px 0px rgb(0 0 0 / 18%), 0px 24px 38px 3px rgb(0 0 0 / 12%), 0px 9px 46px 8px rgb(0 0 0 / 10%)',
       },
     },
     paper: {
-      padding: '0.75rem',
+      padding: '0 0.75rem 0.75rem',
       [theme.breakpoints.only('xs')]: {
         maxWidth: '100vw',
       },

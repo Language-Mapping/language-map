@@ -22,7 +22,7 @@ export const RandomLinkBtn: FC = () => {
 
   if (!langFeatsLenCache) btnText = 'Loading languages...'
   else if (!langFeatures.length) btnText = 'No communities available'
-  else btnText = 'Show me a community'
+  else btnText = 'Show me a site'
 
   return (
     <Button

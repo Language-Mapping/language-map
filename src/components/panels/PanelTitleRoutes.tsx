@@ -1,14 +1,15 @@
 import React, { FC } from 'react'
 import { Route, Switch, Link as RouterLink } from 'react-router-dom'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-import { IconButton, Typography, Tooltip } from '@material-ui/core'
+import { IconButton, Typography, Tooltip, Hidden } from '@material-ui/core'
 
 import { icons } from 'components/config'
 import { routes } from 'components/config/api'
 import { pluralize } from 'components/explore/utils'
+import { Logo } from 'components/generic'
 
 type PanelTitleProps = {
-  text: string
+  text: React.ReactNode
   icon?: React.ReactNode
 }
 
@@ -21,6 +22,13 @@ const useStyles = makeStyles((theme: Theme) =>
         color: theme.palette.text.hint,
         marginRight: 6,
       },
+    },
+    logoWrap: {
+      fontSize: '0.65rem',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      display: 'flex',
+      alignItems: 'center',
     },
     panelTitleText: {
       fontSize: '1.5rem',
@@ -38,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const PanelTitle: FC<PanelTitleProps> = (props) => {
   const { text, icon } = props
-  const classes = useStyles({})
+  const classes = useStyles()
 
   return (
     <div className={classes.root}>
@@ -72,20 +80,24 @@ const LinkToHomeBtn: FC = (props) => {
 
 export const PanelTitleRoutes: FC<{ panelTitle: string }> = (props) => {
   const { panelTitle } = props
+  const classes = useStyles()
 
   // TODO: add small logo to left side of bar
   return (
     <Switch>
       <Route path="/" exact>
-        {/* Flex spacer */}
-        <div />
-        <PanelTitle text="Search and Display Sites" icon={icons.Home} />
+        <Hidden smDown>
+          <div />
+          <PanelTitle text="Search and Display Sites" icon={icons.Home} />
+        </Hidden>
+        <Hidden mdUp>
+          <div className={classes.logoWrap}>
+            <Logo darkTheme />
+          </div>
+        </Hidden>
       </Route>
       <Route path={routes.none}>
-        <PanelTitle text="No site selected" />
-      </Route>
-      <Route path={routes.explore} exact>
-        <PanelTitle text="Explore ELA Data" icon={icons[panelTitle]} />
+        <PanelTitle text="No Site Selected" />
       </Route>
       <Route path={routes.data}>
         <PanelTitle text=" " />
@@ -112,6 +124,10 @@ export const PanelTitleRoutes: FC<{ panelTitle: string }> = (props) => {
         {/* Census just needs panel heading override */}
         <LinkToHomeBtn />
         <PanelTitle text="Census Language Data" icon={icons[panelTitle]} />
+      </Route>
+      <Route path={routes.explore} exact>
+        <LinkToHomeBtn />
+        <PanelTitle text="Explore ELA Data" icon={icons[panelTitle]} />
       </Route>
       <Route path="/:level1" exact>
         {/* Home btn on /TopLevelRoutes looks balanced on left */}
