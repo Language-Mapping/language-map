@@ -84,6 +84,9 @@ export const PanelTitleRoutes: FC<{ panelTitle: string }> = (props) => {
       <Route path={routes.none}>
         <PanelTitle text="No site selected" />
       </Route>
+      <Route path={routes.explore} exact>
+        <PanelTitle text="Explore ELA Data" icon={icons[panelTitle]} />
+      </Route>
       <Route path={routes.data}>
         <PanelTitle text=" " />
       </Route>
