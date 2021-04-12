@@ -12,7 +12,7 @@ import {
 
 import { SearchByOmnibox } from 'components/home/SearchByOmnibox'
 import { GeocoderPopout } from 'components/map'
-import { SlideDown, PopoverWithUItext } from 'components/generic'
+import { PopoverWithUItext } from 'components/generic'
 import { UItextTableID } from 'components/generic/types'
 import { TabPanel } from './TabPanel'
 import { SearchTabsProps } from './types'
@@ -61,7 +61,7 @@ const QuickFlex: FC<{ uiTextID: UItextTableID }> = (props) => {
 }
 
 export const SearchTabs: FC<SearchTabsProps> = (props) => {
-  const { mapRef, fixed, open } = props
+  const { mapRef } = props
   const classes = useStyles()
   const theme = useTheme()
   const [value, setValue] = useState<number>(0)
@@ -122,14 +122,10 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
     </SwipeableViews>
   )
 
-  const Everybody = (
+  return (
     <>
       {TabAppBar}
       {TabMeat}
     </>
   )
-
-  if (!fixed) return Everybody
-
-  return <SlideDown inProp={open as boolean}>{Everybody}</SlideDown>
 }

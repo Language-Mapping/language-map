@@ -74,7 +74,6 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: '1rem 0.75rem 1.25rem',
       },
       [theme.breakpoints.only('sm')]: {
-        margin: '1rem auto',
         padding: '1.5rem 8vw',
       },
       [theme.breakpoints.up('xl')]: {
@@ -88,7 +87,7 @@ const useStyles = makeStyles((theme: Theme) =>
 // https://react-swipeable-views.com/demos/demos/
 export const PanelWrap: FC<PanelWrapProps> = (props) => {
   const { mapRef } = props
-  const { panelOpen, searchTabsOpen } = usePanelState()
+  const { panelOpen } = usePanelState()
   const loc = useLocation()
   const targetElemID = 'back-to-top-anchor'
   const panelRef = useRef<HTMLDivElement | null>(null)
@@ -111,9 +110,6 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
               <div style={{ marginTop: '-1rem', marginBottom: '1rem' }}>
                 <SearchTabs mapRef={mapRef} />
               </div>
-            </Route>
-            <Route path="/Explore">
-              <SearchTabs mapRef={mapRef} fixed open={searchTabsOpen} />
             </Route>
             <Switch location={loc}>
               {nonNavRoutesConfig.map((routeConfig) => {

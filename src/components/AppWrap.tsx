@@ -84,7 +84,7 @@ export const AppWrap: FC = () => {
       <ShowPanelBtn panelOpen={panelOpen} />
       <main className={classes.root}>
         <Hidden mdUp>
-          <PanelTitleBar />
+          <PanelTitleBar mapRef={mapRef} />
         </Hidden>
         <PanelWrap mapRef={mapRef} />
         <Map mapRef={mapRef} mapLoaded={mapLoaded} setMapLoaded={setMapLoaded}>
