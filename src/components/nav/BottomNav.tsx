@@ -141,6 +141,27 @@ export const BottomNav: FC = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
+  /* eslint-disable @typescript-eslint/ban-ts-comment */
+  // @ts-ignore
+  const handleClick = (
+    to: string,
+    e?: React.MouseEventHandler<HTMLAnchorElement>
+  ) => {
+    // Avoid route changes if we just want to open/close the panel
+    if (pathname.includes(to)) {
+      if (!panelOpen) {
+        // @ts-ignore
+        e?.preventDefault()
+        panelDispatch({ type: 'TOGGLE_MAIN_PANEL', payload: true })
+      } else if (pathname === to) {
+        // @ts-ignore
+        e?.preventDefault()
+        panelDispatch({ type: 'TOGGLE_MAIN_PANEL', payload: false })
+      }
+    }
+  }
+  /* eslint-enable @typescript-eslint/ban-ts-comment */
+
   const NavActions = navRoutes.map((config) => {
     const { rootPath } = config
     const subRouteStateKey = rootPath.split('/')[1] || '/'
@@ -156,6 +177,11 @@ export const BottomNav: FC = (props) => {
         to={to}
         showLabel
         classes={{ root: bottomNavActionRoot, selected, label, wrapper }}
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        onClick={(e: React.MouseEventHandler<HTMLAnchorElement>) => {
+          handleClick(to, e)
+        }}
       />
     )
   })
