@@ -71,7 +71,7 @@ export const TimelineCrumbs: FC<TimelineCrumbsProps> = (props) => {
                 <b>
                   <Switch>
                     <Route path="/Explore/Language/:language/:instanceID" exact>
-                      Community details
+                      Site Details
                     </Route>
                     <Route path="/Explore/Language/none">
                       No community selected

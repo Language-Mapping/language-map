@@ -7,10 +7,14 @@ import { wpQueryCache } from 'components/about/utils'
 import { routes } from 'components/config/api'
 import { Nav } from 'components/nav'
 import { wpQueryIDs } from './config'
+import { WaysToHelp } from './WaysToHelp'
 
 export const InfoPanel: FC = () => {
   return (
     <>
+      <Route path={routes.info} exact>
+        <WaysToHelp />
+      </Route>
       <ReactQueryCacheProvider queryCache={wpQueryCache}>
         <Route path={routes.about}>
           <AboutPageView noImgShadow queryKey={wpQueryIDs.about} />

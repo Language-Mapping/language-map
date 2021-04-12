@@ -18,7 +18,8 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       listStyle: 'none',
-      margin: '0 0 0.75rem',
+      margin: 0,
+      marginBottom: '0.25rem',
       padding: 0,
       '& li + li': {
         marginLeft: '0.5rem',
@@ -28,6 +29,9 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       display: 'flex',
       fontSize: '0.85rem',
+      '&.bold': {
+        fontWeight: 'bold',
+      },
       '& svg': {
         marginRight: '0.25rem',
       },
@@ -36,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const MediaListItem: FC<MediaListItemProps> = (props) => {
-  const { label, icon, handleClick, disabled, variant = 'text' } = props
+  const { label, icon, handleClick, disabled, bold, variant = 'text' } = props
   const classes = useStyles({})
   let title = ''
 
@@ -52,7 +56,7 @@ const MediaListItem: FC<MediaListItemProps> = (props) => {
         size="small"
         color="secondary"
         variant={variant}
-        className={classes.mediaLink}
+        className={classes.mediaLink + (bold ? ' bold' : '')}
         disabled={disabled}
         title={disabled ? '' : title}
         onClick={(e: React.MouseEvent) => handleClick()}
@@ -87,21 +91,23 @@ export const Media: FC<MediaProps> = (props) => {
       )}
       <ul className={classes.root}>
         <MediaListItem
+          bold={Video !== undefined}
           disabled={!Video}
           icon={<FiVideo />}
           label="Video"
           type="Video"
-          variant="outlined"
           handleClick={() => setMediaUrl(Video)}
         />
         <MediaListItem
+          bold={Audio !== undefined}
           disabled={!Audio}
           icon={<AiOutlineSound />}
           label="Audio"
           type="Audio"
-          variant="outlined"
           handleClick={() => setMediaUrl(Audio)}
         />
+        {/* flex spacer */}
+        <li style={{ flexGrow: 0.5 }} />
         {/* TODO: use Switch + Route for this, e.g. /Data/:id */}
         {!omitClear &&
           ((!isTable && (

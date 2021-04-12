@@ -9,6 +9,7 @@ export const ColoredCircle: FC<{ color: string }> = (props) => {
       viewBox="0 0 24 24"
       height="0.5em"
       width="0.5em"
+      style={{ verticalAlign: 0 }}
     >
       <circle cx="12" cy="12" r="12" fill={color} />
     </svg>

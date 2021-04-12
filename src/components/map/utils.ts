@@ -92,15 +92,20 @@ export const prepPopupContent: Types.PrepPopupContent = (
 
 export const flyToBounds: Types.FlyToBounds = (
   map,
-  { height, width, bounds, offset }
+  { height, width, bounds, breakpoint }
 ) => {
+  let padding: number
+
+  if (breakpoint === 'mobile' || breakpoint === 'tablet') padding = 25
+  else padding = 100
+
   const webMercViewport = new WebMercatorViewport({
     width,
     height,
-  }).fitBounds(bounds, { offset, padding: 75 })
+  }).fitBounds(bounds, { padding })
   const { latitude, longitude, zoom } = webMercViewport
 
-  map.flyTo({ essential: true, zoom, center: [longitude, latitude], offset }, {
+  map.flyTo({ essential: true, zoom, center: [longitude, latitude] }, {
     forceViewportUpdate: true,
   } as Types.CustomEventData)
 }
@@ -115,8 +120,6 @@ export const flyToPoint: Types.FlyToPoint = (
     disregardCurrZoom,
     latitude,
     longitude,
-    offset,
-    pitch = 0,
     zoom: targetZoom,
   } = settings
   let zoom = targetZoom
@@ -139,7 +142,7 @@ export const flyToPoint: Types.FlyToPoint = (
   }
 
   const center = [longitude, latitude] as [number, number]
-  const params = { essential: true, zoom, center, bearing, pitch, offset }
+  const params = { essential: true, zoom, center, bearing }
 
   if (disregardCurrZoom) {
     map.flyTo(params, customEventData)
@@ -213,12 +216,12 @@ export const setInterpolatedFill = (high: number, low = 0): FillPaint => ({
   'fill-opacity': 0.9,
 })
 
-export const flyHome = (map: MbMap, offset: Types.Offset): void => {
+export const flyHome: Types.FlyHome = (map, breakpoint): void => {
   const settings = {
     height: map.getContainer().clientHeight,
     width: map.getContainer().clientWidth,
     bounds: config.initialBounds,
-    offset,
+    breakpoint,
   }
 
   // TODO: prevent errors on resize-while-loading
@@ -227,7 +230,6 @@ export const flyHome = (map: MbMap, offset: Types.Offset): void => {
 
 export const getFlyToPointSettings = (
   coords: { lat: number; lon: number },
-  offset: Types.Offset,
   isMapTilted: boolean
 ): Types.FlyToPointSettings => ({
   // bearing: 80, // TODO: consider it as it does add a new element of fancy
@@ -236,7 +238,6 @@ export const getFlyToPointSettings = (
   zoom: config.POINT_ZOOM_LEVEL,
   disregardCurrZoom: true,
   pitch: isMapTilted ? 80 : 0,
-  offset,
 })
 
 // REFACTOR: just reduce it one go instead of mapping, filtering, mapping again
@@ -271,10 +272,7 @@ export const rightToLeftSetup = (): void => {
   }
 }
 
-export const getPolyWebMercView: Types.GetPolyWebMercView = (
-  boundsArray,
-  offset
-) => {
+export const getPolyWebMercView: Types.GetPolyWebMercView = (boundsArray) => {
   // NOTE: rather than storing bounds in the lookup tables, tried
   // `boundaryFeat.geometry` instead. Sort of worked but since vector tiles only
   // render what's needed, there's no guarantee the whole feature's bbox will be
@@ -287,7 +285,7 @@ export const getPolyWebMercView: Types.GetPolyWebMercView = (
   const webMercViewport = new WebMercatorViewport({
     width,
     height,
-  }).fitBounds(boundsArray, { offset, padding: 75 })
+  }).fitBounds(boundsArray, { padding: 75 })
 
   return { ...webMercViewport }
 }

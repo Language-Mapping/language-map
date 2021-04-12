@@ -33,19 +33,7 @@ export const Explore: FC = () => {
             icon={icons[name] || null}
             title={plural || ''} // TODO: ugh
             url={`/Explore/${name}`}
-            // CRED: 🏅 https://css-tricks.com/almanac/properties/l/line-clamp/
-            footer={
-              <footer
-                style={{
-                  display: '-webkit-box',
-                  overflow: 'hidden',
-                  WebkitBoxOrient: 'vertical',
-                  WebkitLineClamp: 3,
-                }}
-              >
-                {definition}
-              </footer>
-            }
+            footer={definition}
           />
         ))}
       </CardListWrap>

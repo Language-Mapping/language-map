@@ -19,25 +19,23 @@ import { getCenterOfBounds } from './utils'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    mapPopupRoot: {
+    root: {
       textAlign: 'center',
-      minWidth: 150,
-      // Shaky but makes long endos like Church Slavonic's fit. Safari and/or
-      // Firefox seem to need more room than Chrome.
-      maxWidth: 270,
+      minWidth: 175,
+      maxWidth: 275,
       wordWrap: 'break-word',
       '& .mapboxgl-popup-content': {
         // Leave room for "x" close button
-        padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+        padding: `${theme.spacing(1)}px ${theme.spacing(3)}px`,
       },
       '& .mapboxgl-popup-close-button': {
-        fontSize: 16,
+        fontSize: '1.25rem',
         padding: 0,
         margin: 0,
-        lineHeight: '16px',
-        top: 2,
-        right: 4,
-        color: theme.palette.text.hint,
+        lineHeight: 1,
+        top: 0,
+        right: 8,
+        color: theme.palette.text.primary,
       },
     },
     popupHeading: {
@@ -57,14 +55,14 @@ const useStyles = makeStyles((theme: Theme) =>
 export const MapPopup: FC<MapPopupProps> = (props) => {
   const classes = useStyles()
   const { longitude, latitude, handleClose, heading, content } = props
-  const { mapPopupRoot, popupHeading, popupContent } = classes
+  const { root, popupHeading, popupContent } = classes
 
   return (
     <Popup
       tipSize={10}
       longitude={longitude}
       latitude={latitude}
-      className={mapPopupRoot}
+      className={root}
       onClose={handleClose}
     >
       <header>

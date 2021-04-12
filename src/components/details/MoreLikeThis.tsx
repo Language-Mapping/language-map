@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.75rem',
       justifyContent: 'center',
       flexWrap: 'wrap',
-      marginBottom: '0.5rem',
       '& > * + *': {
         marginLeft: '0.35rem',
       },

@@ -1,68 +1,83 @@
-import React, { FC, useEffect, useRef } from 'react'
-import { Route, Switch, useRouteMatch, useLocation } from 'react-router-dom'
+import React, { FC, useRef } from 'react'
+import { Route, Switch, useLocation } from 'react-router-dom'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Paper, Toolbar } from '@material-ui/core'
+import { Hidden } from '@material-ui/core'
 
-import { SearchTabs, usePanelState } from 'components/panels'
+import {
+  SearchTabs,
+  usePanelState,
+  PanelCloseBtnSticky,
+} from 'components/panels'
 import { BackToTopBtn, useHideOnScroll } from 'components/generic'
-import { routes } from 'components/config/api'
+import { BottomNav } from 'components/nav'
 import { PanelTitleBar } from './PanelTitleBar'
 import { PanelWrapProps } from './types'
 
-import * as config from './config'
+import { panelWidths, nonNavRoutesConfig } from './config'
 import './styles.css'
 
-type StyleProps = {
-  hide: boolean
-  panelOpen: boolean
-}
+type Style = { open: boolean }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      borderBottomLeftRadius: 0, // override paper
-      borderBottomRightRadius: 0, // override paper
-      bottom: 48, // default is set directly in MUI to 56
-      boxShadow: '0 -2px 7px hsla(0, 0%, 0%, 0.25)',
-      left: 0,
-      opacity: (props: StyleProps) => (props.panelOpen ? 1 : 0),
+      backgroundColor: theme.palette.background.paper,
+      bottom: 0,
+      boxShadow: '1px 2px 8px hsl(0deg 0% 0% / 65%)',
       position: 'absolute',
-      right: 0,
-      top: '45%',
-      transition: '300ms ease all',
-      transform: (props: StyleProps) =>
-        `translateY(${props.panelOpen ? 0 : '100%'})`,
-      [theme.breakpoints.up('sm')]: {
-        left: 8,
-        right: 8,
-      },
+      top: '50%',
+      transition: 'all 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
       [theme.breakpoints.up('md')]: {
-        top: 24,
-        left: 24,
-        bottom: 92, // 36 + 56 (aka BottomNav `bottom` + `height`)
-        width: config.panelWidths.mid,
+        bottom: 0,
+        left: 0,
+        top: 0,
+        width: panelWidths.mid,
+        opacity: (props: Style) => (props.open ? 1 : 0),
+        transform: (props: Style) =>
+          props.open ? 'translateX(0)' : `translateX(-100%)`,
       },
       [theme.breakpoints.up('xl')]: {
-        width: config.panelWidths.midLarge,
+        width: panelWidths.midLarge,
+      },
+      [theme.breakpoints.down('sm')]: {
+        width: '100%',
+        borderTop: `solid 6px ${theme.palette.primary.dark}`,
       },
       '& .MuiInputLabel-formControl': {
         color: theme.palette.text.secondary,
         fontSize: '1rem',
       },
+      '& .trans-group': {
+        height: '100%',
+        width: '100%',
+        [theme.breakpoints.up('md')]: {
+          position: 'relative', // not sure if needed
+        },
+      },
     },
-    panelContentRoot: {
-      bottom: 0,
-      overflowX: 'hidden',
+    panelContent: {
+      opacity: 1,
       overflowY: 'auto',
-      position: 'absolute',
-      top: 0,
+      padding: '1rem 0.75rem 1.25rem',
       width: '100%',
-    },
-    innerPanel: {
-      padding: '0.75rem 0.75rem',
-      [theme.breakpoints.up('sm')]: {
-        padding: '1.25rem',
+      [theme.breakpoints.up('md')]: {
+        padding: '1.5rem 1.25rem',
+        position: 'absolute',
+        top: 48,
+        bottom: 48,
+      },
+      [theme.breakpoints.down('sm')]: {
+        opacity: (props: Style) => (props.open ? 1 : 0),
+        transition: 'all 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+        height: '100%',
+        padding: '1rem 0.75rem 1.25rem',
+      },
+      [theme.breakpoints.only('sm')]: {
+        padding: '1.5rem 8vw',
+      },
+      [theme.breakpoints.up('xl')]: {
+        padding: '1.75rem 1.5rem',
       },
     },
   })
@@ -72,77 +87,49 @@ const useStyles = makeStyles((theme: Theme) =>
 // https://react-swipeable-views.com/demos/demos/
 export const PanelWrap: FC<PanelWrapProps> = (props) => {
   const { mapRef } = props
-  const { panelOpen, searchTabsOpen } = usePanelState()
+  const { panelOpen } = usePanelState()
   const loc = useLocation()
-  const { pathname } = loc
   const targetElemID = 'back-to-top-anchor'
   const panelRef = useRef<HTMLDivElement | null>(null)
   const hide = useHideOnScroll(panelRef.current)
-  const classes = useStyles({ panelOpen, hide })
-
-  /* eslint-disable @typescript-eslint/ban-ts-comment */
-  // @ts-ignore // TODO: 😞
-  const isPageWithID = useRouteMatch<{ params: { id: number } }>([
-    '/Explore/Language/:langName/:id',
-    routes.dataDetail,
-    // @ts-ignore // TODO: 😞
-  ])?.params.id
-  const asArray = pathname.split('/')
-  const pageTitle = asArray[4] || asArray[3] || asArray[2] || asArray[1]
-
-  // TODO: make this actually work on mobile, and confirm on desktop
-  useEffect(() => {
-    // @ts-ignore
-    document?.activeElement?.blur() // CRED: stackoverflow.com/a/2568972/1048518
-  }, [loc.pathname])
-  /* eslint-enable @typescript-eslint/ban-ts-comment */
-
-  // Default Home title // TODO: set this for reuse somewhere if needed
-  if (!pageTitle) document.title = 'Languages of New York City'
-  // Everything else gets the first available path segment, except for detail
-  // view via Details or Table.
-  else if (!isPageWithID) {
-    // CRED: https://flaviocopes.com/how-to-uppercase-first-letter-javascript/
-    const pageTitleCapitalized =
-      pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1)
-
-    document.title = `${pageTitleCapitalized} - NYC Languages`
-  }
+  const classes = useStyles({ open: panelOpen })
 
   return (
-    <Paper className={classes.root} elevation={8}>
-      <PanelTitleBar hide={hide} />
-      <TransitionGroup>
-        <CSSTransition key={loc.key} classNames="fade" timeout={950} appear>
-          <div className={classes.panelContentRoot} ref={panelRef}>
+    <div className={classes.root}>
+      <Hidden smDown>
+        <PanelTitleBar mapRef={mapRef} />
+      </Hidden>
+      <Hidden mdUp>
+        <PanelCloseBtnSticky />
+      </Hidden>
+      <TransitionGroup className="trans-group">
+        <CSSTransition key={loc.key} classNames="fade" timeout={950}>
+          <div className={classes.panelContent} ref={panelRef}>
             <div id={targetElemID} />
-            <Toolbar variant="dense" />
-            <Switch>
-              {/* Always show Search tabs on Home */}
-              <Route path="/" exact>
+            <Route path="/" exact>
+              <div style={{ marginTop: '-1rem', marginBottom: '1rem' }}>
                 <SearchTabs mapRef={mapRef} />
-              </Route>
-              <Route path="/Explore">
-                <SearchTabs mapRef={mapRef} fixed open={searchTabsOpen} />
-              </Route>
-            </Switch>
-            <div className={classes.innerPanel}>
-              <Switch location={loc}>
-                {config.nonNavRoutesConfig.map((routeConfig) => {
-                  const { exact, rootPath, component } = routeConfig
+              </div>
+            </Route>
+            <Switch location={loc}>
+              {nonNavRoutesConfig.map((routeConfig) => {
+                const { exact, rootPath, component } = routeConfig
 
-                  return (
-                    <Route exact={exact} path={rootPath} key={rootPath}>
-                      {component}
-                    </Route>
-                  )
-                })}
-              </Switch>
-            </div>
+                return (
+                  <Route exact={exact} path={rootPath} key={rootPath}>
+                    {component}
+                  </Route>
+                )
+              })}
+            </Switch>
+            <div style={{ height: 125, width: '100%' }} />
           </div>
         </CSSTransition>
       </TransitionGroup>
       <BackToTopBtn hide={hide} targetElemID={targetElemID} />
-    </Paper>
+      <Hidden smDown>
+        <BottomNav />
+      </Hidden>
+    </div>
   )
 }

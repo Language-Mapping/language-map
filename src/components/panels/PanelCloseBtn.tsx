@@ -1,37 +1,56 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Link } from '@material-ui/core'
-import { IoIosArrowDropdown } from 'react-icons/io'
+import { IconButton, Tooltip } from '@material-ui/core'
+import { CgClose } from 'react-icons/cg'
 
-type CloseProps = {
-  onClick: () => void
-}
+import { usePanelDispatch } from 'components/panels'
 
+// CRED: for hard stop gradient shorthand https://bit.ly/2OEogv5
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    RouteLocation: {
-      [theme.breakpoints.up('md')]: {
-        display: 'none',
-      },
+    stickyBtn: {
+      height: 0,
+      marginRight: 12,
+      marginTop: 8,
+      position: 'sticky',
+      textAlign: 'right',
+      top: 0,
+    },
+    btnContainer: {
+      alignItems: 'center',
+      display: 'inline-flex',
+      height: '1.25rem',
+      justifyContent: 'center',
+      width: '1.25rem',
     },
   })
 )
 
-export const CloseBtn: FC<CloseProps> = (props) => {
-  const { onClick } = props
+export const PanelCloseBtn: FC = () => {
+  const panelDispatch = usePanelDispatch()
+
+  return (
+    <Tooltip title="Close panel">
+      <IconButton
+        size="small"
+        aria-label="panel close"
+        color="inherit"
+        onClick={() => panelDispatch({ type: 'TOGGLE_MAIN_PANEL' })}
+      >
+        <CgClose />
+      </IconButton>
+    </Tooltip>
+  )
+}
+
+export const PanelCloseBtnSticky: FC = () => {
   const classes = useStyles()
 
   return (
-    <Link
-      color="inherit"
-      href="#"
-      className={classes.RouteLocation}
-      onClick={(e: React.MouseEvent) => {
-        e.preventDefault()
-        onClick()
-      }}
-    >
-      <IoIosArrowDropdown />
-    </Link>
+    <div className={classes.stickyBtn}>
+      <div className={classes.btnContainer}>
+        <PanelCloseBtn />
+      </div>
+    </div>
   )
 }

@@ -97,7 +97,7 @@ export const MapOptionsMenu: FC<MapOptionsMenuProps> = (props) => {
         variant="h6"
         className={classes.popoverHeading}
       >
-        Map options
+        Map Options
       </Typography>
       <ToggleWithHelper
         checked={showNeighbs}

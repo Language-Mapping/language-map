@@ -2,40 +2,46 @@ import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Typography } from '@material-ui/core'
 
-// Shaky but makes long endos like Church Slavonic's fit
-type StyleProps = { tooLong?: boolean }
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
       textAlign: 'center',
       textShadow: '1px 1px 4px hsla(0, 0%, 0%, 0.4)',
-      fontSize: '2rem',
+      fontSize: '2.25rem',
       marginBottom: '0.25rem',
+      // Safari and/or Firefox seem to need smaller font than Chrome
       [theme.breakpoints.up('sm')]: {
-        // Safari and/or Firefox seem to need smaller font than Chrome
         fontSize: '2.25rem',
+      },
+      [theme.breakpoints.only('sm')]: {
+        fontSize: '2.75rem',
       },
       [theme.breakpoints.up('md')]: {
         fontSize: '2.5rem',
       },
+      [theme.breakpoints.up('xl')]: {
+        fontSize: '2.75rem',
+      },
       '& img': {
         fontSize: '0.85em',
-        // verticalAlign: -1, // Country flags look better?
       },
       '& svg': {
         color: theme.palette.text.secondary, // for react-icons, not Swatch
-      },
-      '& > :first-child': {
-        marginRight: '0.25rem',
+        marginRight: '0.25em',
       },
     },
     subTitle: {
-      fontSize: '1.25rem',
+      fontSize: '1.5rem',
       marginBottom: '0.5rem',
       lineHeight: 1,
       color: theme.palette.text.secondary,
       textAlign: 'center',
+      '& + *': {
+        marginBottom: '0.85rem',
+      },
+      [theme.breakpoints.only('sm')]: {
+        marginBottom: '0.85rem',
+      },
     },
   })
 )

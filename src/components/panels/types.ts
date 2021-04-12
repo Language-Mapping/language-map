@@ -10,17 +10,17 @@ export type MapPanel = {
   icon?: React.ReactNode
 }
 
-export type PanelWrapProps = Pick<MapProps, 'mapRef'> & {
-  openOffCanvasNav: (e: React.MouseEvent) => void
-}
+export type PanelWrapProps = Pick<MapProps, 'mapRef'>
 
 export type SearchTabsProps = {
   mapRef: React.RefObject<InteractiveMap>
-  fixed?: boolean // non-Home panels have a hidden SearcTabs component
-  open?: boolean
 }
 
 export type TabPanelProps = {
   index: number
   value: number
+}
+
+export type PanelTitleBarProps = {
+  mapRef?: React.RefObject<InteractiveMap>
 }

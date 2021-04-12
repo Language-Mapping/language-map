@@ -15,12 +15,8 @@ const useStyles = makeStyles((theme: Theme) =>
       borderColor: theme.palette.action.hover,
       borderStyle: 'solid',
       borderWidth: 1,
-      padding: '0.5em',
+      padding: '0.75rem 0.5rem',
       transition: 'all 300ms ease',
-      '& > *': {
-        lineHeight: 1.25,
-        marginBottom: '0.25em',
-      },
       '&:hover': {
         borderColor: theme.palette.secondary.dark,
         background: `radial-gradient(ellipse at top, ${theme.palette.secondary.light}, transparent),
@@ -32,43 +28,51 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     intro: {
+      color: theme.palette.text.secondary,
+      display: 'block',
       fontSize: '0.75rem',
       marginBottom: '0.5rem',
-      display: 'block',
+      textTransform: 'uppercase',
+      [theme.breakpoints.only('xs')]: {
+        marginBottom: '0.25rem',
+      },
     },
     header: {
-      display: 'flex',
-      alignItems: 'center',
-      fontSize: '1.1em',
+      fontSize: '1.15rem',
+      lineHeight: 1.25,
+      marginBottom: '0.5rem',
       // Icons, flags, swatches, etc.
       '& > :first-child': {
-        flexShrink: 0,
         marginRight: '0.25em',
+        display: 'inline-block',
       },
-      '& > svg': {
+      '& svg': {
         fill: theme.palette.text.secondary,
+        verticalAlign: -3, // react-icons don't line up
       },
       '& > .country-flag': {
-        height: '0.8em',
+        height: '0.85rem',
       },
     },
     // Might be a list of examples or just a regular footer
+    // CRED: 🏅 https://css-tricks.com/almanac/properties/l/line-clamp/
     footer: {
       alignItems: 'center',
       color: theme.palette.text.secondary,
-      display: 'inline-flex',
-      fontSize: '0.5em',
-
-      '& svg': {
-        marginRight: '0.25em',
-        fontSize: '1.25em',
-        flexShrink: 0,
+      fontSize: '0.65rem',
+      display: '-webkit-box',
+      overflow: 'hidden',
+      WebkitBoxOrient: 'vertical',
+      WebkitLineClamp: 3,
+      [theme.breakpoints.only('xs')]: {
+        fontSize: '0.5rem',
       },
     },
     accentBar: {
       backgroundColor: theme.palette.action.hover,
       borderRadius: 4,
       height: 2,
+      marginBottom: '0.5rem',
       marginLeft: 'auto',
       marginRight: 'auto',
       transform: 'scaleX(0.5), translateX(100%)',
@@ -107,16 +111,7 @@ export const CustomCard: FC<Types.CustomCardProps> = (props) => {
       // @ts-ignore // it's fine TS, chill out
       component={Link}
     >
-      {intro && (
-        <Typography
-          className={classes.intro}
-          variant="overline"
-          color="textSecondary"
-          gutterBottom
-        >
-          {intro}
-        </Typography>
-      )}
+      {intro && <Typography className={classes.intro}>{intro}</Typography>}
       <Typography variant="h6" component="header" className={classes.header}>
         {icon}
         {title}
@@ -127,18 +122,9 @@ export const CustomCard: FC<Types.CustomCardProps> = (props) => {
         variant="caption"
         className={classes.footer}
       >
-        <footer
-          style={{
-            display: '-webkit-box',
-            overflow: 'hidden',
-            WebkitBoxOrient: 'vertical',
-            WebkitLineClamp: 3,
-          }}
-        >
-          {footer ||
-            (uniqueInstances !== undefined &&
-              utils.prettyTruncate(uniqueInstances as string[]))}
-        </footer>
+        {footer ||
+          (uniqueInstances !== undefined &&
+            utils.prettyTruncate(uniqueInstances as string[]))}
       </Typography>
     </Card>
   )

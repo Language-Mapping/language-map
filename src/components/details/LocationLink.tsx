@@ -12,8 +12,8 @@ import { LocationLinkProps } from './types'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     link: {
-      display: 'inline-flex',
       alignItems: 'center',
+      display: 'inline-flex',
       fontSize: '0.85rem',
       marginBottom: '0.75rem',
       '& > svg': {

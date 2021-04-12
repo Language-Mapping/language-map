@@ -1,4 +1,6 @@
+export type Breakpoint = 'mobile' | 'tablet' | 'desktop' | 'huge' | 'tablet'
 export type UItextTableID =
+  | 'call-to-action'
   | 'census-panel-intro-bottom'
   | 'census-panel-intro-top'
   | 'census-popout-intro'

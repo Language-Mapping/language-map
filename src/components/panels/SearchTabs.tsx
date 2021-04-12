@@ -12,7 +12,7 @@ import {
 
 import { SearchByOmnibox } from 'components/home/SearchByOmnibox'
 import { GeocoderPopout } from 'components/map'
-import { SlideDown, PopoverWithUItext } from 'components/generic'
+import { PopoverWithUItext } from 'components/generic'
 import { UItextTableID } from 'components/generic/types'
 import { TabPanel } from './TabPanel'
 import { SearchTabsProps } from './types'
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) => {
       gridColumnGap: 4,
       justifyContent: 'center',
       gridTemplateColumns: 'minmax(350px, auto) 32px',
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.only('xs')]: {
         gridTemplateColumns: 'minmax(325px, auto) 24px',
       },
     },
@@ -61,7 +61,7 @@ const QuickFlex: FC<{ uiTextID: UItextTableID }> = (props) => {
 }
 
 export const SearchTabs: FC<SearchTabsProps> = (props) => {
-  const { mapRef, fixed, open } = props
+  const { mapRef } = props
   const classes = useStyles()
   const theme = useTheme()
   const [value, setValue] = useState<number>(0)
@@ -78,7 +78,7 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
   }
 
   const TabAppBar = (
-    <AppBar position="static" color="transparent">
+    <AppBar position="static" color="transparent" elevation={0}>
       <Tabs
         value={value}
         onChange={handleChange}
@@ -122,14 +122,10 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
     </SwipeableViews>
   )
 
-  const Everybody = (
+  return (
     <>
       {TabAppBar}
       {TabMeat}
     </>
   )
-
-  if (!fixed) return Everybody
-
-  return <SlideDown inProp={open as boolean}>{Everybody}</SlideDown>
 }

@@ -1,53 +1,62 @@
 import React, { FC, useState, useEffect } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { InteractiveMap } from 'react-map-gl'
+import { Hidden } from '@material-ui/core'
 
-import { PanelWrap, usePanelState } from 'components/panels'
-import { TopBar, OffCanvasNav } from 'components/nav'
+import { panelWidths } from 'components/panels/config'
+import { PanelWrap, usePanelState, ShowPanelBtn } from 'components/panels'
+import { BottomNav, TopBar } from 'components/nav'
 import { WelcomeDialog, HIDE_WELCOME_LOCAL_STG_KEY } from 'components/about'
 import { Map } from 'components/map'
-import { LoadingBackdrop } from 'components/generic/modals'
-import { BottomNav } from './nav/BottomNav'
-import { BOTTOM_NAV_HEIGHT_MOBILE } from './nav/config'
+import {
+  LoadingBackdropEmpty,
+  LoadingTextOnElem,
+} from 'components/generic/modals'
+import {
+  PANEL_TITLE_BAR_HT_MOBILE,
+  BOTTOM_NAV_HEIGHT_MOBILE,
+} from 'components/nav/config'
+import { PanelTitleBar } from './panels/PanelTitleBar'
+import { usePageTitle } from './generic/hooks'
+
+type Style = { open: boolean }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    mainWrap: {
-      top: 0,
+    root: {
+      position: 'fixed',
       bottom: 0,
-      position: 'absolute',
-      height: '100%',
-      width: '100%',
-      overflow: 'hidden',
+      left: 0,
+      right: 0,
+      top: 0,
+      '& .map-container': {
+        position: 'absolute', // for logo on wider screens
+        transition: 'all 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+        [theme.breakpoints.up('md')]: {
+          borderTop: `solid ${theme.palette.primary.dark} 3px`,
+          borderBottom: `solid ${theme.palette.primary.dark} 3px`,
+          display: 'flex',
+          left: (props: Style) => (props.open ? panelWidths.mid : 0),
+          right: 0,
+          top: 0,
+          bottom: 0,
+        },
+        [theme.breakpoints.up('xl')]: {
+          left: (props: Style) => (props.open ? panelWidths.midLarge : 0),
+        },
+        [theme.breakpoints.down('sm')]: {
+          top: PANEL_TITLE_BAR_HT_MOBILE,
+          width: '100%',
+          bottom: (props: Style) =>
+            props.open ? '50%' : BOTTOM_NAV_HEIGHT_MOBILE,
+        },
+      },
+      // TODO: into MapPopup component, and increase "X" size
       '& .mapboxgl-popup-tip': {
         borderTopColor: theme.palette.background.paper,
       },
       '& .mapboxgl-popup-content': {
         backgroundColor: theme.palette.background.paper,
-      },
-      [theme.breakpoints.down('sm')]: {
-        '& .mapboxgl-ctrl-bottom-left > .mapboxgl-ctrl': {
-          marginBottom: '0.5rem', // MB logo has too much spacing
-        },
-        '& .mapboxgl-ctrl-bottom-right > .mapboxgl-ctrl': {
-          marginBottom: '0.25rem', // MB attribution needs a little spacing
-        },
-        '& .mapboxgl-ctrl-bottom-right, .mapboxgl-ctrl-bottom-left': {
-          transition: 'bottom 300ms ease',
-          bottom: (props: { panelOpen: boolean }) =>
-            props.panelOpen ? 'calc(50% + 0.45rem)' : 0,
-        },
-      },
-    },
-    mapWrap: {
-      position: 'absolute',
-      bottom: BOTTOM_NAV_HEIGHT_MOBILE,
-      left: 0,
-      right: 0,
-      top: 0,
-      width: '100%',
-      [theme.breakpoints.up('md')]: {
-        bottom: 0,
       },
     },
   })
@@ -56,12 +65,13 @@ const useStyles = makeStyles((theme: Theme) =>
 export const AppWrap: FC = () => {
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
   const { panelOpen } = usePanelState()
-  const classes = useStyles({ panelOpen })
-  const [offCanvasNavOpen, setOffCanvasNavOpen] = useState<boolean>(false)
+  const classes = useStyles({ open: panelOpen })
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
   const [showWelcome, setShowWelcome] = useState<boolean | null | string>(
     window.localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY)
   )
+
+  usePageTitle()
 
   useEffect(() => {
     setShowWelcome(!window?.localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY))
@@ -70,26 +80,21 @@ export const AppWrap: FC = () => {
   return (
     <>
       {showWelcome && <WelcomeDialog />}
-      {!mapLoaded && <LoadingBackdrop text="Loading..." />}
-      <TopBar />
-      <main className={classes.mainWrap}>
-        <div className={classes.mapWrap}>
-          <Map
-            mapRef={mapRef}
-            mapLoaded={mapLoaded}
-            setMapLoaded={setMapLoaded}
-          />
-        </div>
-        <PanelWrap
-          mapRef={mapRef}
-          openOffCanvasNav={(e: React.MouseEvent) => {
-            e.preventDefault()
-            setOffCanvasNavOpen(true)
-          }}
-        />
-        <BottomNav />
+      <LoadingBackdropEmpty open={!mapLoaded} />
+      <ShowPanelBtn panelOpen={panelOpen} />
+      <main className={classes.root}>
+        <Hidden mdUp>
+          <PanelTitleBar mapRef={mapRef} />
+        </Hidden>
+        <PanelWrap mapRef={mapRef} />
+        <Map mapRef={mapRef} mapLoaded={mapLoaded} setMapLoaded={setMapLoaded}>
+          <TopBar />
+          {!mapLoaded && <LoadingTextOnElem />}
+        </Map>
+        <Hidden mdUp>
+          <BottomNav />
+        </Hidden>
       </main>
-      <OffCanvasNav isOpen={offCanvasNavOpen} setIsOpen={setOffCanvasNavOpen} />
     </>
   )
 }

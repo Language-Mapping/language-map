@@ -7,10 +7,8 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core'
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
 import { useMapToolsDispatch } from 'components/context'
-import { useUItext } from 'components/generic'
+import { useBreakpoint, useUItext } from 'components/generic'
 import { MAPBOX_TOKEN, NYC_LAT_LONG, POINT_ZOOM_LEVEL } from './config'
-import { useWindowResize } from '../../utils'
-import { useOffset } from './hooks'
 import { flyToBounds, flyToPoint } from './utils'
 import { GeocodeResult, BoundsArray, GeocoderPopoutProps } from './types'
 
@@ -39,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
         // Make text more opaque than the 0.5 default
         // CRED: https://stackoverflow.com/a/48545561/1048518
         '&::placeholder': {
+          fontSize: '0.85rem',
           opacity: 0.85,
         },
       },
@@ -52,8 +51,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
   const { mapRef } = props
   const geocoderContainerRef = useRef<HTMLDivElement>(null)
-  const { width, height } = useWindowResize()
-  const offset = useOffset()
+  const breakpoint = useBreakpoint()
   const { text: placeholderText } = useUItext('loc-search-placeholder')
   const classes = useStyles()
   const mapToolsDispatch = useMapToolsDispatch()
@@ -71,14 +69,13 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
     if (bbox) {
       // TODO: if (geocodeResult.result.place_type[0] === 'neighborhood')...
       const settings = {
-        height,
-        width,
+        height: map.getContainer().offsetHeight,
+        width: map.getContainer().offsetWidth,
         bounds: [
           [bbox[0], bbox[1]],
           [bbox[2], bbox[3]],
         ] as BoundsArray,
-        padding: 25,
-        offset,
+        breakpoint,
       }
 
       flyToBounds(map, settings)
@@ -88,7 +85,6 @@ export const GeocoderPopout: FC<GeocoderPopoutProps> = (props) => {
         longitude: center[0],
         zoom: POINT_ZOOM_LEVEL,
         disregardCurrZoom: true,
-        offset,
       }
 
       flyToPoint(map, settings)

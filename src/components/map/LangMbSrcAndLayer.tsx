@@ -5,7 +5,7 @@ import { Source, Layer } from 'react-map-gl'
 import { useSymbAndLabelState } from 'components/context'
 import { useAirtable } from 'components/explore/hooks'
 import { prepEndoFilters, getFlyToPointSettings, flyToPoint } from './utils'
-import { useLayersConfig, useSelLangPointCoords, useOffset } from './hooks'
+import { useLayersConfig, useSelLangPointCoords } from './hooks.points'
 
 import * as config from './config'
 import { LayerPropsPlusMeta, LangMbSrcAndLayerProps } from './types'
@@ -15,7 +15,7 @@ export const LangMbSrcAndLayer: FC<LangMbSrcAndLayerProps> = (props) => {
   const symbLabelState = useSymbAndLabelState()
   const selLangPointCoords = useSelLangPointCoords()
   const { lat, lon } = selLangPointCoords || {}
-  const offset = useOffset()
+
   const {
     activeLabelID,
     activeSymbGroupID,
@@ -79,7 +79,7 @@ export const LangMbSrcAndLayer: FC<LangMbSrcAndLayerProps> = (props) => {
   useEffect(() => {
     if (!map || !mapLoaded || !lat || !lon) return
 
-    const settings = getFlyToPointSettings({ lat, lon }, offset, isMapTilted)
+    const settings = getFlyToPointSettings({ lat, lon }, isMapTilted)
 
     flyToPoint(map, settings)
     // eslint-disable-next-line react-hooks/exhaustive-deps

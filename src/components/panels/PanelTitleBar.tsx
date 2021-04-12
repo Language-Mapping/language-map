@@ -1,39 +1,50 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC, useState } from 'react'
 import { useLocation, Route, Switch } from 'react-router-dom'
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-import { AppBar, IconButton, Toolbar, Tooltip } from '@material-ui/core'
+import {
+  Popover,
+  AppBar,
+  Hidden,
+  IconButton,
+  Toolbar,
+  Tooltip,
+} from '@material-ui/core'
 import { HiOutlineSearch } from 'react-icons/hi'
-import { CgClose } from 'react-icons/cg'
 
-import { usePanelDispatch } from 'components/panels'
+import { PanelCloseBtn } from 'components/panels'
 import { routes } from 'components/config/api'
+import { PANEL_TITLE_BAR_HT_MOBILE } from 'components/nav/config'
 import { SplitCrumbs } from './SplitCrumbs'
 import { PanelTitleRoutes } from './PanelTitleRoutes'
-
-type StyleProps = { hide?: boolean }
-
-const topCornersRadius = 4 // same as bottom left/right in nav bar
-const borderTopLeftRadius = topCornersRadius
-const borderTopRightRadius = topCornersRadius
+import { PanelTitleBarProps } from './types'
+import { SearchTabs } from './SearchTabs'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      borderTopLeftRadius,
-      borderTopRightRadius,
       transition: '300ms all',
-      transform: (props: StyleProps) =>
-        props.hide ? 'translateY(-40px)' : 'translateY(0)',
-      opacity: (props: StyleProps) => (props.hide ? 0 : 1),
-      maxHeight: (props: StyleProps) => (props.hide ? 0 : 48),
-      zIndex: (props: StyleProps) => (props.hide ? -1 : 1),
+      position: 'absolute',
+      top: 0,
+      width: '100%',
+      boxShadow: theme.shadows[12],
+      [theme.breakpoints.down('sm')]: {
+        boxShadow:
+          '0px 11px 10px 0px rgb(0 0 0 / 18%), 0px 24px 38px 3px rgb(0 0 0 / 12%), 0px 9px 46px 8px rgb(0 0 0 / 10%)',
+      },
+    },
+    paper: {
+      padding: '0 0.75rem 0.75rem',
+      [theme.breakpoints.only('xs')]: {
+        maxWidth: '100vw',
+      },
     },
     toolbar: {
       backgroundColor: theme.palette.primary.dark,
-      borderTopLeftRadius,
-      borderTopRightRadius,
       padding: '0 0.5rem',
       justifyContent: 'space-between',
+      [theme.breakpoints.only('xs')]: {
+        minHeight: PANEL_TITLE_BAR_HT_MOBILE,
+      },
     },
     rightSideBtns: {
       '& > * + *': {
@@ -43,75 +54,56 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const PanelCloseBtn: FC = (props) => {
-  const { pathname } = useLocation()
-  const panelDispatch = usePanelDispatch()
-
-  useEffect(() => {
-    panelDispatch({ type: 'TOGGLE_SEARCH_TABS', payload: false })
-  }, [panelDispatch, pathname])
-
-  return (
-    <Tooltip title="Close panel">
-      <IconButton
-        size="small"
-        aria-label="panel close"
-        color="inherit"
-        onClick={() =>
-          panelDispatch({ type: 'TOGGLE_MAIN_PANEL', payload: false })
-        }
-      >
-        <CgClose />
-      </IconButton>
-    </Tooltip>
-  )
-}
-
-const ToggleSearchMenuBtn: FC = () => {
-  const { pathname } = useLocation()
-  const panelDispatch = usePanelDispatch()
+const ToggleSearchMenuBtn: FC = (props) => {
+  const { children } = props
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const open = Boolean(anchorEl)
+  const id = open ? 'map-menu-popover' : undefined
+  const classes = useStyles()
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    panelDispatch({ type: 'TOGGLE_SEARCH_TABS' })
+    setAnchorEl(event.currentTarget)
   }
 
-  useEffect(() => {
-    panelDispatch({ type: 'TOGGLE_SEARCH_TABS', payload: false })
-  }, [panelDispatch, pathname])
+  const handleClose = () => setAnchorEl(null)
 
   return (
-    <Tooltip title="Toggle search menu">
-      <IconButton
-        size="small"
-        aria-label="toggle search menu"
-        color="inherit"
-        onClick={handleClick}
+    <>
+      <Tooltip title="Toggle search menu">
+        <IconButton
+          size="small"
+          aria-label="toggle search menu"
+          color="inherit"
+          onClick={handleClick}
+        >
+          <HiOutlineSearch />
+        </IconButton>
+      </Tooltip>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        PaperProps={{ className: classes.paper, elevation: 24 }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <HiOutlineSearch />
-      </IconButton>
-    </Tooltip>
+        {children}
+      </Popover>
+    </>
   )
 }
 
-export const PanelTitleBar: FC<{ hide: boolean }> = (props) => {
-  const { hide } = props
-  const classes = useStyles({ hide })
+export const PanelTitleBar: FC<PanelTitleBarProps> = (props) => {
+  const { mapRef } = props
+  const classes = useStyles({})
   const { pathname } = useLocation()
   // Lil' gross, but use Level2 route name first, otherwise Level1
   const panelTitle = pathname.split('/')[2] || pathname.split('/')[1]
 
-  const RightSideBtns = (
-    <div className={classes.rightSideBtns}>
-      <Route path="/Explore">
-        <ToggleSearchMenuBtn />
-      </Route>
-      <PanelCloseBtn />
-    </div>
-  )
-
   // WISHLIST: add maximize btn on mobile
   return (
-    <AppBar className={classes.root} position="sticky">
+    <AppBar className={classes.root} position="static">
       <Toolbar variant="dense" className={classes.toolbar}>
         <Switch>
           {/* Census can just have home btn */}
@@ -122,7 +114,16 @@ export const PanelTitleBar: FC<{ hide: boolean }> = (props) => {
           </Route>
         </Switch>
         <PanelTitleRoutes panelTitle={panelTitle} />
-        {RightSideBtns}
+        <div className={classes.rightSideBtns}>
+          <Route path="/Explore">
+            <ToggleSearchMenuBtn>
+              {mapRef && <SearchTabs mapRef={mapRef} />}
+            </ToggleSearchMenuBtn>
+          </Route>
+          <Hidden smDown>
+            <PanelCloseBtn />
+          </Hidden>
+        </div>
       </Toolbar>
     </AppBar>
   )
