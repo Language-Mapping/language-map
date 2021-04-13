@@ -106,8 +106,6 @@ export const Media: FC<MediaProps> = (props) => {
           type="Audio"
           handleClick={() => setMediaUrl(Audio)}
         />
-        {/* flex spacer */}
-        <li style={{ flexGrow: 0.5 }} />
         {/* TODO: use Switch + Route for this, e.g. /Data/:id */}
         {!omitClear &&
           ((!isTable && (
