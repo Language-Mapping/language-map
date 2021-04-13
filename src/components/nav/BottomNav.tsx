@@ -131,6 +131,9 @@ export const BottomNav: FC = (props) => {
 
   // Route changes should only affect their corresponding item
   useEffect(() => {
+    // Open panel no matter what. If annoying, remove this.
+    panelDispatch({ type: 'TOGGLE_MAIN_PANEL', payload: true })
+
     const correspRoute = subRoutePath[currPathSansSlash]
 
     if (!correspRoute) return
