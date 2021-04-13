@@ -1,9 +1,11 @@
 import React, { FC } from 'react'
+import { Route } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Grow, Typography } from '@material-ui/core'
 
 import { FiltersWarning } from 'components/home/FiltersWarning'
 import { Explanation } from 'components/generic'
+import { routes } from 'components/config/api'
 import { BasicExploreIntroProps } from './types'
 import { PanelIntroTitle, PanelIntroSubtitle } from './PanelIntroTitleSubtitle'
 
@@ -72,7 +74,9 @@ export const BasicExploreIntro: FC<BasicExploreIntroProps> = (props) => {
           )}
           {extree}
         </Typography>
-        <FiltersWarning />
+        <Route path={routes.explore}>
+          <FiltersWarning />
+        </Route>
       </div>
     </Grow>
   )
