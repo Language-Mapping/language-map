@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     rightSideBtns: {
+      minWidth: '1.5rem', // semi-helps no horiz. align empty space on mobile
       '& > * + *': {
         marginLeft: 4,
       },
