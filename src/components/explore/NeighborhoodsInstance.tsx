@@ -5,13 +5,14 @@ import { Button } from '@material-ui/core'
 import { FiShare } from 'react-icons/fi'
 
 import { BasicExploreIntro } from 'components/panels'
-import { LoadingIndicatorBar } from 'components/generic/modals'
+import { LoadingIndicator } from 'components/generic/modals'
 import {
   Explanation,
   UItextFromAirtable,
   ShareButtons,
   ShareButtonsWrap,
 } from 'components/generic'
+import { sortArrOfObjects } from 'components/legend/utils'
 import { CardListWrap } from './CardList'
 import { useAirtable } from './hooks'
 import { TonsWithAddl, MidLevelExploreProps } from './types'
@@ -19,6 +20,30 @@ import { AddlLanguages } from './AddlLanguages'
 import { CustomCard } from './CustomCard'
 import { LayerToggle } from './LayerToggle'
 import { ClearSelectionBtn } from './ClearSelectionBtn'
+
+type ATresponse = TonsWithAddl & {
+  name: string
+  endonyms: string[]
+  County?: string
+  summary?: string
+  'data-descrips'?: string[]
+}
+
+type CardsPrep = {
+  lang: string
+  endo: string
+  descrip: string
+}
+
+const fields = [
+  'Additional Languages',
+  'County',
+  'data-descrips',
+  'endonyms',
+  'languages',
+  'name',
+  'summary',
+]
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -49,39 +74,19 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
-  const { value } = useParams<{ field: string; value: string }>()
+  const { value } = useParams<{ value: string }>()
   const { url } = useRouteMatch()
   const classes = useStyles()
-  const field = 'Neighborhood'
   const [showShareBtns, setShowShareBtns] = useState<boolean>(false)
-  const { tableName = field, sortByField = 'name' } = props
-  const fields = [
-    'Additional Languages',
-    'County',
-    'data-descrips',
-    'endonyms',
-    'languages',
-    'name',
-    'summary',
-  ]
-  const shareSrcAndTitle = `${value} - Languages of New York City Map`
 
-  const { data, error, isLoading } = useAirtable<
-    TonsWithAddl & {
-      name: string
-      endonyms: string[]
-      County?: string
-      summary?: string
-      'data-descrips'?: string[]
-    }
-  >(tableName, {
+  const { data, error, isLoading } = useAirtable<ATresponse>('Neighborhood', {
     fields,
     filterByFormula: `{name} = "${value}"`,
-    sort: [{ field: sortByField }],
+    sort: [{ field: 'name' }],
     maxRecords: 1,
   })
 
-  if (isLoading) return <LoadingIndicatorBar />
+  if (isLoading) return <LoadingIndicator omitText />
   if (error) {
     return (
       <>
@@ -89,12 +94,17 @@ export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
       </>
     )
   }
-  const firstRecord = data[0]
+
   const {
     'data-descrips': dataDescrips,
     'Additional Languages': addlLanguages,
-  } = firstRecord || {}
+    languages,
+    endonyms,
+    summary,
+    County,
+  } = data[0] || {}
 
+  const shareSrcAndTitle = `${value} - Languages of New York City Map`
   const Extree = (
     <>
       <div className={classes.buttonWrap}>
@@ -114,7 +124,7 @@ export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
         <ShareButtons
           spacing={2}
           source={shareSrcAndTitle}
-          summary={firstRecord?.summary}
+          summary={summary}
           title={shareSrcAndTitle}
           url={window.location.href}
         />
@@ -122,28 +132,36 @@ export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
     </>
   )
 
+  const sortedByLang = languages
+    ?.map((lang, i) => ({
+      lang,
+      endo: endonyms[i],
+      descrip: dataDescrips ? dataDescrips[i] : '',
+    }))
+    .sort(sortArrOfObjects<CardsPrep>('lang'))
+
   return (
     <>
       <BasicExploreIntro
         title={value}
-        introParagraph={firstRecord?.summary}
-        subtitle={firstRecord?.County}
-        extree={Extree}
+        introParagraph={summary}
+        subtitle={County}
+        extree={isLoading ? <LoadingIndicator omitText /> : Extree}
       />
-      {firstRecord?.languages ? (
+      {languages ? (
         <Explanation>
           <UItextFromAirtable id="neighb-loc-list" />
         </Explanation>
       ) : null}
       <CardListWrap>
-        {firstRecord?.languages?.map((langName, i) => (
+        {sortedByLang?.map(({ lang, endo, descrip }, i) => (
           <CustomCard
-            key={langName}
-            intro={langName}
+            key={lang}
+            intro={lang}
             timeout={350 + i * 250}
-            title={firstRecord?.endonyms[i]}
-            footer={dataDescrips ? dataDescrips[i] : ''}
-            url={`${url}/${langName}`}
+            title={endo}
+            footer={descrip}
+            url={`${url}/${lang}`}
           />
         ))}
       </CardListWrap>
