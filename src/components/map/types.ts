@@ -173,8 +173,6 @@ export type PrepPopupContent = (
   popupHeading?: string | null
 ) => PopupContent | null
 
-export type GetPolyWebMercView = (boundsArray: BoundsArray) => LongLatAndZoom
-
 export type FlyHome = (map: Map, breakpoint: Breakpoint) => void
 
 export type FlyToBounds = (

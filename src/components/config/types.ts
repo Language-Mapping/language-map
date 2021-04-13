@@ -11,7 +11,9 @@ export type RouteLocation =
   | '/Explore/Language/:value/:id'
   | '/Explore/Language/none' // reserved, aka "No community selected"
   | '/Explore/Neighborhood'
+  | '/Explore/Neighborhood/:id'
   | '/Explore/County'
+  | '/Explore/County/:id'
   | '/Info'
   | '/Info/About'
   | '/Info/Feedback'

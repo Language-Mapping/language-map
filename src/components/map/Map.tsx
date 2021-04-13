@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useState, useContext, useEffect, useCallback } from 'react'
 import { isMobile } from 'react-device-detect'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
 import { Map as MbMap, AttributionControl } from 'mapbox-gl'
 import MapGL, { MapLoadEvent } from 'react-map-gl'
 
@@ -14,6 +14,7 @@ import {
   useMapToolsDispatch,
 } from 'components/context'
 import { useBreakpoint } from 'components/generic'
+import { routes } from 'components/config/api'
 import { onHover } from './events'
 import { LangMbSrcAndLayer } from './LangMbSrcAndLayer'
 import { Geolocation } from './Geolocation'
@@ -23,7 +24,7 @@ import { CensusLayer } from './CensusLayer'
 import { GeocodeMarker } from './GeocodeMarker'
 import { PolygonLayer } from './NeighborhoodsLayer'
 import { getAllLangFeatIDs } from '../../utils'
-import { useZoomToLangFeatsExtent } from './hooks'
+import { useFlyToFilteredFeats } from './hooks'
 
 import * as Types from './types'
 import * as utils from './utils'
@@ -38,7 +39,10 @@ export const Map: FC<Types.MapProps> = (props) => {
   const history = useHistory()
   const loc = useLocation()
   const { pathname } = loc
-
+  const featSelected = useRouteMatch({
+    path: [routes.details, routes.neighbInstance, routes.countyInstance],
+    exact: true,
+  })
   const { autoZoomCensus, censusActiveField, baseLayer } = useMapToolsState()
   const { geocodeMarkerText } = useMapToolsState()
   const { state } = useContext(GlobalContext)
@@ -55,7 +59,7 @@ export const Map: FC<Types.MapProps> = (props) => {
   const [showPopups, setShowPopups] = useState<boolean>(true)
   const [viewport, setViewport] = useState<Types.ViewportState>(initialMapState)
   const [mapStyle, setMapStyle] = useState(mbStyleTileConfig.customStyles.light)
-  const shouldFlyHome = useZoomToLangFeatsExtent(isMapTilted, map) // TODO: mob
+  const shouldFlyHome = useFlyToFilteredFeats(isMapTilted, map)
   const handlePopupClose = useCallback(() => setShowPopups(false), [])
   const handleGeocodeClose = useCallback(
     () => mapToolsDispatch({ type: 'SET_GEOCODE_LABEL', payload: null }),
@@ -73,10 +77,6 @@ export const Map: FC<Types.MapProps> = (props) => {
   useEffect(() => {
     setShowPopups(true) // reset it on route change just in case X was clicked
   }, [pathname])
-
-  useEffect(() => {
-    if (map) utils.flyHome(map, breakpoint)
-  }, [shouldFlyHome])
 
   // Load symbol icons on load. Must be done on load and whenever `baselayer` is
   // changed, but this is handled nicely thanks to MB's `styleimagemissing`.
@@ -108,6 +108,12 @@ export const Map: FC<Types.MapProps> = (props) => {
       getAllLangFeatIDs(langFeatures)
     )
   }, [langFeatures.length, beforeId, filterHasRun])
+
+  useEffect(() => {
+    if (!map || featSelected) return // prevent zooming on load if selection
+
+    utils.flyHome(map, breakpoint)
+  }, [mapLoaded, shouldFlyHome])
 
   function onLoad(mapLoadEvent: MapLoadEvent) {
     setMapLoaded(true)
@@ -141,6 +147,7 @@ export const Map: FC<Types.MapProps> = (props) => {
       utils.addLangTypeIconsToMap(mapObj, langTypeIconsConfig)
     })
 
+    // Polygon layers need to know which layer to draw on top of
     mapObj.on('sourcedata', function onStyleData(e) {
       if (!e.isSourceLoaded) return
 
