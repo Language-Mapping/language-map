@@ -1,4 +1,5 @@
 import React, { FC } from 'react'
+import { isMobile } from 'react-device-detect'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
 import { FiSun, FiMoon } from 'react-icons/fi'
@@ -8,8 +9,14 @@ import { useMapToolsState, useMapToolsDispatch } from 'components/context'
 import { useUItext, SubtleText } from 'components/generic'
 import { BaseLayer } from './types'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = makeStyles((theme: Theme) => {
+  const desktopStyles = {
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.main,
+    },
+  }
+
+  return createStyles({
     root: {
       display: 'flex',
       width: '100%',
@@ -38,13 +45,11 @@ const useStyles = makeStyles((theme: Theme) =>
       // Crank the specificity
       '&.MuiToggleButton-root': {
         backgroundColor: theme.palette.secondary.main,
-        '&:hover': {
-          backgroundColor: theme.palette.secondary.main,
-        },
+        ...(!isMobile && desktopStyles),
       },
     },
   })
-)
+})
 
 export const BaseLayerToggles: FC = (props) => {
   const { baseLayer } = useMapToolsState()

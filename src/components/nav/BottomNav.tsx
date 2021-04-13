@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from 'react'
+import { isMobile } from 'react-device-detect'
 import { NavLink, useLocation } from 'react-router-dom'
 import {
   createStyles,
@@ -16,6 +17,13 @@ import { BOTTOM_NAV_HEIGHT_MOBILE } from './config'
 const useStyles = makeStyles((theme: Theme) => {
   const gradientBackground = `radial-gradient(ellipse at top, ${theme.palette.primary.light}, transparent),
 radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`
+  const desktopStyles = {
+    '&:hover': {
+      [theme.breakpoints.up('md')]: {
+        background: lighten(theme.palette.primary.dark, 0.1),
+      },
+    },
+  }
 
   return createStyles({
     root: {
@@ -39,11 +47,7 @@ radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`
       outline: `solid 1px hsla(168, 41%, 19%, 0.15)`,
       transition: 'all 300ms ease',
       flexBasis: '20%',
-      '&:hover': {
-        [theme.breakpoints.up('md')]: {
-          background: lighten(theme.palette.primary.dark, 0.1),
-        },
-      },
+      ...(!isMobile && desktopStyles),
       '& svg': {
         transition: '300ms ease all',
         fontSize: '1.25rem',

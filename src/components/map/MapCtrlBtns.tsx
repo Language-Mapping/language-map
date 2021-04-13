@@ -34,11 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('md')]: {
         margin: '0 0.5rem 0.5rem',
       },
-      '&:hover': {
-        [theme.breakpoints.down('sm')]: {
-          backgroundColor: theme.palette.background.default,
-        },
-      },
     },
   })
 )
