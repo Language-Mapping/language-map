@@ -6,7 +6,6 @@ import {
   NeighborhoodList,
   LangOrEndoIntro,
 } from 'components/details'
-import { LoadingIndicatorBar } from 'components/generic/modals'
 import { FullOnEverything } from 'components/details/types'
 import { FeedbackToggle } from 'components/about'
 import { useAirtable } from './hooks'
@@ -31,9 +30,9 @@ export const LangCardsList: FC<{ field?: string }> = (props) => {
     filterByFormula,
   })
 
-  if (isLoading) return <LoadingIndicatorBar />
   if (error) return <>{error?.message}</>
-  if (!data.length) return <>No match found.</>
+  if (isLoading) return null
+  if (!isLoading && !data.length) return <>No match found.</>
 
   const thisLangConfig = data[0] || {}
 

@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
+import { Grow, Typography } from '@material-ui/core'
 
 import { FiltersWarning } from 'components/home/FiltersWarning'
 import { Explanation } from 'components/generic'
@@ -42,31 +42,38 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const BasicExploreIntro: FC<BasicExploreIntroProps> = (props) => {
-  const { title, icon, subtitle } = props
+  const { title, icon, subtitle, expand, noAppear } = props
   const { subSubtitle, extree, introParagraph } = props
   const classes = useStyles()
 
   return (
-    <>
-      <Typography className={classes.root} component="header">
-        {title && (
-          <PanelIntroTitle>
-            {icon}
-            {title}
-          </PanelIntroTitle>
-        )}
-        {subtitle && <PanelIntroSubtitle>{subtitle}</PanelIntroSubtitle>}
-        {subSubtitle && (
-          <div className={classes.subSubtitle}>{subSubtitle}</div>
-        )}
-        {introParagraph && (
-          <Explanation className={classes.introParagraph}>
-            {introParagraph}
-          </Explanation>
-        )}
-        {extree}
-      </Typography>
-      <FiltersWarning />
-    </>
+    <Grow
+      in={expand !== false}
+      timeout={noAppear ? 0 : 500}
+      style={{ transformOrigin: 'top center' }}
+      appear={!noAppear}
+    >
+      <div>
+        <Typography className={classes.root} component="header">
+          {title && (
+            <PanelIntroTitle>
+              {icon}
+              {title}
+            </PanelIntroTitle>
+          )}
+          {subtitle && <PanelIntroSubtitle>{subtitle}</PanelIntroSubtitle>}
+          {subSubtitle && (
+            <div className={classes.subSubtitle}>{subSubtitle}</div>
+          )}
+          {introParagraph && (
+            <Explanation className={classes.introParagraph}>
+              {introParagraph}
+            </Explanation>
+          )}
+          {extree}
+        </Typography>
+        <FiltersWarning />
+      </div>
+    </Grow>
   )
 }

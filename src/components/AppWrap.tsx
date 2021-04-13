@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
       top: 0,
       '& .map-container': {
         position: 'absolute', // for logo on wider screens
+        zIndex: 1, // above stick close X on mobile panels
         transition: 'all 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
         [theme.breakpoints.up('md')]: {
           borderTop: `solid ${theme.palette.primary.dark} 3px`,

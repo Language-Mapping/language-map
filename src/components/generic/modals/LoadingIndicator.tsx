@@ -40,7 +40,7 @@ const LoadingText: FC = () => {
 }
 
 export const LoadingIndicator: FC<LoadingIndicatorProps> = (props) => {
-  const { size = 40, omitText } = props
+  const { size = '2rem', omitText } = props
   const classes = useStyles()
 
   return (

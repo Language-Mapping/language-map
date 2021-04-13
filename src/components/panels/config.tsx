@@ -18,7 +18,7 @@ import { InfoPanel } from 'components/about/InfoPanel'
 import { routes } from 'components/config/api'
 import { NavItemWithBadge } from './NavItemWithBadge'
 
-export const panelWidths = { mid: 450, midLarge: 600 }
+export const panelWidths = { mid: 450, midLarge: 625 }
 
 // Bottom bar nav panel
 export const navRoutes: MapPanel[] = [

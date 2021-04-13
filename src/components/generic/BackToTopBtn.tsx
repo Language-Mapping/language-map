@@ -8,10 +8,7 @@ import {
   Zoom,
 } from '@material-ui/core'
 import { FaArrowCircleUp } from 'react-icons/fa'
-import {
-  BOTTOM_NAV_HEIGHT,
-  BOTTOM_NAV_HEIGHT_MOBILE,
-} from 'components/nav/config'
+import { BOTTOM_NAV_HEIGHT } from 'components/nav/config'
 
 type BackToTopBtnProps = {
   hide: boolean
@@ -24,8 +21,8 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       bottom: BOTTOM_NAV_HEIGHT + 8,
       right: '1.25rem',
-      [theme.breakpoints.only('xs')]: {
-        bottom: BOTTOM_NAV_HEIGHT_MOBILE + 8,
+      [theme.breakpoints.down('sm')]: {
+        bottom: '1rem',
         right: '1rem',
       },
     },
@@ -39,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const BackToTopBtn: FC<BackToTopBtnProps> = (props) => {
-  const { targetElemID } = props
+  const { targetElemID, hide } = props
   const classes = useStyles()
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -53,7 +50,7 @@ export const BackToTopBtn: FC<BackToTopBtnProps> = (props) => {
   }
 
   return (
-    <Zoom in timeout={300}>
+    <Zoom in={hide} timeout={300}>
       <div onClick={handleClick} role="presentation" className={classes.root}>
         <Fab
           color="secondary"

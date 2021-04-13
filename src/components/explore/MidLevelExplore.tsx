@@ -6,7 +6,7 @@ import {
   ColoredCircle,
 } from 'components/generic/icons-and-swatches'
 import { BasicExploreIntro } from 'components/panels'
-import { LoadingIndicatorBar } from 'components/generic/modals'
+import { LoadingIndicator } from 'components/generic/modals'
 import { CardList } from './CardList'
 import { useAirtable } from './hooks'
 import { prepFormula, prepFields } from './utils'
@@ -25,25 +25,23 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
     sort: [{ field: sortByField }],
   })
 
-  if (isLoading) return <LoadingIndicatorBar />
-  if (error) {
+  if (error)
     return (
       <>
         Could not load {value}. {error?.message}
       </>
     )
-  }
 
   let primaryData
   let Icon = null // TODO: re-componentize
 
   if (field === 'World Region') {
-    Icon = <ColoredCircle color={data[0]?.worldRegionColor} />
+    Icon = <ColoredCircle color={data[0]?.worldRegionColor || 'transparent'} />
   } else if (field === 'Country') Icon = <FlagFromHook value={value} />
 
   // Gross extra steps for Airtable FIND issue, which returns in ARRAYJOIN
   // things like "Dominican Republic" in a "Dominica" query:
-  if (Array.isArray(data[0][field]))
+  if (data.length && Array.isArray(data[0][field]))
     primaryData = data.filter((row) => row[field]?.includes(value))
   else primaryData = data
 
@@ -51,6 +49,8 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
     <>
       <BasicExploreIntro
         title={value}
+        expand={!isLoading}
+        noAppear={!isLoading}
         icon={Icon}
         extree={
           <Route path="/Explore/County">
@@ -58,7 +58,9 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
           </Route>
         }
       />
-      <CardList data={primaryData} />
+      {(isLoading && <LoadingIndicator omitText />) || (
+        <CardList data={primaryData} />
+      )}
     </>
   )
 }

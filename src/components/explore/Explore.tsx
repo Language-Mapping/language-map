@@ -14,7 +14,8 @@ export const Explore: FC = () => {
   const { data, error, isLoading } = useAirtable<AirtableSchemaQuery>(
     'Schema',
     {
-      filterByFormula: '{exploreSortOrder} > 0', // cheap check for Explore-ables
+      // Cheap check for Explore-ables:
+      filterByFormula: '{exploreSortOrder} > 0',
       sort: [{ field: 'exploreSortOrder' }],
     }
   )
@@ -23,16 +24,18 @@ export const Explore: FC = () => {
     <>
       <BasicExploreIntro
         introParagraph={<UItextFromAirtable id="explore-intro" />}
+        noAppear={!isLoading}
       />
       {isLoading && <LoadingIndicatorBar omitText />}
       {error && 'Could not load'}
       <CardListWrap>
-        {data.map(({ name, plural, definition }) => (
+        {data.map(({ name, plural, definition }, i) => (
           <CustomCard
             key={name}
             icon={icons[name] || null}
             title={plural || ''} // TODO: ugh
             url={`/Explore/${name}`}
+            timeout={350 + i * 250}
             footer={definition}
           />
         ))}

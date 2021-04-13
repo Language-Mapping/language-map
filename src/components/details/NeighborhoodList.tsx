@@ -151,6 +151,7 @@ export const NeighborhoodList: FC<Types.DetailedIntroProps> = (props) => {
                   intro={data.County[i]}
                   url={url}
                   footer={<CardFooter text={loc} />}
+                  timeout={350 + i * 250}
                 />
               )
             })}

@@ -1,8 +1,7 @@
 import React, { FC } from 'react'
 import { Link } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card'
-import Typography from '@material-ui/core/Typography'
+import { Grow, Card, Typography } from '@material-ui/core'
 
 import * as Types from './types'
 import * as utils from './utils'
@@ -15,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
       borderColor: theme.palette.action.hover,
       borderStyle: 'solid',
       borderWidth: 1,
-      padding: '0.75rem 0.5rem',
+      padding: '0.75rem 0.65rem',
       transition: 'all 300ms ease',
       '&:hover': {
         borderColor: theme.palette.secondary.dark,
@@ -61,6 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.secondary,
       fontSize: '0.65rem',
       display: '-webkit-box',
+      lineHeight: 1.5,
       overflow: 'hidden',
       WebkitBoxOrient: 'vertical',
       WebkitLineClamp: 3,
@@ -99,9 +99,10 @@ export const GlottoIsoFooter: FC<GlottoIsoFooterProps> = (props) => {
 
 export const CustomCard: FC<Types.CustomCardProps> = (props) => {
   const { title, url, uniqueInstances, intro, icon, footer } = props
+  const { timeout = 350, noAnimate } = props
   const classes = useStyles()
 
-  return (
+  const Content = (
     <Card
       raised
       classes={{ root: classes.root }}
@@ -127,5 +128,13 @@ export const CustomCard: FC<Types.CustomCardProps> = (props) => {
             utils.prettyTruncate(uniqueInstances as string[]))}
       </Typography>
     </Card>
+  )
+
+  if (noAnimate) return Content
+
+  return (
+    <Grow in timeout={timeout}>
+      {Content}
+    </Grow>
   )
 }

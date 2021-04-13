@@ -20,7 +20,7 @@ export const useUItext = (id: UItextTableID): UseUItext => {
   }
 }
 
-// CRED: for all of this challenging scroll stuff!
+// CRED: for much of this challenging scroll stuff!
 // https://stackoverflow.com/questions/36207398
 // https://github.com/mui-org/material-ui/issues/12337#issuecomment-487200865
 
@@ -33,8 +33,8 @@ function getScrollY(scroller: HTMLElement | null): number {
 }
 
 export const useHideOnScroll = (
-  panelRefElem: HTMLDivElement | null,
-  threshold = 150 // prevents mobile weirdness on things like Census dropdown
+  panelRefElem: React.RefObject<HTMLDivElement | null>,
+  threshold = 100 // prevents mobile weirdness on things like Census dropdown
 ): boolean => {
   const scrollRef = useRef<number>(0)
   const [hide, setHide] = useState(false)
@@ -42,13 +42,12 @@ export const useHideOnScroll = (
   const { pathname, hash } = loc
 
   const handleScroll = useCallback(() => {
-    const scrollY = getScrollY(panelRefElem)
+    const scrollY = getScrollY(panelRefElem.current)
     const prevScrollY = scrollRef.current
 
     scrollRef.current = scrollY
 
     let shouldHide = false
-
     if (scrollY > prevScrollY && scrollY > threshold) {
       shouldHide = true
     }
@@ -68,12 +67,13 @@ export const useHideOnScroll = (
   useEffect(() => {
     if (!panelRefElem) return
 
-    panelRefElem.addEventListener('scroll', handleScroll)
+    panelRefElem.current?.addEventListener('scroll', handleScroll)
 
-    // TODO: resolve someday
+    // TODO: just warnings, but resolve both of these if possible
     // eslint-disable-next-line consistent-return
     return function cleanup() {
-      window.removeEventListener('scroll', handleScroll)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      panelRefElem.current?.removeEventListener('scroll', handleScroll)
     }
   }, [handleScroll, panelRefElem, threshold])
 

@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { BasicExploreIntro } from 'components/panels'
-import { LoadingIndicatorBar } from 'components/generic/modals'
+import { LoadingIndicator } from 'components/generic/modals'
 import { useAirtable } from './hooks'
 import { prepFormula, prepFields } from './utils'
 import { CardList } from './CardList'
@@ -14,15 +14,6 @@ export const ExploreLanding: FC<MidLevelExploreProps> = (props) => {
   const filterByFormula = prepFormula(field)
   const fields = prepFields(tableName, field)
 
-  const { data: instanceData, error, isLoading } = useAirtable<TonsWithAddl>(
-    tableName,
-    {
-      fields,
-      ...(filterByFormula && { filterByFormula }),
-      sort: [{ field: sortByField }],
-    }
-  )
-
   const {
     data: landingData,
     isLoading: isLandingLoading,
@@ -32,7 +23,15 @@ export const ExploreLanding: FC<MidLevelExploreProps> = (props) => {
     filterByFormula: `{name} = "${tableName}"`,
   })
 
-  if (isLoading || isLandingLoading) return <LoadingIndicatorBar />
+  const { data: instanceData, error, isLoading } = useAirtable<TonsWithAddl>(
+    tableName,
+    {
+      fields,
+      ...(filterByFormula && { filterByFormula }),
+      sort: [{ field: sortByField }],
+    }
+  )
+
   if (error || landingError) {
     return (
       <>
@@ -43,8 +42,13 @@ export const ExploreLanding: FC<MidLevelExploreProps> = (props) => {
 
   return (
     <>
-      <BasicExploreIntro introParagraph={landingData[0]?.definition} />
-      <CardList data={instanceData} />
+      <BasicExploreIntro
+        introParagraph={landingData[0]?.definition}
+        expand={!isLandingLoading}
+      />
+      {(isLoading && <LoadingIndicator omitText />) || (
+        <CardList data={instanceData} />
+      )}
     </>
   )
 }

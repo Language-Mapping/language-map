@@ -17,6 +17,8 @@ export type BasicExploreIntroProps = {
   extree?: string | React.ReactNode // catch-all stuff for intro bottom
   icon?: React.ReactNode
   introParagraph?: string | React.ReactNode
+  expand?: boolean
+  noAppear?: boolean // way around it after the first load
   subSubtitle?: string | React.ReactNode
   subtitle?: string | React.ReactNode
   title?: string
@@ -30,6 +32,8 @@ export type CustomCardProps = {
   footer?: string | React.ReactNode
   icon?: React.ReactNode
   intro?: string
+  timeout?: number
+  noAnimate?: boolean
 }
 
 export type CategoryConfig = {
