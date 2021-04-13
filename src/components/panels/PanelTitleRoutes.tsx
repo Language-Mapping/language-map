@@ -129,6 +129,9 @@ export const PanelTitleRoutes: FC<{ panelTitle: string }> = (props) => {
         <LinkToHomeBtn />
         <PanelTitle text="Explore ELA Data" icon={icons[panelTitle]} />
       </Route>
+      <Route path={routes.feedback} exact>
+        <PanelTitle text="Contact and Feedback" icon={icons[panelTitle]} />
+      </Route>
       <Route path="/:level1" exact>
         {/* Home btn on /TopLevelRoutes looks balanced on left */}
         <LinkToHomeBtn />
