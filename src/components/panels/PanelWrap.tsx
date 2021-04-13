@@ -8,7 +8,11 @@ import {
   usePanelState,
   PanelCloseBtnSticky,
 } from 'components/panels'
-import { BackToTopBtn, useHideOnScroll } from 'components/generic'
+import {
+  BackToTopBtn,
+  useHideOnScroll,
+  useScrollOnPathChange,
+} from 'components/generic'
 import { BottomNav } from 'components/nav'
 import {
   BOTTOM_NAV_HEIGHT,
@@ -96,6 +100,8 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
   const panelRef = useRef<HTMLDivElement | null>(null)
   const hide = useHideOnScroll(panelRef)
   const classes = useStyles({ open: panelOpen })
+
+  useScrollOnPathChange(targetElemID)
 
   return (
     <div className={classes.root}>

@@ -122,10 +122,18 @@ export const usePageTitle = (): void => {
     }
   }, [censusDetailMatch, detailsMatch, noFeatSelMatch, pathname])
 
-  // React.useEffect(() => { window.scrollTo(0, 1) }, []) // TODO: try
+  // TODO: try to get full-full view on mobile:
+  // React.useEffect(() => { window.scrollTo(0, 1) }, [])
+}
 
-  // TODO: make this actually work on mobile, and confirm on desktop
-  // useEffect(() => {
-  //   document?.activeElement?.blur() // CRED: stackoverflow.com/a/2568972/1048518
-  // }, [pathname])
+export const useScrollOnPathChange = (targetElemID: string): void => {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    const anchor = document.querySelector(`#${targetElemID}`)
+
+    if (anchor) {
+      anchor.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [pathname, targetElemID])
 }
