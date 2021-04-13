@@ -1,4 +1,4 @@
-import { InstanceLevelSchema } from 'components/context'
+import { InstanceLevelSchema, useMapToolsState } from 'components/context'
 import { AtSymbFields, AtSchemaFields } from 'components/legend/types'
 import { layerSymbFields } from 'components/legend/config'
 import { useAirtable } from 'components/explore/hooks'
@@ -13,6 +13,7 @@ export const useLayersConfig = (
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const moreFields = layerSymbFields[tableName] || []
+  const { baseLayer } = useMapToolsState()
   const { data, isLoading, error } = useAirtable<AtSchemaFields>(tableName, {
     // WOW: field order really matters in regards to react-query. If this is
     // the same as the one being used by legend config, it doesn't load
@@ -22,41 +23,46 @@ export const useLayersConfig = (
 
   let prepped: Types.LayerPropsPlusMeta[] = []
 
-  if (data.length) prepped = createLayerStyles(data, tableName)
+  if (data.length) prepped = createLayerStyles(data, tableName, baseLayer)
 
   return { error, data: prepped, isLoading }
 }
 
+// CRED: fo' spread: https://bit.ly/37nzMRT
 // TODO: into utils
 const createLayerStyles = (
   rows: AtSymbFields[],
-  group: keyof InstanceLevelSchema
+  group: keyof InstanceLevelSchema,
+  baseLayer: Types.BaseLayer
 ): Types.LayerPropsPlusMeta[] =>
-  // CRED: fo' spread: https://bit.ly/37nzMRT
-  rows.map((settings) => ({
-    id: settings.name,
-    type: 'symbol', // not being used at time of writing, just satisfy TS
-    group, // aka Airtable table name, and possibly query ID
-    filter: ['match', ['get', group], [settings.name], true, false],
-    layout: {
-      // Making an assumption that image-based icons will look better with the
-      // slightly-larger, placement-ignorant style
-      ...(settings['icon-image'] && {
-        'icon-image': settings['icon-image'],
-        ...iconStyleOverride,
-      }),
-      ...(!settings['icon-image'] &&
-        settings['icon-size'] && { 'icon-size': settings['icon-size'] }),
-    },
-    paint: {
-      ...(settings['icon-color'] && { 'icon-color': settings['icon-color'] }),
-      ...(settings['text-color'] && { 'text-color': settings['text-color'] }),
-      ...(settings['text-halo-color'] && {
-        'text-halo-color': settings['text-halo-color'],
-      }),
-    },
-  }))
+  rows.map((settings) => {
+    const iconColor = settings['icon-color']
+    const textColor =
+      settings['text-color'] || (baseLayer !== 'light' && 'white')
+    const textHaloColor = settings['text-halo-color']
 
+    return {
+      id: settings.name,
+      type: 'symbol', // not being used at time of writing, just satisfy TS
+      group, // aka Airtable table name, and possibly query ID
+      filter: ['match', ['get', group], [settings.name], true, false],
+      layout: {
+        // Making an assumption that image-based icons will look better with the
+        // slightly-larger, placement-ignorant style
+        ...(settings['icon-image'] && {
+          'icon-image': settings['icon-image'],
+          ...iconStyleOverride,
+        }),
+        ...(!settings['icon-image'] &&
+          settings['icon-size'] && { 'icon-size': settings['icon-size'] }),
+      },
+      paint: {
+        ...(iconColor && { 'icon-color': iconColor }),
+        ...(textColor && { 'text-color': textColor }),
+        ...(textHaloColor && { 'text-halo-color': textHaloColor }),
+      },
+    }
+  })
 export const useSelLangPointCoords = (): Types.UseSelLangPointCoordsReturn => {
   const match = useRouteMatch<{ id: string }>({
     path: '/Explore/Language/:language/:id',

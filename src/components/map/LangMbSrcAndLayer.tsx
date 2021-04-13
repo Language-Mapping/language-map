@@ -6,9 +6,9 @@ import { useSymbAndLabelState } from 'components/context'
 import { useAirtable } from 'components/explore/hooks'
 import { prepEndoFilters, getFlyToPointSettings, flyToPoint } from './utils'
 import { useLayersConfig, useSelLangPointCoords } from './hooks.points'
+import { LayerPropsPlusMeta, LangMbSrcAndLayerProps } from './types'
 
 import * as config from './config'
-import { LayerPropsPlusMeta, LangMbSrcAndLayerProps } from './types'
 
 export const LangMbSrcAndLayer: FC<LangMbSrcAndLayerProps> = (props) => {
   const { map, isMapTilted, mapLoaded } = props
