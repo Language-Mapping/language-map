@@ -43,16 +43,9 @@ export const useHideOnScroll = (
 
   const handleScroll = useCallback(() => {
     const scrollY = getScrollY(panelRefElem.current)
-    const prevScrollY = scrollRef.current
-
     scrollRef.current = scrollY
 
-    let shouldHide = false
-    if (scrollY > prevScrollY && scrollY > threshold) {
-      shouldHide = true
-    }
-
-    setHide(shouldHide)
+    setHide(scrollY > threshold)
   }, [panelRefElem, threshold])
 
   // Show on each pathname change, otherwise it stays hidden
