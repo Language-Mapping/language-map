@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) => {
       justifyContent: 'center',
       gridTemplateColumns: 'minmax(350px, auto) 32px',
       [theme.breakpoints.only('xs')]: {
-        gridTemplateColumns: 'minmax(325px, auto) 24px',
+        gridTemplateColumns: '1fr 24px',
       },
     },
   })

@@ -35,7 +35,8 @@ const useStyles = makeStyles((theme: Theme) =>
     paper: {
       padding: '0 0.75rem 0.75rem',
       [theme.breakpoints.only('xs')]: {
-        maxWidth: '100vw',
+        width: '95%',
+        maxWidth: '95%',
       },
     },
     toolbar: {

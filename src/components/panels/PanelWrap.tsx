@@ -64,17 +64,15 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: BOTTOM_NAV_HEIGHT,
       opacity: 1,
       overflowX: 'hidden',
-      padding: '1rem 0.75rem 1.25rem',
+      padding: '1.35rem 0.85rem',
       position: 'absolute',
       top: 48,
-      transform: 'translateY(0px)',
       width: '100%',
       [theme.breakpoints.up('md')]: {
         padding: '1.5rem 1.25rem',
       },
       [theme.breakpoints.down('sm')]: {
         bottom: 0,
-        padding: '1rem 0.85rem 1.25rem',
         top: 0,
         opacity: (props: Style) => (props.open ? 1 : 0),
       },
@@ -110,7 +108,7 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
       <div className={classes.panelContent} ref={panelRef}>
         <div id={targetElemID} />
         <Route path="/" exact>
-          <div style={{ marginTop: '-1rem', marginBottom: '1rem' }}>
+          <div style={{ marginTop: '-0.75rem', marginBottom: '1rem' }}>
             <SearchTabs mapRef={mapRef} />
           </div>
         </Route>
