@@ -4,8 +4,8 @@ import { Typography } from '@material-ui/core'
 
 import { RecordDescription } from 'components/results'
 import { DetailedIntro, LangOrEndoIntro } from 'components/details'
-import { LoadingIndicatorBar } from 'components/generic/modals'
 import { FeedbackToggle } from 'components/about'
+import { routes } from 'components/config/api'
 import { NoFeatSel } from './NoFeatSel'
 import { DetailsProps } from './types'
 import { useDetails } from './hooks'
@@ -14,7 +14,7 @@ import { useDetails } from './hooks'
 export const DetailsPanel: FC = () => {
   return (
     <Switch>
-      <Route path="/Explore/Language/:something/:id">
+      <Route path={routes.details} exact>
         <DetailsWrap />
       </Route>
       {/* Don't need path, assumes parent will be in a Route already */}
@@ -37,7 +37,7 @@ const DetailsWrap: FC = () => {
     notFound,
   } = useDetails()
 
-  if (isLoading) return <LoadingIndicatorBar />
+  if (isLoading) return null
   if (error) return <p>Something went wrong looking for this community.</p>
   if (notFound)
     return <NoFeatSel reason={`No community found with an id of ${id}.`} />

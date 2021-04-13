@@ -1,12 +1,19 @@
 import React, { FC } from 'react'
+import { isMobile } from 'react-device-detect'
 import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Paper } from '@material-ui/core'
 
 import * as Types from './types'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = makeStyles((theme: Theme) => {
+  const desktopStyles = {
+    '&:hover': {
+      backgroundColor: isMobile ? 'unset' : theme.palette.grey[800],
+    },
+  }
+
+  return createStyles({
     chip: {
       alignItems: 'center',
       backgroundColor: theme.palette.grey[700],
@@ -16,12 +23,10 @@ const useStyles = makeStyles((theme: Theme) =>
       lineHeight: 1.5,
       marginBottom: '0.25rem', // otherwise crowded when wrapped
       padding: '0.1rem 0.35rem',
-      transition: '300ms backgroundColor ease',
+      transition: '300ms background-color ease',
       whiteSpace: 'nowrap',
       fontSize: '0.7rem',
-      '&:hover': {
-        backgroundColor: theme.palette.grey[800],
-      },
+      ...(!isMobile && desktopStyles),
       '& img, svg': {
         marginRight: '0.35rem',
       },
@@ -36,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
   })
-)
+})
 
 export const Chip: FC<Types.ChipProps> = (props) => {
   const classes = useStyles()

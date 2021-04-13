@@ -13,17 +13,17 @@ const useStyles = makeStyles((theme: Theme) =>
     // www.smashingmagazine.com/2017/09/css-grid-gotchas-stumbling-blocks/
     root: {
       display: 'grid',
-      gridGap: '0.75rem',
+      gridColumnGap: '0.65rem',
+      gridRowGap: '0.75rem',
       gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))',
       margin: '1rem 0',
-      [theme.breakpoints.up('sm')]: {
-        gridGap: '1rem',
-      },
-      [theme.breakpoints.only('xs')]: {
-        gridColumnGap: '0.5rem',
-      },
       [theme.breakpoints.only('sm')]: {
         gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
+        gridGap: '1.25rem',
+      },
+      [theme.breakpoints.up('xl')]: {
+        gridGap: '1rem',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(45%, 1fr))',
       },
     },
   })
@@ -47,17 +47,19 @@ export const CardList: FC<{ data: TonsWithAddl[] }> = (props) => {
 
   return (
     <div className={classes.root}>
-      {data.map((row) => {
+      {data.map((row, i) => {
         const uniqueInstances = getUniqueInstances(field, row, value)
         const nameOrLang = row.name || row.Language
 
         return (
           <CustomCard
             key={nameOrLang}
+            noAnimate={i > 25}
             intro={useLangAsIntro ? nameOrLang : ''}
             title={row.Endonym || row.name}
             uniqueInstances={uniqueInstances}
             url={`${url}/${nameOrLang}`}
+            timeout={350 + i * 250}
             // TODO: use and refactor SwatchOrFlagOrIcon for icon prop
             icon={
               <>

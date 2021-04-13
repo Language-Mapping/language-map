@@ -1,34 +1,40 @@
 import React, { FC } from 'react'
+import { isMobile } from 'react-device-detect'
 import { Link } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card'
-import Typography from '@material-ui/core/Typography'
+import { Grow, Card, Typography } from '@material-ui/core'
 
-import * as Types from './types'
+import { CustomCardProps } from './types'
 import * as utils from './utils'
 
 type GlottoIsoFooterProps = { glotto?: string; iso?: string }
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = makeStyles((theme: Theme) => {
+  const { palette } = theme
+
+  const desktopStyles = {
+    '&:hover': {
+      borderColor: palette.secondary.dark,
+      background: `radial-gradient(ellipse at top, ${palette.secondary.light}, transparent),
+    radial-gradient(ellipse at bottom, ${palette.secondary.dark}, transparent)`,
+    },
+    '&:hover .accent-bar': {
+      backgroundColor: palette.secondary.light,
+      transform: 'scaleX(1), translateX(-100%)',
+    },
+  }
+
+  return createStyles({
     root: {
-      borderColor: theme.palette.action.hover,
+      borderColor: palette.action.hover,
       borderStyle: 'solid',
       borderWidth: 1,
-      padding: '0.75rem 0.5rem',
+      padding: '0.75rem 0.65rem',
       transition: 'all 300ms ease',
-      '&:hover': {
-        borderColor: theme.palette.secondary.dark,
-        background: `radial-gradient(ellipse at top, ${theme.palette.secondary.light}, transparent),
-        radial-gradient(ellipse at bottom, ${theme.palette.secondary.dark}, transparent)`,
-      },
-      '&:hover .accent-bar': {
-        backgroundColor: theme.palette.secondary.light,
-        transform: 'scaleX(1), translateX(-100%)',
-      },
+      ...(!isMobile && desktopStyles),
     },
     intro: {
-      color: theme.palette.text.secondary,
+      color: palette.text.secondary,
       display: 'block',
       fontSize: '0.75rem',
       marginBottom: '0.5rem',
@@ -47,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
         display: 'inline-block',
       },
       '& svg': {
-        fill: theme.palette.text.secondary,
+        fill: palette.text.secondary,
         verticalAlign: -3, // react-icons don't line up
       },
       '& > .country-flag': {
@@ -58,9 +64,10 @@ const useStyles = makeStyles((theme: Theme) =>
     // CRED: 🏅 https://css-tricks.com/almanac/properties/l/line-clamp/
     footer: {
       alignItems: 'center',
-      color: theme.palette.text.secondary,
+      color: palette.text.secondary,
       fontSize: '0.65rem',
       display: '-webkit-box',
+      lineHeight: 1.5,
       overflow: 'hidden',
       WebkitBoxOrient: 'vertical',
       WebkitLineClamp: 3,
@@ -69,7 +76,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     accentBar: {
-      backgroundColor: theme.palette.action.hover,
+      backgroundColor: palette.action.hover,
       borderRadius: 4,
       height: 2,
       marginBottom: '0.5rem',
@@ -83,7 +90,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: 12,
     },
   })
-)
+})
 
 export const GlottoIsoFooter: FC<GlottoIsoFooterProps> = (props) => {
   const { glotto, iso } = props
@@ -97,11 +104,12 @@ export const GlottoIsoFooter: FC<GlottoIsoFooterProps> = (props) => {
   )
 }
 
-export const CustomCard: FC<Types.CustomCardProps> = (props) => {
+export const CustomCard: FC<CustomCardProps> = (props) => {
   const { title, url, uniqueInstances, intro, icon, footer } = props
+  const { timeout = 350, noAnimate } = props
   const classes = useStyles()
 
-  return (
+  const Content = (
     <Card
       raised
       classes={{ root: classes.root }}
@@ -127,5 +135,13 @@ export const CustomCard: FC<Types.CustomCardProps> = (props) => {
             utils.prettyTruncate(uniqueInstances as string[]))}
       </Typography>
     </Card>
+  )
+
+  if (noAnimate) return Content
+
+  return (
+    <Grow in timeout={timeout}>
+      {Content}
+    </Grow>
   )
 }

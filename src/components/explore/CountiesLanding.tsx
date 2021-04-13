@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { useRouteMatch } from 'react-router-dom'
 
 import { BasicExploreIntro } from 'components/panels'
-import { LoadingIndicatorBar } from 'components/generic/modals'
+import { LoadingIndicator } from 'components/generic/modals'
 import { useAirtable } from './hooks'
 import { CardListWrap } from './CardList'
 import { CustomCard } from './CustomCard'
@@ -10,15 +10,6 @@ import { CustomCard } from './CustomCard'
 export const CountiesLanding: FC = (props) => {
   const tableName = 'County'
   const { url } = useRouteMatch()
-
-  const { data: instanceData, error, isLoading } = useAirtable<{
-    name: string
-    languages: string
-  }>('County', {
-    fields: ['name', 'languages'],
-    filterByFormula: "{languages} != ''",
-    sort: [{ field: 'name' }],
-  })
 
   const {
     data: landingData,
@@ -29,7 +20,15 @@ export const CountiesLanding: FC = (props) => {
     filterByFormula: `{name} = "${tableName}"`,
   })
 
-  if (isLoading || isLandingLoading) return <LoadingIndicatorBar />
+  const { data: instanceData, error, isLoading } = useAirtable<{
+    name: string
+    languages: string
+  }>('County', {
+    fields: ['name', 'languages'],
+    filterByFormula: "{languages} != ''",
+    sort: [{ field: 'name' }],
+  })
+
   if (error || landingError) {
     return (
       <>
@@ -40,21 +39,29 @@ export const CountiesLanding: FC = (props) => {
 
   return (
     <>
-      <BasicExploreIntro introParagraph={landingData[0]?.definition} />
-      <CardListWrap>
-        {instanceData.map((row) => {
-          const { name } = row
+      <BasicExploreIntro
+        introParagraph={landingData[0]?.definition}
+        expand={!isLandingLoading}
+      />
+      {(isLoading && <LoadingIndicator omitText />) || (
+        <CardListWrap>
+          {instanceData.map((row, i) => {
+            const { name } = row
 
-          return (
-            <CustomCard
-              key={name}
-              title={name}
-              uniqueInstances={row.languages.split(', ')} // the ONLY non-array?
-              url={`${url}/${name}`}
-            />
-          )
-        })}
-      </CardListWrap>
+            return (
+              <CustomCard
+                key={name}
+                title={name}
+                noAnimate={i > 25}
+                timeout={350 + i * 250}
+                url={`${url}/${name}`}
+                // the ONLY non-array?
+                uniqueInstances={row.languages.split(', ')}
+              />
+            )
+          })}
+        </CardListWrap>
+      )}
     </>
   )
 }

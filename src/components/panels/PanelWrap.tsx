@@ -1,6 +1,5 @@
 import React, { FC, useRef } from 'react'
 import { Route, Switch, useLocation } from 'react-router-dom'
-import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Hidden } from '@material-ui/core'
 
@@ -11,10 +10,14 @@ import {
 } from 'components/panels'
 import { BackToTopBtn, useHideOnScroll } from 'components/generic'
 import { BottomNav } from 'components/nav'
+import {
+  BOTTOM_NAV_HEIGHT,
+  BOTTOM_NAV_HEIGHT_MOBILE,
+} from 'components/nav/config'
 import { PanelTitleBar } from './PanelTitleBar'
 import { PanelWrapProps } from './types'
-
 import { panelWidths, nonNavRoutesConfig } from './config'
+
 import './styles.css'
 
 type Style = { open: boolean }
@@ -43,6 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.down('sm')]: {
         width: '100%',
         borderTop: `solid 6px ${theme.palette.primary.dark}`,
+        bottom: BOTTOM_NAV_HEIGHT_MOBILE,
       },
       '& .MuiInputLabel-formControl': {
         color: theme.palette.text.secondary,
@@ -57,24 +61,25 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     panelContent: {
+      bottom: BOTTOM_NAV_HEIGHT,
       opacity: 1,
-      overflowY: 'auto',
+      overflowX: 'hidden',
       padding: '1rem 0.75rem 1.25rem',
+      position: 'absolute',
+      top: 48,
+      transform: 'translateY(0px)',
       width: '100%',
       [theme.breakpoints.up('md')]: {
         padding: '1.5rem 1.25rem',
-        position: 'absolute',
-        top: 48,
-        bottom: 48,
       },
       [theme.breakpoints.down('sm')]: {
+        bottom: 0,
+        padding: '1rem 0.85rem 1.25rem',
+        top: 0,
         opacity: (props: Style) => (props.open ? 1 : 0),
-        transition: 'all 225ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-        height: '100%',
-        padding: '1rem 0.75rem 1.25rem',
       },
       [theme.breakpoints.only('sm')]: {
-        padding: '1.5rem 8vw',
+        padding: '1.5rem 8vw', // nice cushion on iPad portrait
       },
       [theme.breakpoints.up('xl')]: {
         padding: '1.75rem 1.5rem',
@@ -91,7 +96,7 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
   const loc = useLocation()
   const targetElemID = 'back-to-top-anchor'
   const panelRef = useRef<HTMLDivElement | null>(null)
-  const hide = useHideOnScroll(panelRef.current)
+  const hide = useHideOnScroll(panelRef)
   const classes = useStyles({ open: panelOpen })
 
   return (
@@ -102,30 +107,25 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
       <Hidden mdUp>
         <PanelCloseBtnSticky />
       </Hidden>
-      <TransitionGroup className="trans-group">
-        <CSSTransition key={loc.key} classNames="fade" timeout={950}>
-          <div className={classes.panelContent} ref={panelRef}>
-            <div id={targetElemID} />
-            <Route path="/" exact>
-              <div style={{ marginTop: '-1rem', marginBottom: '1rem' }}>
-                <SearchTabs mapRef={mapRef} />
-              </div>
-            </Route>
-            <Switch location={loc}>
-              {nonNavRoutesConfig.map((routeConfig) => {
-                const { exact, rootPath, component } = routeConfig
-
-                return (
-                  <Route exact={exact} path={rootPath} key={rootPath}>
-                    {component}
-                  </Route>
-                )
-              })}
-            </Switch>
-            <div style={{ height: 125, width: '100%' }} />
+      <div className={classes.panelContent} ref={panelRef}>
+        <div id={targetElemID} />
+        <Route path="/" exact>
+          <div style={{ marginTop: '-1rem', marginBottom: '1rem' }}>
+            <SearchTabs mapRef={mapRef} />
           </div>
-        </CSSTransition>
-      </TransitionGroup>
+        </Route>
+        <Switch location={loc}>
+          {nonNavRoutesConfig.map((routeConfig) => {
+            const { exact, rootPath, component } = routeConfig
+
+            return (
+              <Route exact={exact} path={rootPath} key={rootPath}>
+                {component}
+              </Route>
+            )
+          })}
+        </Switch>
+      </div>
       <BackToTopBtn hide={hide} targetElemID={targetElemID} />
       <Hidden smDown>
         <BottomNav />

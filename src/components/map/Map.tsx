@@ -1,17 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 // TOO annoying. I'll take the risk, esp. since it has not seemed problematic:
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {
-  FC,
-  useState,
-  useContext,
-  useEffect,
-  useMemo,
-  useCallback,
-} from 'react'
+import React, { FC, useState, useContext, useEffect, useCallback } from 'react'
+import { isMobile } from 'react-device-detect'
 import { useHistory, useLocation } from 'react-router-dom'
-// TODO: try to lazy load the biggest dep of all. See:
-// www.debugbear.com/blog/bundle-splitting-components-with-webpack-and-react
 import { Map as MbMap, AttributionControl } from 'mapbox-gl'
 import MapGL, { MapLoadEvent } from 'react-map-gl'
 
@@ -56,7 +47,6 @@ export const Map: FC<Types.MapProps> = (props) => {
   const breakpoint = useBreakpoint()
 
   const map: MbMap | undefined = mapRef.current?.getMap()
-  const touchEnabled = useMemo(() => utils.isTouchEnabled(), [])
 
   const [beforeId, setBeforeId] = useState<string>('background')
   const [tooltip, setTooltip] = useState<Types.Tooltip | null>(null)
@@ -263,7 +253,9 @@ export const Map: FC<Types.MapProps> = (props) => {
           onViewportChange={setViewport}
           onClick={(event: Types.MapEvent) => onClick(event)}
           onHover={(event: Types.MapEvent) => {
-            onHover(event, setTooltip, map) // Gave up on no mobile hover 🤷‍♂️
+            if (isMobile) return
+
+            onHover(event, setTooltip, map)
           }}
           onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
         >
@@ -301,7 +293,7 @@ export const Map: FC<Types.MapProps> = (props) => {
             <MapPopups handleClose={handlePopupClose} />
           )}
           {/* Popups are annoying on mobile */}
-          {!touchEnabled && tooltip && !mapIsMoving && (
+          {!isMobile && tooltip && !mapIsMoving && (
             <GeocodeMarker {...tooltip} subtle />
           )}
         </MapGL>

@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { useRouteMatch } from 'react-router-dom'
 
 import { BasicExploreIntro } from 'components/panels'
-import { LoadingIndicatorBar } from 'components/generic/modals'
+import { LoadingIndicator } from 'components/generic/modals'
 import { useAirtable } from './hooks'
 import { prepFormula, prepFields, getUniqueInstances } from './utils'
 import { CardListWrap } from './CardList'
@@ -15,14 +15,6 @@ export const NeighborhoodsLanding: FC = (props) => {
   const fields = prepFields(tableName, tableName)
   const { url } = useRouteMatch()
 
-  const { data: instanceData, error, isLoading } = useAirtable<
-    TonsWithAddl & { County?: string }
-  >('Neighborhood', {
-    fields,
-    ...(filterByFormula && { filterByFormula }),
-    sort: [{ field: 'name' }],
-  })
-
   const {
     data: landingData,
     isLoading: isLandingLoading,
@@ -32,7 +24,14 @@ export const NeighborhoodsLanding: FC = (props) => {
     filterByFormula: `{name} = "${tableName}"`,
   })
 
-  if (isLoading || isLandingLoading) return <LoadingIndicatorBar />
+  const { data: instanceData, error, isLoading } = useAirtable<
+    TonsWithAddl & { County?: string }
+  >('Neighborhood', {
+    fields,
+    ...(filterByFormula && { filterByFormula }),
+    sort: [{ field: 'name' }],
+  })
+
   if (error || landingError) {
     return (
       <>
@@ -43,23 +42,30 @@ export const NeighborhoodsLanding: FC = (props) => {
 
   return (
     <>
-      <BasicExploreIntro introParagraph={landingData[0]?.definition} />
-      <CardListWrap>
-        {instanceData.map((row) => {
-          const uniqueInstances = getUniqueInstances('Neighborhood', row)
-          const { name } = row
+      <BasicExploreIntro
+        introParagraph={landingData[0]?.definition}
+        noAppear={!isLandingLoading}
+      />
+      {(isLoading && <LoadingIndicator omitText />) || (
+        <CardListWrap>
+          {instanceData.map((row, i) => {
+            const uniqueInstances = getUniqueInstances('Neighborhood', row)
+            const { name } = row
 
-          return (
-            <CustomCard
-              key={name}
-              intro={row.County}
-              title={name}
-              uniqueInstances={uniqueInstances}
-              url={`${url}/${name}`}
-            />
-          )
-        })}
-      </CardListWrap>
+            return (
+              <CustomCard
+                key={name}
+                intro={row.County}
+                noAnimate={i > 25}
+                timeout={350 + i * 250}
+                title={name}
+                uniqueInstances={uniqueInstances}
+                url={`${url}/${name}`}
+              />
+            )
+          })}
+        </CardListWrap>
+      )}
     </>
   )
 }

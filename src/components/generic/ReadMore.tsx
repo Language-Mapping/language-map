@@ -1,4 +1,5 @@
 import React, { FC, useState } from 'react'
+import { isMobile } from 'react-device-detect'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Link } from '@material-ui/core'
 
@@ -7,16 +8,20 @@ import { ToggleableSection, MarkdownWithRouteLinks } from 'components/generic'
 type ReadMoreProps = { text: string; fontSize?: string | number }
 type ReadMoreStyles = { open?: boolean } & Pick<ReadMoreProps, 'fontSize'>
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = makeStyles((theme: Theme) => {
+  const desktopStyles = {
+    '&:hover': {
+      textDecoration: 'none',
+    },
+  }
+
+  return createStyles({
     link: {
       display: 'block',
       height: 0,
       justifyContent: 'center',
       position: 'relative',
-      '&:hover': {
-        textDecoration: 'none',
-      },
+      ...(!isMobile && desktopStyles),
       // CRED: (partial): https://codepen.io/mahtab-alam/pen/aPKLBq
       '&:before': {
         content: '""',
@@ -53,7 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
       lineHeight: 1.75,
     },
   })
-)
+})
 
 export const ReadMore: FC<ReadMoreProps> = (props) => {
   const { text, fontSize } = props

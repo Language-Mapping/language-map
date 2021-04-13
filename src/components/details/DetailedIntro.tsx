@@ -1,6 +1,7 @@
 import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Route, Switch } from 'react-router-dom'
+import { Grow } from '@material-ui/core'
 
 import { Media } from 'components/media'
 import { MoreLikeThis } from 'components/details'
@@ -30,33 +31,35 @@ export const DetailedIntro: FC<DetailedIntroProps> = (props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
 
   return (
-    <header className={classes.root}>
-      {children}
-      <Route path={[routes.details, routes.dataDetail]} exact>
-        <LocationLink
-          anchorEl={anchorEl}
-          setAnchorEl={setAnchorEl}
-          data={data}
-        />
-      </Route>
-      <Switch>
-        <Route path={[routes.details, routes.dataDetail]} exact />
-        <Route>
-          <StatsAndMeta data={data} />
-        </Route>
-      </Switch>
-      <MoreLikeThis data={data}>
-        <CensusPopover data={data} />
-      </MoreLikeThis>
-      <Media data={data} shareNoun={shareNoun} omitClear={!isInstance} />
-      {langDescripID && <ReadMoreLangDescrip langDescripID={langDescripID} />}
-      <Route path={routes.explore}>
-        {data.langProfileDescripID && (
-          <LangProfileDescrip
-            langProfileDescripID={data.langProfileDescripID}
+    <Grow in timeout={500} style={{ transformOrigin: 'top center' }}>
+      <header className={classes.root}>
+        {children}
+        <Route path={[routes.details, routes.dataDetail]} exact>
+          <LocationLink
+            anchorEl={anchorEl}
+            setAnchorEl={setAnchorEl}
+            data={data}
           />
-        )}
-      </Route>
-    </header>
+        </Route>
+        <Switch>
+          <Route path={[routes.details, routes.dataDetail]} exact />
+          <Route>
+            <StatsAndMeta data={data} />
+          </Route>
+        </Switch>
+        <MoreLikeThis data={data}>
+          <CensusPopover data={data} />
+        </MoreLikeThis>
+        <Media data={data} shareNoun={shareNoun} omitClear={!isInstance} />
+        {langDescripID && <ReadMoreLangDescrip langDescripID={langDescripID} />}
+        <Route path={routes.explore}>
+          {data.langProfileDescripID && (
+            <LangProfileDescrip
+              langProfileDescripID={data.langProfileDescripID}
+            />
+          )}
+        </Route>
+      </header>
+    </Grow>
   )
 }

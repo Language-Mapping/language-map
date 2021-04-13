@@ -36,9 +36,6 @@ const useStyles = makeStyles((theme: Theme) =>
       lineHeight: 1,
       color: theme.palette.text.secondary,
       textAlign: 'center',
-      '& + *': {
-        marginBottom: '0.85rem',
-      },
       [theme.breakpoints.only('sm')]: {
         marginBottom: '0.85rem',
       },

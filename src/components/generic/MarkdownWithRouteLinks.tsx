@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Link as RouterLink } from 'react-router-dom'
+import { Link } from '@material-ui/core'
 
 import { LinkRenderer, MarkdownRootElemType } from './types'
 
@@ -18,12 +19,25 @@ const renderers = (rootElemType: MarkdownRootElemType = 'span') => ({
 
     return <span style={keepLines}>{children}</span>
   }, // TODO: UGHHHHHHHHHH
-  link: ({ href, node }: LinkRenderer) => (
+  link: ({ href, node }: LinkRenderer) => {
+    const isInternal = href.includes('http:///')
+
     // Airtable converts relative links to absolute by adding the protocol 😠
-    <RouterLink to={href.replace('http://', '')}>
-      {node.children[0].value}
-    </RouterLink>
-  ),
+    if (isInternal) {
+      return (
+        <RouterLink to={href.replace('http:///', '/')}>
+          {node.children[0].value}
+        </RouterLink>
+      )
+    }
+
+    // Assume everything else is external
+    return (
+      <Link href={href} target="_blank">
+        {node.children[0].value}
+      </Link>
+    )
+  },
   document: ({ children }: { children: React.ReactNode }) => (
     <div style={keepLines}>{children}</div>
   ),

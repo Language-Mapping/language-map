@@ -140,6 +140,7 @@ export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
           <CustomCard
             key={langName}
             intro={langName}
+            timeout={350 + i * 250}
             title={firstRecord?.endonyms[i]}
             footer={dataDescrips ? dataDescrips[i] : ''}
             url={`${url}/${langName}`}

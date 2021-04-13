@@ -11,16 +11,17 @@ const useStyles = makeStyles((theme: Theme) =>
     stickyBtn: {
       height: 0,
       marginRight: 12,
-      marginTop: 8,
       position: 'sticky',
       textAlign: 'right',
       top: 0,
+      zIndex: 1,
     },
     btnContainer: {
       alignItems: 'center',
       display: 'inline-flex',
       height: '1.25rem',
       justifyContent: 'center',
+      marginTop: 8,
       width: '1.25rem',
     },
   })
