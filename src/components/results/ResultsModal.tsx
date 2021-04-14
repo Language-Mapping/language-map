@@ -52,7 +52,7 @@ const ResultsModal: FC = () => {
   const { data, isLoading, error } = useAirtable<InstanceLevelSchema>('Data', {
     fields,
     // Save a little bandwidth on local dev (30 is enough to paginate)
-    maxRecords: window?.location.hostname === 'lampel-2.local' ? 30 : 20000,
+    maxRecords: window?.location.hostname === 'lampel-2.local' ? 300 : 20000,
   })
 
   // CRED:

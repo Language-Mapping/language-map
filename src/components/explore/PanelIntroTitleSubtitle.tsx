@@ -31,14 +31,11 @@ const useStyles = makeStyles((theme: Theme) =>
       },
     },
     subTitle: {
-      fontSize: '1.5rem',
-      marginBottom: '0.5rem',
-      lineHeight: 1,
       color: theme.palette.text.secondary,
+      fontSize: '1.5rem',
+      lineHeight: 1,
+      marginBottom: '0.5rem',
       textAlign: 'center',
-      [theme.breakpoints.only('sm')]: {
-        marginBottom: '0.85rem',
-      },
     },
   })
 )

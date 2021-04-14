@@ -24,11 +24,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     legendCtrls: {
       gridTemplateColumns: '1fr 1fr',
+      gridGap: '0.85rem',
       display: 'grid',
       marginBottom: '0.5rem',
-      '& > * + *': {
-        marginLeft: '1rem',
-      },
     },
     // Looks PERFECT on all breakpoints for World Region
     groupedLegend: {

@@ -32,6 +32,8 @@ export const routes = {
   explore: '/Explore',
   home: '/',
   neighborhood: '/Explore/Neighborhood',
+  neighbInstance: '/Explore/Neighborhood/:id',
+  countyInstance: '/Explore/County/:id',
   data: '/Data', // aka "table"
   dataDetail: '/Data/:id', // aka "table"
   none: '/Explore/Language/none',

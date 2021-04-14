@@ -55,18 +55,28 @@ export const usePolygonWebMerc: Types.UsePolygonWebMerc = (
 }
 
 // Fly to extent of lang features on length change
-export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
+export const useFlyToFilteredFeats: Types.UseZoomToLangFeatsExtent = (
   isMapTilted,
   map
 ) => {
   const { state } = useContext(GlobalContext)
-  const { langFeatures, langFeatsLenCache } = state
+  const { langFeatures, langFeatsLenCache, filterHasRun } = state
   const [shouldFlyHome, setShouldFlyHome] = useState<boolean>(false)
   const breakpoint = useBreakpoint()
 
   // Fly to extent of lang features on length change
   useEffect((): void => {
-    if (!map || !langFeatures.length) return
+    if (!map) return
+
+    // User hasn't filtered yet
+    if (!filterHasRun) {
+      setShouldFlyHome(true)
+
+      return
+    }
+
+    // Features are filtered out or not loaded yet
+    if (!langFeatures.length || !langFeatsLenCache) return
 
     // TODO: better check/decouple the fly-home-on-filter-reset behavior so that
     // there are no surprise fly-to-home scenarios.
@@ -99,8 +109,8 @@ export const useZoomToLangFeatsExtent: Types.UseZoomToLangFeatsExtent = (
     )
 
     flyToBounds(map, {
-      height: window.innerHeight as number,
-      width: window.innerWidth as number,
+      height: map.getContainer().offsetHeight,
+      width: map.getContainer().offsetWidth,
       bounds: bounds.toArray() as Types.BoundsArray,
       breakpoint,
     })

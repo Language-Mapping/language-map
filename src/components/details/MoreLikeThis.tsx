@@ -12,9 +12,10 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
+      flexWrap: 'wrap',
       fontSize: '0.75rem',
       justifyContent: 'center',
-      flexWrap: 'wrap',
+      marginBottom: '0.25rem',
       '& > * + *': {
         marginLeft: '0.35rem',
       },

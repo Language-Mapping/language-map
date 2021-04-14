@@ -6,14 +6,15 @@ import { BiMapPin } from 'react-icons/bi'
 
 import { CustomCard, CardListWrap } from 'components/explore'
 import { Explanation, UItextFromAirtable } from 'components/generic'
-import * as Types from './types'
+import { sortArrOfObjects } from 'components/legend/utils'
+import { DetailedIntroProps } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     divider: { marginBottom: '1.5em' },
     addlNeighbsList: {
       margin: 0,
-      fontSize: '1rem',
+      fontSize: '0.85rem',
     },
     explanation: {
       color: theme.palette.text.secondary,
@@ -49,7 +50,7 @@ const CardFooter: FC<{ text?: string }> = ({ text }) => {
   )
 }
 
-export const NeighborhoodList: FC<Types.DetailedIntroProps> = (props) => {
+export const NeighborhoodList: FC<DetailedIntroProps> = (props) => {
   const { data, isInstance } = props
   const classes = useStyles()
   const {
@@ -108,6 +109,14 @@ export const NeighborhoodList: FC<Types.DetailedIntroProps> = (props) => {
     </>
   )
 
+  const sortedByLoc = primaryLocs
+    .map((loc, i) => ({
+      loc,
+      county: data.County[i],
+      id: instanceIDs[i] || 999999,
+    }))
+    .sort(sortArrOfObjects<{ loc: string; county: string; id: number }>('loc'))
+
   return (
     <>
       <Typography
@@ -139,17 +148,13 @@ export const NeighborhoodList: FC<Types.DetailedIntroProps> = (props) => {
             />
           </Route>
           <Route>
-            {primaryLocs.map((loc, i) => {
-              const url = `/Explore/Language/${name}/${
-                instanceIDs.length ? instanceIDs[i] : 999999
-              }`
-
+            {sortedByLoc.map(({ loc, county, id }, i) => {
               return (
                 <CustomCard
                   key={loc}
                   title={loc}
-                  intro={data.County[i]}
-                  url={url}
+                  intro={county}
+                  url={`/Explore/Language/${name}/${id}`}
                   footer={<CardFooter text={loc} />}
                   timeout={350 + i * 250}
                 />

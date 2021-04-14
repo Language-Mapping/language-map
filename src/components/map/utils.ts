@@ -272,24 +272,6 @@ export const rightToLeftSetup = (): void => {
   }
 }
 
-export const getPolyWebMercView: Types.GetPolyWebMercView = (boundsArray) => {
-  // NOTE: rather than storing bounds in the lookup tables, tried
-  // `boundaryFeat.geometry` instead. Sort of worked but since vector tiles only
-  // render what's needed, there's no guarantee the whole feature's bbox will be
-  // available in the current view. And there doesn't seem to be a way to get
-  // its full bounds other than the lookup tables. 😞
-
-  const height = window.innerHeight
-  const width = window.innerWidth
-
-  const webMercViewport = new WebMercatorViewport({
-    width,
-    height,
-  }).fitBounds(boundsArray, { padding: 75 })
-
-  return { ...webMercViewport }
-}
-
 // Get the center of a rectangle, e.g. a polygon w/o dedicated centroid columns
 export const getCenterOfBounds = (
   cornerCoords: Types.BoundsColumns

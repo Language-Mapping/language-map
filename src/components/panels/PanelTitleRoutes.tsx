@@ -86,8 +86,8 @@ export const PanelTitleRoutes: FC<{ panelTitle: string }> = (props) => {
   return (
     <Switch>
       <Route path="/" exact>
+        <div style={{ minWidth: '1.5rem' }} />
         <Hidden smDown>
-          <div />
           <PanelTitle text="Search and Display Sites" icon={icons.Home} />
         </Hidden>
         <Hidden mdUp>
@@ -130,7 +130,7 @@ export const PanelTitleRoutes: FC<{ panelTitle: string }> = (props) => {
         <PanelTitle text="Explore ELA Data" icon={icons[panelTitle]} />
       </Route>
       <Route path={routes.feedback} exact>
-        <PanelTitle text="Contact and Feedback" icon={icons[panelTitle]} />
+        <PanelTitle text="Contact & Feedback" icon={icons[panelTitle]} />
       </Route>
       <Route path="/:level1" exact>
         {/* Home btn on /TopLevelRoutes looks balanced on left */}

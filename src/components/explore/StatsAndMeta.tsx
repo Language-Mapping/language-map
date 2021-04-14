@@ -11,12 +11,15 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.65rem',
       justifyContent: 'center',
       listStyle: 'none',
-      margin: '0 0 0.65rem',
+      margin: '0 0 0.75rem',
       padding: 0,
       '& > :not(:last-child)': {
         borderRight: `solid 1px ${theme.palette.text.secondary}`,
         marginRight: '0.4rem',
         paddingRight: '0.4rem',
+      },
+      [theme.breakpoints.up('md')]: {
+        marginBottom: '1rem',
       },
     },
   })

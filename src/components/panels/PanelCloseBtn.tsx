@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     stickyBtn: {
       height: 0,
-      marginRight: 12,
+      marginRight: 10,
       position: 'sticky',
       textAlign: 'right',
       top: 0,
