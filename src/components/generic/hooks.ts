@@ -3,8 +3,9 @@ import { useTheme } from '@material-ui/core/styles'
 import { useAirtable } from 'components/explore/hooks'
 import { useLocation, useRouteMatch } from 'react-router-dom'
 import { routes } from 'components/config'
+import { HIDE_WELCOME_LOCAL_STG_KEY } from 'components/about'
 import { UItextTableID, UseUItext, Breakpoint } from './types'
-import { useWindowResize } from '../../utils'
+import { useWindowResize, showWelcomeIfSupport } from '../../utils'
 
 export const useUItext = (id: UItextTableID): UseUItext => {
   const { data, isLoading, error } = useAirtable<{ text?: string }>('UI Text', {
@@ -136,4 +137,21 @@ export const useScrollOnPathChange = (targetElemID: string): void => {
       anchor.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
   }, [pathname, targetElemID])
+}
+
+export const useShowWelcome = (): string | null | boolean => {
+  const [showWelcome, setShowWelcome] = useState<string | null | boolean>(
+    showWelcomeIfSupport()
+  )
+
+  useEffect(() => {
+    try {
+      setShowWelcome(!window?.localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY))
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error('User has not enabled cookies (most likely)')
+    }
+  }, [])
+
+  return showWelcome
 }

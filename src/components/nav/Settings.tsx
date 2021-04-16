@@ -33,28 +33,49 @@ export const Settings: FC<SettingsProps> = (props) => {
   const classes = useStyles()
   const { switchFormCtrlRoot, settingsHeading } = classes
 
-  const [showWelcomeChecked, setShowWelcomeChecked] = useState(
-    !window.localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY)
-  )
+  // TODO: reuse all this between WelcomeFooter and Settings
+  const [localStgError, setLocalStgError] = useState<boolean>(false)
+
+  const [showWelcomeChecked, setShowWelcomeChecked] = useState(() => {
+    try {
+      return !window.localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY)
+    } catch (e) {
+      setLocalStgError(true)
+
+      return false
+    }
+  })
 
   const handleWelcomeSwitchChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    if (event.target.checked) {
-      localStorage.removeItem(HIDE_WELCOME_LOCAL_STG_KEY)
-    } else {
-      localStorage.setItem(HIDE_WELCOME_LOCAL_STG_KEY, 'true')
+    try {
+      if (event.target.checked) {
+        localStorage.removeItem(HIDE_WELCOME_LOCAL_STG_KEY)
+      } else {
+        localStorage.setItem(HIDE_WELCOME_LOCAL_STG_KEY, 'true')
+      }
+    } catch (e) {
+      setLocalStgError(true)
     }
 
     setShowWelcomeChecked(event.target.checked)
   }
 
-  return (
+  const Share = (
     <>
       <Typography component="h3" className={settingsHeading}>
         <FiShare /> Share this project
       </Typography>
       <ShareButtons />
+    </>
+  )
+
+  if (localStgError) return Share
+
+  return (
+    <>
+      {Share}
       <Typography component="h3" className={settingsHeading}>
         <GoGear />
         Settings

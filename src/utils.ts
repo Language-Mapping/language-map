@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Theme } from '@material-ui/core/styles'
 
 import { InternalUse } from 'components/context/types'
+import { HIDE_WELCOME_LOCAL_STG_KEY } from 'components/about'
 
 // CRED: github.com/mbrn/material-table/issues/709#issuecomment-566097441
 // TODO: put into hooks file and/or folder along with any others
@@ -81,3 +82,11 @@ export const toProperCase = (srcText: string): string =>
     /\w\S*/g,
     (txt: string) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
   )
+
+export const showWelcomeIfSupport = (): string | null | boolean => {
+  try {
+    return window.localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY)
+  } catch (e) {
+    return true
+  }
+}
