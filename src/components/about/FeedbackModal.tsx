@@ -7,7 +7,12 @@ import { FeedbackForm } from 'components/about'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
       [theme.breakpoints.up('sm')]: {
+        top: '1rem',
+        bottom: '1rem',
         minWidth: 600,
       },
     },
