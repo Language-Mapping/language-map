@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react'
+import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { InteractiveMap } from 'react-map-gl'
 import { Hidden } from '@material-ui/core'
@@ -6,7 +6,7 @@ import { Hidden } from '@material-ui/core'
 import { panelWidths } from 'components/panels/config'
 import { PanelWrap, usePanelState, ShowPanelBtn } from 'components/panels'
 import { BottomNav, TopBar } from 'components/nav'
-import { WelcomeDialog, HIDE_WELCOME_LOCAL_STG_KEY } from 'components/about'
+import { WelcomeDialog } from 'components/about'
 import { Map } from 'components/map'
 import {
   LoadingBackdropEmpty,
@@ -17,7 +17,7 @@ import {
   BOTTOM_NAV_HEIGHT_MOBILE,
 } from 'components/nav/config'
 import { PanelTitleBar } from './panels/PanelTitleBar'
-import { usePageTitle } from './generic/hooks'
+import { usePageTitle, useShowWelcome } from './generic/hooks'
 
 type Style = { open: boolean }
 
@@ -68,15 +68,9 @@ export const AppWrap: FC = () => {
   const { panelOpen } = usePanelState()
   const classes = useStyles({ open: panelOpen })
   const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
-  const [showWelcome, setShowWelcome] = useState<boolean | null | string>(
-    window.localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY)
-  )
+  const showWelcome = useShowWelcome()
 
   usePageTitle()
-
-  useEffect(() => {
-    setShowWelcome(!window?.localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY))
-  }, [])
 
   return (
     <>

@@ -37,7 +37,7 @@ const fields: Array<Extract<keyof InstanceLevelSchema, string>> = [
   'worldRegionColor',
 ]
 
-const ResultsModal: FC = () => {
+export const ResultsModal: FC = () => {
   const classes = useStyles()
   const { dispatch } = useContext(GlobalContext)
 
@@ -52,7 +52,7 @@ const ResultsModal: FC = () => {
   const { data, isLoading, error } = useAirtable<InstanceLevelSchema>('Data', {
     fields,
     // Save a little bandwidth on local dev (30 is enough to paginate)
-    maxRecords: window?.location.hostname === 'lampel-2.local' ? 300 : 20000,
+    // maxRecords: window?.location.hostname === 'lampel-2.local' ? 300 : 20000,
   })
 
   // CRED:
@@ -115,5 +115,3 @@ const ResultsModal: FC = () => {
     </Dialog>
   )
 }
-
-export default ResultsModal

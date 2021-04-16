@@ -59,22 +59,36 @@ export const WelcomeFooter: FC<WelcomeFooterProps> = (props) => {
   const { handleClose } = props
   const classes = useStyles()
   const { welcomeFootRoot, haveReadText, showOnStartup, continueBtn } = classes
-  const { localStorage } = window
 
-  const [showWelcomeModal, setShowWelcomeModal] = useState(
-    !localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY)
-  )
+  // TODO: reuse all this between WelcomeFooter and Settings
+  const [localStgError, setLocalStgError] = useState<boolean>(false)
 
-  const handleShowOnStartupChange = (
+  const [showWelcomeChecked, setShowWelcomeChecked] = useState(() => {
+    try {
+      return !window.localStorage.getItem(HIDE_WELCOME_LOCAL_STG_KEY)
+    } catch (e) {
+      setLocalStgError(true)
+
+      return false
+    }
+  })
+
+  const handleWelcomeSwitchChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    if (event.target.checked) {
-      localStorage.removeItem(HIDE_WELCOME_LOCAL_STG_KEY)
-    } else {
-      localStorage.setItem(HIDE_WELCOME_LOCAL_STG_KEY, 'true')
+    try {
+      const { localStorage } = window
+
+      if (event.target.checked) {
+        localStorage.removeItem(HIDE_WELCOME_LOCAL_STG_KEY)
+      } else {
+        localStorage.setItem(HIDE_WELCOME_LOCAL_STG_KEY, 'true')
+      }
+    } catch (e) {
+      setLocalStgError(true)
     }
 
-    setShowWelcomeModal(event.target.checked)
+    setShowWelcomeChecked(event.target.checked)
   }
 
   return (
@@ -83,18 +97,20 @@ export const WelcomeFooter: FC<WelcomeFooterProps> = (props) => {
         By continuing I acknowledge that I have read and accept the above
         information.
       </Typography>
-      <FormControlLabel
-        classes={{ label: showOnStartup }}
-        control={
-          <Checkbox
-            checked={showWelcomeModal}
-            onChange={handleShowOnStartupChange}
-            name="show on startup"
-            size="small"
-          />
-        }
-        label="Show on startup"
-      />
+      {!localStgError && (
+        <FormControlLabel
+          classes={{ label: showOnStartup }}
+          control={
+            <Checkbox
+              checked={showWelcomeChecked}
+              onChange={handleWelcomeSwitchChange}
+              name="show on startup"
+              size="small"
+            />
+          }
+          label="Show on startup"
+        />
+      )}
       <Button
         onClick={handleClose}
         color="secondary"
