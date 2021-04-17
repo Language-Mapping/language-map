@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react'
 import { Map as MbMap, FillPaint, Layer, setRTLTextPlugin } from 'mapbox-gl'
 import { WebMercatorViewport } from 'react-map-gl'
 
@@ -94,20 +95,32 @@ export const flyToBounds: Types.FlyToBounds = (
   map,
   { height, width, bounds, breakpoint }
 ) => {
+  const { offsetHeight, offsetWidth } = map.getContainer()
   let padding: number
 
   if (breakpoint === 'mobile' || breakpoint === 'tablet') padding = 25
   else padding = 100
 
-  const webMercViewport = new WebMercatorViewport({
-    width,
-    height,
-  }).fitBounds(bounds, { padding })
-  const { latitude, longitude, zoom } = webMercViewport
+  // Prevent all kinds of crashes
+  if (padding * 2 > offsetHeight || padding * 2 > offsetWidth) padding = 0
 
-  map.flyTo({ essential: true, zoom, center: [longitude, latitude] }, {
-    forceViewportUpdate: true,
-  } as Types.CustomEventData)
+  try {
+    const webMercViewport = new WebMercatorViewport({
+      width,
+      height,
+    }).fitBounds(bounds, { padding })
+    const { latitude, longitude, zoom } = webMercViewport
+
+    map.flyTo({ essential: true, zoom, center: [longitude, latitude] }, {
+      forceViewportUpdate: true,
+    } as Types.CustomEventData)
+  } catch (e) {
+    Sentry.withScope(() => {
+      Sentry.captureException(
+        new Error('Web merc viewport bad news in flyToBounds ')
+      )
+    })
+  }
 }
 
 export const flyToPoint: Types.FlyToPoint = (
@@ -218,8 +231,8 @@ export const setInterpolatedFill = (high: number, low = 0): FillPaint => ({
 
 export const flyHome: Types.FlyHome = (map, breakpoint): void => {
   const settings = {
-    height: map.getContainer().clientHeight,
-    width: map.getContainer().clientWidth,
+    height: map.getContainer().offsetHeight,
+    width: map.getContainer().offsetWidth,
     bounds: config.initialBounds,
     breakpoint,
   }
