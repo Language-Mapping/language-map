@@ -103,7 +103,7 @@ export const Nav: FC = () => {
           <ListItem button dense disableGutters>
             <Link
               underline="none"
-              href="https://languagemapping.org/wp-content/uploads/2021/03/Help-Video-Script.pdf"
+              href="https://content.endangeredlanguagealliance.org/wp-content/uploads/2022/12/User-Manual.pdf"
               target="_blank"
               className={listLink}
             >
