@@ -41,7 +41,10 @@ export const EndoImageModal: FC<EndoImageComponent> = (props) => {
 
   return (
     <>
-      <Link onClick={() => setOpen(true)}>View image</Link>
+      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid -- MUI Link renders as <button> via component prop */}
+      <Link component="button" onClick={() => setOpen(true)}>
+        View image
+      </Link>
       <SimpleDialog
         open={open}
         className={classes.endoModalRoot}

@@ -36,13 +36,12 @@ export const FiltersWarning: FC = () => {
   const BadgeDot = <div className={classes.badgeDot} />
 
   const ClearFilters = (
+    // eslint-disable-next-line jsx-a11y/anchor-is-valid -- MUI Link renders as <button> via component prop
     <Link
       title="Clear table filters"
-      href="#"
+      component="button"
       color="primary"
-      onClick={(e: React.MouseEvent) => {
-        e.preventDefault()
-
+      onClick={() => {
         dispatch({ type: 'CLEAR_FILTERS', payload: 555 }) // TODO: fix, obvi
       }}
     >

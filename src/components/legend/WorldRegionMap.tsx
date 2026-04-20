@@ -27,10 +27,10 @@ export const WorldRegionMap: FC = () => {
   const [showWorldMap, setShowWorldMap] = useState<boolean>(false)
 
   const WorldMapToggle = (
+    // eslint-disable-next-line jsx-a11y/anchor-is-valid -- MUI Link renders as <button> via component prop
     <Link
-      href="#"
-      onClick={(e: React.MouseEvent) => {
-        e.preventDefault()
+      component="button"
+      onClick={() => {
         setShowWorldMap(!showWorldMap)
       }}
     >

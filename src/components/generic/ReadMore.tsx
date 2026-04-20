@@ -69,11 +69,11 @@ export const ReadMore: FC<ReadMoreProps> = (props) => {
   })
 
   const ToggleDescription = (
+    // eslint-disable-next-line jsx-a11y/anchor-is-valid -- MUI Link renders as <button> via component prop
     <Link
-      href="#"
+      component="button"
       className={classes.link}
-      onClick={(e: React.MouseEvent) => {
-        e.preventDefault()
+      onClick={() => {
         setShowDescrip(!showDescrip)
       }}
     >

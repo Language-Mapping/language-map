@@ -131,6 +131,7 @@ export const MapOptionsMenu: FC<MapOptionsMenuProps> = (props) => {
         >
           View options
         </Button>
+        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid -- MUI Link is rendered as Button via the component prop */}
         <Link
           component={Button}
           size="small"

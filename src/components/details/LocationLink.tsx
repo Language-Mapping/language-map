@@ -77,9 +77,9 @@ export const LocationLink: FC<LocationLinkProps> = (props) => {
           onClose={() => handleClose()}
         />
       </Popover>
+      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid -- MUI Link renders as <button> via component prop */}
       <Link
-        href="#"
-        role="button"
+        component="button"
         className={classes.link}
         title="Show neighborhood or town options"
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
