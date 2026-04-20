@@ -27,7 +27,6 @@
   "extends": [
     "airbnb-typescript",
     "airbnb/hooks",
-    "react-app",
     "prettier/react",
     "plugin:jest/recommended",
     "plugin:react/recommended",
@@ -40,7 +39,7 @@
     // last configuration in the extends array.
     "plugin:prettier/recommended"
   ],
-  "ignorePatterns": ["scratch", "src/serviceWorker.ts", "build"],
+  "ignorePatterns": ["scratch", "build"],
   "rules": {
     "array-bracket-newline": [
       "error",
