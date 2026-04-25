@@ -299,6 +299,4 @@ export const getCenterOfBounds = (
 
 // CRED: geeksforgeeks.org/how-to-detect-touch-screen-device-using-javascript/
 export const isTouchEnabled = (): boolean =>
-  (window && 'ontouchstart' in window) ||
-  navigator.maxTouchPoints > 0 ||
-  navigator.msMaxTouchPoints > 0
+  (window && 'ontouchstart' in window) || navigator.maxTouchPoints > 0

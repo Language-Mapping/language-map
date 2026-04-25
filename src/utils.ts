@@ -72,9 +72,7 @@ export const getAllLangFeatIDs = (data: InternalUse[]): string[] =>
 // CRED:
 // www.geeksforgeeks.org/how-to-detect-touch-screen-device-using-javascript/
 export const isTouchEnabled = (): boolean =>
-  (window && 'ontouchstart' in window) ||
-  navigator.maxTouchPoints > 0 ||
-  navigator.msMaxTouchPoints > 0
+  (window && 'ontouchstart' in window) || navigator.maxTouchPoints > 0
 
 // CRED: https://stackoverflow.com/a/5574446/1048518
 export const toProperCase = (srcText: string): string =>
