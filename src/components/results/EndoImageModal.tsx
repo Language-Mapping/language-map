@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Link, Typography } from '@material-ui/core'
+import { Button, Typography } from '@material-ui/core'
 
 import { SimpleDialog } from 'components/generic/modals'
 import { correctDropboxURL } from '../../utils'
@@ -41,10 +41,7 @@ export const EndoImageModal: FC<EndoImageComponent> = (props) => {
 
   return (
     <>
-      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid -- MUI Link renders as <button> via component prop */}
-      <Link component="button" onClick={() => setOpen(true)}>
-        View image
-      </Link>
+      <Button onClick={() => setOpen(true)}>View image</Button>
       <SimpleDialog
         open={open}
         className={classes.endoModalRoot}

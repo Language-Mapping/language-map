@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Link } from '@material-ui/core'
+import { Button } from '@material-ui/core'
 
 import { ToggleableSection, MarkdownWithRouteLinks } from 'components/generic'
 
@@ -69,9 +69,7 @@ export const ReadMore: FC<ReadMoreProps> = (props) => {
   })
 
   const ToggleDescription = (
-    // eslint-disable-next-line jsx-a11y/anchor-is-valid -- MUI Link renders as <button> via component prop
-    <Link
-      component="button"
+    <Button
       className={classes.link}
       onClick={() => {
         setShowDescrip(!showDescrip)
@@ -80,7 +78,7 @@ export const ReadMore: FC<ReadMoreProps> = (props) => {
       <span className={classes.innerText}>{`Read ${
         showDescrip ? 'less' : 'more'
       }`}</span>
-    </Link>
+    </Button>
   )
 
   return (
