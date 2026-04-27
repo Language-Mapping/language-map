@@ -21,6 +21,18 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
   const tableRef = React.useRef<MuiTableWithLangs>(null)
   const [clearBtnEnabled, setClearBtnEnabled] = useState<boolean>(false)
 
+  // Filter changes, etc. keep the table at its current vertical scroll, often
+  // at the bottom, which is super annoying.
+  function scrollToTop() {
+    if (!tableRef || !tableRef.current) return
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore // nooooooo thanks
+    const divRef = tableRef.current.tableContainerDiv
+
+    if (divRef && divRef.current) divRef.current.scrollIntoView(true)
+  }
+
   // REFACTOR: get this monster into utils or events or something
   const onRowClick = (
     event: React.MouseEvent,
@@ -101,18 +113,6 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
 
     setClearBtnEnabled(true)
     scrollToTop()
-  }
-
-  // Filter changes, etc. keep the table at its current vertical scroll, often
-  // at the bottom, which is super annoying.
-  function scrollToTop() {
-    if (!tableRef || !tableRef.current) return
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore // nooooooo thanks
-    const divRef = tableRef.current.tableContainerDiv
-
-    if (divRef && divRef.current) divRef.current.scrollIntoView(true)
   }
 
   return (

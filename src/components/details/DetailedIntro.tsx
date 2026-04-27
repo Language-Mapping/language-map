@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const DetailedIntro: FC<DetailedIntroProps> = (props) => {
   const { data, shareNoun, isInstance, langDescripID, children } = props
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 
   return (
     <Grow in timeout={500} style={{ transformOrigin: 'top center' }}>

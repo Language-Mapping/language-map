@@ -64,7 +64,7 @@ const ctrlBtnsConfig = [
 export const MapCtrlBtns: FC<MapCtrlBtnsProps> = (props) => {
   const { onMapCtrlClick, isMapTilted } = props
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     setAnchorEl(event.currentTarget)
