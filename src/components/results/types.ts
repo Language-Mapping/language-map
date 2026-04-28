@@ -25,6 +25,7 @@ export type ResultsToolbarProps = {
   scrollToTop: () => void
   clearBtnEnabled: boolean
   setClearBtnEnabled: React.Dispatch<boolean>
+  columns: ColumnList
 }
 
 export type FilterComponentProps = {

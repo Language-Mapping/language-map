@@ -59,6 +59,7 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
       clearBtnEnabled,
       setClearBtnEnabled,
       scrollToTop,
+      columns: columnConfig,
     },
   }
 

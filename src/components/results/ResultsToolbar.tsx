@@ -6,22 +6,24 @@ import makeStyles from '@mui/styles/makeStyles'
 import { Button } from '@mui/material'
 import {
   GridToolbarContainer,
+  GridToolbarColumnsButton,
+  GridToolbarFilterButton,
   GridToolbarQuickFilter,
   gridFilteredSortedRowEntriesSelector,
   useGridApiContext,
 } from '@mui/x-data-grid'
-
-import { InstanceLevelSchema } from 'components/context/types'
 import { BiMapPin } from 'react-icons/bi'
-import { FaMap } from 'react-icons/fa'
+import { FaMap, FaFileCsv, FaFilePdf } from 'react-icons/fa'
 import { RiFilterOffFill } from 'react-icons/ri'
 
+import { InstanceLevelSchema } from 'components/context/types'
 import { GlobalContext } from 'components/context'
 import { routes } from 'components/config/api'
 import { PopoverWithUItext } from 'components/generic'
 import { ResultsTitle } from './ResultsTitle'
 
 import * as Types from './types'
+import { exportCsv, exportPdf } from './exporting'
 import { whittleLangFeats } from './utils'
 
 export const useStyles = makeStyles((theme: Theme) =>
@@ -36,12 +38,13 @@ export const useStyles = makeStyles((theme: Theme) =>
       display: 'grid',
       alignItems: 'center',
       gridColumnGap: '0.75em',
-      gridRowGap: '0.15em',
+      gridRowGap: '0.4em',
       gridTemplateAreas: `"title searchAndActions"
         "buttons buttons"
+        "exports exports"
         "local local"`,
       gridTemplateColumns: 'auto 1fr',
-      gridTemplateRows: 'auto auto auto',
+      gridTemplateRows: 'auto auto auto auto',
       '& .MuiIconButton-root': { padding: 4 },
       [theme.breakpoints.up('sm')]: {
         gridTemplateColumns: 'auto auto',
@@ -49,12 +52,12 @@ export const useStyles = makeStyles((theme: Theme) =>
         gridColumnGap: '1em',
       },
       [theme.breakpoints.up('md')]: {
-        gridTemplateAreas: `"title buttons local searchAndActions"`,
-        gridTemplateColumns: 'auto auto auto 1fr',
+        gridTemplateAreas: `"title buttons exports local searchAndActions"`,
+        gridTemplateColumns: 'auto auto auto auto 1fr',
         gridTemplateRows: 'auto',
         justifyContent: 'flex-start',
-        padding: '1em 1em 0',
-        height: 100,
+        padding: '0.75em 1em 0',
+        height: 'auto',
       },
     },
     searchAndActions: {
@@ -84,20 +87,24 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     toolbarBtns: {
       alignItems: 'center',
-      display: 'grid',
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '0.5rem',
       gridArea: 'buttons',
-      gridColumnGap: '0.5rem',
-      gridTemplateColumns: 'auto auto auto',
       justifyContent: 'center',
-      [theme.breakpoints.only('xs')]: {
-        gridColumnGap: '0.25rem',
-      },
+    },
+    exportBtns: {
+      alignItems: 'center',
+      display: 'flex',
+      gap: '0.5rem',
+      gridArea: 'exports',
+      justifyContent: 'center',
     },
   })
 )
 
 export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
-  const { clearBtnEnabled, setClearBtnEnabled, scrollToTop } = props
+  const { clearBtnEnabled, setClearBtnEnabled, scrollToTop, columns } = props
   const { state, dispatch } = useContext(GlobalContext)
   const classes = useStyles()
   const history = useHistory()
@@ -105,6 +112,11 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
 
   const rowCount = apiRef.current.getRowsCount()
   const noResults = rowCount === 0
+
+  const getVisibleRows = (): InstanceLevelSchema[] =>
+    gridFilteredSortedRowEntriesSelector(apiRef).map(
+      (entry) => entry.model as InstanceLevelSchema
+    )
 
   function clearFiltersBtnClick(physicalClick?: boolean): void {
     apiRef.current.setFilterModel({ items: [] })
@@ -114,12 +126,9 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
 
     if (!physicalClick) {
       dispatch({ type: 'CLEAR_FILTERS', payload: 0 })
-      const visibleRows = gridFilteredSortedRowEntriesSelector(apiRef).map(
-        (entry) => entry.model as InstanceLevelSchema
-      )
       dispatch({
         type: 'SET_LANG_LAYER_FEATURES',
-        payload: whittleLangFeats(visibleRows),
+        payload: whittleLangFeats(getVisibleRows()),
       })
     }
   }
@@ -132,9 +141,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
   }, [state.clearFilters])
 
   function mapFilterBtnClick(): void {
-    const visibleRows = gridFilteredSortedRowEntriesSelector(apiRef).map(
-      (entry) => entry.model as InstanceLevelSchema
-    )
+    const visibleRows = getVisibleRows()
 
     dispatch({
       type: 'SET_LANG_LAYER_FEATURES',
@@ -170,20 +177,44 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
           onClick={() => mapFilterBtnClick()}
           disabled={noResults}
         >
-          View results in map
+          View in map
         </Button>
+        <GridToolbarFilterButton />
+        <GridToolbarColumnsButton />
         <Button
           title="Clear table filters"
           color="secondary"
-          variant="contained"
+          variant="outlined"
           disabled={!clearBtnEnabled}
           size="small"
           startIcon={<RiFilterOffFill />}
           onClick={() => clearFiltersBtnClick(true)}
         >
-          Clear filters
+          Clear
         </Button>
         <PopoverWithUItext id="table-info-btn" />
+      </div>
+      <div className={classes.exportBtns}>
+        <Button
+          title="Download filtered results as CSV"
+          color="secondary"
+          variant="outlined"
+          size="small"
+          startIcon={<FaFileCsv />}
+          onClick={() => exportCsv(columns, getVisibleRows())}
+        >
+          CSV
+        </Button>
+        <Button
+          title="Download filtered results as PDF"
+          color="secondary"
+          variant="outlined"
+          size="small"
+          startIcon={<FaFilePdf />}
+          onClick={() => exportPdf(columns, getVisibleRows())}
+        >
+          PDF
+        </Button>
       </div>
       <small className={`${classes.localIndicator} ${classes.localCommLegend}`}>
         <BiMapPin /> Local community data
