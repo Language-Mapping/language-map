@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { IconButton } from '@mui/material'
 import { GoInfo } from 'react-icons/go'
 
@@ -12,7 +12,7 @@ export const AboutLinkAsIcon: FC<ListItemLinkProps> = ({
   muiClass,
   to = '/Info/About',
 }) => {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   return (
     <IconButton
@@ -20,7 +20,7 @@ export const AboutLinkAsIcon: FC<ListItemLinkProps> = ({
       color="inherit"
       className={muiClass}
       edge="end"
-      onClick={() => history.push(to)}
+      onClick={() => navigate(to)}
       size="large"
     >
       <GoInfo />

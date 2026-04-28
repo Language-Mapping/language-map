@@ -2,7 +2,7 @@ import { InstanceLevelSchema, useMapToolsState } from 'components/context'
 import { AtSymbFields, AtSchemaFields } from 'components/legend/types'
 import { layerSymbFields } from 'components/legend/config'
 import { useAirtable } from 'components/explore/hooks'
-import { useRouteMatch } from 'react-router-dom'
+import { useMatch } from 'react-router-dom'
 import { iconStyleOverride } from './config'
 
 import * as Types from './types'
@@ -65,10 +65,7 @@ export const useLayersConfig = (
 }
 
 export const useSelLangPointCoords = (): Types.UseSelLangPointCoordsReturn => {
-  const match = useRouteMatch<{ id: string }>({
-    path: '/Explore/Language/:language/:id',
-    exact: true,
-  })
+  const match = useMatch('/Explore/Language/:language/:id')
 
   const { data, error, isLoading } = useAirtable<Types.SelFeatAttribs>(
     'Data',

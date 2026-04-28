@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { useHistory, useRouteMatch } from 'react-router-dom'
+import { useNavigate, useMatch } from 'react-router-dom'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
@@ -72,11 +72,9 @@ const MediaListItem: FC<MediaListItemProps> = (props) => {
 
 export const Media: FC<MediaProps> = (props) => {
   const { data, omitClear, shareNoun = 'community' } = props
-  const history = useHistory()
+  const navigate = useNavigate()
   const [mediaUrl, setMediaUrl] = useState<string>()
-  const isTable: { params: { id: string } } | null = useRouteMatch(
-    routes.dataDetail
-  )
+  const isTable = useMatch(routes.dataDetail)
   const [showShareBtns, setShowShareBtns] = useState<boolean>(false)
   const classes = useStyles({ showShareBtns })
   const { Language, Video, Audio, Description, name } = data
@@ -115,7 +113,7 @@ export const Media: FC<MediaProps> = (props) => {
               label="De-select"
               icon={<IoIosCloseCircleOutline />}
               type="clear"
-              handleClick={() => history.push('/Explore/Language/none')}
+              handleClick={() => navigate('/Explore/Language/none')}
             />
           )) || (
             <MediaListItem
@@ -123,7 +121,7 @@ export const Media: FC<MediaProps> = (props) => {
               icon={<FaMapMarkedAlt />}
               type="view"
               handleClick={() =>
-                history.push(
+                navigate(
                   `/Explore/Language/${Language || name}/${isTable?.params?.id}`
                 )
               }

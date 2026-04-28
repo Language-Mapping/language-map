@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { useLocation, Route, Switch } from 'react-router-dom'
+import { useLocation, useMatch } from 'react-router-dom'
 import { Theme } from '@mui/material/styles'
 import makeStyles from '@mui/styles/makeStyles'
 import createStyles from '@mui/styles/createStyles'
@@ -105,25 +105,25 @@ export const PanelTitleBar: FC<PanelTitleBarProps> = (props) => {
   // Lil' gross, but use Level2 route name first, otherwise Level1
   const panelTitle = pathname.split('/')[2] || pathname.split('/')[1]
 
+  // Crumbs are hidden on Census and on the bare top-level routes (/, /Foo)
+  const isCensus = useMatch(`${routes.local}/*`) !== null
+  const isHome = useMatch('/') !== null
+  const isLevel1Only = useMatch('/:level1') !== null
+  const isExplore = useMatch('/Explore/*') !== null
+  const showCrumbs = !isCensus && !isHome && !isLevel1Only
+
   // WISHLIST: add maximize btn on mobile
   return (
     <AppBar className={classes.root} position="static">
       <Toolbar variant="dense" className={classes.toolbar}>
-        <Switch>
-          {/* Census can just have home btn */}
-          <Route path={routes.local} />
-          <Route path={['/', '/:level1']} exact />
-          <Route>
-            <SplitCrumbs />
-          </Route>
-        </Switch>
+        {showCrumbs && <SplitCrumbs />}
         <PanelTitleRoutes panelTitle={panelTitle} />
         <div className={classes.rightSideBtns}>
-          <Route path="/Explore">
+          {isExplore && (
             <ToggleSearchMenuBtn>
               {mapRef && <SearchTabs mapRef={mapRef} />}
             </ToggleSearchMenuBtn>
-          </Route>
+          )}
           <Hidden mdDown>
             <PanelCloseBtn />
           </Hidden>

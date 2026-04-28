@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { FC, useMemo, useRef, useState } from 'react'
-import { Route, useHistory } from 'react-router-dom'
+import { Route, useNavigate } from 'react-router-dom'
 import {
   Box,
   MenuItem,
@@ -105,7 +105,7 @@ const PAGE_SIZE_OPTIONS = [10, 20, 50]
 export const ResultsTable: FC<ResultsTableProps> = (props) => {
   const { data: tableData } = props
   const classes = useStyles()
-  const history = useHistory()
+  const navigate = useNavigate()
   const containerRef = useRef<HTMLDivElement>(null)
   const [clearBtnEnabled, setClearBtnEnabled] = useState<boolean>(false)
   const [globalFilter, setGlobalFilter] = useState<string>('')
@@ -182,13 +182,13 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
     event: React.MouseEvent
   ): void => {
     if (field === 'actions-id') {
-      history.push(`/Explore/Language/${row.Language}/${row.id}`)
+      navigate(`/Explore/Language/${row.Language}/${row.id}`)
 
       return
     }
 
     if (field === 'actions-county') {
-      history.push(`${routes.data}/${row.id}`)
+      navigate(`${routes.data}/${row.id}`)
 
       return
     }

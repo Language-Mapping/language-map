@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { useParams, useRouteMatch } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { Theme } from '@mui/material/styles'
 
 import createStyles from '@mui/styles/createStyles'
@@ -44,8 +44,8 @@ export const CardListWrap: FC = (props) => {
 export const CardList: FC<{ data: TonsWithAddl[] }> = (props) => {
   const { data } = props
   const classes = useStyles()
-  const { field, value } = useParams<RouteMatch & { value: string }>()
-  const { url } = useRouteMatch()
+  const { field, value } = useParams() as RouteMatch & { value: string }
+  const { pathname: url } = useLocation()
   const useLangAsIntro = value || field === 'Language'
 
   return (

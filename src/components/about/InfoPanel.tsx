@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Route } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import { QueryClientProvider } from '@tanstack/react-query'
 
 import { AboutPageView, FeedbackForm } from 'components/about'
@@ -12,23 +12,25 @@ import { WaysToHelp } from './WaysToHelp'
 export const InfoPanel: FC = () => {
   return (
     <>
-      <Route path={routes.info} exact>
-        <WaysToHelp />
-      </Route>
+      <Routes>
+        <Route path={routes.info} element={<WaysToHelp />} />
+      </Routes>
       <QueryClientProvider client={wpQueryClient}>
-        <Route path={routes.about}>
-          <AboutPageView noImgShadow queryKey={wpQueryIDs.about} />
-        </Route>
-        <Route path={routes.help}>
-          <AboutPageView queryKey={wpQueryIDs.help} />
-        </Route>
-        <Route path={routes.feedback}>
-          <FeedbackForm />
-        </Route>
+        <Routes>
+          <Route
+            path={routes.about}
+            element={<AboutPageView noImgShadow queryKey={wpQueryIDs.about} />}
+          />
+          <Route
+            path={routes.help}
+            element={<AboutPageView queryKey={wpQueryIDs.help} />}
+          />
+          <Route path={routes.feedback} element={<FeedbackForm />} />
+        </Routes>
       </QueryClientProvider>
-      <Route path={routes.info} exact>
-        <Nav />
-      </Route>
+      <Routes>
+        <Route path={routes.info} element={<Nav />} />
+      </Routes>
     </>
   )
 }

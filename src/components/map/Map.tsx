@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { FC, useState, useContext, useEffect, useCallback } from 'react'
 import { isMobile } from 'react-device-detect'
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import { useLocation, useMatch, useNavigate } from 'react-router-dom'
 import { Map as MbMap, AttributionControl } from 'mapbox-gl'
 import MapGL, { MapLoadEvent } from 'react-map-gl'
 
@@ -36,13 +36,13 @@ utils.rightToLeftSetup()
 
 export const Map: FC<Types.MapProps> = (props) => {
   const { children, mapLoaded, mapRef, setMapLoaded } = props
-  const history = useHistory()
+  const navigate = useNavigate()
   const loc = useLocation()
   const { pathname } = loc
-  const featSelected = useRouteMatch({
-    path: [routes.details, routes.neighbInstance, routes.countyInstance],
-    exact: true,
-  })
+  const detailsMatch = useMatch(routes.details)
+  const neighbInstMatch = useMatch(routes.neighbInstance)
+  const countyInstMatch = useMatch(routes.countyInstance)
+  const featSelected = detailsMatch || neighbInstMatch || countyInstMatch
   const { autoZoomCensus, censusActiveField, baseLayer } = useMapToolsState()
   const { geocodeMarkerText } = useMapToolsState()
   const { state } = useContext(GlobalContext)
@@ -192,7 +192,7 @@ export const Map: FC<Types.MapProps> = (props) => {
     )[0]
 
     if (topLangFeat) {
-      history.push(
+      navigate(
         `/Explore/Language/${topLangFeat.properties?.Language}/${topLangFeat.properties?.id}`
       )
 
@@ -226,12 +226,12 @@ export const Map: FC<Types.MapProps> = (props) => {
         targetRoute = `/Census/${scope}/${id}/${uniqueID}`
       }
 
-      history.push(targetRoute)
+      navigate(targetRoute)
 
       return
     }
 
-    history.push(targetRoute || '/Explore/Language/none') // no feat. selected
+    navigate(targetRoute || '/Explore/Language/none') // no feat. selected
   }
 
   function onMapCtrlClick(actionID: Types.MapControlAction) {
