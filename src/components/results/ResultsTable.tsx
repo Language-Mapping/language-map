@@ -79,6 +79,8 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
           getRowId={(row) => row.id}
           density="compact"
           disableRowSelectionOnClick
+          getRowHeight={() => 'auto'}
+          getEstimatedRowHeight={() => 36}
           onCellClick={onCellClick}
           onFilterModelChange={() => {
             setClearBtnEnabled(true)
@@ -92,6 +94,13 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
           pageSizeOptions={[10, 20, 50]}
           slots={{ toolbar: ResultsToolbar }}
           slotProps={slotProps}
+          sx={{
+            '& .MuiDataGrid-cell': {
+              alignItems: 'flex-start',
+              paddingTop: '6px',
+              paddingBottom: '6px',
+            },
+          }}
         />
       </div>
     </>
