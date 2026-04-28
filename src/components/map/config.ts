@@ -4,7 +4,7 @@ import { nonCensusPolygonConfig } from './config.non-census-poly'
 
 export * from './config.points'
 
-export const MAPBOX_TOKEN = process.env.REACT_APP_MB_TOKEN
+export const MAPBOX_TOKEN = import.meta.env.REACT_APP_MB_TOKEN
 export const NYC_LAT_LONG = { latitude: 40.7128, longitude: -74.006 }
 export const initialMapState = { ...NYC_LAT_LONG, zoom: 8.5 }
 export const POINT_ZOOM_LEVEL = 13 // clicked point or single-result filter
@@ -25,15 +25,12 @@ export const allPolyLayersConfig = {
   ...nonCensusPolygonConfig,
 }
 
-export const mapProps: InitialMapProps = {
+export const mapProps: Partial<InitialMapProps> = {
   attributionControl: false,
-  className: 'mb-language-map',
-  clickRadius: 4, // much comfier for small points on small screens
-  height: '100%',
-  mapboxApiAccessToken: MAPBOX_TOKEN,
-  mapOptions: { logoPosition: 'bottom-left' },
+  mapboxAccessToken: MAPBOX_TOKEN,
+  logoPosition: 'bottom-left',
   maxZoom: 18, // 18 is kinda misleading w/the dispersed points, but looks good
-  width: '100%',
+  style: { height: '100%', width: '100%' },
 }
 
 // This is for #3 above. It should include the 5 boroughs and bits of NJ, and

@@ -1,7 +1,9 @@
 import React, { FC, useState } from 'react'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import Popover from '@material-ui/core/Popover'
-import IconButton from '@material-ui/core/IconButton'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
+import Popover from '@mui/material/Popover'
+import IconButton from '@mui/material/IconButton'
 import { GoInfo } from 'react-icons/go'
 
 import { Explanation } from './Explanation'

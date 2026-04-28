@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Theme } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
 
 import { InternalUse } from 'components/context/types'
 import { HIDE_WELCOME_LOCAL_STG_KEY } from 'components/about'

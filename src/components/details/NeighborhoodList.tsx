@@ -1,7 +1,9 @@
 import React, { FC } from 'react'
-import { Link as RouterLink, Route, Switch } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography, Link } from '@material-ui/core'
+import { Link as RouterLink, useMatch } from 'react-router-dom'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Typography, Link } from '@mui/material'
 import { BiMapPin } from 'react-icons/bi'
 
 import { CustomCard, CardListWrap } from 'components/explore'
@@ -40,19 +42,17 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const CardFooter: FC<{ text?: string }> = ({ text }) => {
-  return (
-    <Switch>
-      <Route path="/Explore/Language/:language/:id" exact>
-        View more languages spoken in {text}
-      </Route>
-      <Route>View details and show in map</Route>
-    </Switch>
-  )
+  const isLangInstance = useMatch('/Explore/Language/:language/:id') !== null
+
+  if (isLangInstance) return <>View more languages spoken in {text}</>
+
+  return <>View details and show in map</>
 }
 
 export const NeighborhoodList: FC<DetailedIntroProps> = (props) => {
   const { data, isInstance } = props
   const classes = useStyles()
+  const isLangInstance = useMatch('/Explore/Language/:language/:id') !== null
   const {
     addlNeighborhoods,
     Neighborhood,
@@ -68,6 +68,10 @@ export const NeighborhoodList: FC<DetailedIntroProps> = (props) => {
   if (isInstance) additional = data['Additional Neighborhoods'] || []
   else additional = addlNeighborhoods
   const gahhhh = additional || []
+  let pickedNeighbs: string[] = []
+
+  if (isLangInstance) pickedNeighbs = data['Additional Neighborhoods'] || []
+  else pickedNeighbs = addlNeighborhoods || []
 
   const More = (
     <>
@@ -79,32 +83,13 @@ export const NeighborhoodList: FC<DetailedIntroProps> = (props) => {
         Additional neighborhoods (NYC only)
       </Typography>
       <ul className={classes.addlNeighbsList}>
-        <Switch>
-          <Route path="/Explore/Language/:language/:id" exact>
-            {(data['Additional Neighborhoods'] || []).map((place) => (
-              <li key={place}>
-                <Link
-                  component={RouterLink}
-                  to={`/Explore/Neighborhood/${place}`}
-                >
-                  {place}
-                </Link>
-              </li>
-            ))}
-          </Route>
-          <Route>
-            {addlNeighborhoods?.map((place) => (
-              <li key={place}>
-                <Link
-                  component={RouterLink}
-                  to={`/Explore/Neighborhood/${place}`}
-                >
-                  {place}
-                </Link>
-              </li>
-            ))}
-          </Route>
-        </Switch>
+        {pickedNeighbs.map((place) => (
+          <li key={place}>
+            <Link component={RouterLink} to={`/Explore/Neighborhood/${place}`}>
+              {place}
+            </Link>
+          </li>
+        ))}
       </ul>
     </>
   )
@@ -127,41 +112,31 @@ export const NeighborhoodList: FC<DetailedIntroProps> = (props) => {
         <BiMapPin /> Sites
       </Typography>
       <Explanation>
-        <Switch>
-          <Route path="/Explore/Language/:language/:id" exact>
-            <UItextFromAirtable id="details-neighb-loc-list" rootElemType="p" />
-          </Route>
-          <Route>
-            <UItextFromAirtable id="lang-profile-loc-list" />
-          </Route>
-        </Switch>
+        {isLangInstance ? (
+          <UItextFromAirtable id="details-neighb-loc-list" rootElemType="p" />
+        ) : (
+          <UItextFromAirtable id="lang-profile-loc-list" />
+        )}
       </Explanation>
       <CardListWrap>
-        <Switch>
-          {/* Inside the Details "Locations" popout */}
-          <Route path="/Explore/Language/:language/:id" exact>
+        {isLangInstance ? (
+          <CustomCard
+            title={locName}
+            url={`/Explore/${locRouteName}/${locName}`}
+            footer={<CardFooter text={locName} />}
+          />
+        ) : (
+          sortedByLoc.map(({ loc, county, id }, i) => (
             <CustomCard
-              title={locName}
-              // intro={`${data.County[0]}`} // TODO: County as intro
-              url={`/Explore/${locRouteName}/${locName}`}
-              footer={<CardFooter text={locName} />}
+              key={loc}
+              title={loc}
+              intro={county}
+              url={`/Explore/Language/${name}/${id}`}
+              footer={<CardFooter text={loc} />}
+              timeout={350 + i * 250}
             />
-          </Route>
-          <Route>
-            {sortedByLoc.map(({ loc, county, id }, i) => {
-              return (
-                <CustomCard
-                  key={loc}
-                  title={loc}
-                  intro={county}
-                  url={`/Explore/Language/${name}/${id}`}
-                  footer={<CardFooter text={loc} />}
-                  timeout={350 + i * 250}
-                />
-              )
-            })}
-          </Route>
-        </Switch>
+          ))
+        )}
       </CardListWrap>
       {gahhhh.length ? More : null}
     </>

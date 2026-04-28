@@ -1,12 +1,9 @@
 import React, { FC } from 'react'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-import { Link } from '@material-ui/core'
-import {
-  useLocation,
-  Link as RouterLink,
-  Route,
-  Switch,
-} from 'react-router-dom'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
+import { Link } from '@mui/material'
+import { useLocation, Link as RouterLink, useMatch } from 'react-router-dom'
 import { BiHomeAlt } from 'react-icons/bi'
 
 import { CurrentDetailCrumb } from './CurrentDetailCrumb'
@@ -17,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       display: 'flex',
       overflow: 'hidden',
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         overflowX: 'auto', // Easter egg: scroll sideways on small screens
       },
       '& > :last-child': {
@@ -53,6 +50,7 @@ export const Breadcrumbs: FC = () => {
   const pathnames = loc.pathname.split('/').filter((x) => x)
   const includeSeparator = pathnames.length !== 0
   const Separator = <span className={classes.separator}>/</span>
+  const isLangInstance = useMatch('/Explore/Language/:language/:id') !== null
 
   return (
     <div aria-label="breadcrumb" className={classes.root}>
@@ -71,14 +69,11 @@ export const Breadcrumbs: FC = () => {
             {includeSeparator && Separator}
             {(last && (
               <span>
-                <Switch>
-                  <Route path="/Explore/Language/:language/:id" exact>
-                    <CurrentDetailCrumb />
-                  </Route>
-                  <Route>
-                    <span className={classes.capital}>{value}</span>
-                  </Route>
-                </Switch>
+                {isLangInstance ? (
+                  <CurrentDetailCrumb />
+                ) : (
+                  <span className={classes.capital}>{value}</span>
+                )}
               </span>
             )) || (
               <Link to={to} component={RouterLink} className={classes.capital}>

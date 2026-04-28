@@ -1,24 +1,29 @@
 import React from 'react'
-import { IconButton } from '@material-ui/core'
+import { IconButton } from '@mui/material'
 import { GoFile } from 'react-icons/go'
 import { FaMapMarkedAlt } from 'react-icons/fa'
 
 import { InstanceLevelSchema, InternalWithLang } from 'components/context/types'
 import { CountryListItemWithFlag } from './CountryListItemWithFlag'
 import { EndoImageModal } from './EndoImageModal'
+import { LangCellContext } from './types'
 
 export const FILTER_CLASS = 'for-filter'
 
 export function renderCountryColumn(
-  data: InstanceLevelSchema
+  info: LangCellContext
 ): string | React.ReactNode {
+  const data = info.row.original
+
+  if (!Array.isArray(data.Country) || data.Country.length === 0) return ''
+
   return (
     <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
       {data.Country.map((countryWithFlag, i) => (
         <CountryListItemWithFlag
           key={data.Country[i]}
           name={data.Country[i]}
-          url={data.countryImg[i].url}
+          url={data.countryImg?.[i]?.url ?? ''}
           filterClassName={FILTER_CLASS}
         />
       ))}
@@ -27,10 +32,12 @@ export function renderCountryColumn(
 }
 
 export function renderEndoColumn(
-  data: InstanceLevelSchema
+  info: LangCellContext
 ): string | React.ReactNode {
+  const data = info.row.original
+
   if (!data['Font Image Alt']) {
-    return data.Endonym
+    return data.Endonym ?? ''
   }
 
   return (
@@ -41,7 +48,6 @@ export function renderEndoColumn(
   )
 }
 
-// This is a misleading name since it's now "County", but it does the same thing
 export function renderDescripCol(): string | React.ReactNode {
   return (
     <IconButton title="View full-screen details" size="small" color="secondary">
@@ -64,6 +70,5 @@ export const whittleLangFeats = (
   data.map((row) => {
     const { id, Latitude, Longitude, Language } = row
 
-    // Language needed for "No community selected" due to new routes setup
     return { id, Latitude, Longitude, Language }
   })

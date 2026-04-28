@@ -1,6 +1,8 @@
 import React, { FC } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 import {
   Divider,
   Link,
@@ -8,7 +10,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-} from '@material-ui/core'
+} from '@mui/material'
 
 import { routes, icons } from 'components/config'
 import { UItextFromAirtable } from 'components/generic'

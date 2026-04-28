@@ -1,7 +1,9 @@
 import React, { FC, useState } from 'react'
 import { isMobile } from 'react-device-detect'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Link } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Button } from '@mui/material'
 
 import { ToggleableSection, MarkdownWithRouteLinks } from 'components/generic'
 
@@ -69,18 +71,16 @@ export const ReadMore: FC<ReadMoreProps> = (props) => {
   })
 
   const ToggleDescription = (
-    <Link
-      href="#"
+    <Button
       className={classes.link}
-      onClick={(e: React.MouseEvent) => {
-        e.preventDefault()
+      onClick={() => {
         setShowDescrip(!showDescrip)
       }}
     >
       <span className={classes.innerText}>{`Read ${
         showDescrip ? 'less' : 'more'
       }`}</span>
-    </Link>
+    </Button>
   )
 
   return (

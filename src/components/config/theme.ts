@@ -1,8 +1,9 @@
 import {
-  createMuiTheme,
+  createTheme,
   responsiveFontSizes,
-  fade,
-} from '@material-ui/core/styles'
+  alpha,
+  adaptV4Theme,
+} from '@mui/material/styles'
 
 // Always have a hard time finding the Typography variant docs for some reason:
 // https://material-ui.com/components/typography/#component
@@ -59,94 +60,80 @@ const headings = {
 // track, "just" need to wire it up w/state and responsive fonts and all the
 // other shtuff: `export function customTheme(type: PaletteType)`
 
-// Easy access to theme properties when used in `createMuiTheme` overrides
-// CRED: https://stackoverflow.com/a/57127040/1048518
-const customTheme = createMuiTheme({
-  palette: {
-    type: 'dark',
-    primary: {
-      light: '#62aca0',
-      main: '#379587',
-      dark: '#286a61',
-      contrastText: '#fff',
+const baseTheme = createTheme(
+  adaptV4Theme({
+    palette: {
+      mode: 'dark',
+      primary: {
+        light: '#62aca0',
+        main: '#379587',
+        dark: '#286a61',
+        contrastText: '#fff',
+      },
+      secondary: {
+        light: '#55a9c1',
+        main: '#207d96',
+        dark: '#2d6777',
+        contrastText: '#fff',
+      },
     },
-    secondary: {
-      light: '#55a9c1',
-      main: '#207d96',
-      dark: '#2d6777',
-      contrastText: '#fff',
+    typography: {
+      fontFamily: BODY_FONTS,
+      fontSize: 16,
+      ...headings,
     },
-  },
-  typography: {
-    fontFamily: BODY_FONTS,
-    fontSize: 16,
-    ...headings,
-  },
-})
+  })
+)
 
-// Global overrides of MUI components that need to be re-styled often. More
-// examples available at:
-// https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/4523287b5c2a4f0dea1fe918b985aa6b6ca1efc6/src/theme.ts
-
-// Global overrides of MUI components that need to be re-styled often
-customTheme.overrides = {
-  MuiFormHelperText: {
-    root: {
-      fontSize: '0.65rem',
+const customTheme = createTheme(baseTheme, {
+  components: {
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: { fontSize: '0.65rem' },
+        contained: { marginLeft: '0.75rem', marginRight: 0 },
+      },
     },
-    contained: {
-      marginLeft: '0.75rem',
-      marginRight: 0,
+    MuiInput: {
+      styleOverrides: {
+        root: { fontSize: baseTheme.typography.body2.fontSize },
+        underline: {
+          '&.Mui-focused:after': {
+            borderBottomColor: baseTheme.palette.secondary.main,
+          },
+        },
+      },
     },
-  },
-  MuiInput: {
-    root: {
-      fontSize: customTheme.typography.body2.fontSize, // default inputs: huge
+    MuiInputAdornment: {
+      styleOverrides: {
+        root: { color: baseTheme.palette.text.secondary },
+      },
     },
-    underline: {
-      // Bottom line of focused input boxes, including table column filters
-      '&.Mui-focused:after': {
-        borderBottomColor: customTheme.palette.secondary.main,
+    MuiDialog: {
+      styleOverrides: {
+        paper: { margin: 12 },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: { textTransform: 'none' },
+        textSecondary: { color: baseTheme.palette.secondary.light },
+        outlinedSecondary: {
+          color: baseTheme.palette.secondary.light,
+          border: `1px solid ${alpha(baseTheme.palette.secondary.light, 0.5)}`,
+        },
+      },
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: { color: baseTheme.palette.secondary.light },
+      },
+    },
+    MuiAutocomplete: {
+      styleOverrides: {
+        root: { marginBottom: '1rem' },
       },
     },
   },
-  MuiInputAdornment: {
-    root: {
-      color: customTheme.palette.text.secondary,
-    },
-  },
-  MuiDialog: {
-    // Outside boundary of all dialogs
-    paper: {
-      margin: 12,
-    },
-  },
-  MuiButton: {
-    root: {
-      textTransform: 'none',
-    },
-    textSecondary: {
-      color: customTheme.palette.secondary.light,
-    },
-    // Outlined secondary buttons use the default of `palette.secondary.main`,
-    // which is too hard to see against dark paper backgrounds
-    outlinedSecondary: {
-      color: customTheme.palette.secondary.light,
-      border: `1px solid ${fade(customTheme.palette.secondary.light, 0.5)}`,
-    },
-  },
-  MuiLink: {
-    root: {
-      color: customTheme.palette.secondary.light,
-    },
-  },
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  MuiAutocomplete: {
-    root: {
-      marginBottom: '1rem',
-    },
-  },
-}
+})
 
 export const theme = responsiveFontSizes(customTheme)

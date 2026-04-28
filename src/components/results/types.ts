@@ -1,76 +1,68 @@
-import MaterialTable, {
-  Options,
-  Column,
-  MaterialTableProps,
-} from 'material-table'
+import { CellContext, ColumnDef, FilterFn, Row } from '@tanstack/react-table'
 
 import { InstanceLevelSchema } from 'components/context/types'
 import { AirtableError } from 'components/explore/types'
 
-type ColumnWithField = Column<InstanceLevelSchema> & {
-  field: keyof InstanceLevelSchema
-  title: string
+export type LangColumnMeta = {
+  // Human-readable column title for export (PDF/CSV) and filter labels.
+  exportTitle?: string | React.ReactElement
+  // If true, exclude from CSV/PDF export.
+  excludeFromExport?: boolean
+  // Predefined value set, used to render a select dropdown filter.
+  lookup?: { [key: string]: string }
+  // Render a "has media" checkbox filter instead of the default text input.
+  mediaFilter?: boolean
+  // Hide the per-column filter input.
+  unfilterable?: boolean
 }
-
-export type ColumnList = ColumnWithField[]
-export type InitialData = InstanceLevelSchema[]
-
-// The JSON file with {"name":"code"} country key/val pairs
-export type CountryCodes = { [key: string]: string }
-export type ColumnWithTableData = { tableData: TableData } & ColumnsConfig
-export type ResultsTableProps = { data: InstanceLevelSchema[] }
-export type TableOptions = Options<InstanceLevelSchema>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type TableData = { id: number | string; filterValue: any }
-
-export type FilterComponentProps = {
-  columnDef: {
-    tableData: TableData
-  } & Column<InstanceLevelSchema>
-  onFilterChanged: (rowId: number | string, value: string) => void
+export type LangColumn = ColumnDef<InstanceLevelSchema, any> & {
+  meta?: LangColumnMeta
 }
 
-export type ColumnsConfig = Column<InstanceLevelSchema> & {
-  title: keyof InstanceLevelSchema
-  field: keyof InstanceLevelSchema
+export type ColumnList = LangColumn[]
+export type InitialData = InstanceLevelSchema[]
+
+// Used by exporting.ts after filtering out export-excluded columns.
+export type ExportableColumn = LangColumn & {
+  accessorKey: keyof InstanceLevelSchema
+  header: string | React.ReactElement
 }
+
+export type CountryCodes = { [key: string]: string }
+export type ResultsTableProps = { data: InstanceLevelSchema[] }
 
 export type UseLocation = {
   state: null | {
     selFeatID?: number
-    // TODO: scroll tops:
-    // scrollTops?: {
-    //   [key in RouteLocation]?: string
-    // }
   }
   pathname: string
 }
 
-// `dataManager` prop definitely exists but is not evidently part of the TS
-export type MuiTableWithLangs = MaterialTable<InstanceLevelSchema> & {
-  dataManager: {
-    data: InstanceLevelSchema[]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    changeFilterValue: (col: number, val: any) => void
-    changeSearchText: (text: string) => void
-    getRenderState: () => Omit<
-      MaterialTableProps<InstanceLevelSchema>,
-      'columns'
-    > & {
-      columns: ColumnWithTableData[]
-      query: {
-        searchText: string
-      }
-    }
-  }
+export type LangCellContext = CellContext<InstanceLevelSchema, unknown>
+export type LangRow = Row<InstanceLevelSchema>
+export type LangFilterFn = FilterFn<InstanceLevelSchema>
+
+export type ColumnToggle = {
+  id: string
+  label: string
+  isVisible: boolean
+  canHide: boolean
+  toggle: () => void
 }
 
-export type ResultsToolbarProps = MaterialTableProps<InstanceLevelSchema> & {
+export type ResultsToolbarProps = {
   scrollToTop: () => void
-  tableRef: React.RefObject<MuiTableWithLangs>
   clearBtnEnabled: boolean
   setClearBtnEnabled: React.Dispatch<boolean>
+  visibleRows: InstanceLevelSchema[]
+  globalFilter: string
+  setGlobalFilter: (v: string) => void
+  resetFilters: () => void
+  rowCount: number
+  columns: ColumnList
+  columnToggles: ColumnToggle[]
 }
 
 export type CountryListItemWithFlagProps = {

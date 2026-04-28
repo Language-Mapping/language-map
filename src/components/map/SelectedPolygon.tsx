@@ -16,7 +16,7 @@ export const SelectedPolygon: FC<SelectedPolygonProps> = (props) => {
     selFillColor,
     mapLoaded,
   } = props
-  const { id } = useParams<{ id: string }>()
+  const { id = '' } = useParams() as { id: string }
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // TODO: come on
   const layerConfig = allPolyLayersConfig[configKey]

@@ -1,7 +1,9 @@
 import React, { FC, useRef } from 'react'
-import { Route, Switch, useLocation } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Hidden } from '@material-ui/core'
+import { Route, Routes, useLocation } from 'react-router-dom'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Hidden } from '@mui/material'
 
 import {
   SearchTabs,
@@ -47,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('xl')]: {
         width: panelWidths.midLarge,
       },
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         width: '100%',
         borderTop: `solid 6px ${theme.palette.primary.dark}`,
         bottom: BOTTOM_NAV_HEIGHT_MOBILE,
@@ -75,7 +77,7 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('md')]: {
         padding: '1.5rem 1.25rem',
       },
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         bottom: 0,
         top: 0,
         opacity: (props: Style) => (props.open ? 1 : 0),
@@ -90,8 +92,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-// WISHLIST: consider swipeable views for moving between panels:
-// https://react-swipeable-views.com/demos/demos/
 export const PanelWrap: FC<PanelWrapProps> = (props) => {
   const { mapRef } = props
   const { panelOpen } = usePanelState()
@@ -105,7 +105,7 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
 
   return (
     <div className={classes.root}>
-      <Hidden smDown>
+      <Hidden mdDown>
         <PanelTitleBar mapRef={mapRef} />
       </Hidden>
       <Hidden mdUp>
@@ -113,25 +113,29 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
       </Hidden>
       <div className={classes.panelContent} ref={panelRef}>
         <div id={targetElemID} />
-        <Route path="/" exact>
-          <div style={{ marginTop: '-0.75rem', marginBottom: '1rem' }}>
-            <SearchTabs mapRef={mapRef} />
-          </div>
-        </Route>
-        <Switch location={loc}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div style={{ marginTop: '-0.75rem', marginBottom: '1rem' }}>
+                <SearchTabs mapRef={mapRef} />
+              </div>
+            }
+          />
+        </Routes>
+        <Routes location={loc}>
           {nonNavRoutesConfig.map((routeConfig) => {
             const { exact, rootPath, component } = routeConfig
+            // v5 paths that weren't `exact` matched descendants too; v6 needs
+            // an explicit /* suffix for that.
+            const path = exact ? rootPath : `${rootPath}/*`
 
-            return (
-              <Route exact={exact} path={rootPath} key={rootPath}>
-                {component}
-              </Route>
-            )
+            return <Route key={rootPath} path={path} element={component} />
           })}
-        </Switch>
+        </Routes>
       </div>
       <BackToTopBtn hide={hide} targetElemID={targetElemID} />
-      <Hidden smDown>
+      <Hidden mdDown>
         <BottomNav />
       </Hidden>
     </div>

@@ -1,12 +1,14 @@
 import React, { FC, useState } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   Typography,
   Backdrop,
-} from '@material-ui/core'
+} from '@mui/material'
 
 import { MarkdownWithRouteLinks, useUItext, Logo } from 'components/generic'
 import { WelcomeFooter } from './WelcomeFooter'
@@ -20,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'center',
       paddingTop: '1rem',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         padding: '1rem 0.75rem 0.75rem',
       },
     },
@@ -42,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
       fontSize: '1rem',
       paddingTop: '1.5rem',
       paddingBottom: '1.5rem',
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         paddingLeft: '1.25rem',
         paddingRight: '1.25rem',
         '& p': {
@@ -56,10 +58,10 @@ const useStyles = makeStyles((theme: Theme) =>
         marginLeft: theme.spacing(3),
         marginRight: theme.spacing(3),
       },
-      [theme.breakpoints.down('xs')]: {
+      [theme.breakpoints.down('sm')]: {
         marginBottom: 0,
         marginTop: 0,
-        maxHeight: `calc(100% - ${theme.spacing(4)}px)`,
+        maxHeight: `calc(100% - ${theme.spacing(4)})`,
       },
     },
   })
@@ -112,14 +114,13 @@ export const WelcomeDialog: FC = () => {
       open={open}
       onClose={handleClose}
       disableEscapeKeyDown
-      disableBackdropClick
       aria-labelledby="welcome-dialog-title"
       aria-describedby="welcome-dialog-description"
       maxWidth="sm"
       BackdropProps={{ classes: { root: backdrop } }}
       PaperProps={{ classes: { root: paper }, elevation: 24 }}
     >
-      <DialogTitle disableTypography className={dialogTitle}>
+      <DialogTitle className={dialogTitle}>
         <WelcomeDialogTitle />
       </DialogTitle>
       <DialogContent dividers className={dialogContent}>
