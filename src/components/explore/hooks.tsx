@@ -15,16 +15,21 @@ import {
 
 type AirtableQueryKey = [string, AirtableOptions]
 
-const airtableQuery = async ({
+// airtable@0.12+ types base().select().all() narrowly as
+// Records<FieldSet>, which doesn't compose with our generic TResult.
+// Cast through the lib's lower-level shape.
+async function airtableQuery<TResult>({
   queryKey,
-}: QueryFunctionContext<AirtableQueryKey>) => {
+}: QueryFunctionContext<AirtableQueryKey>): Promise<{ fields: TResult }[]> {
   const [tableName, options] = queryKey
   const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(
     options?.baseID || AIRTABLE_BASE
   )
 
   // CRED: github.com/Airtable/airtable.js/issues/69#issuecomment-414394657
-  return base(tableName).select(options).all()
+  const records = await base(tableName).select(options).all()
+
+  return records as unknown as { fields: TResult }[]
 }
 
 export function useAirtable<TResult = TonsOfFields>(

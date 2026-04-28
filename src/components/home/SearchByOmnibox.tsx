@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { useNavigate } from 'react-router-dom'
-import matchSorter from 'match-sorter'
+import { matchSorter, rankings } from 'match-sorter'
 import Autocomplete from '@mui/material/Autocomplete'
 import { TextField, InputAdornment } from '@mui/material'
 import { Theme } from '@mui/material/styles'
@@ -139,7 +139,7 @@ export const SearchByOmnibox: FC = (props) => {
       filterOptions={(opts, { inputValue }) => {
         return matchSorter(opts, inputValue, {
           keys: ['name', 'Endonym', 'ISO 639-3', 'Glottocode'],
-          threshold: matchSorter.rankings.WORD_STARTS_WITH,
+          threshold: rankings.WORD_STARTS_WITH,
         })
       }}
       ListboxComponent={
