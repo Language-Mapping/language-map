@@ -45,7 +45,7 @@ export const App: FC = () => {
           {/* TODO: make Suspense/Lazy work on poor connections */}
           <ResultsModal />
         </MapToolsProvider>
-        {import.meta.env.DEV && <ReactQueryDevtools />}
+        {import.meta.env.DEV && <ReactQueryDevtools position="bottom-right" />}
       </QueryClientProvider>
     </Sentry.ErrorBoundary>
   )
