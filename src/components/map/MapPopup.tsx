@@ -61,7 +61,6 @@ export const MapPopup: FC<MapPopupProps> = (props) => {
 
   return (
     <Popup
-      tipSize={10}
       longitude={longitude}
       latitude={latitude}
       className={root}

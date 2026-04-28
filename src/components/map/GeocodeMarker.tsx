@@ -33,7 +33,7 @@ export const GeocodeMarker: FC<MapTypes.GeocodeMarkerProps> = (props) => {
   const classes = useStyles({ subtle })
 
   return (
-    <Marker {...{ latitude, longitude }} offsetTop={8}>
+    <Marker latitude={latitude} longitude={longitude} offset={[0, 8]}>
       <Typography className={classes.markerLabel}>{text}</Typography>
     </Marker>
   )

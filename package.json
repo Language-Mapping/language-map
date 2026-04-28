@@ -5,6 +5,8 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@mapbox/mapbox-gl-geocoder": "^5.1.2",
+    "@math.gl/web-mercator": "^4.1.0",
     "@mui/lab": "^5.0.0-alpha.176",
     "@mui/material": "^5.16.7",
     "@mui/styles": "^5.16.7",
@@ -37,8 +39,7 @@
     "react-device-detect": "^1.17.0",
     "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
-    "react-map-gl": "^5.2.7",
-    "react-map-gl-geocoder": "^2.0.16",
+    "react-map-gl": "^7",
     "react-markdown": "^5.0.3",
     "react-router-dom": "^6",
     "react-share": "^4.2.1",
@@ -49,6 +50,7 @@
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
+    "@types/mapbox__mapbox-gl-geocoder": "^5.1.1",
     "@typescript-eslint/eslint-plugin": "^3.6.0",
     "@typescript-eslint/parser": "^3.6.0",
     "@vitejs/plugin-react": "^4.3.4",

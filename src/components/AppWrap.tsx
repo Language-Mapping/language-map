@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
-import { InteractiveMap } from 'react-map-gl'
+import { MapRef } from 'react-map-gl'
 import { Hidden } from '@mui/material'
 
 import { panelWidths } from 'components/panels/config'
@@ -69,7 +69,7 @@ export const AppWrap: FC = () => {
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
   const { panelOpen } = usePanelState()
   const classes = useStyles({ open: panelOpen })
-  const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
+  const mapRef: React.RefObject<MapRef> = React.useRef(null)
   const showWelcome = useShowWelcome()
 
   usePageTitle()
