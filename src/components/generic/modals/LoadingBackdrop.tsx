@@ -1,8 +1,10 @@
 import React, { FC } from 'react'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { Backdrop, CircularProgress, Typography } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
+import { Backdrop, CircularProgress, Typography } from '@mui/material'
 
-type LoadingBackdrop = {
+type LoadingBackdropProps = {
   centerOnScreen?: boolean
   text?: string
   testID?: string
@@ -38,7 +40,7 @@ export const LoadingBackdropEmpty: FC<{ open: boolean }> = (props) => {
   return <Backdrop className={classes.root} open={open} />
 }
 
-export const LoadingBackdrop: FC<LoadingBackdrop> = (props) => {
+export const LoadingBackdrop: FC<LoadingBackdropProps> = (props) => {
   const { text = 'Loading...', testID } = props
   const classes = useStyles()
 

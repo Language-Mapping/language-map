@@ -1,15 +1,15 @@
 import React from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { VariableSizeList } from 'react-window'
-import { AutocompleteRenderGroupParams } from '@material-ui/lab/Autocomplete'
-import ListSubheader from '@material-ui/core/ListSubheader'
+import { AutocompleteRenderGroupParams } from '@mui/material/Autocomplete'
+import ListSubheader from '@mui/material/ListSubheader'
 
 import { LangLevelSchema } from 'components/context/types'
 import { PreppedAutocompleteGroup } from './types'
 
 export function useResetCache(
   itemCount: number
-): React.RefObject<VariableSizeList> {
+): React.RefObject<VariableSizeList | null> {
   const ref = React.useRef<VariableSizeList>(null)
 
   React.useEffect(() => {

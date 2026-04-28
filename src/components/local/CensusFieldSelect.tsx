@@ -1,10 +1,12 @@
-import React, { FC } from 'react'
-import { useHistory } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { TextField, Typography, ListSubheader } from '@material-ui/core'
+import React, { FC, PropsWithChildren } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { TextField, Typography, ListSubheader } from '@mui/material'
 import Autocomplete, {
   AutocompleteRenderGroupParams,
-} from '@material-ui/lab/Autocomplete'
+} from '@mui/material/Autocomplete'
 
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'
 import { UItextFromAirtable, useUItext } from 'components/generic'
@@ -42,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     listbox: {
       paddingTop: 0,
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         maxHeight: 225, // maybe helps prevent unwanted upward-opening menu?
       },
     },
@@ -80,7 +82,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const CensusGroupHeader: FC<GroupHeaderProps> = (props) => {
+const CensusGroupHeader: FC<PropsWithChildren<GroupHeaderProps>> = (props) => {
   const { title, censusScope } = props
   const classes = useStyles()
   const { text: subTitle } = useUItext(
@@ -120,7 +122,7 @@ export const CensusFieldSelect: FC = (props) => {
   const { censusActiveField } = useMapToolsState()
   const { data, isLoading, error } = useCensusFields()
   const { text: placeholderText } = useUItext('census-search-placeholder')
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const defaultValue =
     data.find(({ id }) => id === censusActiveField?.id) || null
@@ -128,7 +130,7 @@ export const CensusFieldSelect: FC = (props) => {
   const handleChange = (value: UseCensusResponse | null) => {
     setCensusField(value, mapToolsDispatch)
     // TODO: UGHHHH don't transition/animate panels on stuff like this!
-    history.push(routes.local) // clears any census popups
+    navigate(routes.local) // clears any census popups
   }
 
   // TODO: reuse in utils (nearly identical to Omnibox)

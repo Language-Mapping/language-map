@@ -1,7 +1,9 @@
 import React, { FC } from 'react'
 import { isMobile } from 'react-device-detect'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { ToggleButton, ToggleButtonGroup } from '@mui/material'
 import { FiSun, FiMoon } from 'react-icons/fi'
 import { RiEyeCloseLine } from 'react-icons/ri'
 
@@ -82,7 +84,6 @@ export const BaseLayerToggles: FC = (props) => {
       >
         <ToggleButton
           value="light"
-          color="blue"
           aria-label="light baselayer"
           classes={btnClasses}
         >

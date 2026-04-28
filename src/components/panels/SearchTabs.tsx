@@ -1,14 +1,9 @@
-import React, { FC, useState } from 'react'
-import SwipeableViews from 'react-swipeable-views'
-import AppBar from '@material-ui/core/AppBar'
-import {
-  createStyles,
-  makeStyles,
-  Tab,
-  Tabs,
-  Theme,
-  useTheme,
-} from '@material-ui/core'
+import React, { FC, useState, PropsWithChildren } from 'react'
+import AppBar from '@mui/material/AppBar'
+import { Tab, Tabs, Theme } from '@mui/material'
+
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
 import { SearchByOmnibox } from 'components/home/SearchByOmnibox'
 import { GeocoderPopout } from 'components/map'
@@ -48,7 +43,9 @@ const a11yProps = (index: number) => ({
   'aria-controls': `search-tabpanel-${index}`,
 })
 
-const QuickFlex: FC<{ uiTextID: UItextTableID }> = (props) => {
+const QuickFlex: FC<PropsWithChildren<{ uiTextID: UItextTableID }>> = (
+  props
+) => {
   const { children, uiTextID } = props
   const classes = useStyles()
 
@@ -63,7 +60,6 @@ const QuickFlex: FC<{ uiTextID: UItextTableID }> = (props) => {
 export const SearchTabs: FC<SearchTabsProps> = (props) => {
   const { mapRef } = props
   const classes = useStyles()
-  const theme = useTheme()
   const [value, setValue] = useState<number>(0)
 
   const handleChange = (
@@ -71,10 +67,6 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
     newValue: number
   ) => {
     setValue(newValue)
-  }
-
-  const handleChangeIndex = (index: number) => {
-    setValue(index)
   }
 
   const TabAppBar = (
@@ -104,11 +96,7 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
   )
 
   const TabMeat = (
-    <SwipeableViews
-      axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-      index={value}
-      onChangeIndex={handleChangeIndex}
-    >
+    <>
       <TabPanel value={value} index={0}>
         <QuickFlex uiTextID="omni-info-popout">
           <SearchByOmnibox />
@@ -119,7 +107,7 @@ export const SearchTabs: FC<SearchTabsProps> = (props) => {
           <GeocoderPopout mapRef={mapRef} />
         </QuickFlex>
       </TabPanel>
-    </SwipeableViews>
+    </>
   )
 
   return (

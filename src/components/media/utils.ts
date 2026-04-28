@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react'
 
-const YOUTUBE_API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY
+const YOUTUBE_API_KEY = import.meta.env.REACT_APP_YOUTUBE_API_KEY
 const youTubeEmbedBase = 'https://www.youtube.com/embed/'
 const youTubePlaylistEmbed = `${youTubeEmbedBase}videoseries?list=`
 const internetArchiveEmbed = 'https://archive.org/embed'

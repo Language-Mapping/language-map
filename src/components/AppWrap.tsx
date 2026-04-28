@@ -1,7 +1,9 @@
 import React, { FC, useState } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { InteractiveMap } from 'react-map-gl'
-import { Hidden } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { MapRef } from 'react-map-gl'
+import { Hidden } from '@mui/material'
 
 import { panelWidths } from 'components/panels/config'
 import { PanelWrap, usePanelState, ShowPanelBtn } from 'components/panels'
@@ -45,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
         [theme.breakpoints.up('xl')]: {
           left: (props: Style) => (props.open ? panelWidths.midLarge : 0),
         },
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down('md')]: {
           top: PANEL_TITLE_BAR_HT_MOBILE,
           width: '100%',
           bottom: (props: Style) =>
@@ -67,7 +69,7 @@ export const AppWrap: FC = () => {
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
   const { panelOpen } = usePanelState()
   const classes = useStyles({ open: panelOpen })
-  const mapRef: React.RefObject<InteractiveMap> = React.useRef(null)
+  const mapRef = React.useRef<MapRef>(null)
   const showWelcome = useShowWelcome()
 
   usePageTitle()

@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Button } from '@material-ui/core'
+import { Button } from '@mui/material'
 import { IoMdCloseCircle } from 'react-icons/io'
 
 type ClearFiltersComponent = {

@@ -1,6 +1,9 @@
-import React, { FC } from 'react'
-import { useParams, useRouteMatch } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import React, { FC, PropsWithChildren } from 'react'
+import { useLocation, useParams } from 'react-router-dom'
+import { Theme } from '@mui/material/styles'
+
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
 import { ColoredCircle } from 'components/generic/icons-and-swatches'
 import { RouteMatch, TonsWithAddl } from './types'
@@ -29,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const CardListWrap: FC = (props) => {
+export const CardListWrap: FC<PropsWithChildren> = (props) => {
   const { children } = props
   const classes = useStyles()
 
@@ -41,8 +44,8 @@ export const CardListWrap: FC = (props) => {
 export const CardList: FC<{ data: TonsWithAddl[] }> = (props) => {
   const { data } = props
   const classes = useStyles()
-  const { field, value } = useParams<RouteMatch & { value: string }>()
-  const { url } = useRouteMatch()
+  const { field, value } = useParams() as RouteMatch & { value: string }
+  const { pathname: url } = useLocation()
   const useLangAsIntro = value || field === 'Language'
 
   return (

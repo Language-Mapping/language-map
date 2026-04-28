@@ -1,4 +1,7 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
 const footerCell = '.MuiTableCell-footer'
 const footerWrap = '.MuiPaper-root > .MuiTable-root'
@@ -7,7 +10,7 @@ const headCell = '.MuiTableCell-head'
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     resultsModalRoot: {
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         '& .MuiTableFooter-root .MuiIconButton-root': {
           padding: 4, // waaaaayy too much default padding, can't see on mobile
         },
@@ -30,7 +33,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: theme.palette.background.paper,
       },
       // e.g. the Filter icon at beginning of column filters
-      '& .MuiInputAdornment-root': { color: theme.palette.text.hint },
+      '& .MuiInputAdornment-root': { color: theme.palette.text.disabled },
       [`& ${headCell}`]: {
         backgroundColor: 'inherit',
         color: theme.palette.secondary.light,
@@ -56,9 +59,10 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& .MuiTablePagination-select': { paddingLeft: 0 },
       // All icons in and out of table. Icons inherit color and size from it.
       // ...otherwise it overrides the `disabled` Action buttons
-      '& table .MuiIconButton-root:not([disabled]), .MuiToolbar-root .MuiIconButton-root:not([disabled])': {
-        color: theme.palette.secondary.light,
-      },
+      '& table .MuiIconButton-root:not([disabled]), .MuiToolbar-root .MuiIconButton-root:not([disabled])':
+        {
+          color: theme.palette.secondary.light,
+        },
       '& .MuiTableSortLabel-icon': {
         flexShrink: 0, // prevents tiny arrows on columns w/wrapped headings
       },
@@ -71,9 +75,9 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     // Squeeze a bit more room out of the dialog
     resultsModalPaper: {
-      height: `calc(100% - ${theme.spacing(2)}px)`,
+      height: `calc(100% - ${theme.spacing(2)})`,
       maxHeight: '100%',
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         height: '100%',
         margin: 0,
       },

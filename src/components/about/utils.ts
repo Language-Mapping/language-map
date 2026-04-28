@@ -1,24 +1,20 @@
-import { QueryCache } from 'react-query'
+import { QueryClient } from '@tanstack/react-query'
 import { WP_API_PAGES_ENDPOINT } from './config'
 
-// Define a default query function that will receive the query key
-export const defaultQueryFn = async <T extends unknown>(
-  key: number
-): Promise<T> =>
-  // `password` is part of a hack to attempt to exclude/filter NYC Map pages
-  // from the ELA website's NextJS builds. It is not intended for security, so
-  // it's safe to commit.
+// `password` is part of a hack to attempt to exclude/filter NYC Map pages
+// from the ELA website's NextJS builds. It is not intended for security, so
+// it's safe to commit.
+export const defaultQueryFn = async <T>(key: number): Promise<T> =>
   (await fetch(`${WP_API_PAGES_ENDPOINT}/${key}?password=1234`)).json()
 
-// Provide the default query function to your app with defaultConfig
-export const wpQueryCache = new QueryCache({
-  defaultConfig: {
+// Isolated QueryClient for the WordPress info panel queries (separate cache
+// lifecycle from the rest of the app, used via QueryClientProvider).
+export const wpQueryClient = new QueryClient({
+  defaultOptions: {
     queries: {
-      queryFn: defaultQueryFn,
       refetchOnMount: false,
       refetchOnWindowFocus: false,
-      // 1000 * 60 * 30, // ms * sec * min. Default: 5 min.
-      cacheTime: 600000, // 600000 = 10 minutes
+      gcTime: 600000, // 10 minutes (renamed from cacheTime in v5)
     },
   },
 })

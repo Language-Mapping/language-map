@@ -1,5 +1,7 @@
-import React, { FC } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import React, { FC, PropsWithChildren } from 'react'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 import { IoIosPeople } from 'react-icons/io'
 
 import { routes } from 'components/config/api'
@@ -23,7 +25,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const MoreLikeThis: FC<Types.TonsOfData> = (props) => {
+export const MoreLikeThis: FC<PropsWithChildren<Types.TonsOfData>> = (
+  props
+) => {
   const { data, children } = props
   const classes = useStyles()
 

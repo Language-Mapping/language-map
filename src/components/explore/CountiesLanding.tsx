@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { useRouteMatch } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import { BasicExploreIntro } from 'components/panels'
 import { LoadingIndicator } from 'components/generic/modals'
@@ -9,7 +9,7 @@ import { CustomCard } from './CustomCard'
 
 export const CountiesLanding: FC = (props) => {
   const tableName = 'County'
-  const { url } = useRouteMatch()
+  const { pathname: url } = useLocation()
 
   const {
     data: landingData,
@@ -20,7 +20,11 @@ export const CountiesLanding: FC = (props) => {
     filterByFormula: `{name} = "${tableName}"`,
   })
 
-  const { data: instanceData, error, isLoading } = useAirtable<{
+  const {
+    data: instanceData,
+    error,
+    isLoading,
+  } = useAirtable<{
     name: string
     languages: string
   }>('County', {

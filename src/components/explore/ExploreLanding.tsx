@@ -9,7 +9,7 @@ import { CardList } from './CardList'
 import { TonsWithAddl, MidLevelExploreProps, RouteMatch } from './types'
 
 export const ExploreLanding: FC<MidLevelExploreProps> = (props) => {
-  const { field } = useParams<RouteMatch>()
+  const { field } = useParams() as RouteMatch
   const { tableName = field, sortByField = 'name' } = props
   const filterByFormula = prepFormula(field)
   const fields = prepFields(tableName, field)
@@ -23,14 +23,15 @@ export const ExploreLanding: FC<MidLevelExploreProps> = (props) => {
     filterByFormula: `{name} = "${tableName}"`,
   })
 
-  const { data: instanceData, error, isLoading } = useAirtable<TonsWithAddl>(
-    tableName,
-    {
-      fields,
-      ...(filterByFormula && { filterByFormula }),
-      sort: [{ field: sortByField }],
-    }
-  )
+  const {
+    data: instanceData,
+    error,
+    isLoading,
+  } = useAirtable<TonsWithAddl>(tableName, {
+    fields,
+    ...(filterByFormula && { filterByFormula }),
+    sort: [{ field: sortByField }],
+  })
 
   if (error || landingError) {
     return (

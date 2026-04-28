@@ -1,10 +1,17 @@
 // TOO annoying. I'll take the risk, esp. since it has not seemed problematic:
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { FC, useState, useContext, useEffect, useCallback } from 'react'
+import React, {
+  FC,
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+  PropsWithChildren,
+} from 'react'
 import { isMobile } from 'react-device-detect'
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
-import { Map as MbMap, AttributionControl } from 'mapbox-gl'
-import MapGL, { MapLoadEvent } from 'react-map-gl'
+import { useLocation, useMatch, useNavigate } from 'react-router-dom'
+import { Map as MbMap, AttributionControl, MapboxEvent } from 'mapbox-gl'
+import { Map as MapGL } from 'react-map-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
 
@@ -34,15 +41,15 @@ const { mbStyleTileConfig, langTypeIconsConfig, initialMapState } = config
 
 utils.rightToLeftSetup()
 
-export const Map: FC<Types.MapProps> = (props) => {
+export const Map: FC<PropsWithChildren<Types.MapProps>> = (props) => {
   const { children, mapLoaded, mapRef, setMapLoaded } = props
-  const history = useHistory()
+  const navigate = useNavigate()
   const loc = useLocation()
   const { pathname } = loc
-  const featSelected = useRouteMatch({
-    path: [routes.details, routes.neighbInstance, routes.countyInstance],
-    exact: true,
-  })
+  const detailsMatch = useMatch(routes.details)
+  const neighbInstMatch = useMatch(routes.neighbInstance)
+  const countyInstMatch = useMatch(routes.countyInstance)
+  const featSelected = detailsMatch || neighbInstMatch || countyInstMatch
   const { autoZoomCensus, censusActiveField, baseLayer } = useMapToolsState()
   const { geocodeMarkerText } = useMapToolsState()
   const { state } = useContext(GlobalContext)
@@ -50,14 +57,13 @@ export const Map: FC<Types.MapProps> = (props) => {
   const mapToolsDispatch = useMapToolsDispatch()
   const breakpoint = useBreakpoint()
 
-  const map: MbMap | undefined = mapRef.current?.getMap()
+  const map: MbMap | undefined = mapRef.current?.getMap() as MbMap | undefined
 
   const [beforeId, setBeforeId] = useState<string>('background')
   const [tooltip, setTooltip] = useState<Types.Tooltip | null>(null)
   const [isMapTilted, setIsMapTilted] = useState<boolean>(false)
   const [mapIsMoving, setMapIsMoving] = useState<boolean>(true)
   const [showPopups, setShowPopups] = useState<boolean>(true)
-  const [viewport, setViewport] = useState<Types.ViewportState>(initialMapState)
   const [mapStyle, setMapStyle] = useState(mbStyleTileConfig.customStyles.light)
   const shouldFlyHome = useFlyToFilteredFeats(isMapTilted, map)
   const handlePopupClose = useCallback(() => setShowPopups(false), [])
@@ -69,8 +75,8 @@ export const Map: FC<Types.MapProps> = (props) => {
   useEffect(() => {
     if (!map) return
 
-    if (isMapTilted) map.setPitch(80, { forceViewportUpdate: true })
-    else map.setPitch(0, { forceViewportUpdate: true })
+    if (isMapTilted) map.setPitch(80)
+    else map.setPitch(0)
   }, [isMapTilted])
 
   // Reset popup visibility and clear geocode marker
@@ -115,27 +121,16 @@ export const Map: FC<Types.MapProps> = (props) => {
     utils.flyHome(map, breakpoint)
   }, [mapLoaded, shouldFlyHome])
 
-  function onLoad(mapLoadEvent: MapLoadEvent) {
+  function onLoad(mapLoadEvent: MapboxEvent) {
     setMapLoaded(true)
 
     // `mapObj` should === `map` but avoid naming conflict just in case:
     const { target: mapObj } = mapLoadEvent
 
-    // Maintain viewport state sync if needed (e.g. after `flyTo`), otherwise
-    // the map shifts back to previous position after panning or zooming.
-    mapObj.on('moveend', function onMoveEnd(zoomEndEvent) {
+    // react-map-gl v7 manages map view state internally — `moveend` no longer
+    // needs to sync state back to React.
+    mapObj.on('moveend', function onMoveEnd() {
       setMapIsMoving(false)
-
-      // No custom event data, regular move event
-      if (zoomEndEvent.forceViewportUpdate) {
-        setViewport({
-          ...viewport, // spreading just in case bearing or pitch are added
-          latitude: mapObj.getCenter().lat,
-          longitude: mapObj.getCenter().lng,
-          pitch: mapObj.getPitch(),
-          zoom: mapObj.getZoom(),
-        })
-      }
     })
 
     mapObj.on('movestart', function onMoveStart(zoomEndEvent) {
@@ -186,13 +181,13 @@ export const Map: FC<Types.MapProps> = (props) => {
 
     // CRED: https://stackoverflow.com/a/42984268/1048518
     const topLangFeat = utils.queryRenderedPoints(
-      event.point,
+      [event.point.x, event.point.y],
       map,
       utils.getLangLayersIDs(map.getStyle().layers || [])
     )[0]
 
     if (topLangFeat) {
-      history.push(
+      navigate(
         `/Explore/Language/${topLangFeat.properties?.Language}/${topLangFeat.properties?.id}`
       )
 
@@ -226,12 +221,12 @@ export const Map: FC<Types.MapProps> = (props) => {
         targetRoute = `/Census/${scope}/${id}/${uniqueID}`
       }
 
-      history.push(targetRoute)
+      navigate(targetRoute)
 
       return
     }
 
-    history.push(targetRoute || '/Explore/Language/none') // no feat. selected
+    navigate(targetRoute || '/Explore/Language/none') // no feat. selected
   }
 
   function onMapCtrlClick(actionID: Types.MapControlAction) {
@@ -242,9 +237,9 @@ export const Map: FC<Types.MapProps> = (props) => {
     } else if (actionID === 'reset-pitch') {
       setIsMapTilted(!isMapTilted)
     } else if (actionID === 'in') {
-      map.zoomIn(undefined, { forceViewportUpdate: true })
+      map.zoomIn()
     } else if (actionID === 'out') {
-      map.zoomOut(undefined, { forceViewportUpdate: true })
+      map.zoomOut()
     }
   }
 
@@ -253,24 +248,23 @@ export const Map: FC<Types.MapProps> = (props) => {
       <div className="map-container">
         {children}
         <MapGL
-          {...viewport}
           {...config.mapProps}
+          initialViewState={initialMapState}
           mapStyle={mapStyle}
           ref={mapRef}
-          onViewportChange={setViewport}
-          onClick={(event: Types.MapEvent) => onClick(event)}
-          onHover={(event: Types.MapEvent) => {
+          interactiveLayerIds={[]}
+          onClick={(event) => onClick(event as unknown as Types.MapEvent)}
+          onMouseMove={(event) => {
             if (isMobile) return
 
-            onHover(event, setTooltip, map)
+            onHover(event as unknown as Types.MapEvent, setTooltip, map)
           }}
           onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
         >
           <Geolocation
-            onViewportChange={(mapViewport: Types.ViewportState) => {
-              // CRED:
-              // github.com/visgl/react-map-gl/issues/887#issuecomment-531580394
-              setViewport({ ...mapViewport, zoom: config.POINT_ZOOM_LEVEL })
+            onGeolocate={() => {
+              if (!map) return
+              map.zoomTo(config.POINT_ZOOM_LEVEL)
             }}
           />
           {geocodeMarkerText && !mapIsMoving && (

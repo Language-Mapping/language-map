@@ -1,7 +1,11 @@
-import { useQuery } from 'react-query'
+import { QueryFunctionContext, useQuery } from '@tanstack/react-query'
 import Airtable from 'airtable'
 
-import { AIRTABLE_BASE, reactQueryDefaults } from 'components/config'
+import {
+  AIRTABLE_API_KEY,
+  AIRTABLE_BASE,
+  reactQueryDefaults,
+} from 'components/config'
 import {
   AirtableOptions,
   TonsOfFields,
@@ -9,11 +13,23 @@ import {
   ReactQueryOptions,
 } from './types'
 
-const airtableQuery = async (tableName: string, options: AirtableOptions) => {
-  const base = new Airtable().base(options?.baseID || AIRTABLE_BASE)
+type AirtableQueryKey = [string, AirtableOptions]
+
+// airtable@0.12+ types base().select().all() narrowly as
+// Records<FieldSet>, which doesn't compose with our generic TResult.
+// Cast through the lib's lower-level shape.
+async function airtableQuery<TResult>({
+  queryKey,
+}: QueryFunctionContext<AirtableQueryKey>): Promise<{ fields: TResult }[]> {
+  const [tableName, options] = queryKey
+  const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(
+    options?.baseID || AIRTABLE_BASE
+  )
 
   // CRED: github.com/Airtable/airtable.js/issues/69#issuecomment-414394657
-  return base(tableName).select(options).all()
+  const records = await base(tableName).select(options).all()
+
+  return records as unknown as { fields: TResult }[]
 }
 
 export function useAirtable<TResult = TonsOfFields>(
@@ -27,8 +43,12 @@ export function useAirtable<TResult = TonsOfFields>(
 } {
   const { data, isLoading, error } = useQuery<
     { fields: TResult }[],
-    AirtableError
-  >([tableName, options], airtableQuery, {
+    AirtableError,
+    { fields: TResult }[],
+    AirtableQueryKey
+  >({
+    queryKey: [tableName, options],
+    queryFn: airtableQuery,
     ...reactQueryDefaults,
     ...reactQueryOptions,
   })

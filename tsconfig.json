@@ -14,8 +14,14 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "es5"
+    "target": "ES2020",
+    "types": ["vite/client", "vite-plugin-svgr/client"]
   },
   "include": ["src"],
-  "exclude": ["node_modules", "build"]
+  "exclude": [
+    "node_modules",
+    "build",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx"
+  ]
 }

@@ -1,12 +1,11 @@
 import React, { FC } from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import * as Sentry from '@sentry/react'
 import { BrowserRouter } from 'react-router-dom'
 import WebFont from 'webfontloader'
 
 import { App } from 'components'
 import { ProvidersWrap } from 'components/context'
-import * as serviceWorker from './serviceWorker'
 
 const SENTRY_DSN =
   'https://fff4ab9699284c8489f9890aa8aa4609@o416804.ingest.sentry.io/5313356'
@@ -18,7 +17,7 @@ Sentry.init({
   // the `REACT_APP_` prefix, so these are set in netlify.toml file.
   // TODO: is it really needed or just better practice to use `process`? What if
   // `window.location` was used instead?
-  environment: process.env.REACT_APP_SENTRY_ENVIRONMENT,
+  environment: import.meta.env.REACT_APP_SENTRY_ENVIRONMENT,
   // Ignore MB errors on baselayer change
   ignoreErrors: [/^Error: Layer with id.* does not exist on this map\.$/],
 })
@@ -44,17 +43,8 @@ const AppWrap: FC = () => (
   </React.StrictMode>
 )
 
-ReactDOM.render(<AppWrap />, document.getElementById('root'))
+const container = document.getElementById('root')
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-if (module.hot) {
-  // @ts-ignore
-  module.hot.accept()
-}
-/* eslint-enable @typescript-eslint/ban-ts-comment */
+if (!container) throw new Error('No #root element to mount React into')
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister()
+createRoot(container).render(<AppWrap />)

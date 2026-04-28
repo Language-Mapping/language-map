@@ -1,8 +1,10 @@
 import React, { FC } from 'react'
-import { Route, useParams, Switch } from 'react-router-dom'
+import { Route, useParams, Routes } from 'react-router-dom'
 import { Popup } from 'react-map-gl'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Typography } from '@mui/material'
 
 import { InstanceLevelSchema, useMapToolsState } from 'components/context'
 import { useAirtable } from 'components/explore/hooks'
@@ -26,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
       wordWrap: 'break-word',
       '& .mapboxgl-popup-content': {
         // Leave room for "x" close button
-        padding: `${theme.spacing(1)}px ${theme.spacing(3)}px`,
+        padding: `${theme.spacing(1)} ${theme.spacing(3)}`,
       },
       '& .mapboxgl-popup-close-button': {
         fontSize: '1.25rem',
@@ -59,7 +61,6 @@ export const MapPopup: FC<MapPopupProps> = (props) => {
 
   return (
     <Popup
-      tipSize={10}
       longitude={longitude}
       latitude={latitude}
       className={root}
@@ -77,7 +78,7 @@ export const MapPopup: FC<MapPopupProps> = (props) => {
 
 const LanguagePopup: FC<Pick<MapPopupsProps, 'handleClose'>> = (props) => {
   const { handleClose } = props
-  const { id } = useParams<{ id: string }>()
+  const { id = '' } = useParams() as { id: string }
 
   const { data, isLoading, error } = useAirtable<InstanceLevelSchema>('Data', {
     fields: ['Language', 'Endonym', 'Latitude', 'Longitude'],
@@ -102,7 +103,7 @@ const LanguagePopup: FC<Pick<MapPopupsProps, 'handleClose'>> = (props) => {
 
 const PolygonPopup: FC<PolygonPopupProps> = (props) => {
   const { handleClose, tableName, addlFields = [] } = props
-  const { id } = useParams<{ id: string }>()
+  const { id = '' } = useParams() as { id: string }
 
   const { data, isLoading, error } = useAirtable<NeighborhoodTableSchema>(
     tableName,
@@ -131,11 +132,15 @@ const PolygonPopup: FC<PolygonPopupProps> = (props) => {
 
 const CensusPopup: FC<MapPopupsProps> = (props) => {
   const { handleClose } = props
-  const { field, id, table } = useParams<{
+  const {
+    field = '',
+    id = '',
+    table = 'tract',
+  } = useParams() as {
     id: string
     field: string
     table: 'puma' | 'tract' // TODO: tighten up everywhere
-  }>()
+  }
   const addlFields = table === 'puma' ? ['Neighborhood'] : []
   const { censusActiveField } = useMapToolsState()
 
@@ -189,27 +194,35 @@ export const MapPopups: FC<MapPopupsProps> = (props) => {
   const { handleClose } = props
 
   return (
-    <Switch>
-      <Route path="/Explore/Language/:language/:id" exact>
-        <LanguagePopup handleClose={handleClose} />
-      </Route>
-      <Route path="/Explore/Neighborhood/:id" exact>
-        <PolygonPopup
-          handleClose={handleClose}
-          tableName="Neighborhood"
-          addlFields={['County', 'name']}
-        />
-      </Route>
-      <Route path="/Explore/County/:id" exact>
-        <PolygonPopup
-          handleClose={handleClose}
-          tableName="County"
-          addlFields={['name']}
-        />
-      </Route>
-      <Route path={routes.censusDetail} exact>
-        <CensusPopup handleClose={handleClose} />
-      </Route>
-    </Switch>
+    <Routes>
+      <Route
+        path="/Explore/Language/:language/:id"
+        element={<LanguagePopup handleClose={handleClose} />}
+      />
+      <Route
+        path="/Explore/Neighborhood/:id"
+        element={
+          <PolygonPopup
+            handleClose={handleClose}
+            tableName="Neighborhood"
+            addlFields={['County', 'name']}
+          />
+        }
+      />
+      <Route
+        path="/Explore/County/:id"
+        element={
+          <PolygonPopup
+            handleClose={handleClose}
+            tableName="County"
+            addlFields={['name']}
+          />
+        }
+      />
+      <Route
+        path={routes.censusDetail}
+        element={<CensusPopup handleClose={handleClose} />}
+      />
+    </Routes>
   )
 }

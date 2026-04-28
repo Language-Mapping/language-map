@@ -1,5 +1,8 @@
-import React, { FC } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core'
+import React, { FC, PropsWithChildren } from 'react'
+import { Theme } from '@mui/material'
+
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
 import { TabPanelProps } from './types'
 
@@ -10,14 +13,14 @@ const useStyles = makeStyles((theme: Theme) => {
     root: {
       padding: '1rem',
       borderBottom: `solid 1px ${palette.divider}`,
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         padding: '0.75rem 0.5rem',
       },
     },
   })
 })
 
-export const TabPanel: FC<TabPanelProps> = (props) => {
+export const TabPanel: FC<PropsWithChildren<TabPanelProps>> = (props) => {
   const { children, value, index, ...other } = props
   const classes = useStyles()
 

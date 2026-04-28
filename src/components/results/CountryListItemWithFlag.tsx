@@ -1,5 +1,8 @@
 import React, { FC } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
 import { CountryListItemWithFlagProps } from './types'
 
@@ -9,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       display: 'grid',
       gridColumnGap: theme.spacing(1),
-      gridTemplateColumns: `${theme.spacing(3)}px auto`,
+      gridTemplateColumns: `${theme.spacing(3)} auto`,
       gridTemplateRows: 'auto',
       lineHeight: 1, // proper vertical align (all good except super-long Congo)
       '& + li': {

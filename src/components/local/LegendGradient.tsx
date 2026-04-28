@@ -1,5 +1,8 @@
 import React, { FC } from 'react'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
 
 import { useMapToolsState } from 'components/context'
 import { LegendBarProps, LegendMarkersProps } from './types'
@@ -39,10 +42,8 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const LegendBar: FC<LegendBarProps> = (props) => {
-  const {
-    lowColor = 'rgb(237, 248, 233)',
-    highColor = 'rgb(0, 109, 44)',
-  } = props
+  const { lowColor = 'rgb(237, 248, 233)', highColor = 'rgb(0, 109, 44)' } =
+    props
   const classes = useStyles()
   const backgroundImage = `linear-gradient(
     to right,

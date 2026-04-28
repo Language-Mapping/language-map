@@ -1,7 +1,9 @@
 import React, { FC, useContext } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Link } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Button, Link } from '@mui/material'
 
 import { GlobalContext } from 'components/context'
 import { Explanation } from 'components/generic'
@@ -36,18 +38,15 @@ export const FiltersWarning: FC = () => {
   const BadgeDot = <div className={classes.badgeDot} />
 
   const ClearFilters = (
-    <Link
+    <Button
       title="Clear table filters"
-      href="#"
       color="primary"
-      onClick={(e: React.MouseEvent) => {
-        e.preventDefault()
-
+      onClick={() => {
         dispatch({ type: 'CLEAR_FILTERS', payload: 555 }) // TODO: fix, obvi
       }}
     >
       clear
-    </Link>
+    </Button>
   )
 
   const TableLink = (

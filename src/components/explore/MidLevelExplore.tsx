@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { useParams, Route } from 'react-router-dom'
+import { useMatch, useParams } from 'react-router-dom'
 
 import {
   FlagFromHook,
@@ -14,7 +14,8 @@ import { TonsWithAddl, MidLevelExploreProps, RouteMatch } from './types'
 import { LayerToggle } from './LayerToggle'
 
 export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
-  const { field, value } = useParams<RouteMatch & { value: string }>()
+  const { field, value } = useParams() as RouteMatch & { value: string }
+  const isCounty = useMatch('/Explore/County/*') !== null
   const { tableName = field, sortByField = 'name' } = props
   const filterByFormula = prepFormula(field, value)
   const fields = prepFields(tableName, field)
@@ -52,11 +53,7 @@ export const MidLevelExplore: FC<MidLevelExploreProps> = (props) => {
         expand={!isLoading}
         noAppear={!isLoading}
         icon={Icon}
-        extree={
-          <Route path="/Explore/County">
-            <LayerToggle layerID="counties" />
-          </Route>
-        }
+        extree={isCounty ? <LayerToggle layerID="counties" /> : null}
       />
       {(isLoading && <LoadingIndicator omitText />) || (
         <CardList data={primaryData} />

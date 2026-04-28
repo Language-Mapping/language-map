@@ -8,15 +8,9 @@ import { allPolyLayersConfig } from './config'
 import { useZoomToBounds } from './hooks'
 
 export const SelectedPolygon: FC<SelectedPolygonProps> = (props) => {
-  const {
-    map,
-    beforeId,
-    configKey,
-    selLineColor,
-    selFillColor,
-    mapLoaded,
-  } = props
-  const { id } = useParams<{ id: string }>()
+  const { map, beforeId, configKey, selLineColor, selFillColor, mapLoaded } =
+    props
+  const { id = '' } = useParams() as { id: string }
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore // TODO: come on
   const layerConfig = allPolyLayersConfig[configKey]

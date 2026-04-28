@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Typography, Box, Grid, Paper } from '@material-ui/core'
+import { Typography, Box, Grid, Paper } from '@mui/material'
 
 export const DemoColors: FC = () => {
   return (

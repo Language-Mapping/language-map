@@ -1,9 +1,11 @@
 import React, { FC } from 'react'
-import { useHistory } from 'react-router-dom'
-import matchSorter from 'match-sorter'
-import Autocomplete from '@material-ui/lab/Autocomplete'
-import { TextField, InputAdornment } from '@material-ui/core'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import { useNavigate } from 'react-router-dom'
+import { matchSorter, rankings } from 'match-sorter'
+import Autocomplete from '@mui/material/Autocomplete'
+import { TextField, InputAdornment } from '@mui/material'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
 import { MdClose } from 'react-icons/md'
 import { GoSearch } from 'react-icons/go'
 
@@ -43,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       // Group headings
       '& .MuiListSubheader-root': {
-        borderBottom: `1px solid ${theme.palette.text.hint}`,
+        borderBottom: `1px solid ${theme.palette.text.disabled}`,
         color: theme.palette.text.primary,
         fontFamily: theme.typography.h1.fontFamily,
         fontSize: '1.25rem',
@@ -88,7 +90,7 @@ export const SearchByOmnibox: FC = (props) => {
     sort: [{ field: 'name' }],
   })
   const classes = useStyles()
-  const history = useHistory()
+  const navigate = useNavigate()
   const { text: placeholderText } = useUItext('omni-placeholder')
 
   // TODO: make it so this doesn't have to loop twice, aka prep AND sort.
@@ -109,7 +111,7 @@ export const SearchByOmnibox: FC = (props) => {
     <Autocomplete
       id="virtualize-demo"
       classes={classes}
-      closeIcon={<MdClose />}
+      clearIcon={<MdClose />}
       // Thought this helped to resolve iOS zoom issue but the cause seems to be
       // when <input> font size is smaller than the page default.
       // blurOnSelect="touch"
@@ -122,18 +124,22 @@ export const SearchByOmnibox: FC = (props) => {
       disabled={isLoading || problemo}
       loadingText={loadingText} // does nothing
       renderGroup={renderGroup}
-      renderOption={(option) => <OmniboxResult data={option} />}
+      renderOption={(liProps, option) => (
+        <li {...liProps} key={option.id}>
+          <OmniboxResult data={option} />
+        </li>
+      )}
       size="small"
       popupIcon={null}
       color="secondary"
       onChange={(event, value) => {
         // Can't just do <RouterLink>, otherwise keyboard selection no-go...
-        if (value) history.push(`/Explore/Language/${value.name}/${value.id}`)
+        if (value) navigate(`/Explore/Language/${value.name}/${value.id}`)
       }}
       filterOptions={(opts, { inputValue }) => {
         return matchSorter(opts, inputValue, {
           keys: ['name', 'Endonym', 'ISO 639-3', 'Glottocode'],
-          threshold: matchSorter.rankings.WORD_STARTS_WITH,
+          threshold: rankings.WORD_STARTS_WITH,
         })
       }}
       ListboxComponent={

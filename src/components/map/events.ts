@@ -4,10 +4,11 @@ import { mbStyleTileConfig } from './config'
 const { langSrcID } = mbStyleTileConfig
 
 export const onHover: Types.OnHover = (event, setTooltip, map) => {
-  const { target, features } = event
+  const { features } = event
 
   if (!map || map?.isMoving() || !features) return // no feats means errors...
 
+  const canvas = map.getCanvas()
   const topFeat = features[0]
   const topFeatSrc = topFeat?.source
 
@@ -20,7 +21,7 @@ export const onHover: Types.OnHover = (event, setTooltip, map) => {
 
   // Nothing going on, just the basemap
   if (!highlightableLayers && !cursorableLayers) {
-    target.style.cursor = 'default'
+    canvas.style.cursor = 'default'
     setTooltip(null) // close it no matter what
 
     // Clear counties and neighbs each time
@@ -33,7 +34,7 @@ export const onHover: Types.OnHover = (event, setTooltip, map) => {
     return
   }
 
-  target.style.cursor = 'pointer' // give users indication that they can click
+  canvas.style.cursor = 'pointer' // give users indication that they can click
 
   if (!highlightableLayers) return // ...but jump ship for census (for now)
 
