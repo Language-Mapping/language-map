@@ -69,7 +69,7 @@ export const AppWrap: FC = () => {
   const [mapLoaded, setMapLoaded] = useState<boolean>(false)
   const { panelOpen } = usePanelState()
   const classes = useStyles({ open: panelOpen })
-  const mapRef: React.RefObject<MapRef> = React.useRef(null)
+  const mapRef = React.useRef<MapRef>(null)
   const showWelcome = useShowWelcome()
 
   usePageTitle()

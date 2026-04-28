@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import { Theme } from '@mui/material/styles'
 import makeStyles from '@mui/styles/makeStyles'
 import createStyles from '@mui/styles/createStyles'
@@ -14,7 +14,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const SubtleText: FC<{ className?: string }> = (props) => {
+export const SubtleText: FC<PropsWithChildren<{ className?: string }>> = (
+  props
+) => {
   const { children, className = '' } = props
   const classes = useStyles()
 

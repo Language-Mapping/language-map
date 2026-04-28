@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useState, PropsWithChildren } from 'react'
 import AppBar from '@mui/material/AppBar'
 import { Tab, Tabs, Theme } from '@mui/material'
 
@@ -43,7 +43,9 @@ const a11yProps = (index: number) => ({
   'aria-controls': `search-tabpanel-${index}`,
 })
 
-const QuickFlex: FC<{ uiTextID: UItextTableID }> = (props) => {
+const QuickFlex: FC<PropsWithChildren<{ uiTextID: UItextTableID }>> = (
+  props
+) => {
   const { children, uiTextID } = props
   const classes = useStyles()
 

@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import { CssBaseline } from '@mui/material'
 import {
   Theme,
@@ -19,7 +19,7 @@ declare module '@mui/styles/defaultTheme' {
 
 // Everything the app needs except Routes. This makes it testable and reusable
 // (e.g. <MemoryRouter>)
-export const ProvidersWrap: FC = ({ children }) => {
+export const ProvidersWrap: FC<PropsWithChildren> = ({ children }) => {
   // TODO: rm if not using Dark/light switch, otherwise wire up
   // https://stackoverflow.com/a/61986784
   // https://medium.com/heuristics/react-dark-mode-switch-in-material-ui-dashboard-82fcf1cded66

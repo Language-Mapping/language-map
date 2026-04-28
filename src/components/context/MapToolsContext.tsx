@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 
 import * as Types from './types'
 
@@ -65,7 +65,7 @@ function reducer(
   }
 }
 
-export const MapToolsProvider: FC = (props) => {
+export const MapToolsProvider: FC<PropsWithChildren> = (props) => {
   const { children } = props
   const [state, dispatch] = React.useReducer(reducer, initialState)
 

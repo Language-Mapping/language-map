@@ -13,7 +13,7 @@ export type MapPanel = {
 export type PanelWrapProps = Pick<MapProps, 'mapRef'>
 
 export type SearchTabsProps = {
-  mapRef: React.RefObject<MapRef>
+  mapRef: React.RefObject<MapRef | null>
 }
 
 export type TabPanelProps = {
@@ -22,5 +22,5 @@ export type TabPanelProps = {
 }
 
 export type PanelTitleBarProps = {
-  mapRef?: React.RefObject<MapRef>
+  mapRef?: React.RefObject<MapRef | null>
 }

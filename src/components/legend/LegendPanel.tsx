@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const PanelSectionHeading: FC = (props) => {
+const PanelSectionHeading: FC<PropsWithChildren> = (props) => {
   const { children } = props
   const classes = useStyles()
 
@@ -65,7 +65,7 @@ const PanelSectionHeading: FC = (props) => {
   )
 }
 
-export const LegendPanel: FC = () => {
+export const LegendPanel: FC<PropsWithChildren> = () => {
   const { activeSymbGroupID } = useSymbAndLabelState()
   const classes = useStyles()
   const {

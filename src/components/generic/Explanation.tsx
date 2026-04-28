@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
@@ -23,7 +23,7 @@ type ExplanationProps = {
   className?: string
 }
 
-export const Explanation: FC<ExplanationProps> = (props) => {
+export const Explanation: FC<PropsWithChildren<ExplanationProps>> = (props) => {
   const { children, component = 'div', className = '' } = props
   const classes = useStyles()
 

@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import { useTheme, Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 // TODO: don't make close go back in history, or some other smooth way:
 // https://stackoverflow.com/questions/47409586
-export const SimpleDialog: FC<DialogProps> = (props) => {
+export const SimpleDialog: FC<PropsWithChildren<DialogProps>> = (props) => {
   const { onClose, children } = props
   const classes = useStyles()
   const theme = useTheme()

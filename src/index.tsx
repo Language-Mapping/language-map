@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import * as Sentry from '@sentry/react'
 import { BrowserRouter } from 'react-router-dom'
 import WebFont from 'webfontloader'
@@ -43,4 +43,8 @@ const AppWrap: FC = () => (
   </React.StrictMode>
 )
 
-ReactDOM.render(<AppWrap />, document.getElementById('root'))
+const container = document.getElementById('root')
+
+if (!container) throw new Error('No #root element to mount React into')
+
+createRoot(container).render(<AppWrap />)

@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useState, PropsWithChildren } from 'react'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
@@ -27,7 +27,9 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 // The intro section of pre-Details ("Language Profile") and Details views
-export const DetailedIntro: FC<DetailedIntroProps> = (props) => {
+export const DetailedIntro: FC<PropsWithChildren<DetailedIntroProps>> = (
+  props
+) => {
   const { data, shareNoun, isInstance, langDescripID, children } = props
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
