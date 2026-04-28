@@ -1,9 +1,9 @@
 import React, { FC } from 'react'
 import { Route } from 'react-router-dom'
-import { ReactQueryCacheProvider } from 'react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 
 import { AboutPageView, FeedbackForm } from 'components/about'
-import { wpQueryCache } from 'components/about/utils'
+import { wpQueryClient } from 'components/about/utils'
 import { routes } from 'components/config/api'
 import { Nav } from 'components/nav'
 import { wpQueryIDs } from './config'
@@ -15,7 +15,7 @@ export const InfoPanel: FC = () => {
       <Route path={routes.info} exact>
         <WaysToHelp />
       </Route>
-      <ReactQueryCacheProvider queryCache={wpQueryCache}>
+      <QueryClientProvider client={wpQueryClient}>
         <Route path={routes.about}>
           <AboutPageView noImgShadow queryKey={wpQueryIDs.about} />
         </Route>
@@ -25,7 +25,7 @@ export const InfoPanel: FC = () => {
         <Route path={routes.feedback}>
           <FeedbackForm />
         </Route>
-      </ReactQueryCacheProvider>
+      </QueryClientProvider>
       <Route path={routes.info} exact>
         <Nav />
       </Route>

@@ -1,24 +1,18 @@
 import React, { FC } from 'react'
 import * as Sentry from '@sentry/react'
-// import { ReactQueryDevtools } from 'react-query-devtools'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import Airtable from 'airtable'
 
-import { AIRTABLE_API_KEY } from 'components/config'
+import { AIRTABLE_API_KEY, reactQueryDefaults } from 'components/config'
 import { PanelContextProvider } from 'components/panels'
 import { ResultsModal } from 'components/results'
 import { AppWrap } from './AppWrap'
 import { MapToolsProvider } from './context/MapToolsContext'
 
-// // Provide the default query function to your app with defaultConfig
-// const mainQueryCache = new QueryCache({
-//   defaultConfig: {
-//     queries: {
-//       queryFn: asyncAwaitFetch,
-//       refetchOnMount: false,
-//       cacheTime: 1800000, // 1000 * 60 * 30, // ms * sec * min. Default: 5 min.
-//     },
-//   },
-// })
+const queryClient = new QueryClient({
+  defaultOptions: { queries: reactQueryDefaults },
+})
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore // great start 🙄
@@ -43,14 +37,16 @@ export const App: FC = () => {
         </>
       )}
     >
-      <MapToolsProvider>
-        <PanelContextProvider>
-          <AppWrap />
-        </PanelContextProvider>
-        {/* TODO: make Suspense/Lazy work on poor connections */}
-        <ResultsModal />
-      </MapToolsProvider>
-      {/* <ReactQueryDevtools /> */}
+      <QueryClientProvider client={queryClient}>
+        <MapToolsProvider>
+          <PanelContextProvider>
+            <AppWrap />
+          </PanelContextProvider>
+          {/* TODO: make Suspense/Lazy work on poor connections */}
+          <ResultsModal />
+        </MapToolsProvider>
+        {import.meta.env.DEV && <ReactQueryDevtools />}
+      </QueryClientProvider>
     </Sentry.ErrorBoundary>
   )
 }

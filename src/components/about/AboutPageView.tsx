@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { useQuery } from 'react-query'
+import { useQuery } from '@tanstack/react-query'
 import { Theme } from '@mui/material/styles'
 
 import createStyles from '@mui/styles/createStyles'
@@ -41,9 +41,10 @@ export const AboutPageView: FC<AboutPageProps> = (props) => {
   const { queryKey, noImgShadow } = props
   const classes = useStyles()
 
-  const { data, isLoading, error } = useQuery(queryKey, () =>
-    defaultQueryFn<WpApiPageResponse>(queryKey)
-  )
+  const { data, isLoading, error } = useQuery<WpApiPageResponse>({
+    queryKey: [queryKey],
+    queryFn: () => defaultQueryFn<WpApiPageResponse>(queryKey),
+  })
 
   if (isLoading) return <LoadingIndicator omitText />
 
