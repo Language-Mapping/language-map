@@ -92,8 +92,6 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-// WISHLIST: consider swipeable views for moving between panels:
-// https://react-swipeable-views.com/demos/demos/
 export const PanelWrap: FC<PanelWrapProps> = (props) => {
   const { mapRef } = props
   const { panelOpen } = usePanelState()
