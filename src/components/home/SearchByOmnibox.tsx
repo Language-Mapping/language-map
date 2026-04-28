@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       // Group headings
       '& .MuiListSubheader-root': {
-        borderBottom: `1px solid ${theme.palette.text.hint}`,
+        borderBottom: `1px solid ${theme.palette.text.disabled}`,
         color: theme.palette.text.primary,
         fontFamily: theme.typography.h1.fontFamily,
         fontSize: '1.25rem',
@@ -124,7 +124,11 @@ export const SearchByOmnibox: FC = (props) => {
       disabled={isLoading || problemo}
       loadingText={loadingText} // does nothing
       renderGroup={renderGroup}
-      renderOption={(option) => <OmniboxResult data={option} />}
+      renderOption={(liProps, option) => (
+        <li {...liProps} key={option.id}>
+          <OmniboxResult data={option} />
+        </li>
+      )}
       size="small"
       popupIcon={null}
       color="secondary"

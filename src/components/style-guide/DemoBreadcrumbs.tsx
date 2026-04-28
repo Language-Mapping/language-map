@@ -8,7 +8,7 @@ import { Breadcrumbs, Typography, Link } from '@mui/material'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      borderBottomColor: theme.palette.text.hint,
+      borderBottomColor: theme.palette.text.disabled,
       borderBottomStyle: 'dashed',
       borderBottomWidth: 1,
       marginTop: theme.spacing(4),

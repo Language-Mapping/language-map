@@ -93,7 +93,7 @@ const initialSubRoutes = {
 export const BottomNav: FC = (props) => {
   const { pathname } = useLocation()
   const classes = useStyles()
-  const { bottomNavActionRoot, selected, label, wrapper } = classes
+  const { bottomNavActionRoot, selected } = classes
   const { panelOpen } = usePanelState()
   const panelDispatch = usePanelDispatch()
   const [subRoutePath, setSubRoutePath] = useState(
@@ -149,7 +149,7 @@ export const BottomNav: FC = (props) => {
   // @ts-ignore
   const handleClick = (
     to: string,
-    e?: React.MouseEventHandler<HTMLAnchorElement>
+    e?: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>
   ) => {
     // Avoid route changes if we just want to open/close the panel
     if (pathname.includes(to)) {
@@ -180,10 +180,10 @@ export const BottomNav: FC = (props) => {
         value={subRouteStateKey}
         to={to}
         showLabel
-        classes={{ root: bottomNavActionRoot, selected, label, wrapper }}
+        classes={{ root: bottomNavActionRoot, selected }}
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        onClick={(e: React.MouseEventHandler<HTMLAnchorElement>) => {
+        onClick={(e) => {
           handleClick(to, e)
         }}
       />

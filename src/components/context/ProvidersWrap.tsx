@@ -1,6 +1,10 @@
 import React, { FC } from 'react'
 import { CssBaseline } from '@mui/material'
-import { ThemeProvider, Theme, StyledEngineProvider } from '@mui/styles'
+import {
+  Theme,
+  ThemeProvider,
+  StyledEngineProvider,
+} from '@mui/material/styles'
 
 import '../style.css'
 

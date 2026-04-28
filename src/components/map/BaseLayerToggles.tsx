@@ -84,7 +84,6 @@ export const BaseLayerToggles: FC = (props) => {
       >
         <ToggleButton
           value="light"
-          color="blue"
           aria-label="light baselayer"
           classes={btnClasses}
         >

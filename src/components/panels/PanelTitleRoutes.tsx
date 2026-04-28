@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       display: 'flex',
       '& > svg': {
-        color: theme.palette.text.hint,
+        color: theme.palette.text.disabled,
         marginRight: 6,
       },
     },

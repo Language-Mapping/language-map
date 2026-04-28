@@ -13,12 +13,10 @@ const useStyles = makeStyles((theme: Theme) =>
       top: '1rem',
       left: '1rem',
       zIndex: 1,
+      fontSize: '1.5rem',
       [theme.breakpoints.down('md')]: {
         display: 'none', // TODO: think it through
       },
-    },
-    label: {
-      fontSize: '1.5rem',
     },
   })
 )
@@ -41,7 +39,7 @@ export const ShowPanelBtn: FC<{ panelOpen: boolean }> = (props) => {
           aria-label="panel open"
           color="secondary"
           variant="circular"
-          classes={{ root: classes.root, label: classes.label }}
+          classes={{ root: classes.root }}
           onClick={handleClick}
         >
           <MdKeyboardArrowRight />

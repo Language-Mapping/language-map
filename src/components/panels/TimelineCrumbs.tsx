@@ -61,7 +61,7 @@ export const TimelineCrumbs: FC<TimelineCrumbsProps> = (props) => {
             <TimelineSeparator>
               <TimelineDot
                 color="secondary"
-                variant={firstOne ? 'outlined' : 'default'}
+                variant={firstOne ? 'outlined' : 'filled'}
                 className={emptyIconClass}
               >
                 {panelIcon}

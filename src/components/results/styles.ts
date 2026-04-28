@@ -33,7 +33,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: theme.palette.background.paper,
       },
       // e.g. the Filter icon at beginning of column filters
-      '& .MuiInputAdornment-root': { color: theme.palette.text.hint },
+      '& .MuiInputAdornment-root': { color: theme.palette.text.disabled },
       [`& ${headCell}`]: {
         backgroundColor: 'inherit',
         color: theme.palette.secondary.light,

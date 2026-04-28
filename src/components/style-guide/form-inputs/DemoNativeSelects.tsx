@@ -30,13 +30,13 @@ export const DemoNativeSelects: FC = () => {
     name: 'hai',
   })
 
-  const handleChange = (
-    event: React.ChangeEvent<{ name?: string; value: unknown }>
-  ) => {
-    const name = event.target.name as keyof typeof state
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleChange = (event: any) => {
+    const target = event.target as { name?: string; value: unknown }
+    const name = target.name as keyof typeof state
     setState({
       ...state,
-      [name]: event.target.value,
+      [name]: target.value,
     })
   }
 
