@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Checkbox, FormControlLabel } from '@mui/material'
+import { Checkbox } from '@mui/material'
 import { Column } from '@tanstack/react-table'
 
 import { InstanceLevelSchema } from 'components/context/types'
@@ -29,17 +29,13 @@ export const MediaColumnFilter: FC<{
   const checked = (column.getFilterValue() as boolean) || false
 
   return (
-    <FormControlLabel
-      sx={{ marginLeft: 0, '& .MuiTypography-root': { fontSize: '0.75rem' } }}
-      control={
-        <Checkbox
-          size="small"
-          color="secondary"
-          checked={checked}
-          onChange={(e) => column.setFilterValue(e.target.checked || undefined)}
-        />
-      }
-      label="Has"
+    <Checkbox
+      size="small"
+      color="secondary"
+      checked={checked}
+      title="Show only rows with media"
+      onChange={(e) => column.setFilterValue(e.target.checked || undefined)}
+      sx={{ padding: 0.5 }}
     />
   )
 }
