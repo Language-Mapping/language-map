@@ -7,7 +7,7 @@ import { GoCircleSlash } from 'react-icons/go'
 
 import { LegendSwatch } from 'components/legend'
 import { InstanceLevelSchema } from 'components/context/types'
-import { CellProps, MediaColumnCellProps } from './types'
+import { LangCellParams } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -17,9 +17,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const MediaColumnCell: FC<MediaColumnCellProps> = (props) => {
+export const MediaColumnCell: FC<{
+  params: LangCellParams
+  columnName: keyof InstanceLevelSchema
+}> = (props) => {
   const classes = useStyles()
-  const { data, columnName } = props
+  const { params, columnName } = props
+  const data = params.row
 
   return (
     <div className={classes.disabled} style={{ paddingLeft: 16 }}>
@@ -28,32 +32,32 @@ export const MediaColumnCell: FC<MediaColumnCellProps> = (props) => {
   )
 }
 
-export const GlobalSpeakers: FC<CellProps> = (props) => {
+export const GlobalSpeakers: FC<{ params: LangCellParams }> = (props) => {
   const classes = useStyles()
-  const { data } = props
+  const { params } = props
+  const data = params.row
 
   if (!data['Global Speaker Total']) return null
 
   return (
-    // Right-aligned number w/left-aligned column heading was requested
     <div className={classes.disabled} style={{ paddingRight: 16 }}>
       {data['Global Speaker Total'].toLocaleString()}
     </div>
   )
 }
 
-export const CommStatus: FC<CellProps> = (props) => {
+export const CommStatus: FC<{ params: LangCellParams }> = (props) => {
   const classes = useStyles()
-  const { data } = props
+  const { params } = props
+  const data = params.row
 
   return <div className={classes.disabled}>{data.Status}</div>
 }
 
-export const CommSize: FC<{
-  data: InstanceLevelSchema
-}> = (props) => {
+export const CommSize: FC<{ params: LangCellParams }> = (props) => {
   const theme = useTheme()
-  const { data } = props
+  const { params } = props
+  const data = params.row
   const { Size, sizeColor } = data
 
   return (
@@ -72,8 +76,9 @@ export const CommSize: FC<{
   )
 }
 
-export const WorldRegion: FC<CellProps> = (props) => {
-  const { data } = props
+export const WorldRegion: FC<{ params: LangCellParams }> = (props) => {
+  const { params } = props
+  const data = params.row
 
   return (
     <LegendSwatch

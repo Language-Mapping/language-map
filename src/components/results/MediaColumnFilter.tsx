@@ -1,49 +1,59 @@
-import React, { FC } from 'react'
+import React from 'react'
+import { GridFilterInputValueProps, GridFilterOperator } from '@mui/x-data-grid'
+import { FormControlLabel, Checkbox } from '@mui/material'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
-import { FormControlLabel, Checkbox } from '@mui/material'
 
-import * as Types from './types'
-
-const CHECK_STRING = 'http'
+const CHECK_VALUE = 'http'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       color: theme.palette.secondary.main,
-      marginLeft: 2, // shaaaaky
+      marginLeft: 2,
     },
   })
 )
 
-// CRED: (partial anyway):
-// https://github.com/mbrn/material-table/issues/671#issuecomment-651743451
-export const MediaColumnFilter: FC<Types.FilterComponentProps> = (props) => {
+const MediaFilterInput: React.FC<GridFilterInputValueProps> = (props) => {
+  const { item, applyValue } = props
   const classes = useStyles()
-  const { columnDef, onFilterChanged } = props
-  const { tableData, field } = columnDef
-  const { filterValue } = tableData
-  const checked = filterValue === CHECK_STRING
-  const inputElemName = `${field?.replace(/\s/g, '-').toLowerCase()}-filter`
+  const checked = item.value === CHECK_VALUE
 
-  // REFACTOR: useMemo maybe? This gets run for EVERY record, and it's the same
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onFilterChanged(tableData.id, e.target.checked ? CHECK_STRING : '')
+    applyValue({ ...item, value: e.target.checked ? CHECK_VALUE : '' })
   }
 
   return (
     <FormControlLabel
       classes={{ root: classes.root }}
       control={
-        <Checkbox
-          checked={checked}
-          onChange={handleChange}
-          name={inputElemName}
-          size="small"
-        />
+        <Checkbox checked={checked} onChange={handleChange} size="small" />
       }
-      label=""
+      label="Has media"
     />
   )
+}
+
+// Single operator: "has URL" — value is truthy and contains "http"
+export const mediaHasUrlOperator: GridFilterOperator = {
+  label: 'has media',
+  value: 'hasMedia',
+  getApplyFilterFn: (filterItem) => {
+    if (filterItem.value !== CHECK_VALUE) return null
+
+    return ({ value }) => {
+      if (!value) return false
+      if (typeof value === 'string') return value.includes(CHECK_VALUE)
+      if (Array.isArray(value)) {
+        return value.some(
+          (v) => typeof v === 'string' && v.includes(CHECK_VALUE)
+        )
+      }
+
+      return false
+    }
+  },
+  InputComponent: MediaFilterInput,
 }

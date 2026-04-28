@@ -1,20 +1,5 @@
 /* eslint-disable react/display-name */
 import React from 'react'
-import { Icons, Localization } from 'material-table'
-import { FaFilter } from 'react-icons/fa'
-import {
-  MdArrowUpward,
-  MdCheck,
-  MdChevronLeft,
-  MdChevronRight,
-  MdClear,
-  MdFileDownload,
-  MdFirstPage,
-  MdLastPage,
-  MdSearch,
-  MdViewColumn,
-  MdRemove,
-} from 'react-icons/md'
 
 import { Statuses } from 'components/context/types'
 
@@ -22,7 +7,7 @@ import * as Types from './types'
 import * as utils from './utils'
 import * as Cells from './Cells'
 
-import { MediaColumnFilter } from './MediaColumnFilter'
+import { mediaHasUrlOperator } from './MediaColumnFilter'
 import { LocalColumnTitle } from './LocalColumnTitle'
 
 const COMM_STATUS_LOOKUP = {
@@ -35,14 +20,12 @@ const COMM_STATUS_LOOKUP = {
   [key in Statuses]: Statuses
 }
 
-// TODO: pass this as fn arg instead of importing in export util
 export const tableExportMeta = {
   pageTitle: 'Languages of New York City',
   filename: 'nyc-language-data',
   fullDatasetURL: 'https://airtable.com/shrqQo5FJHvhKtffs',
 }
 
-// TODO: Enum??
 const SIZE_MAP = {
   Smallest: 1,
   Small: 2,
@@ -59,276 +42,194 @@ const COMM_SIZES = {
   Largest: 'Largest',
 }
 
-export const localization: Localization = {
-  body: {
-    emptyDataSourceMessage:
-      'No communities found. Try fewer criteria or click the "Clear filters" button to reset the table.',
-  },
-  header: {
-    actions: '',
-  },
-  toolbar: {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore // in newer version of material-table, which has laggy bug...
-    exportCSVName: 'Download as CSV',
-    exportPDFName: 'Download as PDF',
-    searchPlaceholder: 'Search...',
-  },
-}
-
-// Table options for the <MaterialTable> component
-export const options = {
-  columnsButton: true,
-  doubleHorizontalScroll: false,
-  draggable: true, // kinda clunky
-  exportAllData: true, // misleading, it actually exports all FILTERED data
-  exportButton: true, // enable it in the toolbar
-  filtering: true,
-  grouping: false, // kinda clunky
-  isLoading: true,
-  maxBodyHeight: '100%',
-  minBodyHeight: '100%',
-  pageSize: 20,
-  pageSizeOptions: [10, 20, 50],
-  searchFieldAlignment: 'left',
-  showTitle: false,
-  thirdSortClick: false,
-  // TODO: rm unused, or keep for reference
-  // actionsCellStyle: {}, // semi-useful but ended up with `!important` anyway
-  // actionsColumnIndex: 0,
-  // fixedColumns: { left: 2, right: 0 }, // awful in so many ways
-  // headerStyle: { position: 'sticky', top: 0 },
-  // filterCellStyle: { backgroundColor: 'yellow' }, // works
-  // filterRowStyle: { backgroundColor: 'red' }, // works, but sticky 2 tricky!
-  // padding: 'dense', // dense leads to choppier inconsistent row height
-  // rowStyle: { backgroundColor: 'turquoise' }, // works
-  // searchFieldVariant: 'outlined', // meh, too big
-  // searchFieldStyle: {}, // the actual text inside search box
-  // tableLayout: 'fixed', // can set widths, but `fixed` = for bad Actions col
-} as Types.TableOptions
-
-export const icons = {
-  Check: MdCheck,
-  DetailPanel: MdChevronRight,
-  Export: MdFileDownload,
-  Filter: FaFilter,
-  FirstPage: MdFirstPage,
-  LastPage: MdLastPage,
-  NextPage: MdChevronRight,
-  PreviousPage: MdChevronLeft,
-  ResetSearch: MdClear,
-  Search: MdSearch,
-  SortArrow: MdArrowUpward,
-  ThirdStateCheck: MdRemove,
-  ViewColumn: MdViewColumn,
-} as Icons
-
 const commonColProps = {
-  editable: 'never',
-  searchable: true,
-  // cellStyle: {},
+  editable: false,
+  filterable: true,
+  sortable: true,
 }
 
-const hiddenCols = [
+const hiddenCols: Types.LangColumn[] = [
   {
+    headerName: 'Glottocode',
     title: 'Glottocode',
     field: 'Glottocode',
-    ...commonColProps,
+    flex: 1,
+    minWidth: 120,
     hidden: true,
+    ...commonColProps,
   },
   {
+    headerName: 'ISO 639-3',
     title: 'ISO 639-3',
     field: 'ISO 639-3',
-    ...commonColProps,
+    flex: 1,
+    minWidth: 120,
     hidden: true,
+    ...commonColProps,
   },
   {
+    headerName: 'Additional Neighborhoods',
     title: 'Additional Neighborhoods',
     field: 'Additional Neighborhoods',
-    ...commonColProps,
+    flex: 1,
+    minWidth: 200,
     hidden: true,
+    ...commonColProps,
   },
 ]
 
-// NOTE: did not want to attempt to deal with any of the multi-option cols like
-// Size or Status in terms of filter-col-via-cell-click behavior, or the
-// boolean-ish Video column. Wishlist...
-
-// First and second column values are just buttons
-const stickyColStyle = {
-  position: 'sticky',
-  zIndex: 250,
-  backgroundColor: '#424242', // "paper" BG. Can't access theme from here 😞
-}
-
-const firstColStyle = {
-  ...stickyColStyle,
-  left: 0,
-}
-
-const secondColStyle = {
-  ...stickyColStyle,
-  left: 42,
-  paddingLeft: 0,
-  boxShadow: '5px 0px 8px 0px rgba(0,0,0,0.08)',
-}
-
-// "View in map" and details modal can't use `hidden`, but without a title they
-// show up as blanks in the column toggle/reorder menu. Handy workaround.
-const hidden = {
-  color: 'transparent',
-  fontSize: 0,
-}
-
-// 25px : 200char = decent ratio
-export const columns = [
+export const columns: Types.LangColumn[] = [
   {
+    headerName: '',
     title: 'View in map',
-    field: 'id',
-    ...commonColProps,
-    filtering: false,
+    field: 'actions-id',
+    width: 56,
+    sortable: false,
+    filterable: false,
     export: false,
-    render: utils.renderIDcolumn,
-    cellStyle: firstColStyle,
-    headerStyle: { ...firstColStyle, ...hidden },
-    filterCellStyle: firstColStyle,
+    renderCell: utils.renderIDcolumn,
   },
   {
-    // It's not actully county, just a sneaky way to allow county/borough search
-    // AND a "view details modal" icon. Two birds, one stone.
+    headerName: '',
     title: 'County',
-    field: 'County',
-    ...commonColProps,
-    sorting: false,
-    filtering: false,
+    field: 'actions-county',
+    width: 56,
+    sortable: false,
+    filterable: false,
     export: false,
-    render: utils.renderDescripCol,
-    cellStyle: secondColStyle,
-    headerStyle: { ...firstColStyle, ...hidden },
-    filterCellStyle: secondColStyle,
+    renderCell: utils.renderDescripCol,
   },
   {
-    // Average: 9.3, Longest: 31
+    headerName: 'Language',
     title: 'Language',
     field: 'Language',
+    flex: 1,
+    minWidth: 140,
     ...commonColProps,
-    defaultSort: 'asc',
-    cellStyle: { paddingLeft: '1.25rem' }, // give room to 2nd col shadow
-    headerStyle: { paddingLeft: '1.25rem' }, // give room to 2nd col shadow
-    filterCellStyle: { paddingLeft: '1.25rem' }, // give room to 2nd col shadow
   },
   {
-    // Average: 8.5, Longest: 26, Longest full: Anashinaabemowin
+    headerName: 'Endonym',
     title: 'Endonym',
     field: 'Endonym',
+    flex: 1,
+    minWidth: 140,
     ...commonColProps,
-    render: utils.renderEndoColumn,
+    renderCell: utils.renderEndoColumn,
   },
   {
-    // Average: 13, Longest: 25 (thanks AUS & NZ...)
+    headerName: 'World Region',
     title: 'World Region',
     field: 'World Region',
+    flex: 1,
+    minWidth: 160,
     ...commonColProps,
-    // TODO: instead of open-search filters, custom `filterComponent` with this:
-    // https://material-ui.com/components/autocomplete/#checkboxes
-    render: (data) => <Cells.WorldRegion data={data} />,
-    headerStyle: {
-      paddingRight: 25, // enough for `Southeastern Asia` cells to not wrap
-      whiteSpace: 'nowrap',
-    },
+    renderCell: (params) => <Cells.WorldRegion params={params} />,
   },
   {
-    // Average: 8.5, Longest: 35 (w/o big Congos: Average: 8, Longest: 24)
-    // ...plus emoji flag and margin
-    // TODO: for Country selection:
-    // https://material-ui.com/components/autocomplete/#country-select
+    headerName: 'Country',
     title: 'Country',
     field: 'Country',
+    flex: 1,
+    minWidth: 180,
     ...commonColProps,
-    render: utils.renderCountryColumn,
-    headerStyle: {
-      paddingRight: 30, // enough for `South Africa` cells to not wrap
-    },
+    renderCell: utils.renderCountryColumn,
+    valueGetter: (params) =>
+      Array.isArray(params.row.Country) ? params.row.Country.join(', ') : '',
   },
   {
-    // Longest: 20
-    title: 'Global Speakers', // the only abbrev so far
+    headerName: 'Global Speakers',
+    title: 'Global Speakers',
     field: 'Global Speaker Total',
-    ...commonColProps,
-    // customSort: utils.sortNeighbs, // TODO: blanks last
-    render: (data) => <Cells.GlobalSpeakers data={data} />,
-    searchable: false,
-    filtering: false,
-    disableClick: true,
-    type: 'numeric',
-    // Right-aligned number w/left-aligned column heading was requested
-    headerStyle: {
-      whiteSpace: 'nowrap',
-      paddingRight: 0,
-      flexDirection: 'row',
-    },
+    width: 140,
+    type: 'number',
+    sortable: true,
+    filterable: false,
+    renderCell: (params) => <Cells.GlobalSpeakers params={params} />,
   },
   {
-    // Average: 10, Longest: 23 but preserve hyphenated Athabaskan-Eyak-Tlingit
+    headerName: 'Language Family',
     title: 'Language Family',
     field: 'Language Family',
+    flex: 1,
+    minWidth: 160,
     ...commonColProps,
-    headerStyle: { whiteSpace: 'nowrap' },
   },
   {
+    headerName: 'Video',
     title: 'Video',
     field: 'Video',
-    ...commonColProps,
+    width: 90,
+    sortable: false,
+    filterable: true,
+    filterOperators: [mediaHasUrlOperator],
     export: false,
-    filterComponent: MediaColumnFilter,
-    headerStyle: { whiteSpace: 'nowrap' },
-    render: (data) => <Cells.MediaColumnCell data={data} columnName="Video" />,
-    searchable: false,
-    disableClick: true,
+    renderCell: (params) => (
+      <Cells.MediaColumnCell params={params} columnName="Video" />
+    ),
   },
   {
+    headerName: 'Audio',
     title: 'Audio',
     field: 'Audio',
-    ...commonColProps,
+    width: 90,
+    sortable: false,
+    filterable: true,
+    filterOperators: [mediaHasUrlOperator],
     export: false,
-    filterComponent: MediaColumnFilter,
-    headerStyle: { whiteSpace: 'nowrap' },
-    render: (data) => <Cells.MediaColumnCell data={data} columnName="Audio" />,
-    searchable: false,
-    disableClick: true,
+    renderCell: (params) => (
+      <Cells.MediaColumnCell params={params} columnName="Audio" />
+    ),
   },
   {
-    // Average: 12, Longest: 26
+    headerName: 'Location',
     title: <LocalColumnTitle text="Location" />,
     field: 'Primary Location',
+    flex: 1,
+    minWidth: 160,
     ...commonColProps,
+    renderHeader: () => <LocalColumnTitle text="Location" />,
   },
   {
-    // Longest: 14
+    headerName: 'Size',
     title: <LocalColumnTitle text="Size" />,
     field: 'Size',
-    ...commonColProps,
-    align: 'left',
+    width: 130,
+    type: 'singleSelect',
+    valueOptions: Object.values(COMM_SIZES),
     lookup: COMM_SIZES,
-    customSort: (a, b) => {
-      if (SIZE_MAP[a.Size] === SIZE_MAP[b.Size]) return 0
-      if (SIZE_MAP[a.Size] > SIZE_MAP[b.Size]) return 1
+    sortable: true,
+    filterable: true,
+    sortComparator: (a, b) => {
+      const va = SIZE_MAP[a as keyof typeof SIZE_MAP] || 0
+      const vb = SIZE_MAP[b as keyof typeof SIZE_MAP] || 0
 
-      return -1
+      if (va === vb) return 0
+
+      return va > vb ? 1 : -1
     },
-    render: (data) => <Cells.CommSize data={data} />,
-    searchable: false,
-    headerStyle: {
-      paddingRight: 25, // "Smallest" is ironically the longest
-    },
+    renderCell: (params) => <Cells.CommSize params={params} />,
+    renderHeader: () => <LocalColumnTitle text="Size" />,
   },
   {
+    headerName: 'Status',
     title: <LocalColumnTitle text="Status" />,
     field: 'Status',
-    ...commonColProps,
-    searchable: false,
-    render: (data) => <Cells.CommStatus data={data} />,
+    width: 140,
+    type: 'singleSelect',
+    valueOptions: Object.values(COMM_STATUS_LOOKUP),
     lookup: COMM_STATUS_LOOKUP,
+    sortable: true,
+    filterable: true,
+    renderCell: (params) => <Cells.CommStatus params={params} />,
+    renderHeader: () => <LocalColumnTitle text="Status" />,
   },
   ...hiddenCols,
-] as Types.ColumnsConfig[]
+]
+
+export const initialColumnVisibility = columns.reduce<{
+  [key: string]: boolean
+}>((acc, col) => {
+  if (col.hidden) acc[col.field] = false
+
+  return acc
+}, {})

@@ -3,8 +3,15 @@ import { useHistory } from 'react-router-dom'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
-import { MTableToolbar } from 'material-table'
 import { Button } from '@mui/material'
+import {
+  GridToolbarContainer,
+  GridToolbarQuickFilter,
+  gridFilteredSortedRowEntriesSelector,
+  useGridApiContext,
+} from '@mui/x-data-grid'
+
+import { InstanceLevelSchema } from 'components/context/types'
 import { BiMapPin } from 'react-icons/bi'
 import { FaMap } from 'react-icons/fa'
 import { RiFilterOffFill } from 'react-icons/ri'
@@ -17,19 +24,15 @@ import { ResultsTitle } from './ResultsTitle'
 import * as Types from './types'
 import { whittleLangFeats } from './utils'
 
-const TOOLBAR_ID = 'custom-toolbar'
-
-// TODO: get this monster into styles file
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     resultsToolbarRoot: {
       padding: '0.5em 0.75em',
-      // outline: 'solid blue 5px',
       borderBottom: `solid ${theme.palette.divider} 2px`,
       position: 'sticky',
       top: 0,
       backgroundColor: theme.palette.background.paper,
-      zIndex: 11, // keeps it above header row
+      zIndex: 11,
       display: 'grid',
       alignItems: 'center',
       gridColumnGap: '0.75em',
@@ -39,8 +42,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         "local local"`,
       gridTemplateColumns: 'auto 1fr',
       gridTemplateRows: 'auto auto auto',
-      // marginBottom: '0.25em', // STUPID SPACER SO RIDICULOUS
-      '& .MuiIconButton-root': { padding: 4 }, // huuuge by default
+      '& .MuiIconButton-root': { padding: 4 },
       [theme.breakpoints.up('sm')]: {
         gridTemplateColumns: 'auto auto',
         justifyContent: 'center',
@@ -52,28 +54,17 @@ export const useStyles = makeStyles((theme: Theme) =>
         gridTemplateRows: 'auto',
         justifyContent: 'flex-start',
         padding: '1em 1em 0',
-        height: 100, // ugghhhhh
+        height: 100,
       },
     },
-    // TODO: move the stupid searchbar onto its own line
     searchAndActions: {
       display: 'flex',
       gridArea: 'searchAndActions',
-      '& .MuiToolbar-root': { paddingLeft: 0 },
-      // Can't seem to access these any other way except maybe overriding the
-      // entire component, and definitely not via `MTable` classes since they
-      // are mutated in the build.
-      '& .MuiToolbar-root > :nth-child(2)': { display: 'none' }, // spacer
-      '& .MuiToolbar-root > :last-child': { flexShrink: 0 }, // actions wrap
-      [theme.breakpoints.only('xs')]: {
-        '& .MuiToolbar-root': { paddingRight: 0 },
-        '& .MuiInputBase-root.MuiInput-root': { maxWidth: 135 }, // so FRAGILE
-      },
+      alignItems: 'center',
       [theme.breakpoints.up('md')]: {
         justifyContent: 'flex-end',
         marginRight: 8,
       },
-      // outline: 'solid red 1px',
     },
     localIndicator: {
       display: 'flex',
@@ -88,7 +79,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       justifyContent: 'center',
       marginTop: '0.4em',
       textAlign: 'center',
-      // outline: 'solid gold 1px',
       '& svg': { fontSize: '1.2em' },
       [theme.breakpoints.up('md')]: { marginTop: 0, justifySelf: 'flex-end' },
     },
@@ -99,7 +89,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       gridColumnGap: '0.5rem',
       gridTemplateColumns: 'auto auto auto',
       justifyContent: 'center',
-      // outline: 'solid green 1px',
       [theme.breakpoints.only('xs')]: {
         gridColumnGap: '0.25rem',
       },
@@ -108,58 +97,34 @@ export const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
-  const { tableRef, clearBtnEnabled, setClearBtnEnabled, scrollToTop } = props
+  const { clearBtnEnabled, setClearBtnEnabled, scrollToTop } = props
   const { state, dispatch } = useContext(GlobalContext)
   const classes = useStyles()
   const history = useHistory()
-  const noResults = tableRef.current && !tableRef.current.state.data.length
+  const apiRef = useGridApiContext()
 
-  // CRED: 🎉
-  // https://github.com/mbrn/material-table/issues/1132#issuecomment-549591832
+  const rowCount = apiRef.current.getRowsCount()
+  const noResults = rowCount === 0
+
   function clearFiltersBtnClick(physicalClick?: boolean): void {
-    if (!tableRef || !tableRef.current) return
-
-    const self = tableRef.current
-    const { dataManager } = self
-    const { columns } = dataManager.getRenderState()
-
-    // CRED: for TS: https://stackoverflow.com/a/46204035/1048518
-    const shame: HTMLElement = document.querySelector(
-      `#${TOOLBAR_ID} button[aria-label="Clear Search"]`
-    ) as HTMLElement
-
-    if (shame) shame.click()
-    // else { // TODO: sentry: element not found... }
-
-    const cleared = columns.map((column: Types.ColumnWithTableData) => ({
-      ...column,
-      tableData: { ...column.tableData, filterValue: undefined },
-    }))
-
-    columns.forEach((col: Types.ColumnWithTableData, i: number) => {
-      dataManager.changeFilterValue(i, undefined)
-    })
-
-    self.setState({ ...dataManager.getRenderState(), columns: cleared })
-
+    apiRef.current.setFilterModel({ items: [] })
+    apiRef.current.setQuickFilterValues([])
     setClearBtnEnabled(false)
     scrollToTop()
 
     if (!physicalClick) {
-      dispatch({
-        type: 'CLEAR_FILTERS',
-        payload: 0,
-      })
-
+      dispatch({ type: 'CLEAR_FILTERS', payload: 0 })
+      const visibleRows = gridFilteredSortedRowEntriesSelector(apiRef).map(
+        (entry) => entry.model as InstanceLevelSchema
+      )
       dispatch({
         type: 'SET_LANG_LAYER_FEATURES',
-        payload: whittleLangFeats(dataManager.data),
+        payload: whittleLangFeats(visibleRows),
       })
     }
   }
 
   useEffect((): void => {
-    // TODO: fix, obviously:
     if (state.clearFilters === 555) {
       clearFiltersBtnClick()
     }
@@ -167,32 +132,33 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
   }, [state.clearFilters])
 
   function mapFilterBtnClick(): void {
-    const currentData = tableRef?.current.state.data
-
-    if (!currentData) return
+    const visibleRows = gridFilteredSortedRowEntriesSelector(apiRef).map(
+      (entry) => entry.model as InstanceLevelSchema
+    )
 
     dispatch({
       type: 'SET_LANG_LAYER_FEATURES',
-      payload: whittleLangFeats(currentData),
+      payload: whittleLangFeats(visibleRows),
     })
 
-    // Let the map know it's okay to re-render (as opposed to on first load)
     dispatch({ type: 'SET_FILTER_HAS_RUN' })
 
-    const gangsAllHere = state.langFeatsLenCache === currentData.length
+    const gangsAllHere = state.langFeatsLenCache === visibleRows.length
 
     dispatch({ type: 'CLEAR_FILTERS', payload: gangsAllHere ? 0 : 1 })
 
-    history.push(routes.home) // TODO: ideally, go back
+    history.push(routes.home)
   }
 
   return (
-    <div className={classes.resultsToolbarRoot}>
+    <GridToolbarContainer className={classes.resultsToolbarRoot}>
       <ResultsTitle />
-      <div className={classes.searchAndActions} id={TOOLBAR_ID}>
-        <MTableToolbar {...props} />
-        {/* TODO: restore */}
-        {/* Showing {langFeatures.length} of {langFeatures.length} communities. */}
+      <div className={classes.searchAndActions}>
+        <GridToolbarQuickFilter
+          variant="standard"
+          placeholder="Search…"
+          onChange={() => setClearBtnEnabled(true)}
+        />
       </div>
       <div className={classes.toolbarBtns}>
         <Button
@@ -222,6 +188,6 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
       <small className={`${classes.localIndicator} ${classes.localCommLegend}`}>
         <BiMapPin /> Local community data
       </small>
-    </div>
+    </GridToolbarContainer>
   )
 }

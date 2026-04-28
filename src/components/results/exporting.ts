@@ -3,7 +3,9 @@ import jsPDF from 'jspdf'
 import autoTable, { RowInput, UserOptions } from 'jspdf-autotable'
 import { InstanceLevelSchema } from 'components/context/types'
 import * as config from './config'
-import { ColumnList } from './types'
+import { ColumnList, LangColumn } from './types'
+
+type ExportableColumn = LangColumn & { field: keyof InstanceLevelSchema }
 
 // CRED: https://stackoverflow.com/a/9039885/1048518
 function iOS(): boolean {
@@ -21,10 +23,10 @@ function iOS(): boolean {
   )
 }
 
-const getColumns = (columnList: ColumnList) =>
+const getColumns = (columnList: ColumnList): ExportableColumn[] =>
   columnList.filter(
     (columnDef) => !columnDef.hidden && columnDef.export !== false
-  )
+  ) as ExportableColumn[]
 
 // CRED: https://stackoverflow.com/a/19828943/1048518
 // CRED: https://stackoverflow.com/a/36449773/1048518
@@ -36,7 +38,10 @@ const excludeUTFtext = (input: string): string => {
   return !numMatchingChars || numMatchingChars === input.length ? input : ''
 }
 
-const getData = (columns: ColumnList, initialData: InstanceLevelSchema[]) =>
+const getData = (
+  columns: ExportableColumn[],
+  initialData: InstanceLevelSchema[]
+) =>
   initialData.map((rowData) =>
     columns.map(({ field }) => {
       const value = rowData[field] as number | string
@@ -133,7 +138,7 @@ export const exportPdf = (
         halign: 'left',
       },
       // Runs on each page, e.g. to show page numbers in footer
-      didDrawPage(currentPageData) {
+      didDrawPage(currentPageData: { pageNumber: number }) {
         const str = `Page ${currentPageData.pageNumber} of ${totalPagesExp}`
         const { pageSize } = doc.internal
         const pageHeight = pageSize.getHeight()

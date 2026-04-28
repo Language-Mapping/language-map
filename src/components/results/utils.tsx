@@ -6,12 +6,15 @@ import { FaMapMarkedAlt } from 'react-icons/fa'
 import { InstanceLevelSchema, InternalWithLang } from 'components/context/types'
 import { CountryListItemWithFlag } from './CountryListItemWithFlag'
 import { EndoImageModal } from './EndoImageModal'
+import { LangCellParams } from './types'
 
 export const FILTER_CLASS = 'for-filter'
 
 export function renderCountryColumn(
-  data: InstanceLevelSchema
+  params: LangCellParams
 ): string | React.ReactNode {
+  const data = params.row
+
   return (
     <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
       {data.Country.map((countryWithFlag, i) => (
@@ -27,8 +30,10 @@ export function renderCountryColumn(
 }
 
 export function renderEndoColumn(
-  data: InstanceLevelSchema
+  params: LangCellParams
 ): string | React.ReactNode {
+  const data = params.row
+
   if (!data['Font Image Alt']) {
     return data.Endonym
   }
@@ -41,7 +46,6 @@ export function renderEndoColumn(
   )
 }
 
-// This is a misleading name since it's now "County", but it does the same thing
 export function renderDescripCol(): string | React.ReactNode {
   return (
     <IconButton title="View full-screen details" size="small" color="secondary">
@@ -64,6 +68,5 @@ export const whittleLangFeats = (
   data.map((row) => {
     const { id, Latitude, Longitude, Language } = row
 
-    // Language needed for "No community selected" due to new routes setup
     return { id, Latitude, Longitude, Language }
   })
