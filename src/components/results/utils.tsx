@@ -15,13 +15,15 @@ export function renderCountryColumn(
 ): string | React.ReactNode {
   const data = info.row.original
 
+  if (!Array.isArray(data.Country) || data.Country.length === 0) return ''
+
   return (
     <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
       {data.Country.map((countryWithFlag, i) => (
         <CountryListItemWithFlag
           key={data.Country[i]}
           name={data.Country[i]}
-          url={data.countryImg[i].url}
+          url={data.countryImg?.[i]?.url ?? ''}
           filterClassName={FILTER_CLASS}
         />
       ))}
@@ -35,7 +37,7 @@ export function renderEndoColumn(
   const data = info.row.original
 
   if (!data['Font Image Alt']) {
-    return data.Endonym
+    return data.Endonym ?? ''
   }
 
   return (

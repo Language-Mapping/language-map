@@ -68,7 +68,7 @@ export const columns: Types.ColumnList = [
   }),
   ch.accessor('Language', {
     header: 'Language',
-    cell: (info) => info.getValue(),
+    cell: (info) => (info.getValue() as React.ReactNode) ?? '',
     meta: { exportTitle: 'Language' },
   }),
   ch.accessor('Endonym', {
@@ -99,7 +99,7 @@ export const columns: Types.ColumnList = [
   }),
   ch.accessor('Language Family', {
     header: 'Language Family',
-    cell: (info) => info.getValue(),
+    cell: (info) => (info.getValue() as React.ReactNode) ?? '',
     meta: { exportTitle: 'Language Family' },
   }),
   ch.accessor('Video', {
@@ -118,7 +118,7 @@ export const columns: Types.ColumnList = [
   }),
   ch.accessor('Primary Location', {
     header: () => <LocalColumnTitle text="Location" />,
-    cell: (info) => info.getValue(),
+    cell: (info) => (info.getValue() as React.ReactNode) ?? '',
     meta: { exportTitle: 'Location' },
   }),
   ch.accessor('Size', {
@@ -141,17 +141,17 @@ export const columns: Types.ColumnList = [
   }),
   ch.accessor('Glottocode', {
     header: 'Glottocode',
-    cell: (info) => info.getValue(),
+    cell: (info) => (info.getValue() as React.ReactNode) ?? '',
     meta: { exportTitle: 'Glottocode' },
   }),
   ch.accessor('ISO 639-3', {
     header: 'ISO 639-3',
-    cell: (info) => info.getValue(),
+    cell: (info) => (info.getValue() as React.ReactNode) ?? '',
     meta: { exportTitle: 'ISO 639-3' },
   }),
   ch.accessor('Additional Neighborhoods', {
     header: 'Additional Neighborhoods',
-    cell: (info) => info.getValue(),
+    cell: (info) => (info.getValue() as React.ReactNode) ?? '',
     meta: { exportTitle: 'Additional Neighborhoods' },
   }),
 ]
