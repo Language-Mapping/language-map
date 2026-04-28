@@ -178,6 +178,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
         >
           View in map
         </Button>
+        {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
         <ColumnVisibilityMenu toggles={columnToggles} />
         <Button
           title="Clear table filters"

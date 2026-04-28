@@ -253,11 +253,11 @@ export const Map: FC<PropsWithChildren<Types.MapProps>> = (props) => {
           mapStyle={mapStyle}
           ref={mapRef}
           interactiveLayerIds={[]}
-          onClick={(event) => onClick((event as unknown) as Types.MapEvent)}
+          onClick={(event) => onClick(event as unknown as Types.MapEvent)}
           onMouseMove={(event) => {
             if (isMobile) return
 
-            onHover((event as unknown) as Types.MapEvent, setTooltip, map)
+            onHover(event as unknown as Types.MapEvent, setTooltip, map)
           }}
           onLoad={(mapLoadEvent) => onLoad(mapLoadEvent)}
         >

@@ -63,9 +63,7 @@ export type FinalPrep = (
   sortByField?: 'name' | keyof AtSymbFields
 ) => AtSymbFields[]
 
-export type UseLegendConfig = (
-  tableName: string
-) => {
+export type UseLegendConfig = (tableName: string) => {
   data: LegendProps[]
   isLoading: boolean
   error?: unknown

@@ -59,9 +59,10 @@ export const useStyles = makeStyles((theme: Theme) =>
       '& .MuiTablePagination-select': { paddingLeft: 0 },
       // All icons in and out of table. Icons inherit color and size from it.
       // ...otherwise it overrides the `disabled` Action buttons
-      '& table .MuiIconButton-root:not([disabled]), .MuiToolbar-root .MuiIconButton-root:not([disabled])': {
-        color: theme.palette.secondary.light,
-      },
+      '& table .MuiIconButton-root:not([disabled]), .MuiToolbar-root .MuiIconButton-root:not([disabled])':
+        {
+          color: theme.palette.secondary.light,
+        },
       '& .MuiTableSortLabel-icon': {
         flexShrink: 0, // prevents tiny arrows on columns w/wrapped headings
       },

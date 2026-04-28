@@ -42,10 +42,8 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const LegendBar: FC<LegendBarProps> = (props) => {
-  const {
-    lowColor = 'rgb(237, 248, 233)',
-    highColor = 'rgb(0, 109, 44)',
-  } = props
+  const { lowColor = 'rgb(237, 248, 233)', highColor = 'rgb(0, 109, 44)' } =
+    props
   const classes = useStyles()
   const backgroundImage = `linear-gradient(
     to right,

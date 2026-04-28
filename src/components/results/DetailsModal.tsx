@@ -9,13 +9,8 @@ import { Details, useDetails } from 'components/details'
 export const DetailsModal: FC = () => {
   const navigate = useNavigate()
   const loc = useLocation()
-  const {
-    isLoading,
-    error,
-    data,
-    instanceDescripID,
-    langDescripID,
-  } = useDetails()
+  const { isLoading, error, data, instanceDescripID, langDescripID } =
+    useDetails()
 
   if (isLoading || error || !data) return null
 
