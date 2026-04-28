@@ -1,7 +1,9 @@
 import React, { FC } from 'react'
 import { Marker } from 'react-map-gl'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Typography } from '@mui/material'
 
 import * as MapTypes from './types'
 
@@ -31,7 +33,7 @@ export const GeocodeMarker: FC<MapTypes.GeocodeMarkerProps> = (props) => {
   const classes = useStyles({ subtle })
 
   return (
-    <Marker {...{ latitude, longitude }} offsetTop={8}>
+    <Marker latitude={latitude} longitude={longitude} offset={[0, 8]}>
       <Typography className={classes.markerLabel}>{text}</Typography>
     </Marker>
   )

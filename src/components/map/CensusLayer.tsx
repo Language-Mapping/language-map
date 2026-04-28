@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Route } from 'react-router-dom'
+import { useMatch } from 'react-router-dom'
 import { Source, Layer } from 'react-map-gl'
 
 import { CensusLayerProps } from './types'
@@ -16,6 +16,7 @@ export const CensusLayer: FC<CensusLayerProps> = (props) => {
   const layerConfig = censusLayersConfig[configKey]
   const { sourceID, sourceLayer } = layerConfig
   const { url, linePaint } = layerConfig
+  const isSelected = useMatch(`/Census/${sourceID}/:field/:id`) !== null
 
   const { fillPaint, visible, error, isLoading } = useCensusSymb(
     sourceLayer,
@@ -61,9 +62,9 @@ export const CensusLayer: FC<CensusLayerProps> = (props) => {
         paint={linePaint}
         layout={{ visibility }}
       />
-      <Route path={`/Census/${sourceID}/:field/:id`} exact>
+      {isSelected && (
         <SelectedPolygon {...props} selLineColor="hsl(133, 100%, 47%)" />
-      </Route>
+      )}
     </Source>
   )
 }

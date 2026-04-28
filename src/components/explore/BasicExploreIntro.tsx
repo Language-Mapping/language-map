@@ -1,7 +1,9 @@
 import React, { FC } from 'react'
-import { Route } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Grow, Typography } from '@material-ui/core'
+import { useMatch } from 'react-router-dom'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Grow, Typography } from '@mui/material'
 
 import { FiltersWarning } from 'components/home/FiltersWarning'
 import { Explanation } from 'components/generic'
@@ -47,6 +49,7 @@ export const BasicExploreIntro: FC<BasicExploreIntroProps> = (props) => {
   const { title, icon, subtitle, expand, noAppear } = props
   const { subSubtitle, extree, introParagraph } = props
   const classes = useStyles()
+  const isExplore = useMatch(`${routes.explore}/*`) !== null
 
   return (
     <Grow
@@ -74,9 +77,7 @@ export const BasicExploreIntro: FC<BasicExploreIntroProps> = (props) => {
           )}
           {extree}
         </Typography>
-        <Route path={routes.explore}>
-          <FiltersWarning />
-        </Route>
+        {isExplore && <FiltersWarning />}
       </div>
     </Grow>
   )

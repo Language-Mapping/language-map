@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react'
 import { Map as MbMap, FillPaint, Layer, setRTLTextPlugin } from 'mapbox-gl'
-import { WebMercatorViewport } from 'react-map-gl'
+import WebMercatorViewport from '@math.gl/web-mercator'
 
 import * as Types from './types'
 import * as config from './config' // TODO: pass this as fn args, don't import

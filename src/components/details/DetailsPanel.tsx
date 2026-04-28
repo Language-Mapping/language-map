@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
-import { Switch, Route } from 'react-router-dom'
-import { Typography } from '@material-ui/core'
+import { Routes, Route } from 'react-router-dom'
+import { Typography } from '@mui/material'
 
 import { RecordDescription } from 'components/results'
 import { DetailedIntro, LangOrEndoIntro } from 'components/details'
@@ -13,15 +13,10 @@ import { useDetails } from './hooks'
 // Just the routes so that the hook with `useParams` will work
 export const DetailsPanel: FC = () => {
   return (
-    <Switch>
-      <Route path={routes.details} exact>
-        <DetailsWrap />
-      </Route>
-      {/* Don't need path, assumes parent will be in a Route already */}
-      <Route>
-        <NoFeatSel />
-      </Route>
-    </Switch>
+    <Routes>
+      <Route path={routes.details} element={<DetailsWrap />} />
+      <Route path="*" element={<NoFeatSel />} />
+    </Routes>
   )
 }
 

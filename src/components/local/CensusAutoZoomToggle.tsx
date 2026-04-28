@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Switch } from '@material-ui/core'
+import { Switch } from '@mui/material'
 
 import { CustomFormControl } from 'components/legend'
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'

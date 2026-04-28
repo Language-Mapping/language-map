@@ -1,6 +1,8 @@
-import React, { FC, useState } from 'react'
-import { useLocation, Route, Switch } from 'react-router-dom'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import React, { FC, useState, PropsWithChildren } from 'react'
+import { useLocation, useMatch } from 'react-router-dom'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
 import {
   Popover,
   AppBar,
@@ -8,7 +10,7 @@ import {
   IconButton,
   Toolbar,
   Tooltip,
-} from '@material-ui/core'
+} from '@mui/material'
 import { HiOutlineSearch } from 'react-icons/hi'
 
 import { PanelCloseBtn } from 'components/panels'
@@ -27,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
       top: 0,
       width: '100%',
       boxShadow: theme.shadows[12],
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         boxShadow:
           '0px 11px 10px 0px rgb(0 0 0 / 18%), 0px 24px 38px 3px rgb(0 0 0 / 12%), 0px 9px 46px 8px rgb(0 0 0 / 10%)',
       },
@@ -56,7 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const ToggleSearchMenuBtn: FC = (props) => {
+const ToggleSearchMenuBtn: FC<PropsWithChildren> = (props) => {
   const { children } = props
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const open = Boolean(anchorEl)
@@ -103,26 +105,26 @@ export const PanelTitleBar: FC<PanelTitleBarProps> = (props) => {
   // Lil' gross, but use Level2 route name first, otherwise Level1
   const panelTitle = pathname.split('/')[2] || pathname.split('/')[1]
 
+  // Crumbs are hidden on Census and on the bare top-level routes (/, /Foo)
+  const isCensus = useMatch(`${routes.local}/*`) !== null
+  const isHome = useMatch('/') !== null
+  const isLevel1Only = useMatch('/:level1') !== null
+  const isExplore = useMatch('/Explore/*') !== null
+  const showCrumbs = !isCensus && !isHome && !isLevel1Only
+
   // WISHLIST: add maximize btn on mobile
   return (
     <AppBar className={classes.root} position="static">
       <Toolbar variant="dense" className={classes.toolbar}>
-        <Switch>
-          {/* Census can just have home btn */}
-          <Route path={routes.local} />
-          <Route path={['/', '/:level1']} exact />
-          <Route>
-            <SplitCrumbs />
-          </Route>
-        </Switch>
+        {showCrumbs && <SplitCrumbs />}
         <PanelTitleRoutes panelTitle={panelTitle} />
         <div className={classes.rightSideBtns}>
-          <Route path="/Explore">
+          {isExplore && (
             <ToggleSearchMenuBtn>
               {mapRef && <SearchTabs mapRef={mapRef} />}
             </ToggleSearchMenuBtn>
-          </Route>
-          <Hidden smDown>
+          )}
+          <Hidden mdDown>
             <PanelCloseBtn />
           </Hidden>
         </div>

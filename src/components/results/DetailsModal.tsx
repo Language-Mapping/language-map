@@ -1,15 +1,14 @@
 /* eslint-disable react/display-name */
 import React, { FC } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 import { SimpleDialog } from 'components/generic/modals'
 import { routes } from 'components/config/api'
 import { Details, useDetails } from 'components/details'
-import { UseLocation } from './types'
 
 export const DetailsModal: FC = () => {
-  const history = useHistory()
-  const loc = useLocation<UseLocation>()
+  const navigate = useNavigate()
+  const loc = useLocation()
   const {
     isLoading,
     error,
@@ -25,9 +24,11 @@ export const DetailsModal: FC = () => {
       maxWidth="md"
       open
       onClose={() =>
-        history.push({
-          pathname: routes.data,
-          state: { ...loc.state, pathname: loc.pathname },
+        navigate(routes.data, {
+          state: {
+            ...((loc.state as Record<string, unknown>) || {}),
+            pathname: loc.pathname,
+          },
         })
       }
     >

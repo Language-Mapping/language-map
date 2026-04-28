@@ -1,6 +1,8 @@
-import React, { FC } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
+import React, { FC, PropsWithChildren } from 'react'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Typography } from '@mui/material'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -40,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const PanelIntroTitle: FC = (props) => {
+export const PanelIntroTitle: FC<PropsWithChildren> = (props) => {
   const { children } = props
   const classes = useStyles()
 
@@ -51,7 +53,7 @@ export const PanelIntroTitle: FC = (props) => {
   )
 }
 
-export const PanelIntroSubtitle: FC = (props) => {
+export const PanelIntroSubtitle: FC<PropsWithChildren> = (props) => {
   const { children } = props
   const classes = useStyles()
 

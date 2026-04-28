@@ -1,7 +1,9 @@
 import React, { FC, useState } from 'react'
-import { useParams, useRouteMatch } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Button } from '@material-ui/core'
+import { useLocation, useParams } from 'react-router-dom'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Button } from '@mui/material'
 import { FiShare } from 'react-icons/fi'
 
 import { BasicExploreIntro } from 'components/panels'
@@ -58,7 +60,7 @@ const useStyles = makeStyles((theme: Theme) =>
       },
       '& .MuiButton-textSizeSmall': {
         fontSize: '0.85rem',
-        [theme.breakpoints.down('sm')]: {
+        [theme.breakpoints.down('md')]: {
           minWidth: 'auto',
         },
       },
@@ -66,7 +68,7 @@ const useStyles = makeStyles((theme: Theme) =>
     // wowww overkill, but it fits...
     hideOnMobile: {
       whiteSpace: 'pre',
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         display: 'none',
       },
     },
@@ -74,8 +76,8 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
-  const { value } = useParams<{ value: string }>()
-  const { url } = useRouteMatch()
+  const { value = '' } = useParams() as { value: string }
+  const { pathname: url } = useLocation()
   const classes = useStyles()
   const [showShareBtns, setShowShareBtns] = useState<boolean>(false)
 

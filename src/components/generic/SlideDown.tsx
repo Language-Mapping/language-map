@@ -1,6 +1,9 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import { CSSTransition } from 'react-transition-group'
-import { createStyles, makeStyles, Theme } from '@material-ui/core'
+import { Theme } from '@mui/material'
+
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
 type SlideDownProps = {
   inProp: boolean
@@ -37,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => {
   })
 })
 
-export const SlideDown: FC<SlideDownProps> = (props) => {
+export const SlideDown: FC<PropsWithChildren<SlideDownProps>> = (props) => {
   const { inProp, children } = props
   const classes = useStyles()
 

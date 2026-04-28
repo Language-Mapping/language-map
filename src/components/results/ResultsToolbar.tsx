@@ -1,10 +1,21 @@
-import React, { FC, useContext, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { MTableToolbar } from 'material-table'
-import { Button } from '@material-ui/core'
+import React, { FC, useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import {
+  Button,
+  Checkbox,
+  FormControlLabel,
+  InputAdornment,
+  Menu,
+  MenuItem,
+  TextField,
+} from '@mui/material'
 import { BiMapPin } from 'react-icons/bi'
-import { FaMap } from 'react-icons/fa'
+import { FaMap, FaFileCsv, FaFilePdf } from 'react-icons/fa'
+import { GoSearch } from 'react-icons/go'
+import { MdViewColumn } from 'react-icons/md'
 import { RiFilterOffFill } from 'react-icons/ri'
 
 import { GlobalContext } from 'components/context'
@@ -13,65 +24,39 @@ import { PopoverWithUItext } from 'components/generic'
 import { ResultsTitle } from './ResultsTitle'
 
 import * as Types from './types'
+import { exportCsv, exportPdf } from './exporting'
 import { whittleLangFeats } from './utils'
 
-const TOOLBAR_ID = 'custom-toolbar'
-
-// TODO: get this monster into styles file
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     resultsToolbarRoot: {
       padding: '0.5em 0.75em',
-      // outline: 'solid blue 5px',
       borderBottom: `solid ${theme.palette.divider} 2px`,
-      position: 'sticky',
-      top: 0,
       backgroundColor: theme.palette.background.paper,
-      zIndex: 11, // keeps it above header row
       display: 'grid',
       alignItems: 'center',
       gridColumnGap: '0.75em',
-      gridRowGap: '0.15em',
+      gridRowGap: '0.4em',
       gridTemplateAreas: `"title searchAndActions"
         "buttons buttons"
+        "exports exports"
         "local local"`,
       gridTemplateColumns: 'auto 1fr',
-      gridTemplateRows: 'auto auto auto',
-      // marginBottom: '0.25em', // STUPID SPACER SO RIDICULOUS
-      '& .MuiIconButton-root': { padding: 4 }, // huuuge by default
-      [theme.breakpoints.up('sm')]: {
-        gridTemplateColumns: 'auto auto',
-        justifyContent: 'center',
-        gridColumnGap: '1em',
-      },
+      '& .MuiIconButton-root': { padding: 4 },
       [theme.breakpoints.up('md')]: {
-        gridTemplateAreas: `"title buttons local searchAndActions"`,
-        gridTemplateColumns: 'auto auto auto 1fr',
+        gridTemplateAreas: `"title buttons exports local searchAndActions"`,
+        gridTemplateColumns: 'auto auto auto auto 1fr',
         gridTemplateRows: 'auto',
-        justifyContent: 'flex-start',
-        padding: '1em 1em 0',
-        height: 100, // ugghhhhh
+        padding: '0.75em 1em',
       },
     },
-    // TODO: move the stupid searchbar onto its own line
     searchAndActions: {
       display: 'flex',
       gridArea: 'searchAndActions',
-      '& .MuiToolbar-root': { paddingLeft: 0 },
-      // Can't seem to access these any other way except maybe overriding the
-      // entire component, and definitely not via `MTable` classes since they
-      // are mutated in the build.
-      '& .MuiToolbar-root > :nth-child(2)': { display: 'none' }, // spacer
-      '& .MuiToolbar-root > :last-child': { flexShrink: 0 }, // actions wrap
-      [theme.breakpoints.only('xs')]: {
-        '& .MuiToolbar-root': { paddingRight: 0 },
-        '& .MuiInputBase-root.MuiInput-root': { maxWidth: 135 }, // so FRAGILE
-      },
+      alignItems: 'center',
       [theme.breakpoints.up('md')]: {
         justifyContent: 'flex-end',
-        marginRight: 8,
       },
-      // outline: 'solid red 1px',
     },
     localIndicator: {
       display: 'flex',
@@ -84,36 +69,59 @@ export const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.75em',
       gridArea: 'local',
       justifyContent: 'center',
-      marginTop: '0.4em',
       textAlign: 'center',
-      // outline: 'solid gold 1px',
       '& svg': { fontSize: '1.2em' },
-      [theme.breakpoints.up('md')]: { marginTop: 0, justifySelf: 'flex-end' },
+      [theme.breakpoints.up('md')]: { justifySelf: 'flex-end' },
     },
     toolbarBtns: {
       alignItems: 'center',
-      display: 'grid',
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '0.5rem',
       gridArea: 'buttons',
-      gridColumnGap: '0.5rem',
-      gridTemplateColumns: 'auto auto auto',
       justifyContent: 'center',
-      // outline: 'solid green 1px',
-      [theme.breakpoints.only('xs')]: {
-        gridColumnGap: '0.25rem',
-      },
+    },
+    exportBtns: {
+      alignItems: 'center',
+      display: 'flex',
+      gap: '0.5rem',
+      gridArea: 'exports',
+      justifyContent: 'center',
     },
   })
 )
 
 export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
-  const { tableRef, clearBtnEnabled, setClearBtnEnabled, scrollToTop } = props
+  const {
+    clearBtnEnabled,
+    setClearBtnEnabled,
+    scrollToTop,
+    visibleRows,
+    globalFilter,
+    setGlobalFilter,
+    resetFilters,
+    rowCount,
+    columns,
+    columnToggles,
+  } = props
   const { state, dispatch } = useContext(GlobalContext)
   const classes = useStyles()
-  const history = useHistory()
-  const noResults = tableRef.current && !tableRef.current.state.data.length
+  const navigate = useNavigate()
+  const noResults = rowCount === 0
+
+  function clearFiltersBtnClick(physicalClick?: boolean): void {
+    resetFilters()
+
+    if (!physicalClick) {
+      dispatch({ type: 'CLEAR_FILTERS', payload: 0 })
+      dispatch({
+        type: 'SET_LANG_LAYER_FEATURES',
+        payload: whittleLangFeats(visibleRows),
+      })
+    }
+  }
 
   useEffect((): void => {
-    // TODO: fix, obviously:
     if (state.clearFilters === 555) {
       clearFiltersBtnClick()
     }
@@ -121,76 +129,42 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
   }, [state.clearFilters])
 
   function mapFilterBtnClick(): void {
-    const currentData = tableRef?.current.state.data
-
-    if (!currentData) return
-
     dispatch({
       type: 'SET_LANG_LAYER_FEATURES',
-      payload: whittleLangFeats(currentData),
+      payload: whittleLangFeats(visibleRows),
     })
 
-    // Let the map know it's okay to re-render (as opposed to on first load)
     dispatch({ type: 'SET_FILTER_HAS_RUN' })
 
-    const gangsAllHere = state.langFeatsLenCache === currentData.length
+    const gangsAllHere = state.langFeatsLenCache === visibleRows.length
 
     dispatch({ type: 'CLEAR_FILTERS', payload: gangsAllHere ? 0 : 1 })
 
-    history.push(routes.home) // TODO: ideally, go back
-  }
-
-  // CRED: 🎉
-  // https://github.com/mbrn/material-table/issues/1132#issuecomment-549591832
-  function clearFiltersBtnClick(physicalClick?: boolean): void {
-    if (!tableRef || !tableRef.current) return
-
-    const self = tableRef.current
-    const { dataManager } = self
-    const { columns } = dataManager.getRenderState()
-
-    // CRED: for TS: https://stackoverflow.com/a/46204035/1048518
-    const shame: HTMLElement = document.querySelector(
-      `#${TOOLBAR_ID} button[aria-label="Clear Search"]`
-    ) as HTMLElement
-
-    if (shame) shame.click()
-    // else { // TODO: sentry: element not found... }
-
-    const cleared = columns.map((column: Types.ColumnWithTableData) => ({
-      ...column,
-      tableData: { ...column.tableData, filterValue: undefined },
-    }))
-
-    columns.forEach((col: Types.ColumnWithTableData, i: number) => {
-      dataManager.changeFilterValue(i, undefined)
-    })
-
-    self.setState({ ...dataManager.getRenderState(), columns: cleared })
-
-    setClearBtnEnabled(false)
-    scrollToTop()
-
-    if (!physicalClick) {
-      dispatch({
-        type: 'CLEAR_FILTERS',
-        payload: 0,
-      })
-
-      dispatch({
-        type: 'SET_LANG_LAYER_FEATURES',
-        payload: whittleLangFeats(dataManager.data),
-      })
-    }
+    navigate(routes.home)
   }
 
   return (
     <div className={classes.resultsToolbarRoot}>
       <ResultsTitle />
-      <div className={classes.searchAndActions} id={TOOLBAR_ID}>
-        <MTableToolbar {...props} />
-        {/* TODO: restore */}
-        {/* Showing {langFeatures.length} of {langFeatures.length} communities. */}
+      <div className={classes.searchAndActions}>
+        <TextField
+          size="small"
+          variant="standard"
+          placeholder="Search…"
+          value={globalFilter}
+          onChange={(e) => {
+            setGlobalFilter(e.target.value)
+            setClearBtnEnabled(true)
+            scrollToTop()
+          }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <GoSearch />
+              </InputAdornment>
+            ),
+          }}
+        />
       </div>
       <div className={classes.toolbarBtns}>
         <Button
@@ -202,24 +176,95 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
           onClick={() => mapFilterBtnClick()}
           disabled={noResults}
         >
-          View results in map
+          View in map
         </Button>
+        <ColumnVisibilityMenu toggles={columnToggles} />
         <Button
           title="Clear table filters"
           color="secondary"
-          variant="contained"
+          variant="outlined"
           disabled={!clearBtnEnabled}
           size="small"
           startIcon={<RiFilterOffFill />}
           onClick={() => clearFiltersBtnClick(true)}
         >
-          Clear filters
+          Clear
         </Button>
         <PopoverWithUItext id="table-info-btn" />
+      </div>
+      <div className={classes.exportBtns}>
+        <Button
+          title="Download filtered results as CSV"
+          color="secondary"
+          variant="outlined"
+          size="small"
+          startIcon={<FaFileCsv />}
+          onClick={() => exportCsv(columns, visibleRows)}
+        >
+          CSV
+        </Button>
+        <Button
+          title="Download filtered results as PDF"
+          color="secondary"
+          variant="outlined"
+          size="small"
+          startIcon={<FaFilePdf />}
+          onClick={() => exportPdf(columns, visibleRows)}
+        >
+          PDF
+        </Button>
       </div>
       <small className={`${classes.localIndicator} ${classes.localCommLegend}`}>
         <BiMapPin /> Local community data
       </small>
     </div>
+  )
+}
+
+const ColumnVisibilityMenu: FC<{ toggles: Types.ColumnToggle[] }> = (props) => {
+  const { toggles } = props
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+
+  return (
+    <>
+      <Button
+        title="Toggle column visibility"
+        color="secondary"
+        variant="outlined"
+        size="small"
+        startIcon={<MdViewColumn />}
+        onClick={(e) => setAnchorEl(e.currentTarget)}
+      >
+        Columns
+      </Button>
+      <Menu
+        anchorEl={anchorEl}
+        open={!!anchorEl}
+        onClose={() => setAnchorEl(null)}
+      >
+        {toggles
+          .filter((t) => t.canHide)
+          .map((t) => (
+            <MenuItem
+              key={t.id}
+              dense
+              onClick={() => t.toggle()}
+              sx={{ paddingY: 0 }}
+            >
+              <FormControlLabel
+                onClick={(e) => e.preventDefault()}
+                control={
+                  <Checkbox
+                    size="small"
+                    color="secondary"
+                    checked={t.isVisible}
+                  />
+                }
+                label={t.label}
+              />
+            </MenuItem>
+          ))}
+      </Menu>
+    </>
   )
 }

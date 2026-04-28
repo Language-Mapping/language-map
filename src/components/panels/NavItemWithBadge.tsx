@@ -1,6 +1,8 @@
-import React, { FC, useContext } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Badge } from '@material-ui/core'
+import React, { FC, useContext, PropsWithChildren } from 'react'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Badge } from '@mui/material'
 
 import { GlobalContext } from 'components/context'
 
@@ -13,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const NavItemWithBadge: FC = (props) => {
+export const NavItemWithBadge: FC<PropsWithChildren> = (props) => {
   const { state } = useContext(GlobalContext)
   const { children } = props
   const classes = useStyles()
@@ -24,7 +26,7 @@ export const NavItemWithBadge: FC = (props) => {
       classes={{ dot: classes.badgeRoot }}
       badgeContent=""
       color="secondary"
-      overlap="circle"
+      overlap="circular"
       anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
       invisible={state.langFeatsLenCache === state.langFeatures.length}
     >

@@ -1,6 +1,9 @@
 import React, { FC } from 'react'
-import { useQuery } from 'react-query'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { useQuery } from '@tanstack/react-query'
+import { Theme } from '@mui/material/styles'
+
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
 import { LoadingIndicator } from 'components/generic/modals'
 import { AboutPageProps, WpApiPageResponse } from './types'
@@ -19,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
         boxShadow: theme.shadows[8],
         // Prevent screenshots from getting lost in Paper bg if same color:
         // outline: 'solid 1px hsl(0deg 0% 40%)',
-        [theme.breakpoints.down('xs')]: {
+        [theme.breakpoints.down('sm')]: {
           margin: '0.5rem 0',
         },
       },
@@ -38,28 +41,31 @@ export const AboutPageView: FC<AboutPageProps> = (props) => {
   const { queryKey, noImgShadow } = props
   const classes = useStyles()
 
-  const { data, isLoading, error } = useQuery(queryKey, () =>
-    defaultQueryFn<WpApiPageResponse>(queryKey)
-  )
+  const { data, isLoading, error } = useQuery<WpApiPageResponse>({
+    queryKey: [queryKey],
+    queryFn: () => defaultQueryFn<WpApiPageResponse>(queryKey),
+  })
 
   if (isLoading) return <LoadingIndicator omitText />
 
   // TODO: wire up Sentry; aria; TS for error (`error.message` is a string)
   return (
     <div className={classes.root}>
-      {error && (
-        <>
-          An error has occurred.{' '}
-          <span role="img" aria-label="man shrugging emoji">
-            🤷‍♂
-          </span>
-        </>
-      )}
-      <div
-        className={noImgShadow ? NO_IMG_SHADOW_CLASSNAME : ''}
-        dangerouslySetInnerHTML={createMarkup(data?.content.rendered || '')}
-        id={`${queryKey}-content`}
-      />
+      <>
+        {error && (
+          <>
+            An error has occurred.{' '}
+            <span role="img" aria-label="man shrugging emoji">
+              🤷‍♂
+            </span>
+          </>
+        )}
+        <div
+          className={noImgShadow ? NO_IMG_SHADOW_CLASSNAME : ''}
+          dangerouslySetInnerHTML={createMarkup(data?.content.rendered || '')}
+          id={`${queryKey}-content`}
+        />
+      </>
     </div>
   )
 }
