@@ -6,14 +6,14 @@ import { FaMapMarkedAlt } from 'react-icons/fa'
 import { InstanceLevelSchema, InternalWithLang } from 'components/context/types'
 import { CountryListItemWithFlag } from './CountryListItemWithFlag'
 import { EndoImageModal } from './EndoImageModal'
-import { LangCellParams } from './types'
+import { LangCellContext } from './types'
 
 export const FILTER_CLASS = 'for-filter'
 
 export function renderCountryColumn(
-  params: LangCellParams
+  info: LangCellContext
 ): string | React.ReactNode {
-  const data = params.row
+  const data = info.row.original
 
   return (
     <ul style={{ padding: 0, margin: 0, listStyle: 'none' }}>
@@ -30,9 +30,9 @@ export function renderCountryColumn(
 }
 
 export function renderEndoColumn(
-  params: LangCellParams
+  info: LangCellContext
 ): string | React.ReactNode {
-  const data = params.row
+  const data = info.row.original
 
   if (!data['Font Image Alt']) {
     return data.Endonym

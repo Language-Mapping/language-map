@@ -1,22 +1,23 @@
-import React, { FC, useContext, useEffect } from 'react'
+import React, { FC, useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
-import { Button } from '@mui/material'
 import {
-  GridToolbarContainer,
-  GridToolbarColumnsButton,
-  GridToolbarFilterButton,
-  GridToolbarQuickFilter,
-  gridFilteredSortedRowEntriesSelector,
-  useGridApiContext,
-} from '@mui/x-data-grid'
+  Button,
+  Checkbox,
+  FormControlLabel,
+  InputAdornment,
+  Menu,
+  MenuItem,
+  TextField,
+} from '@mui/material'
 import { BiMapPin } from 'react-icons/bi'
 import { FaMap, FaFileCsv, FaFilePdf } from 'react-icons/fa'
+import { GoSearch } from 'react-icons/go'
+import { MdViewColumn } from 'react-icons/md'
 import { RiFilterOffFill } from 'react-icons/ri'
 
-import { InstanceLevelSchema } from 'components/context/types'
 import { GlobalContext } from 'components/context'
 import { routes } from 'components/config/api'
 import { PopoverWithUItext } from 'components/generic'
@@ -31,10 +32,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     resultsToolbarRoot: {
       padding: '0.5em 0.75em',
       borderBottom: `solid ${theme.palette.divider} 2px`,
-      position: 'sticky',
-      top: 0,
       backgroundColor: theme.palette.background.paper,
-      zIndex: 11,
       display: 'grid',
       alignItems: 'center',
       gridColumnGap: '0.75em',
@@ -44,20 +42,12 @@ export const useStyles = makeStyles((theme: Theme) =>
         "exports exports"
         "local local"`,
       gridTemplateColumns: 'auto 1fr',
-      gridTemplateRows: 'auto auto auto auto',
       '& .MuiIconButton-root': { padding: 4 },
-      [theme.breakpoints.up('sm')]: {
-        gridTemplateColumns: 'auto auto',
-        justifyContent: 'center',
-        gridColumnGap: '1em',
-      },
       [theme.breakpoints.up('md')]: {
         gridTemplateAreas: `"title buttons exports local searchAndActions"`,
         gridTemplateColumns: 'auto auto auto auto 1fr',
         gridTemplateRows: 'auto',
-        justifyContent: 'flex-start',
-        padding: '0.75em 1em 0',
-        height: 'auto',
+        padding: '0.75em 1em',
       },
     },
     searchAndActions: {
@@ -66,7 +56,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       [theme.breakpoints.up('md')]: {
         justifyContent: 'flex-end',
-        marginRight: 8,
       },
     },
     localIndicator: {
@@ -80,10 +69,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.75em',
       gridArea: 'local',
       justifyContent: 'center',
-      marginTop: '0.4em',
       textAlign: 'center',
       '& svg': { fontSize: '1.2em' },
-      [theme.breakpoints.up('md')]: { marginTop: 0, justifySelf: 'flex-end' },
+      [theme.breakpoints.up('md')]: { justifySelf: 'flex-end' },
     },
     toolbarBtns: {
       alignItems: 'center',
@@ -104,31 +92,31 @@ export const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
-  const { clearBtnEnabled, setClearBtnEnabled, scrollToTop, columns } = props
+  const {
+    clearBtnEnabled,
+    setClearBtnEnabled,
+    scrollToTop,
+    visibleRows,
+    globalFilter,
+    setGlobalFilter,
+    resetFilters,
+    rowCount,
+    columns,
+    columnToggles,
+  } = props
   const { state, dispatch } = useContext(GlobalContext)
   const classes = useStyles()
   const history = useHistory()
-  const apiRef = useGridApiContext()
-
-  const rowCount = apiRef.current.getRowsCount()
   const noResults = rowCount === 0
 
-  const getVisibleRows = (): InstanceLevelSchema[] =>
-    gridFilteredSortedRowEntriesSelector(apiRef).map(
-      (entry) => entry.model as InstanceLevelSchema
-    )
-
   function clearFiltersBtnClick(physicalClick?: boolean): void {
-    apiRef.current.setFilterModel({ items: [] })
-    apiRef.current.setQuickFilterValues([])
-    setClearBtnEnabled(false)
-    scrollToTop()
+    resetFilters()
 
     if (!physicalClick) {
       dispatch({ type: 'CLEAR_FILTERS', payload: 0 })
       dispatch({
         type: 'SET_LANG_LAYER_FEATURES',
-        payload: whittleLangFeats(getVisibleRows()),
+        payload: whittleLangFeats(visibleRows),
       })
     }
   }
@@ -141,8 +129,6 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
   }, [state.clearFilters])
 
   function mapFilterBtnClick(): void {
-    const visibleRows = getVisibleRows()
-
     dispatch({
       type: 'SET_LANG_LAYER_FEATURES',
       payload: whittleLangFeats(visibleRows),
@@ -158,13 +144,26 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
   }
 
   return (
-    <GridToolbarContainer className={classes.resultsToolbarRoot}>
+    <div className={classes.resultsToolbarRoot}>
       <ResultsTitle />
       <div className={classes.searchAndActions}>
-        <GridToolbarQuickFilter
+        <TextField
+          size="small"
           variant="standard"
           placeholder="Search…"
-          onChange={() => setClearBtnEnabled(true)}
+          value={globalFilter}
+          onChange={(e) => {
+            setGlobalFilter(e.target.value)
+            setClearBtnEnabled(true)
+            scrollToTop()
+          }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <GoSearch />
+              </InputAdornment>
+            ),
+          }}
         />
       </div>
       <div className={classes.toolbarBtns}>
@@ -179,8 +178,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
         >
           View in map
         </Button>
-        <GridToolbarFilterButton />
-        <GridToolbarColumnsButton />
+        <ColumnVisibilityMenu toggles={columnToggles} />
         <Button
           title="Clear table filters"
           color="secondary"
@@ -201,7 +199,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
           variant="outlined"
           size="small"
           startIcon={<FaFileCsv />}
-          onClick={() => exportCsv(columns, getVisibleRows())}
+          onClick={() => exportCsv(columns, visibleRows)}
         >
           CSV
         </Button>
@@ -211,7 +209,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
           variant="outlined"
           size="small"
           startIcon={<FaFilePdf />}
-          onClick={() => exportPdf(columns, getVisibleRows())}
+          onClick={() => exportPdf(columns, visibleRows)}
         >
           PDF
         </Button>
@@ -219,6 +217,54 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
       <small className={`${classes.localIndicator} ${classes.localCommLegend}`}>
         <BiMapPin /> Local community data
       </small>
-    </GridToolbarContainer>
+    </div>
+  )
+}
+
+const ColumnVisibilityMenu: FC<{ toggles: Types.ColumnToggle[] }> = (props) => {
+  const { toggles } = props
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+
+  return (
+    <>
+      <Button
+        title="Toggle column visibility"
+        color="secondary"
+        variant="outlined"
+        size="small"
+        startIcon={<MdViewColumn />}
+        onClick={(e) => setAnchorEl(e.currentTarget)}
+      >
+        Columns
+      </Button>
+      <Menu
+        anchorEl={anchorEl}
+        open={!!anchorEl}
+        onClose={() => setAnchorEl(null)}
+      >
+        {toggles
+          .filter((t) => t.canHide)
+          .map((t) => (
+            <MenuItem
+              key={t.id}
+              dense
+              onClick={() => t.toggle()}
+              sx={{ paddingY: 0 }}
+            >
+              <FormControlLabel
+                onClick={(e) => e.preventDefault()}
+                control={
+                  <Checkbox
+                    size="small"
+                    color="secondary"
+                    checked={t.isVisible}
+                  />
+                }
+                label={t.label}
+              />
+            </MenuItem>
+          ))}
+      </Menu>
+    </>
   )
 }

@@ -1,56 +1,45 @@
-import React from 'react'
-import { GridFilterInputValueProps, GridFilterOperator } from '@mui/x-data-grid'
-import { FormControlLabel, Checkbox } from '@mui/material'
+import React, { FC } from 'react'
+import { Checkbox, FormControlLabel } from '@mui/material'
+import { Column } from '@tanstack/react-table'
+
+import { InstanceLevelSchema } from 'components/context/types'
+import { LangFilterFn } from './types'
 
 const CHECK_VALUE = 'http'
 
-const MediaFilterInput: React.FC<GridFilterInputValueProps> = (props) => {
-  const { item, applyValue } = props
-  const checked = item.value === CHECK_VALUE
+// TanStack column filter that matches rows whose value contains "http"
+// (used for the Audio/Video URL columns).
+export const mediaUrlFilterFn: LangFilterFn = (row, columnId, filterValue) => {
+  if (!filterValue) return true
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    applyValue({ ...item, value: e.target.checked ? CHECK_VALUE : '' })
+  const value = row.getValue(columnId)
+
+  if (!value) return false
+  if (typeof value === 'string') return value.includes(CHECK_VALUE)
+  if (Array.isArray(value)) {
+    return value.some((v) => typeof v === 'string' && v.includes(CHECK_VALUE))
   }
+
+  return false
+}
+
+export const MediaColumnFilter: FC<{
+  column: Column<InstanceLevelSchema, unknown>
+}> = ({ column }) => {
+  const checked = (column.getFilterValue() as boolean) || false
 
   return (
     <FormControlLabel
-      sx={{
-        // Data Grid filter inputs sit on a baseline 18px above the bottom of
-        // the filter row; an unlabeled checkbox renders too high without this.
-        alignSelf: 'flex-end',
-        marginBottom: '4px',
-      }}
+      sx={{ marginLeft: 0, '& .MuiTypography-root': { fontSize: '0.75rem' } }}
       control={
         <Checkbox
-          checked={checked}
-          onChange={handleChange}
           size="small"
           color="secondary"
+          checked={checked}
+          onChange={(e) => column.setFilterValue(e.target.checked || undefined)}
         />
       }
-      label="Has media"
+      label="Has"
     />
   )
-}
-
-// Single operator: "has URL" — value is truthy and contains "http"
-export const mediaHasUrlOperator: GridFilterOperator = {
-  label: 'has media',
-  value: 'hasMedia',
-  getApplyFilterFn: (filterItem) => {
-    if (filterItem.value !== CHECK_VALUE) return null
-
-    return ({ value }) => {
-      if (!value) return false
-      if (typeof value === 'string') return value.includes(CHECK_VALUE)
-      if (Array.isArray(value)) {
-        return value.some(
-          (v) => typeof v === 'string' && v.includes(CHECK_VALUE)
-        )
-      }
-
-      return false
-    }
-  },
-  InputComponent: MediaFilterInput,
 }

@@ -7,7 +7,7 @@ import { GoCircleSlash } from 'react-icons/go'
 
 import { LegendSwatch } from 'components/legend'
 import { InstanceLevelSchema } from 'components/context/types'
-import { LangCellParams } from './types'
+import { LangCellContext } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -18,12 +18,12 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const MediaColumnCell: FC<{
-  params: LangCellParams
+  info: LangCellContext
   columnName: keyof InstanceLevelSchema
 }> = (props) => {
   const classes = useStyles()
-  const { params, columnName } = props
-  const data = params.row
+  const { info, columnName } = props
+  const data = info.row.original
 
   return (
     <div className={classes.disabled} style={{ paddingLeft: 16 }}>
@@ -32,10 +32,10 @@ export const MediaColumnCell: FC<{
   )
 }
 
-export const GlobalSpeakers: FC<{ params: LangCellParams }> = (props) => {
+export const GlobalSpeakers: FC<{ info: LangCellContext }> = (props) => {
   const classes = useStyles()
-  const { params } = props
-  const data = params.row
+  const { info } = props
+  const data = info.row.original
 
   if (!data['Global Speaker Total']) return null
 
@@ -46,18 +46,18 @@ export const GlobalSpeakers: FC<{ params: LangCellParams }> = (props) => {
   )
 }
 
-export const CommStatus: FC<{ params: LangCellParams }> = (props) => {
+export const CommStatus: FC<{ info: LangCellContext }> = (props) => {
   const classes = useStyles()
-  const { params } = props
-  const data = params.row
+  const { info } = props
+  const data = info.row.original
 
   return <div className={classes.disabled}>{data.Status}</div>
 }
 
-export const CommSize: FC<{ params: LangCellParams }> = (props) => {
+export const CommSize: FC<{ info: LangCellContext }> = (props) => {
   const theme = useTheme()
-  const { params } = props
-  const data = params.row
+  const { info } = props
+  const data = info.row.original
   const { Size, sizeColor } = data
 
   return (
@@ -76,9 +76,9 @@ export const CommSize: FC<{ params: LangCellParams }> = (props) => {
   )
 }
 
-export const WorldRegion: FC<{ params: LangCellParams }> = (props) => {
-  const { params } = props
-  const data = params.row
+export const WorldRegion: FC<{ info: LangCellContext }> = (props) => {
+  const { info } = props
+  const data = info.row.original
 
   return (
     <LegendSwatch
