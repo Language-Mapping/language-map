@@ -1,6 +1,8 @@
 import React, { FC } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { IconButton, Tooltip } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { IconButton, Tooltip } from '@mui/material'
 import { CgClose } from 'react-icons/cg'
 
 import { usePanelDispatch } from 'components/panels'

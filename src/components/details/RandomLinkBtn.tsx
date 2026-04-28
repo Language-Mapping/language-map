@@ -1,6 +1,6 @@
 import React, { FC, useContext } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { Button } from '@material-ui/core'
+import { Button } from '@mui/material'
 import { FaRandom } from 'react-icons/fa'
 
 import { GlobalContext } from 'components/context'

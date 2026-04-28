@@ -1,7 +1,9 @@
 import React, { FC, useState } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 import { Route, Switch } from 'react-router-dom'
-import { Grow } from '@material-ui/core'
+import { Grow } from '@mui/material'
 
 import { Media } from 'components/media'
 import { MoreLikeThis } from 'components/details'
@@ -28,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const DetailedIntro: FC<DetailedIntroProps> = (props) => {
   const { data, shareNoun, isInstance, langDescripID, children } = props
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 
   return (
     <Grow in timeout={500} style={{ transformOrigin: 'top center' }}>

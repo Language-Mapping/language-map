@@ -1,7 +1,9 @@
 import React, { FC } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { Link, Button, Popover, Typography } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
+import { Button, Popover, Typography } from '@mui/material'
 
 import { DialogCloseBtn } from 'components/generic/modals'
 import { useMapToolsState, useMapToolsDispatch } from 'components/context'
@@ -10,8 +12,8 @@ import { routes } from 'components/config/api'
 import { BaseLayerToggles } from './BaseLayerToggles'
 
 type MapOptionsMenuProps = {
-  anchorEl: HTMLDivElement | null
-  setAnchorEl: React.Dispatch<HTMLDivElement | null>
+  anchorEl: HTMLElement | null
+  setAnchorEl: React.Dispatch<HTMLElement | null>
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -131,8 +133,7 @@ export const MapOptionsMenu: FC<MapOptionsMenuProps> = (props) => {
         >
           View options
         </Button>
-        <Link
-          component={Button}
+        <Button
           size="small"
           className={classes.censusLink}
           color="secondary"
@@ -141,7 +142,7 @@ export const MapOptionsMenu: FC<MapOptionsMenuProps> = (props) => {
           onClick={() => mapToolsDispatch({ type: 'CLEAR_CENSUS_FIELD' })}
         >
           Clear selection
-        </Link>
+        </Button>
       </div>
       <BaseLayerToggles />
       <DialogCloseBtn tooltip="Close map menu" onClose={() => handleClose()} />

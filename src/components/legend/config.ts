@@ -1,4 +1,4 @@
-import { OutlinedTextFieldProps } from '@material-ui/core'
+import { OutlinedTextFieldProps } from '@mui/material'
 
 import { InstanceLevelSchema } from 'components/context/types'
 import { AtSymbFields } from './types'

@@ -1,8 +1,10 @@
 // TODO: rename file and component to "BackBtn"
 import React, { FC, useEffect } from 'react'
 import { Link as RouterLink, useLocation } from 'react-router-dom'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-import { IconButton, Popover, Tooltip } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
+import { IconButton, Popover, Tooltip } from '@mui/material'
 import { AiOutlineUnorderedList } from 'react-icons/ai'
 import { BsArrow90DegUp } from 'react-icons/bs'
 
@@ -25,6 +27,14 @@ export const SplitCrumbs: FC = () => {
   const loc = useLocation<{ pathname: string }>()
   const { pathname = '/' } = loc
 
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
   // Cheap way to close the timeline on click
   useEffect(() => {
     handleClose()
@@ -33,14 +43,6 @@ export const SplitCrumbs: FC = () => {
   const pathChunks = pathname.split('/')
   const notHome = pathChunks.slice(1) // exclude Home
   const backLink = pathChunks.slice(0, -1).join('/') || '/'
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
 
   const open = Boolean(anchorEl)
   const id = open ? 'show-explore-nav' : undefined

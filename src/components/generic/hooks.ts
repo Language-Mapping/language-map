@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from 'react'
-import { useTheme } from '@material-ui/core/styles'
+import { useTheme } from '@mui/material/styles'
 import { useAirtable } from 'components/explore/hooks'
 import { useLocation, useRouteMatch } from 'react-router-dom'
 import { routes } from 'components/config'

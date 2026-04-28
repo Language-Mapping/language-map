@@ -1,7 +1,9 @@
 import React, { FC } from 'react'
 import { Route } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Grow, Typography } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Grow, Typography } from '@mui/material'
 
 import { FiltersWarning } from 'components/home/FiltersWarning'
 import { Explanation } from 'components/generic'

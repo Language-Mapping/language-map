@@ -1,6 +1,8 @@
 import React, { FC } from 'react'
 import { Link as RouterLink, Route, Switch } from 'react-router-dom'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
 import {
   Timeline,
   TimelineItem,
@@ -8,7 +10,7 @@ import {
   TimelineConnector,
   TimelineContent,
   TimelineDot,
-} from '@material-ui/lab'
+} from '@mui/lab'
 
 import { RouteableTableNames } from 'components/context/types'
 import { icons } from 'components/config'
@@ -59,7 +61,7 @@ export const TimelineCrumbs: FC<TimelineCrumbsProps> = (props) => {
             <TimelineSeparator>
               <TimelineDot
                 color="secondary"
-                variant={firstOne ? 'outlined' : 'default'}
+                variant={firstOne ? 'outlined' : 'filled'}
                 className={emptyIconClass}
               >
                 {panelIcon}
