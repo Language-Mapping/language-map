@@ -160,6 +160,15 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
     .getFilteredRowModel()
     .rows.map((r) => r.original)
 
+  // Static config filtered down to only currently-visible columns. Used for
+  // CSV/PDF export so hidden columns don't leak into downloads.
+  const visibleColumnConfig = columns.filter(
+    (col) =>
+      columnVisibility[
+        (col.id ?? (col as { accessorKey?: string }).accessorKey) as string
+      ] !== false
+  )
+
   const resetFilters = () => {
     setGlobalFilter('')
     setColumnFilters([])
@@ -203,7 +212,7 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
         setGlobalFilter={setGlobalFilter}
         resetFilters={resetFilters}
         rowCount={table.getFilteredRowModel().rows.length}
-        columns={columns}
+        columns={visibleColumnConfig}
         columnToggles={table.getAllLeafColumns().map((column) => {
           const headerDef = column.columnDef.header
           const label = typeof headerDef === 'string' ? headerDef : column.id
