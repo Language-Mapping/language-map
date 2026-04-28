@@ -112,34 +112,6 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
   const history = useHistory()
   const noResults = tableRef.current && !tableRef.current.state.data.length
 
-  useEffect((): void => {
-    // TODO: fix, obviously:
-    if (state.clearFilters === 555) {
-      clearFiltersBtnClick()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.clearFilters])
-
-  function mapFilterBtnClick(): void {
-    const currentData = tableRef?.current.state.data
-
-    if (!currentData) return
-
-    dispatch({
-      type: 'SET_LANG_LAYER_FEATURES',
-      payload: whittleLangFeats(currentData),
-    })
-
-    // Let the map know it's okay to re-render (as opposed to on first load)
-    dispatch({ type: 'SET_FILTER_HAS_RUN' })
-
-    const gangsAllHere = state.langFeatsLenCache === currentData.length
-
-    dispatch({ type: 'CLEAR_FILTERS', payload: gangsAllHere ? 0 : 1 })
-
-    history.push(routes.home) // TODO: ideally, go back
-  }
-
   // CRED: 🎉
   // https://github.com/mbrn/material-table/issues/1132#issuecomment-549591832
   function clearFiltersBtnClick(physicalClick?: boolean): void {
@@ -182,6 +154,34 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
         payload: whittleLangFeats(dataManager.data),
       })
     }
+  }
+
+  useEffect((): void => {
+    // TODO: fix, obviously:
+    if (state.clearFilters === 555) {
+      clearFiltersBtnClick()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.clearFilters])
+
+  function mapFilterBtnClick(): void {
+    const currentData = tableRef?.current.state.data
+
+    if (!currentData) return
+
+    dispatch({
+      type: 'SET_LANG_LAYER_FEATURES',
+      payload: whittleLangFeats(currentData),
+    })
+
+    // Let the map know it's okay to re-render (as opposed to on first load)
+    dispatch({ type: 'SET_FILTER_HAS_RUN' })
+
+    const gangsAllHere = state.langFeatsLenCache === currentData.length
+
+    dispatch({ type: 'CLEAR_FILTERS', payload: gangsAllHere ? 0 : 1 })
+
+    history.push(routes.home) // TODO: ideally, go back
   }
 
   return (

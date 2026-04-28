@@ -7,27 +7,6 @@ import { iconStyleOverride } from './config'
 
 import * as Types from './types'
 
-export const useLayersConfig = (
-  tableName: keyof InstanceLevelSchema
-): Types.UseLayersConfig => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const moreFields = layerSymbFields[tableName] || []
-  const { baseLayer } = useMapToolsState()
-  const { data, isLoading, error } = useAirtable<AtSchemaFields>(tableName, {
-    // WOW: field order really matters in regards to react-query. If this is
-    // the same as the one being used by legend config, it doesn't load
-    // properly on page load
-    fields: ['name', ...moreFields],
-  })
-
-  let prepped: Types.LayerPropsPlusMeta[] = []
-
-  if (data.length) prepped = createLayerStyles(data, tableName, baseLayer)
-
-  return { error, data: prepped, isLoading }
-}
-
 // CRED: fo' spread: https://bit.ly/37nzMRT
 // TODO: into utils
 const createLayerStyles = (
@@ -63,6 +42,28 @@ const createLayerStyles = (
       },
     }
   })
+
+export const useLayersConfig = (
+  tableName: keyof InstanceLevelSchema
+): Types.UseLayersConfig => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const moreFields = layerSymbFields[tableName] || []
+  const { baseLayer } = useMapToolsState()
+  const { data, isLoading, error } = useAirtable<AtSchemaFields>(tableName, {
+    // WOW: field order really matters in regards to react-query. If this is
+    // the same as the one being used by legend config, it doesn't load
+    // properly on page load
+    fields: ['name', ...moreFields],
+  })
+
+  let prepped: Types.LayerPropsPlusMeta[] = []
+
+  if (data.length) prepped = createLayerStyles(data, tableName, baseLayer)
+
+  return { error, data: prepped, isLoading }
+}
+
 export const useSelLangPointCoords = (): Types.UseSelLangPointCoordsReturn => {
   const match = useRouteMatch<{ id: string }>({
     path: '/Explore/Language/:language/:id',

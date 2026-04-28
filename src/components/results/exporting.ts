@@ -26,6 +26,16 @@ const getColumns = (columnList: ColumnList) =>
     (columnDef) => !columnDef.hidden && columnDef.export !== false
   )
 
+// CRED: https://stackoverflow.com/a/19828943/1048518
+// CRED: https://stackoverflow.com/a/36449773/1048518
+const excludeUTFtext = (input: string): string => {
+  // eslint-disable-next-line no-control-regex
+  const nonRomanExp = /[^\u0000-\u024F\u1E00-\u1EFF\u2C60-\u2C7F\uA720-\uA7FF]/g
+  const numMatchingChars = input.match(nonRomanExp)?.length
+
+  return !numMatchingChars || numMatchingChars === input.length ? input : ''
+}
+
 const getData = (columns: ColumnList, initialData: InstanceLevelSchema[]) =>
   initialData.map((rowData) =>
     columns.map(({ field }) => {
@@ -64,16 +74,6 @@ export const exportCsv = (
     .setColumns(columns.map(({ title, field }) => getColumnTitle(title, field)))
     .addRows(data)
     .exportFile()
-}
-
-// CRED: https://stackoverflow.com/a/19828943/1048518
-// CRED: https://stackoverflow.com/a/36449773/1048518
-const excludeUTFtext = (input: string): string => {
-  // eslint-disable-next-line no-control-regex
-  const nonRomanExp = /[^\u0000-\u024F\u1E00-\u1EFF\u2C60-\u2C7F\uA720-\uA7FF]/g
-  const numMatchingChars = input.match(nonRomanExp)?.length
-
-  return !numMatchingChars || numMatchingChars === input.length ? input : ''
 }
 
 // TODO: if switching UI headings to Gentium Alt, use that instead of Plus here

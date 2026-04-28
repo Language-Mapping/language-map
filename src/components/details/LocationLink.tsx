@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Link, Popover } from '@material-ui/core'
+import { Button, Popover } from '@material-ui/core'
 import { BiMapPin } from 'react-icons/bi'
 
 import { NeighborhoodList } from 'components/details'
@@ -42,7 +42,7 @@ export const LocationLink: FC<LocationLinkProps> = (props) => {
   const id = open ? 'neighbs-menu-popover' : undefined
   const handleClose = () => setAnchorEl(null)
 
-  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
     setAnchorEl(event.currentTarget)
   }
@@ -77,18 +77,14 @@ export const LocationLink: FC<LocationLinkProps> = (props) => {
           onClose={() => handleClose()}
         />
       </Popover>
-      <Link
-        href="#"
-        role="button"
+      <Button
         className={classes.link}
         title="Show neighborhood or town options"
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore // TODO: mas tarde...
         onClick={handleClick}
       >
         <BiMapPin />
         {linkText}
-      </Link>
+      </Button>
     </>
   )
 }
