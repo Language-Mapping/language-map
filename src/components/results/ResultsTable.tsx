@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 import React, { FC, useMemo, useRef, useState } from 'react'
-import { Route, useNavigate } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 import {
   Box,
   MenuItem,
@@ -200,9 +200,9 @@ export const ResultsTable: FC<ResultsTableProps> = (props) => {
 
   return (
     <Box className={classes.container}>
-      <Route path={routes.dataDetail}>
-        <DetailsModal />
-      </Route>
+      <Routes>
+        <Route path={routes.dataDetail} element={<DetailsModal />} />
+      </Routes>
       <ResultsToolbar
         clearBtnEnabled={clearBtnEnabled}
         setClearBtnEnabled={setClearBtnEnabled}
