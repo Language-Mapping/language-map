@@ -1,8 +1,10 @@
 import React, { FC } from 'react'
 import { isMobile } from 'react-device-detect'
 import { Link } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Grow, Card, Typography } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Grow, Card, Typography } from '@mui/material'
 
 import { CustomCardProps } from './types'
 import * as utils from './utils'

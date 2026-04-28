@@ -1,6 +1,9 @@
 import React, { FC } from 'react'
 import { useQuery } from 'react-query'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
 import { LoadingIndicator } from 'components/generic/modals'
 import { AboutPageProps, WpApiPageResponse } from './types'
@@ -19,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
         boxShadow: theme.shadows[8],
         // Prevent screenshots from getting lost in Paper bg if same color:
         // outline: 'solid 1px hsl(0deg 0% 40%)',
-        [theme.breakpoints.down('xs')]: {
+        [theme.breakpoints.down('sm')]: {
           margin: '0.5rem 0',
         },
       },

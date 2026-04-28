@@ -1,8 +1,9 @@
 import {
-  createMuiTheme,
+  createTheme,
   responsiveFontSizes,
-  fade,
-} from '@material-ui/core/styles'
+  alpha,
+  adaptV4Theme,
+} from '@mui/material/styles'
 
 // Always have a hard time finding the Typography variant docs for some reason:
 // https://material-ui.com/components/typography/#component
@@ -61,28 +62,30 @@ const headings = {
 
 // Easy access to theme properties when used in `createMuiTheme` overrides
 // CRED: https://stackoverflow.com/a/57127040/1048518
-const customTheme = createMuiTheme({
-  palette: {
-    type: 'dark',
-    primary: {
-      light: '#62aca0',
-      main: '#379587',
-      dark: '#286a61',
-      contrastText: '#fff',
+const customTheme = createTheme(
+  adaptV4Theme({
+    palette: {
+      mode: 'dark',
+      primary: {
+        light: '#62aca0',
+        main: '#379587',
+        dark: '#286a61',
+        contrastText: '#fff',
+      },
+      secondary: {
+        light: '#55a9c1',
+        main: '#207d96',
+        dark: '#2d6777',
+        contrastText: '#fff',
+      },
     },
-    secondary: {
-      light: '#55a9c1',
-      main: '#207d96',
-      dark: '#2d6777',
-      contrastText: '#fff',
+    typography: {
+      fontFamily: BODY_FONTS,
+      fontSize: 16,
+      ...headings,
     },
-  },
-  typography: {
-    fontFamily: BODY_FONTS,
-    fontSize: 16,
-    ...headings,
-  },
-})
+  })
+)
 
 // Global overrides of MUI components that need to be re-styled often. More
 // examples available at:
@@ -132,7 +135,7 @@ customTheme.overrides = {
     // which is too hard to see against dark paper backgrounds
     outlinedSecondary: {
       color: customTheme.palette.secondary.light,
-      border: `1px solid ${fade(customTheme.palette.secondary.light, 0.5)}`,
+      border: `1px solid ${alpha(customTheme.palette.secondary.light, 0.5)}`,
     },
   },
   MuiLink: {

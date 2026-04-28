@@ -1,14 +1,10 @@
 import React, { FC, useState } from 'react'
 import SwipeableViews from 'react-swipeable-views'
-import AppBar from '@material-ui/core/AppBar'
-import {
-  createStyles,
-  makeStyles,
-  Tab,
-  Tabs,
-  Theme,
-  useTheme,
-} from '@material-ui/core'
+import AppBar from '@mui/material/AppBar'
+import { Tab, Tabs, Theme, useTheme } from '@mui/material'
+
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
 import { SearchByOmnibox } from 'components/home/SearchByOmnibox'
 import { GeocoderPopout } from 'components/map'

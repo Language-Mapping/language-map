@@ -1,13 +1,10 @@
 import React, { FC, useEffect, useState } from 'react'
 import { isMobile } from 'react-device-detect'
 import { NavLink, useLocation } from 'react-router-dom'
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  lighten,
-} from '@material-ui/core/styles'
-import { BottomNavigation, BottomNavigationAction } from '@material-ui/core'
+import { Theme, lighten } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { BottomNavigation, BottomNavigationAction } from '@mui/material'
 
 import { usePanelState, usePanelDispatch } from 'components/panels'
 import { routes } from 'components/config/api'
@@ -33,7 +30,7 @@ radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`
       width: '100%',
       position: 'absolute',
       bottom: 0,
-      [theme.breakpoints.down('md')]: {
+      [theme.breakpoints.down('lg')]: {
         boxShadow: '0px -5px 5px 0px rgba(0,0,0,0.1)',
         borderRadius: 0,
         height: BOTTOM_NAV_HEIGHT_MOBILE,
@@ -65,7 +62,7 @@ radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`
     },
     wrapper: {
       fontSize: '0.85rem',
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         fontSize: '0.75rem',
       },
     },
@@ -73,7 +70,7 @@ radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`
       '& .Mui-selected': {
         fontSize: 'inherit', // from the wrapper class
       },
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         fontSize: '0.75rem',
       },
     },

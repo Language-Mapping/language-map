@@ -1,9 +1,11 @@
 import React, { FC } from 'react'
 import { useHistory } from 'react-router-dom'
 import matchSorter from 'match-sorter'
-import Autocomplete from '@material-ui/lab/Autocomplete'
-import { TextField, InputAdornment } from '@material-ui/core'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import Autocomplete from '@mui/material/Autocomplete'
+import { TextField, InputAdornment } from '@mui/material'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
 import { MdClose } from 'react-icons/md'
 import { GoSearch } from 'react-icons/go'
 
@@ -109,7 +111,7 @@ export const SearchByOmnibox: FC = (props) => {
     <Autocomplete
       id="virtualize-demo"
       classes={classes}
-      closeIcon={<MdClose />}
+      clearIcon={<MdClose />}
       // Thought this helped to resolve iOS zoom issue but the cause seems to be
       // when <input> font size is smaller than the page default.
       // blurOnSelect="touch"

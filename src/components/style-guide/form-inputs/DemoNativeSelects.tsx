@@ -1,10 +1,12 @@
 import React, { FC } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import InputLabel from '@material-ui/core/InputLabel'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import FormControl from '@material-ui/core/FormControl'
-import Select from '@material-ui/core/Select'
-import NativeSelect from '@material-ui/core/NativeSelect'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import InputLabel from '@mui/material/InputLabel'
+import FormHelperText from '@mui/material/FormHelperText'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
+import NativeSelect from '@mui/material/NativeSelect'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

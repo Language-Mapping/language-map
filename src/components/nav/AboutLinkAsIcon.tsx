@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { useHistory } from 'react-router-dom'
-import { IconButton } from '@material-ui/core'
+import { IconButton } from '@mui/material'
 import { GoInfo } from 'react-icons/go'
 
 type ListItemLinkProps = {
@@ -21,6 +21,7 @@ export const AboutLinkAsIcon: FC<ListItemLinkProps> = ({
       className={muiClass}
       edge="end"
       onClick={() => history.push(to)}
+      size="large"
     >
       <GoInfo />
     </IconButton>

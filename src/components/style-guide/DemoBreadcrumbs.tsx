@@ -1,7 +1,9 @@
 import React, { FC } from 'react'
 import { Link as RouteLink } from 'react-router-dom'
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles'
-import { Breadcrumbs, Typography, Link } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Breadcrumbs, Typography, Link } from '@mui/material'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

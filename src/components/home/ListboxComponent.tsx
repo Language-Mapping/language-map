@@ -1,5 +1,5 @@
 import React from 'react'
-import { ListSubheader } from '@material-ui/core'
+import { ListSubheader } from '@mui/material'
 import { VariableSizeList, ListChildComponentProps } from 'react-window'
 
 import { useResetCache } from './utils'

@@ -1,6 +1,6 @@
 import React from 'react'
-import { Slide } from '@material-ui/core'
-import { TransitionProps } from '@material-ui/core/transitions'
+import { Slide } from '@mui/material'
+import { TransitionProps } from '@mui/material/transitions'
 
 export const SlideUp = React.forwardRef(function Transition(
   // Don't care, came straight from the MUI example

@@ -1,10 +1,7 @@
 import React, { FC } from 'react'
-import {
-  makeStyles,
-  createStyles,
-  useTheme,
-  Theme,
-} from '@material-ui/core/styles'
+import { useTheme, Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
 import { MdCheck } from 'react-icons/md'
 import { GoCircleSlash } from 'react-icons/go'
 

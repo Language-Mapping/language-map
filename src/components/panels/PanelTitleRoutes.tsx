@@ -1,7 +1,9 @@
 import React, { FC } from 'react'
 import { Route, Switch, Link as RouterLink } from 'react-router-dom'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-import { IconButton, Typography, Tooltip, Hidden } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
+import { IconButton, Typography, Tooltip, Hidden } from '@mui/material'
 
 import { icons } from 'components/config'
 import { routes } from 'components/config/api'
@@ -87,7 +89,7 @@ export const PanelTitleRoutes: FC<{ panelTitle: string }> = (props) => {
     <Switch>
       <Route path="/" exact>
         <div style={{ minWidth: '1.5rem' }} />
-        <Hidden smDown>
+        <Hidden mdDown>
           <PanelTitle text="Search and Display Sites" icon={icons.Home} />
         </Hidden>
         <Hidden mdUp>

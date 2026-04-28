@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { Switch, Route } from 'react-router-dom'
-import { Typography } from '@material-ui/core'
+import { Typography } from '@mui/material'
 
 import { RecordDescription } from 'components/results'
 import { DetailedIntro, LangOrEndoIntro } from 'components/details'

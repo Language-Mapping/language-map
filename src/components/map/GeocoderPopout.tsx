@@ -2,7 +2,10 @@
 import React, { FC, useRef } from 'react'
 import { Map } from 'mapbox-gl'
 import Geocoder from 'react-map-gl-geocoder'
-import { createStyles, makeStyles, Theme } from '@material-ui/core'
+import { Theme } from '@mui/material'
+
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css'
 
