@@ -120,7 +120,7 @@ const MediaModalContent: FC<ModalContentProps> = (props) => {
 
   if (!goods) {
     Sentry.withScope((scope) => {
-      scope.setLevel(Sentry.Severity.Warning) // or should be error maybe?
+      scope.setLevel('warning') // or should be 'error' maybe?
 
       Sentry.captureException(new Error('No video/audio found via API'), {
         tags: {
