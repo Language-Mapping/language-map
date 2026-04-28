@@ -16,7 +16,7 @@ export const wpQueryClient = new QueryClient({
     queries: {
       refetchOnMount: false,
       refetchOnWindowFocus: false,
-      cacheTime: 600000, // 10 minutes
+      gcTime: 600000, // 10 minutes (renamed from cacheTime in v5)
     },
   },
 })
