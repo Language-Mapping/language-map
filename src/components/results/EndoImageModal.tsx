@@ -1,6 +1,8 @@
 import React, { FC, useState } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Button, Typography } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Button, Typography } from '@mui/material'
 
 import { SimpleDialog } from 'components/generic/modals'
 import { correctDropboxURL } from '../../utils'
@@ -23,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     // Smaller than the default so that it is not as large as table modal
     endoModalPaper: {
-      margin: `${theme.spacing(4)}px ${theme.spacing(3)}px`,
+      margin: `${theme.spacing(4)} ${theme.spacing(3)}`,
     },
     image: {
       height: 'auto',

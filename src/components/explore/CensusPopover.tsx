@@ -1,7 +1,9 @@
 import React, { FC, useState } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { Typography, Popover, Button } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
+import { Typography, Popover, Button } from '@mui/material'
 import { FaClipboardList } from 'react-icons/fa'
 import { MdLayersClear, MdLayers } from 'react-icons/md'
 

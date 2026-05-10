@@ -7,9 +7,9 @@ import { TopBar } from 'components/nav'
 // Hoist helper functions (but not vars) to reuse between test cases
 const renderTopBar = () => (
   // Only needed because there are <Link> components
-  <MemoryRouter>
+  (<MemoryRouter>
     <TopBar />
-  </MemoryRouter>
+  </MemoryRouter>)
 )
 
 describe('Formerly testing off-canvas behavhior', () => {

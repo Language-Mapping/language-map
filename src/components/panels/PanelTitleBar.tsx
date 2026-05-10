@@ -1,6 +1,8 @@
 import React, { FC, useState } from 'react'
 import { useLocation, Route, Switch } from 'react-router-dom'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
 import {
   Popover,
   AppBar,
@@ -8,7 +10,7 @@ import {
   IconButton,
   Toolbar,
   Tooltip,
-} from '@material-ui/core'
+} from '@mui/material'
 import { HiOutlineSearch } from 'react-icons/hi'
 
 import { PanelCloseBtn } from 'components/panels'
@@ -27,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
       top: 0,
       width: '100%',
       boxShadow: theme.shadows[12],
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         boxShadow:
           '0px 11px 10px 0px rgb(0 0 0 / 18%), 0px 24px 38px 3px rgb(0 0 0 / 12%), 0px 9px 46px 8px rgb(0 0 0 / 10%)',
       },
@@ -122,7 +124,7 @@ export const PanelTitleBar: FC<PanelTitleBarProps> = (props) => {
               {mapRef && <SearchTabs mapRef={mapRef} />}
             </ToggleSearchMenuBtn>
           </Route>
-          <Hidden smDown>
+          <Hidden mdDown>
             <PanelCloseBtn />
           </Hidden>
         </div>

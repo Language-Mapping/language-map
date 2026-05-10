@@ -1,10 +1,12 @@
 import React, { FC } from 'react'
 import { useHistory } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { TextField, Typography, ListSubheader } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { TextField, Typography, ListSubheader } from '@mui/material'
 import Autocomplete, {
   AutocompleteRenderGroupParams,
-} from '@material-ui/lab/Autocomplete'
+} from '@mui/material/Autocomplete'
 
 import { useMapToolsDispatch, useMapToolsState } from 'components/context'
 import { UItextFromAirtable, useUItext } from 'components/generic'
@@ -42,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     listbox: {
       paddingTop: 0,
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         maxHeight: 225, // maybe helps prevent unwanted upward-opening menu?
       },
     },

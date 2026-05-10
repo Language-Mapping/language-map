@@ -1,12 +1,14 @@
 import React, { FC, useState } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 import {
   Button,
   Checkbox,
   DialogActions,
   FormControlLabel,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 
 import { HIDE_WELCOME_LOCAL_STG_KEY } from './config'
 

@@ -1,8 +1,10 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable react/display-name */
 import React, { FC } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Typography } from '@mui/material'
 import { BsTable } from 'react-icons/bs'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -11,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
       gridArea: 'title',
       display: 'flex',
       alignItems: 'center',
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         '& .MuiFormControl-root': { paddingLeft: 8 },
       },
     },

@@ -1,7 +1,9 @@
 import React, { FC, useState } from 'react'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
 import clsx from 'clsx'
-import { red } from '@material-ui/core/colors'
+import { red } from '@mui/material/colors'
 import {
   Avatar,
   Button,
@@ -14,7 +16,7 @@ import {
   Collapse,
   IconButton,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 
 import { MdShare, MdMoreVert, MdExpandMore } from 'react-icons/md'
 import { GoGraph } from 'react-icons/go'
@@ -69,7 +71,7 @@ export const DemoCard: FC = () => {
           </Avatar>
         }
         action={
-          <IconButton aria-label="settings">
+          <IconButton aria-label="settings" size="large">
             <MdMoreVert />
           </IconButton>
         }
@@ -90,10 +92,10 @@ export const DemoCard: FC = () => {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="statistics">
+        <IconButton aria-label="statistics" size="large">
           <GoGraph />
         </IconButton>
-        <IconButton aria-label="share">
+        <IconButton aria-label="share" size="large">
           <MdShare />
         </IconButton>
         <IconButton
@@ -103,6 +105,7 @@ export const DemoCard: FC = () => {
           onClick={handleExpandClick}
           aria-expanded={expanded}
           aria-label="show more"
+          size="large"
         >
           <MdExpandMore />
         </IconButton>

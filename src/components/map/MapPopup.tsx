@@ -1,8 +1,10 @@
 import React, { FC } from 'react'
 import { Route, useParams, Switch } from 'react-router-dom'
 import { Popup } from 'react-map-gl'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Typography } from '@mui/material'
 
 import { InstanceLevelSchema, useMapToolsState } from 'components/context'
 import { useAirtable } from 'components/explore/hooks'
@@ -26,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
       wordWrap: 'break-word',
       '& .mapboxgl-popup-content': {
         // Leave room for "x" close button
-        padding: `${theme.spacing(1)}px ${theme.spacing(3)}px`,
+        padding: `${theme.spacing(1)} ${theme.spacing(3)}`,
       },
       '& .mapboxgl-popup-close-button': {
         fontSize: '1.25rem',

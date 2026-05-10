@@ -1,6 +1,8 @@
 import React, { FC, useState } from 'react'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import { SpeedDial, SpeedDialAction } from '@material-ui/lab'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
+import { SpeedDial, SpeedDialAction } from '@mui/material'
 import { MdYoutubeSearchedFor } from 'react-icons/md'
 import { FiLayers } from 'react-icons/fi'
 import { FaSearchPlus, FaSearchMinus } from 'react-icons/fa'
@@ -14,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
       '& svg': {
         fontSize: '1.25rem',
       },
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         position: 'absolute',
         right: '0.5rem',
         top: -4, // deals w/padding on btn root

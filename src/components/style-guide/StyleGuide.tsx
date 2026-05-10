@@ -1,6 +1,8 @@
 import React, { FC } from 'react'
-import { Theme, createStyles, makeStyles } from '@material-ui/core/styles'
-import { Container, Paper, Typography } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Container, Paper, Typography } from '@mui/material'
 
 import {
   DemoBreadcrumbs,
@@ -21,12 +23,12 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       '& .MuiPaper-root': {
-        padding: `${theme.spacing(3)}px ${theme.spacing(3)}px`,
+        padding: `${theme.spacing(3)} ${theme.spacing(3)}`,
         marginTop: theme.spacing(4),
         marginBottom: theme.spacing(4),
       },
       '& .MuiPaper-root .MuiPaper-root': {
-        padding: `${theme.spacing(2)}px ${theme.spacing(2)}px`,
+        padding: `${theme.spacing(2)} ${theme.spacing(2)}`,
         marginTop: theme.spacing(4),
         marginBottom: theme.spacing(4),
       },

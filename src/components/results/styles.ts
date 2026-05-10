@@ -1,4 +1,7 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
 const footerCell = '.MuiTableCell-footer'
 const footerWrap = '.MuiPaper-root > .MuiTable-root'
@@ -7,7 +10,7 @@ const headCell = '.MuiTableCell-head'
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     resultsModalRoot: {
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         '& .MuiTableFooter-root .MuiIconButton-root': {
           padding: 4, // waaaaayy too much default padding, can't see on mobile
         },
@@ -30,7 +33,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         backgroundColor: theme.palette.background.paper,
       },
       // e.g. the Filter icon at beginning of column filters
-      '& .MuiInputAdornment-root': { color: theme.palette.text.hint },
+      '& .MuiInputAdornment-root': { color: theme.palette.text.disabled },
       [`& ${headCell}`]: {
         backgroundColor: 'inherit',
         color: theme.palette.secondary.light,
@@ -71,9 +74,9 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     // Squeeze a bit more room out of the dialog
     resultsModalPaper: {
-      height: `calc(100% - ${theme.spacing(2)}px)`,
+      height: `calc(100% - ${theme.spacing(2)})`,
       maxHeight: '100%',
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         height: '100%',
         margin: 0,
       },

@@ -1,5 +1,8 @@
 import React, { FC } from 'react'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
 
 import { BasicExploreIntro } from 'components/explore'
 import { UItextFromAirtable } from 'components/generic'

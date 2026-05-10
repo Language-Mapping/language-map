@@ -1,6 +1,6 @@
 import React, { FC, useContext, useEffect, useState } from 'react'
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
-import { Dialog } from '@material-ui/core'
+import { Dialog } from '@mui/material'
 
 import { DialogCloseBtn, SlideUp } from 'components/generic/modals'
 import { InstanceLevelSchema, GlobalContext } from 'components/context'
@@ -108,6 +108,7 @@ export const ResultsModal: FC = () => {
       aria-describedby="results-modal-dialog-description"
       maxWidth="lg"
       PaperProps={{ className: classes.resultsModalPaper }}
+      fullScreen
     >
       <DialogCloseBtn onClose={handleClose} tooltip="Exit to map" />
       {error ? 'An error occurred fetching table data' : null}

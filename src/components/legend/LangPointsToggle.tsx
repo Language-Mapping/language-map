@@ -1,7 +1,10 @@
 // TODO: rename file to something logical; mv it and all children to ../local
 import React, { FC } from 'react'
-import { FormControlLabel, Switch } from '@material-ui/core'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { FormControlLabel, Switch } from '@mui/material'
+import { Theme } from '@mui/material/styles'
+
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
 import {
   useLabelAndSymbDispatch,
@@ -29,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     smallerText: {
       fontSize: '0.75rem',
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         fontSize: '0.65rem',
       },
     },

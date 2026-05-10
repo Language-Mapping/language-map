@@ -1,12 +1,7 @@
 import React, { FC } from 'react'
-import {
-  createStyles,
-  makeStyles,
-  Theme,
-  Fab,
-  fade,
-  Zoom,
-} from '@material-ui/core'
+import { Theme, Fab, alpha, Zoom } from '@mui/material'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 import { FaArrowCircleUp } from 'react-icons/fa'
 import { BOTTOM_NAV_HEIGHT } from 'components/nav/config'
 
@@ -21,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
       position: 'absolute',
       bottom: BOTTOM_NAV_HEIGHT + 8,
       right: '1.25rem',
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         bottom: '1rem',
         right: '1rem',
       },
@@ -30,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: 36,
       height: 36,
       minHeight: 36,
-      backgroundColor: fade(theme.palette.secondary.main, 0.75),
+      backgroundColor: alpha(theme.palette.secondary.main, 0.75),
     },
   })
 )

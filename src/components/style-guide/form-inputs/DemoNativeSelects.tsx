@@ -1,10 +1,12 @@
 import React, { FC } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import InputLabel from '@material-ui/core/InputLabel'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import FormControl from '@material-ui/core/FormControl'
-import Select from '@material-ui/core/Select'
-import NativeSelect from '@material-ui/core/NativeSelect'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import InputLabel from '@mui/material/InputLabel'
+import FormHelperText from '@mui/material/FormHelperText'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
+import NativeSelect from '@mui/material/NativeSelect'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,13 +30,13 @@ export const DemoNativeSelects: FC = () => {
     name: 'hai',
   })
 
-  const handleChange = (
-    event: React.ChangeEvent<{ name?: string; value: unknown }>
-  ) => {
-    const name = event.target.name as keyof typeof state
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleChange = (event: any) => {
+    const target = event.target as { name?: string; value: unknown }
+    const name = target.name as keyof typeof state
     setState({
       ...state,
-      [name]: event.target.value,
+      [name]: target.value,
     })
   }
 

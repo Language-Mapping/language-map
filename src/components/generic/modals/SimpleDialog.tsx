@@ -1,16 +1,13 @@
 import React, { FC } from 'react'
-import {
-  createStyles,
-  makeStyles,
-  useTheme,
-  Theme,
-} from '@material-ui/core/styles'
+import { useTheme, Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 import {
   Dialog,
   DialogContent,
   DialogProps,
   useMediaQuery,
-} from '@material-ui/core'
+} from '@mui/material'
 
 import { DialogCloseBtn } from './DialogCloseBtn'
 import { SlideUp } from './SlideUp'
@@ -19,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     dialogContent: {
       padding: theme.spacing(3),
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         padding: '2rem 1rem', // make media btns fit
       },
     },

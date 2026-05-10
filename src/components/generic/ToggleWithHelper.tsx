@@ -1,6 +1,8 @@
 import React, { FC } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { FormControlLabel, Switch } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { FormControlLabel, Switch } from '@mui/material'
 
 import { ToggleWithHelperProps } from './types'
 import { SubtleText } from './SubtleText'

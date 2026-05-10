@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import ReactMarkdown from 'react-markdown'
 import { Link as RouterLink } from 'react-router-dom'
-import { Link } from '@material-ui/core'
+import { Link } from '@mui/material'
 
 import { LinkRenderer, MarkdownRootElemType } from './types'
 

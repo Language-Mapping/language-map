@@ -1,6 +1,8 @@
 import React, { FC, useState } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Drawer } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Drawer } from '@mui/material'
 
 import { Nav } from 'components/nav'
 import { SimpleDialog } from 'components/generic/modals'

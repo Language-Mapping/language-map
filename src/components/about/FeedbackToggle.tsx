@@ -1,6 +1,8 @@
 import React, { FC, useState } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Button } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Button } from '@mui/material'
 
 import { FeedbackModal } from 'components/about'
 import { Explanation, UItextFromAirtable } from 'components/generic'

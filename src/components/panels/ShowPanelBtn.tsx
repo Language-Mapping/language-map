@@ -1,7 +1,9 @@
 import React, { FC } from 'react'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
 import { usePanelDispatch } from 'components/panels'
-import { Tooltip, Zoom, Fab } from '@material-ui/core'
+import { Tooltip, Zoom, Fab } from '@mui/material'
 import { MdKeyboardArrowRight } from 'react-icons/md'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -11,12 +13,10 @@ const useStyles = makeStyles((theme: Theme) =>
       top: '1rem',
       left: '1rem',
       zIndex: 1,
-      [theme.breakpoints.down('sm')]: {
+      fontSize: '1.5rem',
+      [theme.breakpoints.down('md')]: {
         display: 'none', // TODO: think it through
       },
-    },
-    label: {
-      fontSize: '1.5rem',
     },
   })
 )
@@ -38,8 +38,8 @@ export const ShowPanelBtn: FC<{ panelOpen: boolean }> = (props) => {
           size="small"
           aria-label="panel open"
           color="secondary"
-          variant="round"
-          classes={{ root: classes.root, label: classes.label }}
+          variant="circular"
+          classes={{ root: classes.root }}
           onClick={handleClick}
         >
           <MdKeyboardArrowRight />

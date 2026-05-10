@@ -1,6 +1,8 @@
 import React, { FC } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { IconButton } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { IconButton } from '@mui/material'
 import { MdClose } from 'react-icons/md'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,6 +36,7 @@ export const DialogCloseBtn: FC<DialogCloseBtnComponent> = (props) => {
       onClick={onClose}
       className={classes.closeBtnRoot}
       title={tooltip}
+      size="large"
     >
       <MdClose />
     </IconButton>

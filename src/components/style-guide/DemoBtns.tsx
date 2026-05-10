@@ -1,12 +1,14 @@
 import React, { FC } from 'react'
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
 import {
   Button,
   ButtonGroup,
   IconButton,
   Paper,
   Typography,
-} from '@material-ui/core'
+} from '@mui/material'
 import { MdDelete } from 'react-icons/md'
 
 import { DemoSplitBtn } from 'components/style-guide'
@@ -124,13 +126,13 @@ export const DemoBtns: FC = () => {
           <IconButton aria-label="delete" size="small">
             <MdDelete fontSize="inherit" />
           </IconButton>
-          <IconButton aria-label="delete">
+          <IconButton aria-label="delete" size="large">
             <MdDelete fontSize="small" />
           </IconButton>
-          <IconButton aria-label="delete">
+          <IconButton aria-label="delete" size="large">
             <MdDelete />
           </IconButton>
-          <IconButton aria-label="delete">
+          <IconButton aria-label="delete" size="large">
             <MdDelete fontSize="large" />
           </IconButton>
         </div>
@@ -150,7 +152,7 @@ export const DemoBtns: FC = () => {
           >
             Text first
           </Button>
-          <Button variant="contained" color="default" startIcon={<MdDelete />}>
+          <Button variant="contained" startIcon={<MdDelete />}>
             Default + icon
           </Button>
           <Button

@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
-import { Button } from '@material-ui/core'
+import { Button } from '@mui/material'
 import { IoIosCloseCircleOutline } from 'react-icons/io'
 
 import { routes } from 'components/config/api'

@@ -1,5 +1,7 @@
 import React, { FC } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
 import { Link as RouteLink } from 'react-router-dom'
 
 import { routes } from 'components/config/api'
@@ -25,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('xl')]: {
         top: '0.75rem',
       },
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         display: 'none',
       },
     },

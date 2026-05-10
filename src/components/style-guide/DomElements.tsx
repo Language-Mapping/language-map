@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Link, Paper, Typography } from '@material-ui/core'
+import { Link, Paper, Typography } from '@mui/material'
 
 const fakeCode = `<HeyThere>
   <HowDidYou>

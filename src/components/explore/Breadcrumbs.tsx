@@ -1,6 +1,8 @@
 import React, { FC } from 'react'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
-import { Link } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
+import { Link } from '@mui/material'
 import {
   useLocation,
   Link as RouterLink,
@@ -17,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: 'center',
       display: 'flex',
       overflow: 'hidden',
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         overflowX: 'auto', // Easter egg: scroll sideways on small screens
       },
       '& > :last-child': {

@@ -1,16 +1,13 @@
 import React, { FC } from 'react'
-import {
-  makeStyles,
-  createStyles,
-  useTheme,
-  Theme,
-} from '@material-ui/core/styles'
+import { useTheme, Theme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import createStyles from '@mui/styles/createStyles'
 import { MdCheck } from 'react-icons/md'
 import { GoCircleSlash } from 'react-icons/go'
 
 import { LegendSwatch } from 'components/legend'
 import { InstanceLevelSchema } from 'components/context/types'
-import { CellProps, MediaColumnCellProps } from './types'
+import { LangCellContext } from './types'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -20,9 +17,13 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const MediaColumnCell: FC<MediaColumnCellProps> = (props) => {
+export const MediaColumnCell: FC<{
+  info: LangCellContext
+  columnName: keyof InstanceLevelSchema
+}> = (props) => {
   const classes = useStyles()
-  const { data, columnName } = props
+  const { info, columnName } = props
+  const data = info.row.original
 
   return (
     <div className={classes.disabled} style={{ paddingLeft: 16 }}>
@@ -31,32 +32,32 @@ export const MediaColumnCell: FC<MediaColumnCellProps> = (props) => {
   )
 }
 
-export const GlobalSpeakers: FC<CellProps> = (props) => {
+export const GlobalSpeakers: FC<{ info: LangCellContext }> = (props) => {
   const classes = useStyles()
-  const { data } = props
+  const { info } = props
+  const data = info.row.original
 
   if (!data['Global Speaker Total']) return null
 
   return (
-    // Right-aligned number w/left-aligned column heading was requested
     <div className={classes.disabled} style={{ paddingRight: 16 }}>
       {data['Global Speaker Total'].toLocaleString()}
     </div>
   )
 }
 
-export const CommStatus: FC<CellProps> = (props) => {
+export const CommStatus: FC<{ info: LangCellContext }> = (props) => {
   const classes = useStyles()
-  const { data } = props
+  const { info } = props
+  const data = info.row.original
 
   return <div className={classes.disabled}>{data.Status}</div>
 }
 
-export const CommSize: FC<{
-  data: InstanceLevelSchema
-}> = (props) => {
+export const CommSize: FC<{ info: LangCellContext }> = (props) => {
   const theme = useTheme()
-  const { data } = props
+  const { info } = props
+  const data = info.row.original
   const { Size, sizeColor } = data
 
   return (
@@ -75,8 +76,9 @@ export const CommSize: FC<{
   )
 }
 
-export const WorldRegion: FC<CellProps> = (props) => {
-  const { data } = props
+export const WorldRegion: FC<{ info: LangCellContext }> = (props) => {
+  const { info } = props
+  const data = info.row.original
 
   return (
     <LegendSwatch

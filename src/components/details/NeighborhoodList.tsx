@@ -1,7 +1,9 @@
 import React, { FC } from 'react'
 import { Link as RouterLink, Route, Switch } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Typography, Link } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Typography, Link } from '@mui/material'
 import { BiMapPin } from 'react-icons/bi'
 
 import { CustomCard, CardListWrap } from 'components/explore'

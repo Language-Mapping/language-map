@@ -1,47 +1,41 @@
 import React, { FC } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { FormControlLabel, Checkbox } from '@material-ui/core'
+import { Checkbox } from '@mui/material'
+import { Column } from '@tanstack/react-table'
 
-import * as Types from './types'
+import { InstanceLevelSchema } from 'components/context/types'
+import { LangFilterFn } from './types'
 
-const CHECK_STRING = 'http'
+const CHECK_VALUE = 'http'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      color: theme.palette.secondary.main,
-      marginLeft: 2, // shaaaaky
-    },
-  })
-)
+// TanStack column filter that matches rows whose value contains "http"
+// (used for the Audio/Video URL columns).
+export const mediaUrlFilterFn: LangFilterFn = (row, columnId, filterValue) => {
+  if (!filterValue) return true
 
-// CRED: (partial anyway):
-// https://github.com/mbrn/material-table/issues/671#issuecomment-651743451
-export const MediaColumnFilter: FC<Types.FilterComponentProps> = (props) => {
-  const classes = useStyles()
-  const { columnDef, onFilterChanged } = props
-  const { tableData, field } = columnDef
-  const { filterValue } = tableData
-  const checked = filterValue === CHECK_STRING
-  const inputElemName = `${field?.replace(/\s/g, '-').toLowerCase()}-filter`
+  const value = row.getValue(columnId)
 
-  // REFACTOR: useMemo maybe? This gets run for EVERY record, and it's the same
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onFilterChanged(tableData.id, e.target.checked ? CHECK_STRING : '')
+  if (!value) return false
+  if (typeof value === 'string') return value.includes(CHECK_VALUE)
+  if (Array.isArray(value)) {
+    return value.some((v) => typeof v === 'string' && v.includes(CHECK_VALUE))
   }
 
+  return false
+}
+
+export const MediaColumnFilter: FC<{
+  column: Column<InstanceLevelSchema, unknown>
+}> = ({ column }) => {
+  const checked = (column.getFilterValue() as boolean) || false
+
   return (
-    <FormControlLabel
-      classes={{ root: classes.root }}
-      control={
-        <Checkbox
-          checked={checked}
-          onChange={handleChange}
-          name={inputElemName}
-          size="small"
-        />
-      }
-      label=""
+    <Checkbox
+      size="small"
+      color="secondary"
+      checked={checked}
+      title="Show only rows with media"
+      onChange={(e) => column.setFilterValue(e.target.checked || undefined)}
+      sx={{ padding: 0.5 }}
     />
   )
 }

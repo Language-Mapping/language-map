@@ -1,8 +1,10 @@
 import React, { FC } from 'react'
 import { isMobile } from 'react-device-detect'
 import { Link as RouterLink } from 'react-router-dom'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Paper } from '@material-ui/core'
+import { Theme } from '@mui/material/styles'
+import createStyles from '@mui/styles/createStyles'
+import makeStyles from '@mui/styles/makeStyles'
+import { Paper } from '@mui/material'
 
 import * as Types from './types'
 
