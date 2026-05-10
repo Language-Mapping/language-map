@@ -87,7 +87,7 @@ export const DomElements: FC = () => {
           Code
         </Typography>
         <p>
-          It's unlike that we'll have any code to display, but the {`<pre>`}{' '}
+          It's unlike that we'll have any code to display, but the {'<pre>'}{' '}
           element could be useful in other cases (although I can't think of any
           at the moment). Just including it since it came over from the style
           guide I started from.

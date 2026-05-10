@@ -77,9 +77,9 @@ export const ReadMore: FC<ReadMoreProps> = (props) => {
         setShowDescrip(!showDescrip)
       }}
     >
-      <span className={classes.innerText}>{`Read ${
-        showDescrip ? 'less' : 'more'
-      }`}</span>
+      <span className={classes.innerText}>
+        {`Read ${showDescrip ? 'less' : 'more'}`}
+      </span>
     </Button>
   )
 
