@@ -5,7 +5,6 @@ import { Typography } from '@mui/material'
 import { RecordDescription } from 'components/results'
 import { DetailedIntro, LangOrEndoIntro } from 'components/details'
 import { FeedbackToggle } from 'components/about'
-import { routes } from 'components/config/api'
 import { NoFeatSel } from './NoFeatSel'
 import { DetailsProps } from './types'
 import { useDetails } from './hooks'
@@ -14,7 +13,7 @@ import { useDetails } from './hooks'
 export const DetailsPanel: FC = () => {
   return (
     <Routes>
-      <Route path={routes.details} element={<DetailsWrap />} />
+      <Route index element={<DetailsWrap />} />
       <Route path="*" element={<NoFeatSel />} />
     </Routes>
   )
