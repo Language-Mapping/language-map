@@ -5,10 +5,39 @@ import { Typography } from '@mui/material'
 import { RecordDescription } from 'components/results'
 import { DetailedIntro, LangOrEndoIntro } from 'components/details'
 import { FeedbackToggle } from 'components/about'
-import { routes } from 'components/config/api'
 import { NoFeatSel } from './NoFeatSel'
 import { DetailsProps } from './types'
 import { useDetails } from './hooks'
+
+// Just the routes so that the hook with `useParams` will work
+export const DetailsPanel: FC = () => {
+  return (
+    <Routes>
+      <Route index element={<DetailsWrap />} />
+      <Route path="*" element={<NoFeatSel />} />
+    </Routes>
+  )
+}
+
+// Responsible for hitting the hook and passing data
+const DetailsWrap: FC = () => {
+  const {
+    isLoading,
+    error,
+    instanceDescripID,
+    langDescripID,
+    data,
+    id,
+    notFound,
+  } = useDetails()
+
+  if (isLoading) return null
+  if (error) return <p>Something went wrong looking for this community.</p>
+  if (notFound)
+    return <NoFeatSel reason={`No community found with an id of ${id}.`} />
+
+  return <Details {...{ instanceDescripID, langDescripID, data }} />
+}
 
 // Used in /Explore/Language/:language/:id and /Data/:id
 export const Details: FC<DetailsProps> = (props) => {
@@ -39,35 +68,5 @@ export const Details: FC<DetailsProps> = (props) => {
       )}
       <FeedbackToggle language={Language} />
     </>
-  )
-}
-
-// Responsible for hitting the hook and passing data
-const DetailsWrap: FC = () => {
-  const {
-    isLoading,
-    error,
-    instanceDescripID,
-    langDescripID,
-    data,
-    id,
-    notFound,
-  } = useDetails()
-
-  if (isLoading) return null
-  if (error) return <p>Something went wrong looking for this community.</p>
-  if (notFound)
-    return <NoFeatSel reason={`No community found with an id of ${id}.`} />
-
-  return <Details {...{ instanceDescripID, langDescripID, data }} />
-}
-
-// Just the routes so that the hook with `useParams` will work
-export const DetailsPanel: FC = () => {
-  return (
-    <Routes>
-      <Route path={routes.details} element={<DetailsWrap />} />
-      <Route path="*" element={<NoFeatSel />} />
-    </Routes>
   )
 }
