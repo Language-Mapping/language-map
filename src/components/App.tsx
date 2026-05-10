@@ -20,19 +20,16 @@ Airtable.configure({ apiKey: AIRTABLE_API_KEY })
 
 export const App: FC = () => {
   return (
-    /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-    // @ts-ignore — Sentry 5.x's ErrorBoundary props don't include children;
-    // fixed in @sentry/react v6+ which is a future phase.
     <Sentry.ErrorBoundary
-      fallback={(props) => (
+      fallback={({ error, componentStack, resetError }) => (
         <>
           <div>You have encountered an error</div>
-          <div>{(props as { error: Error }).error.toString()}</div>
-          <div>{(props as { componentStack: string }).componentStack}</div>
+          <div>{(error as Error).toString()}</div>
+          <div>{componentStack}</div>
           <button
             type="button"
             onClick={() => {
-              ;(props as { resetError: () => void }).resetError()
+              resetError()
             }}
           >
             Click here to reset

@@ -41,7 +41,7 @@ radial-gradient(ellipse at bottom, ${theme.palette.primary.dark}, transparent)`
     bottomNavActionRoot: {
       minWidth: 'auto', // 80 = too-large default,
       // Probably NOT light/dark theme interchangeable:
-      outline: `solid 1px hsla(168, 41%, 19%, 0.15)`,
+      outline: 'solid 1px hsla(168, 41%, 19%, 0.15)',
       transition: 'all 300ms ease',
       flexBasis: '20%',
       ...(!isMobile && desktopStyles),

@@ -2,11 +2,6 @@ import React, { FC } from 'react'
 
 import { useIcon } from 'components/explore/hooks'
 
-type FlagWithTitle = {
-  countryName: string
-  omitText?: boolean
-}
-
 export const FlagWithTitle: FC<{
   altText?: string
   omitText?: boolean

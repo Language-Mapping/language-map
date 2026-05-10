@@ -46,13 +46,16 @@ export const prepAirtableResponse = (
       },
     ]
 
-  const prepped = rows.reduce((all, thisOne) => {
-    const groupName = thisOne[groupByField] as string
-    const existing = all[groupName]
-    const items = existing ? [...existing.items, thisOne] : [thisOne]
+  const prepped = rows.reduce(
+    (all, thisOne) => {
+      const groupName = thisOne[groupByField] as string
+      const existing = all[groupName]
+      const items = existing ? [...existing.items, thisOne] : [thisOne]
 
-    return { ...all, [groupName]: { groupName, items } }
-  }, {} as { [key: string]: LegendProps })
+      return { ...all, [groupName]: { groupName, items } }
+    },
+    {} as { [key: string]: LegendProps }
+  )
 
   return Object.keys(prepped)
     .sort() // assumes intent is alphbetical sorting

@@ -16,12 +16,8 @@ export const LangMbSrcAndLayer: FC<LangMbSrcAndLayerProps> = (props) => {
   const selLangPointCoords = useSelLangPointCoords()
   const { lat, lon } = selLangPointCoords || {}
 
-  const {
-    activeLabelID,
-    activeSymbGroupID,
-    hideLangPoints,
-    hideLangLabels,
-  } = symbLabelState
+  const { activeLabelID, activeSymbGroupID, hideLangPoints, hideLangLabels } =
+    symbLabelState
   const {
     data: fontsData,
     isLoading: areFontsLoading,
@@ -31,9 +27,8 @@ export const LangMbSrcAndLayer: FC<LangMbSrcAndLayerProps> = (props) => {
     filterByFormula: "{Font} != ''",
   })
 
-  const { data: layersData, error: layersError } = useLayersConfig(
-    activeSymbGroupID
-  )
+  const { data: layersData, error: layersError } =
+    useLayersConfig(activeSymbGroupID)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [endoFonts, setEndoFonts] = useState<any[]>()

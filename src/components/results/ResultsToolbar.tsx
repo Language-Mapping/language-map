@@ -44,7 +44,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       gridTemplateColumns: 'auto 1fr',
       '& .MuiIconButton-root': { padding: 4 },
       [theme.breakpoints.up('md')]: {
-        gridTemplateAreas: `"title buttons exports local searchAndActions"`,
+        gridTemplateAreas: '"title buttons exports local searchAndActions"',
         gridTemplateColumns: 'auto auto auto auto 1fr',
         gridTemplateRows: 'auto',
         padding: '0.75em 1em',
@@ -178,6 +178,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
         >
           View in map
         </Button>
+        {/* eslint-disable-next-line @typescript-eslint/no-use-before-define */}
         <ColumnVisibilityMenu toggles={columnToggles} />
         <Button
           title="Clear table filters"

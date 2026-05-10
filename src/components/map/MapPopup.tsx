@@ -132,7 +132,11 @@ const PolygonPopup: FC<PolygonPopupProps> = (props) => {
 
 const CensusPopup: FC<MapPopupsProps> = (props) => {
   const { handleClose } = props
-  const { field = '', id = '', table = 'tract' } = useParams() as {
+  const {
+    field = '',
+    id = '',
+    table = 'tract',
+  } = useParams() as {
     id: string
     field: string
     table: 'puma' | 'tract' // TODO: tighten up everywhere

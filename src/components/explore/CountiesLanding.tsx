@@ -20,7 +20,11 @@ export const CountiesLanding: FC = (props) => {
     filterByFormula: `{name} = "${tableName}"`,
   })
 
-  const { data: instanceData, error, isLoading } = useAirtable<{
+  const {
+    data: instanceData,
+    error,
+    isLoading,
+  } = useAirtable<{
     name: string
     languages: string
   }>('County', {

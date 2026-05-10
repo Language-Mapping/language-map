@@ -3,7 +3,7 @@ import { FC, useEffect } from 'react'
 // TODO: possibly this for preserving panel scroll position:
 // https://codesandbox.io/s/m72wvynqr9?file=/src/useScroll.js
 
-type ScrollToTopProps = { elemID: string; trigger?: any }
+type ScrollToTopProps = { elemID: string; trigger?: unknown }
 
 export const ScrollToTopOnMount: FC<ScrollToTopProps> = (props) => {
   const { elemID, trigger } = props

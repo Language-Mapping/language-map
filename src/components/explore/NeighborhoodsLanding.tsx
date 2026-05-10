@@ -24,9 +24,11 @@ export const NeighborhoodsLanding: FC = (props) => {
     filterByFormula: `{name} = "${tableName}"`,
   })
 
-  const { data: instanceData, error, isLoading } = useAirtable<
-    TonsWithAddl & { County?: string }
-  >('Neighborhood', {
+  const {
+    data: instanceData,
+    error,
+    isLoading,
+  } = useAirtable<TonsWithAddl & { County?: string }>('Neighborhood', {
     fields,
     ...(filterByFormula && { filterByFormula }),
     sort: [{ field: 'name' }],

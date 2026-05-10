@@ -58,12 +58,8 @@ const useHelperText = (): UseHelperTextReturn => {
 export const MapOptionsMenu: FC<MapOptionsMenuProps> = (props) => {
   const { anchorEl, setAnchorEl } = props
   const classes = useStyles()
-  const {
-    showCounties,
-    showNeighbs,
-    geolocActive,
-    censusActiveField,
-  } = useMapToolsState()
+  const { showCounties, showNeighbs, geolocActive, censusActiveField } =
+    useMapToolsState()
   const mapToolsDispatch = useMapToolsDispatch()
   const { neighbsHelp, countiesHelp, geolocHelp } = useHelperText()
   const activeField = censusActiveField?.id

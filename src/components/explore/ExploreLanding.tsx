@@ -23,14 +23,15 @@ export const ExploreLanding: FC<MidLevelExploreProps> = (props) => {
     filterByFormula: `{name} = "${tableName}"`,
   })
 
-  const { data: instanceData, error, isLoading } = useAirtable<TonsWithAddl>(
-    tableName,
-    {
-      fields,
-      ...(filterByFormula && { filterByFormula }),
-      sort: [{ field: sortByField }],
-    }
-  )
+  const {
+    data: instanceData,
+    error,
+    isLoading,
+  } = useAirtable<TonsWithAddl>(tableName, {
+    fields,
+    ...(filterByFormula && { filterByFormula }),
+    sort: [{ field: sortByField }],
+  })
 
   if (error || landingError) {
     return (

@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
         width: panelWidths.mid,
         opacity: (props: Style) => (props.open ? 1 : 0),
         transform: (props: Style) =>
-          props.open ? 'translateX(0)' : `translateX(-100%)`,
+          props.open ? 'translateX(0)' : 'translateX(-100%)',
       },
       [theme.breakpoints.up('xl')]: {
         width: panelWidths.midLarge,
