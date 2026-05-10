@@ -37,3 +37,6 @@ yarn-error.log*
 
 # Notes and TODOs, etc.
 _NOTES.md
+
+# AI
+.claude/settings.local.json
