@@ -1,5 +1,5 @@
 import React, { FC, useContext, useEffect, useState } from 'react'
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom'
+import { useLocation, useMatch, useNavigate } from 'react-router-dom'
 import { Dialog } from '@mui/material'
 
 import { DialogCloseBtn, SlideUp } from 'components/generic/modals'
@@ -41,12 +41,11 @@ export const ResultsModal: FC = () => {
   const classes = useStyles()
   const { dispatch } = useContext(GlobalContext)
 
-  const history = useHistory()
+  const navigate = useNavigate()
   const loc = useLocation()
-  const match = useRouteMatch(routes.data)
-  const { pathname: currPathname, state: locState } = useLocation<
-    LocWithState
-  >() as LocWithState
+  const match = useMatch(`${routes.data}/*`)
+  const { pathname: currPathname, state } = loc
+  const locState = (state as LocWithState['state']) || null
 
   const [lastLoc, setLastLoc] = useState()
   const { data, isLoading, error } = useAirtable<InstanceLevelSchema>('Data', {
@@ -84,14 +83,14 @@ export const ResultsModal: FC = () => {
   // avoids an infinite cycle of table-help-table backness.
   const handleClose = (): void => {
     if (locState && locState?.from === routes.help) {
-      history.push('/')
+      navigate('/')
     } else {
-      history.push({
+      navigate(
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore // TODO: take some time, fix it
-        pathname: lastLoc?.pathname || '/',
-        state: { from: currPathname },
-      })
+        lastLoc?.pathname || '/',
+        { state: { from: currPathname } }
+      )
     }
   }
 

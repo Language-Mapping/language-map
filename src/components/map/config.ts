@@ -25,15 +25,12 @@ export const allPolyLayersConfig = {
   ...nonCensusPolygonConfig,
 }
 
-export const mapProps: InitialMapProps = {
+export const mapProps: Partial<InitialMapProps> = {
   attributionControl: false,
-  className: 'mb-language-map',
-  clickRadius: 4, // much comfier for small points on small screens
-  height: '100%',
-  mapboxApiAccessToken: MAPBOX_TOKEN,
-  mapOptions: { logoPosition: 'bottom-left' },
+  mapboxAccessToken: MAPBOX_TOKEN,
+  logoPosition: 'bottom-left',
   maxZoom: 18, // 18 is kinda misleading w/the dispersed points, but looks good
-  width: '100%',
+  style: { height: '100%', width: '100%' },
 }
 
 // This is for #3 above. It should include the 5 boroughs and bits of NJ, and

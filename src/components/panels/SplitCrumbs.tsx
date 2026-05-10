@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export const SplitCrumbs: FC = () => {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
-  const loc = useLocation<{ pathname: string }>()
+  const loc = useLocation()
   const { pathname = '/' } = loc
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {

@@ -1,4 +1,4 @@
-import { InteractiveMap } from 'react-map-gl'
+import { MapRef } from 'react-map-gl'
 import { RouteLocation } from 'components/config/types'
 import { MapProps } from 'components/map/types'
 
@@ -13,7 +13,7 @@ export type MapPanel = {
 export type PanelWrapProps = Pick<MapProps, 'mapRef'>
 
 export type SearchTabsProps = {
-  mapRef: React.RefObject<InteractiveMap>
+  mapRef: React.RefObject<MapRef>
 }
 
 export type TabPanelProps = {
@@ -22,5 +22,5 @@ export type TabPanelProps = {
 }
 
 export type PanelTitleBarProps = {
-  mapRef?: React.RefObject<InteractiveMap>
+  mapRef?: React.RefObject<MapRef>
 }

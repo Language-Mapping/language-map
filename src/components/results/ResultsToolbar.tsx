@@ -1,5 +1,5 @@
 import React, { FC, useContext, useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
@@ -106,7 +106,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
   } = props
   const { state, dispatch } = useContext(GlobalContext)
   const classes = useStyles()
-  const history = useHistory()
+  const navigate = useNavigate()
   const noResults = rowCount === 0
 
   function clearFiltersBtnClick(physicalClick?: boolean): void {
@@ -140,7 +140,7 @@ export const ResultsToolbar: FC<Types.ResultsToolbarProps> = (props) => {
 
     dispatch({ type: 'CLEAR_FILTERS', payload: gangsAllHere ? 0 : 1 })
 
-    history.push(routes.home)
+    navigate(routes.home)
   }
 
   return (

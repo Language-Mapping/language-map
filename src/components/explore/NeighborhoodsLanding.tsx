@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { useRouteMatch } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import { BasicExploreIntro } from 'components/panels'
 import { LoadingIndicator } from 'components/generic/modals'
@@ -13,7 +13,7 @@ export const NeighborhoodsLanding: FC = (props) => {
   const tableName = 'Neighborhood'
   const filterByFormula = prepFormula(tableName)
   const fields = prepFields(tableName, tableName)
-  const { url } = useRouteMatch()
+  const { pathname: url } = useLocation()
 
   const {
     data: landingData,

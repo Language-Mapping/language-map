@@ -1,6 +1,10 @@
 import React, { FC } from 'react'
 import * as Sentry from '@sentry/react'
-import { useQuery, QueryCache, ReactQueryCacheProvider } from 'react-query'
+import {
+  QueryClient,
+  QueryClientProvider,
+  useQuery,
+} from '@tanstack/react-query'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
@@ -49,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const queryCache = new QueryCache()
+const mediaQueryClient = new QueryClient()
 
 const MediaErrorMsg: FC<{ url: string }> = (props) => {
   const { url } = props
@@ -70,9 +74,10 @@ const MediaModalContent: FC<ModalContentProps> = (props) => {
   const classes = useStyles()
   const mediaType = utils.getMediaTypeViaURL(url)
 
-  const { isLoading, error, data } = useQuery(url, () =>
-    fetch(apiURL).then((res) => res.json())
-  ) as APIresponse
+  const { isLoading, error, data } = useQuery({
+    queryKey: [url],
+    queryFn: () => fetch(apiURL).then((res) => res.json()),
+  }) as APIresponse
 
   if (!apiURL) return <MediaErrorMsg url={url} />
 
@@ -164,14 +169,14 @@ export const MediaModal: FC<MediaModalProps> = (props) => {
       className={classes.root}
       onClose={() => closeModal()}
     >
-      <ReactQueryCacheProvider queryCache={queryCache}>
+      <QueryClientProvider client={mediaQueryClient}>
         <MediaModalContent url={url} />
         <div>
           <Button variant="contained" onClick={() => closeModal()}>
             Back to map
           </Button>
         </div>
-      </ReactQueryCacheProvider>
+      </QueryClientProvider>
     </SimpleDialog>
   )
 }

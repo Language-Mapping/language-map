@@ -1,7 +1,7 @@
 import { useRef, useState, useCallback, useEffect } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { useAirtable } from 'components/explore/hooks'
-import { useLocation, useRouteMatch } from 'react-router-dom'
+import { useLocation, useMatch } from 'react-router-dom'
 import { routes } from 'components/config'
 import { HIDE_WELCOME_LOCAL_STG_KEY } from 'components/about'
 import { UItextTableID, UseUItext, Breakpoint } from './types'
@@ -91,16 +91,11 @@ export const usePageTitle = (): void => {
   const loc = useLocation()
   const { pathname } = loc
 
-  const detailsMatch = useRouteMatch<{ id: string }>({
-    exact: true,
-    path: [routes.dataDetail, routes.details],
-  })
-
-  const noFeatSelMatch = useRouteMatch({ exact: true, path: routes.none })
-  const censusDetailMatch = useRouteMatch<{ table: string }>({
-    exact: true,
-    path: routes.censusDetail,
-  })
+  const dataDetailMatch = useMatch(routes.dataDetail)
+  const detailsRouteMatch = useMatch(routes.details)
+  const detailsMatch = dataDetailMatch || detailsRouteMatch
+  const noFeatSelMatch = useMatch(routes.none)
+  const censusDetailMatch = useMatch(routes.censusDetail)
 
   useEffect(() => {
     const asArray = pathname.split('/')

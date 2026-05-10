@@ -8,7 +8,7 @@ import {
   useMapToolsDispatch,
 } from 'components/context'
 import { useAirtable } from 'components/explore/hooks'
-import { useLocation, useRouteMatch } from 'react-router-dom'
+import { useLocation, useMatch } from 'react-router-dom'
 import { AIRTABLE_CENSUS_BASE } from 'components/config'
 import { routes } from 'components/config/api'
 import { useBreakpoint } from 'components/generic'
@@ -22,10 +22,7 @@ export const usePolygonWebMerc: Types.UsePolygonWebMerc = (
   routePath,
   tableName
 ) => {
-  const match = useRouteMatch<{ id?: string }>({
-    path: routePath,
-    exact: true,
-  })
+  const match = useMatch(routePath)
   const isCensus = ['puma', 'tract'].includes(tableName)
   const filterField = isCensus ? 'GEOID' : 'name'
   const filterValue = match?.params.id
@@ -222,15 +219,13 @@ export const useZoomToBounds: Types.UseZoomToBounds = (
 
 // TODO: make it not insanely fragile, or abandon hover stuff on polygons
 export const useFeatSrcFromMatch: Types.UseRenameLaterUgh = () => {
-  const neighbsMatch = useRouteMatch<{ id: string }>({
-    path: ['/Explore/Neighborhood/:id', '/Explore/Neighborhood/:id/:something'],
-    exact: true,
-  })
+  const neighbBaseMatch = useMatch('/Explore/Neighborhood/:id')
+  const neighbExtraMatch = useMatch('/Explore/Neighborhood/:id/:something')
+  const neighbsMatch = neighbBaseMatch || neighbExtraMatch
 
-  const countiesMatch = useRouteMatch<{ id: string }>({
-    path: ['/Explore/County/:id', '/Explore/County/:id/:something'],
-    exact: true,
-  })
+  const countyBaseMatch = useMatch('/Explore/County/:id')
+  const countyExtraMatch = useMatch('/Explore/County/:id/:something')
+  const countiesMatch = countyBaseMatch || countyExtraMatch
 
   const featID = neighbsMatch?.params.id || countiesMatch?.params.id
 
@@ -250,7 +245,7 @@ export const usePolySelFeatSymb: Types.UsePolySelFeatSymb = (settings) => {
   // @ts-ignore
   const visible = useMapToolsState()[visContextKey]
   // TODO: show at next level? e.g. /Explore/Neighborhood/Astoria/Something
-  const match = useRouteMatch<{ id: string }>({ path: routePath, exact: true })
+  const match = useMatch(routePath)
   const valueParam = match?.params.id
   const isStyleLoaded = map?.isStyleLoaded()
 

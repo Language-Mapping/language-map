@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Route, Switch, Link as RouterLink } from 'react-router-dom'
+import { Route, Routes, Link as RouterLink } from 'react-router-dom'
 import { Theme } from '@mui/material/styles'
 import makeStyles from '@mui/styles/makeStyles'
 import createStyles from '@mui/styles/createStyles'
@@ -84,64 +84,86 @@ export const PanelTitleRoutes: FC<{ panelTitle: string }> = (props) => {
   const { panelTitle } = props
   const classes = useStyles()
 
+  const homeIntro = (
+    <>
+      <div style={{ minWidth: '1.5rem' }} />
+      <Hidden mdDown>
+        <PanelTitle text="Search and Display Sites" icon={icons.Home} />
+      </Hidden>
+      <Hidden mdUp>
+        <div className={classes.logoWrap}>
+          <Logo darkTheme />
+        </div>
+      </Hidden>
+    </>
+  )
+
+  const siteDetails = (
+    <PanelTitle text="Site Details" icon={icons.SiteDetails} />
+  )
+
+  const languageTitle = <PanelTitle text="Language" icon={icons.Language} />
+
+  const censusBlock = (
+    <>
+      <LinkToHomeBtn />
+      <PanelTitle text="Census Language Data" icon={icons[panelTitle]} />
+    </>
+  )
+
+  const exploreBlock = (
+    <>
+      <LinkToHomeBtn />
+      <PanelTitle text="Explore ELA Data" icon={icons[panelTitle]} />
+    </>
+  )
+
+  const topLevelBlock = (
+    <>
+      <LinkToHomeBtn />
+      <PanelTitle text={panelTitle} icon={icons[panelTitle]} />
+    </>
+  )
+
   // TODO: add small logo to left side of bar
   return (
-    <Switch>
-      <Route path="/" exact>
-        <div style={{ minWidth: '1.5rem' }} />
-        <Hidden mdDown>
-          <PanelTitle text="Search and Display Sites" icon={icons.Home} />
-        </Hidden>
-        <Hidden mdUp>
-          <div className={classes.logoWrap}>
-            <Logo darkTheme />
-          </div>
-        </Hidden>
-      </Route>
-      <Route path={routes.none}>
-        <PanelTitle text="No Site Selected" />
-      </Route>
-      <Route path={routes.data}>
-        <PanelTitle text=" " />
-      </Route>
+    <Routes>
+      <Route path="/" element={homeIntro} />
       <Route
-        path={['/Explore/:field/:value/:language/:id', routes.details]}
-        exact
-      >
-        <PanelTitle text="Site Details" icon={icons.SiteDetails} />
-      </Route>
+        path={routes.none}
+        element={<PanelTitle text="No Site Selected" />}
+      />
+      <Route path={`${routes.data}/*`} element={<PanelTitle text=" " />} />
       <Route
-        path={['/Explore/:field/:value/:language', routes.languageInstance]}
-        exact
-      >
-        <PanelTitle text="Language" icon={icons.Language} />
-      </Route>
-      <Route path="/Explore/:field" exact>
-        <PanelTitle text={pluralize(panelTitle)} icon={icons[panelTitle]} />
-      </Route>
-      <Route path="/Explore/:field/:value" exact>
-        <PanelTitle text={panelTitle} icon={icons[panelTitle]} />
-      </Route>
-      <Route path="/Census">
-        {/* Census just needs panel heading override */}
-        <LinkToHomeBtn />
-        <PanelTitle text="Census Language Data" icon={icons[panelTitle]} />
-      </Route>
-      <Route path={routes.explore} exact>
-        <LinkToHomeBtn />
-        <PanelTitle text="Explore ELA Data" icon={icons[panelTitle]} />
-      </Route>
-      <Route path={routes.feedback} exact>
-        <PanelTitle text="Contact & Feedback" icon={icons[panelTitle]} />
-      </Route>
-      <Route path="/:level1" exact>
-        {/* Home btn on /TopLevelRoutes looks balanced on left */}
-        <LinkToHomeBtn />
-        <PanelTitle text={panelTitle} icon={icons[panelTitle]} />
-      </Route>
-      <Route path={routes.info}>
-        <PanelTitle text={panelTitle} icon={icons[panelTitle]} />
-      </Route>
-    </Switch>
+        path="/Explore/:field/:value/:language/:id"
+        element={siteDetails}
+      />
+      <Route path={routes.details} element={siteDetails} />
+      <Route path="/Explore/:field/:value/:language" element={languageTitle} />
+      <Route path={routes.languageInstance} element={languageTitle} />
+      <Route
+        path="/Explore/:field"
+        element={
+          <PanelTitle text={pluralize(panelTitle)} icon={icons[panelTitle]} />
+        }
+      />
+      <Route
+        path="/Explore/:field/:value"
+        element={<PanelTitle text={panelTitle} icon={icons[panelTitle]} />}
+      />
+      <Route path="/Census/*" element={censusBlock} />
+      <Route path={routes.explore} element={exploreBlock} />
+      <Route
+        path={routes.feedback}
+        element={
+          <PanelTitle text="Contact & Feedback" icon={icons[panelTitle]} />
+        }
+      />
+      <Route path="/:level1" element={topLevelBlock} />
+      <Route
+        path={`${routes.info}/*`}
+        element={<PanelTitle text={panelTitle} icon={icons[panelTitle]} />}
+      />
+    </Routes>
   )
 }

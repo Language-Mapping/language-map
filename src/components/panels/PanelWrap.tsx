@@ -1,5 +1,5 @@
 import React, { FC, useRef } from 'react'
-import { Route, Switch, useLocation } from 'react-router-dom'
+import { Route, Routes, useLocation } from 'react-router-dom'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
@@ -113,22 +113,26 @@ export const PanelWrap: FC<PanelWrapProps> = (props) => {
       </Hidden>
       <div className={classes.panelContent} ref={panelRef}>
         <div id={targetElemID} />
-        <Route path="/" exact>
-          <div style={{ marginTop: '-0.75rem', marginBottom: '1rem' }}>
-            <SearchTabs mapRef={mapRef} />
-          </div>
-        </Route>
-        <Switch location={loc}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div style={{ marginTop: '-0.75rem', marginBottom: '1rem' }}>
+                <SearchTabs mapRef={mapRef} />
+              </div>
+            }
+          />
+        </Routes>
+        <Routes location={loc}>
           {nonNavRoutesConfig.map((routeConfig) => {
             const { exact, rootPath, component } = routeConfig
+            // v5 paths that weren't `exact` matched descendants too; v6 needs
+            // an explicit /* suffix for that.
+            const path = exact ? rootPath : `${rootPath}/*`
 
-            return (
-              <Route exact={exact} path={rootPath} key={rootPath}>
-                {component}
-              </Route>
-            )
+            return <Route key={rootPath} path={path} element={component} />
           })}
-        </Switch>
+        </Routes>
       </div>
       <BackToTopBtn hide={hide} targetElemID={targetElemID} />
       <Hidden mdDown>

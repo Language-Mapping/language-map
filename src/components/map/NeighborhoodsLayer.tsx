@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Route } from 'react-router-dom'
+import { useMatch } from 'react-router-dom'
 import { Source, Layer } from 'react-map-gl'
 import { FillPaint } from 'mapbox-gl'
 
@@ -21,6 +21,7 @@ export const PolygonLayer: FC<PolygonLayerProps> = (props) => {
   // @ts-ignore
   const visible = useMapToolsState()[visContextKey]
   /* eslint-enable @typescript-eslint/ban-ts-comment */
+  const isSelected = useMatch(routePath) !== null
 
   return (
     <Source
@@ -55,13 +56,13 @@ export const PolygonLayer: FC<PolygonLayerProps> = (props) => {
         beforeId={beforeId}
         layout={{ visibility: visible ? 'visible' : 'none' }}
       />
-      <Route path={routePath} exact>
+      {isSelected && (
         <SelectedPolygon
           {...props}
           selLineColor={selLineColor}
           selFillColor={selFillColor}
         />
-      </Route>
+      )}
     </Source>
   )
 }

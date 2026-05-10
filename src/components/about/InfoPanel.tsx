@@ -1,10 +1,9 @@
 import React, { FC } from 'react'
-import { Route } from 'react-router-dom'
-import { ReactQueryCacheProvider } from 'react-query'
+import { Route, Routes } from 'react-router-dom'
+import { QueryClientProvider } from '@tanstack/react-query'
 
 import { AboutPageView, FeedbackForm } from 'components/about'
-import { wpQueryCache } from 'components/about/utils'
-import { routes } from 'components/config/api'
+import { wpQueryClient } from 'components/about/utils'
 import { Nav } from 'components/nav'
 import { wpQueryIDs } from './config'
 import { WaysToHelp } from './WaysToHelp'
@@ -12,23 +11,25 @@ import { WaysToHelp } from './WaysToHelp'
 export const InfoPanel: FC = () => {
   return (
     <>
-      <Route path={routes.info} exact>
-        <WaysToHelp />
-      </Route>
-      <ReactQueryCacheProvider queryCache={wpQueryCache}>
-        <Route path={routes.about}>
-          <AboutPageView noImgShadow queryKey={wpQueryIDs.about} />
-        </Route>
-        <Route path={routes.help}>
-          <AboutPageView queryKey={wpQueryIDs.help} />
-        </Route>
-        <Route path={routes.feedback}>
-          <FeedbackForm />
-        </Route>
-      </ReactQueryCacheProvider>
-      <Route path={routes.info} exact>
-        <Nav />
-      </Route>
+      <Routes>
+        <Route index element={<WaysToHelp />} />
+      </Routes>
+      <QueryClientProvider client={wpQueryClient}>
+        <Routes>
+          <Route
+            path="About"
+            element={<AboutPageView noImgShadow queryKey={wpQueryIDs.about} />}
+          />
+          <Route
+            path="Help"
+            element={<AboutPageView queryKey={wpQueryIDs.help} />}
+          />
+          <Route path="Feedback" element={<FeedbackForm />} />
+        </Routes>
+      </QueryClientProvider>
+      <Routes>
+        <Route index element={<Nav />} />
+      </Routes>
     </>
   )
 }

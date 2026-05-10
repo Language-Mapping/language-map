@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { useParams, useRouteMatch } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
@@ -76,8 +76,8 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const NeighborhoodsInstance: FC<MidLevelExploreProps> = (props) => {
-  const { value } = useParams<{ value: string }>()
-  const { url } = useRouteMatch()
+  const { value = '' } = useParams() as { value: string }
+  const { pathname: url } = useLocation()
   const classes = useStyles()
   const [showShareBtns, setShowShareBtns] = useState<boolean>(false)
 

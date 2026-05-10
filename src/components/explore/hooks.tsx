@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query'
+import { QueryFunctionContext, useQuery } from '@tanstack/react-query'
 import Airtable from 'airtable'
 
 import {
@@ -13,7 +13,12 @@ import {
   ReactQueryOptions,
 } from './types'
 
-const airtableQuery = async (tableName: string, options: AirtableOptions) => {
+type AirtableQueryKey = [string, AirtableOptions]
+
+const airtableQuery = async ({
+  queryKey,
+}: QueryFunctionContext<AirtableQueryKey>) => {
+  const [tableName, options] = queryKey
   const base = new Airtable({ apiKey: AIRTABLE_API_KEY }).base(
     options?.baseID || AIRTABLE_BASE
   )
@@ -33,8 +38,12 @@ export function useAirtable<TResult = TonsOfFields>(
 } {
   const { data, isLoading, error } = useQuery<
     { fields: TResult }[],
-    AirtableError
-  >([tableName, options], airtableQuery, {
+    AirtableError,
+    { fields: TResult }[],
+    AirtableQueryKey
+  >({
+    queryKey: [tableName, options],
+    queryFn: airtableQuery,
     ...reactQueryDefaults,
     ...reactQueryOptions,
   })

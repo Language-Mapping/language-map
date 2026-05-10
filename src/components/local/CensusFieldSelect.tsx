@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
@@ -122,7 +122,7 @@ export const CensusFieldSelect: FC = (props) => {
   const { censusActiveField } = useMapToolsState()
   const { data, isLoading, error } = useCensusFields()
   const { text: placeholderText } = useUItext('census-search-placeholder')
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const defaultValue =
     data.find(({ id }) => id === censusActiveField?.id) || null
@@ -130,7 +130,7 @@ export const CensusFieldSelect: FC = (props) => {
   const handleChange = (value: UseCensusResponse | null) => {
     setCensusField(value, mapToolsDispatch)
     // TODO: UGHHHH don't transition/animate panels on stuff like this!
-    history.push(routes.local) // clears any census popups
+    navigate(routes.local) // clears any census popups
   }
 
   // TODO: reuse in utils (nearly identical to Omnibox)

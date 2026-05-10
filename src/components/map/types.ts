@@ -1,10 +1,9 @@
 import {
+  MapLayerMouseEvent,
+  MapProps as MapGLProps,
+  MapRef,
   SourceProps,
-  PointerEvent,
-  InteractiveMap,
-  InteractiveMapProps,
   LayerProps,
-  ViewportProps,
   ViewState,
 } from 'react-map-gl'
 import {
@@ -33,7 +32,7 @@ type SourceWithPromoteID = Omit<SourceProps, 'id'> & {
 export type BaseLayer = 'light' | 'dark' | 'none'
 export type BoundsArray = [[number, number], [number, number]]
 export type GeocodeMarkerProps = LongLat & { text: string; subtle?: boolean }
-export type InitialMapProps = InteractiveMapProps
+export type InitialMapProps = MapGLProps
 export type LangIconConfig = { icon: string; id: string }
 export type LayerBasics = { 'source-layer': string; id: string }
 export type Layer = LayerProps & LayerBasics
@@ -49,7 +48,7 @@ export type MapControlAction =
 export type PopupContent = { heading: string; content?: React.ReactNode }
 export type PopupSettings = PopupContent & LongLat
 export type UseStyleProps = { panelOpen: boolean }
-export type ViewportState = Partial<ViewportProps> & ViewState
+export type ViewportState = ViewState
 export type Offset = [number, number] // [x, y] // TODO: rm if
 
 export type LayerPropsPlusMeta = Omit<LayerProps, 'paint' | 'layout' | 'id'> & {
@@ -93,8 +92,8 @@ export type BoundaryFeat = Omit<
   'source-layer': string
 }
 
-export type MapEvent = Omit<PointerEvent, 'features'> & {
-  features: LangFeature[] | BoundaryFeat[]
+export type MapEvent = Omit<MapLayerMouseEvent, 'features'> & {
+  features?: (LangFeature | BoundaryFeat)[]
 }
 
 export type GetWebMercViewport = (
@@ -131,7 +130,7 @@ export type PanelSectionProps = {
 export type MapProps = {
   mapLoaded: boolean
   setMapLoaded: React.Dispatch<boolean>
-  mapRef: React.RefObject<InteractiveMap>
+  mapRef: React.RefObject<MapRef>
 }
 
 export type MapCtrlBtnsProps = {

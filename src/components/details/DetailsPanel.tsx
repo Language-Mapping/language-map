@@ -1,11 +1,10 @@
 import React, { FC } from 'react'
-import { Switch, Route } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { Typography } from '@mui/material'
 
 import { RecordDescription } from 'components/results'
 import { DetailedIntro, LangOrEndoIntro } from 'components/details'
 import { FeedbackToggle } from 'components/about'
-import { routes } from 'components/config/api'
 import { NoFeatSel } from './NoFeatSel'
 import { DetailsProps } from './types'
 import { useDetails } from './hooks'
@@ -13,15 +12,10 @@ import { useDetails } from './hooks'
 // Just the routes so that the hook with `useParams` will work
 export const DetailsPanel: FC = () => {
   return (
-    <Switch>
-      <Route path={routes.details} exact>
-        <DetailsWrap />
-      </Route>
-      {/* Don't need path, assumes parent will be in a Route already */}
-      <Route>
-        <NoFeatSel />
-      </Route>
-    </Switch>
+    <Routes>
+      <Route index element={<DetailsWrap />} />
+      <Route path="*" element={<NoFeatSel />} />
+    </Routes>
   )
 }
 

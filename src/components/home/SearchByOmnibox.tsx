@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import matchSorter from 'match-sorter'
 import Autocomplete from '@mui/material/Autocomplete'
 import { TextField, InputAdornment } from '@mui/material'
@@ -90,7 +90,7 @@ export const SearchByOmnibox: FC = (props) => {
     sort: [{ field: 'name' }],
   })
   const classes = useStyles()
-  const history = useHistory()
+  const navigate = useNavigate()
   const { text: placeholderText } = useUItext('omni-placeholder')
 
   // TODO: make it so this doesn't have to loop twice, aka prep AND sort.
@@ -134,7 +134,7 @@ export const SearchByOmnibox: FC = (props) => {
       color="secondary"
       onChange={(event, value) => {
         // Can't just do <RouterLink>, otherwise keyboard selection no-go...
-        if (value) history.push(`/Explore/Language/${value.name}/${value.id}`)
+        if (value) navigate(`/Explore/Language/${value.name}/${value.id}`)
       }}
       filterOptions={(opts, { inputValue }) => {
         return matchSorter(opts, inputValue, {

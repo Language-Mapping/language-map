@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Link as RouterLink, Route, Switch } from 'react-router-dom'
+import { Link as RouterLink, useMatch } from 'react-router-dom'
 import { Theme } from '@mui/material/styles'
 import makeStyles from '@mui/styles/makeStyles'
 import createStyles from '@mui/styles/createStyles'
@@ -17,6 +17,17 @@ import { icons } from 'components/config'
 
 type TimelineCrumbsProps = {
   pathChunks: [string | RouteableTableNames]
+}
+
+const firstCrumbLabel = (
+  isLangInstance: boolean,
+  isLangNone: boolean,
+  fallback: string | RouteableTableNames
+): React.ReactNode => {
+  if (isLangInstance) return 'Site Details'
+  if (isLangNone) return 'No community selected'
+
+  return fallback
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -41,6 +52,9 @@ const useStyles = makeStyles((theme: Theme) =>
 export const TimelineCrumbs: FC<TimelineCrumbsProps> = (props) => {
   const classes = useStyles()
   const { pathChunks } = props
+  const isLangInstance =
+    useMatch('/Explore/Language/:language/:instanceID') !== null
+  const isLangNone = useMatch('/Explore/Language/none/*') !== null
 
   return (
     <Timeline className={classes.root}>
@@ -70,17 +84,7 @@ export const TimelineCrumbs: FC<TimelineCrumbsProps> = (props) => {
             </TimelineSeparator>
             <TimelineContent>
               {firstOne ? (
-                <b>
-                  <Switch>
-                    <Route path="/Explore/Language/:language/:instanceID" exact>
-                      Site Details
-                    </Route>
-                    <Route path="/Explore/Language/none">
-                      No community selected
-                    </Route>
-                    <Route>{chunk}</Route>
-                  </Switch>
-                </b>
+                <b>{firstCrumbLabel(isLangInstance, isLangNone, chunk)}</b>
               ) : (
                 <RouterLink to={to}>{chunk}</RouterLink>
               )}
