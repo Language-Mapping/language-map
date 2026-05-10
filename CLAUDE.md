@@ -34,11 +34,11 @@ Two external systems drive the app, and the code is tightly coupled to their sch
 1. **Mapbox tilesets** — layer names `mb-data` (language points), `puma`, `tract`, `counties`, `neighborhoods`. These names appear as object keys throughout `src/components/map/` and renaming them in Mapbox will break the app in ways TypeScript will not catch.
 2. **Airtable** — most routes, table names, and column names are referenced by string literals from `src/components/config/api.ts` and typed in `src/components/context/types.ts`. See `docs/data-structure.md` for required fields.
 
-When adding fields, update both the Airtable schema *and* the TypeScript types in `src/components/context/types.ts`.
+When adding fields, update both the Airtable schema _and_ the TypeScript types in `src/components/context/types.ts`.
 
 ### Top-level composition
 
-`src/index.tsx` → `ProvidersWrap` (theme + GlobalContext + SymbAndLabelContext) → `BrowserRouter` → `App` (Sentry boundary + `MapToolsProvider` + `PanelContextProvider`) → `AppWrap` (layout: `PanelWrap`, `Map`, `TopBar`, `BottomNav`, plus `ResultsModal`).
+`src/index.tsx` → `ProvidersWrap` (theme + GlobalContext + SymbAndLabelContext) → `BrowserRouter` → `App` (Sentry boundary + app-wide `QueryClientProvider` + `MapToolsProvider` + `PanelContextProvider`) → `AppWrap` (layout: `PanelWrap`, `Map`, `TopBar`, `BottomNav`, plus `ResultsModal`).
 
 ### State management
 
@@ -49,11 +49,13 @@ State is split across **multiple React Contexts**, not Redux:
 - `MapToolsContext` — basemap, geocoder, census active field, etc.
 - `PanelContext` (`src/components/panels/PanelContext.tsx`) — open/closed panel UI state.
 
-Server state uses `react-query` v2 (note: this is the legacy v2 API, not v3+). Defaults are in `reactQueryDefaults` in `src/components/config/api.ts` (everything is `staleTime: Infinity`, no refetch on focus/mount/reconnect — Airtable data is treated as effectively static for the session).
+Server state uses **`@tanstack/react-query` v4**. (The `react-query` v2 entry in `package.json` is leftover and unused.) The app-wide `QueryClient` is created in `src/components/App.tsx`; its defaults come from `reactQueryDefaults` in `src/components/config/api.ts` — everything is `staleTime: Infinity`, no refetch on focus/mount/reconnect, so Airtable data is treated as effectively static for the session. `InfoPanel` and `MediaModal` swap in their own clients (`wpQueryClient`, `mediaQueryClient`) for separate cache lifecycles on WordPress/media data.
 
 ### Routing
 
-All routes are declared in `routes` in `src/components/config/api.ts` and consumed via `useRouteMatch`/`<Route>`. URL is the source of truth for "what's selected" (e.g. `/Explore/Language/:value/:id`, `/Census/:table/:field/:id`). The map listens for route changes to fly/zoom/highlight.
+All routes are declared in `routes` in `src/components/config/api.ts` and consumed via `<Routes>`/`<Route>` (`react-router-dom` v6). URL is the source of truth for "what's selected" (e.g. `/Explore/Language/:value/:id`, `/Census/:table/:field/:id`). The map listens for route changes to fly/zoom/highlight.
+
+**v6 nested-Routes gotcha — read this before adding routes inside a panel.** `PanelWrap.tsx` builds parent routes as `${rootPath}/*` from `nonNavRoutesConfig`, so panel components like `InfoPanel` and `DetailsPanel` are children of a parent `<Route path="/Foo/*">`. Inside a nested `<Routes>`, v6 strips the parent's `pathnameBase` from the URL before matching — meaning **absolute child paths like `<Route path={routes.info}>` (= `/Info`) silently fail to match** because the inner basename is already `/Info`. Use `<Route index>` for the parent path itself and **relative** paths (`path="About"`, not `path="/Info/About"`) for siblings. The mechanical v5→v6 migration left a few absolute-path regressions of this shape — `git grep '<Route path={routes\.'` to find suspects.
 
 ### Map layer wiring (`src/components/map/`)
 
@@ -75,8 +77,7 @@ The codebase uses **MUI v5** (`@mui/material`) but still relies on the deprecate
 
 ## Conventions worth knowing
 
-- `react-query` is **v2** — API differs from v3+. Don't reach for `useQueryClient`, `useInfiniteQuery` v3 syntax, etc.
-- React 17, `react-router-dom` v5 (`useRouteMatch`, `<Switch>`-style), not v6.
-- `mapbox-gl` is pinned to v1.x and `react-map-gl` to v5.x — the v2/v6 APIs (`Map` from react-map-gl v7) are not available.
+- React 17, `react-router-dom` v6 (`<Routes>`/`<Route element={...} />`/`useNavigate`), `@tanstack/react-query` v4.
+- `mapbox-gl` is pinned to v1.x and `react-map-gl` to v5.x — the v2/v6+ APIs (`Map` from react-map-gl v7) are not available.
 - ESLint extends `airbnb-typescript` with prettier; lots of custom whitespace/padding rules. Run `yarn lint` before assuming a change is clean.
 - Husky + lint-staged auto-fix on commit (`eslint --quiet --cache --fix`).
