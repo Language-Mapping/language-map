@@ -175,6 +175,7 @@
         "prop": "parens-new-line"
       }
     ],
+    "react/jsx-one-expression-per-line": 0,
     "import/imports-first": ["error", "absolute-first"],
     "import/newline-after-import": "error",
     "import/extensions": 0,
