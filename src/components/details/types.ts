@@ -23,8 +23,8 @@ export type DetailedIntroProps = TonsOfData & {
 }
 
 export type LocationLinkProps = TonsOfData & {
-  anchorEl: HTMLDivElement | null
-  setAnchorEl: React.Dispatch<HTMLDivElement | null>
+  anchorEl: HTMLElement | null
+  setAnchorEl: React.Dispatch<HTMLElement | null>
 }
 
 export type DetailsProps = {

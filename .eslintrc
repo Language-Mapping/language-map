@@ -27,7 +27,6 @@
   "extends": [
     "airbnb-typescript",
     "airbnb/hooks",
-    "react-app",
     "prettier/react",
     "plugin:jest/recommended",
     "plugin:react/recommended",
@@ -40,7 +39,12 @@
     // last configuration in the extends array.
     "plugin:prettier/recommended"
   ],
-  "ignorePatterns": ["scratch", "src/serviceWorker.ts", "build"],
+  "ignorePatterns": [
+    "scratch",
+    "build",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx"
+  ],
   "rules": {
     "array-bracket-newline": [
       "error",
@@ -178,6 +182,6 @@
     "import/newline-after-import": "error",
     "import/extensions": 0,
     "import/prefer-default-export": 0,
-    "@typescript-eslint/no-unused-vars": ["error"]
+    "@typescript-eslint/no-unused-vars": ["error", { "args": "none" }]
   }
 }

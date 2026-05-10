@@ -1,6 +1,7 @@
 import { RouteLocation } from './types'
 
-export const AIRTABLE_API_KEY = process.env.REACT_APP_AIRTABLE_API_KEY as string
+export const AIRTABLE_API_KEY = import.meta.env
+  .REACT_APP_AIRTABLE_API_KEY as string
 export const AIRTABLE_BASE = 'applPEl3BsnpuszQu'
 export const AIRTABLE_CENSUS_BASE = 'appjb6Qnp4lTNz7Gn'
 

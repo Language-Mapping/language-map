@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react'
-import { Link } from '@material-ui/core'
+import { Button } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 import { ToggleableSection, Explanation } from 'components/generic'
@@ -27,15 +27,13 @@ export const WorldRegionMap: FC = () => {
   const [showWorldMap, setShowWorldMap] = useState<boolean>(false)
 
   const WorldMapToggle = (
-    <Link
-      href="#"
-      onClick={(e: React.MouseEvent) => {
-        e.preventDefault()
+    <Button
+      onClick={() => {
         setShowWorldMap(!showWorldMap)
       }}
     >
       {showWorldMap ? 'Hide' : 'Show'} world map
-    </Link>
+    </Button>
   )
 
   const WorldMapTip = (

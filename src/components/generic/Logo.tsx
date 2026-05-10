@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { ReactComponent as ProjectLogo } from '../../img/logo.svg'
+import ProjectLogo from '../../img/logo.svg?react'
 
 type LogoProps = {
   darkTheme?: boolean
