@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react'
+import React, { FC, useContext, PropsWithChildren } from 'react'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const NavItemWithBadge: FC = (props) => {
+export const NavItemWithBadge: FC<PropsWithChildren> = (props) => {
   const { state } = useContext(GlobalContext)
   const { children } = props
   const classes = useStyles()

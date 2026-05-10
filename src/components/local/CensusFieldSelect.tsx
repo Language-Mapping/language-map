@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const CensusGroupHeader: FC<GroupHeaderProps> = (props) => {
+const CensusGroupHeader: FC<PropsWithChildren<GroupHeaderProps>> = (props) => {
   const { title, censusScope } = props
   const classes = useStyles()
   const { text: subTitle } = useUItext(

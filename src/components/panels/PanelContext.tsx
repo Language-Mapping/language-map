@@ -1,7 +1,13 @@
 // NOTE: some of this file was adapted from an existing GitHub project with an
 // MIT License, available here:
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
-import React, { useReducer, useContext, createContext, FC } from 'react'
+import React, {
+  useReducer,
+  useContext,
+  createContext,
+  FC,
+  PropsWithChildren,
+} from 'react'
 
 // TODO: 3-state mobile panel
 // export type PanelState = 'default' | 'maximized' | 'minimized'
@@ -36,7 +42,7 @@ const reducer = (state: InitialState, action: PanelAction): InitialState => {
 const PanelStateContext = createContext<InitialState | undefined>(undefined)
 const PanelDispatchContext = createContext<Dispatch | undefined>(undefined)
 
-export const PanelContextProvider: FC = (props) => {
+export const PanelContextProvider: FC<PropsWithChildren> = (props) => {
   const { children } = props
   const [state, dispatch] = useReducer(reducer, initialState)
 

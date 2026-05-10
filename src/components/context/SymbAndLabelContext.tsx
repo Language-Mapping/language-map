@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 
 import { LangSchemaCol } from './types'
 
@@ -59,7 +59,7 @@ function reducer(state: InitialState, action: Action) {
   }
 }
 
-export const SymbAndLabelProvider: FC = (props) => {
+export const SymbAndLabelProvider: FC<PropsWithChildren> = (props) => {
   const { children } = props
   const [state, dispatch] = React.useReducer(reducer, initialState)
 

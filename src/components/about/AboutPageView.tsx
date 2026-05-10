@@ -51,19 +51,21 @@ export const AboutPageView: FC<AboutPageProps> = (props) => {
   // TODO: wire up Sentry; aria; TS for error (`error.message` is a string)
   return (
     <div className={classes.root}>
-      {error && (
-        <>
-          An error has occurred.{' '}
-          <span role="img" aria-label="man shrugging emoji">
-            🤷‍♂
-          </span>
-        </>
-      )}
-      <div
-        className={noImgShadow ? NO_IMG_SHADOW_CLASSNAME : ''}
-        dangerouslySetInnerHTML={createMarkup(data?.content.rendered || '')}
-        id={`${queryKey}-content`}
-      />
+      <>
+        {error && (
+          <>
+            An error has occurred.{' '}
+            <span role="img" aria-label="man shrugging emoji">
+              🤷‍♂
+            </span>
+          </>
+        )}
+        <div
+          className={noImgShadow ? NO_IMG_SHADOW_CLASSNAME : ''}
+          dangerouslySetInnerHTML={createMarkup(data?.content.rendered || '')}
+          id={`${queryKey}-content`}
+        />
+      </>
     </div>
   )
 }

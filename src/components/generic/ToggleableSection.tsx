@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
 
@@ -29,7 +29,9 @@ const useStyles = makeStyles(() =>
 // TODO: consider ellipsizing with `line-clamp`:
 // https://css-tricks.com/multiline-truncated-text-with-show-more-button/
 // https://css-tricks.com/almanac/properties/l/line-clamp/
-export const ToggleableSection: FC<ToggleableProps> = (props) => {
+export const ToggleableSection: FC<PropsWithChildren<ToggleableProps>> = (
+  props
+) => {
   const { children, show, initialHeight = 0 } = props
   const classes = useStyles({ show, initialHeight })
 

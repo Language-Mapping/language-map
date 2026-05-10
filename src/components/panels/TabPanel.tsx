@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import { Theme } from '@mui/material'
 
 import createStyles from '@mui/styles/createStyles'
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) => {
   })
 })
 
-export const TabPanel: FC<TabPanelProps> = (props) => {
+export const TabPanel: FC<PropsWithChildren<TabPanelProps>> = (props) => {
   const { children, value, index, ...other } = props
   const classes = useStyles()
 

@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useState, PropsWithChildren } from 'react'
 import { useLocation, useMatch } from 'react-router-dom'
 import { Theme } from '@mui/material/styles'
 import makeStyles from '@mui/styles/makeStyles'
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-const ToggleSearchMenuBtn: FC = (props) => {
+const ToggleSearchMenuBtn: FC<PropsWithChildren> = (props) => {
   const { children } = props
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
   const open = Boolean(anchorEl)

@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import { Theme } from '@mui/material'
 
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => {
   })
 })
 
-export const SlideDown: FC<SlideDownProps> = (props) => {
+export const SlideDown: FC<PropsWithChildren<SlideDownProps>> = (props) => {
   const { inProp, children } = props
   const classes = useStyles()
 

@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import { Theme } from '@mui/material/styles'
 import createStyles from '@mui/styles/createStyles'
 import makeStyles from '@mui/styles/makeStyles'
@@ -27,7 +27,9 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const ShareButtonsWrap: FC<ShareButtonsWrapProps> = (props) => {
+export const ShareButtonsWrap: FC<PropsWithChildren<ShareButtonsWrapProps>> = (
+  props
+) => {
   const { children, showShareBtns, shareText } = props
   const classes = useStyles({ showShareBtns })
 

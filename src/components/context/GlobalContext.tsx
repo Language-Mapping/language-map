@@ -1,7 +1,7 @@
 // NOTE: some of this file was adapted from an existing GitHub project with an
 // MIT License, available here:
 // https://github.com/Covid-Self-report-Tool/cov-self-report-frontend/blob/master/LICENSE
-import React, { useReducer, createContext, FC } from 'react'
+import React, { useReducer, createContext, FC, PropsWithChildren } from 'react'
 
 import { reducer } from './reducer'
 import { StoreAction, InitialState } from './types'
@@ -28,7 +28,7 @@ export const GlobalContext = createContext<Context>({
 // TODO: this if it makes sense to:
 // https://dev.to/stephencweiss/usereducer-with-typescript-2kf
 
-export const GlobalProvider: FC = (props) => {
+export const GlobalProvider: FC<PropsWithChildren> = (props) => {
   const { children } = props
   const [state, dispatch] = useReducer(reducer, initialState)
 

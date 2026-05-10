@@ -9,7 +9,7 @@ import { PreppedAutocompleteGroup } from './types'
 
 export function useResetCache(
   itemCount: number
-): React.RefObject<VariableSizeList> {
+): React.RefObject<VariableSizeList | null> {
   const ref = React.useRef<VariableSizeList>(null)
 
   React.useEffect(() => {

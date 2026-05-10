@@ -130,7 +130,7 @@ export type PanelSectionProps = {
 export type MapProps = {
   mapLoaded: boolean
   setMapLoaded: React.Dispatch<boolean>
-  mapRef: React.RefObject<MapRef>
+  mapRef: React.RefObject<MapRef | null>
 }
 
 export type MapCtrlBtnsProps = {

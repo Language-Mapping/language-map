@@ -1,6 +1,13 @@
 // TOO annoying. I'll take the risk, esp. since it has not seemed problematic:
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { FC, useState, useContext, useEffect, useCallback } from 'react'
+import React, {
+  FC,
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+  PropsWithChildren,
+} from 'react'
 import { isMobile } from 'react-device-detect'
 import { useLocation, useMatch, useNavigate } from 'react-router-dom'
 import { Map as MbMap, AttributionControl, MapboxEvent } from 'mapbox-gl'
@@ -34,7 +41,7 @@ const { mbStyleTileConfig, langTypeIconsConfig, initialMapState } = config
 
 utils.rightToLeftSetup()
 
-export const Map: FC<Types.MapProps> = (props) => {
+export const Map: FC<PropsWithChildren<Types.MapProps>> = (props) => {
   const { children, mapLoaded, mapRef, setMapLoaded } = props
   const navigate = useNavigate()
   const loc = useLocation()

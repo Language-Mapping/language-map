@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, PropsWithChildren } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import { Theme } from '@mui/material/styles'
 
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 )
 
-export const CardListWrap: FC = (props) => {
+export const CardListWrap: FC<PropsWithChildren> = (props) => {
   const { children } = props
   const classes = useStyles()
 
