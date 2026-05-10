@@ -13,10 +13,10 @@
     "@types/jest": "^24.0.0",
     "@types/match-sorter": "^4.0.0",
     "@types/node": "^14.0.13",
-    "@types/react": "^16.9.35",
-    "@types/react-dom": "^16.9.8",
+    "@types/react": "^17.0.83",
+    "@types/react-dom": "^17.0.26",
     "@types/react-map-gl": "^5.2.7",
-    "@types/react-router-dom": "^5.1.5",
+    "@types/react-router-dom": "^5.3.3",
     "@types/react-swipeable-views": "^0.13.0",
     "@types/react-window": "^1.8.2",
     "@types/webfontloader": "^1.6.32",
@@ -24,9 +24,9 @@
     "jest-canvas-mock": "^2.2.0",
     "match-sorter": "^4.2.0",
     "material-table": "1.68.1",
-    "react": "^16.14.0",
+    "react": "^17.0.2",
     "react-device-detect": "^1.17.0",
-    "react-dom": "^16.14.0",
+    "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
     "react-map-gl": "^5.2.7",
     "react-map-gl-geocoder": "^2.0.16",
@@ -105,6 +105,8 @@
   },
   "resolutions": {
     "material-table/jspdf": "^2.1.0",
-    "material-table/jspdf-autotable": "^3.5.13"
+    "material-table/jspdf-autotable": "^3.5.13",
+    "@types/react": "^17.0.83",
+    "@types/react-dom": "^17.0.26"
   }
 }
